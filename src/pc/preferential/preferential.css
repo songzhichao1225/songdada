@@ -172,7 +172,20 @@
 }
 .fontColor{
     font-size: 12px;
-    color: #9B9B9B;
+color: #9B9B9B;
+}
+.ant-input{
+    width: 249px;
+    height: 26px;
+}
+.mookodg{
+    display: block;
+    font-size: 30px;
+    padding: 20px 0;
+    text-align: center;
+}
+.mookodgGod{
+    display: none
 }
 .xiange{
     height: 8px;

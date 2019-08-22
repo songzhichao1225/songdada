@@ -65,6 +65,14 @@ export function getVenueSport(data,headers){    //查看当前场馆的运动项
     return axios.post('/api/getVenueSport',data, {headers: {'token': headers}})
 }
 
+export function addVenueDiscount(data,headers){    //新增优惠活动
+    return axios.post('/api/addVenueDiscount',data, {headers: {'token': headers}})
+}
+export function getVenueDiscountList(data,headers){    //优惠活动列表
+    return axios.post('/api/getVenueDiscountList',data, {headers: {'token': headers}})
+}
+
+
 
 
 

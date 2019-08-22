@@ -5,7 +5,7 @@
     background: #fff;
     padding-left: 25px;
     overflow: hidden;
-    margin-top: 8px;
+
 }
 .orderList .navTab .colorNot{
     background: #f5f5f5;
@@ -142,4 +142,8 @@
 }
 .orderList .borderLi{
     border-bottom: 2px solid #000;
+}
+.xiange{
+    height: 8px;
+    background: #F5F5F5
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import './information.css';
 import 'antd/dist/antd.css';
-import { Button, Row, Col, Select, Pagination } from 'antd';
+import { Button, Row, Col, Select, Pagination,Spin, message } from 'antd';
 import { getReservationActivitieslist } from '../../api';
 
 const { Option } = Select;
@@ -16,6 +16,7 @@ class information extends React.Component {
     list: [],
     dianIndex:'0',
     liNum:'4',
+    loading:true,
     activityNav:[
       {name:'篮球',num:4},
       {name:'羽毛球',num:1 },
@@ -39,9 +40,10 @@ class information extends React.Component {
   async getReservationActivitieslist(data) {
     const res = await getReservationActivitieslist(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ list: res.data.data.data })
+      this.setState({ list: res.data.data.data,loading:false})
     } else {
-      this.setState({ listNot: res.data.msg })
+       message.error(res.data.msg)
+       this.setState({loading:false})
     }
   }
 
@@ -62,6 +64,7 @@ class information extends React.Component {
     let userMessage;
     if (this.state.list.length !== 0) {
       userMessage = (
+        
         <div>
           {
             this.state.list.map((item, i) => (
@@ -82,6 +85,7 @@ class information extends React.Component {
           }
           <Pagination className="fenye" defaultCurrent={1} total={10} />
         </div>
+       
       )
     } else {
       userMessage = (
@@ -94,6 +98,7 @@ class information extends React.Component {
           <Button onClick={this.handelClick} className={this.state.number === '1' ? 'colorGo' : 'colorNot'} data-num='1'>预约活动列表</Button>
           <Button onClick={this.handelClick} data-num='2' className={this.state.number === '2' ? 'colorGo' : 'colorNot'}>场地预约情况</Button>
         </div>
+        <div className="xiange"></div>
         <div className={this.state.number === '1' ? 'listName' : 'listNameT'}>
           <Row className="rowConten">
             <Col xs={{ span: 2 }}>活动编号</Col>
@@ -130,7 +135,12 @@ class information extends React.Component {
             <Col xs={{ span: 2 }}>场地状态</Col>
             <Col xs={{ span: 2 }}>发消息</Col>
           </Row>
+
+          <Spin spinning={this.state.loading} style={{ minHeight: 600 }} size="large">
           {userMessage}
+          </Spin>
+
+
         </div>
         <div className={this.state.number === '2' ? 'circumstance' : 'circumstanceT'}>
           <div className="prompt">

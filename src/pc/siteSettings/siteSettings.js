@@ -2,7 +2,7 @@ import React from 'react';
 import './siteSettings.css';
 import 'antd/dist/antd.css';
 import { getVenueFieldList,addVenueField,getVenueSport} from '../../api';
-import { Select, Row, Col, Modal, TimePicker, InputNumber, Input, message } from 'antd';
+import { Select, Row, Col, Modal, TimePicker, InputNumber, Input, message,Spin } from 'antd';
 import moment from 'moment';
 const format = 'HH:mm';
 const { Option } = Select;
@@ -28,26 +28,32 @@ class siteSettings extends React.Component {
     maxScheduledDate:'',//最长可预定日期、
     appointmenttime:'',//最短可提前预定时间
     comment:'',//备注
+    loading:true,//加载
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
     this.setState({ListSport:res.data.data})
-  
   }
 
   async getVenueFieldList(data) {
     const res = await getVenueFieldList(data, sessionStorage.getItem('venue_token'))
    console.log(res)
-   this.setState({list:res.data.data})
-  
+   if(res.data.code===2000){
+    this.setState({list:res.data.data,loading:false})
+   }else{
+     message.error(res.data.msg)
+     this.setState({loading:false})
+   }
   }
 
   componentDidMount() {
      this.getVenueSport()
      this.getVenueFieldList({sportid:'',page:''})
   }
-  handleChange = e => {
+ 
+  handleChangeSelect=e=>{
     console.log(e)
+    this.getVenueFieldList({sportid:e,page:''})
   }
 
   showModal = () => {
@@ -183,7 +189,8 @@ class siteSettings extends React.Component {
       maxtablecount:number,
       maxScheduledDate:maxScheduledDate,
       appointmenttime:appointmenttime,
-      comment:comment
+      comment:comment,
+      uuid:''
      }
      this.addVenueField(data)
   }
@@ -195,7 +202,8 @@ class siteSettings extends React.Component {
       <div className="siteStting">
         <div className="header">
           <span>运动项目</span>
-          <Select defaultValue="未选择" className="selectN" style={{ width: 100 }} onChange={this.handleChange}>
+          <Select defaultValue="全部" className="selectN" style={{ width: 100 }} onChange={this.handleChangeSelect}>
+          <Option  value=''>全部</Option>
              {
                this.state.ListSport.map((item,i)=>(
                 <Option key={i} value={item.id}>{item.name}</Option>
@@ -205,8 +213,8 @@ class siteSettings extends React.Component {
           </Select>
           <div className="addList" onClick={this.showModal}>添加</div>
         </div>
+        <div className="xiange"></div>
         <div className="siteList">
-
           <Row className="rowConten">
             <Col xs={{ span: 2 }}>运动项目</Col>
             <Col xs={{ span: 2 }}>节假日/工作日</Col>
@@ -218,7 +226,11 @@ class siteSettings extends React.Component {
             <Col xs={{ span: 3 }}>最短提前预定时间</Col>
             <Col xs={{ span: 2 }}>操作</Col>
           </Row>
+
+
+          <Spin spinning={this.state.loading} style={{ minHeight: 600 }} size="large">
           <div className="dataList">
+            
             {
               this.state.list.map((item, i) => (
                 <Row key={i} className="rowList">
@@ -235,6 +247,7 @@ class siteSettings extends React.Component {
               ))
             }
           </div>
+          </Spin>
         </div>
 
 
@@ -248,8 +261,7 @@ class siteSettings extends React.Component {
         >
           <div className="modelList">
             <span>运动项目</span>
-            <Select defaultValue="全部" className="selectModel" style={{ width: 249 }} onChange={this.handleChangeOne}>
-            <Option  value=''>全部</Option>
+            <Select defaultValue="请选择" className="selectModel" style={{ width: 249 }} onChange={this.handleChangeOne}>
             {
                this.state.ListSport.map((item,i)=>(
                 <Option key={i} value={item.id}>{item.name}</Option>

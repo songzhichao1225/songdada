@@ -7,6 +7,7 @@ import { Layout, Menu, Icon } from 'antd';
 import homePage from '../homePage/homePage';
 import information from '../information/information';
 import siteSettings from '../siteSettings/siteSettings';
+import preferential from '../preferential/preferential';
 
 
 const { Header, Sider, Content } = Layout;
@@ -46,6 +47,8 @@ class home extends React.Component {
       sessionStorage.setItem('path', '2');
     }else if(this.props.history.location.pathname==='/home/siteSettings'){
       sessionStorage.setItem('path', '3');
+    }else if(this.props.history.location.pathname==='/home/preferential'){
+      sessionStorage.setItem('path', '4');
     }
   }
 
@@ -161,10 +164,12 @@ class home extends React.Component {
               <Icon style={{ paddingLeft: 25 }} type="global" />
               <span>场地设置</span>
               </Link>
-            </Menu.Item>
+            </Menu.Item>                   
             <Menu.Item key="4">
+            <Link to="/home/preferential">
               <Icon style={{ paddingLeft: 25 }} type="gift" />
               <span>优惠活动</span>
+              </Link>
             </Menu.Item>
             <Menu.Item key="5">
               <Icon style={{ paddingLeft: 25 }} type="usergroup-delete" />
@@ -197,7 +202,7 @@ class home extends React.Component {
             </div>
           </Header>
           <Content style={{
-            background: '#F5F5F5',
+            background: '#fff',
           }}>
             <div className={this.state.path !== '/home' ? 'homePageT' : 'homePage'} >
               <span className="title">{this.state.nookod} 欢迎使用挑战场馆端</span>
@@ -237,6 +242,7 @@ class home extends React.Component {
             <Route path="/home/homePage" component={homePage}/>
             <Route path="/home/information" component={information}/>
             <Route path="/home/siteSettings" component={siteSettings}/>
+            <Route path="/home/preferential" component={preferential}/>
             
           </Content>
         </Layout>
