@@ -180,7 +180,7 @@ class home extends React.Component {
               <Icon style={{ paddingLeft: 25 }} type="setting" />
               <span>系统设置</span>
             </Menu.Item>
-            <Menu.Item key="7">+
+            <Menu.Item key="7">
               <Icon style={{ paddingLeft: 25 }} type="account-book" />
               <span>我的钱包</span>
             </Menu.Item>

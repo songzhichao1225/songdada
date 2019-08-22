@@ -51,8 +51,6 @@ class preferential extends React.Component {
       message.error(res.data.msg)
       this.setState({loading: false })
     }
-
-
   }
 
   componentDidMount() {
@@ -168,6 +166,11 @@ class preferential extends React.Component {
 
   }
 
+  updata=()=>{
+   
+
+  }
+
 
 
   submit = () => {
@@ -190,8 +193,6 @@ class preferential extends React.Component {
   }
 
   render() {
-
-
     return (
       <div className="siteStting">
         <div className="header">
@@ -232,7 +233,7 @@ class preferential extends React.Component {
                     <Col xs={{ span: 3 }}>{item.fromdate}-{item.enddate}</Col>
                     <Col xs={{ span: 2 }}>{item.maxtablecount}</Col>
                     <Col xs={{ span: 3 }}>{item.appointmenttime}分</Col>
-                    <Col xs={{ span: 2 }}><img src={require("../../assets/icon_pc_updata.png")} alt="修改" /></Col>
+                    <Col className="updata" xs={{ span: 2 }}><img onClick={this.updata} src={require("../../assets/icon_pc_updata.png")} alt="修改" /> <img src={require("../../assets/icon_pc_delet.png")} alt="删除" /></Col>
                   </Row>
                 ))
               }
@@ -277,7 +278,7 @@ class preferential extends React.Component {
 
           <div className="modelList">
             <span>有效日期</span>
-            <RangePicker disabledDate={disabledDate} placeholder={['开始日期', '结束日期']} onChange={this.onChangeStartDate} style={{ marginLeft: 108 }} />
+            <RangePicker style={{width:249,height:26,marginLeft:108}} disabledDate={disabledDate} placeholder={['开始日期', '结束日期']} onChange={this.onChangeStartDate}  />
           </div>
 
           <div className="modelList">

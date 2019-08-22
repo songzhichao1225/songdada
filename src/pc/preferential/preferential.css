@@ -174,15 +174,17 @@
     font-size: 12px;
 color: #9B9B9B;
 }
-.ant-input{
-    width: 249px;
-    height: 26px;
-}
+
+
 .mookodg{
     display: block;
     font-size: 30px;
     padding: 20px 0;
     text-align: center;
+}
+.ant-calendar-picker>span{
+    height: 26px;
+    line-height: 26px;
 }
 .mookodgGod{
     display: none
@@ -190,4 +192,18 @@ color: #9B9B9B;
 .xiange{
     height: 8px;
     background: #F5F5F5
+}
+.updata>img:first-child{
+    display: block;
+    float: left;
+    margin-left: 40px;
+    margin-top: 15px;
+    cursor: pointer;
+}
+.updata>img:last-child{
+    display: block;
+    float: right;
+    margin-right: 40px;
+    margin-top: 15px;
+    cursor: pointer;
 }
