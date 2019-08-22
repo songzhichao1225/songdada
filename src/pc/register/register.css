@@ -1,0 +1,158 @@
+
+.register .header{
+	width: 100%;
+	height: 120px;
+	background: #374D66;
+}
+.register .heCenter{
+  width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.register .heCenter .logo{
+	display: block;
+	width: 96px;
+	height: 92px;
+	margin-top: 14px;
+	float: left;
+}
+.register .heCenter .title{
+	font-size: 20px;
+    color: #FFFFFF;
+    display: block;
+    float: left;
+    margin-left: 14px;
+    margin-top: 50px;
+    font-family: PingFang-SC-Bold;
+}
+.register .content{
+	width: 1200px;
+	margin: 20px auto;
+	-moz-box-shadow:0 2px 2px  2px #DDDDDD; 
+	-webkit-box-shadow:0 2px 2px  2px #DDDDDD;
+	box-shadow:0 2px 2px  2px #DDDDDD;
+	overflow: hidden;
+}
+.register .nav{
+	width: 1000px;
+	margin: 20px auto;
+	display: flex;
+}
+.register .nav div:first-child{
+  background-image: url(../../assets/oneline.png);
+  background-size:100%;
+  color: #fff;
+  background-repeat: no-repeat; 
+}
+.register .nav div{
+   flex: 1;
+   height: 43px;
+   color: #333;
+   line-height: 43px;
+   text-align:center;
+   margin-left:10px ;
+   background-image: url(../../assets/twoline.png);
+  background-size:100%;
+  background-repeat: no-repeat; 
+}
+.register .authentication{
+	width: 500px;
+	margin: 50px auto 0;
+	overflow: hidden;
+	padding-bottom: 50px;
+}
+.register .authentication .title{
+	font-size: 20px;
+	color: #4A4A4A;
+	font-weight: bold;
+}
+.register .formSub{
+	margin-top: 30px;
+}
+.register .son{
+	overflow: hidden;
+}
+.register .phone{
+	width: 425px;
+	height: 45px;
+	float: right;
+}
+.register .son{
+	margin-top: 30px;
+}
+.register .xing{
+	font-size: 16px;
+	color: #F64A0C;
+}
+.register .huoBtn{
+	width: 94px;
+	height: 32px;
+	background: #F5A623;
+	border-radius: 2px;
+	margin-left: 16px;
+	color: #fff;
+	float: right;
+	margin-top: 6.5px
+}
+.register .code{
+	width: 315px;
+}
+.register .agreement{
+	 width: 425px;
+	 float: right;
+	 font-size: 13px;
+	 color: #4A4A4A;
+	 margin-top: 20px;
+}
+.register .agreement .color{
+	font-size: 13px;
+	color: #F5A623;
+}
+.register .submint{
+	width: 425px;
+	height: 45px;
+	background: #F5A623;
+	border-radius: 2px;
+	color: #fff;
+	float: right;
+	margin-top: 20px;
+}
+.register .Existing{
+	font-size: 16px;
+	color: #4A4A4A;
+	width: 425px;
+	float: right;
+	margin-top: 20px;
+}
+.register .Existing span{
+	font-size: 16px;
+	color: #F5A623;
+}
+ .logoRegister{
+	 display: block;
+	margin: 80px auto 0;
+}
+.modelTitle{
+	font-size: 36px;
+	color: #4A4A4A;
+	display: block;
+	text-align: center;
+	margin-top: 30px;
+}
+.modelPhone{
+	font-size: 18px;
+	color: #4A4A4A;
+	text-align: center;
+	display: block;
+	margin-top: 15px;
+}
+.modelBtn{
+	width: 105px;
+	height: 32px;
+	background: #F5A623;
+	border-radius: 2px;
+	left: 50%;
+	margin-top: 15px;
+	margin-left: -52px;
+	color:#fff;
+}

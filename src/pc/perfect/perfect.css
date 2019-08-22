@@ -1,0 +1,174 @@
+
+.perfect .header{
+	width: 100%;
+	height: 120px;
+	background: #374D66;
+}
+.perfect .heCenter{
+  width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.perfect .heCenter .logo{
+	display: block;
+	width: 96px;
+	height: 92px;
+	margin-top: 14px;
+	float: left;
+}
+.perfect .heCenter .title{
+	font-size: 20px;
+    color: #FFFFFF;
+    display: block;
+    float: left;
+    margin-left: 14px;
+    margin-top: 50px;
+    font-family: PingFang-SC-Bold;
+}
+.perfect .content{
+	width: 1200px;
+	margin: 20px auto;
+	-moz-box-shadow:0 2px 2px  2px #DDDDDD; 
+	-webkit-box-shadow:0 2px 2px  2px #DDDDDD;
+	box-shadow:0 2px 2px  2px #DDDDDD;
+	overflow: hidden;
+}
+.perfect .nav{
+	width: 1000px;
+	margin: 20px auto;
+	display: flex;
+}
+.perfect .nav div:first-child{
+  background-image: url(../../assets/oneline.png);
+  background-size:100%;
+  color: #fff;
+  background-repeat: no-repeat; 
+}
+.perfect .nav div:nth-child(2){
+	background-image: url(../../assets/lineThree.png);
+	background-size:100%;
+	color: #fff;
+	background-repeat: no-repeat; 
+  }
+.perfect .nav div{
+   flex: 1;
+   height: 43px;
+   color: #333;
+   line-height: 43px;
+   text-align:center;
+   margin-left:10px ;
+   background-image: url(../../assets/twoline.png);
+  background-size:100%;
+  background-repeat: no-repeat; 
+}
+.perfect .contentSon{
+	width: 800px;
+	margin: 60px auto 0;
+	padding-bottom: 80px;
+	position: relative;
+}
+.perfect .titile{
+ 	display: block;
+	font-size: 20px;
+	color: #4A4A4A;
+	font-weight: 550;
+}
+.perfect .area{
+	margin-top: 20px;
+}
+.perfect .symbol{
+	color: #F64A0C ;
+	display: block;
+	float: left
+}
+.perfect .boTitle{
+	font-size: 16px;
+	color: #4A4A4A;
+	margin-left: 5px;
+	display: block;
+	float: left
+}
+.perfect .one{
+	margin-left: 26.8px;
+	height: 26px;
+}
+.perfect .name{
+	margin-top: 20px;
+	clear: both;
+}
+.perfect .nameINput{
+	width: 273px;
+	height: 26px;
+	margin-left: 26.8px;
+}
+.perfect .dingImg{
+	margin-left: 9px
+}
+.perfect .addImg{
+width: 132px;
+height: 132px;
+margin-left: 26.8px;
+float: left;
+}
+.perfect .rightText{
+	font-size: 12px;
+	color: #9B9B9B;
+	float: left;
+	margin-top: 20px;
+	text-align: center;
+	width: 100%;
+	margin-bottom: 20px;
+}
+.perfect .negative{
+	margin-left: -17px;
+}
+.perfect .negativeT{
+	margin-left: -7px
+}
+.perfect .negativeTwo{
+	margin-left: -49px;
+}
+.perfect .negativeTwoT{
+	margin-left: -39px;
+}
+.perfect .two{
+	margin-left: 26.8px;
+}
+.perfect .kong{
+	display: inline-block;
+	width: 26.8px;
+}
+.perfect .textarea{
+	width: 539px;
+	height: 114px;
+}
+.perfect .prompt{
+	margin-left: 100px;
+	font-size: 14px;
+	color: #4A4A4A;
+	margin-top: 20px;
+}
+.perfect .prompt>span{
+	color: #F64A0C;
+}
+.perfect .next{
+	background: #F5A623;
+	border-radius: 2px;
+	width: 150px;
+	height: 45px;
+	margin-left: 100px;
+	margin-top: 20px;
+	font-size: 16px;
+	color: #FFFFFF;
+}
+.perfect .ant-upload-picture-card-wrapper{
+	width: 600px;
+	margin-left: 26.8px;
+}
+.perfect .mapLocation{
+	width: 400px;
+	height: 300px;
+	position: absolute;
+	top: 100px;
+	right: -30px;
+}

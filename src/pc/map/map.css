@@ -1,0 +1,41 @@
+.mapLocation .search{
+	width: 400px;
+	position: absolute;
+	top: 40px;
+	left: 40px;
+	z-index: 100
+}
+.mapLocation .ant-btn{
+	
+	height: 45px;
+	font-size: 25px;
+}
+.mapLocation .ant-input-group-addon{
+	width: 50px;
+}
+.mapLocation .ulList{
+	width: 400px;
+	background: #fff;
+	list-style: none;
+	overflow: hidden;
+	padding-top: 20px;
+}
+.mapLocation .ulList li{
+	width: 400px;
+	margin-left:-40px; 
+	height: 60px;
+	padding-left: 10px;
+	overflow: hidden;
+}
+
+.mapLocation .ulList li:hover{
+	background: #81b9ee;
+	color:#fff;
+	cursor: pointer;
+}
+.mapLocation .ulList li span{
+	display: block;
+}
+.mapLocation .ulList li span:first-child{
+	margin-top: 10px;
+}

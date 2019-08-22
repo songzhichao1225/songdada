@@ -1,0 +1,132 @@
+
+.statusAudits .header{
+	width: 100%;
+	height: 120px;
+	background: #374D66;
+}
+.statusAudits .heCenter{
+  width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.statusAudits .heCenter .logo{
+	display: block;
+	width: 96px;
+	height: 92px;
+	margin-top: 14px;
+	float: left;
+}
+.statusAudits .heCenter .title{
+	font-size: 20px;
+    color: #FFFFFF;
+    display: block;
+    float: left;
+    margin-left: 14px;
+    margin-top: 50px;
+    font-family: PingFang-SC-Bold;
+}
+.statusAudits .content{
+	width: 1200px;
+	height: 759px;
+	margin: 20px auto;
+	-moz-box-shadow:0 2px 2px  2px #DDDDDD; 
+	-webkit-box-shadow:0 2px 2px  2px #DDDDDD;
+	box-shadow:0 2px 2px  2px #DDDDDD;
+	overflow: hidden;
+	background: #fff;
+	display: block;
+}
+.statusAudits .nav{
+	width: 1000px;
+	margin: 20px auto;
+	display: flex;
+}
+.statusAudits .nav div:first-child{
+	background-image: url(../../assets/oneline.png);
+	background-size:100%;
+	color: #fff;
+	background-repeat: no-repeat; 
+  }
+.statusAudits .nav div:nth-child(2){
+	background-image: url(../../assets/lineThree.png);
+	background-size:100%;
+	color: #fff;
+	background-repeat: no-repeat; 
+	}
+.statusAudits .nav .imgFour{
+	background-image: url(../../assets/lineThree.png);
+	background-size:100%;
+	color: #fff;
+	background-repeat: no-repeat; 
+}
+.statusAudits .nav div:nth-child(3){
+	background-image: url(../../assets/lineThree.png);
+	background-size:100%;
+	color: #fff;
+	background-repeat: no-repeat; 
+   }
+.statusAudits .nav div{
+	flex: 1;
+	height: 43px;
+	color: #333;
+	line-height: 43px;
+	text-align:center;
+	margin-left:10px ;
+	background-image: url(../../assets/twoline.png);
+	background-size:100%;
+	background-repeat: no-repeat; 
+  }
+  .statusAudits .img{
+	  display:block;
+	  margin: 110px auto 0;
+  }
+  .statusAudits .titleText{
+	font-size: 36px;
+	color: #4A4A4A;
+	text-align: center;
+	display: block;
+	margin-top: 30px;
+  }
+  .statusAudits .footer{
+	  width: 100%;
+	  height: 157px;
+	  background: #FAFAFA;
+	  overflow: hidden;
+	  margin-top: 89px;
+	 
+  }
+  .statusAudits .footer>span{
+	font-size: 16px;
+	color: #9B9B9B;
+	line-height: 22px;
+	display: block;
+	margin-left: 59px;
+	margin-top: 10px;
+  }
+  .statusAudits .footer>span:first-child{
+	  margin-top: 35px;
+  }
+  .statusAudits .nowKo{
+	  display: block;
+	  font-size: 18px;
+	  color: #4A4A4A;
+	  text-align: center;
+	  margin-top: 25px;
+  }
+.a{
+	text-align: center;
+	display: block;
+	margin-top: 16px;
+	font-size: 14px;
+	color: #F5A623;
+}
+.at{
+	text-align: left;
+	margin:10px 0 0 59px;
+	color: #F5A623;
+	font-size: 14px;
+}
+
+  .hidden{
+  display: none;
+  }
