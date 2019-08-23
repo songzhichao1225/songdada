@@ -10,6 +10,10 @@ export function _register(data){   //注册
 }
 
 
+export function getPromoteName(data){   //输入推广专员id号显示其姓名
+    return axios.post('/api/getPromoteName',data)
+}
+
 export function _code(data){    //获取验证码
     return axios.post('/api/toSendCode',data)
 }
@@ -61,6 +65,10 @@ export function addVenueField(data,headers){    //添加场地设置
     return axios.post('/api/addVenueField',data, {headers: {'token': headers}})
 }
 
+export function getFirstField(data,headers){    //查看某一条场地设置信息置
+    return axios.post('/api/getFirstField',data, {headers: {'token': headers}})
+}
+
 export function getVenueSport(data,headers){    //查看当前场馆的运动项目
     return axios.post('/api/getVenueSport',data, {headers: {'token': headers}})
 }
@@ -71,6 +79,20 @@ export function addVenueDiscount(data,headers){    //新增优惠活动
 export function getVenueDiscountList(data,headers){    //优惠活动列表
     return axios.post('/api/getVenueDiscountList',data, {headers: {'token': headers}})
 }
+
+
+
+
+
+
+
+
+export function getVenueInformation(data,headers){    //获取场馆基本信息
+    return axios.post('/api/getVenueInformation',data, {headers: {'token': headers}})
+}
+
+
+
 
 
 

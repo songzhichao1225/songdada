@@ -8,7 +8,8 @@ import homePage from '../homePage/homePage';
 import information from '../information/information';
 import siteSettings from '../siteSettings/siteSettings';
 import preferential from '../preferential/preferential';
-
+import stadiums from '../stadiums/stadiums';
+ 
 
 const { Header, Sider, Content } = Layout;
 
@@ -28,8 +29,11 @@ class home extends React.Component {
     getVenue: '',
     gerVenueName:'',
     nookod:'',
+  
   };
+ 
 
+ 
   componentDidMount() {
     sessionStorage.setItem('path', '1');
     this.setState({ minheight: document.body.scrollHeight })
@@ -49,6 +53,8 @@ class home extends React.Component {
       sessionStorage.setItem('path', '3');
     }else if(this.props.history.location.pathname==='/home/preferential'){
       sessionStorage.setItem('path', '4');
+    }else if(this.props.history.location.pathname==='/home/stadiums'){
+      sessionStorage.setItem('path', '5');
     }
   }
 
@@ -171,9 +177,11 @@ class home extends React.Component {
               <span>优惠活动</span>
               </Link>
             </Menu.Item>
-            <Menu.Item key="5">
+            <Menu.Item key="5"> 
+            <Link to={{pathname: '/home/stadiums', query : { name : 'sunny' }}}>
               <Icon style={{ paddingLeft: 25 }} type="usergroup-delete" />
               <span>场馆信息</span> 
+              </Link>
             </Menu.Item>
 
             <Menu.Item key="6">
@@ -203,6 +211,7 @@ class home extends React.Component {
           </Header>
           <Content style={{
             background: '#fff',
+            overflowY:'auto'
           }}>
             <div className={this.state.path !== '/home' ? 'homePageT' : 'homePage'} >
               <span className="title">{this.state.nookod} 欢迎使用挑战场馆端</span>
@@ -237,13 +246,13 @@ class home extends React.Component {
               </div>
             </div>
              
-
-
             <Route path="/home/homePage" component={homePage}/>
             <Route path="/home/information" component={information}/>
             <Route path="/home/siteSettings" component={siteSettings}/>
             <Route path="/home/preferential" component={preferential}/>
+            <Route path="/home/stadiums"  component={stadiums}/>
             
+
           </Content>
         </Layout>
       </Layout>

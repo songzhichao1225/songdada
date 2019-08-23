@@ -79,6 +79,8 @@ class perfect extends React.Component {
     if(sessionStorage.getItem('handleCityId')!==null){
       this.getArea({ crty: sessionStorage.getItem('handleCityId') })
     }
+
+   
    
   };
 
@@ -198,7 +200,6 @@ class perfect extends React.Component {
     }
     let sportId=sessionStorage.getItem('onChangeCheck')===null?'':sessionStorage.getItem('onChangeCheck').split(',')
      let facilitiesId=sessionStorage.getItem('onChangeSite')===null?'':sessionStorage.getItem('onChangeSite').split(',')
-     console.log(sportId,facilitiesId)
     let data={
       venueloginuuid:sessionStorage.getItem('uuid'),
       province:sessionStorage.getItem('handleArea'),
@@ -213,7 +214,8 @@ class perfect extends React.Component {
       firstURL:imageRes,
       sport:sportId===''?[]:sportId.join('|'),
       facilities:facilitiesId===''?[]:facilitiesId.join('|'),
-      siteInfo:this.state.onChangeText
+      siteInfo:this.state.onChangeText,
+      position:this.props.location.query.adddress
     }
     this.PerfectingVenueInformation(data)
   }

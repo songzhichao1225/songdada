@@ -1,7 +1,7 @@
 import React from 'react';
 import './siteSettings.css';
 import 'antd/dist/antd.css';
-import { getVenueFieldList,addVenueField,getVenueSport} from '../../api';
+import { getVenueFieldList,addVenueField,getVenueSport,getFirstField} from '../../api';
 import { Select, Row, Col, Modal, TimePicker, InputNumber, Input, message,Spin } from 'antd';
 import moment from 'moment';
 const format = 'HH:mm';
@@ -56,7 +56,13 @@ class siteSettings extends React.Component {
     this.getVenueFieldList({sportid:e,page:''})
   }
 
-  showModal = () => {
+  async getFirstField(data) {
+    const res = await getFirstField(data, sessionStorage.getItem('venue_token'))
+     console.log(res)
+  }
+  showModal = (uid) => {
+    this.getFirstField({uuid:uid})
+
     this.setState({
       visible: true,
     });
@@ -195,9 +201,13 @@ class siteSettings extends React.Component {
      this.addVenueField(data)
   }
 
+  update=e=>{
+     let uid=e.target.dataset.uid
+     this.showModal(uid)
+     
+  }
+
   render() {
-
-
     return (
       <div className="siteStting">
         <div className="header">
@@ -209,7 +219,6 @@ class siteSettings extends React.Component {
                 <Option key={i} value={item.id}>{item.name}</Option>
                ))
              }
-
           </Select>
           <div className="addList" onClick={this.showModal}>添加</div>
         </div>
@@ -226,8 +235,6 @@ class siteSettings extends React.Component {
             <Col xs={{ span: 3 }}>最短提前预定时间</Col>
             <Col xs={{ span: 2 }}>操作</Col>
           </Row>
-
-
           <Spin spinning={this.state.loading} style={{ minHeight: 600 }} size="large">
           <div className="dataList">
             
@@ -242,15 +249,13 @@ class siteSettings extends React.Component {
                   <Col xs={{ span: 2 }}>{item.maxtablecount}</Col>
                   <Col xs={{ span: 3 }}>{item.maxScheduledDate}周</Col>
                   <Col xs={{ span: 3 }}>{item.appointmenttime}分</Col>
-                  <Col xs={{ span: 2 }}><img src={require("../../assets/icon_pc_updata.png")} alt="修改" /></Col>
+                  <Col xs={{ span: 2 }}><img onClick={this.update} data-uid={item.uid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;<img src={require("../../assets/icon_pc_delet.png")} alt="删除" /></Col>
                 </Row>
               ))
             }
           </div>
           </Spin>
         </div>
-
-
         <Modal
           title="添加场地设置"
           visible={this.state.visible}
@@ -328,10 +333,6 @@ class siteSettings extends React.Component {
           <div className="submit" onClick={this.submit}>保存</div>
 
         </Modal>
-
-
-
-
       </div>
     );
   }
