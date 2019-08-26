@@ -1,0 +1,129 @@
+.systemSettings{
+    background: #F5F5F5;
+    padding-bottom: 40px;
+    overflow: hidden;
+}
+.systemSettings .title{
+    width: 100%;
+    padding-left: 25px;
+    font-size: 16px;
+    color: #4A4A4A;
+    display: block;
+    height:46px;
+    line-height: 46px;
+    background: #fff;
+    margin-top: 8px;
+    overflow: hidden;
+}
+.systemSettings .title>span{
+    float: left;
+}
+.systemSettings .title .titleSpan{
+    color: #F5A623;
+    display: block;
+    cursor: pointer;
+}
+.systemSettings .list{
+    display: block;
+    margin-top: 8px;
+    
+}
+.systemSettings .listNone{
+    display: none;
+}
+.ul{
+    margin-left: 25px;
+    background: #fff;
+    margin-top: 8px;
+}
+.ul>li{
+    padding:12px 0;
+    font-size: 16px;
+    color: #4A4A4A;
+    border-bottom: 1px solid #E1E0E1;
+    margin-left: -40px;
+    list-style: none;
+    cursor: pointer;
+    padding-left: 36px;
+}
+.ul>li>span{
+    display: block;
+}
+.ul>li>span:last-child{
+    margin-top: 20px;
+    font-size: 13px;
+    color: #4A4A4A;
+}
+.ul>li .block{
+    display: block;
+}
+.ul>li .none{
+    display: none;
+}
+.systemSettings .reset{
+    display: block;
+}
+.systemSettings .resetSon{
+    width: 350px;
+    height: 400px;
+    margin:100px auto 0;
+}
+.systemSettings .ant-input{
+    height: 32px;
+}
+.systemSettings .inputSon{
+    margin-bottom: 21px;
+}
+.systemSettings .inputSon>span{
+    width: 65px;
+    display: inline-block;
+}
+
+.systemSettings .inputSon .ant-input-affix-wrapper{
+    width: 250px;
+    margin-left: 15px;
+}
+.systemSettings .inputSonT .ant-input-affix-wrapper{
+    width: 160px;
+    margin-left: 15px;
+}
+.systemSettings .obtainCode{
+  width: 94px;
+  height: 32px;
+  background: #F5A623;
+  border-radius: 2px;
+  float: right;
+  text-align: center;
+  line-height: 32px;
+  color: #fff;
+  display: block;
+  margin-right: 16px;
+  cursor: pointer;
+}
+.systemSettings  .koohidden{
+    width: 94px;
+    height: 32px;
+    background: #F5A623;
+    border-radius: 2px;
+    float: right;
+    text-align: center;
+    line-height: 32px;
+    color: #fff;
+    display: none;
+    margin-right: 16px;
+}
+.systemSettings .submit{
+    width: 94px;
+    height: 32px;
+    background: #F5A623;
+    border-radius: 2px;
+    font-size: 14px;
+    color: #fff;
+    text-align: center;
+    line-height: 32px;
+    float: left;
+    margin: 0 0 0 80px;
+}
+.systemSettings .Untie{
+    display: block;
+}

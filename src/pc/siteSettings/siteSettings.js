@@ -42,7 +42,7 @@ class siteSettings extends React.Component {
     this.setState({list:res.data.data,loading:false})
    }else{
      message.error(res.data.msg)
-     this.setState({loading:false})
+     this.setState({list:res.data.data,loading:false})
    }
   }
 
@@ -227,13 +227,13 @@ class siteSettings extends React.Component {
           <Row className="rowConten">
             <Col xs={{ span: 2 }}>运动项目</Col>
             <Col xs={{ span: 2 }}>节假日/工作日</Col>
-            <Col xs={{ span: 2 }}>开始时间</Col>
-            <Col xs={{ span: 2 }}>结束时间</Col>
-            <Col xs={{ span: 2 }}>价格<span className="fontColor">元/时</span></Col>
+            <Col xs={{ span: 2}}>开始时间</Col>
+            <Col xs={{ span: 2}}>结束时间</Col>
+            <Col xs={{ span: 2}}>价格<span className="fontColor">元/时</span></Col>
             <Col xs={{ span: 2 }}>场地数量</Col>
             <Col xs={{ span: 3 }}>最长可预定日期</Col>
             <Col xs={{ span: 3 }}>最短提前预定时间</Col>
-            <Col xs={{ span: 2 }}>操作</Col>
+            <Col xs={{ span: 2 ,offset:3 }}>操作</Col>
           </Row>
           <Spin spinning={this.state.loading} style={{ minHeight: 600 }} size="large">
           <div className="dataList">
@@ -249,7 +249,7 @@ class siteSettings extends React.Component {
                   <Col xs={{ span: 2 }}>{item.maxtablecount}</Col>
                   <Col xs={{ span: 3 }}>{item.maxScheduledDate}周</Col>
                   <Col xs={{ span: 3 }}>{item.appointmenttime}分</Col>
-                  <Col xs={{ span: 2 }}><img onClick={this.update} data-uid={item.uid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;<img src={require("../../assets/icon_pc_delet.png")} alt="删除" /></Col>
+                  <Col xs={{ span: 2 ,offset:3}}><img onClick={this.update} data-uid={item.uid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;<img src={require("../../assets/icon_pc_delet.png")} alt="删除" /></Col>
                 </Row>
               ))
             }

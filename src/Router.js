@@ -1,5 +1,5 @@
 import React from 'react';
-import {HashRouter, Route, Switch} from 'react-router-dom';
+import {HashRouter, Route, Switch } from 'react-router-dom';
 import Login from './pc/Login/Login';
 import forgetPassword from './pc/forgetPassword/forgetPassword';
 import register from './pc/register/register';
@@ -26,6 +26,8 @@ const BasicRoute = () => (
         </Switch>
     </HashRouter>
 );
+
+
 
 
 export default BasicRoute;

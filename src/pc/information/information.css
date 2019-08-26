@@ -147,3 +147,9 @@
     height: 8px;
     background: #F5F5F5
 }
+.fenye{
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}

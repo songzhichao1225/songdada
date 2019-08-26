@@ -57,6 +57,7 @@ class Login extends React.Component {
 
   }
   naCode = () => {
+    console.log(6666)
     if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
       let num = 60
       const timer = setInterval(() => {
@@ -153,12 +154,12 @@ class Login extends React.Component {
                     <Input onChange={this.code} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="手机验证码" />
                   </Form.Item>
                   <Form.Item className="bind">
-                    <Button className={this.state.textT === '获取验证码' ? 'codeBtn' : 'koohidden'} onClick={this.naCode} htmlType="submit">
+                    <div className={this.state.textT === '获取验证码' ? 'codeBtn' : 'koohidden'}  onClick={this.naCode} >
                       {this.state.textT}
-                    </Button>
-                    <Button className={this.state.textT === '获取验证码' ? 'koohidden' : 'codeBtn'} htmlType="submit">
+                    </div>
+                    <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'codeBtn'} onClick={this.naCode}>
                       {this.state.textT}
-                    </Button>
+                    </div>
                   </Form.Item>
                   <Form.Item className="input" >
                     <Input.Password onChange={this.onPassword} onPressEnter={this.noHuiche} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" />
@@ -181,7 +182,7 @@ class Login extends React.Component {
                     <Input.Password onChange={this.onPassword} onPressEnter={this.noHuiche} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" />
                   </Form.Item>
                   <Form.Item className="bind">
-                    <Button className="btnSubmit" onClick={this.onSubmitT} htmlType="submit">
+                    <Button className="btnSubmit" onClick={this.onSubmitT} >
                       登录
                 </Button>
                   </Form.Item>

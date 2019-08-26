@@ -8,6 +8,9 @@ export function _login(data){    //登录
 export function _register(data){   //注册
     return axios.post('/api/venueregister',data)
 }
+export function VenueChangePassword(data,headers){   //重置密码
+    return axios.post('/api/VenueChangePassword',data,{headers: {'token': headers}})
+}
 
 
 export function getPromoteName(data){   //输入推广专员id号显示其姓名
@@ -80,16 +83,32 @@ export function getVenueDiscountList(data,headers){    //优惠活动列表
     return axios.post('/api/getVenueDiscountList',data, {headers: {'token': headers}})
 }
 
+export function DelVenueDiscount(data,headers){    //删除优惠活动
+    return axios.post('/api/DelVenueDiscount',data, {headers: {'token': headers}})
+}
 
-
-
-
-
+export function getFirstDiscount(data,headers){    //查看某一条优惠活动信息
+    return axios.post('/api/getFirstDiscount',data, {headers: {'token': headers}})
+}
 
 
 export function getVenueInformation(data,headers){    //获取场馆基本信息
     return axios.post('/api/getVenueInformation',data, {headers: {'token': headers}})
 }
+
+export function VenueBindingPhone(data,headers){    //更换绑定手机号
+    return axios.post('/api/VenueBindingPhone',data, {headers: {'token': headers}})
+}
+
+export function getVenueMoneyList(data,headers){    //我的钱包列表页
+    return axios.post('/api/getVenueMoneyList',data, {headers: {'token': headers}})
+}
+
+export function getVenueWithdrawalList(data,headers){    //提现记录列表
+    return axios.post('/api/getVenueWithdrawalList',data, {headers: {'token': headers}})
+}
+
+
 
 
 

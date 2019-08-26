@@ -9,7 +9,10 @@ import information from '../information/information';
 import siteSettings from '../siteSettings/siteSettings';
 import preferential from '../preferential/preferential';
 import stadiums from '../stadiums/stadiums';
- 
+import systemSettings from '../systemSettings/systemSettings';
+import myWallet from '../myWallet/myWallet';
+
+
 
 const { Header, Sider, Content } = Layout;
 
@@ -55,7 +58,12 @@ class home extends React.Component {
       sessionStorage.setItem('path', '4');
     }else if(this.props.history.location.pathname==='/home/stadiums'){
       sessionStorage.setItem('path', '5');
+    }else if(this.props.history.location.pathname==='/home/systemSettings'){
+      sessionStorage.setItem('path', '6');
+    }else if(this.props.history.location.pathname==='/home/myWallet'){
+      sessionStorage.setItem('path', '7');
     }
+    
   }
 
   timer = () => {
@@ -111,7 +119,7 @@ class home extends React.Component {
       Tminutes=myDate.getMinutes()
     }
     this.setState({
-      year: myDate.getFullYear(), mount: month, date:Tdate, getDay: day, hours: Thours, minutes: Tminutes
+      year: myDate.getFullYear()+'    /', mount: month+'    /', date:Tdate, getDay: day, hours: Thours+':', minutes: Tminutes
     })
     if(Thours<12){
      this.setState({nookod:'上午好'})
@@ -183,14 +191,19 @@ class home extends React.Component {
               <span>场馆信息</span> 
               </Link>
             </Menu.Item>
-
+            
+            
             <Menu.Item key="6">
+            <Link to="/home/systemSettings">
               <Icon style={{ paddingLeft: 25 }} type="setting" />
               <span>系统设置</span>
+              </Link>
             </Menu.Item>
             <Menu.Item key="7">
+              <Link to="/home/myWallet">
               <Icon style={{ paddingLeft: 25 }} type="account-book" />
               <span>我的钱包</span>
+              </Link>
             </Menu.Item>
           </Menu>
         </Sider>
@@ -201,7 +214,7 @@ class home extends React.Component {
               <span>{this.state.gerVenueName.name}</span>
             </div>
             <div className="time">
-              <span> {this.state.year} / {this.state.mount} / {this.state.date} {this.state.getDay}  {this.state.hours}:{this.state.minutes}</span>
+              <span> {this.state.year}  {this.state.mount}  {this.state.date} {this.state.getDay}  {this.state.hours}{this.state.minutes}</span>
                 <div className="new">
                   <img src={require("../../assets/icon_pc_new.png")} alt="message" />
                    <div className="number">{this.state.gerVenueName.mess}</div>
@@ -251,6 +264,8 @@ class home extends React.Component {
             <Route path="/home/siteSettings" component={siteSettings}/>
             <Route path="/home/preferential" component={preferential}/>
             <Route path="/home/stadiums"  component={stadiums}/>
+            <Route path="/home/systemSettings"  component={systemSettings}/>
+            <Route path="/home/myWallet"  component={myWallet}/>
             
 
           </Content>

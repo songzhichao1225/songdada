@@ -1,8 +1,8 @@
 import React from 'react';
 import './preferential.css';
 import 'antd/dist/antd.css';
-import { getVenueDiscountList, addVenueDiscount, getVenueSport } from '../../api';
-import { Select, Row, Col, Modal, TimePicker, InputNumber, Input, message, DatePicker, Spin } from 'antd';
+import { getVenueDiscountList, addVenueDiscount, getVenueSport,DelVenueDiscount,getFirstDiscount} from '../../api';
+import { Select, Row, Col, Modal, TimePicker, InputNumber, Input, message, DatePicker, Spin,Form,Button } from 'antd';
 import moment from 'moment';
 const format = 'HH:mm';
 const { Option } = Select;
@@ -36,6 +36,7 @@ class preferential extends React.Component {
     appointmenttime: '',//最短可提前预定时间
     comment: '',//备注
     loading: true,//加载
+    DisList:'',//查看某一条有毁活动信息
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -49,17 +50,19 @@ class preferential extends React.Component {
       this.setState({ list: res.data.data, loading: false })
     }else{
       message.error(res.data.msg)
-      this.setState({loading: false })
+      this.setState({ list: res.data.data, loading: false })
     }
   }
 
   componentDidMount() {
     this.getVenueSport()
     this.getVenueDiscountList({ sportid: '', page: '' })
+    sessionStorage.setItem('preferential','')
   }
 
   handleChangeSelect = e => {
     console.log(e)
+    sessionStorage.setItem('preferential',e)
     this.getVenueDiscountList({ sportid: e, page: '' })
   }
 
@@ -166,13 +169,6 @@ class preferential extends React.Component {
 
   }
 
-  updata=()=>{
-   
-
-  }
-
-
-
   submit = () => {
     let { runId, runName, starttime, endtime, costperhour, number, appointmenttime, comment, startDate, endDate } = this.state
     let data = {
@@ -192,6 +188,41 @@ class preferential extends React.Component {
     this.addVenueDiscount(data)
   }
 
+  
+ 
+
+  async getFirstDiscount(data) {
+    const res = await getFirstDiscount(data,sessionStorage.getItem('venue_token'))
+    console.log(res)
+    if(res.data.code!==2000){
+      message.error(res.data.msg)
+    }else{
+      this.setState({DisList:res.data.data})
+    }
+  }
+  updata=(e)=>{
+    
+   this.setState({visible:true})
+    this.getFirstDiscount({uuid:e.target.dataset.uid})
+     
+
+  }
+
+
+
+
+  async DelVenueDiscount(data) {
+    const res = await DelVenueDiscount(data,sessionStorage.getItem('venue_token'))
+    if(res.data.code!==200){
+      message.error(res.data.msg)
+    }else{
+      message.info('删除成功')
+    }
+  }
+  delet=(e)=>{
+    this.DelVenueDiscount({uuid:e.target.dataset.uid})
+    this.getVenueDiscountList({ sportid: sessionStorage.getItem('preferential'), page: '' })
+  }
   render() {
     return (
       <div className="siteStting">
@@ -213,13 +244,13 @@ class preferential extends React.Component {
 
           <Row className="rowConten">
             <Col xs={{ span: 2 }}>运动项目</Col>
-            <Col xs={{ span: 2 }}>开始时间</Col>
-            <Col xs={{ span: 2 }}>结束时间</Col>
-            <Col xs={{ span: 2 }}>价格<span className="fontColor">元/时</span></Col>
+            <Col xs={{ span: 2,offset:1 }}>开始时间</Col>
+            <Col xs={{ span: 2,offset:1}}>结束时间</Col>
+            <Col xs={{ span: 2,offset:1 }}>价格<span className="fontColor">元/时</span></Col>
             <Col xs={{ span: 3 }}>有效日期</Col>
             <Col xs={{ span: 2 }}>预留场地数量</Col>
             <Col xs={{ span: 3 }}>最短提前预定时间</Col>
-            <Col xs={{ span: 2 }}>操作</Col>
+            <Col xs={{ span: 2,offset:2 }}>操作</Col>
           </Row>
           <Spin spinning={this.state.loading} style={{ minHeight: 600 }} size="large">
             <div className="dataList" >
@@ -227,13 +258,13 @@ class preferential extends React.Component {
                 this.state.list.map((item, i) => (
                   <Row key={i} className="rowList">
                     <Col xs={{ span: 2 }}>{item.sportname}</Col>
-                    <Col xs={{ span: 2 }}>{item.starttime}</Col>
-                    <Col xs={{ span: 2 }}>{item.endtime}</Col>
-                    <Col xs={{ span: 2 }}>{item.costperhour}</Col>
-                    <Col xs={{ span: 3 }}>{item.fromdate}-{item.enddate}</Col>
+                    <Col xs={{ span: 2,offset:1 }}>{item.starttime}</Col>
+                    <Col xs={{ span: 2,offset:1 }}>{item.endtime}</Col>
+                    <Col xs={{ span: 2,offset:1 }}>{item.costperhour}</Col>
+                    <Col xs={{ span: 3 }}>{item.fromdate}—{item.enddate}</Col>
                     <Col xs={{ span: 2 }}>{item.maxtablecount}</Col>
                     <Col xs={{ span: 3 }}>{item.appointmenttime}分</Col>
-                    <Col className="updata" xs={{ span: 2 }}><img onClick={this.updata} src={require("../../assets/icon_pc_updata.png")} alt="修改" /> <img src={require("../../assets/icon_pc_delet.png")} alt="删除" /></Col>
+                    <Col className="updata" xs={{ span: 2,offset:2 }}><img onClick={this.updata} data-uid={item.uid} src={require("../../assets/icon_pc_updata.png")} alt="修改" /> <img data-uid={item.uid} onClick={this.delet} src={require("../../assets/icon_pc_delet.png")} alt="删除" /></Col>
                   </Row>
                 ))
               }
@@ -250,9 +281,10 @@ class preferential extends React.Component {
           width={630}
           className='model'
         >
+           <Form onSubmit={this.submit}>
           <div className="modelList">
             <span>运动项目</span>
-            <Select defaultValue="请选择" className="selectModel" style={{ width: 249 }} onChange={this.handleChangeOne}>
+            <Select defaultValue='请选择' className="selectModel" style={{ width: 249 }} onChange={this.handleChangeOne}>
               {
                 this.state.ListSport.map((item, i) => (
                   <Option key={i} value={item.id}>{item.name}</Option>
@@ -260,7 +292,7 @@ class preferential extends React.Component {
               }
             </Select>
           </div>
-
+         
           <div className="modelList">
             <span>开始时间</span>
             <TimePicker className="startTime" placeholder="请选择时间" minuteStep={30} defaultValue={moment('00:00', format)} format={format} onChange={this.handleChangThree} />
@@ -301,8 +333,9 @@ class preferential extends React.Component {
             <span>备注</span>
             <TextArea className="textArea" rows={4} placeholder='请输入' onChange={this.textArea} />
           </div>
-
-          <div className="submit" onClick={this.submit}>保存</div>
+          <Button className="submit"  htmlType='submit'>保存</Button>
+          </Form>
+         
 
         </Modal>
 

@@ -1,0 +1,117 @@
+.myWallet{
+ display: block;
+}
+.myWallet .header{
+   height: 46px;
+   background: #fff;
+   margin-top: 8px;
+}
+
+.myWallet .header .select{
+    font-size: 16px;
+    color: #4A4A4A;
+    padding-left: 25px;
+    line-height: 46px;
+    display: block;
+    float: left;
+}
+.myWallet .header .selectN{
+    margin-left: 12px;
+    float: left;
+    margin-top: 10px;
+}
+.myWallet .header .addList{
+    width: 50px;
+    height: 22px;
+    background: #F5A623;
+    border-radius: 2px; 
+    font-size: 12px;
+    color: #FFFFFF;
+    line-height: 22px;
+    float: right;
+    text-align: center;
+    margin-right: 40px;
+    margin-top: 12px;
+    cursor: pointer;
+}
+
+.myWallet .xiange{
+    height: 8px;
+    background: #F5F5F5
+}
+.myWallet .ant-calendar-picker{
+    margin-top: 10px;
+    margin-left: 15px;
+    float: left;
+}
+.myWallet .query{
+    width: 49px;
+    height: 26px;
+    background: #F5A623;
+    border-radius: 2px;
+    font-size: 12px;
+    color: #fff;
+    text-align: center;
+    line-height: 26px;
+    float: left;
+    margin-left: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+.myWallet .rightMoney{
+    float: right;
+    margin-right: 50px;
+}
+.myWallet .rightMoney .sum{
+    font-size: 16px;
+    color: #4A4A4A;
+    float: left;
+    margin-right: 20px;
+    line-height: 46px;
+}
+.myWallet .rightMoney .withdrawal{
+    width: 62px;
+    height: 26px;
+    background: #F5A623;
+    border-radius: 2px;
+    font-size: 12px;
+    color: #FFFFFF;
+    text-align: center;
+    line-height: 26px;
+    float: left;
+    margin-right: 15px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+.myWallet .oneText{
+    text-align: left;
+    padding-left: 25px;
+}
+.myWallet .ant-row{
+    border-bottom: 1px solid #E1E0E1;
+}
+.myWallet  .fenye{
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+.myWalletNone{
+    display: none;
+}
+.record{
+    display: block;
+}
+.record .previousStep{
+    padding-left: 25px;
+}
+.record .header>span{
+    display: block;
+    line-height: 46px;
+    float: left;
+    font-size: 16px;
+}
+.record .header>span:last-child{
+    
+    color: #F5A623;
+}
