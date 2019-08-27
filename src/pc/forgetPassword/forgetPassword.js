@@ -1,12 +1,15 @@
 import React from 'react';
 import './forgetPassword.css';
 import 'antd/dist/antd.css';
-import { Form, Input, Button } from 'antd';
+import { _code} from '../../api';
+import { Form, Input, Button,message } from 'antd';
 
 class forgetPassword extends React.Component {
 
   state = {
     equipment: 1,//登录设备 0pc 1移动设备
+    phone:'',
+    textT:'获取验证码',
   };
 
   componentDidMount() {
@@ -23,6 +26,30 @@ class forgetPassword extends React.Component {
       this.setState({ equipment: 1 })
     } else {
       this.setState({ equipment: 0 })
+    }
+  }
+  phoneChange=e=>{
+    this.setState({phone:e.target.value})
+  }
+  async nacode(data) {
+    const res = await _code(data)
+    console.log(res)
+
+  }
+  naCode = () => {
+    console.log(6666)
+    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
+      let num = 60
+      const timer = setInterval(() => {
+        this.setState({ textT: num-- })
+        if (num === -1) {
+          clearInterval(timer)
+          this.setState({ textT: '获取验证码' })
+        }
+      }, 1000)
+      this.nacode({ "mobile": this.state.phone, "type": 'venuesavepass' })
+    } else {
+      message.error('请输入手机号')
     }
   }
 
@@ -42,8 +69,14 @@ class forgetPassword extends React.Component {
             <Form>
               <Form.Item >
                 <div className="son">
-                  <span>手机号码</span>
-                  <Input className="phone" type="number" /><Button className="huoBtn">获取验证码</Button>
+                  <span style={{float:'left',marginLeft:17}}>手机号码</span>
+                  <Input style={{float:'left'}} className="phone" onChange={this.phoneChange} />
+                  <div  className={this.state.textT === '获取验证码' ? 'huoBtn' : 'koohidden'}  onClick={this.naCode} >
+                      {this.state.textT}
+                    </div>
+                    <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'huoBtn'} onClick={this.naCode}>
+                      {this.state.textT}
+                    </div>
                 </div>
                 <div className="son">
                   <span>验证码</span>

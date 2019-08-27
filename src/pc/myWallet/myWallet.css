@@ -104,6 +104,7 @@
 }
 .record .previousStep{
     padding-left: 25px;
+    cursor: pointer;
 }
 .record .header>span{
     display: block;
@@ -114,4 +115,7 @@
 .record .header>span:last-child{
     
     color: #F5A623;
+}
+.hidden{
+    display: none;
 }

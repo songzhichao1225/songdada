@@ -68,6 +68,10 @@ export function addVenueField(data,headers){    //添加场地设置
     return axios.post('/api/addVenueField',data, {headers: {'token': headers}})
 }
 
+export function delVenueField(data,headers){    //删除场地设置
+    return axios.post('/api/delVenueField',data, {headers: {'token': headers}})
+}
+
 export function getFirstField(data,headers){    //查看某一条场地设置信息置
     return axios.post('/api/getFirstField',data, {headers: {'token': headers}})
 }
@@ -100,6 +104,19 @@ export function VenueBindingPhone(data,headers){    //更换绑定手机号
     return axios.post('/api/VenueBindingPhone',data, {headers: {'token': headers}})
 }
 
+export function getVenueIsClose(data,headers){    //查询场馆是否关闭预约
+    return axios.post('/api/getVenueIsClose',data, {headers: {'token': headers}})
+}
+
+export function VenueIsClose(data,headers){    //关闭预约
+    return axios.post('/api/VenueIsClose',data, {headers: {'token': headers}})
+}
+
+export function VenueTemporarilyClosed(data,headers){    //临时关闭预约
+    return axios.post('/api/VenueTemporarilyClosed',data, {headers: {'token': headers}})
+}
+
+
 export function getVenueMoneyList(data,headers){    //我的钱包列表页
     return axios.post('/api/getVenueMoneyList',data, {headers: {'token': headers}})
 }
@@ -107,6 +124,11 @@ export function getVenueMoneyList(data,headers){    //我的钱包列表页
 export function getVenueWithdrawalList(data,headers){    //提现记录列表
     return axios.post('/api/getVenueWithdrawalList',data, {headers: {'token': headers}})
 }
+
+export function getCommentList(data,headers){    //用户对该场馆的评价列
+    return axios.post('/api/getCommentList',data, {headers: {'token': headers}})
+}
+
 
 
 

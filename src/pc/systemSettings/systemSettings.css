@@ -127,3 +127,6 @@
 .systemSettings .Untie{
     display: block;
 }
+.systemSettings .one .selectN{
+    width: 249px;
+}

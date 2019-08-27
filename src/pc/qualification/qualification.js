@@ -68,6 +68,10 @@ class qualification extends React.Component {
 
   async getIsStatus(data) {
     const res = await getIsStatus(data,sessionStorage.getItem('venue_token'))
+     if(res.data.code===4001){
+      this.props.history.push('/')
+      message.error('登陆超时请重新登陆！')
+    }
     this.setState({siteUUID:res.data.data.siteUid})
   }
   componentDidMount (){

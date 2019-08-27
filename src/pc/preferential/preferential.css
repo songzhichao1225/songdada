@@ -34,6 +34,7 @@
 .siteStting .siteList{
     background: #fff;
     padding-bottom: 30px;
+    display: block;
 }
 .siteStting .siteList .rowConten{
     border-bottom: 1px solid #E1E0E1;
@@ -193,17 +194,6 @@ color: #9B9B9B;
     height: 8px;
     background: #F5F5F5
 }
-.updata>img:first-child{
-    display: block;
-    float: left;
-    margin-left: 40px;
-    margin-top: 15px;
-    cursor: pointer;
-}
-.updata>img:last-child{
-    display: block;
-    float: right;
-    margin-right: 40px;
-    margin-top: 15px;
-    cursor: pointer;
+.hidden{
+    display: none
 }

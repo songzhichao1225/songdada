@@ -34,6 +34,7 @@
 .siteStting .siteList{
     background: #fff;
     padding-bottom: 30px;
+    display: block;
 }
 .siteStting .siteList .rowConten{
     border-bottom: 1px solid #E1E0E1;
@@ -184,4 +185,7 @@
 }
 img{
     cursor: pointer;
+}
+.hidden{
+    display: none;
 }

@@ -41,6 +41,9 @@ class information extends React.Component {
     const res = await getReservationActivitieslist(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ list: res.data.data.data,loading:false})
+    }else if(res.data.code===4001){
+      this.props.history.push('/')
+      message.error('登陆超时请重新登陆！')
     } else {
        message.error(res.data.msg)
        this.setState({loading:false})

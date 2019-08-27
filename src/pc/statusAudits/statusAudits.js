@@ -2,9 +2,10 @@ import React from 'react';
 import './statusAudits.css';
 import 'antd/dist/antd.css';
 import { getIsStatus} from '../../api';
-
+import {message} from 'antd';
 
 class statusAudits extends React.Component {
+  
 
 state = {
   islegal:'',
@@ -12,7 +13,10 @@ state = {
 
 async getIsStatus(data) {
   const res = await getIsStatus(data,sessionStorage.getItem('venue_token'))
-  console.log(res)
+   if(res.data.code===4001){
+    this.props.history.push('/')
+    message.error('登陆超时请重新登陆！')
+  } 
   this.setState({islegal:res.data.data.islegal})
 
 }

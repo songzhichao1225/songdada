@@ -69,7 +69,6 @@ class stadiums extends React.Component {
 
   async getVenueInformation(data) {
     const res = await getVenueInformation(data, sessionStorage.getItem('venue_token'))
-    console.log(res)
     let imgS = (res.data.data.filesURL).split('|')
     let arrImg = []
     for (let i in imgS) {

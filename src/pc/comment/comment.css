@@ -1,0 +1,164 @@
+.comment .xian{
+    height: 8px;
+    background: #F5F5F5;
+}
+.comment .has{
+    height: 46px;
+   
+}
+.comment .has .title{
+    font-size: 16px;
+    color: #333333;
+    line-height: 46px;
+    padding-left: 25px;
+    float: left;
+}
+.comment .has .xing{
+    margin-top: 10px;
+    float: left;
+}
+.comment .has .xing>img{
+    margin-left: 5px;
+    width: 20px;
+    height: 20px;
+}
+.comment .has .xing>img:first-child{
+   margin-left: 15px;
+}
+.comment .content{
+    width: 95%;
+    margin: 0 auto;
+}
+.comment .content .contentTitle{
+    height: 46px;
+    font-size: 16px;
+    border-bottom:1px solid #F5F5F5;
+    line-height: 46px;
+}
+.comment .content .contentTitle .new{
+    float: left;
+}
+.comment .content .contentTitle .sping{
+    float: right;
+    margin-right: 40px;
+    cursor: pointer;
+    
+}
+.comment .content .contentTitle .ant-spin{
+    margin-top: -8px;
+}
+.comment .content .contentSon{
+    padding-bottom: 10px;
+    border-bottom: 1px solid #F5F5F5;
+    padding-top: 10px;
+    padding-left: 10px;
+    overflow: hidden;
+    position: relative;
+}
+.comment .content .contentSon .avatar{
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #F5F5F5;
+    float: left;
+}
+.contentSon .introduction{
+    float: left;
+    margin-left: 10px;
+}
+.contentSon .introduction .sumFen .title{
+    font-size: 12px;
+    float: left;
+    line-height: 21px;
+}
+.contentSon .introduction .sumFen .xing{
+   float: left;
+   margin-left: 10px;
+}
+.contentSon .introduction .sumFen .xing>img{
+    width: 12px;
+    height: 12px;
+    margin-top: -4px;
+ }
+ .contentSon .introduction .sumFen .sumNum{
+    color: #9B9B9B;
+    padding-left: 10px;
+ }
+ .contentSon .introduction .sumFen .titleThree{
+    
+    padding-left: 10px;
+ }
+ .contentSon .introduction .text{
+     font-size: 14px;
+ }
+ .contentSon .introduction .imgA{
+     display: flex;
+     margin-top: 12px;
+ }
+ .contentSon .introduction .imgA>img{
+    display: block;
+    width: 85px;
+    height: 85px;
+    float: left;
+    margin-left: 12px;
+}
+.contentSon .introduction .imgA>img:first-child{
+    margin-left: 0;
+}
+.contentSon .introduction .timer{
+    font-size: 12px;
+    color: #9B9B9B;
+    margin-top: 12px;
+    display: block;
+}
+.contentSon  .textArea{
+    width: 34px;
+    height: 34px;
+    position: absolute;
+    right: 50px;
+    bottom:10px;
+}
+.boss{
+    width: 100%;
+    overflow: hidden;
+}
+.boss .publish{
+    width: 100%;
+    padding-left: 10px;
+    padding-top: 10px;
+    display: block;
+}
+.boss .publish img{
+    float: left;
+    display: block;
+}
+.boss .publish .news{
+    width: 96%;
+    float: left;
+    margin-left: 10px;
+}
+.boss .publish .operation{
+  float: right;
+  margin-top: 12px;
+
+}
+.boss .publish .operation>div{
+    width: 49px;
+    height: 22px;
+    background: #F5F5F5;
+    border: 1px solid #E1E0E1;
+    border-radius: 2px;
+    font-size: 12px;
+    line-height: 22px;
+    text-align: center;
+    float: left;
+    cursor: pointer;
+}
+.boss .publish .operation>div:last-child{
+    margin-left: 10px;
+    background: #F5A623;
+    color: #fff;
+}
+.boss .publishNone{
+    display: none
+}
