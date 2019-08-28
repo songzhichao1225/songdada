@@ -60,6 +60,10 @@ export function getReservationActivitieslist(data,headers){    //预约活动列
     return axios.post('/api/getReservationActivitieslist',data, {headers: {'token': headers}})
 }
 
+export function getVenueReservations(data,headers){    //场地预约情况
+    return axios.post('/api/getVenueReservations',data, {headers: {'token': headers}})
+}
+
 export function getVenueFieldList(data,headers){    //场地设置列表
     return axios.post('/api/getVenueFieldList',data, {headers: {'token': headers}})
 }
@@ -128,6 +132,10 @@ export function getVenueWithdrawalList(data,headers){    //提现记录列表
 export function getCommentList(data,headers){    //用户对该场馆的评价列
     return axios.post('/api/getCommentList',data, {headers: {'token': headers}})
 }
+export function VenueCommentReply(data,headers){    //场馆端回复用户评论
+    return axios.post('/api/VenueCommentReply',data, {headers: {'token': headers}})
+}
+
 
 
 

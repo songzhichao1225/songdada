@@ -170,7 +170,7 @@ class siteSettings extends React.Component {
 
   }
   jia = () => {
-    if(this.state.number<100){
+    if(this.state.number<26){
       this.setState({ number: this.state.number + 1 })
     }
   }
@@ -215,12 +215,10 @@ class siteSettings extends React.Component {
   async getFirstField(data) {
     const res = await getFirstField(data, sessionStorage.getItem('venue_token'))
     let datefor=res.data.data
-    if (res.data.code !== 2000) {
-      message.error(res.data.msg)
-    }else if(res.data.code===4001){
+    if(res.data.code===4001){
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
-    }  else {
+    }  else if(res.data.code=== 2000) {
       this.setState({ DisList: res.data.data })
       this.setState({
         runId: datefor.sportid,openday:datefor.openday, starttime: datefor.starttime, endtime: datefor.endtime, costperhour: datefor.costperhour, 

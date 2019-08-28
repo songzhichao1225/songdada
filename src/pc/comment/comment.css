@@ -45,7 +45,7 @@
     
 }
 .comment .content .contentTitle .ant-spin{
-    margin-top: -8px;
+    margin-top: 6px;
 }
 .comment .content .contentSon{
     padding-bottom: 10px;
@@ -94,6 +94,13 @@
  .contentSon .introduction .imgA{
      display: flex;
      margin-top: 12px;
+     display: block;
+ }
+ .hidden{
+     display: none;
+ }
+ .block{
+     display: block;
  }
  .contentSon .introduction .imgA>img{
     display: block;

@@ -47,11 +47,17 @@ class home extends React.Component {
       this.timer()
     }, 1000)
 
-    console.log(666)
     this.setState({ path: this.props.history.location.pathname })
-    console.log(this.props.history.location.pathname)
+    
+
+  }
+
+
+  componentWillReceiveProps() {
+    this.setState({ path: this.props.history.location.pathname })
     if (this.props.history.location.pathname === '/home') {
       sessionStorage.setItem('path', '1');
+      console.log(this.props.history.location.pathname)
     } else if (this.props.history.location.pathname === '/home/information') {
       sessionStorage.setItem('path', '2');
     } else if (this.props.history.location.pathname === '/home/siteSettings') {
@@ -65,12 +71,6 @@ class home extends React.Component {
     } else if (this.props.history.location.pathname === '/home/myWallet') {
       sessionStorage.setItem('path', '7');
     }
-
-  }
-
-
-  componentWillReceiveProps() {
-    this.setState({ path: this.props.history.location.pathname })
   }
   lppd = () => {
 
@@ -171,8 +171,8 @@ class home extends React.Component {
           <div className="logo">
             <img style={{ width: 115, height: 92, marginLeft: 45, marginTop: 16 }}
               src={require("../../assets/tiaozhanicon.png")} alt="logo" />
-          </div>
-          <Menu theme="dark" mode="inline" defaultSelectedKeys={[sessionStorage.getItem('path')]} onSelect={this.kood}>
+          </div>  {sessionStorage.getItem('path')}
+          <Menu theme="dark" mode="inline" selectedKeys={[sessionStorage.getItem('path')]} onSelect={this.kood}>
             <Menu.Item key="1">
               <Link to="/home">
                 <Icon style={{ paddingLeft: 25 }} type="home" />
