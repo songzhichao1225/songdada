@@ -1,7 +1,7 @@
 import React from 'react';
 import './forgetPassword.css';
 import 'antd/dist/antd.css';
-import { _code} from '../../api';
+import { _code,VenueSelectSiteName} from '../../api';
 import { Form, Input, Button,message } from 'antd';
 
 class forgetPassword extends React.Component {
@@ -12,22 +12,28 @@ class forgetPassword extends React.Component {
     textT:'获取验证码',
   };
 
-  componentDidMount() {
-    var sUserAgent = navigator.userAgent;
-    var mobileAgents = ['Android', 'iPhone'];
-    var goUrl = 0;
-    for (let index = 0; index < mobileAgents.length; index++) {
-      if (sUserAgent.indexOf(mobileAgents[index]) > -1) {
-        goUrl = 1;
-        break;
-      }
-    }
-    if (goUrl === 1) {
-      this.setState({ equipment: 1 })
-    } else {
-      this.setState({ equipment: 0 })
-    }
+  async VenueSelectSiteName(data) {
+    const res = await VenueSelectSiteName(data)
+    console.log(res)
+    let num = 60
+      const timer = setInterval(() => {
+        this.setState({ textT: num-- })
+        if (num === -1) {
+          clearInterval(timer)
+          this.setState({ textT: '获取验证码' })
+        }
+      }, 1000)
+      this.nacode({ "mobile": this.state.phone, "type": 'venuesavepass' })
+
   }
+
+  componentDidMount() {
+   
+  }
+
+ 
+
+
   phoneChange=e=>{
     this.setState({phone:e.target.value})
   }
@@ -37,17 +43,8 @@ class forgetPassword extends React.Component {
 
   }
   naCode = () => {
-    console.log(6666)
     if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
-      let num = 60
-      const timer = setInterval(() => {
-        this.setState({ textT: num-- })
-        if (num === -1) {
-          clearInterval(timer)
-          this.setState({ textT: '获取验证码' })
-        }
-      }, 1000)
-      this.nacode({ "mobile": this.state.phone, "type": 'venuesavepass' })
+      this.VenueSelectSiteName({phone:this.state.phone})
     } else {
       message.error('请输入手机号')
     }

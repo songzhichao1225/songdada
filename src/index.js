@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import Router from './Router';
+import RouterPh from './RouterPh';
 import * as serviceWorker from './serviceWorker';
 
 
@@ -16,7 +17,7 @@ for (let index = 0; index < mobileAgents.length; index++) { if(sUserAgent.indexO
  if(goUrl===0){
     ReactDOM.render(<Router/>, document.getElementById('root'));
  }else if(goUrl===1){
-
+   ReactDOM.render(<RouterPh/>, document.getElementById('root'));
  }
 
 

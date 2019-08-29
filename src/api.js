@@ -136,6 +136,18 @@ export function VenueCommentReply(data,headers){    //场馆端回复用户评�
     return axios.post('/api/VenueCommentReply',data, {headers: {'token': headers}})
 }
 
+export function getVenueWithdrawalOneList(data,headers){    //提现申请中的接口（钱包、银行卡）
+    return axios.post('/api/getVenueWithdrawalOneList',data, {headers: {'token': headers}})
+}
+export function VenueWithdrawal(data,headers){    //申请提现
+    return axios.post('/api/VenueWithdrawal',data, {headers: {'token': headers}})
+}
+
+export function VenueSelectSiteName(data,headers){    //一个法人多个场馆情况将查询出来的场馆显示让用户自己选修改哪个场馆的 
+    return axios.post('/api/VenueSelectSiteName',data, {headers: {'token': headers}})
+}
+
+
 
 
 

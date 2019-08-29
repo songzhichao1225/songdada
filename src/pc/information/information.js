@@ -73,6 +73,8 @@ class information extends React.Component {
     const res = await getVenueReservations(data, sessionStorage.getItem('venue_token'))
     let koArr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     if (res.data.code === 2000) {
+     
+     if(res.data.data.length>0){
       let letter = [
         { title: '时间', width: 100, fixed: 'left', align: 'center', dataIndex: 'a', }]
       for (let i in koArr) {
@@ -91,8 +93,8 @@ class information extends React.Component {
       for (let i in res.data.data) {
         res.data.data[i].key = i
       }
-      this.setState({ Reservations: res.data.data, letterNum: letter })
-      console.log(this.state.Reservations, this.state.letterNum)
+      this.setState({ Reservations: res.data.data, letterNum: letter,tabelFlag: false })
+     }
     } else if (res.data.code === 4005) {
       this.setState({ Reservations: [], letterNum: [], tabelFlag: true })
     } else if (res.data.code === 4001) {

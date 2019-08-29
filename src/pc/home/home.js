@@ -12,6 +12,7 @@ import stadiums from '../stadiums/stadiums';
 import systemSettings from '../systemSettings/systemSettings';
 import myWallet from '../myWallet/myWallet';
 import comment from '../comment/comment';
+import news from '../news/news';
 
 
 
@@ -48,7 +49,23 @@ class home extends React.Component {
     }, 1000)
 
     this.setState({ path: this.props.history.location.pathname })
-    
+    this.setState({ path: this.props.history.location.pathname })
+    if (this.props.history.location.pathname === '/home') {
+      sessionStorage.setItem('path', '1');
+      console.log(this.props.history.location.pathname)
+    } else if (this.props.history.location.pathname === '/home/information') {
+      sessionStorage.setItem('path', '2');
+    } else if (this.props.history.location.pathname === '/home/siteSettings') {
+      sessionStorage.setItem('path', '3');
+    } else if (this.props.history.location.pathname === '/home/preferential') {
+      sessionStorage.setItem('path', '4');
+    } else if (this.props.history.location.pathname === '/home/stadiums') {
+      sessionStorage.setItem('path', '5');
+    } else if (this.props.history.location.pathname === '/home/systemSettings') {
+      sessionStorage.setItem('path', '6');
+    } else if (this.props.history.location.pathname === '/home/myWallet') {
+      sessionStorage.setItem('path', '7');
+    }
 
   }
 
@@ -228,8 +245,10 @@ class home extends React.Component {
             <div className="time">
               <span> {this.state.year}  {this.state.mount}  {this.state.date} {this.state.getDay}  {this.state.hours}{this.state.minutes}</span>
               <div className="new">
+              <Link to="/home/news">
                 <img src={require("../../assets/icon_pc_new.png")} alt="message" />
                 <div className="number">{this.state.gerVenueName.mess}</div>
+                </Link>
               </div>
               <div className="lvyue">场地履约率：{this.state.gerVenueName.rate}%</div>
             </div>
@@ -287,7 +306,7 @@ class home extends React.Component {
             <Route path="/home/systemSettings" component={systemSettings} />
             <Route path="/home/myWallet" component={myWallet} />
             <Route path="/home/comment" component={comment} />
-
+            <Route path="/home/news" component={news} />
           </Content>
         </Layout>
       </Layout>

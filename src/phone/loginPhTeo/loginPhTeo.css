@@ -1,0 +1,54 @@
+.loginPhTeo{
+    margin-top: 1rem;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    overflow: hidden;
+}
+.loginPhTeo .loginInput {
+    width: 20rem;
+    margin: 2rem auto 0;
+}
+.loginPhTeo .loginInput .name{
+    width: 100%;
+    height: 3.06rem;
+    border-bottom: 0.06rem solid #999;
+}
+.loginPhTeo .loginInput .name .phone{
+    outline: none;
+    width: 70%;
+    height: 3rem;
+    border: none;
+    line-height: 3.06rem;
+    display: block;
+    float: left;
+}
+.loginPhTeo .loginInput .name>span{
+  display: block;
+  float: right;
+  line-height: 3.06rem;
+}
+.loginPhTeo .loginBtn{
+    width:20.44rem;
+    height:2.69rem;
+    background:rgba(216,93,39,1);
+    border-radius:1.34rem;
+    margin-top: 2rem;
+    font-size:1.06rem;
+    font-weight:600;
+    color:rgba(255,255,255,1);
+    line-height:2.69rem;
+    text-align: center;
+}
+.loginPhTeo .footer>span{
+   display: block;
+   float: left;
+   font-size:0.75rem;
+   padding: 0.4rem;
+}
+.loginPhTeo .footer>span:last-child{
+    display: block;
+    float: right;
+    font-size:0.75rem;
+    padding: 0.4rem;
+ }

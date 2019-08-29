@@ -113,9 +113,79 @@
     font-size: 16px;
 }
 .record .header>span:last-child{
-    
     color: #F5A623;
 }
 .hidden{
     display: none;
+}
+
+.withdrawal .header>span{
+    display: block;
+    line-height: 46px;
+    float: left;
+    font-size: 16px;
+}
+.withdrawal .header>span:last-child{
+    color: #F5A623;
+}
+.withdrawal .previousStep{
+    padding-left: 25px;
+    cursor: pointer;
+}
+.withdrawal .balance{
+    height: 77px;
+    background: #FCF7EE;
+    border-top: 1px solid #E8D2AD;
+    border-bottom: 1px solid #E8D2AD;
+    line-height: 77px;
+    font-size: 16px;
+    color: #4A4A4A;
+}
+.withdrawal .balance >span:first-child{
+  padding-left: 90px;
+  font-weight: bold;
+}
+.withdrawal .balance >span:nth-child(2){
+    color: #F64A0C;
+    padding-left: 53px;
+}
+.withdrawal .balance >span:last-child{
+    font-size: 12px;
+    color: #4A4A4A;
+    padding-left: 5px;
+}
+.withdrawal .home{
+   margin-left:90px; 
+   margin-top: 30px;
+}
+.withdrawal .listSon{
+    margin-top: 20px;
+}
+.withdrawal .listSon .input{
+   width: 150px;
+   height: 32px;
+   margin-left: 50px;
+}
+.withdrawal .listSon .all{
+    line-height: 32px;
+    padding-left: 10px;
+    font-size: 14px;
+    color: #F5A623;
+    cursor: pointer;
+}
+.withdrawal   .textNext{
+    padding-left: 50px;
+}
+.withdrawal .comfir{
+    width: 77px;
+    height: 26px;
+    background: #F5A623;
+    border-radius: 2px;
+    text-align: center;
+    line-height: 26px;
+    color: #fff;
+    font-size: 14px;
+    margin-top: 30px;
+    margin-left: 110px;
+    cursor: pointer;
 }
