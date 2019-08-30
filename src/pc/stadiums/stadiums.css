@@ -6,7 +6,7 @@
     margin-top: 8px;
     padding-left: 25px;
 }
-.stadiums .navTap>div{
+.stadiums .navTap .div{
     width: 111px;
     height: 27px;
     background: #F5F5F5;
@@ -17,12 +17,26 @@
     margin-top: 9px;
     cursor: pointer;
 }
+
+.stadiums .background{
+	width: 111px;
+    height: 27px;
+	background: #F5A623;
+	color: #FFFFFF;
+	text-align: center;
+    line-height: 27px;
+    float: left;
+    margin-top: 9px;
+    cursor: pointer;
+}
+
 .stadiums .navTap>div:last-child{
     margin-left: 27px;
 }
 
 .stadiums .information{
-    padding-left: 25px;
+	padding-left: 25px;
+	display: block;
 }
 .stadiums .symbol{
 	color: #F64A0C ;
@@ -90,7 +104,7 @@ float: left;
 }
 .stadiums .textarea{
 	width: 539px;
-	height: 114px;
+
 }
 .stadiums .prompt{
 	margin-left: 100px;
@@ -135,4 +149,11 @@ float: left;
 	margin-left: 110px;
 	line-height: 28px;
 	margin-bottom: 40px;
+}
+.stadiums .none{
+	display: none;
+}
+.stadiums .qualification{
+	display: block;
+	padding-left: 25px;
 }

@@ -142,9 +142,28 @@ export function getVenueWithdrawalOneList(data,headers){    //提现申请中的
 export function VenueWithdrawal(data,headers){    //申请提现
     return axios.post('/api/VenueWithdrawal',data, {headers: {'token': headers}})
 }
+export function VenueForgetPass(data){    //忘记密码
+    return axios.post('/api/VenueForgetPass',data)
+}
 
 export function VenueSelectSiteName(data,headers){    //一个法人多个场馆情况将查询出来的场馆显示让用户自己选修改哪个场馆的 
     return axios.post('/api/VenueSelectSiteName',data, {headers: {'token': headers}})
+}
+
+export function VenueInformationSave(data,headers){    //修改场馆基本信息
+    return axios.post('/api/VenueInformationSave',data, {headers: {'token': headers}})
+}
+
+export function getVenueNewsList(data,headers){    //消息中心列表
+    return axios.post('/api/getVenueNewsList',data, {headers: {'token': headers}})
+}
+
+export function getVenueNewsFirst(data,headers){    //查看消息中心的某一条消息
+    return axios.post('/api/getVenueNewsFirst',data, {headers: {'token': headers}})
+}
+
+export function VenueNewsSaveIsRead(data,headers){    //将消息中心的某条消息变成已阅读
+    return axios.post('/api/VenueNewsSaveIsRead',data, {headers: {'token': headers}})
 }
 
 

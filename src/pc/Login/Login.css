@@ -109,8 +109,6 @@
 }
 .login .content  .right .checke{
 	width: 300px;
-	position: absolute;
-	bottom: 0;
 	margin-left: 30px;
 }
 .login .content  .right .checke a:first-child span{
@@ -158,4 +156,11 @@
 	position: absolute;
 	margin-left: 30px;
 	display: none;
+}
+
+.login .selectVeunNone{
+	display: none;
+}
+.forgetPassWord .radio{
+	margin-left:-60px;
 }

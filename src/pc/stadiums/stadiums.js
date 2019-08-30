@@ -1,7 +1,7 @@
 import React from 'react';
 import './stadiums.css';
 import 'antd/dist/antd.css';
-import { getVenueInformation } from '../../api';
+import { getVenueInformation,VenueInformationSave } from '../../api';
 import { Modal, Upload, Input, Icon, message, Checkbox, Button, Popconfirm } from 'antd';
 
 const { TextArea } = Input;
@@ -64,7 +64,9 @@ class stadiums extends React.Component {
     imageUrl: '',
     sport: '',
     facilities: '',
-    textArea: '',
+    siteInfo:'',
+    comment:'',
+    flag:true,
   };
 
   async getVenueInformation(data) {
@@ -72,12 +74,12 @@ class stadiums extends React.Component {
     let imgS = (res.data.data.filesURL).split('|')
     let arrImg = []
     for (let i in imgS) {
-      arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: 'https://app.tiaozhanmeiyitian.com/uploads/Venue/2019-08-23/' + imgS[i] })
+      arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: imgS[i] })
     }
     this.setState({
       informationList: res.data.data, name: res.data.data.name, handleAddress: res.data.data.address,
-      contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, adddress: res.data.data.position, imageUrl: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.firstURL,
-      fileList: arrImg, sport: res.data.data.sport, facilities: res.data.data.facilities
+      contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, adddress: res.data.data.position, imageUrl: res.data.data.firstURL,
+      fileList: arrImg, sport:res.data.data.sport.split('') , facilities: res.data.data.facilities.split(''),siteInfo:res.data.data.siteInfo,comment:res.data.data.comment
     })
 
 
@@ -113,6 +115,7 @@ class stadiums extends React.Component {
     if (!file.url && !file.preview) {
       file.preview = await getBase64T(file.originFileObj);
     }
+ 
 
     this.setState({
       previewImage: file.url || file.preview,
@@ -150,18 +153,34 @@ class stadiums extends React.Component {
     this.setState({ facilities: e })
   }
   onChangeText = e => {
-    this.setState({ textArea: e.target.dataset.value })
+    this.setState({ siteInfo: e.target.value })
+  }
+  onChangeTextTwo=e=>{
+    this.setState({comment:e.target.value})
   }
 
+  
+  async VenueInformationSave(data) {
+    const res = await VenueInformationSave(data,sessionStorage.getItem('venue_token'))
+    if(res.data.code===2000){
+     message.info('修改成功')
+     this.getVenueInformation()
+    }else{
+      message.error(res.data.msg)
+    }
+
+  }
 
   confirm = () => {
-
-  
-    let {informationList, name, handleAddress, contacts, contactNumber,fileList,adddress, imageUrl, sport, facilities, textArea } = this.state
+    let {informationList, name, handleAddress, contacts, contactNumber,fileList,adddress, imageUrl, sport, facilities,siteInfo,comment } = this.state
     let filesURLarr=[]
     console.log(fileList)
     for(let i in fileList){
-      filesURLarr.push(fileList[i].response.data.filesURL)
+     if(fileList[i].response!==undefined){
+      filesURLarr.push(fileList[i].response.data.baseURL+fileList[i].response.data.filesURL)
+     }else if(fileList[i].response===undefined){
+      filesURLarr.push(fileList[i].url)
+     }
     }
     let data = {
       venuename:name,
@@ -171,22 +190,22 @@ class stadiums extends React.Component {
       linkMan:contacts,
       telephone:contactNumber,
       firstURL:imageUrl,
-      baseURL:'',
-      filesURL:filesURLarr===null?informationList.filesURL:filesURLarr.join('|'),
-      facilities:facilities,
-      sport:sport,
-      siteInfo:textArea,
-      comment:'',
-      position:adddress
+      filesURL:filesURLarr.join('|'),
+      facilities:facilities.join('|'),
+      sport:sport.join('|'),
+      siteInfo:siteInfo,
+      position:adddress,
+      comment:comment,
+      type:2
     }
-
-    console.log(data)
-
-
-
+      this.VenueInformationSave(data)
   }
-
-
+  basic=()=>{
+    this.setState({flag:true})
+  }
+  qualification=()=>{
+    this.setState({flag:false})
+  }
 
   
   
@@ -210,11 +229,13 @@ class stadiums extends React.Component {
     return (
       <div className="stadiums">
         <div className="navTap">
-          <div>基本信息</div>
-          <div>场馆资质</div>
+          <div className={this.state.flag===true?'background':'div'} onClick={this.basic}>基本信息</div>
+          <div className={this.state.flag===true?'div':'background'} onClick={this.qualification}>场馆资质</div>
         </div>
         <div className="xiange"></div>
-        <div className="information">
+
+          
+        <div className={this.state.flag===true?'information':'none'}>
 
           <div className="name">
             <span className="boTitle">推广员:</span>
@@ -246,12 +267,12 @@ class stadiums extends React.Component {
 
           <div className="name">
             <span className="boTitle">联系电话:</span>
-            <Input className="nameINput" value={this.state.contactNumber} onInput={this.contactNumber} />
+            <Input className="nameINput" maxLength={11} value={this.state.contactNumber} onInput={this.contactNumber} />
           </div>
 
           <div className="name">
             <span className="boTitle">新增电话:</span>
-            <Input className="nameINput" onInput={this.addtelephone} placeholder="请输入新增联系电话" />
+            <Input className="nameINput" maxLength={11} onInput={this.addtelephone} placeholder="请输入新增联系电话" />
           </div>
 
           <div className="name">
@@ -265,7 +286,7 @@ class stadiums extends React.Component {
               beforeUpload={beforeUpload}
               onChange={this.handleChange}
             >
-              {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+              {imageUrl ? <img src={ 'https://app.tiaozhanmeiyitian.com/' +imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
             </Upload>
           </div>
 
@@ -295,12 +316,16 @@ class stadiums extends React.Component {
 
           <div className="name">
             <span className="boTitle">场地设施:</span><span className="kong"></span>
-            <Checkbox.Group options={options} value={this.state.facilities} onChange={this.onChangeSite} />
+            <Checkbox.Group options={options} value={this.state.facilities} onChange={this.onChangeSite} /> 
           </div>
 
           <div className="name">
             <span className="boTitle">场地介绍:</span><span className="kong"></span>
-            <TextArea className="textarea" placeholder="请输入场地介绍，如场地规模、特色等。" onChange={this.onChangeText} rows={4} />
+            <TextArea className="textarea" value={this.state.siteInfo} placeholder="请输入场地介绍，如场地规模、特色等。" onChange={this.onChangeText} rows={3} />
+          </div>
+          <div className="name">
+            <span className="boTitle">其他:</span><span className="kong"></span>
+            <TextArea className="textarea" value={this.state.comment} placeholder="请输入场地其他介绍，如比赛、特色等。" onChange={this.onChangeTextTwo} rows={2} />
           </div>
 
 
@@ -315,9 +340,16 @@ class stadiums extends React.Component {
           </Popconfirm>
         </div>
 
+        
+
+      <div className={this.state.flag===true?'none':'qualification'}>
+      
+    
 
 
 
+
+      </div>
 
       </div >
     );

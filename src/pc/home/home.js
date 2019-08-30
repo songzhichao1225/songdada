@@ -34,7 +34,6 @@ class home extends React.Component {
     getVenue: '',
     gerVenueName: '',
     nookod: '',
-
   };
 
 
@@ -47,7 +46,6 @@ class home extends React.Component {
     setInterval(() => {
       this.timer()
     }, 1000)
-
     this.setState({ path: this.props.history.location.pathname })
     this.setState({ path: this.props.history.location.pathname })
     if (this.props.history.location.pathname === '/home') {

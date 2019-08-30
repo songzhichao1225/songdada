@@ -192,11 +192,9 @@ class perfect extends React.Component {
 
   onClickNex=()=>{
     let {imageRes,fileList,handleAddress}=this.state
-    let baseURLarr=[]
     let filesURLarr=[]
     for(let i in fileList){
-      baseURLarr.push(fileList[i].response.data.baseURL)
-      filesURLarr.push(fileList[i].response.data.filesURL)
+      filesURLarr.push(fileList[i].response.data.baseURL+fileList[i].response.data.filesURL)
     }
     let sportId=sessionStorage.getItem('onChangeCheck')===null?'':sessionStorage.getItem('onChangeCheck').split(',')
      let facilitiesId=sessionStorage.getItem('onChangeSite')===null?'':sessionStorage.getItem('onChangeSite').split(',')
@@ -209,7 +207,6 @@ class perfect extends React.Component {
       lat:this.props.location.query===undefined?'':this.props.location.query.lat,
       lng:this.props.location.query===undefined?'':this.props.location.query.lng,
       address:handleAddress,
-      baseURL:baseURLarr[0],
       filesURL:filesURLarr===null?'':filesURLarr.join('|'),
       firstURL:imageRes,
       sport:sportId===''?[]:sportId.join('|'),
@@ -217,7 +214,8 @@ class perfect extends React.Component {
       siteInfo:this.state.onChangeText,
       position:this.props.location.query.adddress
     }
-    this.PerfectingVenueInformation(data)
+    console.log(data)
+     this.PerfectingVenueInformation(data)
   }
  
   async PerfectingVenueInformation(data) {
@@ -298,11 +296,6 @@ class perfect extends React.Component {
                 <span>区/县</span>
               </div>
               <div className="name">
-                <span className="symbol">*</span><span className="boTitle">场馆名称</span>
-                <Input className="nameINput" onChange={this.handleName}  placeholder="请输入场馆名称" />
-              </div>
-
-              <div className="name">
                 <span className="symbol">*</span><span className="boTitle">场馆位置</span>
                 <Input className="nameINput" value={this.props.location.query!==undefined?this.props.location.query.adddress:''} placeholder="请输选择场馆位置" />
                 <img onClick={this.routerMap} className="dingImg" src={require("../../assets/icon_pc_dingwei.png")} alt="" />
@@ -312,6 +305,13 @@ class perfect extends React.Component {
                 <span className="symbol">*</span><span className="boTitle">详细地址</span>
                 <Input className="nameINput" onChange={this.handleAddress} value={this.state.handleAddress} placeholder="请输入场馆详细地址如门牌号楼层" />
               </div>
+              
+              <div className="name">
+                <span className="symbol">*</span><span className="boTitle">场馆名称</span>
+                <Input className="nameINput" onChange={this.handleName}  placeholder="请输入场馆名称" />
+              </div>
+
+              
 
               <div className="name">
                 <span className="symbol negative">*</span><span className="boTitle negativeT">门脸照(1张)</span>

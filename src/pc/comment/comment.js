@@ -14,7 +14,7 @@ class comment extends React.Component {
   state = {
     loading: false,
     textValue: '',
-    flag: false,
+    flag: null,
     commentList: [],
     imgArr: '',
     hidden: '',
@@ -35,10 +35,16 @@ class comment extends React.Component {
     if (res.data.code === 2000) {
       let imgArr = []
       if (res.data.data.length > 0) {
-        let imgS = res.data.data.imgnames.split('|')
-        for (let i in imgS) {
-          imgArr.push(imgS[i])
-        }
+         for(let i in res.data.data){
+           if(res.data.data[i].imgnames!==null){
+            let imgS = res.data.data[i].imgnames.split('|')
+            for (let i in imgS) {
+              imgArr.push(imgS[i])
+            }
+           }
+        
+         }
+        
         this.setState({ commentList: res.data.data, imgArr: imgArr, loading: false, hidden: false,Oneloading:false })
       }
     } else if (res.data.code === 4001) {
@@ -55,9 +61,11 @@ class comment extends React.Component {
   clear = () => {
     this.setState({ textValue: '' })
   }
-  pullOut = () => {
-    console.log(!this.state.flag)
-    this.setState({ flag: !this.state.flag })
+  pullOut = (e) => {
+    this.setState({ flag:parseInt(e.currentTarget.dataset.index) })
+    if(parseInt(e.currentTarget.dataset.index)===this.state.flag){
+      this.setState({ flag:null})
+    }
   }
 
 
@@ -70,11 +78,14 @@ class comment extends React.Component {
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
+    }else{
+      message.error(res.data.msg)
     }
 
   }
   operation = (e) => {
     this.VenueCommentReply({ commentid: e.target.dataset.uid, comment: this.state.textValue })
+    
 
   }
   sping = () => {
@@ -151,9 +162,9 @@ class comment extends React.Component {
                       <span className="timer">{item.comment_reply_time}</span>
 
                     </div>
-                    <div className="textArea" onClick={this.pullOut}><img src={require('../../assets/icon_pc_comment.png')} alt="评论" /></div>
+                    <div className="textArea" data-index={i} onClick={this.pullOut}><img src={require('../../assets/icon_pc_comment.png')} alt="评论" /></div>
                   </div>
-                  <div className={this.state.flag === true ? 'publish' : 'publishNone'}>
+                  <div className={this.state.flag === i ? 'publish' : 'publishNone'}>
                     <img src={require('../../assets/kefu.png')} alt="场馆" />
                     <TextArea className="news" onChange={this.textValue} value={this.state.textValue} rows={2} />
                     <div className="operation">
@@ -164,9 +175,9 @@ class comment extends React.Component {
                 </div>
               ))
             }
-          </Spin>
+          
           <Result className={this.state.commentList.length===0? 'block' : 'hidden'} icon={<Icon type="calendar" theme="twoTone" twoToneColor="#F5A623" />} title="还没有人评价！" />
-
+          </Spin>
 
 
         </div>

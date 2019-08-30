@@ -32,3 +32,46 @@
     cursor: pointer;
     font-size: 12px;
 }
+.news .newsList{
+    padding-left: 25px;
+    min-height: 44px;
+    border-bottom:1px solid #E1E0E1;
+}
+.news .newsList .check{
+    float: left;
+    margin-top: 12px;
+}
+.news .newsList  .btn{
+    padding:2px 8px;
+    line-height: 20px;
+    margin-top: 12px;
+    border:1px solid #E1E0E1;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block
+}
+.news .newsList .imgRight{
+    float: right;
+    margin-right: 50px;
+    margin-top: 13px;
+    
+}
+.news .newsList .textOne{
+    width:800;
+    height:44;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    float: left;
+    margin-top: 12px;
+    margin-left: 20px;
+    cursor: pointer;
+    
+}
+
+.news .fenye{
+    margin-top: 40px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
