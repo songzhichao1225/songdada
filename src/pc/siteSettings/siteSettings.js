@@ -71,8 +71,8 @@ class siteSettings extends React.Component {
       visible: true,
     });
     this.setState({
-      runId: '请选择',openday:'请选择', starttime: '', endtime: '', costperhour: 0, 
-     number:0,maxScheduledDate:'请选择',appointmenttime:'请选择', comment: ''
+      runId: '请选择',openday:'请选择',opendayname:'请选择', starttime: '', endtime: '', costperhour: 0, 
+     number:0,maxScheduledDate:'请选择',appointmenttime:'请选择', comment: '',DisList:''
     })
   };
 
@@ -221,7 +221,7 @@ class siteSettings extends React.Component {
     }  else if(res.data.code=== 2000) {
       this.setState({ DisList: res.data.data })
       this.setState({
-        runId: datefor.sportid,openday:datefor.openday, starttime: datefor.starttime, endtime: datefor.endtime, costperhour: datefor.costperhour, 
+        runId: datefor.sportid,openday:datefor.openday,opendayname:datefor.opendayname, starttime: datefor.starttime, endtime: datefor.endtime, costperhour: datefor.costperhour, 
        number: datefor.maxtablecount,maxScheduledDate:datefor.maxScheduledDate,appointmenttime: datefor.appointmenttime, comment: datefor.comment
       })
       let day = ''
@@ -367,7 +367,7 @@ class siteSettings extends React.Component {
 
           <div className="modelList">
             <span>节假日/工作日</span>
-            <Select defaultValue="请选择" className="selectModel" value={this.state.openday} style={{ width: 249 }} onChange={this.handleChangeTwo}>
+            <Select defaultValue="请选择" className="selectModel" value={this.state.opendayname} style={{ width: 249 }} onChange={this.handleChangeTwo}>
               <Option value="1">周一到周五</Option>
               <Option value="2">节假日</Option>
               <Option value="3">周一到周日</Option>

@@ -1,0 +1,115 @@
+
+.qualification .title{
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+.qualification .headTtitle{
+    width: 100%;
+    height: 3rem;
+    background: #fff;
+    font-size:1rem;
+    line-height: 3rem;
+    padding-left: 0.5rem;
+    margin-top: 1rem;
+}
+.qualification .boss{
+    width: 100%;
+    height: 100%;
+    margin: 1rem auto;
+    background: #fff;
+}
+.qualification .boss .input{
+    width: 95%;
+    min-height: 3rem;
+    margin: 1rem 0 0 2.5%;
+    border-bottom: 0.06rem solid #f3f3f3;
+    float: left;
+}
+.qualification .boss .input>span{
+    font-size:0.88rem;
+    line-height: 3rem;
+    float: left;
+}
+.qualification .boss .input .select{
+    width: 15rem;
+    height: 2.9rem;
+    float: right;
+    background: #fff;
+    margin-right: 1rem;
+}
+.qualification  .arow{
+    width: 0.44rem;
+    height: 0.69rem;
+    display: block;
+    float: right;
+    margin-top: 1.1rem;
+}
+.qualification .ant-input{
+    border:none;
+}
+
+.qualification .ant-cascader-picker:focus .ant-cascader-input {
+    border: none;
+    box-shadow: none;
+}
+
+
+
+ .qualification .ant-input:focus {
+    border: none;
+    box-shadow: none;
+}
+.qualification .input .imgAddress{
+    width: 15px;
+    height: 22px;
+    margin-top: 0.88rem;
+}
+.qualification .addImg{
+    width: 5rem;
+    height: 5rem;
+    margin-bottom: 1rem;
+    
+}
+.qualification .left{
+    margin-left: 3rem;
+}
+.qualification .addImg .ant-upload.ant-upload-select-picture-card{
+    width: 100%;
+    height: 100%;
+    border:none;
+    margin:0;
+}
+.qualification .addImg .ant-upload.ant-upload-select-picture-card > .ant-upload{
+    padding:0;
+}
+.qualification .ant-upload.ant-upload-select-picture-card{
+    border:none;
+    width: 5rem;
+    height: 5rem;
+}
+.qualification .ant-checkbox-wrapper{
+    width: 6rem;
+    margin-top: 8px;
+}
+.qualification .radio{
+    margin:0.88rem 0 0 3.5rem;
+}
+.qualification .loTitle{
+    font-size: 1rem;
+    padding:1rem 2.5%;
+
+}
+.qualification .btn{
+    width: 90%;
+    height: 3rem;
+    background:rgba(216,93,39,1);
+    border-radius:1.34rem;
+    color: #fff;
+    font-size: 1.06rem;
+    text-align: center;
+    line-height: 3rem;
+    margin-top: 2rem;
+    margin-left: 5%;
+}

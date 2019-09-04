@@ -40,7 +40,7 @@
     text-align: center;
     line-height: 1.5rem;
     margin-top: 1rem;
-
+    display: block
 }
 .corporatePh .loginBtn{
     width:20.44rem;
@@ -66,3 +66,25 @@
     font-size:0.75rem;
     padding: 0.4rem;
  }
+
+ .corporatePh .ant-input{
+    border: none;
+}
+.corporatePh .ant-input:focus {
+   border: none;
+   box-shadow: none;
+}
+.corporatePh .koohidden{
+    display: none
+}
+.corporatePh .radio{
+    margin-top: 1rem;
+}
+.corporatePh .headerTitle{
+    height: 3rem;
+    background: #fff;
+    border-bottom: 0.06rem solid #F5F5F5;
+    line-height: 3rem;
+    text-align: center;
+    
+}

@@ -75,7 +75,7 @@ class preferential extends React.Component {
     });
     this.setState({
       runId: '请选择', starttime: '', endtime: '', costperhour: '', startDate: '',
-      endDate: '', number:0, appointmenttime: '请选择', comment: ''
+      endDate: '', number:0, appointmenttime: '请选择', comment: '',DisList:''
     })
   };
 

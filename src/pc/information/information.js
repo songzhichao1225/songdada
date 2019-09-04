@@ -86,6 +86,8 @@ class information extends React.Component {
               return <span className="white"></span>
             } else if (value === 3) {
               return <span className="yellow"></span>
+            } else if (value === 4) {
+              return <span className="red"></span>
             }
           },
         })
@@ -216,7 +218,9 @@ class information extends React.Component {
           <div className="prompt">
             <div><span></span><span>空闲</span></div>
             <div><span></span><span>不可选</span></div>
+            <div><span></span><span>场馆取消</span></div>
             <div><span></span><span>已占用</span></div>
+          
           </div>
 
           <ul className="activityNav">

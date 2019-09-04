@@ -67,7 +67,7 @@
 }
 .login .content  .right  .input{
 	display: block;
-	width: 100%;
+	width:300px;
 	height: 45px;
 	margin-top: 20px;
 }
@@ -80,7 +80,7 @@
 }
 .login .content  .right .codeBtn{
 	width: 89px;
-	height: 45px;
+	height: 43px;
 	background: #F5A623;
 	color: #fff;
 	text-align: center;
@@ -88,10 +88,18 @@
 	position: absolute;
 	cursor: pointer;
 	line-height: 45px;
+	margin-left: -16px;
+	
+}
+.login .ant-col{
+   width: 100%;
+}
+.login .ant-input{
+	height: 45px;
 }
 .koohidden{
 	width: 89px;
-	height: 45px;
+	height: 43px;
 	background: #F5A623;
 	color: #fff;
 	text-align: center;

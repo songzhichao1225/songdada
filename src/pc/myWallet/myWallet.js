@@ -50,7 +50,8 @@ class myWallet extends React.Component {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
     } else {
-      this.setState({ moneyList: res.data.data, loading: false, hidden: true })
+      console.log(res.data.data)
+      this.setState({ moneyList: res.data.data.data, loading: false, hidden: true })
     }
 
   }

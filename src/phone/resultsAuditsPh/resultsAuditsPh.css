@@ -1,0 +1,36 @@
+.resultsAuditsPh{
+    height: 100%;
+}
+.resultsAuditsPh .title{
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+.resultsAuditsPh .boss{
+    width: 100%;
+    height: 100%;
+    margin: 1rem auto;
+    background: #fff;
+}
+.resultsAuditsPh .boss .icon{
+    width: 3rem;
+    height: 3rem;
+    display: block;
+    margin: 3rem auto 1rem;
+}
+.resultsAuditsPh .boss .text{
+    font-size: 1rem;
+    text-align: center;
+    display: block;
+    padding-bottom: 3rem;
+    border-bottom: 0.13rem solid #E9E9E9;
+}
+.resultsAuditsPh .boss .content{
+    font-size:0.75rem;
+    color:rgba(155,155,155,1);
+    line-height: 1.06rem;
+    margin-left: 1rem;
+    padding-top: 1rem;
+    display: block;
+}

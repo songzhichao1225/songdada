@@ -119,6 +119,15 @@
     width: 16px;
     height: 16px;
     float: left;
+    background: red;
+    border-radius: 2px;
+  }
+
+  .orderList .circumstance .prompt>div:nth-child(4)>span:first-child{
+    display: block;
+    width: 16px;
+    height: 16px;
+    float: left;
     background: #FFC567;
     border-radius: 2px;
   }
@@ -208,6 +217,13 @@
     height: 26px;
     display: block;
     background: #FFC567;
+    cursor: pointer;
+}
+.orderList .red{
+    width: 26px;
+    height: 26px;
+    display: block;
+    background: red;
     cursor: pointer;
 }
 .orderList .hidden{

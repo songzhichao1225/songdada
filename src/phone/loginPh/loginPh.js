@@ -10,7 +10,9 @@ class loginPh extends React.Component {
   };
 
   componentDidMount() {
-
+   if(sessionStorage.getItem('venue_token')){
+    this.props.history.push('/homePh')
+   }
   }
 
   login=()=>{

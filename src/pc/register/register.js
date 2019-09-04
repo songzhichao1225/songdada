@@ -17,7 +17,7 @@ import {
 class register extends React.Component {
 
   state = {
-    equipment: 1,//登录设备 0pc 1移动设备
+   
     Id: '',//推广员Id
     name: '',//用户名
     phone: '',//手机号

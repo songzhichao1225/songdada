@@ -3,7 +3,7 @@ import { Route, Link } from 'react-router-dom';
 import './home.css';
 import 'antd/dist/antd.css';
 import { getVenueIndex, gerVenueName } from '../../api';
-import { Layout, Menu, Icon } from 'antd';
+import { Layout, Menu, Icon,message } from 'antd';
 import homePage from '../homePage/homePage';
 import information from '../information/information';
 import siteSettings from '../siteSettings/siteSettings';
@@ -170,13 +170,25 @@ class home extends React.Component {
 
   async getVenueIndex(data) {
     const res = await getVenueIndex(data, sessionStorage.getItem('venue_token'))
-    this.setState({ getVenue: res.data.data })
+    if (res.data.code === 4001) {
+      this.props.history.push('/')
+      message.error('登陆超时请重新登陆！')
+    }else{
+      this.setState({ getVenue: res.data.data })
+    }
+   
   }
 
 
   async gerVenueName(data) {
     const res = await gerVenueName(data, sessionStorage.getItem('venue_token'))
-    this.setState({ gerVenueName: res.data.data })
+    if (res.data.code === 4001) {
+      this.props.history.push('/')
+      message.error('登陆超时请重新登陆！')
+    }else{
+      this.setState({ gerVenueName: res.data.data })
+
+    }
   }
 
   render() {

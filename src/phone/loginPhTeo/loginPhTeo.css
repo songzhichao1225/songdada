@@ -52,3 +52,17 @@
     font-size:0.75rem;
     padding: 0.4rem;
  }
+ .loginPhTeo .ant-input{
+     border: none;
+ }
+ .loginPhTeo .ant-input:focus {
+    border: none;
+    box-shadow: none;
+}
+.loginPhTeo .headerTitle{
+    height: 3rem;
+    background: #fff;
+    border-bottom: 0.06rem solid #F5F5F5;
+    line-height: 3rem;
+    text-align: center;
+}

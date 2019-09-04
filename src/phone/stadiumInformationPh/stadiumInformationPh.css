@@ -1,0 +1,107 @@
+.stadiumInformationPh{
+   
+   
+   
+}
+.stadiumInformationPh .title{
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+.stadiumInformationPh .title>span{
+    display: block;
+    font-size:0.88rem;
+     float: left;
+     padding-left: 0.5rem;
+}
+.stadiumInformationPh .headTtitle{
+    width: 100%;
+    height: 3rem;
+    background: #fff;
+    font-size:1rem;
+    line-height: 3rem;
+    padding-left: 0.5rem;
+    margin-top: 1rem;
+}
+.stadiumInformationPh .boss{
+    width: 100%;
+    height: 100%;
+    margin: 1rem auto;
+    background: #fff;
+}
+.stadiumInformationPh .boss .input{
+    width: 95%;
+    min-height: 3rem;
+    margin: 1rem 0 0 2.5%;
+    border-bottom: 0.06rem solid #f3f3f3;
+    float: left;
+}
+.stadiumInformationPh .boss .input>span{
+    font-size:0.88rem;
+    line-height: 3rem;
+    float: left;
+}
+.stadiumInformationPh .boss .input .select{
+    width: 15rem;
+    height: 2.9rem;
+    margin-left: 1rem;
+    float: left;
+}
+.stadiumInformationPh .ant-input{
+    border:none;
+}
+
+.stadiumInformationPh .ant-cascader-picker:focus .ant-cascader-input {
+    border: none;
+    box-shadow: none;
+}
+
+
+
+ .stadiumInformationPh .ant-input:focus {
+    border: none;
+    box-shadow: none;
+}
+.stadiumInformationPh .input .imgAddress{
+    width: 15px;
+    height: 22px;
+    margin-top: 0.88rem;
+}
+.stadiumInformationPh .addImg{
+    width: 5rem;
+    height: 5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    clear: both;
+}
+.stadiumInformationPh .addImg .ant-upload.ant-upload-select-picture-card{
+    width: 100%;
+    height: 100%;
+    border:none;
+    margin:0;
+}
+.stadiumInformationPh .addImg .ant-upload.ant-upload-select-picture-card > .ant-upload{
+    padding:0;
+}
+.stadiumInformationPh .ant-upload.ant-upload-select-picture-card{
+    border:none;
+    width: 5rem;
+    height: 5rem;
+}
+.stadiumInformationPh .ant-checkbox-wrapper{
+    width: 6rem;
+    margin-top: 8px;
+}
+.stadiumInformationPh .btn{
+    width: 90%;
+    height: 3rem;
+    background:rgba(216,93,39,1);
+    border-radius:1.34rem;
+    color: #fff;
+    font-size: 1.06rem;
+    text-align: center;
+    line-height: 3rem;
+    margin-top: 2rem;
+    margin-left: 5%;
+}
