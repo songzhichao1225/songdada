@@ -133,25 +133,25 @@
 	font-size: 16px;
 	color: #F5A623;
 }
- .register .logoRegister{
+ .logoRegister{
 	 display: block;
 	margin: 80px auto 0;
 }
-.register .modelTitle{
+ .modelTitle{
 	font-size: 36px;
 	color: #4A4A4A;
 	display: block;
 	text-align: center;
 	margin-top: 30px;
 }
-.register .modelPhone{
+ .modelPhone{
 	font-size: 18px;
 	color: #4A4A4A;
 	text-align: center;
 	display: block;
 	margin-top: 15px;
 }
-.register .modelBtn{
+  .remodelBtn{
 	width: 105px;
 	height: 32px;
 	background: #F5A623;

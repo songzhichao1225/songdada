@@ -59,6 +59,9 @@ export function gerVenueName(data,headers){    //获取该场馆名称、消息�
 export function getReservationActivitieslist(data,headers){    //预约活动列表
     return axios.post('/api/getReservationActivitieslist',data, {headers: {'token': headers}})
 }
+export function VenueSendMessage(data,headers){    //预约活动列表发送消息
+    return axios.post('/api/VenueSendMessage',data, {headers: {'token': headers}})
+}
 
 export function getVenueReservations(data,headers){    //场地预约情况
     return axios.post('/api/getVenueReservations',data, {headers: {'token': headers}})
@@ -124,6 +127,9 @@ export function VenueTemporarilyClosed(data,headers){    //临时关闭预约
 export function getVenueMoneyList(data,headers){    //我的钱包列表页
     return axios.post('/api/getVenueMoneyList',data, {headers: {'token': headers}})
 }
+export function getVenueMoney(data,headers){    //我的钱包余额
+    return axios.post('/api/getVenueMoney',data, {headers: {'token': headers}})
+}
 
 export function getVenueWithdrawalList(data,headers){    //提现记录列表
     return axios.post('/api/getVenueWithdrawalList',data, {headers: {'token': headers}})
@@ -131,6 +137,9 @@ export function getVenueWithdrawalList(data,headers){    //提现记录列表
 
 export function getCommentList(data,headers){    //用户对该场馆的评价列
     return axios.post('/api/getCommentList',data, {headers: {'token': headers}})
+}
+export function getOverallScore(data,headers){    //场馆端整体评分
+    return axios.post('/api/getOverallScore',data, {headers: {'token': headers}})
 }
 export function VenueCommentReply(data,headers){    //场馆端回复用户评论
     return axios.post('/api/VenueCommentReply',data, {headers: {'token': headers}})
@@ -142,6 +151,12 @@ export function getVenueWithdrawalOneList(data,headers){    //提现申请中的
 export function VenueWithdrawal(data,headers){    //申请提现
     return axios.post('/api/VenueWithdrawal',data, {headers: {'token': headers}})
 }
+
+export function getVenueWalletDetailsList(data,headers){    //手机端钱包明细列表 
+    return axios.post('/api/getVenueWalletDetailsList',data, {headers: {'token': headers}})
+}
+
+
 export function VenueForgetPass(data){    //忘记密码
     return axios.post('/api/VenueForgetPass',data)
 }
@@ -158,12 +173,29 @@ export function getVenueNewsList(data,headers){    //消息中心列表
     return axios.post('/api/getVenueNewsList',data, {headers: {'token': headers}})
 }
 
+export function getVenueNewsReceivedList(data,headers){    //我发布的消息
+    return axios.post('/api/getVenueNewsReceivedList',data, {headers: {'token': headers}})
+}
+export function delVenueNews(data,headers){    //删除某条消息
+    return axios.post('/api/delVenueNews',data, {headers: {'token': headers}})
+}
+export function VenueNewsSendMessage(data,headers){    //消息中心给平台发送消息
+    return axios.post('/api/VenueNewsSendMessage',data, {headers: {'token': headers}})
+}
+
+
+
 export function getVenueNewsFirst(data,headers){    //查看消息中心的某一条消息
     return axios.post('/api/getVenueNewsFirst',data, {headers: {'token': headers}})
 }
 
 export function VenueNewsSaveIsRead(data,headers){    //将消息中心的某条消息变成已阅读
     return axios.post('/api/VenueNewsSaveIsRead',data, {headers: {'token': headers}})
+}
+
+
+export function getVenueIssecondaudit(data,headers){    // 获取该场馆二级审核状态
+    return axios.post('/api/getVenueIssecondaudit',data, {headers: {'token': headers}})
 }
 
 

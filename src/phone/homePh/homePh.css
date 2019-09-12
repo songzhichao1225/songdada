@@ -26,17 +26,87 @@
   margin: 0 auto;
   display: flex;
 }
-.homePh .footer .footerSon>div{
+.homePh .footer .footerSon> div{
   flex: 1;
 }
-.homePh .footer .footerSon>div>img{
+.homePh .footer .footerSon>div>a>img{
   width: 1.6rem;
   height: 1.6rem;
   display: block;
   margin: 0.3rem auto 0;
 }
-.homePh .footer .footerSon>div>span{
+.homePh .footer .footerSon>div>a>span{
   display: block;
   text-align: center;
   font-size: 0.88rem;
+  color: #000;
+}
+
+.homePagePh>div:first-child{
+  width: 90%;
+  height: 6rem;
+  margin: 1rem auto 0;
+  background-image: url('../../assets/one.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.homePagePh>div:nth-child(2){
+  width: 90%;
+  height: 6rem;
+  margin: 1rem auto 0;
+  background-image: url('../../assets/two.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.homePagePh>div:nth-child(3){
+  width: 90%;
+  height: 6rem;
+  margin: 1rem auto 0;
+  background-image: url('../../assets/three.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.homePagePh>div:nth-child(4){
+  width: 90%;
+  height: 6rem;
+  margin: 1rem auto 0;
+  background-image: url('../../assets/four.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.homePagePh>div:last-child{
+  width: 90%;
+  height: 6rem;
+  margin: 1rem auto 0;
+  background-image: url('../../assets/five.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.homePagePh>div>.title{
+  font-size:1rem;
+  color:rgba(255,255,255,1);
+  display: block;
+  padding:1rem 0 0 2rem;
+}
+.homePagePh>div>.content{
+  margin-left: 2rem;
+}
+.homePagePh>div>.content>span:first-child{
+  font-size:1.5rem;
+  font-weight:600;
+  color:rgba(255,255,255,1);
+}
+.homePagePh>div>.content>span:last-child{
+  font-size:1.13rem;
+  font-weight:500;
+  color:rgba(255,255,255,1);
+}
+.homePagePh>div>.content>img{
+  display: block;
+  float: left;
+  height: 1rem;
+  margin-top: 1rem;
+}
+.none{
+  display: none;
 }

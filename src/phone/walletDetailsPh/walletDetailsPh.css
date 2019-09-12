@@ -1,0 +1,74 @@
+.walletDetailsPh{
+    padding-bottom: 3rem;
+} 
+.walletDetailsPh .headTitle{
+    height: 3rem;
+    text-align: center;
+    line-height: 3rem;
+    border-bottom: 0.06rem solid #f5f5f5;
+}
+.walletDetailsPh .timer{
+    height: 3rem;
+    background:rgba(245,245,245,1);
+}
+.walletDetailsPh .timer .leftTime{
+    width:6.44rem;
+    height:1.75rem;
+    background:rgba(255,255,255,1);
+    border-radius:0.88rem;
+    margin-top: 0.6rem;
+    margin-left: 1rem;
+}
+.walletDetailsPh .timer .rightTime{
+    width:6.44rem;
+    height:1.75rem;
+    background:rgba(255,255,255,1);
+    border-radius:0.88rem;
+    margin-top: 0.6rem;
+   
+}
+.walletDetailsPh .ant-input{
+    height: 1.75rem;
+    border-radius:0.88rem;
+    font-size: 0.63rem;
+}
+.walletDetailsPh .timer .rightMoneyAll{
+    float: right;
+    margin-right: 1rem;
+    margin-top: 0.3rem;
+}
+.walletDetailsPh .timer .rightMoneyAll>span{
+    display: block;
+    font-size: 0.75rem;
+}
+.walletDetailsPh .sonList{
+    width: 90%;
+    height: 3.31rem;
+    margin: 1rem auto 0;
+    border-bottom: 0.06rem solid #f5f5f5
+}
+.walletDetailsPh .sonList .sonLeft{
+    float: left;
+}
+.walletDetailsPh .sonList .sonLeft>span{
+    display: block;
+}
+.walletDetailsPh .sonList .moneyNum{
+    display: block;
+    float: right;
+    line-height: 3.31rem;
+    font-size:0.88rem;
+    font-family:PingFangSC;
+    font-weight:600;
+    margin-right: 0.5rem;
+}
+.walletDetailsPh .sonList .arrow{
+    display: block;
+    float: right;
+    width:0.44rem;
+    height:0.69rem;
+    margin-top: 1.3rem;
+}
+.walletDetailsPh .hidden{
+    display: none;
+}

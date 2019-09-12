@@ -1,0 +1,92 @@
+.withdrawalPh .headTitle{
+    height: 3rem;
+    text-align: center;
+    line-height: 3rem;
+    border-bottom: 0.06rem solid #f5f5f5;
+}
+.withdrawalPh .white{
+    height:0.63rem;
+    background:rgba(243,243,243,1);
+}
+.withdrawalPh .bankCards{
+    width: 90%;
+    margin: 2rem auto;
+}
+.withdrawalPh .bankCards>span{
+    display: block;
+    margin-top: 0.5rem;
+}
+.withdrawalPh .bankCards>span:first-child{
+    font-size:0.88rem;
+    font-family:PingFangSC;
+    font-weight:600;
+    color:rgba(51,51,51,1);
+    line-height:1.25rem;
+}
+.withdrawalPh .money{
+    width: 90%;
+    margin: 1rem auto;
+}
+.withdrawalPh .money .title{
+    display: block;
+    font-size:0.88rem;
+    font-family:PingFang-SC;
+    font-weight:500;
+    color:rgba(51,51,51,1);
+    line-height:1.25rem;
+}
+.withdrawalPh .money .text{
+    width: 100%;
+    height: 4rem;
+    border-bottom: 0.06rem solid #f5f5f5;
+}
+.withdrawalPh .money .text .moneySon{
+    font-size:2.81rem;
+    display: block;
+    float: left;
+}
+.withdrawalPh .money .text>input{
+   height: 3.9rem;
+   outline: none;
+   border: none;
+   display: block;
+   float: left;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+.withdrawalPh .money .bottomSpan{
+    position: relative;
+}
+.withdrawalPh .money .bottomSpan>span{
+    display: block;
+    font-size:0.88rem;
+    font-family:PingFang-SC;
+    font-weight:500;
+    color:rgba(155,155,155,1);
+    line-height:1.25rem;
+    margin-top: 0.5rem;
+}
+.withdrawalPh .all{
+    font-size:0.88rem;
+    font-family:PingFang-SC;
+    font-weight:500;
+    color:rgba(216,93,39,1);
+    line-height:1.25rem;
+    position: absolute;
+    right: 1rem;
+    top: 0.5rem;
+    cursor: pointer;
+}
+.withdrawalPh .btnMoney{
+  width: 85%;
+  height: 3rem;
+  background:rgba(216,93,39,1);
+  border-radius:1.34rem;
+  font-size:1.06rem;
+  font-family:PingFangSC;
+    font-weight:600;
+    color:rgba(255,255,255,1);
+    line-height:3rem;
+    text-align: center;
+    margin: 3rem auto 0;
+}

@@ -31,6 +31,7 @@ class register extends React.Component {
     visiblePhone: false,
     idName:'',
     qipao:true,
+    promotid:'',
   };
 
   changID = (e) => {
@@ -90,13 +91,9 @@ class register extends React.Component {
 
   async nacode(data) {
     const res = await _code(data)
-    console.log(res)
-  }
-
-  naCode = () => {
-    if (this.state.visiblePhone === true) {
-      message.error('请输入正确的手机号')
-    } else {
+    if(res.data.code===4007){
+     message.error(res.data.msg)
+    }else{
       let num = 60
       const timer = setInterval(() => {
         this.setState({ textT: num-- })
@@ -105,12 +102,25 @@ class register extends React.Component {
           this.setState({ textT: '获取验证码' })
         }
       }, 1000)
+    }
+  }
+
+  naCode = () => {
+    if (this.state.visiblePhone === true) {
+      message.error('请输入正确的手机号')
+    } else {
       this.nacode({ "mobile": this.state.phone, "type": 'venueregister' })
     }
   }
 
   showModal = e => {
-    if (this.state.code === '') {
+   
+   
+    
+    
+    if (this.state.name === '') {
+      message.error('请输入用户名')
+    }else if (this.state.code === '') {
       message.error('请输入验证码')
     } else if (this.state.password === '') {
       message.error('请输入密码')
@@ -121,25 +131,30 @@ class register extends React.Component {
     } else if (this.state.changeRadio !== true) {
       message.error('请勾选阅读协议')
     } else {
-      const { Id, name, phone, code, password } = this.state
-      const data = { name: name, phone: phone, pass: password, promoteid: Id, code: code, Logintype: 'pc' }
-      this.Ko(data)
+      let { Id, name, phone, code, password } = this.state
+      if(this.state.idName==='推广员不存在'){
+        let data = { name: name, phone: phone, pass: password, promoteid: '', code: code, Logintype: 'pc' }
+        this.Ko(data)
+      }else{
+        let data = { name: name, phone: phone, pass: password, promoteid: Id, code: code, Logintype: 'pc' }
+        this.Ko(data)
+      }
+     
     }
-
   }
   blurId = e => {
-    console.log(e.target.value)
-    this.getPromoteName({ promotid: e.target.value })
+    this.getPromoteName({ promotid:e.target.value })
   }
   async getPromoteName(data) {
     const res = await getPromoteName(data)
      if(res.data.code===2000){
-      this.setState({idName:res.data.data.promotname,qipao:false})
+      this.setState({idName:res.data.data.promotname})
      }else{
-       message.error(res.data.msg)
-       this.setState({qipao:true})
+      this.setState({idName:'推广员不存在',})
      }
-    
+  }
+  onCancel=e=>{
+    this.setState({Id:''})
   }
 
   render() {
@@ -162,16 +177,16 @@ class register extends React.Component {
               <span className="title">用户注册</span>
               <div className="son">
                 <span>推广员ID:</span>
-                <Input maxLength={6} onChange={this.changID} onBlur={this.blurId} className="phone" />
+                <Input maxLength={6} onChange={this.changID}  value={this.state.Id} onBlur={this.blurId} className="phone" />
               </div>
 
               <div className="son">
                 <span className="xing">*</span> <span>用户名:</span>
                 <Popover
-                  content='用户名不能输入汉字或为空'
+                  content='请输入英文+数字'
                   visible={this.state.visibleName}
                 >
-                  <Input type="text" maxLength={8} onBlur={this.changeName} className="phone" />
+                  <Input type="text"  onBlur={this.changeName} className="phone" />
                 </Popover>
               </div>
 
@@ -203,14 +218,15 @@ class register extends React.Component {
 
               <div className="agreement"><Radio onChange={this.changeRadio}><span>我已阅读并同意</span><span className="color">《用户协议》</span></Radio></div>
 
-              <Popconfirm
-                title={"推广员姓名："+this.state.idName+'?'}
+              <Popconfirm 
+                title={this.state.idName===""?'您没有推广员？':"推广员姓名："+this.state.idName&&this.state.idName==='推广员不存在'?'推广员不存在':"推广员姓名："+this.state.idName}
                 onConfirm={this.showModal}
+                onCancel={this.onCancel}
                 okText="是"
                 cancelText="否"
-                disabled={this.state.qipao}
+                disabled={false}
               >
-                <div  className="submint" >注册</div>
+                <div  className="submint"  >注册</div>
               </Popconfirm>,
 
                 <div className="Existing"> 已有账号 <a href='#/'><span>请登录</span></a></div>
@@ -227,7 +243,7 @@ class register extends React.Component {
                 <img className="logoRegister" src={require("../../assets/icon_pc.png")} alt="ico" />
                 <span className="modelTitle">恭喜您，注册成功</span>
                 <span className="modelPhone">用户名:{this.state.name}</span>
-                <Button className="modelBtn"><a href="#/perfect">下一步</a></Button>
+                <Button className="remodelBtn"><a href="#/perfect">下一步</a></Button>
 
 
               </Modal>

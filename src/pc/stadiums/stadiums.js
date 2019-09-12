@@ -1,8 +1,8 @@
 import React from 'react';
 import './stadiums.css';
 import 'antd/dist/antd.css';
-import { getVenueInformation,VenueInformationSave } from '../../api';
-import { Modal, Upload, Input, Icon, message, Checkbox, Button, Popconfirm } from 'antd';
+import { getVenueInformation, VenueInformationSave,getVenueIssecondaudit } from '../../api';
+import { Modal, Upload, Input, Icon, message, Checkbox, Button, Popconfirm,Radio } from 'antd';
 
 const { TextArea } = Input;
 const plainOptions = [
@@ -64,9 +64,11 @@ class stadiums extends React.Component {
     imageUrl: '',
     sport: '',
     facilities: '',
-    siteInfo:'',
-    comment:'',
-    flag:true,
+    siteInfo: '',
+    comment: '',
+    flag: true,
+    numRadio:1,
+    issecondaudit:1,
   };
 
   async getVenueInformation(data) {
@@ -79,15 +81,22 @@ class stadiums extends React.Component {
     this.setState({
       informationList: res.data.data, name: res.data.data.name, handleAddress: res.data.data.address,
       contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, adddress: res.data.data.position, imageUrl: res.data.data.firstURL,
-      fileList: arrImg, sport:res.data.data.sport.split('') , facilities: res.data.data.facilities.split(''),siteInfo:res.data.data.siteInfo,comment:res.data.data.comment
+      fileList: arrImg, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
     })
-
-
   }
   componentDidMount() {
     this.getVenueInformation()
+    this.getVenueIssecondaudit()
   }
 
+  async getVenueIssecondaudit(data) {
+    const res = await getVenueIssecondaudit(data,sessionStorage.getItem('venue_token'))
+      console.log(res)
+      this.setState({issecondaudit:res.data.data.issecondaudit})
+  }
+
+
+  
 
 
   handleChange = info => {
@@ -115,7 +124,7 @@ class stadiums extends React.Component {
     if (!file.url && !file.preview) {
       file.preview = await getBase64T(file.originFileObj);
     }
- 
+
 
     this.setState({
       previewImage: file.url || file.preview,
@@ -155,60 +164,64 @@ class stadiums extends React.Component {
   onChangeText = e => {
     this.setState({ siteInfo: e.target.value })
   }
-  onChangeTextTwo=e=>{
-    this.setState({comment:e.target.value})
+  onChangeTextTwo = e => {
+    this.setState({ comment: e.target.value })
   }
 
-  
+
   async VenueInformationSave(data) {
-    const res = await VenueInformationSave(data,sessionStorage.getItem('venue_token'))
-    if(res.data.code===2000){
-     message.info('修改成功')
-     this.getVenueInformation()
-    }else{
+    const res = await VenueInformationSave(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      message.info('修改成功')
+      this.getVenueInformation()
+    } else {
       message.error(res.data.msg)
     }
-
   }
 
   confirm = () => {
-    let {informationList, name, handleAddress, contacts, contactNumber,fileList,adddress, imageUrl, sport, facilities,siteInfo,comment } = this.state
-    let filesURLarr=[]
-    console.log(fileList)
-    for(let i in fileList){
-     if(fileList[i].response!==undefined){
-      filesURLarr.push(fileList[i].response.data.baseURL+fileList[i].response.data.filesURL)
-     }else if(fileList[i].response===undefined){
-      filesURLarr.push(fileList[i].url)
-     }
-    }
-    let data = {
-      venuename:name,
-      lat:informationList.lat,
-      lng:informationList.lng,
-      address:handleAddress,
-      linkMan:contacts,
-      telephone:contactNumber,
-      firstURL:imageUrl,
-      filesURL:filesURLarr.join('|'),
-      facilities:facilities.join('|'),
-      sport:sport.join('|'),
-      siteInfo:siteInfo,
-      position:adddress,
-      comment:comment,
-      type:2
-    }
+   
+      let { informationList, name, handleAddress, contacts, contactNumber, fileList, adddress, imageUrl, sport, facilities, siteInfo, comment } = this.state
+      let filesURLarr = []
+      for (let i in fileList) {
+        if (fileList[i].response !== undefined) {
+          filesURLarr.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
+        } else if (fileList[i].response === undefined) {
+          filesURLarr.push(fileList[i].url)
+        }
+      }
+      let data = {
+        venuename: name,
+        lat: informationList.lat,
+        lng: informationList.lng,
+        address: handleAddress,
+        linkMan: contacts,
+        telephone: contactNumber,
+        firstURL: imageUrl,
+        filesURL: filesURLarr.join('|'),
+        facilities: facilities.join('|'),
+        sport: sport.join('|'),
+        siteInfo: siteInfo,
+        position: adddress,
+        comment: comment,
+        type: 2
+      }
       this.VenueInformationSave(data)
+   
+   
   }
-  basic=()=>{
-    this.setState({flag:true})
+  basic = () => {
+    this.setState({ flag: true })
   }
-  qualification=()=>{
-    this.setState({flag:false})
+  qualification = () => {
+    this.setState({ flag: false })
   }
 
-  
-  
+  numRadio=e=>{
+    this.setState({numRadio:e.target.value})
+  }
+
+
   render() {
     const uploadButton = (
       <div>
@@ -217,7 +230,6 @@ class stadiums extends React.Component {
       </div>
     );
     const { imageUrl } = this.state;
-
     const { previewVisible, previewImage, fileList } = this.state;
     const uploadButtonT = (
       <div>
@@ -225,56 +237,43 @@ class stadiums extends React.Component {
         <div className="ant-upload-text">场地照</div>
       </div>
     );
-
     return (
       <div className="stadiums">
         <div className="navTap">
-          <div className={this.state.flag===true?'background':'div'} onClick={this.basic}>基本信息</div>
-          <div className={this.state.flag===true?'div':'background'} onClick={this.qualification}>场馆资质</div>
+          <div className={this.state.flag === true ? 'background' : 'div'} onClick={this.basic}>基本信息</div>
+          <div className={this.state.flag === true? 'div' : 'background'} style={sessionStorage.getItem('ismethod')==='1'?{display:'block'}:{display:'none'}} onClick={this.qualification}>场馆资质</div>
         </div>
         <div className="xiange"></div>
 
-          
-        <div className={this.state.flag===true?'information':'none'}>
 
+        <div className={this.state.flag === true ? 'information' : 'none'}>
           <div className="name">
             <span className="boTitle">推广员:</span>
             <span className="nameINput" style={{ lineHeight: '38px' }}>{this.state.informationList.promote}</span>
           </div>
-
-
           <div className="name">
             <span className="boTitle">场馆名称:</span>
             <Input className="nameINput" value={this.state.name} onInput={this.handleName} />
           </div>
           <div className="name">
             <span className="boTitle">场馆位置:</span>
-
             <Input className="nameINput" value={this.state.adddress} />
             {/* <Input className="nameINput" value={this.props.location.query !== undefined ? this.props.location.query.adddress : this.state.adddress}  /> */}
             {/* <img onClick={this.routerMap} className="dingImg" src={require("../../assets/icon_pc_dingwei.png")} alt="" /> */}
           </div>
-
           <div className="name">
             <span className="boTitle">详细地址:</span>
             <Input className="nameINput" onChange={this.handleAddress} value={this.state.handleAddress} />
           </div>
-
           <div className="name">
             <span className="boTitle">联系人:</span>
             <Input className="nameINput" value={this.state.contacts} onInput={this.contacts} />
           </div>
-
           <div className="name">
             <span className="boTitle">联系电话:</span>
             <Input className="nameINput" maxLength={11} value={this.state.contactNumber} onInput={this.contactNumber} />
           </div>
-
-          <div className="name">
-            <span className="boTitle">新增电话:</span>
-            <Input className="nameINput" maxLength={11} onInput={this.addtelephone} placeholder="请输入新增联系电话" />
-          </div>
-
+        
           <div className="name">
             <span className="boTitle">门脸照:</span>
             <Upload
@@ -286,7 +285,7 @@ class stadiums extends React.Component {
               beforeUpload={beforeUpload}
               onChange={this.handleChange}
             >
-              {imageUrl ? <img src={ 'https://app.tiaozhanmeiyitian.com/' +imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+              {imageUrl ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
             </Upload>
           </div>
 
@@ -300,6 +299,7 @@ class stadiums extends React.Component {
                 fileList={fileList}
                 onPreview={this.handlePreview}
                 onChange={this.handleChangeT}
+                headers={'http://venue.tiaozhanmeiyitian.com'}
               >
                 {fileList.length >= 8 ? null : uploadButtonT}
               </Upload>
@@ -316,7 +316,7 @@ class stadiums extends React.Component {
 
           <div className="name">
             <span className="boTitle">场地设施:</span><span className="kong"></span>
-            <Checkbox.Group options={options} value={this.state.facilities} onChange={this.onChangeSite} /> 
+            <Checkbox.Group options={options} value={this.state.facilities} onChange={this.onChangeSite} />
           </div>
 
           <div className="name">
@@ -336,20 +336,69 @@ class stadiums extends React.Component {
             okText="确定"
             cancelText="返回"
           >
-            <Button className="submit">提交修改</Button>
+            <Button className="submit" style={this.state.issecondaudit===1?{display:'block'}:{display:'none'}}>提交修改</Button>
           </Popconfirm>
+          <Button className="submit"  style={this.state.issecondaudit===1?{display:'none'}:{display:'block'}}>审核中~</Button>
         </div>
 
-        
-
-      <div className={this.state.flag===true?'none':'qualification'}>
-      
-    
 
 
+        <div className={this.state.flag === true ? 'none' : 'qualification'}>
+          <div className="listing">
+            <span>营业执照:</span>
+            <span>通过|长期</span>
+            <span>修改</span>
+          </div>
+
+          <div className="listing">
+            <span>身份证:</span>
+            <span>9845645645968456</span>
+            <span>修改</span>
+          </div>
+
+          <div className="listing">
+            <span>法人姓名:</span>
+            <Input className="listingInput" />
+          </div>
+          <div className="listing">
+            <span>法人身份证号:</span>
+            <Input className="listingInput" />
+          </div>
+
+          <div className="listing">
+            <span>法人手机号:</span>
+            <Input className="listingInput" />
+          </div>
+
+          <div className="listing">
+            <span>结算账号:</span>
+            <Radio.Group className="accountNum" onChange={this.numRadio} value={this.state.numRadio}>
+              <Radio value={0}>公司银行账号</Radio>
+              <Radio value={1}>法人账号</Radio>
+            </Radio.Group>
+          </div>
+
+          <div className="listing">
+            <span>银行卡号:</span>
+            <Input className="listingInput" />
+          </div>
+
+          <div className="listing">
+            <span>开户行:</span>
+            <Input className="listingInput" />
+          </div>
+
+           <div className="submitListing">提交修改</div>
 
 
-      </div>
+
+
+
+
+
+
+
+        </div>
 
       </div >
     );

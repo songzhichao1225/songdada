@@ -14,7 +14,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge，chrome=1">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
   </head>
-  <body style="background:#FAFAFA;" οncοntextmenu="return false;" onselectstart="return false">
+  <body οncοntextmenu="return false;" onselectstart="return false">
     <div id="root"></div>
   
     
@@ -24,6 +24,9 @@
 <style>
 html {
     font-size: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+  'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji',
+  'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 /*适配iphone5*/
 @media screen and (max-width: 320px){
@@ -55,3 +58,4 @@ let root=document.querySelector('#root')
 root.style.height=document.body.clientHeight+'px'
 sessionStorage.setItem('min-height',document.body.clientHeight);
 </script>
+

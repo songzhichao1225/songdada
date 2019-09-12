@@ -1,12 +1,13 @@
 import React from 'react';
 import './systemSettings.css';
 import 'antd/dist/antd.css';
-import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport,VenueTemporarilyClosed,VenueIsClose,getVenueIsClose } from '../../api';
+import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport, VenueTemporarilyClosed, VenueIsClose, getVenueIsClose } from '../../api';
 import { Input, Icon, message, Checkbox, Modal, Select, DatePicker, LocaleProvider } from 'antd';
 import moment from 'moment';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import 'moment/locale/zh-cn';
 const { Option } = Select;
+
 
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -25,13 +26,13 @@ function disabledDate(current) {
 function disabledRangeTime(_, type) {
   if (type === 'start') {
     return {
-      disabledHours: () => range(0, 60).splice(4, 20),
-      disabledMinutes: () => range(30, 60),
-      disabledSeconds: () => [55, 56],
+      disabledHours: () => range(0, 24),
+      disabledMinutes: () => range(0, 60),
+      disabledSeconds: () => [0, 60],
     };
   }
   return {
-    disabledHours: () => range(0, 60).splice(20, 4),
+    disabledHours: () => range(0, 60),
     disabledMinutes: () => range(0, 31),
     disabledSeconds: () => [55, 56],
   };
@@ -49,6 +50,7 @@ class systemSettings extends React.Component {
     flagListOne: true,
     text: '',
     textT: '获取验证码',
+    textTwo: '获取验证码',
     phone: '',
     code: '',
     passWord: '',
@@ -60,43 +62,44 @@ class systemSettings extends React.Component {
     visible: false,
     ListSport: [],
     runName: '',
-    runId: '',
-    start:'',
-    end:'',
-    textArea:'',
-    isClose:'',
+    runId: '', 
+    start: '',
+    end: '',
+    textArea: '',
+    isClose: '',
   };
-  
+
   async getVenueIsClose(data) {
-    const res = await getVenueIsClose(data,sessionStorage.getItem('venue_token'))
-     if(res.data.code===4001){
+    const res = await getVenueIsClose(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
-    }else{
-     this.setState({isClose:res.data.data.isclose})
+    } else {
+      this.setState({ isClose: res.data.data.isclose })
     }
   }
   componentDidMount() {
-      this.getVenueIsClose()
+    this.getVenueIsClose()
   }
 
-  
+
 
 
   async VenueIsClose(data) {
-    const res = await VenueIsClose(data,sessionStorage.getItem('venue_token'))
-     if(res.data.code===4001){
+    const res = await VenueIsClose(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
-    } else{
-    message.info(res.data.msg)
+    } else {
+      message.info(res.data.msg)
     }
   }
-  order=e=>{
-    console.log(e.target.checked)
-    this.setState({isClose:e.target.checked?1:0})
-    this.VenueIsClose({close:e.target.checked?1:0})
+  order = e => {
+    
+    this.setState({ isClose: e.target.checked ? 1 : 0 })
+    this.VenueIsClose({ close: e.target.checked ? 1 : 0 })
   }
+ 
 
   agreement = () => {
     this.setState({ flag: !this.state.flag })
@@ -145,7 +148,7 @@ class systemSettings extends React.Component {
   }
 
   naCodeOutie = () => {
-    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
+    if (this.state.corporatePhone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.corporatePhone))) {
       let num = 60
       const timer = setInterval(() => {
         this.setState({ textT: num-- })
@@ -154,7 +157,7 @@ class systemSettings extends React.Component {
           this.setState({ textT: '获取验证码' })
         }
       }, 1000)
-      this.nacode({ "mobile": this.state.phone, "type": 'venuebinding' })
+      this.nacode({ "mobile": this.state.corporatePhone, "type": 'venuebinding' })
     } else {
       message.error('请输入手机号')
     }
@@ -164,13 +167,29 @@ class systemSettings extends React.Component {
     const res = await VenueChangePassword(data, sessionStorage.getItem('venue_token'))
     if (res.data.code !== 2000) {
       message.error(res.data.msg)
-    }else if(res.data.code===4001){
+    } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
-    }  else {
+    } else {
       message.success('修改成功')
       sessionStorage.removeItem('venue_token')
       sessionStorage.removeItem('uuid')
+    }
+  }
+
+  naCodeOutieTwo = () => {
+    if (this.state.operationPhone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.operationPhone))) {
+      let num = 60
+      const timer = setInterval(() => {
+        this.setState({ textT: num-- })
+        if (num === -1) {
+          clearInterval(timer)
+          this.setState({ textT: '获取验证码' })
+        }
+      }, 1000)
+      this.nacode({ "mobile": this.state.operationPhone, "type": 'venuebinding' })
+    } else {
+      message.error('请输入手机号')
     }
   }
 
@@ -206,10 +225,10 @@ class systemSettings extends React.Component {
     const res = await VenueBindingPhone(data, sessionStorage.getItem('venue_token'))
     if (res.data.code !== 2000) {
       message.error(res.data.msg)
-    }else if(res.data.code===4001){
+    } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
-    }  else {
+    } else {
       message.success('修改成功')
       this.setState({ flagListOne: true, flagList: true, flagUntie: true })
     }
@@ -223,11 +242,11 @@ class systemSettings extends React.Component {
 
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
-     if(res.data.code===4001){
+    if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
-    } else{
-    this.setState({ ListSport: res.data.data })
+    } else {
+      this.setState({ ListSport: res.data.data })
     }
   }
 
@@ -274,11 +293,10 @@ class systemSettings extends React.Component {
     this.setState({ runName: day })
   }
   dateSelect = (e) => {
-
+     
     let start = this.timer(e[0]._d)
     let end = this.timer(e[1]._d)
-    console.log(start, end)
-    this.setState({start:start,end:end})
+    this.setState({ start: start, end: end })
   }
   timer = (date) => {
     let year = date.getFullYear()
@@ -286,169 +304,172 @@ class systemSettings extends React.Component {
     let dateR = date.getDate()
     let hour = date.getHours()
     let minutes = date.getMinutes()
-    if (month < 10) {
-      month = "0" + month;
-    }
-    if (dateR < 10) {
-      dateR = "0" + date;
-    }
-    if (hour < 10) {
-      hour = "0" + hour;
-    }
-    if (minutes < 10) {
-      minutes = "0" + minutes;
-    }
+    // if (month < 10) {
+    //   month = "0" + month;
+    // }
+    // if (dateR < 10) {
+    //   dateR = "0" + date;
+    // }
+    // if (hour < 10) {
+    //   hour = "0" + hour;
+    // }
+    // if (minutes < 10) {
+    //   minutes = "0" + minutes;
+    // }
 
 
     var time = year + "-" + month + "-" + dateR + " " + hour + ":" + minutes; //2009-06-12 17:18:05
     return time;
   }
-  textArea=e=>{
-  this.setState({textArea:e.target.value})
+  textArea = e => {
+    this.setState({ textArea: e.target.value })
   }
   
   async VenueTemporarilyClosed(data) {
     const res = await VenueTemporarilyClosed(data, sessionStorage.getItem('venue_token'))
-   if(res.data.code===4001){
+    if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
-    } else{
-    message.info(res.data.msg)
+    } else {
+      this.setState({visible:false})
+      message.info(res.data.msg)
     }
   }
   modelSubmit = () => {
-    let { runName,runId,start,end,textArea,}=this.state
-    this.VenueTemporarilyClosed({sportid:runId,sportname:runName,starttime:start,endtime:end,comment:textArea})
+    let { runName, runId, start, end, textArea, } = this.state
+
+    this.VenueTemporarilyClosed({ sportid: runId, sportname: runName, starttime: start, endtime: end, comment: textArea })
 
   }
 
   render() {
     return (
-      <div className="systemSettings" style={{ height: parseInt(sessionStorage.getItem('height')) }}>
+      <div className="systemSettings" style={{ height: parseInt(sessionStorage.getItem('min-height')) }}>
         <div className="title"><span style={{ cursor: 'pointer' }} onClick={this.resetNot}>系统设置</span> <span className={this.state.flagListOne === false ? 'titleSpan' : 'listNone'}>{this.state.text}</span></div>
         <div className={this.state.flagListOne === true ? 'list' : 'listNone'}>
           <ul className="ul">
-            <li><Checkbox onChange={this.order} checked={this.state.isClose===1?true:false}>关闭预约</Checkbox></li>
-            <li onClick={this.model}>设置临时关闭预约时间</li>
+            <li><Checkbox onChange={this.order} checked={this.state.isClose === 1 ? true : false}>关闭预约</Checkbox></li>
+              <li onClick={this.model}>设置临时关闭预约时间</li>
           </ul>
 
-          <ul className="ul">
-            <li onClick={this.Untie}>解除/更换绑定手机号</li>
-            <li onClick={this.reset}>重置密码</li>
-          </ul>
 
-          <ul className="ul">
-            <li>
-              <span onClick={this.agreement}>用户协议</span>
-              <span className={this.state.flag === true ? 'block' : 'none'}>挑战约球的创始团队来自阿里巴巴、GOOGLE、舒适堡、格力，及全球连锁酒店顶级管理人士。一群狂热的健身&互联网信徒，乐刻运动是一个充满极客精神以追求极致的态度为都市年轻人提供健身服务的创业公司。致力于成为混乱的国内健身行业的颠覆者。</span>
-            </li>
-            <li>关于我们</li>
-            <li>客服电话 （010-120101021）</li>
-            <li>帮助中心</li>
-          </ul>
+            <ul className="ul">
+              <li onClick={this.Untie}>解除/更换绑定手机号</li>
+              <li onClick={this.reset}>重置密码</li>
+            </ul>
+
+            <ul className="ul">
+              <li>
+                <span onClick={this.agreement}>用户协议</span>
+                <span className={this.state.flag === true ? 'block' : 'none'}>挑战约球的创始团队来自阿里巴巴、GOOGLE、舒适堡、格力，及全球连锁酒店顶级管理人士。一群狂热的健身&互联网信徒，乐刻运动是一个充满极客精神以追求极致的态度为都市年轻人提供健身服务的创业公司。致力于成为混乱的国内健身行业的颠覆者。</span>
+              </li>
+              <li>关于我们</li>
+              <li>客服电话 （010-120101021）</li>
+              <li>帮助中心</li>
+            </ul>
         </div>
 
-        <div className={this.state.flagList === false ? 'reset' : 'listNone'}>
-          <div className="resetSon">
-            <div className="inputSon">
-              <span>手机号码</span>
-              <Input maxLength={11} prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.phone} placeholder="请输入手机号" />
-            </div>
+          <div className={this.state.flagList === false ? 'reset' : 'listNone'}>
+            <div className="resetSon">
+              <div className="inputSon">
+                <span>手机号码</span>
+                <Input maxLength={11} prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.phone} placeholder="请输入手机号" />
+              </div>
 
-            <div className="inputSonT inputSon">
-              <span>验证码</span>
-              <Input maxLength={6} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.code} placeholder="请输入验证码" />
-              <div className={this.state.textT === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCode}>{this.state.textT}</div>
-              <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textT}</div>
-            </div>
+              <div className="inputSonT inputSon">
+                <span>验证码</span>
+                <Input maxLength={6} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.code} placeholder="请输入验证码" />
+                <div className={this.state.textT === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCode}>{this.state.textT}</div>
+                <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textT}</div>
+              </div>
 
-            <div className="inputSon">
-              <span>重置密码</span>
-              <Input.Password maxLength={8} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.passWord} placeholder="请输入重置密码" />
-            </div>
+              <div className="inputSon">
+                <span>重置密码</span>
+                <Input.Password maxLength={8} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.passWord} placeholder="请输入重置密码" />
+              </div>
 
-            <div className="inputSon">
-              <span>确认密码</span>
-              <Input.Password maxLength={8} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.passWordT} placeholder="请输入确认密码" />
+              <div className="inputSon">
+                <span>确认密码</span>
+                <Input.Password maxLength={8} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.passWordT} placeholder="请输入确认密码" />
+              </div>
+              <div className="submit" onClick={this.submit}>确定</div>
             </div>
-            <div className="submit" onClick={this.submit}>确定</div>
           </div>
+
+          <div className={this.state.flagUntie === false ? 'Untie' : 'listNone'}>
+            <div className="resetSon">
+              <div className="inputSon">
+                <span style={{ width: 145, marginLeft: -80, textAlign: 'right' }}>法人手机号</span>
+                <Input maxLength={11} prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.corporatePhone} placeholder="请输入手机号" />
+              </div>
+
+              <div className="inputSonT inputSon">
+                <span style={{ textAlign: 'right' }}>验证码</span>
+                <Input maxLength={6} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.corporateCode} placeholder="请输入验证码" />
+                <div className={this.state.textT === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCodeOutie}>{this.state.textT}</div>
+                <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textT}</div>
+              </div>
+              <div className="inputSon">
+                <span style={{ width: 145, marginLeft: -80, textAlign: 'right' }}>绑定操作员新手机号</span>
+                <Input maxLength={11} prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.operationPhone} placeholder="请输入手机号" />
+              </div>
+              <div className="inputSonT inputSon">
+                <span style={{ textAlign: 'right' }}>验证码</span>
+                <Input maxLength={6} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.operationCode} placeholder="请输入验证码" />
+                <div className={this.state.textTwo === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCodeOutieTwo}>{this.state.textTwo}</div>
+                <div className={this.state.textTwo === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textTwo}</div>
+              </div>
+              <div className="submit" onClick={this.UoiteSubimt}>确定</div>
+            </div>
+          </div>
+          <Modal
+            title="设置临时关闭预约时间"
+            visible={this.state.visible}
+            onOk={this.handleOk}
+            onCancel={this.handleCancel}
+          >
+            <div className="one">
+              <span>运动项目</span>
+              <Select defaultValue="请选择" className="selectN" style={{ width: 350, marginLeft: 15 }} onChange={this.handleChangeSelect}>
+                {
+                  this.state.ListSport.map((item, i) => (
+                    <Option key={i} value={item.id}>{item.name}</Option>
+                  ))
+                }
+              </Select>
+            </div>
+            <div className="one" style={{ marginTop: 20 }}>
+              <span>选择时间</span>
+              <LocaleProvider locale={zh_CN}>
+                <RangePicker
+                  style={{ width: 350, marginLeft: 15 }}
+                  disabledDate={disabledDate}
+                 
+                  onOk={this.dateSelect}
+                  showTime={{
+                    hideDisabledOptions: true,
+                    defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
+                  }}
+                  format="YYYY-MM-DD HH:mm:ss"
+                />
+              </LocaleProvider>
+            </div>
+
+            <div className="one" style={{ marginTop: 20 }}>
+              <span style={{ display: 'block', float: 'left' }}>备注</span>
+              <TextArea style={{ width: 350, marginLeft: 43 }} onChange={this.textArea} rows={3} />
+
+            </div>
+            <div className="submit" onClick={this.modelSubmit}>确认</div>
+
+
+          </Modal>
+
+
+
         </div>
-
-        <div className={this.state.flagUntie === false ? 'Untie' : 'listNone'}>
-          <div className="resetSon">
-            <div className="inputSon">
-              <span style={{ width: 145, marginLeft: -80, textAlign: 'right' }}>法人手机号</span>
-              <Input maxLength={11} prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.corporatePhone} placeholder="请输入手机号" />
-            </div>
-
-            <div className="inputSonT inputSon">
-              <span style={{ textAlign: 'right' }}>验证码</span>
-              <Input maxLength={6} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.corporateCode} placeholder="请输入验证码" />
-              <div className={this.state.textT === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCodeOutie}>{this.state.textT}</div>
-              <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textT}</div>
-            </div>
-            <div className="inputSon">
-              <span style={{ width: 145, marginLeft: -80, textAlign: 'right' }}>绑定操作员新手机号</span>
-              <Input maxLength={11} prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.operationPhone} placeholder="请输入手机号" />
-            </div>
-            <div className="inputSonT inputSon">
-              <span style={{ textAlign: 'right' }}>验证码</span>
-              <Input maxLength={6} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.operationCode} placeholder="请输入验证码" />
-              <div className={this.state.textT === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCodeOutie}>{this.state.textT}</div>
-              <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textT}</div>
-            </div>
-            <div className="submit" onClick={this.UoiteSubimt}>确定</div>
-          </div>
-        </div>
-        <Modal
-          title="设置临时关闭预约时间"
-          visible={this.state.visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-        >
-          <div className="one">
-            <span>运动项目</span>
-            <Select defaultValue="请选择" className="selectN" style={{ width: 249, marginLeft: 15 }} onChange={this.handleChangeSelect}>
-              {
-                this.state.ListSport.map((item, i) => (
-                  <Option key={i} value={item.id}>{item.name}</Option>
-                ))
-              }
-            </Select>
-          </div>
-          <div className="one" style={{ marginTop: 20 }}>
-            <span>选择时间</span>
-            <LocaleProvider locale={zh_CN}>
-              <RangePicker
-                style={{ width: 250, marginLeft: 15 }}
-                disabledDate={disabledDate}
-                disabledTime={disabledRangeTime}
-                onOk={this.dateSelect}
-                showTime={{
-                  hideDisabledOptions: true,
-                  defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
-                }}
-                format="YYYY-MM-DD HH:mm:ss"
-              />
-            </LocaleProvider>
-          </div>
-
-          <div className="one" style={{ marginTop: 20 }}>
-            <span style={{ display: 'block', float: 'left' }}>备注</span>
-            <TextArea style={{ width: 250, marginLeft: 43 }} onChange={this.textArea} rows={3} />
-
-          </div>
-          <div className="submit" onClick={this.modelSubmit}>确认</div>
-
-
-        </Modal>
-
-
-
-      </div>
-    );
-  }
-}
-
+        );
+      }
+    }
+    
 export default systemSettings;

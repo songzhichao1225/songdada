@@ -19,7 +19,6 @@
 }
 .comment .has .xing>img{
     margin-left: 5px;
-    width: 20px;
     height: 20px;
 }
 .comment .has .xing>img:first-child{
@@ -169,3 +168,20 @@
 .boss .publishNone{
     display: none
 }
+.boss .kefu{
+    clear: both;
+    margin-top: 20px;
+    overflow: hidden;
+}
+.boss .kefu>img{
+    float: left;
+}
+.boss .kefu  .kefuSon{
+    width: 500px;
+    float: left;
+    margin-left: 15px;
+}
+.boss .kefu .timerLok{
+    display: block;
+}
+

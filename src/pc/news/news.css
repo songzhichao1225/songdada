@@ -36,6 +36,7 @@
     padding-left: 25px;
     min-height: 44px;
     border-bottom:1px solid #E1E0E1;
+    overflow: hidden;
 }
 .news .newsList .check{
     float: left;
@@ -57,8 +58,8 @@
     
 }
 .news .newsList .textOne{
-    width:800;
-    height:44;
+    width:800px;
+    height:44px;
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
@@ -74,4 +75,23 @@
     overflow: hidden;
     display: flex;
     justify-content: center;
+}
+.btnModel{
+    float: right;
+    margin-top: 20px;
+}
+.btnModel>div{
+    float: left;
+    width: 82px;
+    height: 36px;
+    background: #D8D8D8;
+    border-radius: 2px;
+    margin-left: 15px;
+    line-height: 36px;
+    text-align: center;
+    cursor: pointer;
+    color:#fff;
+}
+.btnModel>div:last-child{
+    background: #F5A623;
 }

@@ -6,14 +6,17 @@ import corporatePh from './phone/corporatePh/corporatePh';
 import registerPh from './phone/registerPh/registerPh';
 import stadiumInformationPh from './phone/stadiumInformationPh/stadiumInformationPh';
 import mapPh from './phone/mapPh/mapPh';
-import qualification from './phone/qualification/qualification';
+import qualificationPh from './phone/qualificationPh/qualificationPh';
 import idCardPh from './phone/idCardPh/idCardPh';
 import resultsAuditsPh from './phone/resultsAuditsPh/resultsAuditsPh';
 import forgetPasswordPh from './phone/forgetPasswordPh/forgetPasswordPh';
 import homePh from './phone/homePh/homePh';
 import monthlyIncomePh from './phone/monthlyIncomePh/monthlyIncomePh';
 import moneyDetailPh from './phone/moneyDetailPh/moneyDetailPh';
-
+import commentPh from './phone/commentPh/commentPh';
+import myWalletPh from './phone/myWalletPh/myWalletPh';
+import withdrawalPh from './phone/withdrawalPh/withdrawalPh';
+import walletDetailsPh from './phone/walletDetailsPh/walletDetailsPh';
 
 const BasicRoute = () => (
     <HashRouter>
@@ -24,13 +27,20 @@ const BasicRoute = () => (
             <Route exact path="/registerPh" component={registerPh}/>
             <Route exact path="/stadiumInformationPh" component={stadiumInformationPh}/>
             <Route exact path="/mapPh" component={mapPh}/>
-            <Route exact path="/qualification" component={qualification}/>
+            <Route exact path="/qualificationPh" component={qualificationPh}/>
             <Route exact path="/idCardPh" component={idCardPh}/>
             <Route exact path="/resultsAuditsPh" component={resultsAuditsPh}/>
             <Route exact path="/forgetPasswordPh" component={forgetPasswordPh}/>
-            <Route exact path="/homePh" component={homePh}/>
             <Route exact path="/homePh/monthlyIncomePh" component={monthlyIncomePh}/>
             <Route exact path="/homePh/monthlyIncomePh/moneyDetailPh" component={moneyDetailPh}/>
+            <Route exact path="/homePh/commentPh" component={commentPh}/>
+            <Route exact path="/homePh/myWalletPh" component={myWalletPh}/>
+            <Route exact path="/homePh/withdrawalPh" component={withdrawalPh}/>
+            <Route exact path="/homePh/walletDetailsPh" component={walletDetailsPh}/>
+            <Route  path="/homePh" component={homePh}/>
+         
+            
+
             
             
         </Switch>

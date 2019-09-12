@@ -240,3 +240,28 @@
 .orderList .block{
     display: block;
 }
+.orderList  .img{
+    display: block;
+    width: 30px;
+    height: 20px;
+    margin:15px auto 0;
+}
+.sending{
+    float: right;
+    margin-top: 8px;
+}
+.sending>div{
+    width: 82px;
+    height: 36px;
+    background: #D8D8D8;
+    border-radius: 2px;
+    text-align: center;
+    line-height: 36px;
+    float: left;
+    color: #fff;
+    cursor: pointer;
+}
+.sending>div:last-child{
+    margin-left: 16px;
+    background: #F5A623; 
+}

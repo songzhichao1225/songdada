@@ -126,11 +126,11 @@ class forgetPasswordPh extends React.Component {
 
 
           <div className="name">
-            <Input.Password  prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} className=" pass" maxLength={8}onChange={this.pass} placeholder="请输入密码" />
+            <Input.Password className="phone" prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} className=" pass" maxLength={8}onChange={this.pass} placeholder="请输入密码" />
           </div>
 
           <div className="name">
-            <Input.Password prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} className=" pass" maxLength={8} onChange={this.passTwo} placeholder="请再次输入密码" />
+            <Input.Password className="phone" prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} className=" pass" maxLength={8} onChange={this.passTwo} placeholder="请再次输入密码" />
           </div>
            <div className="btn" onClick={this.comfir}>确定</div>
 

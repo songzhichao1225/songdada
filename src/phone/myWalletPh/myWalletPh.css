@@ -1,0 +1,65 @@
+.myWalletPh .headBanner{
+    width: 100%;
+    height:14.38rem;
+    background:linear-gradient(135deg,rgba(238,72,39,1) 0%,rgba(254,155,57,1) 100%);
+}
+.myWalletPh .headBanner .headerTitle{
+    height: 3rem;
+    text-align: center;
+    line-height: 3rem;
+    color: #fff;
+}
+.myWalletPh .headBanner .content{
+    margin-left: 2rem;
+    margin-top: 2rem;
+}
+.myWalletPh .headBanner .content>span:first-child{
+     display: block;
+     font-size:1.06rem;
+    font-family:PingFang-SC;
+    font-weight:500;
+    color:rgba(255,255,255,1);
+    line-height:1.5rem;
+}
+.myWalletPh .headBanner .content>span:last-child{
+    display: block;
+    font-size:3.13rem;
+    font-family:PingFangSC;
+    font-weight:500;
+    color:rgba(255,255,255,1);
+    line-height:6.38rem;
+
+}
+.myWalletPh .mineList{
+    list-style: none;
+    width: 95%;
+    padding: 0;
+    margin: 1rem auto 0;
+}
+.myWalletPh .mineList>li{
+    width: 100%;
+    height: 3rem;
+    line-height: 3rem;
+    font-size: 0.88rem;
+    border-bottom: 0.06rem solid #f5f5f5;
+}
+.myWalletPh .mineList>li>img:first-child{
+    width: 1rem;
+    height: 1rem;
+    display: block;
+    float: left;
+    margin-top: 1rem;
+}
+.myWalletPh .mineList>li>span{
+    display: block;
+    float: left;
+    margin-left: 0.8rem;
+}
+
+.myWalletPh .mineList>li>img:last-child{
+    width: 0.44rem;
+    height: 0.69rem;
+    display: block;
+    float: right;
+    margin-top: 1.3rem;
+}

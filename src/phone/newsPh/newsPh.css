@@ -1,0 +1,77 @@
+.newsPh .headerTitle{
+   overflow: hidden;
+   padding-left: 1rem;
+   border-bottom: 0.06rem solid #f5f5f5;
+}
+.newsPh .headerTitle>div{
+    width: 4rem;
+    height: 3rem;
+    float: left;
+    color: #9B9B9B;
+}
+.newsPh .headerTitle>div:last-child{
+    margin-left: 1rem;
+}
+.newsPh .receive{
+    width: 90%;
+    margin: 2rem auto 0;
+}
+.newsPh  .recriveSon{
+    overflow: hidden;
+    margin-top: 1rem;
+}
+.newsPh  .recriveSon .notRead{
+    width:0.5rem;
+    height:0.5rem;
+    background:rgba(216,93,39,1);
+    border-radius: 50%;
+    float: left;
+    margin-top: 1.3rem;
+}
+.newsPh  .recriveSon .img{
+    display: block;
+    width: 3rem;
+    height: 3rem;
+    float: left;
+    margin-left: 0.5rem;
+}
+.newsPh  .recriveSon .content{
+    float: left;
+    margin-left: 1rem;
+    width: 75%;
+}
+.newsPh  .recriveSon .content .contentHead{
+    overflow: hidden;
+}
+.newsPh  .recriveSon .content .contentHead>span:first-child{
+    display: block;
+    float: left;
+    font-size:1rem;
+    font-weight:600;
+    color:rgba(51,51,51,1);
+
+}
+.newsPh  .recriveSon .content .contentHead>span:last-child{
+    display: block;
+    float: right;
+    font-size:0.75rem;
+    line-height: 1.5rem;
+    color:rgba(151,151,151,1);
+}
+.newsPh  .recriveSon .content .contentText{
+    width: 100%;
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: normal;
+    font-size:0.88rem;
+    color:rgba(155,155,155,1);
+    line-height:1.25rem;
+    border-bottom: 0.06rem solid #f5f5f5;
+    min-height: 2rem;
+}
+.newsPh>.none{
+   opacity: 0;
+}
+.newsPh>.hidden{
+  display: none
+ }

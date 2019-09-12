@@ -2,7 +2,7 @@ import React from 'react';
 import './preferential.css';
 import 'antd/dist/antd.css';
 import { getVenueDiscountList, addVenueDiscount, getVenueSport, DelVenueDiscount, getFirstDiscount } from '../../api';
-import { Select, Row, Col, Modal, TimePicker, InputNumber, Input, message, DatePicker, Spin, Form, Button,Result,Icon } from 'antd';
+import { Select, Row, Col, Modal, TimePicker, InputNumber, Input, message, DatePicker, Spin, Form, Button,Result,Icon,Pagination } from 'antd';
 import moment from 'moment';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import 'moment/locale/zh-cn';
@@ -35,6 +35,8 @@ class preferential extends React.Component {
     loading: true,//加载
     DisList: '',//查看某一条有毁活动信息
     hidden:'',
+    other:'',
+    page:1,
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -48,7 +50,7 @@ class preferential extends React.Component {
   async getVenueDiscountList(data) {
     const res = await getVenueDiscountList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ list: res.data.data, loading: false,hidden:true })
+      this.setState({ list: res.data.data,other:res.data.other, loading: false,hidden:true })
     }else if(res.data.code===4001){
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
@@ -75,7 +77,7 @@ class preferential extends React.Component {
     });
     this.setState({
       runId: '请选择', starttime: '', endtime: '', costperhour: '', startDate: '',
-      endDate: '', number:0, appointmenttime: '请选择', comment: '',DisList:''
+      endDate: '', number:1, appointmenttime: '请选择', comment: '',DisList:''
     })
   };
 
@@ -255,7 +257,6 @@ class preferential extends React.Component {
 
 
 
-
   async DelVenueDiscount(data) {
     const res = await DelVenueDiscount(data, sessionStorage.getItem('venue_token'))
     if (res.data.code !== 200) {
@@ -269,7 +270,12 @@ class preferential extends React.Component {
   }
   delet = (e) => {
     this.DelVenueDiscount({ uuid: e.target.dataset.uid })
-    this.getVenueDiscountList({ sportid: sessionStorage.getItem('preferential'), page: '' })
+    this.getVenueDiscountList({ sportid: sessionStorage.getItem('preferential'), page: this.state.page })
+  }
+
+  current=(page,pageSize)=>{
+    this.setState({page:page})
+    this.getVenueDiscountList({sportid:sessionStorage.getItem('siteSettings'),page:page})
   }
   render() {
     return (
@@ -294,13 +300,13 @@ class preferential extends React.Component {
         <div className={this.state.hidden===true?'siteList':'hidden'} >
           <Row className="rowConten">
             <Col xs={{ span: 2 }}>运动项目</Col>
-            <Col xs={{ span: 2, offset: 1 }}>开始时间</Col>
-            <Col xs={{ span: 2, offset: 1 }}>结束时间</Col>
-            <Col xs={{ span: 2, offset: 1 }}>价格<span className="fontColor">元/时</span></Col>
-            <Col xs={{ span: 3 }}>有效日期</Col>
-            <Col xs={{ span: 2 }}>预留场地数量</Col>
+            <Col xs={{ span: 2 }}>开始时间</Col>
+            <Col xs={{ span: 2 }}>结束时间</Col>
+            <Col xs={{ span: 2 }}>价格<span className="fontColor">元/时</span></Col>
+            <Col xs={{ span: 5 }}>有效日期</Col>
+            <Col xs={{ span: 3 }}>预留场地数量</Col>
             <Col xs={{ span: 3 }}>最短提前预定时间</Col>
-            <Col xs={{ span: 2, offset: 2 }}>操作</Col>
+            <Col xs={{ span: 2 }}>操作</Col>
           </Row>
           
             <div className="dataList" >
@@ -308,19 +314,19 @@ class preferential extends React.Component {
                 this.state.list.map((item, i) => (
                   <Row key={i} className="rowList">
                     <Col xs={{ span: 2 }}>{item.sportname}</Col>
-                    <Col xs={{ span: 2, offset: 1 }}>{item.starttime}</Col>
-                    <Col xs={{ span: 2, offset: 1 }}>{item.endtime}</Col>
-                    <Col xs={{ span: 2, offset: 1 }}>{item.costperhour}</Col>
-                    <Col xs={{ span: 3 }}>{item.fromdate}—{item.enddate}</Col>
-                    <Col xs={{ span: 2 }}>{item.maxtablecount}</Col>
+                    <Col xs={{ span: 2 }}>{item.starttime}</Col>
+                    <Col xs={{ span: 2 }}>{item.endtime}</Col>
+                    <Col xs={{ span: 2 }}>{item.costperhour}</Col>
+                    <Col xs={{ span: 5 }}>{item.fromdate}—{item.enddate}</Col>
+                    <Col xs={{ span: 3 }}>{item.maxtablecount}</Col>
                     <Col xs={{ span: 3 }}>{item.appointmenttime}分</Col>
-                    <Col className="updata" xs={{ span: 2, offset: 2 }}><img onClick={this.updata} data-uid={item.uid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;&nbsp;<img data-uid={item.uid} onClick={this.delet} src={require("../../assets/icon_pc_delet.png")} alt="删除" /></Col>
+                    <Col className="updata" xs={{ span: 2 }}><img onClick={this.updata} data-uid={item.uid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;&nbsp;<img data-uid={item.uid} onClick={this.delet} src={require("../../assets/icon_pc_delet.png")} alt="删除" /></Col>
                   </Row>
                 ))
               }
             </div>
         </div>
-       
+        <Pagination className={this.state.hidden===true?'fenye':'hidden'} defaultCurrent={1} total={this.state.other} onChange={this.current} />
           <Result className={this.state.hidden===true?'hidden':''} icon={<Icon type="gift" theme="twoTone"  twoToneColor="#F5A623"/>}title="您没有优惠活动！"/>
          </Spin>
 
@@ -332,7 +338,7 @@ class preferential extends React.Component {
 
 
         <Modal
-          title="添加场地设置"
+          title="添加优惠活动"
           visible={this.state.visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
@@ -382,7 +388,7 @@ class preferential extends React.Component {
 
             <div className="modelList">
               <span>最短提前预定时间</span>
-              <Select defaultValue="请选择" placeholder="请选择" value={this.state.appointmenttime} className="selectModel" style={{ width: 249 }} onChange={this.handleChangeFive}>
+              <Select defaultValue="请选择" placeholder="请选择" value={this.state.appointmenttime+'分钟'} className="selectModel" style={{ width: 249 }} onChange={this.handleChangeFive}>
                 <Option value="0">0分钟</Option>
                 <Option value="30">30分钟</Option>
                 <Option value="60">60分钟</Option>
@@ -395,7 +401,7 @@ class preferential extends React.Component {
               <span>备注</span>
               <TextArea className="textArea" rows={4} value={this.state.comment} placeholder='请输入' onChange={this.textArea} />
             </div>
-            <Button className="submit" data-uid={this.state.DisList !== '' ? this.state.DisList.uid : ''} onClick={this.submit}>保存</Button>
+            <div className="submit" data-uid={this.state.DisList !== '' ? this.state.DisList.uid : ''} onClick={this.submit}>保存</div>
           </Form>
 
 

@@ -21,13 +21,13 @@ class loginPhTeo extends React.Component {
   }
 
   registerPh=()=>{
-    this.props.history.push('/registerPh')
+    this.props.history.push('/registerPh')    
   }
   phone=e=>{
-    this.setState({phone:e.target.value})
+    this.setState({phone:e.target.value}) 
   }
   pssword=e=>{
-    this.setState({password:e.target.value})
+    this.setState({password:e.target.value})    
   }
 
   async login(data) {
@@ -56,7 +56,6 @@ class loginPhTeo extends React.Component {
         }
       }, 1000)
     }
-
   }
   
   submit=()=>{

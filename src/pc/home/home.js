@@ -42,7 +42,7 @@ class home extends React.Component {
     sessionStorage.setItem('path', '1');
     this.setState({ minheight: document.body.scrollHeight })
     this.getVenueIndex()
-    this.gerVenueName()
+      this.gerVenueName()
     setInterval(() => {
       this.timer()
     }, 1000)
@@ -187,10 +187,18 @@ class home extends React.Component {
       message.error('登陆超时请重新登陆！')
     }else{
       this.setState({ gerVenueName: res.data.data })
-
     }
   }
+  income=()=>{
+    this.props.history.push({pathname:'/home/myWallet',query:{time:1}})
+  }
+  daysIncome=()=>{
+    this.props.history.push({pathname:'/home/myWallet',query:{time:1}})
+  }
 
+  mounthOrder=()=>{
+    this.props.history.push({pathname:'/home/information',query:{time:1}})
+  }
   render() {
     return (
       <Layout style={{ height: '100%' }}>
@@ -198,7 +206,7 @@ class home extends React.Component {
           <div className="logo">
             <img style={{ width: 115, height: 92, marginLeft: 45, marginTop: 16 }}
               src={require("../../assets/tiaozhanicon.png")} alt="logo" />
-          </div>  {sessionStorage.getItem('path')}
+          </div> 
           <Menu theme="dark" mode="inline" selectedKeys={[sessionStorage.getItem('path')]} onSelect={this.kood}>
             <Menu.Item key="1">
               <Link to="/home">
@@ -257,7 +265,7 @@ class home extends React.Component {
               <div className="new">
               <Link to="/home/news">
                 <img src={require("../../assets/icon_pc_new.png")} alt="message" />
-                <div className="number">{this.state.gerVenueName.mess}</div>
+                <div className="number"><span>{this.state.gerVenueName.mess}</span></div>
                 </Link>
               </div>
               <div className="lvyue">场地履约率：{this.state.gerVenueName.rate}%</div>
@@ -268,21 +276,22 @@ class home extends React.Component {
             overflowY: 'auto'
           }}>
             <div className={this.state.path !== '/home' ? 'homePageT' : 'homePage'} >
-              <span className="title">{this.state.nookod} 欢迎使用挑战场馆端</span>
+              <span className="title">{this.state.nookod}! 欢迎使用挑战场馆端</span>
+              <div style={{height:8,background:'#F5F5F5',width:'100%'}}></div>
               <div className="divContent">
-                <div>
+                <div onClick={this.income}>
                   <div className="left"><span>本月收入</span><span>￥{this.state.getVenue.month_money}</span></div>
                   <div className="right"><img src={require("../../assets/icon_pc_money.png")} alt="icon" /></div>
                 </div>
-                <div>
+                <div onClick={this.daysIncome}>
                   <div className="left"><span>今日收入</span><span>￥{this.state.getVenue.today_money}</span></div>
                   <div className="right" ><img src={require("../../assets/icon_pc_money.png")} alt="icon" /></div>
                 </div>
-                <div>
+                <div onClick={this.mounthOrder}>
                   <div className="left"><span>本月成功预约</span><span>{this.state.getVenue.month_count}单</span></div>
                   <div className="right"><img src={require("../../assets/icon_pc_biji.png")} alt="icon" /></div>
                 </div>
-                <div>
+                <div onClick={this.mounthOrder}>
                   <div className="left"><span>今日成功预约</span><span>{this.state.getVenue.today_count}单</span></div>
                   <div className="right"><img src={require("../../assets/icon_pc_biji.png")} alt="icon" /></div>
                 </div>
@@ -290,18 +299,16 @@ class home extends React.Component {
 
 
                 <div onClick={this.lppd}>
-
                   <div className="left"><span>场馆评分  {this.state.getVenue.score}分</span>
                     <div className="xing">
-                      <img src={this.state.getVenue.score >= 1 ? require('../../assets/50xing (3).png') : require('../../assets/50xing (2).png')} alt="666" />
-                      <img src={this.state.getVenue.score >= 2 ? require('../../assets/50xing (3).png') : require('../../assets/50xing (2).png')} alt="666" />
-                      <img src={this.state.getVenue.score >= 3 ? require('../../assets/50xing (3).png') : require('../../assets/50xing (2).png')} alt="666" />
-                      <img src={this.state.getVenue.score >= 4 ? require('../../assets/50xing (3).png') : require('../../assets/50xing (2).png')} alt="666" />
-                      <img src={this.state.getVenue.score >= 5 ? require('../../assets/50xing (3).png') : require('../../assets/50xing (2).png')} alt="666" />
+                      <img src={this.state.getVenue.score >= 1 ? require('../../assets/50xing (3).png') : require('../../assets/50xing (2).png')&&this.state.getVenue.score < 1&&this.state.getVenue.score>0 ? require('../../assets/50xing (1).png') : require('../../assets/50xing (2).png')} alt="666" />
+                      <img src={this.state.getVenue.score >= 2 ? require('../../assets/50xing (3).png') : require('../../assets/50xing (2).png')&&this.state.getVenue.score < 2&&this.state.getVenue.score>1 ? require('../../assets/50xing (1).png') : require('../../assets/50xing (2).png')} alt="666" />
+                      <img src={this.state.getVenue.score >= 3 ? require('../../assets/50xing (3).png') : require('../../assets/50xing (2).png')&&this.state.getVenue.score < 3&&this.state.getVenue.score>2 ? require('../../assets/50xing (1).png') : require('../../assets/50xing (2).png')} alt="666" />
+                      <img src={this.state.getVenue.score >= 4 ? require('../../assets/50xing (3).png') : require('../../assets/50xing (2).png')&&this.state.getVenue.score < 4&&this.state.getVenue.score>3 ? require('../../assets/50xing (1).png') : require('../../assets/50xing (2).png')} alt="666" />
+                      <img src={this.state.getVenue.score >= 5 ? require('../../assets/50xing (3).png') : require('../../assets/50xing (2).png')&&this.state.getVenue.score < 5&&this.state.getVenue.score>4 ? require('../../assets/50xing (1).png') : require('../../assets/50xing (2).png')} alt="666" />
                     </div>
                   </div>
                   <div className="right"><img src={require("../../assets/icon_pc_xingxin.png")} alt="icon" /></div>
-
                 </div>
 
 

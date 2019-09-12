@@ -50,19 +50,27 @@ class Login extends React.Component {
   onPassword = e => {
     this.setState({ pass: e.target.value })
   }
-
-
   async nacode(data) {
     const res = await _code(data)
-    console.log(res)
-
+    if(res.data.code!==2000){
+       message.error(res.data.msg)
+    }else{
+      let num = 60
+      const timer = setInterval(() => {
+        this.setState({ textT: num-- })
+        if (num === -1) { 
+          clearInterval(timer)
+          this.setState({ textT: '获取验证码' })
+        }
+      }, 1000)
+    }
   }
   
-
+ 
 
   async login(data) {
     const res = await _login(data)
-    if (res.data.code !== 2000) {
+    if (res.data.code!==2000) {
       message.error(res.data.msg)
     } else {
       sessionStorage.setItem('uuid', res.data.data.uuid);
@@ -71,6 +79,9 @@ class Login extends React.Component {
       sessionStorage.setItem('venue_token', res.data.data.venue_token);
       sessionStorage.setItem('issite', res.data.data.issite);
       sessionStorage.setItem('isqult', res.data.data.isqult);
+      sessionStorage.setItem('ismethod', res.data.data.ismethod);
+      sessionStorage.setItem('issecondaudit', res.data.data.issecondaudit);
+      
       setTimeout(() => {
         if (res.data.data.venue_token) {
           if (res.data.data.issite === 0) {
@@ -90,17 +101,10 @@ class Login extends React.Component {
 
   async VenueSelectSiteName(data) {
     const res = await VenueSelectSiteName(data)
-    console.log(res)
     if (res.data.code === 2000) {
       this.setState({selectVeun:res.data.data,value:res.data.data[0].venueloginuuid})
-      let num = 60
-      const timer = setInterval(() => {
-        this.setState({ textT: num-- })
-        if (num === -1) {
-          clearInterval(timer)
-          this.setState({ textT: '获取验证码' })
-        }
-      }, 1000)
+      this.nacode({ "mobile": this.state.phone, "type": 'venuelogin' })
+    }else{
       this.nacode({ "mobile": this.state.phone, "type": 'venuelogin' })
     }
   }
@@ -152,7 +156,7 @@ class Login extends React.Component {
               <span>挑战场地管理端</span>
             </div>
             <div className="right">
-              <div className="navTap"><div onClick={this.phoneLogin}>手机号登录</div><div onClick={this.nameLogin}>用户名登录</div></div>
+              <div className="navTap"><div onClick={this.phoneLogin} style={this.state.navNum===true?{color:'#F5A623'}:{color:'#000'}}>法人登录</div><div style={this.state.navNum===false?{color:'#F5A623'}:{color:'#000'}} onClick={this.nameLogin}>普通登录</div></div>
               <div className={this.state.navNum ? 'phoneLoginT' : 'phoneLogin'}>
                 <Form layout="inline" onSubmit={this.handleSubmit} className="form">
                   <Form.Item className="input">
@@ -160,7 +164,7 @@ class Login extends React.Component {
                       content='请输入正确的手机号'
                       visible={this.state.visiblePhone}
                     >
-                      <Input onBlur={this.phone} maxLength={11} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="手机/法人手机" />
+                      <Input onBlur={this.phone} maxLength={11} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="法人手机号" />
                     </Popover>
                   </Form.Item>
                   <Form.Item className="code">
@@ -186,7 +190,7 @@ class Login extends React.Component {
                  </Radio.Group>
                   </Form.Item>
                   <Form.Item className="input" >
-                    <Input.Password onChange={this.onPassword} maxLength={8} onPressEnter={this.noHuiche} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" />
+                    <Input.Password onChange={this.onPassword} maxLength={8} onPressEnter={this.onSubmit} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" />
                   </Form.Item>
                   <Form.Item className="bind">
                     <Button className="btnSubmit" onClick={this.onSubmit} htmlType="submit">
@@ -200,13 +204,13 @@ class Login extends React.Component {
               <div className={this.state.navNum ? 'nameLogin' : 'nameLoginT'}  >
                 <Form layout="inline" onSubmit={this.handleSubmit} className="form">
                   <Form.Item className="input">
-                    <Input onChange={this.phone} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名" />
+                    <Input onChange={this.phone} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名/操作员手机号" />
                   </Form.Item>
                   <Form.Item className="input" >
-                    <Input.Password onChange={this.onPassword} onPressEnter={this.noHuiche} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" />
+                    <Input.Password onChange={this.onPassword} onPressEnter={this.onSubmitT} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" />
                   </Form.Item>
                   <Form.Item className="bind">
-                    <Button className="btnSubmit" onClick={this.onSubmitT} >
+                    <Button className="btnSubmit"  onClick={this.onSubmitT} >
                       登录
                 </Button>
                   </Form.Item>

@@ -1,5 +1,5 @@
 import React from 'react';
-import './qualification.css';
+import './qualificationPh.css';
 import { Upload, Input, Button, Radio } from 'antd';
 import { } from '../../api';
 
@@ -20,7 +20,7 @@ function beforeUpload(file) {
 
 
 
-class qualification extends React.Component {
+class qualificationPh extends React.Component {
 
   state = {
     place: '请上传手持身份证正反面照片',
@@ -87,7 +87,7 @@ class qualification extends React.Component {
 
 
     return (
-      <div className="qualification">
+      <div className="qualificationPh">
         <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span style={{ color: '#D85D27' }}>完善信息 ></span> <span>审核  ></span> <span>成功  ></span> </div>
         <div className="headTtitle">完善场馆资质信息</div>
         <div className="boss">
@@ -163,4 +163,4 @@ class qualification extends React.Component {
   }
 }
 
-export default qualification;
+export default qualificationPh;
