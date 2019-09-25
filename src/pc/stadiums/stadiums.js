@@ -163,16 +163,23 @@ class stadiums extends React.Component {
   }
   onChangeText = e => {
     this.setState({ siteInfo: e.target.value })
+    if( e.target.value.length===200){
+      message.error('最多输入200字')
+    }
   }
   onChangeTextTwo = e => {
     this.setState({ comment: e.target.value })
+    if( e.target.value.length>200){
+      message.error('最多输入200字')
+    }
   }
 
 
   async VenueInformationSave(data) {
     const res = await VenueInformationSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info('修改成功')
+      message.info('提交成功')
+        this.setState({issecondaudit:0})
       this.getVenueInformation()
     } else {
       message.error(res.data.msg)
@@ -190,25 +197,27 @@ class stadiums extends React.Component {
           filesURLarr.push(fileList[i].url)
         }
       }
-      let data = {
-        venuename: name,
-        lat: informationList.lat,
-        lng: informationList.lng,
-        address: handleAddress,
-        linkMan: contacts,
-        telephone: contactNumber,
-        firstURL: imageUrl,
-        filesURL: filesURLarr.join('|'),
-        facilities: facilities.join('|'),
-        sport: sport.join('|'),
-        siteInfo: siteInfo,
-        position: adddress,
-        comment: comment,
-        type: 2
+      if(filesURLarr.length>=2){
+        let data = {
+          venuename: name,
+          lat: informationList.lat,
+          lng: informationList.lng,
+          address: handleAddress,
+          linkMan: contacts,
+          telephone: contactNumber,
+          firstURL: imageUrl,
+          filesURL: filesURLarr.join('|'),
+          facilities: facilities.join(','),
+          sport: sport.join(','),
+          siteInfo: siteInfo,
+          position: adddress,
+          comment: comment,
+          type: 2
+        }
+        this.VenueInformationSave(data)
+      }else{
+        message.error('至少上传两张室内照')
       }
-      this.VenueInformationSave(data)
-   
-   
   }
   basic = () => {
     this.setState({ flag: true })
@@ -267,7 +276,7 @@ class stadiums extends React.Component {
           </div>
           <div className="name">
             <span className="boTitle">联系人:</span>
-            <Input className="nameINput" value={this.state.contacts} onInput={this.contacts} />
+            <Input className="nameINput" maxLength={10} value={this.state.contacts} onInput={this.contacts} />
           </div>
           <div className="name">
             <span className="boTitle">联系电话:</span>
@@ -300,6 +309,7 @@ class stadiums extends React.Component {
                 onPreview={this.handlePreview}
                 onChange={this.handleChangeT}
                 headers={'http://venue.tiaozhanmeiyitian.com'}
+                accept=".jpg, .jpeg, .png"
               >
                 {fileList.length >= 8 ? null : uploadButtonT}
               </Upload>
@@ -321,11 +331,11 @@ class stadiums extends React.Component {
 
           <div className="name">
             <span className="boTitle">场地介绍:</span><span className="kong"></span>
-            <TextArea className="textarea" value={this.state.siteInfo} placeholder="请输入场地介绍，如场地规模、特色等。" onChange={this.onChangeText} rows={3} />
+            <TextArea className="textarea" maxLength={200} value={this.state.siteInfo} placeholder="请输入场地介绍，如场地规模、特色等。" onChange={this.onChangeText} rows={3} />
           </div>
           <div className="name">
             <span className="boTitle">其他:</span><span className="kong"></span>
-            <TextArea className="textarea" value={this.state.comment} placeholder="请输入场地其他介绍，如比赛、特色等。" onChange={this.onChangeTextTwo} rows={2} />
+            <TextArea className="textarea" maxLength={200} value={this.state.comment} placeholder="请输入场地其他介绍，如比赛、特色等。" onChange={this.onChangeTextTwo} rows={2} />
           </div>
 
 

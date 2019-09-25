@@ -63,8 +63,9 @@ class home extends React.Component {
       sessionStorage.setItem('path', '6');
     } else if (this.props.history.location.pathname === '/home/myWallet') {
       sessionStorage.setItem('path', '7');
+    } else if(sessionStorage.getItem('issportid')!==''){
+      this.props.history.location.pathname= '/home/siteSettings'
     }
-
   }
 
 
@@ -86,6 +87,9 @@ class home extends React.Component {
     } else if (this.props.history.location.pathname === '/home/myWallet') {
       sessionStorage.setItem('path', '7');
     }
+ 
+
+
   }
   lppd = () => {
 
@@ -193,7 +197,7 @@ class home extends React.Component {
     this.props.history.push({pathname:'/home/myWallet',query:{time:1}})
   }
   daysIncome=()=>{
-    this.props.history.push({pathname:'/home/myWallet',query:{time:1}})
+    this.props.history.push({pathname:'/home/myWallet',query:{time:2}})
   }
 
   mounthOrder=()=>{

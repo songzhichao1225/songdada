@@ -2,7 +2,7 @@ import React from 'react';
 import './comment.css';
 import 'antd/dist/antd.css';
 import { getCommentList, VenueCommentReply, getOverallScore } from '../../api';
-import { Spin, Icon, Input, message, Result } from 'antd';
+import { Spin, Icon, Input, message, Result,Pagination } from 'antd';
 const { TextArea } = Input;
 
 
@@ -21,6 +21,8 @@ class comment extends React.Component {
     Oneloading: true,
     score: '',
     scoreSon: '',
+    other:1,
+    page:0,
   };
 
 
@@ -53,7 +55,7 @@ class comment extends React.Component {
 
         }
 
-        this.setState({ commentList: res.data.data, imgArr: imgArr, loading: false, hidden: false, Oneloading: false })
+        this.setState({ commentList: res.data.data, imgArr: imgArr, other:res.data.other, loading: false, hidden: false, Oneloading: false })
       }
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
@@ -82,14 +84,14 @@ class comment extends React.Component {
     const res = await VenueCommentReply(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
 
-      this.getCommentList({ page: 1 })
+      this.getCommentList({ page:this.state.page })
+      this.setState({flag:null})
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
     } else {
       message.error(res.data.msg)
     }
-
   }
   operation = (e) => {
     this.VenueCommentReply({ commentid: e.target.dataset.uid, comment: this.state.textValue })
@@ -97,10 +99,14 @@ class comment extends React.Component {
 
   }
   sping = () => {
-    this.getCommentList({ page: 1 })
+    this.getCommentList({ page: this.state.page })
     this.setState({ loading: true, hidden: true })
   }
 
+  current=(page,pageSize)=>{
+    this.setState({page:page})
+    this.getCommentList({ page: page })
+  }
 
 
 
@@ -122,7 +128,7 @@ class comment extends React.Component {
             <img src={this.state.scoreSon >= 5 ? require("../../assets/50xing (3).png") : require("../../assets/50xing (2).png") && this.state.scoreSon < 5 && this.state.scoreSon > 4 ? require("../../assets/50xing (1).png") : require("../../assets/50xing (2).png")} alt="星" />
 
           </div>
-          <span className="title">设施   {this.state.score.equscore} 服务   {this.state.score.envscore} 价格  {this.state.score.xjbScore}</span>
+          <span className="title">设施   {this.state.score.equscore}分    服务   {this.state.score.envscore}分    价格  {this.state.score.xjbScore}分</span>
         </div>
         <div className="xian"></div>
         <div className="content">
@@ -148,7 +154,7 @@ class comment extends React.Component {
                           <img src={item.score >= 5 ? require("../../assets/50xing (3).png") : require("../../assets/50xing (2).png") && item.score < 5 && item.score > 4 ? require("../../assets/50xing (1).png") : require("../../assets/50xing (2).png")} alt="星" />
                         </div>
                         <span className="sumNum">{item.score}分</span>
-                        <span className="titleThree">设施 {item.equscore}分   服务 {item.envscore}分   价格 {item.xjbScore}</span>
+                        <span className="titleThree">设施 {item.equscore}分   服务 {item.envscore}分   价格 {item.xjbScore}分</span>
                       </div>
                       <span className="text">
                         {item.content}
@@ -187,6 +193,8 @@ class comment extends React.Component {
                 </div>
               ))
             }
+             
+             <Pagination className="fenye" defaultCurrent={1} onChange={this.current} total={this.state.other} />
 
             <Result className={this.state.commentList.length === 0 ? 'block' : 'hidden'} icon={<Icon type="calendar" theme="twoTone" twoToneColor="#F5A623" />} title="还没有人评价！" />
           </Spin>

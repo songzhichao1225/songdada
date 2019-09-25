@@ -81,6 +81,7 @@ class Login extends React.Component {
       sessionStorage.setItem('isqult', res.data.data.isqult);
       sessionStorage.setItem('ismethod', res.data.data.ismethod);
       sessionStorage.setItem('issecondaudit', res.data.data.issecondaudit);
+      sessionStorage.setItem('issportid', res.data.data.issportid);
       
       setTimeout(() => {
         if (res.data.data.venue_token) {

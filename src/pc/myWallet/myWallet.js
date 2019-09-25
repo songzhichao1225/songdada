@@ -1,7 +1,7 @@
 import React from 'react';
 import './myWallet.css';
 import 'antd/dist/antd.css';
-import { getVenueMoneyList, getVenueWithdrawalList, getVenueWithdrawalOneList,VenueWithdrawal } from '../../api';
+import { getVenueMoneyList, getVenueWithdrawalList, getVenueWithdrawalOneList, VenueWithdrawal } from '../../api';
 import { DatePicker, Row, Col, Pagination, message, Spin, Result, Icon, Input } from 'antd';
 import moment from 'moment';
 
@@ -25,17 +25,17 @@ class myWallet extends React.Component {
     loading: true,
     hidden: '',
     hiddenTwo: '',
-    walletList:[],
-    moneyYuan:'',
-    allNow:'',
-    sumMoney:'0',
-    whereMoney:'0',
-    start:'',
-    end:'',
-    dateString:[],
-    other:1,
-    page:1,
-    recordListOther:'',
+    walletList: [],
+    moneyYuan: '',
+    allNow: '',
+    sumMoney: '0',
+    whereMoney: '0',
+    start: '',
+    end: '',
+    dateString: [],
+    other: 1,
+    page: 1,
+    recordListOther: '',
     list: [
       { time: '2018-5-02', minxi: 'sruhgdnjfgihdfvgndiurhgdrjgiej', money: '￥300' },
       { time: '2018-5-02', minxi: 'sruhgdnjfgihdfvgndiurhgdrjgiej', money: '￥300' },
@@ -46,28 +46,26 @@ class myWallet extends React.Component {
   };
 
   dateChange = (data, dateString) => {
-    console.log(dateString)
-    this.setState({dateString:dateString,start:dateString[0],end:dateString[1]})
+    this.setState({ dateString: dateString, start: dateString[0], end: dateString[1] })
   }
-  search=()=>{
+  search = () => {
     this.getVenueMoneyList({ start: this.state.dateString[0], end: this.state.dateString[1], page: this.state.page })
 
   }
 
   async getVenueMoneyList(data) {
     const res = await getVenueMoneyList(data, sessionStorage.getItem('venue_token'))
-    
+
     if (res.data.code !== 2000) {
       this.setState({ loading: false, hidden: false })
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
     } else {
-      console.log(res.data.data)
-      this.setState({ moneyList: res.data.data.data,sumMoney:res.data.data.sumMoney,whereMoney:res.data.data.whereMoney,other:parseInt(res.data.data.count),loading: false, hidden: true })
+      this.setState({ moneyList: res.data.data.data, sumMoney: res.data.data.sumMoney, whereMoney: res.data.data.whereMoney, other: parseInt(res.data.data.count), loading: false, hidden: true })
     }
 
-  }    
+  }
 
 
 
@@ -79,21 +77,37 @@ class myWallet extends React.Component {
     } else if (res.data.data.length < 1) {
       this.setState({ hiddenTwo: false })
     } else {
-      this.setState({ recordList: res.data.data,recordListOther:res.data.other,hiddenTwo: true })
+      this.setState({ recordList: res.data.data, recordListOther: res.data.other, hiddenTwo: true })
     }
 
   }
 
   componentDidMount() {
+    console.log(this.props)
+    if (this.props.location.query !== undefined) {
+      if (this.props.location.query.time === 1) {
+        let myDate = new Date();
+        let start = moment().startOf('day').subtract( myDate.getDate()-1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
+        let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
+        this.setState({ start: start, end: end })
+        this.getVenueMoneyList({ start: start, end: end, page: 1 })
+      } else if (this.props.location.query.time === 2) {
+        let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
+        let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
+        this.setState({ start: start, end: end })
+        this.getVenueMoneyList({ start: start, end: end, page: 1 })
+      }
+    } else if (this.props.location.query === undefined) {
+      let start = moment().startOf('day').subtract(6, 'days')._d.toLocaleDateString().replace(/\//g, "-")
+      let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
+      this.setState({ start: start, end: end })
+      this.getVenueMoneyList({ start: start, end: end, page: 1 })
+    }
 
-    let start = moment().startOf('day').subtract(6, 'days')._d.toLocaleDateString().replace(/\//g, "-")
-    let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-    this.setState({start: start, end: end})
-    this.getVenueMoneyList({ start: start, end: end, page: 1 })
   }
   record = () => {
     this.setState({ flag: 2 })
-    this.getVenueWithdrawalList({page:1})
+    this.getVenueWithdrawalList({ page: 1 })
   }
   returnN = () => {
     this.setState({ flag: 1 })
@@ -103,8 +117,8 @@ class myWallet extends React.Component {
     this.getVenueWithdrawalOneList()
   }
 
-  moneyFen=(page,pageSize)=>{
-    this.setState({page:page})
+  moneyFen = (page, pageSize) => {
+    this.setState({ page: page })
     this.getVenueMoneyList({ start: this.state.start, end: this.state.end, page: page })
   }
 
@@ -115,7 +129,7 @@ class myWallet extends React.Component {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
     } else {
-      this.setState({walletList:res.data.data})
+      this.setState({ walletList: res.data.data })
     }
   }
   async VenueWithdrawal(data) {
@@ -123,24 +137,24 @@ class myWallet extends React.Component {
     if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
-    }else if(res.data.code === 2000){
+    } else if (res.data.code === 2000) {
       this.setState({ flag: 1 })
       message.info('提现申请成功')
-    } else{
-     message.info(res.data.msg)
+    } else {
+      message.info(res.data.msg)
     }
   }
-  all=()=>{
-    this.setState({moneyYuan:this.state.walletList.money})
+  all = () => {
+    this.setState({ moneyYuan: this.state.walletList.money })
   }
-  allNow=e=>{
-    this.setState({moneyYuan:e.target.value})
+  allNow = e => {
+    this.setState({ moneyYuan: e.target.value })
   }
-  comfir=()=>{
-    this.VenueWithdrawal({money:this.state.moneyYuan})
+  comfir = () => {
+    this.VenueWithdrawal({ money: this.state.moneyYuan })
   }
-  recordListOther=(page,pageSize)=>{
-      this.getVenueWithdrawalList({page:page})
+  recordListOther = (page, pageSize) => {
+    this.getVenueWithdrawalList({ page: page })
   }
   render() {
     return (
@@ -150,8 +164,7 @@ class myWallet extends React.Component {
           <div className="header">
             <span className="select">选择时间</span>
             <RangePicker
-              defaultValue={[defaultSelectDate.startDate, defaultSelectDate.endDate]}
-              placeholder={['开始日期', '结束日期']}
+              placeholder={[this.state.start, this.state.end]}
               onChange={this.dateChange}
             />
             <span className="query" onClick={this.search}>查询</span>
@@ -178,7 +191,7 @@ class myWallet extends React.Component {
                   </Row>
                 ))
               }
-              <span style={{float:'right',marginRight:'110px',marginTop:'30px'}}>查询期间收入(元)：￥{this.state.whereMoney}</span>
+              <span style={{ float: 'right', marginRight: '110px', marginTop: '30px' }}>查询期间收入(元)：￥{this.state.whereMoney}</span>
               <Pagination defaultCurrent={1} className={this.state.moneyList.length < 1 ? 'myWalletNone' : 'fenye'} onChange={this.moneyFen} total={this.state.other} />
             </div>
             <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<Icon type="money-collect" theme="twoTone" twoToneColor="#F5A623" />} title="还没有人预约您的场馆！" />
@@ -202,12 +215,12 @@ class myWallet extends React.Component {
               this.state.recordList.map((item, i) => (
                 <Row key={i} >
                   <Col className="oneText" xs={{ span: 4 }}>{item.SubmitDate}</Col>
-                  <Col xs={{ span: 4, offset: 0 }}>{item.OpeningBank.slice(-4)}|{'*'+item.BankCard.slice(-4)}|{'*'+item.BankName.slice(-1)}</Col>
-                  <Col xs={{ span: 4, offset: 0 }}>{item.FinishedDate===null?'---':item.FinishedDate}</Col>
+                  <Col xs={{ span: 4, offset: 0 }}>{item.OpeningBank.slice(-4)}|{'*' + item.BankCard.slice(-4)}|{'*' + item.BankName.slice(-1)}</Col>
+                  <Col xs={{ span: 4, offset: 0 }}>{item.FinishedDate === null ? '---' : item.FinishedDate}</Col>
                   <Col xs={{ span: 4, offset: 0 }}>￥{item.RequestMoney}</Col>
-                  <Col xs={{ span: 4, offset: 0 }}>{item.status===1?'待处理':'已处理'}</Col>
+                  <Col xs={{ span: 4, offset: 0 }}>{item.status === 1 ? '待处理' : '已处理'}</Col>
                 </Row>
-              )) 
+              ))
             }
           </div>
           <Pagination className="fenye" defaultCurrent={1} onChange={this.recordListOther} total={this.state.recordListOther} />
@@ -216,7 +229,7 @@ class myWallet extends React.Component {
         <div className={this.state.flag === 3 ? 'withdrawal myWallet' : 'myWalletNone'}>
 
           <div className="xiange"></div>
-          <div className="header"> 
+          <div className="header">
             <span className="previousStep" onClick={this.returnN}>我的钱包 ></span><span>提现</span>
           </div>
           <div className="xiange"></div>
@@ -224,7 +237,7 @@ class myWallet extends React.Component {
             <span>钱包余额</span> <span>{this.state.walletList.money}</span><span>元</span>
           </div>
           <div className="home">
-            <span style={{marginLeft:-15}}>提现银行卡:</span><span className="textNext">{this.state.walletList.Bankaccount} {this.state.walletList.OpeningBank}</span>
+            <span style={{ marginLeft: -15 }}>提现银行卡:</span><span className="textNext">{this.state.walletList.Bankaccount} {this.state.walletList.OpeningBank}</span>
             <div className="listSon">
               <span>提现金额:</span>
               <Input className="input" onChange={this.allNow} value={this.state.moneyYuan} />元

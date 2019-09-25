@@ -51,7 +51,6 @@ class walletDetailsPh extends React.Component {
             <span>支出 ￥{this.state.other.expenditure}</span>
           </div>
         </div>
-
         {
           this.state.details.map((item, i) => (
             <div className="sonList" key={i}>
@@ -63,7 +62,6 @@ class walletDetailsPh extends React.Component {
         }
         <Pagination className={this.state.details.length===0?'hidden':'fenye'} defaultCurrent={1} onChange={this.current} total={this.state.other.maxcount} />
         <Result className={this.state.details.length===0?'':'hidden'} icon={<Icon type="money-collect" theme="twoTone"  twoToneColor="#F5A623" />} title="没有发布消息" />
-
       </div>
     );
   }

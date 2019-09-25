@@ -32,10 +32,11 @@ class information extends React.Component {
     Oneloading: false,
     other: '',
     visible: false,
-    sendCheck:1,
+    sendCheck: 1,
     textArea: '',
     publicUUID: '',
-    placeholder:'请输入预留场地号',
+    placeholder: '请输入预留场地号',
+    page:0,
   };
 
   async getVenueSport(data) {
@@ -58,6 +59,7 @@ class information extends React.Component {
   }
 
   current = (page, pageSize) => {
+    this.setState({page:page})
     this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status })
   }
 
@@ -106,8 +108,8 @@ class information extends React.Component {
         }
         this.setState({ Reservations: res.data.data, letterNum: letter, tabelFlag: false })
       }
-    }else if(res.data.code===4003){
-     this.setState({tabelFlag:true})
+    } else if (res.data.code === 4003) {
+      this.setState({ tabelFlag: true })
     } else if (res.data.code === 4005) {
       this.setState({ Reservations: [], letterNum: [], tabelFlag: true })
     } else if (res.data.code === 4001) {
@@ -131,12 +133,11 @@ class information extends React.Component {
     this.setState({ dianIndex: e.target.dataset.index, liNum: e.target.dataset.num })
   }
   dateChange = (data, datatring) => {
-    console.log(datatring)
     this.getVenueReservations({ sportid: this.state.liNum, date: datatring })
   }
   Oneloading = () => {
     this.setState({ Oneloading: true })
-    this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: this.state.status })
+    this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status })
   }
   handleCancel = () => {
     this.setState({ visible: false })
@@ -144,9 +145,9 @@ class information extends React.Component {
 
   async VenueSendMessage(data) {
     const res = await VenueSendMessage(data, sessionStorage.getItem('venue_token'))
-    if(res.data.code===2000){
+    if (res.data.code === 2000) {
       message.info(res.data.msg)
-       this.setState({visible:false})
+      this.setState({ visible: false })
     }
   }
 
@@ -154,20 +155,20 @@ class information extends React.Component {
     this.setState({ visible: true, publicUUID: e.currentTarget.dataset.uid })
   }
   sendCheck = e => {
-  
-    this.setState({sendCheck:e.target.value})
-    if(e.target.value==2){
-      this.setState({placeholder:'请说明未预留场地原因'})
-    }else{
-      this.setState({placeholder:'请输入预留场地号'})
+
+    this.setState({ sendCheck: e.target.value })
+    if (e.target.value == 2) {
+      this.setState({ placeholder: '请说明未预留场地原因' })
+    } else {
+      this.setState({ placeholder: '请输入预留场地号' })
     }
   }
   textArea = e => {
     this.setState({ textArea: e.target.value })
   }
-  sendingMessage=e=>{
-    let {publicUUID,sendCheck,textArea}=this.state
-    this.VenueSendMessage({type:sendCheck,publicUUID:publicUUID,content:textArea})
+  sendingMessage = e => {
+    let { publicUUID, sendCheck, textArea } = this.state
+    this.VenueSendMessage({ type: sendCheck, publicUUID: publicUUID, content: textArea })
   }
 
 
@@ -180,7 +181,7 @@ class information extends React.Component {
           {
             this.state.list.map((item, i) => (
               <Row key={i}>
-                <Col xs={{ span: 2 }}>{item.orderId}</Col>
+                <Col xs={{ span: 3 }}>{item.orderId}</Col>
                 <Col xs={{ span: 2 }}>{item.SportName}</Col>
                 <Col xs={{ span: 3 }}>{item.StartTime}</Col>
                 <Col xs={{ span: 3 }}>{item.FinishedTime}</Col>
@@ -190,7 +191,9 @@ class information extends React.Component {
                 <Col xs={{ span: 2 }}>{item.PublicStatus}</Col>
                 <Col xs={{ span: 2 }}>{item.SiteMoney}</Col>
                 <Col xs={{ span: 2 }}>{item.SiteMoneyStatus}</Col>
-                <Col xs={{ span: 2 }}><img className="img" data-uid={item.uuid} onClick={this.sending} src={require("../../assets/icon_pc_faNews.png")} alt="发送消息" /></Col>
+                <Col xs={{ span: 2 }}>
+                  <img className={item.PublicStatus==='匹配中'?'img':'circumstanceT'&&item.PublicStatus==='待出发'?'img':'circumstanceT'&&item.PublicStatus==='活动中'?'img':'circumstanceT'} data-uid={item.uuid} onClick={this.sending} src={require("../../assets/icon_pc_faNews.png")} alt="发送消息" />
+                  </Col>
               </Row>
             ))
           }
@@ -213,41 +216,42 @@ class information extends React.Component {
         <div className="xiange"></div>
         <div className={this.state.number === '1' ? 'listName' : 'listNameT'}>
           <Spin spinning={this.state.loading} style={{ minHeight: 600 }} size="large">
-           
-              <Row className="rowConten">
-                <Col xs={{ span: 2 }}>活动编号</Col>
-                <Col xs={{ span: 2 }}>
-                  <Select className="selectName" defaultValue="项目名称" style={{ width: 100 }} onChange={this.nameChang}>
-                    <Option value="1">羽毛球</Option>
-                    <Option value="2">乒乓球</Option>
-                    <Option value="3">台球</Option>
-                    <Option value="4">篮球</Option>
-                    <Option value="5">足球</Option>
-                    <Option value="6">排球</Option>
-                    <Option value="7">网球</Option>
-                    <Option value="8">高尔夫</Option>
-                  </Select>
-                </Col>
-                <Col xs={{ span: 3 }}>开始时间</Col>
-                <Col xs={{ span: 3 }}>结束时间</Col>
-                <Col xs={{ span: 1 }}>时长</Col>
-                <Col xs={{ span: 2 }}>应到人数</Col>
-                <Col xs={{ span: 2 }}>已签到人数</Col>
-                <Col xs={{ span: 2 }}>
-                  <Select className="selectName" defaultValue="活动状态" style={{ width: 100}} onChange={this.activityChang} >
-                    <Option value="1">匹配中</Option>
-                    <Option value="2">待出发</Option>
-                    <Option value="3">活动中</Option>
-                    <Option value="5">已完成</Option>
-                    <Option value="6">待评价</Option>
-                    <Option value="9">填写结果确认结束</Option>
-                  </Select>
-                </Col>
-                <Col xs={{ span: 2 }}>场地费金额</Col>
-                <Col xs={{ span: 2 }}>场地状态</Col>
-                <Col xs={{ span: 2 }}>发消息</Col>
-              </Row>
-              <div className={this.state.hidden === true ? '' : 'hidden'} >
+
+            <Row className="rowConten">
+              <Col xs={{ span: 3 }}>活动编号</Col>
+              <Col xs={{ span: 2 }}>
+                <Select className="selectName" defaultValue="项目名称" style={{ width: 100 }} onChange={this.nameChang}>
+                  <Option value="0">全部</Option>
+                  <Option value="1">羽毛球</Option>
+                  <Option value="2">乒乓球</Option>
+                  <Option value="3">台球</Option>
+                  <Option value="4">篮球</Option>
+                  <Option value="5">足球</Option>
+                  <Option value="6">排球</Option>
+                  <Option value="7">网球</Option>
+                  <Option value="8">高尔夫</Option>
+                </Select>
+              </Col>
+              <Col xs={{ span: 3 }}>开始时间</Col>
+              <Col xs={{ span: 3 }}>结束时间</Col>
+              <Col xs={{ span: 1 }}>时长</Col>
+              <Col xs={{ span: 2 }}>应到人数</Col>
+              <Col xs={{ span: 2 }}>已签到人数</Col>
+              <Col xs={{ span: 2 }}>
+                <Select className="selectName" defaultValue="活动状态" style={{ width: 100 }} onChange={this.activityChang} >
+                  <Option value="1">匹配中</Option>
+                  <Option value="2">待出发</Option>
+                  <Option value="3">活动中</Option>
+                  <Option value="5">已完成</Option>
+                  <Option value="6">待评价</Option>
+                  <Option value="4">填写结果确认结束</Option>
+                </Select>
+              </Col>
+              <Col xs={{ span: 2 }}>场地费金额</Col>
+              <Col xs={{ span: 2 }}>场地费状态</Col>
+              <Col xs={{ span: 2 }}>发消息</Col>
+            </Row>
+            <div className={this.state.hidden === true ? '' : 'hidden'} >
               {userMessage}
             </div>
             <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<Icon type="bank" theme="twoTone" twoToneColor="#F5A623" />} title="您还没有预约活动！" />,
@@ -261,17 +265,13 @@ class information extends React.Component {
             <div><span></span><span>不可选</span></div>
             <div><span></span><span>场馆取消</span></div>
             <div><span></span><span>已占用</span></div>
-
           </div>
-
           <ul className="activityNav">
             {
               this.state.activityNav.map((item, i) => (
                 <li key={i} onClick={this.clickLi} data-index={i} data-num={item.id} className={parseInt(this.state.dianIndex) === i ? 'borderLi' : ''}>{item.name}</li>
               ))
             }
-
-
           </ul>
           <ul className="rightNav">
             {/* <li>今天</li>
@@ -284,7 +284,6 @@ class information extends React.Component {
             <Table pagination={{ simple: false }} columns={this.state.letterNum} dataSource={this.state.Reservations} position='top' scroll={{ x: 2000 }} />
           </div>
           <Result className={this.state.tabelFlag === true ? '' : 'hidden'} icon={<Icon type="fund" theme="twoTone" twoToneColor="#F5A623" />} title="您没有预约情况！" />
-
         </div>
 
 
@@ -293,7 +292,7 @@ class information extends React.Component {
           visible={this.state.visible}
           onCancel={this.handleCancel}
         >
-          
+
           <Radio.Group onChange={this.sendCheck} value={this.state.sendCheck}>
             <Radio value={1}>预留场地</Radio>
             <Radio value={2}>未预留场地</Radio>
@@ -305,17 +304,6 @@ class information extends React.Component {
             <div onClick={this.sendingMessage}>发送</div>
           </div>
         </Modal>
-
-
-
-
-
-
-
-
-
-
-
       </div>
     );
   }

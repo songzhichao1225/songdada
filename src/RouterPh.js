@@ -17,6 +17,14 @@ import commentPh from './phone/commentPh/commentPh';
 import myWalletPh from './phone/myWalletPh/myWalletPh';
 import withdrawalPh from './phone/withdrawalPh/withdrawalPh';
 import walletDetailsPh from './phone/walletDetailsPh/walletDetailsPh';
+import recordPh from './phone/recordPh/recordPh';
+import sittingPh from './phone/sittingPh/sittingPh';
+import temporaryPh from './phone/temporaryPh/temporaryPh';
+import untiePhonePh from './phone/untiePhonePh/untiePhonePh';
+import resetPasswordPh from './phone/resetPasswordPh/resetPasswordPh';
+import inforSitePh from './phone/inforSitePh/inforSitePh';
+
+
 
 const BasicRoute = () => (
     <HashRouter>
@@ -37,6 +45,13 @@ const BasicRoute = () => (
             <Route exact path="/homePh/myWalletPh" component={myWalletPh}/>
             <Route exact path="/homePh/withdrawalPh" component={withdrawalPh}/>
             <Route exact path="/homePh/walletDetailsPh" component={walletDetailsPh}/>
+            <Route exact path="/homePh/recordPh" component={recordPh}/>
+            <Route exact path="/homePh/sittingPh" component={sittingPh}/>
+            <Route exact path="/homePh/temporaryPh" component={temporaryPh}/>
+            <Route exact path="/homePh/untiePhonePh" component={untiePhonePh}/>
+            <Route exact path="/homePh/resetPasswordPh" component={resetPasswordPh}/>
+            <Route exact path="/homePh/inforSitePh" component={inforSitePh}/>
+            
             <Route  path="/homePh" component={homePh}/>
          
             

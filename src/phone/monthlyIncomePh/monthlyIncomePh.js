@@ -14,7 +14,6 @@ const endDate=endTwo[2]+'-'+endTwo[0]+'-'+endTwo[1]
 let startT = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
 let startTwoT=startT.split('-')
 const startDateT=startTwoT[2]+'-'+startTwoT[0]+'-'+startTwoT[1]
-
 class monthlyIncomePh extends React.Component {
 
   state = {
@@ -36,10 +35,8 @@ class monthlyIncomePh extends React.Component {
 
 
     if(res.data.data.data!==undefined){
-      console.log('有数据')
       this.setState({  moneyList: res.data.data.data,flag:false })
     }else{
-      console.log('无数据')
       this.setState({flag:true})
     }
       
@@ -53,7 +50,6 @@ class monthlyIncomePh extends React.Component {
     if(this.props.location.query===undefined){
        this.props.history.goBack()
     }else{
-
       if(this.props.location.query.income==='month'){
         let start = moment().startOf('day').subtract(1, 'months')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")

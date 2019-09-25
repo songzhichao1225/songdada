@@ -212,8 +212,8 @@ class perfect extends React.Component {
       address:handleAddress,
       filesURL:filesURLarr===null?'':filesURLarr.join('|'),
       firstURL:imageRes,
-      sport:sportId===''?[]:sportId.join('|'),
-      facilities:facilitiesId===''?[]:facilitiesId.join('|'),
+      sport:sportId===''?[]:sportId.join(','),
+      facilities:facilitiesId===''?[]:facilitiesId.join(','),
       siteInfo:this.state.onChangeText,
       position:this.props.location.query.adddress
     }
@@ -343,6 +343,7 @@ class perfect extends React.Component {
                     fileList={fileList}
                     onPreview={this.handlePreview}
                     onChange={this.handleChangeT}
+                    accept=".jpg, .jpeg, .png"
                   >
                     {fileList.length >= 8 ? null : uploadButtonT}
                   </Upload>

@@ -81,7 +81,7 @@ class homePh extends React.Component {
           </div>
           </div>
         </div>
-        <Route path="/homePh/orderPh" component={orderPh} />
+        <Route path="/homePh/orderPh" component={orderPh}/>
         <Route path="/homePh/sitePh" component={sitePh} />
         <Route path="/homePh/newsPh" component={newsPh} />
         <Route path="/homePh/minePh" component={minePh} />

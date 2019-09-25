@@ -1,7 +1,7 @@
 import React from 'react';
 import './orderPh.css';
-import { Row, Col, message, Tooltip, Pagination, Modal, Radio, Input, Drawer } from 'antd';
-import { getReservationActivitieslist, VenueSendMessage,getVenueReservations } from '../../api';
+import { Row, Col, message, Tooltip, Pagination, Modal, Radio, Input, Drawer, DatePicker,Result,Icon } from 'antd';
+import { getReservationActivitieslist, VenueSendMessage, getVenueReservations } from '../../api';
 const { TextArea } = Input
 class orderPh extends React.Component {
 
@@ -15,39 +15,60 @@ class orderPh extends React.Component {
     textArea: '',
     publicUUID: '',
     Drawervisible: false,
-    lookList:[],
-    macNum:[],
+    lookList: [],
+    macNum: [],
+    sportid: 1,
+    sportIdVal:0,
+    statusIdVal:0,
+    flag:false,
+    sport: [
+      { name: '全部', id: 0 },
+      { name: '羽毛球', id: 1 },
+      { name: '乒乓球', id: 2 },
+      { name: '台球', id: 3 },
+      { name: '篮球', id: 4 },
+      { name: '足球', id: 5 },
+      { name: '排球', id: 6 },
+      { name: '网球', id: 7 },
+      { name: '高尔夫', id: 8 }
+    ],
+    status: [
+      { name: '全部', id: 0 },
+      { name: '匹配中', id: 1 },
+      { name: '待出发', id: 2 },
+      { name: '活动中', id: 3 },
+      { name: '待确认解释/待填写结果', id: 4 },
+      { name: '已完成', id: 5 },
+      { name: '待评价', id: 6 },
+    ]
   };
+
+
 
   async getVenueReservations(data) {
     const res = await getVenueReservations(data, sessionStorage.getItem('venue_token'))
-    console.log(res.data.data[0].c)
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
     } else if (res.data.code === 2000) {
-      this.setState({ lookList: res.data.data,macNum:res.data.data[0].c})
+      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c })
     }
-    
   }
-
   async getReservationActivitieslist(data) {
     const res = await getReservationActivitieslist(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
     } else if (res.data.code === 2000) {
-      this.setState({ activeSon: res.data.data.data, total: res.data.data.count })
+      this.setState({ activeSon: res.data.data.data, total: res.data.data.count,flag:false })
+    }else if(res.data.code===4002){
+        this.setState({flag:true})
     }
   }
   componentDidMount() {
     this.getReservationActivitieslist({ page: 1, sport: '', status: '', publicuid: '' })
-    this.getVenueReservations({sportid:1,date:'2019-09-04'})
+    this.getVenueReservations({ sportid: 1, date: '2019-09-04' })
   }
-
-
-
-
   activityList = () => {
     this.setState({ activityList: true })
   }
@@ -63,10 +84,8 @@ class orderPh extends React.Component {
 
   }
   current = (page, pageSize) => {
-    this.getReservationActivitieslist({ page: page, sport: '', status: '', publicuid: '' })
+    this.getReservationActivitieslist({ page: page, sport:this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '' })
   }
-
-
 
   showModal = (e) => {
     this.setState({
@@ -91,7 +110,6 @@ class orderPh extends React.Component {
   sendCheck = e => {
     this.setState({ sendCheck: e.target.value })
   }
-
   textArea = e => {
     this.setState({ textArea: e.target.value })
   }
@@ -122,6 +140,23 @@ class orderPh extends React.Component {
     })
   };
 
+  dateChange = (date, dataString) => {
+    this.getVenueReservations({ date: dataString, sportid: this.state.sportid })
+  }
+  sport=e=>{
+
+    this.setState({sportIdVal:e.currentTarget.dataset.id})
+  }
+
+  status=e=>{
+    this.setState({statusIdVal:e.currentTarget.dataset.id})
+  }
+  submitVal=()=>{
+    this.getReservationActivitieslist({ page: 1, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '' })
+    this.setState({
+      Drawervisible: false,
+    })
+  }
 
 
   render() {
@@ -137,6 +172,7 @@ class orderPh extends React.Component {
             <Col xs={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 1 }}>时间</Col>
             <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 1 }}>状态</Col>
           </Row>
+          <div style={this.state.flag===false?{display:'block'}:{display:'none'}}>
           {
             this.state.activeSon.map((item, i) => (
               <Row key={i} className="list" data-index={i} onClick={this.select}>
@@ -146,7 +182,7 @@ class orderPh extends React.Component {
 
                 <div className={this.state.index === '' + i + '' ? 'select' : 'hidden'}>
                   <Row>
-                    <Col xs={{ span: 6, offset: 1 }} style={{ textAlign: 'left' }} lg={{ span: 6, offset: 2 }}><span style={{ color: '#9B9B9B' }}>金额</span>  {item.SiteMoney}元</Col>
+                    <Col xs={{ span: 6, offset: 1 }} style={{textAlign: 'left'}} lg={{ span: 6, offset: 2 }}><span style={{ color: '#9B9B9B' }}>金额</span>  {item.SiteMoney}元</Col>
                     <Col xs={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 2 }}><span style={{ color: '#9B9B9B' }}>支付状态</span>  {item.SiteMoneyStatus}</Col>
                   </Row>
                   <Row >
@@ -154,20 +190,19 @@ class orderPh extends React.Component {
                     <Col xs={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 2 }}><span style={{ color: '#9B9B9B' }}>已到人数</span>  {item.TrueTo}人</Col>
                   </Row>
                   <Row >
-                    <Col xs={{ span: 6, offset: 1 }} style={{ textAlign: 'left' }} lg={{ span: 6, offset: 2 }}><span style={{ color: '#9B9B9B' }}>  时长</span>  {item.PlayTime}小时</Col>
+                    <Col xs={{ span: 6, offset: 1 }} style={{textAlign: 'left' }} lg={{ span: 6, offset: 2 }}><span style={{ color: '#9B9B9B' }}>  时长</span>  {item.PlayTime}小时</Col>
                     <Col xs={{ span: 9, offset: 1 }} lg={{ span: 6, offset: 3 }}></Col>
                     <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 2 }}><img onClick={this.showModal} data-uid={item.uuid} src={require('../../assets/sendingBtn.png')} alt="发消息" className="sending" /></Col>
                   </Row>
                 </div>
               </Row>
-              
             ))
           }
-
+          </div>
+        
+         <Result className={this.state.flag===false ? 'hidden' : ''} icon={<Icon type="bank" theme="twoTone" twoToneColor="#F5A623" />} title="没有活动列表！" />
           <div className="screen" onClick={this.showDrawer}><span>筛选</span><img src={require('../../assets/shaixuan.png')} alt="筛选" /></div>
-          <Pagination className="fenye" defaultCurrent={1} onChange={this.current} total={this.state.total} />
-
-
+          <Pagination className={this.state.flag===false? 'fenye' : 'hidden'} defaultCurrent={1} onChange={this.current} total={this.state.total} />
           <Modal
             title="发消息"
             visible={this.state.visible}
@@ -194,38 +229,26 @@ class orderPh extends React.Component {
             onClose={this.onClose}
             visible={this.state.Drawervisible}
           >
-
             <span>项目名称</span>
             <div className="drawerBoss">
-              <div>羽毛球</div>
-              <div>足球</div>
-              <div>篮球</div>
-              <div>乒乓球</div>
-              <div>台球</div>
-              <div>网球</div>
-              <div>排球</div>
-              <div>高尔夫球</div>
+              {
+                this.state.sport.map((item, i) => (
+                  <div key={i} onClick={this.sport} data-index={i} data-id={item.id} style={parseInt(this.state.sportIdVal)===i?{background:'#D85D27',color:'#fff'}:{}}>{item.name}</div>
+                )) 
+              }
             </div>
             <span style={{ clear: 'both', display: 'block', marginTop: '2rem' }}>活动状态</span>
             <div className="drawerBossTwo">
-              <div>匹配中</div>
-              <div>待出发</div>
-              <div>活动中</div>
-              <div>待评价</div>
-              <div>已完成</div>
-              <div>待确认结束/待填写结果</div>
-
-            </div>
-
-            <span style={{ clear: 'both', display: 'block', marginTop: '2rem' }}>支付状态</span>
-            <div className="drawerBossTwo">
-              <div>已支付</div>
-              <div>未支付</div>
-            </div>
+              {
+                this.state.status.map((item, i) => (
+                  <div key={i} data-id={item.id} onClick={this.status} style={parseInt(this.state.statusIdVal)===i?{background:'#D85D27',color:'#fff'}:{}}>{item.name}</div>
+                ))
+              }
+            </div>       
 
             <div className="drawerBtn">
               <div onClick={this.onClose}>取消</div>
-              <div>确定</div>
+              <div onClick={this.submitVal}>确定</div>
             </div>
           </Drawer>
         </div>
@@ -244,47 +267,30 @@ class orderPh extends React.Component {
             <div>排球</div>
             <div>高尔夫球</div>
           </div>
-       <div className="lookList">
-          <div className="headerSon" style={{width:''+(this.state.macNum.length+1)*3.25+'rem'}}>
-            <span></span>
-          {
-            this.state.macNum.map((item,i)=>(
-              <span key={i}>{i+1}</span> 
-            ))
-          }
-
-          {
-            this.state.lookList.map((item,i)=>(
-              <div key={i} className="sonList">
-                <span>{item.a}</span>
-                {
-                  this.state.lookList[i].c.map((item,i)=>(
-                    <span key={i} style={item.type===1?{background:'#6FB2FF'}:{}&&item.type===2?{background:'#E9E9E9'}:{}&&item.type===3?{background:'#F5A623'}:{}&&item.type===4?{background:'red'}:{}}></span>
-                  ))
-                }
-              </div>
-            ))
-          }
+          <div className="lookList">
+            <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 3.25 + 'rem' }}>
+              <span></span>
+              {
+                this.state.macNum.map((item, i) => (
+                  <span key={i}>{i + 1}</span>
+                ))
+              }
+              {
+                this.state.lookList.map((item, i) => (
+                  <div key={i} className="sonList">
+                    <span>{item.a}</span>
+                    {
+                      this.state.lookList[i].c.map((item, i) => (
+                        <span key={i} style={item.type === 1 ? { background: '#6FB2FF' } : {} && item.type === 2 ? { background: '#E9E9E9' } : {} && item.type === 3 ? { background: '#F5A623' } : {} && item.type === 4 ? { background: 'red' } : {}}></span>
+                      ))
+                    }
+                  </div>
+                ))
+              }
+            </div>
           </div>
-          
-         
-
-
-         
-
-
-
-
-       </div>
-
-
-
-
-
+          <DatePicker className="date" placeholder="选择日期" onChange={this.dateChange} />
         </div>
-
-
-
       </div>
     )
   }

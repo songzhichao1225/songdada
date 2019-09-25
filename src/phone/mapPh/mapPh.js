@@ -34,7 +34,7 @@ class mapPh extends React.Component {
           that.setState({ mapList: results.Qq })
         }
       }
-    }
+    } 
     var local = new BMap.LocalSearch(map, option);
     local.search(data);
     console.log(option)
@@ -69,7 +69,7 @@ class mapPh extends React.Component {
               list
             }
           </ul>
-        </div>
+        </div>   
       </div>
     );
   }

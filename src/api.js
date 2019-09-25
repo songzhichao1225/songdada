@@ -199,6 +199,12 @@ export function getVenueIssecondaudit(data,headers){    // 获取该场馆二级
 }
 
 
+export function getVenueQualificationInformation(data,headers){    // 获取场馆资质信息
+    return axios.post('/api/getVenueQualificationInformation',data, {headers: {'token': headers}})
+}
+
+
+
 
 
 

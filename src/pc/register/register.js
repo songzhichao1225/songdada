@@ -93,7 +93,7 @@ class register extends React.Component {
     const res = await _code(data)
     if(res.data.code===4007){
      message.error(res.data.msg)
-    }else{
+    }else if(res.data.code===2000){
       let num = 60
       const timer = setInterval(() => {
         this.setState({ textT: num-- })
@@ -102,6 +102,8 @@ class register extends React.Component {
           this.setState({ textT: '获取验证码' })
         }
       }, 1000)
+    }else{
+      message.error(res.data.msg)
     }
   }
 
@@ -114,10 +116,6 @@ class register extends React.Component {
   }
 
   showModal = e => {
-   
-   
-    
-    
     if (this.state.name === '') {
       message.error('请输入用户名')
     }else if (this.state.code === '') {

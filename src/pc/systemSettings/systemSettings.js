@@ -448,9 +448,9 @@ class systemSettings extends React.Component {
                   onOk={this.dateSelect}
                   showTime={{
                     hideDisabledOptions: true,
-                    defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
+                    defaultValue: [moment('00:00', 'HH:mm'), moment('00:00', 'HH:mm')],
                   }}
-                  format="YYYY-MM-DD HH:mm:ss"
+                  format="YYYY-MM-DD HH:mm"
                 />
               </LocaleProvider>
             </div>
