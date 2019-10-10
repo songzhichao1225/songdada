@@ -155,5 +155,7 @@ padding-bottom: 2rem;
 	overflow: hidden;
 	display: flex;
 	justify-content: center;
-   
   }
+ .commentPhbtn .hidden{
+	 display: none;
+ }

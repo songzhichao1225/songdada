@@ -79,7 +79,6 @@
 .modelList{
     overflow: hidden;
     position: relative;
-    height: 26px;
     margin-top: 15px;
 }
 .modelList>span{

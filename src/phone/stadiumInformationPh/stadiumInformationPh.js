@@ -1,7 +1,7 @@
 import React from 'react';
 import './stadiumInformationPh.css';
-import { Input, Cascader, Upload, Checkbox, Icon,Modal,Button } from 'antd';
-import { } from '../../api';
+import { Input, Cascader, Upload, Checkbox, Icon,Modal,Button, message } from 'antd';
+import {PerfectingVenueInformation } from '../../api';
 let arr = require('./address.json');
 const { TextArea } = Input;
 
@@ -52,8 +52,12 @@ class stadiumInformationPh extends React.Component {
     addressArr: '',//选择省市区名称
     addressXian: '',
     previewVisible:false,
-    fileList: [
-    ],
+    fileList: [],
+    imageRes:'',
+    stadiumName:'',//场馆名称
+    onChangeRun:'',//运动项目
+    onChangeCheck:'',//设施
+    textKo:'',//介绍场馆
   };
 
 
@@ -68,7 +72,6 @@ class stadiumInformationPh extends React.Component {
         lng: this.props.location.query.lng
       })
     }
-
   }
 
 
@@ -86,7 +89,12 @@ class stadiumInformationPh extends React.Component {
 
 
   mapPh = () => {
-    this.props.history.push('/mapPh')
+    if(sessionStorage.getItem('addressId')!==null){
+      this.props.history.push('/mapPh')
+    }else{
+      message.error('请选择省市区')
+    }
+    
   }
   xaingxi = e => {
     this.setState({ addressXian: e.target.value })
@@ -98,7 +106,6 @@ class stadiumInformationPh extends React.Component {
       return;
     }
     if (info.file.status === 'done') {
-      // Get this url from response in real world.
       console.log(info.file.response)
       this.setState({ imageRes: info.file.response.data.baseURL + info.file.response.data.filesURL })
       getBase64(info.file.originFileObj, imageUrl =>
@@ -125,9 +132,57 @@ class stadiumInformationPh extends React.Component {
 
    handleCancel = () => this.setState({ previewVisible: false });
 
+   async PerfectingVenueInformation(data) {
+    const res = await PerfectingVenueInformation(data)
+    if(res.data.code===2000){
+      message.info(res.data.msg)
+      sessionStorage.setItem('siteId',res.data.data.siteUUID)
+      this.props.history.push('/qualificationPh')
+    }else{
+      message.error(res.data.msg)
+      this.props.history.push('/login')
+    }
+  }
+  stadiumName=e=>{
+    this.setState({stadiumName:e.target.value})
+  }
+  onChangeRun=e=>{
+    this.setState({onChangeRun:e})
+  }
+  onChangeCheck=e=>{
+    this.setState({onChangeCheck:e})
+  }
+  textKo=e=>{
+    this.setState({textKo:e.target.value})
+  }
 
    next=()=>{
-    this.props.history.push('/qualification')
+     let {stadiumName,lat,lng,addressXian,address,fileList,imageRes,onChangeRun,onChangeCheck,textKo}=this.state
+     let arrimg=[]
+     for(let i in fileList){
+      arrimg.push(fileList[i].response.data.baseURL+ fileList[i].response.data.filesURL)
+     }
+     if(arrimg.length<2){
+      message.error('最少上传两张场地照')
+     }else{
+      let data={
+        venueloginuuid:sessionStorage.getItem('uuid'),
+        province:sessionStorage.getItem('province'),
+        city:sessionStorage.getItem('city'),
+        area:sessionStorage.getItem('county'),
+        venuename:stadiumName,
+        lat:lat,
+        lng:lng,
+        address:address,
+        filesURL:arrimg.join('|'),
+        firstURL:imageRes,
+        sport:onChangeRun.join('|'), 
+        facilities:onChangeCheck.join('|'),
+        siteInfo:textKo,
+        position:addressXian,
+       }
+      this.PerfectingVenueInformation(data)
+     }
    }
 
 
@@ -151,9 +206,11 @@ class stadiumInformationPh extends React.Component {
 
     return (
       <div className="stadiumInformationPh">
+        <div className="headTitle">新用户注册/完善信息</div>
         <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span style={{ color: '#D85D27' }}>完善信息 ></span> <span>审核  ></span> <span>成功  ></span> </div>
 
         <div className="headTtitle">完善场馆基本信息</div>
+        <div style={{height:'0.63rem',background:'rgba(243,243,243,1)'}}></div>
         <div className="boss">
           <div className="input">
             <span>选择地区</span>
@@ -162,14 +219,11 @@ class stadiumInformationPh extends React.Component {
               options={arr}
               onChange={this.selectChange}
               placeholder="选择省市区"
-              value={sessionStorage.getItem('addressId') === null ? [110000, 110100, 110101] : [parseInt(sessionStorage.getItem('addressId').split(',')[0]), parseInt(sessionStorage.getItem('addressId').split(',')[1]), parseInt(sessionStorage.getItem('addressId').split(',')[2])]}
+              value={sessionStorage.getItem('addressId') === null ? '' : [parseInt(sessionStorage.getItem('addressId').split(',')[0]), parseInt(sessionStorage.getItem('addressId').split(',')[1]), parseInt(sessionStorage.getItem('addressId').split(',')[2])]}
             />
           </div>
 
-          <div className="input">
-            <span>场馆名称</span>
-            <Input className="select" placeholder="请输入" />
-          </div>
+         
 
           <div className="input">
             <span>场馆位置</span>
@@ -180,6 +234,11 @@ class stadiumInformationPh extends React.Component {
           <div className="input">
             <span>详细地址</span>
             <Input className="select" value={this.state.addressXian} onChange={this.xaingxi} placeholder="请输入" />
+          </div>
+
+          <div className="input">
+            <span>场馆名称</span>
+            <Input className="select" placeholder="请输入" onChange={this.stadiumName}/>
           </div>
           <div className="input">
             <span>门脸照</span>
@@ -206,17 +265,16 @@ class stadiumInformationPh extends React.Component {
               onPreview={this.handlePreview}
               onChange={this.handleChangeT}
             >
-              {fileList.length >= 8&&fileList.length <= 3 ? null : uploadButtonT}
+              {fileList.length <= 8&&fileList.length >= 3 ? null : uploadButtonT}
             </Upload>
             <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
               <img alt="example" style={{ width: '100%' }} src={previewImage} />
             </Modal>
           </div>
-           
-
+          
           <div className="input">
             <span>运动项目</span>
-            <Checkbox.Group options={plainOptions} onChange={this.onChangeCheck} /><br /><span className="kong"></span>
+            <Checkbox.Group options={plainOptions} onChange={this.onChangeRun} /><br /><span className="kong"></span>
           </div>
 
           <div className="input">
@@ -226,7 +284,7 @@ class stadiumInformationPh extends React.Component {
 
           <div className="input">
             <span>场地介绍</span>
-            <TextArea rows={3} maxLength={200} placeholder="请输入场地介绍，如场地规模、特色等。"/>
+            <TextArea rows={3} maxLength={200} onChange={this.textKo} placeholder="请输入场地介绍，如场地规模、特色等。"/>
           </div>
            <Button className="btn" onClick={this.next}>下一步</Button>
 

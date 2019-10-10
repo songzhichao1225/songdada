@@ -101,11 +101,19 @@
   font-weight:500;
   color:rgba(255,255,255,1);
 }
-.homePagePh>div>.content>img{
+.homePagePh>div>.content>.img{
   display: block;
   float: left;
+  width: 1rem;
   height: 1rem;
   margin-top: 1rem;
+  background-image: url(../../assets/phonexingzi.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.homePagePh>div>.content>.img>img{
+  display: block;
+  height: 100%;
 }
 .none{
   display: none;

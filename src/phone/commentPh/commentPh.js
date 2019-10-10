@@ -2,9 +2,9 @@ import React from 'react';
 import './commentPh.css';
 import 'antd/dist/antd.css';
 import { getCommentList, getOverallScore,VenueCommentReply } from '../../api';
-import { message,Modal,Input,Pagination  } from 'antd';
+import { message,Pagination,Result,Icon  } from 'antd';
 
-const { TextArea } = Input;
+
 class commentPh extends React.Component {
 
   state = {
@@ -24,13 +24,10 @@ class commentPh extends React.Component {
     } else {
       this.setState({ getCommentList: res.data.data })
     }
-
-
   }
   async getOverallScore(data) {
     const res = await getOverallScore(data, sessionStorage.getItem('venue_token'))
     this.setState({ score: res.data.data, scoreSon: res.data.data.score })
-
   }
 
   componentDidMount() {
@@ -75,8 +72,6 @@ class commentPh extends React.Component {
     }else{
       message.error(res.data.msg)
     }
-    
-
   }
 
   pageChang=(page,pageSize)=>{
@@ -166,7 +161,8 @@ class commentPh extends React.Component {
           </Modal> */}
 
        
-          <Pagination className="fenye" current={parseInt(this.state.current)}  pageSize={10} total={this.state.getCommentList.length} onChange={this.pageChang} />
+          <Pagination className="fenye" size='small' style={this.state.getCommentList.length>0?{}:{display:'none'}} current={parseInt(this.state.current)}  pageSize={10} total={this.state.getCommentList.length} onChange={this.pageChang} />
+          <Result className={this.state.getCommentList.length === 0 ? '' : 'hidden'} icon={<Icon type="database" theme="twoTone" twoToneColor="#F5A623" />} title="没有场馆评论" />
         </div>
 
       </div>

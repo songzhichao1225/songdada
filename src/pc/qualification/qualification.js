@@ -1,16 +1,14 @@
 import React from 'react';
 import './qualification.css';
 import 'antd/dist/antd.css';
-import {getIsStatus,VenueQualifications} from '../../api';
-import { Input, Radio, Button, Upload, message, Icon } from 'antd';
-
+import { getIsStatus, VenueQualifications, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity,getVenueOpenBankList } from '../../api';
+import { Input, Radio, Button, Upload, message, Icon, Select,Tooltip } from 'antd';
+const { Option } = Select;
 function getBase64(img, callback) {
   const reader = new FileReader();
   reader.addEventListener('load', () => callback(reader.result));
   reader.readAsDataURL(img);
 }
-
-
 
 function beforeUpload(file) {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -57,28 +55,94 @@ class qualification extends React.Component {
     handleCardId: '',//身份证号
     handlePhone: '',//法人手机号
     handleBankNum: '',//银行卡号
-    Radiovalue:'',//选择个人 还是公司
-    openingLine:'',//开户行
-    siteUUID:'',//场馆Id
-    imageRes:'',//营业执照路径
-    legalBaseURL:'',//公共路径
-    imageReT:'',//身份证正面
-    imageReST:'',//反面
+    Radiovalue: '',//选择个人 还是公司
+    openingLine: '',//开户行
+    siteUUID: '',//场馆Id
+    imageRes: '',//营业执照路径
+    legalBaseURL: '',//公共路径
+    imageReT: '',//身份证正面
+    imageReST: '',//反面
+    flag: true,
+    flagTwo: true,
+    flagThree: true,
+    type: [],//银行类型
+    backProvince: [],//省
+    backCity: [],//市
+    bank_id: '',//类型Id
+    province_id: '',//省Id
+    city_id: '',//市id
+    backList:[],//获取的银行
   };
 
   async getIsStatus(data) {
-    const res = await getIsStatus(data,sessionStorage.getItem('venue_token'))
-     if(res.data.code===4001){
+    const res = await getIsStatus(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
     }
-    this.setState({siteUUID:res.data.data.siteUid})
+    this.setState({ siteUUID: res.data.data.siteUid })
   }
-  componentDidMount (){
-    
-  this.getIsStatus()
+
+
+  async getVenueOpenBank(data) {
+    const res = await getVenueOpenBank(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ type: res.data.data, flag: false })
+    }
+  }
+
+  async getVenueOpenBankProvince(data) {
+    const res = await getVenueOpenBankProvince(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ backProvince: res.data.data, flagTwo: false })
+    }
+  }
+
+
+
+  async getVenueOpenBankCity(data) {
+    const res = await getVenueOpenBankCity(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ backCity: res.data.data, flagThree: false })
+    }
+  }
+
+  
+
+  async getVenueOpenBankList(data) {
+    const res = await getVenueOpenBankList(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ backList: res.data.data, flagThree: false })
+    }
+  }
+
+  componentDidMount() {
+    this.getVenueOpenBank()
+    this.getVenueOpenBankProvince()
+    this.getIsStatus()
 
   }
+
+  provinceChange = e => {
+    
+    this.setState({ province_id: e })
+    this.getVenueOpenBankCity({ province_id: e })
+
+  }
+
+  typeChange = e => {
+    this.setState({ bank_id: e })
+  }
+ 
+  cityChange = e => {
+    this.setState({ city_id: e })
+  }
+
+  handleSearch=e=>{
+       this.getVenueOpenBankList({bank_id:this.state.bank_id,province_id:this.state.province_id,city_id:this.state.city_id,search_name:e})
+  }
+
+
 
   handleName = e => {
     this.setState({ handleName: e.target.value })
@@ -92,8 +156,8 @@ class qualification extends React.Component {
   handleBankNum = e => {
     this.setState({ handleBankNum: e.target.value })
   }
-  openingLine=e=>{
-    this.setState({ openingLine: e.target.value })
+  openingLine = e => {
+    this.setState({ openingLine: e})
   }
 
 
@@ -122,7 +186,7 @@ class qualification extends React.Component {
     if (info.file.status === 'done') {
       // Get this url from response in real world.
       console.log(info.file.response)
-      this.setState({ imageReT:info.file.response.data.filesURL,legalBaseURL:info.file.response.data.baseURL  })
+      this.setState({ imageReT: info.file.response.data.filesURL, legalBaseURL: info.file.response.data.baseURL })
       getBase64(info.file.originFileObj, imageUrlT =>
         this.setState({
           imageUrlT,
@@ -150,43 +214,43 @@ class qualification extends React.Component {
     }
   };
 
-  
 
 
 
-  onChangeRadio=e=>{
+
+  onChangeRadio = e => {
     this.setState({
       Radiovalue: e.target.value,
     });
-   
+
   }
-  
+
   async VenueQualifications(data) {
     const res = await VenueQualifications(data)
-    if(res.data.code!==2000){
-  message.error(res.data.msg)
-    }else{
+    if (res.data.code !== 2000) {
+      message.error(res.data.msg)
+    } else {
       this.props.history.push('/statusAudits')
     }
-    
+
   }
-  submit=()=>{
-   let { handleName,handleCardId,handlePhone,handleBankNum,Radiovalue,openingLine,siteUUID,imageRes,legalBaseURL,imageReT,imageReST,}=this.state
-     
-    let data={
-      siteUUID:siteUUID,
-      lisenceURL:imageRes,
-      legalname:handleName,
-      legalcard:handleCardId,
-      legalphone:handlePhone,
-      legalBaseURL:legalBaseURL,
-      legalFilesURL:imageReT+'|'+imageReST,
-      Settlement:Radiovalue,
-      Bankaccount:handleBankNum,
-      OpeningBank:openingLine,
+  submit = () => {
+    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageReT, imageReST, } = this.state
+
+    let data = {
+      siteUUID: siteUUID,
+      lisenceURL: imageRes,
+      legalname: handleName,
+      legalcard: handleCardId,
+      legalphone: handlePhone,
+      legalBaseURL: legalBaseURL,
+      legalFilesURL: imageReT + '|' + imageReST,
+      Settlement: Radiovalue,
+      Bankaccount: handleBankNum,
+      OpeningBank: openingLine,
     }
 
-  this.VenueQualifications(data)
+    this.VenueQualifications(data)
   }
 
 
@@ -301,13 +365,54 @@ class qualification extends React.Component {
                 <Input className="nameINput" maxLength={19} onChange={this.handleBankNum} placeholder="请输入银行卡号" />
               </div>
 
+              <div className="name">
+                <span className="symbol">*</span><span className="boTitle">开户行所在地</span>
+                <Select placeholder="银行类型" style={{ width: 120, height: '35px', marginLeft: '27px' }} loading={this.state.flag} onChange={this.typeChange}>
+                  {
+                    this.state.type.map((item, i) => (
+                      <Option key={i} value={item.bank_id}>{item.bank_name}</Option>
+                    ))
+                  }
+                </Select>
+                <Select placeholder="所在省" style={{ width: 120, height: '35px', marginLeft: '27px' }} loading={this.state.flagTwo} onChange={this.provinceChange}>
+                  {
+                    this.state.backProvince.map((item, i) => (
+                      <Option key={i} value={item.province_id}>{item.province}</Option>
+                    ))
+                  }
+                </Select>
+                <Select placeholder="所在市" style={{ width: 120, height: '35px', marginLeft: '27px' }} loading={this.state.flagThree} onChange={this.cityChange}>
+                  {
+                    this.state.backCity.map((item, i) => (
+                      <Option key={i} value={item.city_id}>{item.city}</Option>
+                    ))
+                  }
+                </Select>
+              </div>
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">开户行</span>
-                <Input className="nameINput opening " onChange={this.openingLine} placeholder="请输入银行所在支行" />
+                <Select
+                  showSearch
+                  style={{ width: 273, height: '36px', marginLeft: '75px' }}
+                  onSearch={this.handleSearch}
+                  onChange={this.openingLine}
+                  defaultActiveFirstOption={false}
+                  showArrow={false}
+                  notFoundContent={null}
+                >
+                  {
+                    this.state.backList.map((item,i)=>(
+                      <Option key={i} value={item.sub_branch_name} alt={item.sub_branch_name}>
+                        <Tooltip title={item.sub_branch_name}>
+                      <span>{item.sub_branch_name}</span>
+                    </Tooltip></Option>
+                    ))
+                  } 
+                </Select>
+              
               </div>
               <div className="prompt">请注意<span>*</span>为必填项</div>
-
               <Button className="next" onClick={this.submit}>提交</Button>
             </div>
           </div>

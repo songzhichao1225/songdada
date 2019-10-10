@@ -25,19 +25,13 @@ class newsPh extends React.Component {
 
   async getVenueNewsReceivedList(data) {
     const res = await getVenueNewsReceivedList(data, sessionStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      message.error('登录超时请重新登录')
-    } else if (res.data.code === 2000) {
+   if (res.data.code === 2000) {
       this.setState({ getVenueNewsReceivedList: res.data.data, otherPush: res.data.other })
     }
   }
   async getVenueNewsFirst(data) {
     const res = await getVenueNewsFirst(data, sessionStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      message.error('登录超时请重新登录')
-    } else if (res.data.code === 2000) {
+    if (res.data.code === 2000) {
      console.log(res)
     }
   }
@@ -85,10 +79,10 @@ class newsPh extends React.Component {
                   <div className="contentHead"><span>系统消息</span><span>{item.intime}</span></div>
                   <div className="contentText">{item.comment}</div>
                 </div>
-              </div>
+              </div> 
             ))
           }
-          <Pagination className={this.state.getVenueNewsList.length === 0 ? 'hidden' : 'fenye'} onChange={this.current} defaultCurrent={1} total={this.state.other} />
+          <Pagination className={this.state.getVenueNewsList.length === 0 ? 'hidden' : 'fenye'} size="small" onChange={this.current} defaultCurrent={1} total={this.state.other} />
           <Result className={this.state.getVenueNewsList.length === 0 ? '' : 'hidden'} icon={<Icon type="message" theme="twoTone" twoToneColor="#F5A623" />} title="没有系统消息" />
         </div>
 
@@ -105,7 +99,7 @@ class newsPh extends React.Component {
               </div>
             ))
           }
-          <Pagination className={this.state.getVenueNewsReceivedList.length === 0 ? 'hidden' : 'fenye'} onChange={this.currentPush} defaultCurrent={1} total={this.state.otherPush} />
+          <Pagination className={this.state.getVenueNewsReceivedList.length === 0 ? 'hidden' : 'fenye'} size="small" onChange={this.currentPush} defaultCurrent={1} total={this.state.otherPush} />
           <Result className={this.state.getVenueNewsReceivedList.length === 0 ? '' : 'hidden'} icon={<Icon type="message" theme="twoTone" twoToneColor="#F5A623" />} title="没有发布消息" />
         </div>
       </div>

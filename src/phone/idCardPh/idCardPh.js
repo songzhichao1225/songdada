@@ -26,6 +26,7 @@ class idCardPh extends React.Component {
     previewVisible: false,
     imageRes:'',
     imageResT:'',
+    imageUrlBaseT:'',
   };
 
  
@@ -62,7 +63,7 @@ class idCardPh extends React.Component {
     if (info.file.status === 'done') {
       // Get this url from response in real world.
       console.log(info.file.response)
-      this.setState({ imageResT: info.file.response.data.baseURL + info.file.response.data.filesURL })
+      this.setState({ imageResT: info.file.response.data.baseURL + info.file.response.data.filesURL,imageUrlBaseT:info.file.response.data.baseURL })
       getBase64(info.file.originFileObj, imageUrlT =>
         this.setState({
           imageUrlT,
@@ -81,14 +82,14 @@ class idCardPh extends React.Component {
 
 
   submit=()=>{
-    let {imageRes,imageResT}=this.state
+    let {imageRes,imageResT,imageUrlBaseT}=this.state
     if(imageRes===''){
       message.error('请上传身份证正面照')
     }else if(imageResT===''){
       message.error('请上传身份证反面照')
     }else{
 
-      this.props.history.push({ pathname: '/qualification', query: {imageRes:imageRes,imageResT:imageRes } })
+      this.props.history.push({ pathname: '/qualificationPh', query: {imageRes:imageRes,imageResT:imageRes,imageUrlBaseT:imageUrlBaseT } })
     }
    
   }

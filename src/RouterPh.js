@@ -51,7 +51,6 @@ const BasicRoute = () => (
             <Route exact path="/homePh/untiePhonePh" component={untiePhonePh}/>
             <Route exact path="/homePh/resetPasswordPh" component={resetPasswordPh}/>
             <Route exact path="/homePh/inforSitePh" component={inforSitePh}/>
-            
             <Route  path="/homePh" component={homePh}/>
          
             

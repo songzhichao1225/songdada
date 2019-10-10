@@ -24,13 +24,10 @@ class withdrawalPh extends React.Component {
 
   async getVenueMoney(data) {
     const res = await getVenueMoney(data,sessionStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      message.error('登录超时请重新登录')
-    } else {
+  
      
       this.setState({money:res.data.data.money})
-    }
+    
   }
 
   componentDidMount() {

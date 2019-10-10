@@ -72,10 +72,7 @@ class information extends React.Component {
     const res = await getReservationActivitieslist(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ list: res.data.data.data, other: res.data.other, loading: false, hidden: true, Oneloading: false })
-    } else if (res.data.code === 4001) {
-      this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
-    } else {
+    }else {
       this.setState({ loading: false, hidden: false, Oneloading: false })
     }
   }
@@ -157,7 +154,7 @@ class information extends React.Component {
   sendCheck = e => {
 
     this.setState({ sendCheck: e.target.value })
-    if (e.target.value == 2) {
+    if (e.target.value === 2) {
       this.setState({ placeholder: '请说明未预留场地原因' })
     } else {
       this.setState({ placeholder: '请输入预留场地号' })

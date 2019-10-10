@@ -1,7 +1,7 @@
 import React from 'react';
 import './orderPh.css';
 import { Row, Col, message, Tooltip, Pagination, Modal, Radio, Input, Drawer, DatePicker,Result,Icon } from 'antd';
-import { getReservationActivitieslist, VenueSendMessage, getVenueReservations } from '../../api';
+import { getReservationActivitieslist, VenueSendMessage, getVenueReservations,getVenueSport } from '../../api';
 const { TextArea } = Input
 class orderPh extends React.Component {
 
@@ -21,6 +21,8 @@ class orderPh extends React.Component {
     sportIdVal:0,
     statusIdVal:0,
     flag:false,
+    remList:[],
+    dataString:'',
     sport: [
       { name: '全部', id: 0 },
       { name: '羽毛球', id: 1 },
@@ -47,10 +49,7 @@ class orderPh extends React.Component {
 
   async getVenueReservations(data) {
     const res = await getVenueReservations(data, sessionStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      message.error('登录超时请重新登录')
-    } else if (res.data.code === 2000) {
+    if (res.data.code === 2000) {
       this.setState({ lookList: res.data.data, macNum: res.data.data[0].c })
     }
   }
@@ -65,9 +64,19 @@ class orderPh extends React.Component {
         this.setState({flag:true})
     }
   }
+  
+
+  async getVenueSport(data) {
+    const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ remList: res.data.data })
+    }
+  }
+
   componentDidMount() {
     this.getReservationActivitieslist({ page: 1, sport: '', status: '', publicuid: '' })
     this.getVenueReservations({ sportid: 1, date: '2019-09-04' })
+    this.getVenueSport()
   }
   activityList = () => {
     this.setState({ activityList: true })
@@ -141,13 +150,12 @@ class orderPh extends React.Component {
   };
 
   dateChange = (date, dataString) => {
+    this.setState({dataString:dataString})
     this.getVenueReservations({ date: dataString, sportid: this.state.sportid })
   }
   sport=e=>{
-
     this.setState({sportIdVal:e.currentTarget.dataset.id})
   }
-
   status=e=>{
     this.setState({statusIdVal:e.currentTarget.dataset.id})
   }
@@ -156,6 +164,12 @@ class orderPh extends React.Component {
     this.setState({
       Drawervisible: false,
     })
+  }
+
+  sportName=e=>{
+    console.log(e.currentTarget.dataset.id)
+    this.setState({sportid:e.currentTarget.dataset.id})
+    this.getVenueReservations({ sportid: e.currentTarget.dataset.id, date:this.state.dataString })
   }
 
 
@@ -202,7 +216,7 @@ class orderPh extends React.Component {
         
          <Result className={this.state.flag===false ? 'hidden' : ''} icon={<Icon type="bank" theme="twoTone" twoToneColor="#F5A623" />} title="没有活动列表！" />
           <div className="screen" onClick={this.showDrawer}><span>筛选</span><img src={require('../../assets/shaixuan.png')} alt="筛选" /></div>
-          <Pagination className={this.state.flag===false? 'fenye' : 'hidden'} defaultCurrent={1} onChange={this.current} total={this.state.total} />
+          <Pagination className={this.state.flag===false? 'fenye' : 'hidden'} size="small" defaultCurrent={1} onChange={this.current} total={this.state.total} />
           <Modal
             title="发消息"
             visible={this.state.visible}
@@ -245,7 +259,6 @@ class orderPh extends React.Component {
                 ))
               }
             </div>       
-
             <div className="drawerBtn">
               <div onClick={this.onClose}>取消</div>
               <div onClick={this.submitVal}>确定</div>
@@ -258,16 +271,15 @@ class orderPh extends React.Component {
             <span className="blue"></span><span>空闲</span><span className="white"></span><span>不可选</span><span className="yellow"></span><span>已占用</span><span className="red"></span><span>场地取消</span>
           </div>
           <div className="locaList">
-            <div>篮球</div>
-            <div>羽毛球</div>
-            <div>台球</div>
-            <div>乒乓球</div>
-            <div>网球</div>
-            <div>足球</div>
-            <div>排球</div>
-            <div>高尔夫球</div>
+            {
+              this.state.remList.map((item,i)=>(
+                <div key={i} data-id={item.id} onClick={this.sportName}>{item.name}</div>
+              ))
+            }
+           
+           
           </div>
-          <div className="lookList">
+          <div className="lookList" style={this.state.lookList.length<1?{display:'none'}:{display:'block'}}>
             <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 3.25 + 'rem' }}>
               <span></span>
               {
@@ -290,6 +302,8 @@ class orderPh extends React.Component {
             </div>
           </div>
           <DatePicker className="date" placeholder="选择日期" onChange={this.dateChange} />
+          <Result className={this.state.lookList.length === 0 ? '' : 'hidden'} icon={<Icon type="reconciliation" theme="twoTone" twoToneColor="#F5A623" />} title="没有预约情况" />
+       
         </div>
       </div>
     )

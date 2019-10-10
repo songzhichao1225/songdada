@@ -40,9 +40,7 @@ class registerPh extends React.Component {
     }
   }
   changePhone = (e) => {
-    
       this.setState({ phone: e.target.value })
-    
   }
   changeCode = (e) => {
     this.setState({ code: e.target.value })
@@ -97,37 +95,29 @@ class registerPh extends React.Component {
   }
 
   showModal = e => {
-    if (this.state.code === '') {
-      message.error('请输入验证码')
-    } else if (this.state.password === '') {
-      message.error('请输入密码')
-    } else if (this.state.passwordT === '') {
-      message.error('请再次输入密码')
-    } else if (this.state.password !== this.state.passwordT) {
-      message.error('两次密码输入不一致')
-    } else if (this.state.changeRadio !== true) {
+   if (this.state.changeRadio !== true) {
       message.error('请勾选阅读协议')
+    }else if(this.state.password!==this.state.passwordT){
+        message.error('两次密码输入不一致')
     } else {
       const { Id, name, phone, code, password } = this.state
-      const data = { name: name, phone: phone, pass: password, promoteid: Id, code: code, Logintype: 'pc' }
+      const data = { name: name, phone: phone, pass: password, promoteid: Id, code: code, Logintype: 'mobile' }
       this.Ko(data)
     }
-
   }
   blurId = e => {
-    console.log(e.target.value)
+  
     this.getPromoteName({ promotid: e.target.value })
   }
   async getPromoteName(data) {
     const res = await getPromoteName(data)
     if (res.data.code === 2000) {
-      this.setState({ idName: res.data.data.promotname, qipao: false })
+      this.setState({ idName:'推广员姓名：'+ res.data.data.promotname+'?', qipao: false })
     } else {
-      message.error(res.data.msg)
-      this.setState({ qipao: true })
+      this.setState({ idName:'您没有推广员？', qipao: false })
     }
-
   }
+
 
 
 
@@ -139,7 +129,7 @@ class registerPh extends React.Component {
         <div className="bossInput">
 
           <div className="input">
-            <Input  onChange={this.changID} onBlur={this.blurId} prefix={<Icon type="credit-card" style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={6} placeholder="请填写推广员ID号，没有可不填" />
+            <Input  onChange={this.changID} onBlur={this.blurId} autoFocus prefix={<Icon type="credit-card" style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={6} placeholder="请填写推广员ID号，没有可不填" />
           </div>
 
           <div className="input">
@@ -147,12 +137,12 @@ class registerPh extends React.Component {
           </div>
 
           <div className="input">
-            <Input  prefix={<Icon type="phone" onBlur={this.changePhone} style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={11} placeholder="请输入手机号" />
+            <Input  onChange={this.changePhone} prefix={<Icon type="phone"  style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={11} placeholder="请输入手机号" />
           </div>
 
           <div className="input">
             <Input  onChange={this.changeCode} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} className="codeInput" maxLength={6} placeholder="手机验证码" />
-            <div className="codeBtn" onClick={this.naCode}>{this.state.textT}</div>
+            <div className="codeBtn" onClick={this.state.textT==='获取验证码'?this.naCode:''} >{this.state.textT}</div>
           </div>
 
 
@@ -167,13 +157,13 @@ class registerPh extends React.Component {
           </div>
           <div className="input line">
             <Popconfirm
-              title={"推广员姓名：" + this.state.idName + '?'}
+              title={this.state.idName}
               onConfirm={this.showModal}
               okText="是"
               cancelText="否"
               disabled={this.state.qipao}
             >
-              <div className="btn" >注册</div>
+              <div className="btn">注册</div>
             </Popconfirm>
 
           </div>
@@ -185,18 +175,13 @@ class registerPh extends React.Component {
                 footer={null}
                 visible={this.state.visible}
                 onOk={this.handleOk}
-                width={200}
-
+                width='100%'
               >
                 <img className="logoRegister" src={require("../../assets/icon_pc.png")} alt="ico" />
                 <span className="modelTitle">恭喜您，注册成功</span>
                 <span className="modelPhone">用户名:{this.state.name}</span>
-                <Button className="modelBtn"><a href="#/stadiumInformationPh">下一步</a></Button>
-
+                <Button className="modelBtnPh"><a href="#/stadiumInformationPh">下一步</a></Button>
               </Modal>
-
-
-
         </div>
       </div>
     );

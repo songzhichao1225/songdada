@@ -44,13 +44,10 @@ class inforSitePh extends React.Component {
       message.error(res.data.msg)
     }
   }
-
+ 
   async getVenueQualificationInformation(data) {
     const res = await getVenueQualificationInformation(data, sessionStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      message.error('登录超时请重新登录')
-    } else if (res.data.code === 2000) {
+   if (res.data.code === 2000) {
      console.log(res.data.data)
     } else {
       message.error(res.data.msg)
@@ -61,15 +58,12 @@ class inforSitePh extends React.Component {
     this.getVenueInformation()
     this.getVenueQualificationInformation()
   }
-
   left = () => {
     this.setState({ flag: 1 })
   }
   right = () => {
     this.setState({ flag: 2 })
   }
-
-
   handleChange = info => {
     if (info.file.status === 'uploading') {
       this.setState({ loading: true });
@@ -82,24 +76,22 @@ class inforSitePh extends React.Component {
         this.setState({
           imageUrl,
           loading: false,
-        }),
-      );
+        })
+      )
     }
-  };
-
+  }
   render() {
     let { listSon } = this.state
     const options = [
-      { label: '羽毛球', value: '1' },
-      { label: '乒乓球', value: '2' },
+      { label: '羽毛球',value: '1'},
+      { label: '乒乓球',value: '2'},
       { label: '台球', value: '3' },
       { label: '篮球', value: '4' },
       { label: '足球', value: '5' },
       { label: '排球', value: '6' },
       { label: '网球', value: '7' },
-      { label: '高尔夫', value: '8' }
+      { label: '高尔夫', value:'8'}
     ]
-
     const optionsTwo = [{ label: 'WiFi', value: '1' }, { label: '停车场', value: '2' }, { label: '淋浴', value: '3' }]
 
     const uploadButton = (
@@ -121,17 +113,17 @@ class inforSitePh extends React.Component {
             <span>推广员</span>
             <span className="right" style={{ paddingLeft: '11px' }}>{listSon.promote}</span>
           </div>
-
+          
           <div className="listSon">
             <span>场馆名称</span>
             <Input className="right" value={listSon.name} />
           </div>
-
+          
           <div className="listSon">
             <span>场馆位置</span>
             <Input className="right" value={listSon.position} />
           </div>
-
+          
           <div className="listSon">
             <span>详细地址</span>
             <Input className="right" value={listSon.address} />
@@ -161,8 +153,7 @@ class inforSitePh extends React.Component {
           </div>
           <div className="listSon">
             <span>场地照片</span>
-
-
+            
           </div>
           <div className="listSon">
             <span>场地设施</span>
@@ -170,7 +161,7 @@ class inforSitePh extends React.Component {
               <Checkbox.Group options={optionsTwo} value={this.state.facilities} onChange={this.onChange} />
             </div>
           </div>
-
+          
           <div className="listSon">
             <span>运动项目</span>
             <div className="rightLi">
@@ -200,7 +191,7 @@ class inforSitePh extends React.Component {
 
           <div className="listSon">
             <span>身份证</span>
-            <Input className="right"  />
+            <Input className="right" />
           </div>
           <div className="listSon">
             <span>法人姓名</span>
@@ -214,13 +205,14 @@ class inforSitePh extends React.Component {
 
           <div className="listSon">
             <span>法人手机号</span>
-            <Input className="right"  />
+            <Input className="right"/>
           </div>
 
           <div className="listSon">
             <span>结算账号</span>
-            <Input className="right" />
+            <Input className="right"/>
           </div>
+
 
 
 

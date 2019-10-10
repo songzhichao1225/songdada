@@ -169,6 +169,7 @@ float: left;
 	width: 100px;
 	text-align: right;
 	font-size: 16px;
+	line-height: 38px;
 }
 .stadiums .qualification .listing>span:nth-child(2){
 	margin-left: 18px;
@@ -177,12 +178,15 @@ float: left;
 	margin-left: 12px;
 	color: #F5A623;
 	cursor: pointer;
+	display: inline-block;
+	line-height: 38px;
 }
 .stadiums .qualification .listing .listingInput{
 	width: 273px;
-	height: 26px;
+	height: 38px;
 	border: 1px solid #E1E0E1;
 	margin-left: 18px;
+	float: left;
 }
 .stadiums .qualification .listing .accountNum{
 	margin-left: 18px;
@@ -198,4 +202,7 @@ float: left;
 	margin-top: 30px;
 	margin-left: 120px;
 	cursor: pointer;
+}
+.stadiums .ko{
+	margin-left: 118px;
 }

@@ -20,23 +20,19 @@ class sittingPh extends React.Component {
       
       this.setState({flag:res.data.data.isclose})
     }
-    
   }
 
   async VenueIsClose(data) {
     const res = await VenueIsClose(data,sessionStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      message.error('登录超时请重新登录')
-    } else {
-      this.getVenueIsClose()
-    }
+       if(res.data.code===2000){
+        this.getVenueIsClose()
+       }
   }
-
+  
   componentDidMount() {
     this.getVenueIsClose()
   }
-          
+         
   onChange=(e)=>{
      this.setState({flag:e})
      if(e===false){
@@ -77,7 +73,7 @@ class sittingPh extends React.Component {
           <span>重置密码</span>
           <img className="switch" style={{width:'0.44rem',height:'0.6rem',marginTop:'0.5rem'}} src={require("../../assets/right.png")} alt="arrow"/>
         </div>
-     
+        
       </div>
     )
   }

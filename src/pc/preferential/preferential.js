@@ -2,7 +2,7 @@ import React from 'react';
 import './preferential.css';
 import 'antd/dist/antd.css';
 import { getVenueDiscountList, addVenueDiscount, getVenueSport, DelVenueDiscount, getFirstDiscount } from '../../api';
-import { Select, Row, Col, Modal, TimePicker, InputNumber, Input, message, DatePicker, Spin, Form, Button,Result,Icon,Pagination } from 'antd';
+import { Select, Row, Col, Modal, TimePicker, InputNumber, Input, message, DatePicker, Spin, Form,Result,Icon,Pagination } from 'antd';
 import moment from 'moment';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import 'moment/locale/zh-cn';
@@ -51,10 +51,7 @@ class preferential extends React.Component {
     const res = await getVenueDiscountList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ list: res.data.data,other:res.data.other, loading: false,hidden:true })
-    }else if(res.data.code===4001){
-      this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
-    }  else {
+    }else {
       this.setState({ list: res.data.data, loading: false,hidden:false })
     }
   }

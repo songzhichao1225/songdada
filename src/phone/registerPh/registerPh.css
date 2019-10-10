@@ -90,13 +90,16 @@
    display: block;
    margin-top: 0.9rem;
 }
-.modelBtn{
-   width: 31px;
-   height: 8px;
+.modelBtnPh{
+   width: 5rem;
+   height: 2rem;
    background: #F5A623;
    border-radius: 2px;
    left: 50%;
-   margin-top: 4px;
-   margin-left: 15px;
+   margin-top: 1rem;
+   margin-left: -2.5rem;
    color:#fff;
+}
+.registerPh .ant-input{
+    height: 2rem;
 }

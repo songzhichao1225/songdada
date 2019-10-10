@@ -45,37 +45,37 @@ class news extends React.Component {
     }
   }
   allOnChange = (e) => {
+    let {newsList}=this.state
     if (e.target.checked === true) {
-      for (let i in this.state.newsList) {
-        this.state.newsList[i].cheched = true
+    
+      for (let i in newsList) {
+        newsList[i].cheched = true
       }
     } else {
-      for (let i in this.state.newsList) {
-        this.state.newsList[i].cheched = false
+      for (let i in newsList) {
+        newsList[i].cheched = false
       }
     }
     let foArr = []
-    for (let i in this.state.newsList) {
-      if (this.state.newsList[i].cheched === true) {
-        foArr.push(this.state.newsList[i].uuid)
+    for (let i in newsList) {
+      if (newsList[i].cheched === true) {
+        foArr.push(newsList[i].uuid)
       }
     }
-   
     this.setState({ oneChecked: !this.state.oneChecked,delet:foArr })
-
   }
   onChange = e => {
-    console.log(e.target.checked)
+    let {newsList}=this.state
     if (e.target.checked === false) {
       this.setState({ oneChecked: false })
     }
-    this.state.newsList[e.target.index].cheched = !this.state.newsList[e.target.index].cheched
+    newsList[e.target.index].cheched = !newsList[e.target.index].cheched
   }
 
 
 
   async delVenueNews(data) {
-    const res = await delVenueNews(data, sessionStorage.getItem('venue_token'))
+    const res = await delVenueNews(data,sessionStorage.getItem('venue_token'))
     if(res.data.code===2000){
      message.info(res.data.msg)
      this.setState({ oneChecked: false})

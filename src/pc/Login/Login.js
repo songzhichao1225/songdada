@@ -154,7 +154,7 @@ class Login extends React.Component {
           <div className="content">
             <div className="left">
               <span>Welcome!</span>
-              <span>挑战场地管理端</span>
+              <span>找对手场地管理端</span>
             </div>
             <div className="right">
               <div className="navTap"><div onClick={this.phoneLogin} style={this.state.navNum===true?{color:'#F5A623'}:{color:'#000'}}>法人登录</div><div style={this.state.navNum===false?{color:'#F5A623'}:{color:'#000'}} onClick={this.nameLogin}>普通登录</div></div>

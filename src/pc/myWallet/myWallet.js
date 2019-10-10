@@ -7,10 +7,6 @@ import moment from 'moment';
 
 const { RangePicker } = DatePicker;
 
-const defaultSelectDate = {
-  startDate: moment().startOf('day').subtract(6, 'days'),
-  endDate: moment().endOf('day')
-}
 
 
 

@@ -174,12 +174,8 @@ class home extends React.Component {
 
   async getVenueIndex(data) {
     const res = await getVenueIndex(data, sessionStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
-    }else{
+    
       this.setState({ getVenue: res.data.data })
-    }
    
   }
 

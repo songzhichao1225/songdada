@@ -12,30 +12,10 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
-function range(start, end) {
-  const result = [];
-  for (let i = start; i < end; i++) {
-    result.push(i);
-  }
-  return result;
-}
+
 function disabledDate(current) {
   // Can not select days before today and today
   return current && current < moment().endOf('day');
-}
-function disabledRangeTime(_, type) {
-  if (type === 'start') {
-    return {
-      disabledHours: () => range(0, 24),
-      disabledMinutes: () => range(0, 60),
-      disabledSeconds: () => [0, 60],
-    };
-  }
-  return {
-    disabledHours: () => range(0, 60),
-    disabledMinutes: () => range(0, 31),
-    disabledSeconds: () => [55, 56],
-  };
 }
 
 

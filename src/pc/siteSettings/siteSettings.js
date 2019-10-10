@@ -2,7 +2,7 @@ import React from 'react';
 import './siteSettings.css';
 import 'antd/dist/antd.css';
 import { getVenueFieldList, addVenueField, getVenueSport, getFirstField, delVenueField } from '../../api';
-import { Select, Row, Col, Modal, TimePicker, InputNumber, Input, message, Spin, Result, Icon, Pagination,Popconfirm } from 'antd';
+import { Select, Row, Col, Modal, TimePicker, InputNumber, Input, message, Spin, Result, Icon, Pagination, Popconfirm } from 'antd';
 import moment from 'moment';
 const format = 'HH:mm';
 const { Option } = Select;
@@ -33,8 +33,8 @@ class siteSettings extends React.Component {
     hidden: '',
     other: '',
     page: 1,
-    deletUid:0,
-    maxScheduledDateName:'',
+    deletUid: 0,
+    maxScheduledDateName: '请选择',
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -139,36 +139,29 @@ class siteSettings extends React.Component {
   }
 
   handleChangeTwo = e => {
-    this.setState({ openday: e })
-    let day = ''
-    switch (parseInt(e)) {
-      case 1:
-        day = "周一";
-        break;
-      case 2:
-        day = "周二";
-        break;
-      case 3:
-        day = "周三";
-        break;
-      case 4:
-        day = "周四";
-        break;
-      case 5:
-        day = "周五";
-        break;
-      case 6:
-        day = "周六";
-        break;
-      case 0:
-        day = "周日";
-        break;
-
-      default:
-        day = "";
+    console.log(e.join(''))
+    this.setState({ openday: e.join(',') })
+    let day = []
+    for (let i in e) {
+      if (e[i] === '1') {
+        day.push('周一')
+      } else if (e[i] === '2') {
+        day.push('周二')
+      } else if (e[i] === '3') {
+        day.push('周三')
+      } else if (e[i] === '4') {
+        day.push('周四')
+      } else if (e[i] === '5') {
+        day.push('周五')
+      } else if (e[i] === '6') {
+        day.push('周六')
+      } else if (e[i] === '0') {
+        day.push('周日')
+      }
     }
-    this.setState({ opendayname: day })
+    this.setState({ opendayname: day.join(',') })
   }
+
   handleChangThree = (value, dateString) => {
 
     this.setState({ starttime: dateString })
@@ -182,25 +175,27 @@ class siteSettings extends React.Component {
   handleChangeFour = e => {
     this.setState({ maxScheduledDate: e })
     let dayTwo = ''
-    switch (parseInt(e)) {
-      case 0.1:
+    switch (e) {
+      case '0.1':
         dayTwo = "一周";
         break;
-      case 0.2:
+      case '0.2':
         dayTwo = "两周";
         break;
-      case 0.3:
+      case '0.3':
         dayTwo = "三周";
         break;
-      case 1:
+      case '1':
         dayTwo = "一个月";
         break;
-      case 2:
+      case '2':
         dayTwo = "两个月";
         break;
+      default:
+        dayTwo = "请选择";
 
     }
-    this.setState({ maxScheduledDateName:dayTwo })
+    this.setState({ maxScheduledDateName: dayTwo })
   }
   handleChangeFive = e => {
     this.setState({ appointmenttime: e })
@@ -232,9 +227,8 @@ class siteSettings extends React.Component {
       this.setState({
         visible: false,
       });
-      this.getVenueFieldList( {sportid: sessionStorage.getItem('siteSettings'), page: this.state.page})
+      this.getVenueFieldList({ sportid: sessionStorage.getItem('siteSettings'), page: this.state.page })
     }
-
   }
 
 
@@ -323,12 +317,10 @@ class siteSettings extends React.Component {
         case 0:
           days = "周日";
           break;
-        
+        default:
+          days = "";
       }
       this.setState({ opendayname: days })
-
-
-
       let dayTwo = ''
       switch (this.state.maxScheduledDate) {
         case 0.1:
@@ -346,9 +338,10 @@ class siteSettings extends React.Component {
         case 2:
           dayTwo = "两个月";
           break;
-
+        default:
+          dayTwo = "";
       }
-      this.setState({ maxScheduledDateName:dayTwo })
+      this.setState({ maxScheduledDateName: dayTwo })
     }
   }
 
@@ -357,26 +350,21 @@ class siteSettings extends React.Component {
       visible: true,
     });
     this.getFirstField({ uuid: e.target.dataset.uid })
-
-
   }
   async delVenueField(data) {
     const res = await delVenueField(data, sessionStorage.getItem('venue_token'))
     if (res.data.code !== 4001) {
       message.info(res.data.msg)
+      this.getVenueFieldList({ sportid: sessionStorage.getItem('siteSettings'), page: this.state.page })
     }
   }
-
-
   delet = e => {
-    this.setState({deletUid:e.target.dataset.uid})
-   
+    this.setState({ deletUid: e.target.dataset.uid })
   }
-  confirm=()=>{
+  confirm = () => {
     this.delVenueField({ uuid: this.state.deletUid })
-    this.getVenueFieldList({ sportid: sessionStorage.getItem('siteSettings'), page: this.state.page })
   }
-  
+
   current = (page, pageSize) => {
     this.setState({ page: page })
     this.getVenueFieldList({ sportid: sessionStorage.getItem('siteSettings'), page: page })
@@ -398,7 +386,6 @@ class siteSettings extends React.Component {
           <div className="addList" onClick={this.showModal}>添加</div>
         </div>
         <div className="xiange"></div>
-
         <Spin spinning={this.state.loading} style={{ minHeight: 600 }} size="large">
           <div className={this.state.hidden === true ? 'siteList' : 'hidden'}>
             <Row className="rowConten">
@@ -412,9 +399,7 @@ class siteSettings extends React.Component {
               <Col xs={{ span: 3 }}>最短提前预定时间</Col>
               <Col xs={{ span: 2, offset: 3 }}>操作</Col>
             </Row>
-
             <div className="dataList">
-
               {
                 this.state.list.map((item, i) => (
                   <Row key={i} className="rowList">
@@ -435,109 +420,98 @@ class siteSettings extends React.Component {
                         okText="确定"
                         cancelText="取消"
                       >
-                        <img onClick={this.delet} data-uid={item.uid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
-                        </Popconfirm>
+                        <img onClick={this.delet} data-uid={item.uid} src={require("../../assets/icon_pc_delet.png")} alt="删除"/>
+                      </Popconfirm>
                     </Col>
                   </Row>
-                    ))
-                  }
+                ))
+              }
             </div>
           </div>
-            <Pagination className={this.state.hidden === true ? 'fenye' : 'hidden'} defaultCurrent={1} total={this.state.other} onChange={this.current} />
-            <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<Icon type="bank" theme="twoTone" twoToneColor="#F5A623" />} title="您没有进行场地设置！" />,
+          <Pagination className={this.state.hidden === true ?'fenye':'hidden'} defaultCurrent={1} total={this.state.other} onChange={this.current} />
+          <Result className={this.state.hidden === true ? 'hidden':''} icon={<Icon type="bank" theme="twoTone" twoToneColor="#F5A623" />} title="您没有进行场地设置！" />,
         </Spin>
+        <Modal
+          title="添加/修改场地设置"
+          visible={this.state.visible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+          width={630}
+          className='model'
+        >
+          <div className="modelList">
+            <span>运动项目</span>
+            <Select placeholder="请选择" value={this.state.runId} className="selectModel" style={{ width: 249 }} onChange={this.handleChangeOne}>
+              {
+                this.state.ListSport.map((item, i) => (
+                  <Option key={i} value={item.id}>{item.name}</Option>
+                ))
+              }
+            </Select>
+          </div>
 
+          <div className="modelList" style={{ height: 'auto' }}>
+            <span>休息日/工作日</span>
+            <Select placeholder="请选择" mode='multiple' className="selectModel" value={this.state.opendayname} style={{ width: 249, height: 'auto' }} onChange={this.handleChangeTwo}>
+              <Option value="1">周一</Option>
+              <Option value="2">周二</Option>
+              <Option value="3">周三</Option>
+              <Option value="4">周四</Option>
+              <Option value="5">周五</Option>
+              <Option value="6">周六</Option>
+              <Option value="0">周日</Option>
+            </Select>
+          </div>
 
+          <div className="modelList">
+            <span>开始时间</span>
+            <TimePicker className="startTime" placeholder="请选择时间" value={this.state.starttime === undefined || this.state.starttime === '' ? null : moment(this.state.starttime, format)} minuteStep={30} defaultValue={moment('00:00', format)} format={format} onChange={this.handleChangThree} />
+          </div>
+           
+          <div className="modelList">
+            <span>结束时间</span>
+            <TimePicker className="startTime" placeholder="请选择时间" value={this.state.endtime === undefined || this.state.endtime === '' ? null : moment(this.state.endtime, format)} minuteStep={30} defaultValue={moment('00:00', format)} format={format} onChange={this.endtime} />
+          </div>
+          
+          <div className="modelList">
+            <span>价格</span><span>（元/小时）</span>
+            <InputNumber className="startTime" value={this.state.costperhour} defaultValue={0} min={0} placeholder="请输入" onChange={this.money} />
+          </div>
 
-          <Modal
-            title="添加/修改场地设置"
-            visible={this.state.visible}
-            onOk={this.handleOk}
-            onCancel={this.handleCancel}
-            width={630}
-            className='model'
-          >
-            <div className="modelList">
-              <span>运动项目</span>
-              <Select defaultValue="请选择" value={this.state.runId} className="selectModel" style={{ width: 249 }} onChange={this.handleChangeOne}>
-                {
-                  this.state.ListSport.map((item, i) => (
-                    <Option key={i} value={item.id}>{item.name}</Option>
-                  ))
-                }
-              </Select>
-            </div>
+          <div className="modelList">
+            <span>数量</span>
+            <div className="startTime"> <span className="jian" onClick={this.jian}>-</span > &nbsp; {this.state.number} &nbsp;  <span className="jia" onClick={this.jia}>+</span></div>
+          </div>
 
-            <div className="modelList">
-              <span>休息日/工作日</span>
-              <Select defaultValue="请选择" className="selectModel" value={this.state.opendayname} style={{ width: 249 }} onChange={this.handleChangeTwo}>
-                <Option value="1">周一</Option>
-                <Option value="2">周二</Option>
-                <Option value="3">周三</Option>
-                <Option value="4">周四</Option>
-                <Option value="5">周五</Option>
-                <Option value="6">周六</Option>
-                <Option value="0">周日</Option>
-              </Select>
-            </div>
-
-            <div className="modelList">
-              <span>开始时间</span>
-              <TimePicker className="startTime" placeholder="请选择时间" value={this.state.starttime === undefined || this.state.starttime === '' ? null : moment(this.state.starttime, format)} minuteStep={30} defaultValue={moment('00:00', format)} format={format} onChange={this.handleChangThree} />
-            </div>
-
-            <div className="modelList">
-              <span>结束时间</span>
-              <TimePicker className="startTime" placeholder="请选择时间" value={this.state.endtime === undefined || this.state.endtime === '' ? null : moment(this.state.endtime, format)} minuteStep={30} defaultValue={moment('00:00', format)} format={format} onChange={this.endtime} />
-            </div>
-
-            <div className="modelList">
-              <span>价格</span><span>（元/小时）</span>
-              <InputNumber className="startTime" value={this.state.costperhour} defaultValue={0} min={0} placeholder="请输入" onChange={this.money} />
-            </div>
-
-            <div className="modelList">
-              <span>数量</span>
-              <div className="startTime"> <span className="jian" onClick={this.jian}>-</span > &nbsp; {this.state.number} &nbsp;  <span className="jia" onClick={this.jia}>+</span></div>
-            </div>
-
-            <div className="modelList">
-              <span>最长可预定日期</span>
-              <Select defaultValue="请选择" className="selectModel" value={this.state.maxScheduledDateName} style={{ width: 249 }} onChange={this.handleChangeFour}>
-                <Option value="0.1">一周</Option>
-                <Option value="0.2">两周</Option>
-                <Option value="0.3">三周</Option>
-                <Option value="1">一个月</Option>
-                <Option value="2">两个月</Option>
-              </Select>
-            </div>
-            <div className="modelList">
-              <span>最短提前预定时间</span>
-              <Select defaultValue="请选择" className="selectModel" value={this.state.appointmenttime + '分钟'} style={{ width: 249 }} onChange={this.handleChangeFive}>
-                <Option value="0">0分钟</Option>
-                <Option value="30">30分钟</Option>
-                <Option value="60">60分钟</Option>
-                <Option value="120">120分钟</Option>
-                <Option value="180">180分钟</Option>
-              </Select>
-            </div>
-
-            <div className="modelListT">
-              <span>备注</span>
-              <TextArea className="textArea" rows={4} placeholder='请输入' value={this.state.comment} onChange={this.textArea} />
-            </div>
-
-            <div className="submit" data-uid={this.state.DisList !== '' ? this.state.DisList.uid : ''} onClick={this.submit}>保存</div>
-
-          </Modal>
-
-
-
-
-
+          <div className="modelList">
+            <span>最长可预定日期</span>
+            <Select placeholder="请选择" className="selectModel" value={this.state.maxScheduledDateName} style={{ width: 249 }} onChange={this.handleChangeFour}>
+              <Option value="0.1">一周</Option>
+              <Option value="0.2">两周</Option>
+              <Option value="0.3">三周</Option>
+              <Option value="1">一个月</Option>
+              <Option value="2">两个月</Option>
+            </Select>
+          </div>
+          <div className="modelList">
+            <span>最短提前预定时间</span>
+            <Select placeholder="请选择" className="selectModel" value={this.state.appointmenttime + '分钟'} style={{ width: 249 }} onChange={this.handleChangeFive}>
+              <Option value="0">0分钟</Option>
+              <Option value="30">30分钟</Option>
+              <Option value="60">60分钟</Option>
+              <Option value="120">120分钟</Option>
+              <Option value="180">180分钟</Option>
+            </Select>
+          </div>
+          <div className="modelListT">
+            <span>备注</span>
+            <TextArea className="textArea" rows={4} placeholder='请输入' value={this.state.comment} onChange={this.textArea}/>
+          </div>
+          <div className="submit" data-uid={this.state.DisList !== '' ? this.state.DisList.uid : ''} onClick={this.submit}>保存</div>
+        </Modal>
       </div>
-        );
-      }
-    }
-    
+    );
+  }
+}
+
 export default siteSettings;

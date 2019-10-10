@@ -143,7 +143,7 @@ class corporatePh extends React.Component {
         <div className="headerTitle">法人手机号登录</div>
         <div className="loginInput">
           <div className="name">
-            <Input className="phone"  prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={11} onChange={this.phone} placeholder="法人手机号" />
+            <Input className="phone" autoFocus prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={11} onChange={this.phone} placeholder="法人手机号" />
           </div>
           <div className="name">
             <Input className="phone"  prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />}  maxLength={8}  onChange={this.code} placeholder="手机验证码" />

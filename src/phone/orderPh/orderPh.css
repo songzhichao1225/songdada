@@ -33,6 +33,9 @@
    top:3.8rem;
    right: 1rem;
 }
+.orderPh .hidden{
+    display: none;
+}
 .drawerBoss{
     margin-top: 1rem;
     overflow: hidden;

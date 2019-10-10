@@ -30,15 +30,12 @@ class homePh extends React.Component {
   }
   async gerVenueName(data) {
     const res = await gerVenueName(data, sessionStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      message.error('登录超时请重新登录')
-    } else {
+   
       sessionStorage.setItem('name',res.data.data.name)
       sessionStorage.setItem('avatar',"https://app.tiaozhanmeiyitian.com/"+res.data.data.siteimg)
       sessionStorage.setItem('lyv',res.data.data.rate)
       this.setState({ gerVenueName: res.data.data })
-    }
+    
   }
 
   monthlyIncomePh = () => {
@@ -56,7 +53,6 @@ class homePh extends React.Component {
   componentDidMount() {
     this.getVenueIndex()
     this.gerVenueName()
-    console.log(this.props.location.pathname)
   }
 
 
@@ -73,11 +69,21 @@ class homePh extends React.Component {
           <div><span className="title" onClick={this.dayIncomePh}>今日收入</span><div className="content"><span>￥{this.state.getVenue.today_money}</span></div></div>
           <div><span className="title" onClick={this.monthlyIncomePh}>本月收入</span><div className="content"><span>￥{this.state.getVenue.month_money}</span></div></div>
           <div><span className="title" onClick={this.commentPh}>场馆评分  {this.state.getVenue.score}分</span><div className="content">
-            <img src={this.state.getVenue.score >= 1 ? require("../../assets/phonexing (2).png") : require("../../assets/50xing (2).png") && this.state.getVenue.score < 1 && this.state.getVenue.score > 0 ? require("../../assets/phonexing.png") : require("../../assets/50xing (2).png")} alt="星" />
-            <img src={this.state.getVenue.score >= 2 ? require("../../assets/phonexing (2).png") : require("../../assets/50xing (2).png") && this.state.getVenue.score < 2 && this.state.getVenue.score > 1 ? require("../../assets/phonexing.png") : require("../../assets/50xing (2).png")} alt="星" />
-            <img src={this.state.getVenue.score >= 3 ? require("../../assets/phonexing (2).png") : require("../../assets/50xing (2).png") && this.state.getVenue.score < 3 && this.state.getVenue.score > 2 ? require("../../assets/phonexing.png") : require("../../assets/50xing (2).png")} alt="星" />
-            <img src={this.state.getVenue.score >= 4 ? require("../../assets/phonexing (2).png") : require("../../assets/50xing (2).png") && this.state.getVenue.score < 4 && this.state.getVenue.score > 3 ? require("../../assets/phonexing.png") : require("../../assets/50xing (2).png")} alt="星" />
-            <img src={this.state.getVenue.score >= 5 ? require("../../assets/phonexing (2).png") : require("../../assets/50xing (2).png") && this.state.getVenue.score < 5 && this.state.getVenue.score > 4 ? require("../../assets/phonexing.png") : require("../../assets/50xing (2).png")} alt="星" />
+            <div className="img">
+            <img src={this.state.getVenue.score >= 1 ? require("../../assets/oneXing.png") : require("../../assets/phonexingzi.png") && this.state.getVenue.score < 1 && this.state.getVenue.score > 0 ? require("../../assets/phonexing.png") : require("../../assets/phonexingzi.png")} alt="星" />
+            </div>
+            <div  className="img">
+           <img src={this.state.getVenue.score >= 2 ? require("../../assets/oneXing.png") : require("../../assets/phonexingzi.png") && this.state.getVenue.score < 2 && this.state.getVenue.score > 1 ? require("../../assets/phonexing.png") : require("../../assets/phonexingzi.png")} alt="星" />
+            </div>
+            <div  className="img">
+            <img src={this.state.getVenue.score >= 3 ? require("../../assets/oneXing.png") : require("../../assets/phonexingzi.png") && this.state.getVenue.score < 3 && this.state.getVenue.score > 2 ? require("../../assets/phonexing.png") : require("../../assets/phonexingzi.png")} alt="星" />
+            </div>
+            <div  className="img">
+            <img src={this.state.getVenue.score >= 4 ? require("../../assets/oneXing.png") : require("../../assets/phonexingzi.png") && this.state.getVenue.score < 4 && this.state.getVenue.score > 3 ? require("../../assets/phonexing.png") : require("../../assets/phonexingzi.png")} alt="星" />
+            </div>
+            <div  className="img">
+            <img src={this.state.getVenue.score >= 5 ? require("../../assets/oneXing.png") : require("../../assets/phonexingzi.png") && this.state.getVenue.score < 5 && this.state.getVenue.score > 4 ? require("../../assets/phonexing.png") : require("../../assets/phonexingzi.png")} alt="星" />
+            </div>  
           </div>
           </div>
         </div>
@@ -85,7 +91,6 @@ class homePh extends React.Component {
         <Route path="/homePh/sitePh" component={sitePh} />
         <Route path="/homePh/newsPh" component={newsPh} />
         <Route path="/homePh/minePh" component={minePh} />
-        
         <div className="footer">
           <div className="footerSon">
             <div>

@@ -30,14 +30,12 @@ class mapPh extends React.Component {
     var option = {
       renderOptions: { map: map, panel: "results" }, onSearchComplete: function (results) {
         if (results !== undefined){
-          console.log(results.Qq)
           that.setState({ mapList: results.Qq })
         }
       }
     } 
     var local = new BMap.LocalSearch(map, option);
     local.search(data);
-    console.log(option)
   }
 
 
@@ -49,7 +47,6 @@ class mapPh extends React.Component {
   }
 
   handleClick = e => {
-    console.log(e.target.dataset)
     let dateset = e.target.dataset
     this.props.history.push({ pathname:'/stadiumInformationPh', query: { lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })
   }
@@ -64,7 +61,7 @@ class mapPh extends React.Component {
         </div>
         <div className="search">
           <Search placeholder="输入您要搜索的位置" onSearch={this.handleSearch} enterButton />
-          <ul className="ulList">
+          <ul className="ulList" style={this.state.mapList.length>0?{display:'block'}:{display:'none'}}>
             {
               list
             }

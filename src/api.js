@@ -203,6 +203,31 @@ export function getVenueQualificationInformation(data,headers){    // 获取场�
     return axios.post('/api/getVenueQualificationInformation',data, {headers: {'token': headers}})
 }
 
+export function getVenueOpenBank(data,headers){    // 获取银行的类型
+    return axios.post('/api/getVenueOpenBank',data, {headers: {'token': headers}})
+}
+
+export function getVenueOpenBankProvince(data,headers){    // 获取省
+    return axios.post('/api/getVenueOpenBankProvince',data, {headers: {'token': headers}})
+}
+
+export function getVenueOpenBankCity(data,headers){    // 获取市
+    return axios.post('/api/getVenueOpenBankCity',data, {headers: {'token': headers}})
+}
+
+
+export function getVenueOpenBankList(data,headers){    // 获取银行的开户行
+    return axios.post('/api/getVenueOpenBankList',data, {headers: {'token': headers}})
+}
+
+
+export function VenueQualificationInformationSave(data,headers){    // 修改场馆端资质信息
+    return axios.post('/api/VenueQualificationInformationSave',data, {headers: {'token': headers}})
+}
+
+
+
+
 
 
 

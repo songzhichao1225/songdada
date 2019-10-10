@@ -10,7 +10,7 @@ class temporaryPh extends React.Component {
   state = {
     sportList: [],
     sportId: '',
-    sportName:'',
+    sportName: '',
     startTime: '',
     endTime: '',
     comment: '',
@@ -30,7 +30,7 @@ class temporaryPh extends React.Component {
     this.getVenueSport()
   }
   handleChange = e => {
-    
+
     let day = ""
     switch (e) {
       case 1:
@@ -53,10 +53,14 @@ class temporaryPh extends React.Component {
         break;
       case 7:
         day = "网球";
+        break;
       case 8:
         day = "高尔夫";
+        break;
+      default:
+        day = "";
     }
-    this.setState({ sportId: e,sportName:day })
+    this.setState({ sportId: e, sportName: day })
 
   }
   startOnChange = (date, dateString) => {
@@ -75,16 +79,14 @@ class temporaryPh extends React.Component {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
     } else {
-     message.info(res.data.msg)
-     this.props.history.goBack()
-
+      message.info(res.data.msg)
+      this.props.history.goBack()
     }
   }
 
   submit = () => {
-
-    let { sportId,sportName, startTime, endTime, comment } = this.state
-    this.VenueTemporarilyClosed({ sportid: sportId,sportname:sportName,starttime:startTime,endtime:endTime,comment:comment})
+    let { sportId, sportName, startTime, endTime, comment } = this.state
+    this.VenueTemporarilyClosed({ sportid: sportId, sportname: sportName, starttime: startTime, endtime: endTime, comment: comment })
   }
 
 

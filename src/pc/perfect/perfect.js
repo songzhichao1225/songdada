@@ -198,7 +198,7 @@ class perfect extends React.Component {
     }
     if(filesURLarr.length<2){
           message.warning("至少上传两张场地照片")
-    }
+    }else{
     let sportId=sessionStorage.getItem('onChangeCheck')===null?'':sessionStorage.getItem('onChangeCheck').split(',')
      let facilitiesId=sessionStorage.getItem('onChangeSite')===null?'':sessionStorage.getItem('onChangeSite').split(',')
     let data={
@@ -217,13 +217,12 @@ class perfect extends React.Component {
       siteInfo:this.state.onChangeText,
       position:this.props.location.query.adddress
     }
-  
      this.PerfectingVenueInformation(data)
+  }
   }
  
   async PerfectingVenueInformation(data) {
     const res = await PerfectingVenueInformation(data)
-   console.log(res)
    if(res.data.code===2000){
     this.props.history.push('/qualification')
    }

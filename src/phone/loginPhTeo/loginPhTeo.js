@@ -46,7 +46,7 @@ class loginPhTeo extends React.Component {
           if (res.data.data.issite === 0) {
             this.props.history.push('/stadiumInformationPh')
           } else if (res.data.data.isqult === 0) {
-            this.props.history.push('/qualification')
+            this.props.history.push('/qualificationPh')
           } else if (res.data.data.islegal === 0 || res.data.data.islegal === 2) {
             this.props.history.push('/resultsAuditsPh')
           } else {
@@ -76,7 +76,7 @@ class loginPhTeo extends React.Component {
         <div className="headerTitle">用户名登录</div>
         <div className="loginInput">
           <div className="name">
-            <Input className="phone" prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={11}  onChange={this.phone} placeholder="用户名" />
+            <Input className="phone" autoFocus prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={11}  onChange={this.phone} placeholder="用户名" />
           </div>
           <div className="name">
             <Input.Password className="phone" prefix={<Icon type="unlock" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />}  maxLength={8} onChange={this.pssword}  placeholder="请输入密码" />
