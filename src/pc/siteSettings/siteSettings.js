@@ -17,13 +17,13 @@ class siteSettings extends React.Component {
     visible: false,
     ListSport: [],
     list: [],
-    runId: '',//运动项目id
+    runId: [],//运动项目id
     runName: '',//运动项目名称
-    openday: '',//营业时间段Id
+    openday: [],//营业时间段Id
     opendayname: '',//营业时间端名称
     starttime: '',//开始时间
     endtime: '',//结束时间
-    costperhour: 0,//价格
+    costperhour: '',//价格
     number: 1,//数量
     maxScheduledDate: '',//最长可预定日期、
     appointmenttime: '',//最短可提前预定时间
@@ -34,7 +34,8 @@ class siteSettings extends React.Component {
     other: '',
     page: 1,
     deletUid: 0,
-    maxScheduledDateName: '请选择',
+    maxScheduledDateName: [],
+    siteEditor:0,//场地设置打开修改
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -88,8 +89,8 @@ class siteSettings extends React.Component {
       visible: true,
     });
     this.setState({
-      runId: '请选择', openday: '请选择', opendayname: '请选择', starttime: '', endtime: '', costperhour: 0,
-      number: 1, maxScheduledDate: '请选择', appointmenttime: '请选择', comment: '', DisList: ''
+      runId: [], openday: [], opendayname: '请选择', starttime: '', endtime: '', costperhour: '',maxScheduledDateName:[],
+      number: 1, maxScheduledDate: '请选择', appointmenttime: [], comment: '', DisList: ''
     })
   };
 
@@ -102,6 +103,7 @@ class siteSettings extends React.Component {
   handleCancel = e => {
     this.setState({
       visible: false,
+      siteEditor:0,
     });
   };
   handleChangeOne = e => {
@@ -139,27 +141,39 @@ class siteSettings extends React.Component {
   }
 
   handleChangeTwo = e => {
-    console.log(e.join(''))
-    this.setState({ openday: e.join(',') })
-    let day = []
-    for (let i in e) {
-      if (e[i] === '1') {
-        day.push('周一')
-      } else if (e[i] === '2') {
-        day.push('周二')
-      } else if (e[i] === '3') {
-        day.push('周三')
-      } else if (e[i] === '4') {
-        day.push('周四')
-      } else if (e[i] === '5') {
-        day.push('周五')
-      } else if (e[i] === '6') {
-        day.push('周六')
-      } else if (e[i] === '0') {
-        day.push('周日')
-      }
+   
+    if(typeof(e)==='object'){
+      this.setState({ openday: e.join(',') })
+    }else{
+      this.setState({ openday: e })
+      let day = ''
+    switch (parseInt(e)) {
+      case 1:
+        day = "周一";
+        break;
+      case 2:
+        day = "周二";
+        break;
+      case 3:
+        day = "周三";
+        break;
+      case 4:
+        day = "周四";
+        break;
+      case 5:
+        day = "周五";
+        break;
+      case 6:
+        day = "周六";
+        break;
+      case 0:
+        day = "周日";
+        break;
+      default:
+        day = "";
     }
-    this.setState({ opendayname: day.join(',') })
+    this.setState({opendayname:day})
+    }
   }
 
   handleChangThree = (value, dateString) => {
@@ -261,7 +275,7 @@ class siteSettings extends React.Component {
     } else if (res.data.code === 2000) {
       this.setState({ DisList: res.data.data })
       this.setState({
-        runId: datefor.sportid, openday: datefor.openday, opendayname: datefor.opendayname, starttime: datefor.starttime, endtime: datefor.endtime, costperhour: datefor.costperhour,
+        runId: datefor.sportid, openday: datefor.opendayname, opendayname: datefor.opendayname, starttime: datefor.starttime, endtime: datefor.endtime, costperhour: datefor.costperhour,
         number: datefor.maxtablecount, maxScheduledDate: datefor.maxScheduledDate, appointmenttime: datefor.appointmenttime, comment: datefor.comment
       })
       let day = ''
@@ -348,6 +362,7 @@ class siteSettings extends React.Component {
   update = e => {
     this.setState({
       visible: true,
+      siteEditor:1,
     });
     this.getFirstField({ uuid: e.target.dataset.uid })
   }
@@ -452,7 +467,7 @@ class siteSettings extends React.Component {
 
           <div className="modelList" style={{ height: 'auto' }}>
             <span>休息日/工作日</span>
-            <Select placeholder="请选择" mode='multiple' className="selectModel" value={this.state.opendayname} style={{ width: 249, height: 'auto' }} onChange={this.handleChangeTwo}>
+            <Select placeholder="请选择" mode={this.state.siteEditor===1?'':'multiple'} className="selectModel" value={this.state.openday} style={{ width: 249, height: 'auto' }} onChange={this.handleChangeTwo}>
               <Option value="1">周一</Option>
               <Option value="2">周二</Option>
               <Option value="3">周三</Option>
@@ -495,7 +510,7 @@ class siteSettings extends React.Component {
           </div>
           <div className="modelList">
             <span>最短提前预定时间</span>
-            <Select placeholder="请选择" className="selectModel" value={this.state.appointmenttime + '分钟'} style={{ width: 249 }} onChange={this.handleChangeFive}>
+            <Select placeholder="请选择" className="selectModel" value={this.state.appointmenttime===0?'0分钟':[]&&this.state.appointmenttime===30?'30分钟':[]&&this.state.appointmenttime===60?'60分钟':[]&&this.state.appointmenttime===120?'120分钟':[]&&this.state.appointmenttime===180?'分钟':[]} style={{ width: 249 }} onChange={this.handleChangeFive}>
               <Option value="0">0分钟</Option>
               <Option value="30">30分钟</Option>
               <Option value="60">60分钟</Option>

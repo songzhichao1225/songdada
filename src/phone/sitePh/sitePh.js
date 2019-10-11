@@ -1,7 +1,7 @@
 import React from 'react';
 import './sitePh.css';
 import { message, Row, Col, Input, Pagination, Drawer, Select, TimePicker, DatePicker, Result, Icon, Popconfirm } from 'antd';
-import { getVenueFieldList, getVenueSport, addVenueField, getFirstField, getVenueDiscountList, addVenueDiscount, delVenueField,DelVenueDiscount } from '../../api';
+import { getVenueFieldList, getVenueSport, addVenueField, getFirstField, getVenueDiscountList, addVenueDiscount, delVenueField,DelVenueDiscount,getFirstDiscount } from '../../api';
 
 import moment from 'moment';
 
@@ -19,6 +19,7 @@ class sitePh extends React.Component {
     sportid: '',
     selectNum: null,
     flag: false,
+    flagTwo:false,
     visible: false,
     userPickerVisible: false,
     addressPickerVisible: false,
@@ -45,17 +46,22 @@ class sitePh extends React.Component {
     sitePage: 1,//场地设置当前页
     siteEditor:0,//场地设置打开修改
     editorListId:'',
+    opendayname:'',
 
     projectTwoId: '',
-    projectTwoName: '',
-    startDateTwo: '',
-    endDateTwo: '',
+    projectTwoName:[],
+    startDateTwo:undefined,
+    endDateTwo: undefined,
     startTimeTwo: '0:00',
     endTimeTwo: '0:00',
     priceTwo: '',
     numTwo: '',
-    timeChangeTwo: '',
+    timeChangeTwo:[],
+    timeChangeTwoNa:[],
     commentTwo: '',
+    perDeletId:'',//删除某一条优惠活动id
+    perPage:1,//优惠活动当前页
+    YouId:'',
   };
   async getVenueFieldList(data) {
     const res = await getVenueFieldList(data, sessionStorage.getItem('venue_token'))
@@ -117,6 +123,34 @@ class sitePh extends React.Component {
         startTime:res.data.data.starttime,endTime:res.data.data.endtime,price:res.data.data.costperhour,num:res.data.data.maxtablecount,
         weekChange:res.data.data.maxScheduledDate,timeChange:res.data.data.appointmenttime,comment:res.data.data.comment})
     }
+
+    let day = ''
+    switch (parseInt(res.data.data.openday)) {
+      case 1:
+        day = "周一";
+        break;
+      case 2:
+        day = "周二";
+        break;
+      case 3:
+        day = "周三";
+        break;
+      case 4:
+        day = "周四";
+        break;
+      case 5:
+        day = "周五";
+        break;
+      case 6:
+        day = "周六";
+        break;
+      case 0:
+        day = "周日";
+        break;
+      default:
+        day = "";
+    }
+    this.setState({opendayname:day})
   }
 
 
@@ -147,6 +181,7 @@ class sitePh extends React.Component {
     this.getVenueFieldList({ sportid: this.state.sportid, page: page })
   }
   currentTwo = (page, pageSize) => {
+    this.setState({perPage:page,flagTwo:false})
     this.getVenueDiscountList({ sportid: this.state.sportid, page: page })
   }
   selectBottom = (e) => {
@@ -157,18 +192,25 @@ class sitePh extends React.Component {
     }
   }
   selectBottomTwo = (e) => {
-    this.setState({ selectNumTwo: e.currentTarget.dataset.index, flag: true })
+    if(this.state.flagTwo===true){
+      this.setState({ selectNumTwo: e.currentTarget.dataset.index, flagTwo: false })
+    }else{
+      this.setState({ selectNumTwo: e.currentTarget.dataset.index, flagTwo: true })
+    }
   }
 
   addList = () => {
     this.setState({ DrawerVisible: true })
-    this.setState({addsporId:'',runName:'',dateChange:[],
+    this.setState({addsporId:[],runName:'',dateChange:[],
       startTime:'0:00',endTime:'0:00',price:'',num:'',
       weekChange:[],timeChange:[],comment:[]})
   }
 
   addYouList = () => {
     this.setState({ Youvisible: true })
+    this.setState({projectTwoId:'',projectTwoName:[],startDateTwo:undefined,endDateTwo:undefined,
+      startTimeTwo:'0:00',endTimeTwo:'0:00',priceTwo:'',
+      numTwo:'',timeChangeTwo:[],commentTwo:''})
   }
 
 
@@ -231,8 +273,38 @@ class sitePh extends React.Component {
   }
 
   dateChange = e => {
-    console.log(e)
-    this.setState({ dateChange: e })
+    if(typeof(e)==='object'){
+      this.setState({ dateChange: e.join(',') })
+    }else{
+      this.setState({ dateChange: e })
+      let day = ''
+    switch (parseInt(e)) {
+      case 1:
+        day = "周一";
+        break;
+      case 2:
+        day = "周二";
+        break;
+      case 3:
+        day = "周三";
+        break;
+      case 4:
+        day = "周四";
+        break;
+      case 5:
+        day = "周五";
+        break;
+      case 6:
+        day = "周六";
+        break;
+      case 0:
+        day = "周日";
+        break;
+      default:
+        day = "";
+    }
+    this.setState({opendayname:day})
+    }
   }
   startTime = (date, dateString) => {
     this.setState({ startTime: dateString})
@@ -256,12 +328,12 @@ class sitePh extends React.Component {
     this.setState({ comment: e.target.value })
   }
   submit = () => {
-    let { addsporId, runName, dateChange, startTime, endTime, price, num, weekChange, timeChange, comment,editorListId } = this.state
+    let { addsporId, runName, dateChange, opendayname,startTime, endTime, price, num, weekChange, timeChange, comment,editorListId } = this.state
     let data = {
       sportid: addsporId,
       sportname: runName,
       openday: dateChange,
-      opendayname: '',
+      opendayname: opendayname,
       starttime: startTime,
       endtime: endTime,
       costperhour: price,
@@ -300,7 +372,6 @@ class sitePh extends React.Component {
 
   //////////////////////  优惠活动获取添加
   projectTwo = e => {
-    console.log(e)
     this.setState({ projectTwoId: e })
     let day = ''
     switch (parseInt(e)) {
@@ -354,16 +425,38 @@ class sitePh extends React.Component {
   }
   timeChangeTwo = e => {
     this.setState({ timeChangeTwo: e })
+    let day = ''
+    switch (parseInt(e)) {
+      case 0:
+        day = "0分钟";
+        break;
+      case 30:
+        day = "30分钟";
+        break;
+      case 60:
+        day = "60分钟";
+        break;
+      case 120:
+        day = "120分钟";
+        break;
+      case 180:
+        day = "180分钟";
+        break;
+      default:
+        day = "";
+    }
+    this.setState({timeChangeTwoNa:day})
+
   }
   commentTwo = e => {
     this.setState({ commentTwo: e.target.value })
   }
   submitTwo = () => {
-    let { projectTwoId, projectTwoName, startDateTwo, endDateTwo, startTimeTwo, endTimeTwo, priceTwo, numTwo, timeChangeTwo, commentTwo } = this.state
+    let { projectTwoId, projectTwoName, startDateTwo, endDateTwo, startTimeTwo, endTimeTwo, priceTwo, numTwo, timeChangeTwo, commentTwo,YouId } = this.state
     let data = {
       sportid: projectTwoId,
       sportname: projectTwoName,
-      starttime: startTimeTwo,
+      starttime: startTimeTwo, 
       endtime: endTimeTwo,
       costperhour: priceTwo,
       maxtablecount: numTwo,
@@ -371,21 +464,46 @@ class sitePh extends React.Component {
       fromdate: startDateTwo,
       enddate: endDateTwo,
       comment: commentTwo,
-      uuid: ''
+      uuid: YouId
     }
     this.addVenueDiscount(data)
   }
 
-  //  //删除某一条优惠活动
-  //  async DelVenueDiscount (data){
-  //   const res = await DelVenueDiscount(data, sessionStorage.getItem('venue_token'))
-  //   if (res.data.code === 2000) {
-  //     message.info(res.data.msg)
-  //     this.getVenueDiscountList({ sportid: '', page: this.state.sitePage })
-  //   } else {
-  //     message.error(res.data.msg)
-  //   }
-  // }
+   //删除某一条优惠活动
+   async DelVenueDiscount (data){
+    const res = await DelVenueDiscount(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000){
+      message.info(res.data.msg)
+      this.getVenueDiscountList({ sportid: '', page:this.state.perPage })
+    } else {
+      message.error(res.data.msg)
+    }
+  }
+
+  per = e => {
+    this.setState({ perDeletId: e.currentTarget.dataset.uuid })
+  }
+
+  perDelet=()=>{
+   this.DelVenueDiscount({uuid:this.state.perDeletId})
+  }
+
+  editorTwo=(e)=>{
+    this.setState({Youvisible:true})
+    this.setState({YouId:e.currentTarget.dataset.uuid})
+    this.getFirstDiscount({uuid:e.currentTarget.dataset.uuid})
+  }
+
+  
+  async getFirstDiscount(data) {
+    const res = await getFirstDiscount(data,sessionStorage.getItem('venue_token'))
+       if(res.data.code===2000){
+        this.setState({projectTwoId:res.data.data.sportid,projectTwoName:res.data.data.sportname,startDateTwo:res.data.data.fromdate,endDateTwo:res.data.data.enddate,
+          startTimeTwo:res.data.data.starttime,endTimeTwo:res.data.data.endtime,priceTwo:res.data.data.costperhour,
+          numTwo:res.data.data.maxtablecount,timeChangeTwo:res.data.data.appointmenttime,commentTwo:res.data.data.comment})
+       }
+  }
+  
   
 
   render() {
@@ -409,7 +527,8 @@ class sitePh extends React.Component {
                   <Col xs={{ span: 9, offset: 1 }} lg={{ span: 6, offset: 1 }}>{item.starttime + '-' + item.endtime}</Col>
                   <Col xs={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 1 }}>{item.costperhour}</Col>
                 </Row>
-                <div className={parseInt(this.state.selectNum) === i && this.state.flag === true ? 'selectBottom' : 'none'}>
+                {/* && this.state.flag === true */}
+                <div className={parseInt(this.state.selectNum) === i  ? 'selectBottom' : 'none'}>
                   <div className="top"><div><span>日期</span>{item.opendayname}</div><div><span>场地数量</span>{item.maxtablecount}</div></div>
                   <div className="top" style={{ marginTop: '0.5rem', marginBottom: '0.3rem' }}><div><span>最长可预定时间</span>{item.date}</div>
                     <div style={{ marginLeft: '1rem' }}><span>最短预定时间</span>{item.appointmenttime + '分钟'}</div></div>
@@ -461,7 +580,7 @@ class sitePh extends React.Component {
                 style={{ width: '50%', float: 'right' }}
                 placeholder="请选择"
                 onChange={this.dateChange}
-                value={this.state.dateChange}
+                value={this.state.siteEditor===1?this.state.dateChange===0?'周日':[]&&this.state.dateChange===1?'周一':[]&&this.state.dateChange===2?'周二':[]&&this.state.dateChange===3?'周三':[]&&this.state.dateChange===4?'周四':[]&&this.state.dateChange===5?'周五':[]&&this.state.dateChange===6?'周六':[]:this.state.dateChange}
               >
                 <Option value='1'>周一</Option>
                 <Option value='2'>周二</Option>
@@ -537,6 +656,7 @@ class sitePh extends React.Component {
             <Col xs={{ span: 9, offset: 1 }} lg={{ span: 6, offset: 1 }}>时间</Col>
             <Col xs={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 1 }}>价格（元/时）</Col>
           </Row>
+          <div style={this.state.getVenueDiscountList.length < 1 ? { display: 'none' } : {}}>
           {
             this.state.getVenueDiscountList.map((item, i) => (
               <div key={i} style={{ borderBottom: '0.06rem solid #f5f5f5' }}>
@@ -545,23 +665,25 @@ class sitePh extends React.Component {
                   <Col xs={{ span: 9, offset: 1 }} lg={{ span: 6, offset: 1 }}>{item.starttime + '-' + item.endtime}</Col>
                   <Col xs={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 1 }}>{item.costperhour}</Col>
                 </Row>
-                <div className={parseInt(this.state.selectNumTwo) === i && this.state.flag === true ? 'selectBottom' : 'none'}>
+                {/* && this.state.flagTwo === true */}
+                <div className={parseInt(this.state.selectNumTwo) === i ? 'selectBottom' : 'none'}>
                   <div className="top"><div><span>场地预留数量</span>{item.maxtablecount}</div><div><span>最短提前预定时间</span>{item.appointmenttime}</div></div>
                   <div className="top" style={{ marginTop: '0.5rem', marginBottom: '0.3rem' }}><span>最长可预定时间</span>{item.fromdate}至{item.enddate}</div>
-                  <img className="upLoad" onClick={this.editor} data-uuid={item.uid} src={require("../../assets/upLoad.png")} alt="修改" />
+                  <img className="upLoad" onClick={this.editorTwo} data-uuid={item.uid} src={require("../../assets/upLoad.png")} alt="修改" />
                   <Popconfirm
                     title="你确定要删除吗?"
-                    onConfirm={this.siteDelet}
+                    onConfirm={this.perDelet}
                     onCancel={this.siteCancel}
                     okText="确定"
                     cancelText="取消"
                   >
-                    <img className="upLoad" style={{ right: '4rem' }} onClick={this.mood} data-uuid={item.uid} src={require("../../assets/delet.png")} alt="删除" />
+                    <img className="upLoad" style={{ right: '4rem' }} onClick={this.per} data-uuid={item.uid} src={require("../../assets/delet.png")} alt="删除" />
                   </Popconfirm>
                 </div>
               </div>
             ))
           }
+          </div>
 
           <Pagination className="fenye" style={this.state.getVenueDiscountList.length < 1 ? { display: 'none' } : {}} defaultCurrent={1} size="small" onChange={this.currentTwo} total={this.state.Youtotal} />
           <Result className={this.state.getVenueDiscountList.length === 0 ? '' : 'nono'} icon={<Icon type="gift" theme="twoTone" twoToneColor="#F5A623" />} title="没有优惠活动" />
@@ -581,6 +703,7 @@ class sitePh extends React.Component {
               style={{ width: '50%', float: 'right' }}
               placeholder="请选择"
               onChange={this.projectTwo}
+              value={this.state.projectTwoName}
             >
               {
                 this.state.sportList.map((item, i) => (
@@ -592,32 +715,32 @@ class sitePh extends React.Component {
 
           <div className="SzSon">
             <span>开始日期</span>
-            <DatePicker style={{ width: '50%', float: 'right' }} placeholder="请选择开始日期" onChange={this.startDateTwo} />
+            <DatePicker style={{ width: '50%', float: 'right' }} placeholder="请选择开始日期" onChange={this.startDateTwo} value={moment(this.state.startDateTwo)} />
           </div>
 
           <div className="SzSon">
             <span>结束日期</span>
-            <DatePicker style={{ width: '50%', float: 'right' }} placeholder="请选择结束日期" onChange={this.endDateTwo} />
+            <DatePicker style={{ width: '50%', float: 'right' }} placeholder="请选择结束日期" onChange={this.endDateTwo} value={moment(this.state.endDateTwo)} />
           </div>
           <div className="SzSon">
             <span>开始时间</span>
-            <TimePicker style={{ float: 'right', width: '50%' }} onChange={this.startTimeTwo} defaultValue={moment('00:00', format)} format={format} />
+            <TimePicker style={{ float: 'right', width: '50%' }}  onChange={this.startTimeTwo} value={moment(this.state.startTimeTwo, format)} format={format} />
           </div>
           <div className="SzSon">
             <span>结束时间</span>
-            <TimePicker style={{ float: 'right', width: '50%' }} onChange={this.endTimeTwo} defaultValue={moment('00:00', format)} format={format} />
+            <TimePicker style={{ float: 'right', width: '50%' }} onChange={this.endTimeTwo} value={moment(this.state.endTimeTwo, format)} format={format} />
           </div>
           <div className="SzSon">
             <span>价格(元/时)</span>
-            <Input style={{ width: '50%', border: 'none', height: '2rem', float: 'right', boxShadow: 'none' }} onChange={this.priceTwo} placeholder="请输入" type="number" />
+            <Input style={{ width: '50%', border: 'none', height: '2rem', float: 'right', boxShadow: 'none' }} value={this.state.priceTwo} onChange={this.priceTwo} placeholder="请输入" type="number" />
           </div>
           <div className="SzSon">
             <span>数量</span>
-            <Input style={{ width: '50%', border: 'none', height: '2rem', float: 'right', boxShadow: 'none' }} onChange={this.numTwo} placeholder="请输入" type="number" />
+            <Input style={{ width: '50%', border: 'none', height: '2rem', float: 'right', boxShadow: 'none' }} value={this.state.numTwo} onChange={this.numTwo} placeholder="请输入" type="number" />
           </div>
           <div className="SzSon">
             <span>最短提前预定时间</span>
-            <Select style={{ width: '50%', float: 'right' }} placeholder="请选择" onChange={this.timeChangeTwo}>
+            <Select style={{ width: '50%', float: 'right' }} placeholder="请选择" value={this.state.timeChangeTwo===0?'0分钟':[]&&this.state.timeChangeTwo===30?'30分钟':[]&&this.state.timeChangeTwo===60?'60分钟':[]&&this.state.timeChangeTwo===120?'120分钟':[]&&this.state.timeChangeTwo===180?'180分钟':[]} onChange={this.timeChangeTwo}>
               <Option value='0'>0分钟</Option>
               <Option value='30'>30分钟</Option>
               <Option value='60'>60分钟</Option>
@@ -627,12 +750,11 @@ class sitePh extends React.Component {
           </div>
           <div className="SzSon">
             <span>备注</span>
-            <Input style={{ width: '50%', border: 'none', height: '2rem', float: 'right', boxShadow: 'none' }} onChange={this.commentTwo} placeholder="请输入"  />
+            <Input style={{ width: '50%', border: 'none', height: '2rem', float: 'right', boxShadow: 'none' }} value={this.state.commentTwo} onChange={this.commentTwo} placeholder="请输入"  />
           </div>
           <div className="sitePhsubmit" onClick={this.submitTwo}>提交</div>
           <div className="sitePhclose" onClick={this.drawerCloseTwo}>取消</div>
         </Drawer>
-
       </div>
     )
   }

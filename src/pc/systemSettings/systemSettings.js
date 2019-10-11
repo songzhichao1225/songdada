@@ -2,7 +2,7 @@ import React from 'react';
 import './systemSettings.css';
 import 'antd/dist/antd.css';
 import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport, VenueTemporarilyClosed, VenueIsClose, getVenueIsClose } from '../../api';
-import { Input, Icon, message, Checkbox, Modal, Select, DatePicker, LocaleProvider } from 'antd';
+import { Input, Icon, message, Checkbox, Modal, Select, DatePicker, LocaleProvider,Drawer } from 'antd';
 import moment from 'moment';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import 'moment/locale/zh-cn';
@@ -47,7 +47,20 @@ class systemSettings extends React.Component {
     end: '',
     textArea: '',
     isClose: '',
+    Drawervisible:false,
+  }
+
+  showDrawer = () => {
+    this.setState({
+      Drawervisible: true,
+    });
   };
+  onClose=()=>{
+    this.setState({
+      Drawervisible: false,
+    });
+  }
+
 
   async getVenueIsClose(data) {
     const res = await getVenueIsClose(data, sessionStorage.getItem('venue_token'))
@@ -343,7 +356,7 @@ class systemSettings extends React.Component {
                 <span onClick={this.agreement}>用户协议</span>
                 <span className={this.state.flag === true ? 'block' : 'none'}>挑战约球的创始团队来自阿里巴巴、GOOGLE、舒适堡、格力，及全球连锁酒店顶级管理人士。一群狂热的健身&互联网信徒，乐刻运动是一个充满极客精神以追求极致的态度为都市年轻人提供健身服务的创业公司。致力于成为混乱的国内健身行业的颠覆者。</span>
               </li>
-              <li>关于我们</li>
+              <li onClick={this.showDrawer}>关于我们</li>
               <li>客服电话 （010-120101021）</li>
               <li>帮助中心</li>
             </ul>
@@ -441,12 +454,18 @@ class systemSettings extends React.Component {
 
             </div>
             <div className="submit" onClick={this.modelSubmit}>确认</div>
-
-
           </Modal>
-
-
-
+          <Drawer
+          title="关于我们"
+          placement="right"
+          closable={false}
+          onClose={this.onClose}
+          visible={this.state.Drawervisible}
+        >
+         <span style={{display:'block'}}>挑战约球，2019年在背景成立，是由背景甲乙电子商务技术有限公司开发，是国内领先的运动O2O平台，全国规模最大的24小时连锁健身品牌</span>
+         <span style={{display:'block',marginTop:'30px'}}>挑战约球的创始团队来自阿里巴巴、GOOGLE、舒适堡、格力，及全球连锁酒店顶级管理人士。一群狂热的健身&互联网信徒，乐刻运动是一个充满极客精神以追求极致的态度为都市年轻人提供健身服务的创业公司。致力于成为混乱的国内健身行业的颠覆者。</span>
+        <span style={{display:'block',marginTop:'30px'}}>在健身房行业，中美差距正在拉大。乐刻的创始人韩伟想参考的正是小型健身房模式，他为此准备了接近一年时间，对比模式、做市场调研、考察门店，将24小时不打烊的小型健身房正式带入中国市场。</span>
+        </Drawer>
         </div>
         );
       }

@@ -12,7 +12,15 @@
     height: 3rem;
     border-bottom: 0.06rem solid #f5f5f5;
 }
-.inforSitePh .nav>div{
+.inforSitePh .nav .left{
+    float: left;
+    width: 50%;
+    text-align: center;
+    line-height: 3rem;
+    font-size: 1rem;
+    color: #9B9B9B;
+}
+.inforSitePh .nav .right{
     float: left;
     width: 50%;
     text-align: center;
@@ -22,24 +30,26 @@
 }
 .inforSitePh .listSon{
     width: 95%;
-    min-height: 2rem;
-    margin:1rem auto 0;
+    min-height: 3rem;
+    margin:0 auto 0;
     overflow: hidden;
     border-bottom: 0.06rem solid #f5f5f5;
+    line-height: 3rem;
 }
 .inforSitePh .listSon .right{
     width: 70%;
-    height: 2rem;
+    height: 3rem;
     float: right;
     border:none;
     box-shadow: none;
-    margin-top: -0.2rem;
+    line-height: 3rem;
 }
 .inforSitePh .listSon .rightLi{
     width: 70%;
     padding-bottom: 0.5rem;
     float: right;
     padding-left: 11px;
+    margin-top: 0.5rem;
 }
 .inforSitePh .listSon .rightLi .ant-checkbox-wrapper{
     width: 5rem;
@@ -48,6 +58,7 @@
     float: right;
     width: 70%;
     padding-left: 11px;
+    margin-top: 0.5rem;
 }
 .inforSitePh  .siteSubmit{
     width: 80%;
@@ -59,4 +70,31 @@
     text-align: center;
     line-height: 3rem;
     margin: 1rem auto 0;
+}
+.inforSitePh .none{
+    display: none;
+}
+.inforSitePh .width{
+    width: 100%;
+    line-height: 3rem;
+    text-align: center; 
+}
+.inforSitePh .submit{
+	width: 80%;
+	height: 3rem;
+	background: #F5A623;
+	border-radius: 3rem;
+	float: left;
+	 margin-left: 10%;
+	line-height: 28px;
+	margin-bottom: 40px;
+}
+
+.inforSitePh .ant-select-selection{
+    border: none;
+    box-shadow: none;
+    height: 3rem;
+}
+.inforSitePh .ant-select-selection__rendered{
+  line-height: 3rem;
 }

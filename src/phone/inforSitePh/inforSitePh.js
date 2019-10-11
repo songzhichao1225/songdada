@@ -1,8 +1,8 @@
 import React from 'react';
 import './inforSitePh.css';
-import { Input, message, Checkbox, Upload, Icon } from 'antd';
-import { getVenueInformation,getVenueQualificationInformation } from '../../api';
-
+import { Input, message, Checkbox, Upload, Icon,Popconfirm,Button,Radio,Select,Tooltip } from 'antd';
+import { getVenueInformation,getVenueQualificationInformation,VenueInformationSave,VenueQualificationInformationSave,getVenueIssecondaudit,getVenueOpenBank,getVenueOpenBankList,getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
+const {Option}=Select
 
 
 function getBase64(img, callback) {
@@ -23,14 +23,56 @@ function beforeUpload(file) {
   return isJpgOrPng && isLt2M;
 }
 
+function getBase64T(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+
 class inforSitePh extends React.Component {
 
   state = {
     flag: 1,
+    issecondaudit:1,
+   
+    //场馆信息 参数
     listSon: [],
     imageUrl: '',
-    sport: '',
+    cgName:'',
+    address:'',
+    linkMan:'',
+    telephone:'',
+    fileList: [],
     facilities: '',
+    sport:'',
+    siteInfo:'',
+    comment:'',
+    //资质信息 参数
+    imageUrlTwo:'',
+    imageUrlThree:'',
+    corporateName:'',
+    corporateId:'',
+    corporatePhone:'',
+    numRadio:1,
+    corporateCardId:'',
+    flagOne: true,
+    flagTwo: true,
+    flagThree: true,
+    type: [],//银行类型
+    backProvince: [],//省
+    backCity: [],//市
+    bank_id: '',//类型Id
+    province_id: '',//省Id
+    city_id: '',//市id
+    backList:[],//获取的银行
+    upData:true,
+    corporateOpen:'',
+    zuo:0,
+    imgHoodTwo:'',
+    imgHood:'',
   };
 
   async getVenueInformation(data) {
@@ -39,24 +81,48 @@ class inforSitePh extends React.Component {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
     } else if (res.data.code === 2000) {
-      this.setState({ listSon: res.data.data, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), imageUrl: res.data.data.firstURL })
+
+      let imgS = (res.data.data.filesURL).split('|')
+      let arrImg = []
+      for (let i in imgS) {
+        arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: imgS[i] })
+      }
+      this.setState({ listSon: res.data.data, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), imageUrl: res.data.data.firstURL,
+      cgName:res.data.data.name,address:res.data.data.address,linkMan:res.data.data.linkMan,telephone:res.data.data.telephone,siteInfo:res.data.data.siteInfo,
+      fileList: arrImg,comment:res.data.data.comment
+    })
     } else {
       message.error(res.data.msg)
     }
   }
  
-  async getVenueQualificationInformation(data) {
-    const res = await getVenueQualificationInformation(data, sessionStorage.getItem('venue_token'))
-   if (res.data.code === 2000) {
-     console.log(res.data.data)
-    } else {
-      message.error(res.data.msg)
-    }
+
+  async getVenueIssecondaudit(data) {
+    const res = await getVenueIssecondaudit(data,sessionStorage.getItem('venue_token'))
+      console.log(res)
+      this.setState({issecondaudit:res.data.data.issecondaudit})
   }
+
+  async getVenueQualificationInformation(data) {
+    const res = await getVenueQualificationInformation(data,sessionStorage.getItem('venue_token'))
+      if(res.data.code===2000){
+        let corporate=res.data.data
+        let cardImg=corporate.legalFilesURL.replace('|',',').split(',')
+         this.setState({imageUrlTwo:corporate.legalBaseURL+'/'+cardImg[0],imageUrlThree:corporate.legalBaseURL+'/'+cardImg[1],
+         baseImg:corporate.legalBaseURL,
+         imgFile:cardImg[0],imgFileTwo:cardImg[1],
+          corporateName:corporate.legalname,corporateId:corporate.legalcard,corporatePhone:corporate.legalphone,
+          numRadio:corporate.Settlement,corporateCardId:corporate.Bankaccount,corporateOpen:corporate.OpeningBank,lisenceURL:corporate.lisenceURL})
+      }
+  }
+
 
   componentDidMount() {
     this.getVenueInformation()
     this.getVenueQualificationInformation()
+    this.getVenueIssecondaudit()
+    this.getVenueOpenBankProvince()
+    this.getVenueOpenBank()
   }
   left = () => {
     this.setState({ flag: 1 })
@@ -80,6 +146,222 @@ class inforSitePh extends React.Component {
       )
     }
   }
+
+
+  //场馆信息修改获取
+  cgName=e=>{
+    this.setState({cgName:e.target.value})
+  }
+  address=e=>{
+    this.setState({address:e.target.value})
+  }
+  linkMan=e=>{
+    this.setState({linkMan:e.target.value})
+  }
+  telephone=e=>{
+    this.setState({telephone:e.target.value})
+  }
+  handlePreview = async file => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64T(file.originFileObj);
+    }
+    this.setState({
+      previewImage: file.url || file.preview,
+      previewVisible: true,
+    });
+  };
+  handleChangeT = ({ fileList }) => this.setState({ fileList });
+
+  onChangeSite = e => {
+    this.setState({ facilities: e })
+  }
+
+  onChangeCheck = e => {
+    this.setState({ sport: e })
+  }
+  siteInfo=e=>{
+    this.setState({siteInfo:e.target.value})
+  }
+  comment=e=>{
+    this.setState({comment:e.target.value})
+  }
+
+  async VenueInformationSave(data) {
+    const res = await VenueInformationSave(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      message.info('提交成功')
+        this.setState({issecondaudit:0})
+      this.getVenueInformation()
+    } else {
+      message.error(res.data.msg)
+    }
+  }
+
+  confirm = () => {
+    let { listSon, cgName, address, linkMan, telephone, fileList, imageUrl, sport, facilities, siteInfo, comment } = this.state
+    let filesURLarr = []
+    for (let i in fileList) {
+      if (fileList[i].response !== undefined) {
+        filesURLarr.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
+      } else if (fileList[i].response === undefined) {
+        filesURLarr.push(fileList[i].url)
+      }
+    }
+    if(filesURLarr.length>=2){
+      let data = {
+        venuename: cgName,
+        lat: listSon.lat,
+        lng: listSon.lng,
+        address: address,
+        linkMan: linkMan,
+        telephone: telephone,
+        firstURL: imageUrl,
+        filesURL: filesURLarr.join('|'),
+        facilities: facilities.join(','),
+        sport: sport.join(','),
+        siteInfo: siteInfo,
+        position: listSon.position,
+        comment: comment,
+        type: 2
+      }
+      this.VenueInformationSave(data)
+    }else{
+      message.error('至少上传两张室内照')
+    }
+}
+
+// 资质信息修改 获取
+
+handleChangeTwo = info => {
+  if (info.file.status === 'uploading') {
+    this.setState({ loading: true });
+    return;
+  }
+  if (info.file.status === 'done') {
+    this.setState({ zuo:1,imageUrlTwo: info.file.response.data.baseURL + info.file.response.data.filesURL,imgHood:info.file.response.data.baseURL,loading:false,imgFile:info.file.response.data.filesURL })
+  }
+};
+
+handleChangeThree = info => {
+  if (info.file.status === 'uploading') {
+    this.setState({ loading: true });
+    return;
+  }
+  if (info.file.status === 'done') {
+    this.setState({ zuo:1, imageUrlThree: info.file.response.data.baseURL + info.file.response.data.filesURL,imgHoodTwo:info.file.response.data.baseURL,loading:false,imgFileTwo:info.file.response.data.filesURL })
+  }
+}
+corporateName=e=>{
+  this.setState({corporateName:e.target.value})
+}
+corporateId=e=>{
+  this.setState({corporateId:e.target.value})
+}
+corporatePhone=e=>{
+  this.setState({corporatePhone:e.target.value})
+}
+
+numRadio=e=>{
+  this.setState({numRadio:e.target.value})
+}
+corporateCardId=e=>{
+  this.setState({corporateCardId:e.target.value})
+}
+async getVenueOpenBank(data) {
+  const res = await getVenueOpenBank(data, sessionStorage.getItem('venue_token'))
+  if (res.data.code === 2000) {
+    this.setState({ type: res.data.data, flagOne: false })
+  }
+}
+
+async getVenueOpenBankProvince(data) {
+  const res = await getVenueOpenBankProvince(data, sessionStorage.getItem('venue_token'))
+  if (res.data.code === 2000) {
+    this.setState({ backProvince: res.data.data, flagTwo: false })
+  }
+}
+
+async getVenueOpenBankList(data) {
+  const res = await getVenueOpenBankList(data, sessionStorage.getItem('venue_token'))
+  if (res.data.code === 2000) {
+    this.setState({ backList: res.data.data, flagThree: false })
+  }
+}
+
+
+async getVenueOpenBankCity(data) {
+  const res = await getVenueOpenBankCity(data, sessionStorage.getItem('venue_token'))
+  if (res.data.code === 2000) {
+    this.setState({ backCity: res.data.data, flagThree: false })
+  }
+}
+
+upData=()=>{
+  this.setState({upData:false})
+}
+typeChange = e => {
+  this.setState({ bank_id: e })
+}
+cityChange = e => {
+  this.setState({ city_id: e })
+}
+provinceChange = e => {
+    
+  this.setState({ province_id: e })
+  this.getVenueOpenBankCity({ province_id: e })
+
+}
+handleSearch=e=>{
+  this.getVenueOpenBankList({bank_id:this.state.bank_id,province_id:this.state.province_id,city_id:this.state.city_id,search_name:e})
+}
+
+
+corporateOpen=e=>{
+  this.setState({corporateOpen:e})
+}
+
+async VenueQualificationInformationSave(data) {
+  const res = await VenueQualificationInformationSave(data,sessionStorage.getItem('venue_token'))
+  if (res.data.code === 4001) {
+    this.props.history.push('/login')
+    message.error('登录超时请重新登录')
+  } else if(res.data.code===2000){
+       message.info('提交成功')
+       this.setState({issecondaudit:1})
+  }else{
+    message.error(res.data.msg)
+  }
+    
+}
+
+ziSubmit=()=>{
+  let {zuo,imgHoodTwo,imgHood,baseImg,lisenceURL,corporateName,corporateId,corporatePhone,numRadio,corporateCardId,corporateOpen,imgFile,imgFileTwo}=this.state
+  let data={
+    legalname:corporateName,
+    legalcard:corporateId,
+    legalphone:corporatePhone,
+    Settlement:numRadio,
+    Bankaccount:corporateCardId,
+    OpeningBank:corporateOpen,
+    lisenceURL:lisenceURL,
+    legalBaseURL:baseImg,
+    legalFilesURL:imgFile+'|'+imgFileTwo
+  }
+  if(zuo===1){
+    if(imgHood===''){
+     message.error('请更换身份证正面照')
+    }else if(imgHoodTwo===''){
+      message.error('请更换身份证反面照')
+    }else{
+      data.legalBaseURL=imgHood
+      this.VenueQualificationInformationSave(data)
+    }
+
+  }else{
+    this.VenueQualificationInformationSave(data)
+  }
+}
+
   render() {
     let { listSon } = this.state
     const options = [
@@ -100,42 +382,60 @@ class inforSitePh extends React.Component {
         <div className="ant-upload-text">门脸照</div>
       </div>
     );
-    const { imageUrl } = this.state;
+    const { imageUrl,fileList,imageUrlTwo,imageUrlThree} = this.state;
+    const uploadButtonT = (
+      <div>
+        <Icon type="plus" />
+        <div className="ant-upload-text">场地照</div>
+      </div>
+    );
+
+    const uploadButtonTwo = (
+      <div>
+        <Icon type={this.state.loading ? 'loading' : 'plus'} />
+        <div className="ant-upload-text">正面照</div>
+      </div>
+    );
+    const uploadButtonThree = (
+      <div>
+        <Icon type={this.state.loading ? 'loading' : 'plus'} />
+        <div className="ant-upload-text">反面照</div>
+      </div>
+    );
     return (
       <div className="inforSitePh">
         <div className="headTitle">场馆信息设置</div>
         <div className="nav">
-          <div className="left" style={this.state.flag === 1 ? { color: '#000' } : {}} onClick={this.left}>基本信息</div>
-          <div className="right" style={this.state.flag === 1 ? {} : { color: '#000' }} onClick={this.right}>资质信息</div>
-        </div>
+          <div className={sessionStorage.getItem('ismethod')==='1'?'left':'width'} style={this.state.flag === 1 ? {color: '#000' } : {}}  onClick={this.left}>基本信息</div>
+          <div className={sessionStorage.getItem('ismethod')==='1'?'right':'none'} style={this.state.flag === 1 ? {} : { color: '#000' }}  onClick={this.right}>资质信息</div>
+        </div> 
         <div className="basic" style={this.state.flag === 1 ? { display: 'block' } : { display: 'none' }}>
           <div className="listSon">
             <span>推广员</span>
             <span className="right" style={{ paddingLeft: '11px' }}>{listSon.promote}</span>
           </div>
-          
           <div className="listSon">
             <span>场馆名称</span>
-            <Input className="right" value={listSon.name} />
+            <Input className="right" value={this.state.cgName}  onChange={this.cgName}/>
           </div>
           
           <div className="listSon">
             <span>场馆位置</span>
-            <Input className="right" value={listSon.position} />
+            <Input className="right" value={listSon.position} disabled={true}/>
           </div>
           
           <div className="listSon">
             <span>详细地址</span>
-            <Input className="right" value={listSon.address} />
+            <Input className="right" value={this.state.address} onChange={this.address}/>
           </div>
 
           <div className="listSon">
             <span>联系人</span>
-            <Input className="right" value={listSon.linkMan} />
+            <Input className="right" value={this.state.linkMan}  onChange={this.linkMan}/>
           </div>
           <div className="listSon">
             <span>联系电话</span>
-            <Input className="right" value={listSon.telephone} />
+            <Input className="right" value={this.state.telephone}  onChange={this.telephone}/>
           </div>
           <div className="listSon">
             <span>门脸照</span>
@@ -153,68 +453,180 @@ class inforSitePh extends React.Component {
           </div>
           <div className="listSon">
             <span>场地照片</span>
-            
+            <Upload
+                name="files"
+                action="/api/UploadVenueImgs?type=Venue"
+                listType="picture-card"
+                fileList={fileList}
+                className="addImg"
+                onPreview={this.handlePreview}
+                onChange={this.handleChangeT}
+                headers={'http://venue.tiaozhanmeiyitian.com'}
+                accept=".jpg, .jpeg, .png"
+              >
+                {fileList.length >= 8 ? null : uploadButtonT}
+              </Upload>
           </div>
           <div className="listSon">
             <span>场地设施</span>
             <div className="rightLi">
-              <Checkbox.Group options={optionsTwo} value={this.state.facilities} onChange={this.onChange} />
+              <Checkbox.Group options={optionsTwo} value={this.state.facilities} onChange={this.onChangeSite} />
             </div>
           </div>
           
           <div className="listSon">
             <span>运动项目</span>
             <div className="rightLi">
-              <Checkbox.Group options={options} value={this.state.sport} onChange={this.onChange} />
+              <Checkbox.Group options={options} value={this.state.sport} onChange={this.onChangeCheck} />
             </div>
           </div>
 
           <div className="listSon">
             <span>场馆介绍</span>
-            <Input className="right" value={listSon.siteInfo} />
+            <Input className="right" value={listSon.siteInfo}  onChange={this.siteInfo} />
           </div>
 
           <div className="listSon">
             <span>其他</span>
-            <Input className="right" value={listSon.comment} />
+            <Input className="right" value={listSon.comment}  onChange={this.comment} />
           </div>
 
-          <div className="siteSubmit">提交</div>
-
+          <Popconfirm
+            title="您确定本次修改吗?"
+            onConfirm={this.confirm}
+            onCancel={this.cancel}
+            okText="确定"
+            cancelText="返回"
+          >
+            <Button className="submit" style={this.state.issecondaudit===1?{display:'block'}:{display:'none'}}>提交修改</Button>
+          </Popconfirm>
+          <Button className="submit"  style={this.state.issecondaudit===1?{display:'none'}:{display:'block'}}>审核中~</Button>
         </div>
 
         <div className="qualification" style={this.state.flag === 2 ? { display: 'block' } : { display: 'none' }}>
           <div className="listSon">
             <span>营业执照</span>
-            <span className="right">长期</span>
+            <span className="right">通过|长期</span>
           </div>
 
           <div className="listSon">
             <span>身份证</span>
-            <Input className="right" />
+            <Upload
+              name="files"
+              listType="picture-card"
+              className="avatar-uploader addImg"
+              showUploadList={false}
+              action="/api/UploadVenueImgs?type=Venue"
+              beforeUpload={beforeUpload}
+              onChange={this.handleChangeTwo}
+            >
+              {imageUrlTwo ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrlTwo} alt="avatar" style={{ width: '100%' }} /> : uploadButtonTwo}
+            </Upload>
+           <div style={{clear:'both'}}></div>
+            <Upload
+              name="files"
+              listType="picture-card"
+              className="avatar-uploader addImg ko"
+              showUploadList={false}
+              action="/api/UploadVenueImgs?type=Venue"
+              beforeUpload={beforeUpload}
+              onChange={this.handleChangeThree}
+            >
+              {imageUrlThree ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrlThree} alt="avatar" style={{ width: '100%' }} /> : uploadButtonThree}
+            </Upload>
           </div>
           <div className="listSon">
             <span>法人姓名</span>
-            <Input className="right" />
+            <Input className="right" value={this.state.corporateName} onChange={this.corporateName} />
           </div>
 
           <div className="listSon">
             <span>法人身份证号</span>
-            <Input className="right" />
+            <Input className="right" value={this.state.corporateId} onChange={this.corporateId}/>
           </div>
 
           <div className="listSon">
             <span>法人手机号</span>
-            <Input className="right"/>
+            <Input className="right" value={this.state.corporatePhone} onChange={this.corporatePhone}/>
+          </div>
+          <div className="listSon">
+            <span>结算账号:</span>
+            <Radio.Group style={{float:'right',marginRight:'1rem'}} onChange={this.numRadio} value={this.state.numRadio}>
+              <Radio value={1}>公司银行账号</Radio>
+              <Radio value={2}>法人账号</Radio>
+            </Radio.Group>
           </div>
 
           <div className="listSon">
-            <span>结算账号</span>
-            <Input className="right"/>
+            <span>银行账号</span>
+            <Input className="right" value={this.state.corporateCardId} onChange={this.corporateCardId}/>
+          </div>
+
+          <div className="listSon" style={this.state.upData===true?{display:'none'}:{display:'block'}}>
+            <span>开户所在地</span>
+            <Select placeholder="银行类型" style={{ width: '5rem', height: '35px',marginLeft:'2.2rem',display:'inline-block', }} loading={this.state.flagOne} onChange={this.typeChange}>
+                  {
+                    this.state.type.map((item, i) => (
+                      <Option key={i} value={item.bank_id}>{item.bank_name}</Option>
+                    ))
+                  }
+                </Select>
+                <Select placeholder="所在省" style={{ width: '5rem', height: '35px', marginLeft: '0.2rem',display:'inline-block' }} loading={this.state.flagTwo} onChange={this.provinceChange}>
+                  {
+                    this.state.backProvince.map((item, i) => (
+                      <Option key={i} value={item.province_id}>{item.province}</Option>
+                    ))
+                  }
+                </Select>
+                <Select placeholder="所在市" style={{ width: '5rem', height: '35px', marginLeft: '0.2rem',display:'inline-block' }} loading={this.state.flagThree} onChange={this.cityChange}>
+                  {
+                    this.state.backCity.map((item, i) => (
+                      <Option key={i} value={item.city_id}>{item.city}</Option>
+                    ))
+                  }
+                </Select>
+          </div>
+       
+       
+          <div className="listSon">
+            <span>开户行</span>
+            <Select
+                  showSearch
+                  className="right"
+                  style={{height:'3rem',lineHeight:'3rem'}}
+                  onSearch={this.handleSearch}
+                  onChange={this.corporateOpen}
+                  defaultActiveFirstOption={false}
+                  showArrow={false}
+                  notFoundContent={null}
+                  disabled={this.state.upData}
+                  value={this.state.corporateOpen}
+                >
+                  {
+                    this.state.backList.map((item,i)=>(
+                      <Option key={i} value={item.sub_branch_name} alt={item.sub_branch_name}>
+                        <Tooltip title={item.sub_branch_name}>
+                      <span>{item.sub_branch_name}</span>
+                    </Tooltip></Option>
+                    ))
+                  } 
+                </Select>
+            <span onClick={this.upData} style={{marginLeft:'0.5rem',color:'#D85D27'}}>修改</span>
           </div>
 
 
 
+
+          <Popconfirm
+            title="您确定本次修改吗?"
+            onConfirm={this.ziSubmit}
+            onCancel={this.cancel}
+            okText="确定"
+            cancelText="返回"
+          >
+            <Button className="submit" style={this.state.issecondaudit===1?{display:'block'}:{display:'none'}}>提交修改</Button>
+          </Popconfirm>
+          <Button className="submit"  style={this.state.issecondaudit===1?{display:'none'}:{display:'block'}}>审核中~</Button>
 
 
         </div>

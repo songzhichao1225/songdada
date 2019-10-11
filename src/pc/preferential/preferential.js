@@ -21,7 +21,7 @@ class preferential extends React.Component {
     visible: false,
     ListSport: [],
     list: [],
-    runId: '',//运动项目id
+    runId: [],//运动项目id
     runName: '请选择',//运动项目名称
     openday: '',//营业时间段Id
     starttime: '',//开始时间
@@ -73,7 +73,7 @@ class preferential extends React.Component {
       visible: true,
     });
     this.setState({
-      runId: '请选择', starttime: '', endtime: '', costperhour: '', startDate: '',
+      runId: [], starttime: '', endtime: '', costperhour: '', startDate: '',
       endDate: '', number:1, appointmenttime: '请选择', comment: '',DisList:''
     })
   };
@@ -327,12 +327,7 @@ class preferential extends React.Component {
           <Result className={this.state.hidden===true?'hidden':''} icon={<Icon type="gift" theme="twoTone"  twoToneColor="#F5A623"/>}title="您没有优惠活动！"/>
          </Spin>
 
-         
-
-
-
-
-
+        
 
         <Modal
           title="添加优惠活动"
@@ -385,7 +380,7 @@ class preferential extends React.Component {
 
             <div className="modelList">
               <span>最短提前预定时间</span>
-              <Select defaultValue="请选择" placeholder="请选择" value={this.state.appointmenttime+'分钟'} className="selectModel" style={{ width: 249 }} onChange={this.handleChangeFive}>
+              <Select defaultValue="请选择" placeholder="请选择" value={this.state.appointmenttime===0?'0分钟':[]&&this.state.appointmenttime===30?'30分钟':[]&&this.state.appointmenttime===60?'60分钟':[]&&this.state.appointmenttime===120?'120分钟':[]&&this.state.appointmenttime===180?'180分钟':[]} className="selectModel" style={{ width: 249 }} onChange={this.handleChangeFive}>
                 <Option value="0">0分钟</Option>
                 <Option value="30">30分钟</Option>
                 <Option value="60">60分钟</Option>
