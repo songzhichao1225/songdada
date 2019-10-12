@@ -143,9 +143,9 @@ class siteSettings extends React.Component {
   handleChangeTwo = e => {
    
     if(typeof(e)==='object'){
-      this.setState({ openday: e.join(',') })
-    }else{
       this.setState({ openday: e })
+    }else{
+      this.setState({ openday: parseInt(e) })
       let day = ''
     switch (parseInt(e)) {
       case 1:
@@ -212,7 +212,7 @@ class siteSettings extends React.Component {
     this.setState({ maxScheduledDateName: dayTwo })
   }
   handleChangeFive = e => {
-    this.setState({ appointmenttime: e })
+    this.setState({ appointmenttime: parseInt(e) })
   }
   textArea = e => {
     this.setState({ comment: e.target.value })
@@ -253,7 +253,6 @@ class siteSettings extends React.Component {
     let data = {
       sportid: runId,
       sportname: runName,
-      openday: openday,
       opendayname: opendayname,
       starttime: starttime,
       endtime: endtime,
@@ -263,6 +262,11 @@ class siteSettings extends React.Component {
       appointmenttime: appointmenttime,
       comment: comment,
       uuid: e.target.dataset.uid
+    }
+    if(typeof(openday)==='number'){
+     data.openday=openday
+    }else{
+      data.openday=openday.join(',')
     }
     this.addVenueField(data)
   }
@@ -275,18 +279,18 @@ class siteSettings extends React.Component {
     } else if (res.data.code === 2000) {
       this.setState({ DisList: res.data.data })
       this.setState({
-        runId: datefor.sportid, openday: datefor.opendayname, opendayname: datefor.opendayname, starttime: datefor.starttime, endtime: datefor.endtime, costperhour: datefor.costperhour,
+        runId: datefor.sportid, openday: datefor.openday, opendayname: datefor.opendayname, starttime: datefor.starttime, endtime: datefor.endtime, costperhour: datefor.costperhour,
         number: datefor.maxtablecount, maxScheduledDate: datefor.maxScheduledDate, appointmenttime: datefor.appointmenttime, comment: datefor.comment
       })
       let day = ''
-      switch (parseInt(this.state.runId)) {
-        case 1:
+      switch (parseInt(this.state.runId)){
+        case 1: 
           day = "羽毛球";
           break;
         case 2:
           day = "乒乓球";
           break;
-        case 3:
+        case 3:  
           day = "台球";
           break;
         case 4:
@@ -309,7 +313,7 @@ class siteSettings extends React.Component {
       }
       this.setState({ runName: day })
       let days = ''
-      switch (parseInt(this.state.openday)) {
+      switch (parseInt(this.state.openday)){
         case 1:
           days = "周一";
           break;
@@ -467,7 +471,10 @@ class siteSettings extends React.Component {
 
           <div className="modelList" style={{ height: 'auto' }}>
             <span>休息日/工作日</span>
-            <Select placeholder="请选择" mode={this.state.siteEditor===1?'':'multiple'} className="selectModel" value={this.state.openday} style={{ width: 249, height: 'auto' }} onChange={this.handleChangeTwo}>
+            <Select placeholder="请选择" mode={this.state.siteEditor===1?'':'multiple'} className="selectModel"
+             value={this.state.siteEditor===1?this.state.openday===0?'周日':[]&&this.state.openday===1?'周一':[]&&this.state.openday===2?'周二':[]&&this.state.openday===3?'周三':[]&&this.state.openday===4?'周四':[]&&this.state.openday===5?'周五':[]&&this.state.openday===6?'周六':[]:this.state.openday}
+              
+             style={{ width: 249, height: 'auto' }} onChange={this.handleChangeTwo}>
               <Option value="1">周一</Option>
               <Option value="2">周二</Option>
               <Option value="3">周三</Option>

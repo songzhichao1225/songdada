@@ -226,6 +226,9 @@ export function VenueQualificationInformationSave(data,headers){    // 修改场
 }
 
 
+export function VenueClickCancelPlace(data,headers){    // 场馆端关闭开启某个时间段的场地
+    return axios.post('/api/VenueClickCancelPlace',data, {headers: {'token': headers}})
+}
 
 
 

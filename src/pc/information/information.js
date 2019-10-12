@@ -1,8 +1,8 @@
 import React from 'react';
 import './information.css';
 import 'antd/dist/antd.css';
-import { Input, Button, Row, Col, Select, Pagination, Spin, message, Result, Icon, DatePicker, Table, Modal, Radio } from 'antd';
-import { getReservationActivitieslist, getVenueReservations, getVenueSport, VenueSendMessage } from '../../api';
+import { Input, Button, Row, Col, Select, Pagination, Spin, message, Result, Icon, DatePicker, Modal, Radio,Drawer } from 'antd';
+import { getReservationActivitieslist, getVenueReservations, getVenueSport, VenueSendMessage, VenueClickCancelPlace } from '../../api';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -36,7 +36,12 @@ class information extends React.Component {
     textArea: '',
     publicUUID: '',
     placeholder: '请输入预留场地号',
-    page:0,
+    page: 0,
+    macNum: [],
+    lookList: [],
+    dateString: '',
+    informVisible:false,
+    informList:[],
   };
 
   async getVenueSport(data) {
@@ -46,12 +51,13 @@ class information extends React.Component {
       message.error('登陆超时请重新登陆！')
     } else if (res.data.code === 2000) {
       this.setState({ activityNav: res.data.data, liNum: res.data.data[0].id })
-      this.getVenueReservations({ sportid: this.state.activityNav[0].id, date: new Date().toLocaleDateString().replace(/\//g, "-") })
+      this.getVenueReservations({ sportid: this.state.activityNav[0].id, date: this.state.dateString })
     }
   }
 
   componentDidMount() {
     this.getVenueSport()
+    this.setState({ dateString: new Date().toLocaleDateString().replace(/\//g, "-") })
     this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
     setInterval(() => {
       this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
@@ -59,61 +65,39 @@ class information extends React.Component {
   }
 
   current = (page, pageSize) => {
-    this.setState({page:page})
+    this.setState({ page: page })
     this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status })
   }
 
 
   handelClick = (e) => {
     this.setState({ number: e.target.dataset.num })
+    console.log(e.target.dataset.num)
+    if(e.target.dataset.num==='1'){
+      this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
+    }
   }
 
   async getReservationActivitieslist(data) {
     const res = await getReservationActivitieslist(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ list: res.data.data.data, other: res.data.other, loading: false, hidden: true, Oneloading: false })
-    }else {
+      this.setState({ list: res.data.data.data,informList:res.data.data.data, other: res.data.other, loading: false, hidden: true, Oneloading: false })
+    } else {
       this.setState({ loading: false, hidden: false, Oneloading: false })
     }
   }
 
+
   async getVenueReservations(data) {
     const res = await getVenueReservations(data, sessionStorage.getItem('venue_token'))
-    let koArr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     if (res.data.code === 2000) {
-
-      if (res.data.data.length > 0) {
-        let letter = [
-          { title: '时间', width: 100, fixed: 'left', align: 'center', dataIndex: 'a', }]
-        for (let i in koArr) {
-          letter.push({
-            title: koArr[i], width: 100, align: 'center', dataIndex: 'c[' + i + '].type', render: (value, row, index) => {
-              if (value === 1) {
-                return <span className="blue"></span>
-              } else if (value === 2) {
-                return <span className="white"></span>
-              } else if (value === 3) {
-                return <span className="yellow"></span>
-              } else if (value === 4) {
-                return <span className="red"></span>
-              }
-            },
-          })
-        }
-        for (let i in res.data.data) {
-          res.data.data[i].key = i
-        }
-        this.setState({ Reservations: res.data.data, letterNum: letter, tabelFlag: false })
-      }
-    } else if (res.data.code === 4003) {
-      this.setState({ tabelFlag: true })
+      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c })
     } else if (res.data.code === 4005) {
-      this.setState({ Reservations: [], letterNum: [], tabelFlag: true })
-    } else if (res.data.code === 4001) {
-      this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      this.setState({ lookList: res.data.data })
     }
   }
+
+
 
 
 
@@ -126,10 +110,11 @@ class information extends React.Component {
     this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e })
   }
   clickLi = (e) => {
-    this.getVenueReservations({ sportid: e.target.dataset.num, date: new Date().toLocaleDateString().replace(/\//g, "-") })
+    this.getVenueReservations({ sportid: e.target.dataset.num, date: this.state.dateString })
     this.setState({ dianIndex: e.target.dataset.index, liNum: e.target.dataset.num })
   }
   dateChange = (data, datatring) => {
+    this.setState({ dateString: datatring })
     this.getVenueReservations({ sportid: this.state.liNum, date: datatring })
   }
   Oneloading = () => {
@@ -169,6 +154,38 @@ class information extends React.Component {
   }
 
 
+
+
+  async VenueClickCancelPlace(data) {
+    const res = await VenueClickCancelPlace(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.getVenueReservations({ sportid: this.state.liNum, date: this.state.dateString })
+      message.info(res.data.msg)
+    } else {
+      message.error('操作失败')
+    }
+  }
+
+  lookPlate = e => {
+    let time = e.currentTarget.dataset.time
+   
+    if (e.currentTarget.dataset.type !== '3' && e.currentTarget.dataset.type !== '2') {
+      if(e.currentTarget.dataset.type==='1'){
+        this.VenueClickCancelPlace({ date: this.state.dateString, time: time, sportid: this.state.liNum,type:e.currentTarget.dataset.type })
+      }else if(e.currentTarget.dataset.type==='4'){
+        this.VenueClickCancelPlace({ date: this.state.dateString, time: time, sportid: this.state.liNum,type:2 })
+      }
+    }else{
+      this.getReservationActivitieslist({publicuid:e.currentTarget.dataset.uuid,page:1,sport:'',status:''})
+            this.setState({informVisible:true})
+    }
+  }
+
+  informOnClose=()=>{
+    this.setState({informVisible:false})
+  }
+
+
   render() {
 
     let userMessage;
@@ -189,8 +206,8 @@ class information extends React.Component {
                 <Col xs={{ span: 2 }}>{item.SiteMoney}</Col>
                 <Col xs={{ span: 2 }}>{item.SiteMoneyStatus}</Col>
                 <Col xs={{ span: 2 }}>
-                  <img className={item.PublicStatus==='匹配中'?'img':'circumstanceT'&&item.PublicStatus==='待出发'?'img':'circumstanceT'&&item.PublicStatus==='活动中'?'img':'circumstanceT'} data-uid={item.uuid} onClick={this.sending} src={require("../../assets/icon_pc_faNews.png")} alt="发送消息" />
-                  </Col>
+                  <img className={item.PublicStatus === '匹配中' ? 'img' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'img' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'img' : 'circumstanceT'} data-uid={item.uuid} onClick={this.sending} src={require("../../assets/icon_pc_faNews.png")} alt="发送消息" />
+                </Col>
               </Row>
             ))
           }
@@ -204,6 +221,7 @@ class information extends React.Component {
       )
     }
     return (
+    
       <div className="orderList">
         <div className="navTab">
           <Button onClick={this.handelClick} className={this.state.number === '1' ? 'colorGo' : 'colorNot'} data-num='1'>预约活动列表</Button>
@@ -277,19 +295,38 @@ class information extends React.Component {
             <li className="dateSelect"><DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={zh_CN} placeholder="请选择日期" className="DatePicker" onChange={this.dateChange} /></li>
           </ul>
           <div className="xiange"></div>
-          <div className={this.state.tabelFlag === false ? '' : 'hidden'}>
-            <Table pagination={{ simple: false }} columns={this.state.letterNum} dataSource={this.state.Reservations} position='top' scroll={{ x: 2000 }} />
-          </div>
-          <Result className={this.state.tabelFlag === true ? '' : 'hidden'} icon={<Icon type="fund" theme="twoTone" twoToneColor="#F5A623" />} title="您没有预约情况！" />
-        </div>
+          <div className='lookList' style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block' }}>
+            {/* <Table pagination={{ simple: false }} columns={this.state.letterNum} dataSource={this.state.Reservations} position='top' scroll={{ x: 2000 }} /> */}
+            <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 3.25 + 'rem' }}>
+              <span></span>
+              {
+                this.state.macNum.map((item, i) => (
+                  <span key={i}>{i + 1}</span>
+                ))
+              }
+              {
+                this.state.lookList.map((index, i) => (
+                  <div key={i} className="sonList">
+                    <span>{index.a}</span>
+                    {
+                      this.state.lookList[i].c.map((item, i) => (
+                        <span key={i} data-time={index.a} data-num={i+1} data-uuid={item.uuid} data-type={item.type} onClick={this.lookPlate} style={item.type === 1 ? { background: '#6FB2FF', cursor: 'pointer' } : {} && item.type === 2 ? { background: '#E9E9E9' } : {} && item.type === 3 ? { background: '#F5A623', cursor: 'pointer' } : {} && item.type === 4 ? { background: 'red', cursor: 'pointer' } : {}}></span>
+                      ))
+                    }
+                  </div>
+                ))
+              }
+            </div>
 
+          </div>
+          <Result className={this.state.lookList.length < 1 ? '' : 'hidden'} icon={<Icon type="fund" theme="twoTone" twoToneColor="#F5A623" />} title="您没有预约情况！" />
+        </div>
 
         <Modal
           title="给参与人员发送消息"
           visible={this.state.visible}
           onCancel={this.handleCancel}
         >
-
           <Radio.Group onChange={this.sendCheck} value={this.state.sendCheck}>
             <Radio value={1}>预留场地</Radio>
             <Radio value={2}>未预留场地</Radio>
@@ -301,6 +338,57 @@ class information extends React.Component {
             <div onClick={this.sendingMessage}>发送</div>
           </div>
         </Modal>
+
+        <Drawer
+          title="该场地详细信息"
+          placement="right"
+          closable={false}
+          width='400px'
+          onClose={this.informOnClose}
+          visible={this.state.informVisible}
+        >
+       
+          <div className="informDrawer">
+          <span>活动编号：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].orderId:''}</span>
+          </div>
+          <div className="informDrawer">
+          <span>项目名称：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].SportName:''}</span>
+          </div>
+          <div className="informDrawer">
+          <span>开始时间：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].StartTime:''}</span>
+          </div>
+          <div className="informDrawer">
+          <span>结束时间：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].FinishedTime:''}</span>
+          </div>
+          <div className="informDrawer">
+          <span>时长：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].PlayTime:''}</span>
+          </div>
+          <div className="informDrawer">
+          <span>应到人数：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].Shouldarrive:''}</span>
+          </div>
+          <div className="informDrawer">
+          <span>已签到人数：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].TrueTo:''}</span>
+          </div>
+          <div className="informDrawer">
+          <span>活动状态：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].PublicStatus:''}</span>
+          </div>
+          <div className="informDrawer">
+          <span>场地费金额：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].SiteMoney:''}</span>
+          </div>
+          <div className="informDrawer">
+          <span>场地费状态：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].SiteMoneyStatus:''}</span>
+          </div>
+        </Drawer>
       </div>
     );
   }

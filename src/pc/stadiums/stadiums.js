@@ -254,7 +254,6 @@ class stadiums extends React.Component {
   }
 
   confirm = () => {
-   
       let { informationList, name, handleAddress, contacts, contactNumber, fileList, adddress, imageUrl, sport, facilities, siteInfo, comment } = this.state
       let filesURLarr = []
       for (let i in fileList) {

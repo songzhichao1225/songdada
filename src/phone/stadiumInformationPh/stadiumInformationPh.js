@@ -250,6 +250,8 @@ class stadiumInformationPh extends React.Component {
               action="/api/UploadVenueImgs?type=Venue"
               beforeUpload={beforeUpload}
               onChange={this.handleChange}
+              accept=".jpg, .jpeg, .png"
+              multiple={false}
             >
               {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
             </Upload>
@@ -264,6 +266,8 @@ class stadiumInformationPh extends React.Component {
               fileList={fileList}
               onPreview={this.handlePreview}
               onChange={this.handleChangeT}
+              accept=".jpg, .jpeg, .png"
+              multiple={false}
             >
               {fileList.length <= 8&&fileList.length >= 3 ? null : uploadButtonT}
             </Upload>

@@ -1,7 +1,7 @@
 import React from 'react';
 import './orderPh.css';
 import { Row, Col, message, Tooltip, Pagination, Modal, Radio, Input, Drawer, DatePicker,Result,Icon } from 'antd';
-import { getReservationActivitieslist, VenueSendMessage, getVenueReservations,getVenueSport } from '../../api';
+import { getReservationActivitieslist, VenueSendMessage, getVenueReservations,getVenueSport,VenueClickCancelPlace } from '../../api';
 const { TextArea } = Input
 class orderPh extends React.Component {
 
@@ -23,6 +23,8 @@ class orderPh extends React.Component {
     flag:false,
     remList:[],
     dataString:'',
+    informVisible:false,
+    informList:[],
     sport: [
       { name: '全部', id: 0 },
       { name: '羽毛球', id: 1 },
@@ -59,7 +61,7 @@ class orderPh extends React.Component {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
     } else if (res.data.code === 2000) {
-      this.setState({ activeSon: res.data.data.data, total: res.data.data.count,flag:false })
+      this.setState({ activeSon: res.data.data.data,informList:res.data.data.data, total: res.data.data.count,flag:false })
     }else if(res.data.code===4002){
         this.setState({flag:true})
     }
@@ -69,17 +71,19 @@ class orderPh extends React.Component {
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ remList: res.data.data })
+      this.setState({ remList: res.data.data, liNum: res.data.data[0].id })
     }
   }
 
   componentDidMount() {
+    this.setState({ dataString: new Date().toLocaleDateString().replace(/\//g, "-") })
     this.getReservationActivitieslist({ page: 1, sport: '', status: '', publicuid: '' })
-    this.getVenueReservations({ sportid: 1, date: '2019-09-04' })
+    this.getVenueReservations({ sportid: 1, date: new Date().toLocaleDateString().replace(/\//g, "-") })
     this.getVenueSport()
   }
   activityList = () => {
     this.setState({ activityList: true })
+    this.getReservationActivitieslist({ page: 1, sport: '', status: '', publicuid: '' })
   }
   bookingKanban = () => {
     this.setState({ activityList: false })
@@ -168,8 +172,37 @@ class orderPh extends React.Component {
 
   sportName=e=>{
     console.log(e.currentTarget.dataset.id)
-    this.setState({sportid:e.currentTarget.dataset.id})
+    this.setState({liNum:e.currentTarget.dataset.id})
     this.getVenueReservations({ sportid: e.currentTarget.dataset.id, date:this.state.dataString })
+  }
+
+  informOnClose=()=>{
+    this.setState({informVisible:false})
+  }
+
+  async VenueClickCancelPlace(data) {
+    const res = await VenueClickCancelPlace(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.getVenueReservations({ sportid: this.state.liNum, date: this.state.dateString })
+      message.info(res.data.msg)
+    } else {
+      message.error('操作失败')
+    }
+  }
+
+  lookPlate = e => {
+    let time = e.currentTarget.dataset.time
+   
+    if (e.currentTarget.dataset.type !== '3' && e.currentTarget.dataset.type !== '2') {
+      if(e.currentTarget.dataset.type==='1'){
+        this.VenueClickCancelPlace({ date: this.state.dataString, time: time, sportid: this.state.liNum,type:e.currentTarget.dataset.type })
+      }else if(e.currentTarget.dataset.type==='4'){
+        this.VenueClickCancelPlace({ date: this.state.dataString, time: time, sportid: this.state.liNum,type:2 })
+      }
+    }else{
+      this.getReservationActivitieslist({publicuid:e.currentTarget.dataset.uuid,page:1,sport:'',status:''})
+      this.setState({informVisible:true})
+    }
   }
 
 
@@ -288,12 +321,12 @@ class orderPh extends React.Component {
                 ))
               }
               {
-                this.state.lookList.map((item, i) => (
+                this.state.lookList.map((index, i) => (
                   <div key={i} className="sonList">
-                    <span>{item.a}</span>
+                    <span>{index.a}</span>
                     {
                       this.state.lookList[i].c.map((item, i) => (
-                        <span key={i} style={item.type === 1 ? { background: '#6FB2FF' } : {} && item.type === 2 ? { background: '#E9E9E9' } : {} && item.type === 3 ? { background: '#F5A623' } : {} && item.type === 4 ? { background: 'red' } : {}}></span>
+                        <span key={i} data-time={index.a} data-num={i+1} data-uuid={item.uuid} data-type={item.type} onClick={this.lookPlate}  style={item.type === 1 ? { background: '#6FB2FF' } : {} && item.type === 2 ? { background: '#E9E9E9' } : {} && item.type === 3 ? { background: '#F5A623' } : {} && item.type === 4 ? { background: 'red' } : {}}></span>
                       ))
                     }
                   </div>
@@ -303,7 +336,57 @@ class orderPh extends React.Component {
           </div>
           <DatePicker className="date" placeholder="选择日期" onChange={this.dateChange} />
           <Result className={this.state.lookList.length === 0 ? '' : 'hidden'} icon={<Icon type="reconciliation" theme="twoTone" twoToneColor="#F5A623" />} title="没有预约情况" />
+     
+          <Drawer
+          title="该场地详细信息"
+          placement="right"
+          closable={false}
+          width='80%'
+          onClose={this.informOnClose}
+          visible={this.state.informVisible}
+        >
        
+          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
+          <span>活动编号：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].orderId:''}</span>
+          </div>
+          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
+          <span>项目名称：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].SportName:''}</span>
+          </div>
+          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
+          <span>开始时间：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].StartTime:''}</span>
+          </div>
+          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
+          <span>结束时间：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].FinishedTime:''}</span>
+          </div>
+          <div className="informDrawer" style={{fontSize:'0.75rem'}}> 
+          <span>时长：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].PlayTime:''}</span>
+          </div>
+          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
+          <span>应到人数：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].Shouldarrive:''}</span>
+          </div>
+          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
+          <span>已签到人数：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].TrueTo:''}</span>
+          </div>
+          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
+          <span>活动状态：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].PublicStatus:''}</span>
+          </div>
+          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
+          <span>场地费金额：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].SiteMoney:''}</span>
+          </div>
+          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
+          <span>场地费状态：</span>
+          <span>{this.state.informList.length>0?this.state.informList[0].SiteMoneyStatus:''}</span>
+          </div>
+        </Drawer> 
         </div>
       </div>
     )

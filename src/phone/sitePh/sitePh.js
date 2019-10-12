@@ -30,7 +30,7 @@ class sitePh extends React.Component {
     DrawerVisible: false,
     addsporId:[],
     runName: '',
-    dateChange:[],
+    dateChange:'',
     startTime: '0:00',
     endTime: '0:00',
     price: '',
@@ -273,10 +273,11 @@ class sitePh extends React.Component {
   }
 
   dateChange = e => {
+    console.log(e)
     if(typeof(e)==='object'){
-      this.setState({ dateChange: e.join(',') })
-    }else{
       this.setState({ dateChange: e })
+    }else{
+      this.setState({ dateChange: parseInt(e) })
       let day = ''
     switch (parseInt(e)) {
       case 1:
@@ -332,7 +333,6 @@ class sitePh extends React.Component {
     let data = {
       sportid: addsporId,
       sportname: runName,
-      openday: dateChange,
       opendayname: opendayname,
       starttime: startTime,
       endtime: endTime,
@@ -342,6 +342,11 @@ class sitePh extends React.Component {
       appointmenttime: timeChange,
       comment: comment,
       uuid: editorListId
+    }
+    if(typeof(dateChange)==='number'){
+      data.openday=dateChange
+    }else{
+      data.openday=dateChange.join(',')
     }
     this.addVenueField(data)
   }

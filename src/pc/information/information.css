@@ -265,3 +265,36 @@
     margin-left: 16px;
     background: #F5A623; 
 }
+
+.orderList .lookList{
+    overflow: scroll;
+    width: 100%;
+ }
+ 
+ .orderList .lookList .headerSon>span{
+     width:3.13rem;
+     height:1.88rem; 
+     display: block;
+     margin-left: 0.12rem;
+     float:left;
+     text-align: center;
+     line-height: 1.88rem;
+ }
+ .orderList .lookList .sonList{
+     overflow: hidden;
+     clear: both;
+ }
+ .orderList .lookList .sonList>span{
+     width:3.13rem;
+     height:1.88rem; 
+     display: block;
+     margin-left: 0.12rem;
+     float:left;
+     text-align: center;
+     line-height: 1.88rem;
+     margin-top: 0.12rem;
+ }
+ .informDrawer{
+     margin-top: 15px;
+     font-size: 20px;
+ }
