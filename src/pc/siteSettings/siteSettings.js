@@ -11,6 +11,12 @@ const { Option } = Select;
 
 const { TextArea } = Input;
 
+
+
+
+
+
+
 class siteSettings extends React.Component {
 
   state = {
@@ -31,7 +37,7 @@ class siteSettings extends React.Component {
     loading: true,//加载
     DisList: '',
     hidden: '',
-    other: '',
+    other: 0,
     page: 1,
     deletUid: 0,
     maxScheduledDateName: [],
@@ -88,10 +94,10 @@ class siteSettings extends React.Component {
     this.setState({
       visible: true,
     });
-    this.setState({
-      runId: [], openday: [], opendayname: '请选择', starttime: '', endtime: '', costperhour: '',maxScheduledDateName:[],
-      number: 1, maxScheduledDate: '请选择', appointmenttime: [], comment: '', DisList: ''
-    })
+    // this.setState({
+    //   runId: [], openday: [], opendayname: '请选择', starttime: '', endtime: '', costperhour: '',maxScheduledDateName:[],
+    //   number: 1, maxScheduledDate: '请选择', appointmenttime: [], comment: '', DisList: ''
+    // })
   };
 
   handleOk = e => {
@@ -101,6 +107,12 @@ class siteSettings extends React.Component {
   };
 
   handleCancel = e => {
+    if(this.state.siteEditor===1){
+      this.setState({
+      runId: [], openday: [], opendayname: '请选择', starttime: '', endtime: '', costperhour: '',maxScheduledDateName:[],
+      number: 1, maxScheduledDate: '请选择', appointmenttime: [], comment: '', DisList: ''
+    })
+    }
     this.setState({
       visible: false,
       siteEditor:0,
@@ -275,7 +287,6 @@ class siteSettings extends React.Component {
     let datefor = res.data.data
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
     } else if (res.data.code === 2000) {
       this.setState({ DisList: res.data.data })
       this.setState({

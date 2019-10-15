@@ -29,16 +29,9 @@ class myWallet extends React.Component {
     start: '',
     end: '',
     dateString: [],
-    other: 1,
+    other: 0,
     page: 1,
     recordListOther: '',
-    list: [
-      { time: '2018-5-02', minxi: 'sruhgdnjfgihdfvgndiurhgdrjgiej', money: '￥300' },
-      { time: '2018-5-02', minxi: 'sruhgdnjfgihdfvgndiurhgdrjgiej', money: '￥300' },
-      { time: '2018-5-02', minxi: 'sruhgdnjfgihdfvgndiurhgdrjgiej', money: '￥300' },
-      { time: '2018-5-02', minxi: 'sruhgdnjfgihdfvgndiurhgdrjgiej', money: '￥300' },
-      { time: '2018-5-02', minxi: 'sruhgdnjfgihdfvgndiurhgdrjgiej', money: '￥300' },
-    ],
   };
 
   dateChange = (data, dateString) => {
@@ -60,10 +53,7 @@ class myWallet extends React.Component {
     } else {
       this.setState({ moneyList: res.data.data.data, sumMoney: res.data.data.sumMoney, whereMoney: res.data.data.whereMoney, other: parseInt(res.data.data.count), loading: false, hidden: true })
     }
-
   }
-
-
 
   async getVenueWithdrawalList(data) {
     const res = await getVenueWithdrawalList(data, sessionStorage.getItem('venue_token'))
@@ -75,15 +65,13 @@ class myWallet extends React.Component {
     } else {
       this.setState({ recordList: res.data.data, recordListOther: res.data.other, hiddenTwo: true })
     }
-
   }
 
   componentDidMount() {
-    console.log(this.props)
     if (this.props.location.query !== undefined) {
       if (this.props.location.query.time === 1) {
-        let myDate = new Date();
-        let start = moment().startOf('day').subtract( myDate.getDate()-1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
+        let myDate = new Date()
+        let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         this.setState({ start: start, end: end })
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
@@ -202,7 +190,7 @@ class myWallet extends React.Component {
           <div className={this.state.hiddenTwo === true ? '' : 'hidden'}>
             <Row>
               <Col className="oneText" xs={{ span: 4 }}>申请时间</Col>
-              <Col xs={{ span: 4, offset: 0 }}>账户名称</Col>
+              <Col xs={{ span: 7, offset: 0 }}>账户名称</Col>
               <Col xs={{ span: 4, offset: 0 }}>处理时间</Col>
               <Col xs={{ span: 4, offset: 0 }}>金额</Col>
               <Col xs={{ span: 4, offset: 0 }}>提现进度</Col>
@@ -211,7 +199,7 @@ class myWallet extends React.Component {
               this.state.recordList.map((item, i) => (
                 <Row key={i} >
                   <Col className="oneText" xs={{ span: 4 }}>{item.SubmitDate}</Col>
-                  <Col xs={{ span: 4, offset: 0 }}>{item.OpeningBank.slice(-4)}|{'*' + item.BankCard.slice(-4)}|{'*' + item.BankName.slice(-1)}</Col>
+                  <Col xs={{ span: 7, offset: 0 }}>{item.OpeningBank}|{'*' + item.BankCard.slice(-4)}|{'*' + item.BankName.slice(-1)}</Col>
                   <Col xs={{ span: 4, offset: 0 }}>{item.FinishedDate === null ? '---' : item.FinishedDate}</Col>
                   <Col xs={{ span: 4, offset: 0 }}>￥{item.RequestMoney}</Col>
                   <Col xs={{ span: 4, offset: 0 }}>{item.status === 1 ? '待处理' : '已处理'}</Col>

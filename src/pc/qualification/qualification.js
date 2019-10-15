@@ -282,7 +282,7 @@ class qualification extends React.Component {
       <div className="qualification">
         <div className="header">
           <div className="heCenter">
-            <img className="logo" src={require("../../assets/tiaozhanicon.png")} alt="6666" />
+            <img className="logo" src={require("../../assets/tiaozhanicon.png")} style={{ width: 173, height: 58, marginLeft: 45, marginTop: 40 }} alt="6666" />
             <span className="title">北京甲乙电子商务有限公司</span>
           </div>
           <div className="content">

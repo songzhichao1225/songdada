@@ -29,10 +29,7 @@ class Login extends React.Component {
         this.props.history.push('/statusAudits')
       }
     }
-
   }
-
-
 
   phone = (e) => {
     this.setState({ phone: e.target.value })
@@ -41,7 +38,7 @@ class Login extends React.Component {
     } else if (e.target.value === '') {
       this.setState({ visiblePhone: true })
     } else {
-      this.setState({ phone: e.target.value, visiblePhone: false })
+      this.setState({ phone: e.target.value, visiblePhone: false})
     }
   }
   code = e => {
@@ -57,8 +54,8 @@ class Login extends React.Component {
     }else{
       let num = 60
       const timer = setInterval(() => {
-        this.setState({ textT: num-- })
-        if (num === -1) { 
+        this.setState({ textT: num--})
+        if (num === -1) {
           clearInterval(timer)
           this.setState({ textT: '获取验证码' })
         }
@@ -121,13 +118,12 @@ class Login extends React.Component {
     this.setState({value:e.target.value})
   }
 
-
   onSubmit = () => {
     let data = {
       username: this.state.phone, usercode: this.state.code, userpass: this.state.pass, type: 2, Logintype: 'pc',venueloginuuid:this.state.value
     }
     this.login(data)
-  } 
+  }
 
 
   onSubmitT = () => {
@@ -148,7 +144,7 @@ class Login extends React.Component {
       <div className="login">
         <div className="header">
           <div className="heCenter">
-            <img className="logo" src={require("../../assets/tiaozhanicon.png")} alt="logo" />
+            <img className="logo" src={require("../../assets/tiaozhanicon.png")} style={{ width: 173, height: 58, marginLeft: 45, marginTop: 40 }} alt="logo" />
             <span className="title">北京甲乙电子商务有限公司</span>
           </div>
           <div className="content">

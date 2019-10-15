@@ -11,10 +11,13 @@ class map extends React.Component {
 
   state = {
     mapList: [],
+    position:''
   };
 
   componentDidMount(data) {
-
+    if(this.props.location.query!==undefined){
+    sessionStorage.setItem('hanclick',this.props.location.query.type)
+    }
     var map = new BMap.Map("allmap"); // 创建Map实例
     map.enableScrollWheelZoom(true);
     map.clearOverlays();
@@ -31,14 +34,20 @@ class map extends React.Component {
     var option = {
       renderOptions: { map: map, panel: "results" }, onSearchComplete: function (results) {
         if (results !== undefined){
-          console.log(results.Qq)
           that.setState({ mapList: results.Qq })
         }
       }
     }
     var local = new BMap.LocalSearch(map, option);
-    local.search(data);
-    console.log(option)
+   
+    if(this.state.position===''){
+      local.search(sessionStorage.getItem('handleCity'));
+      this.setState({
+        position:sessionStorage.getItem('handleCity')
+      })
+    }else{
+      local.search(data)
+    }
   }
 
 
@@ -46,13 +55,19 @@ class map extends React.Component {
 
 
   handleSearch = e => {
+    this.setState({position:e})
     this.componentDidMount(e)
   }
 
   handleClick = e => {
-    console.log(e.target.dataset)
+
     let dateset = e.target.dataset
-    this.props.history.push({ pathname: '/perfect', query: { lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })
+    if(sessionStorage.getItem('hanclick')==='1'){
+      this.props.history.push({ pathname: '/perfect', query: { lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })
+    }else if(sessionStorage.getItem('hanclick')==='2'){
+      this.props.history.push({ pathname: '/home/stadiums', query: { lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })
+    }
+  
   }
 
   render() {
@@ -60,11 +75,11 @@ class map extends React.Component {
       return <li key={i} onClick={this.handleClick} data-lat={val.point.lat} data-lng={val.point.lng} data-adress={val.address}><span data-lat={val.point.lat} data-lng={val.point.lng} data-adress={val.address}>{val.title}</span><span data-lat={val.point.lat} data-lng={val.point.lng} data-adress={val.address} >{val.address}</span></li>
     })
     return (
-      <div className="mapLocation">
+      <div className="mapLocationOne">
         <div id="allmap" style={{ position: "absolute", top: 0, left: 0, width: '100vw', height: '100vh' }}>
         </div>
         <div className="search">
-          <Search placeholder="输入您要搜索的位置" onSearch={this.handleSearch} enterButton />
+          <Search placeholder="输入您要搜索的位置" onSearch={this.handleSearch} placeholder={this.state.position} enterButton />
           <ul className="ulList">
             {
               list

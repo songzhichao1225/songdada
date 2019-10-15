@@ -42,6 +42,8 @@ class information extends React.Component {
     dateString: '',
     informVisible:false,
     informList:[],
+    start:'',
+    end:'',
   };
 
   async getVenueSport(data) {
@@ -50,29 +52,50 @@ class information extends React.Component {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
     } else if (res.data.code === 2000) {
+   
       this.setState({ activityNav: res.data.data, liNum: res.data.data[0].id })
-      this.getVenueReservations({ sportid: this.state.activityNav[0].id, date: this.state.dateString })
+      this.getVenueReservations({ sportid: res.data.data[0].id , date: this.state.dateString })
     }
   }
 
   componentDidMount() {
     this.getVenueSport()
     this.setState({ dateString: new Date().toLocaleDateString().replace(/\//g, "-") })
-    this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
+    if(this.props.location.query!==undefined){
+     if(this.props.location.query.time===1){
+       let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
+        let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
+        this.setState({ start: start, end: end })
+      this.getReservationActivitieslist({ page: 1, sport: '', status: '',startdate:start,enddate:end })
+      setInterval(() => {
+        this.getReservationActivitieslist({ page: 1, sport: '', status: '',startdate:start,enddate:end  })
+      }, 1000 * 60 * 5)
+     }else if(this.props.location.query.time===2){
+      let myDate = new Date()
+      let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
+      let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
+      this.setState({ start: start, end: end })
+    this.getReservationActivitieslist({ page: 1, sport: '', status: '',startdate:start,enddate:end })
     setInterval(() => {
-      this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
+      this.getReservationActivitieslist({ page: 1, sport: '', status: '',startdate:start,enddate:end  })
     }, 1000 * 60 * 5)
+     }
+    }else{
+      this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
+      setInterval(() => {
+        this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
+      }, 1000 * 60 * 5)
+    }
   }
 
   current = (page, pageSize) => {
     this.setState({ page: page })
-    this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status })
+    this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status,startdate:this.state.start,enddate:this.state.end })
   }
 
 
   handelClick = (e) => {
     this.setState({ number: e.target.dataset.num })
-    console.log(e.target.dataset.num)
     if(e.target.dataset.num==='1'){
       this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
     }
@@ -103,11 +126,11 @@ class information extends React.Component {
 
   nameChang = (e) => {
     this.setState({ sport: e })
-    this.getReservationActivitieslist({ page: 1, sport: e, status: this.state.status })
+    this.getReservationActivitieslist({ page: 1, sport: e, status: this.state.status,startdate:this.state.start,enddate:this.state.end })
   }
   activityChang = (e) => {
     this.setState({ status: e })
-    this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e })
+    this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e,startdate:this.state.start,enddate:this.state.end })
   }
   clickLi = (e) => {
     this.getVenueReservations({ sportid: e.target.dataset.num, date: this.state.dateString })
@@ -119,7 +142,7 @@ class information extends React.Component {
   }
   Oneloading = () => {
     this.setState({ Oneloading: true })
-    this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status })
+    this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status,startdate:this.state.start,enddate:this.state.end })
   }
   handleCancel = () => {
     this.setState({ visible: false })
@@ -168,14 +191,13 @@ class information extends React.Component {
 
   lookPlate = e => {
     let time = e.currentTarget.dataset.time
-   
     if (e.currentTarget.dataset.type !== '3' && e.currentTarget.dataset.type !== '2') {
       if(e.currentTarget.dataset.type==='1'){
         this.VenueClickCancelPlace({ date: this.state.dateString, time: time, sportid: this.state.liNum,type:e.currentTarget.dataset.type })
       }else if(e.currentTarget.dataset.type==='4'){
         this.VenueClickCancelPlace({ date: this.state.dateString, time: time, sportid: this.state.liNum,type:2 })
       }
-    }else{
+    }else if(e.currentTarget.dataset.type ==="3"){
       this.getReservationActivitieslist({publicuid:e.currentTarget.dataset.uuid,page:1,sport:'',status:''})
             this.setState({informVisible:true})
     }
@@ -254,12 +276,13 @@ class information extends React.Component {
               <Col xs={{ span: 2 }}>已签到人数</Col>
               <Col xs={{ span: 2 }}>
                 <Select className="selectName" defaultValue="活动状态" style={{ width: 100 }} onChange={this.activityChang} >
+                  <Option value="0">全部</Option>
                   <Option value="1">匹配中</Option>
                   <Option value="2">待出发</Option>
                   <Option value="3">活动中</Option>
-                  <Option value="5">已完成</Option>
+                  <Option value="4" title="待填写结果/待确认结束">待填写结果/待确认结束</Option>
                   <Option value="6">待评价</Option>
-                  <Option value="4">填写结果确认结束</Option>
+                  <Option value="5">已完成</Option>
                 </Select>
               </Col>
               <Col xs={{ span: 2 }}>场地费金额</Col>
@@ -317,11 +340,9 @@ class information extends React.Component {
                 ))
               }
             </div>
-
           </div>
           <Result className={this.state.lookList.length < 1 ? '' : 'hidden'} icon={<Icon type="fund" theme="twoTone" twoToneColor="#F5A623" />} title="您没有预约情况！" />
         </div>
-
         <Modal
           title="给参与人员发送消息"
           visible={this.state.visible}
@@ -338,7 +359,6 @@ class information extends React.Component {
             <div onClick={this.sendingMessage}>发送</div>
           </div>
         </Modal>
-
         <Drawer
           title="该场地详细信息"
           placement="right"

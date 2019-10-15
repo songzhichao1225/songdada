@@ -59,8 +59,8 @@ class stadiums extends React.Component {
     addtelephone: '',//新增电话
     adddress: '',//场馆位置
     imageUrl: '',
-    sport: '',
-    facilities: '',
+    sport: [],
+    facilities: [],
     siteInfo: '',
     comment: '',
     flag: true,
@@ -99,16 +99,36 @@ class stadiums extends React.Component {
 
   async getVenueInformation(data) {
     const res = await getVenueInformation(data, sessionStorage.getItem('venue_token'))
-    let imgS = (res.data.data.filesURL).split('|')
-    let arrImg = []
-    for (let i in imgS) {
-      arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: imgS[i] })
+    if(res.data.code===2000){
+      let imgS = (res.data.data.filesURL).split('|')
+      let arrImg = []
+      for (let i in imgS) {
+        arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: imgS[i] })
+      }
+    
+      if(this.props.location.query!==undefined&&this.props.location.query.name!=='sunny'){
+        this.setState({
+          adddress:this.props.location.query.adddress,
+          handleAddress:this.props.location.query.adddress,
+          lat:this.props.location.query.lat,
+          lng:this.props.location.query.lng,
+          informationList: res.data.data, name: res.data.data.name,
+        contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone,  imageUrl: res.data.data.firstURL,
+        fileList: arrImg, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
+        })
+      }else if(this.props.location.query===undefined||this.props.location.query.name==='sunny'){
+        this.setState({
+          informationList: res.data.data, name: res.data.data.name, handleAddress: res.data.data.address,
+          contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, adddress: res.data.data.position, imageUrl: res.data.data.firstURL,
+          fileList: arrImg, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
+        })
+      }
+    }else if(res.data.code===4001){
+      this.props.history.push('/')
+      message.error('登陆超时请重新登陆！')
     }
-    this.setState({
-      informationList: res.data.data, name: res.data.data.name, handleAddress: res.data.data.address,
-      contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, adddress: res.data.data.position, imageUrl: res.data.data.firstURL,
-      fileList: arrImg, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
-    })
+    
+
   }
 
   async getVenueOpenBank(data) {
@@ -147,11 +167,12 @@ class stadiums extends React.Component {
     this.getVenueQualificationInformation()
     this.getVenueOpenBankProvince()
     this.getVenueOpenBank()
+  
+  
   }
 
   async getVenueIssecondaudit(data) {
     const res = await getVenueIssecondaudit(data,sessionStorage.getItem('venue_token'))
-      console.log(res)
       this.setState({issecondaudit:res.data.data.issecondaudit})
   }
 
@@ -199,7 +220,9 @@ class stadiums extends React.Component {
     });
   };
   routerMap = () => {
-    this.props.history.push({ pathname: '/map' })
+    this.props.history.push({ pathname: '/map',query:{type:2} })
+    sessionStorage.setItem('handleCity',this.state.adddress)
+    
   }
 
 
@@ -368,7 +391,6 @@ class stadiums extends React.Component {
         data.legalBaseURL=imgHood
         this.VenueQualificationInformationSave(data)
       }
-
     }else{
       this.VenueQualificationInformationSave(data)
     }
@@ -435,7 +457,7 @@ class stadiums extends React.Component {
         <div className={this.state.flag === true ? 'information' : 'none'}>
           <div className="name">
             <span className="boTitle">推广员:</span>
-            <span className="nameINput" style={{ lineHeight: '38px' }}>{this.state.informationList.promote}</span>
+            <span className="nameINput">{this.state.informationList.promote}</span>
           </div>
           <div className="name">
             <span className="boTitle">场馆名称:</span>
@@ -443,9 +465,9 @@ class stadiums extends React.Component {
           </div>
           <div className="name">
             <span className="boTitle">场馆位置:</span>
-            <Input className="nameINput" value={this.state.adddress} />
+            <Input className="nameINput" value={this.state.adddress} />  
             {/* <Input className="nameINput" value={this.props.location.query !== undefined ? this.props.location.query.adddress : this.state.adddress}  /> */}
-            {/* <img onClick={this.routerMap} className="dingImg" src={require("../../assets/icon_pc_dingwei.png")} alt="" /> */}
+            <img onClick={this.routerMap} className="dingImg" src={require("../../assets/icon_pc_dingwei.png")} alt="" />
           </div>
           <div className="name">
             <span className="boTitle">详细地址:</span>
@@ -485,7 +507,6 @@ class stadiums extends React.Component {
                 fileList={fileList}
                 onPreview={this.handlePreview}
                 onChange={this.handleChangeT}
-                headers={'http://venue.tiaozhanmeiyitian.com'}
                 accept=".jpg, .jpeg, .png"
               >
                 {fileList.length >= 8 ? null : uploadButtonT}
@@ -533,7 +554,7 @@ class stadiums extends React.Component {
         <div className={this.state.flag === true ? 'none' : 'qualification'}>
           <div className="listing">
             <span>营业执照:</span>
-            <span>通过|长期</span>
+            <span style={{lineHeight:'38px',display:'block'}}>通过|长期</span>
           </div>
 
           <div className="listing">
@@ -566,7 +587,7 @@ class stadiums extends React.Component {
 
           <div className="listing">
             <span>法人姓名:</span>
-            <Input className="listingInput" value={this.state.corporateName} onChange={this.name}/>
+            <Input className="listingInput" value={this.state.corporateName} onChange={this.corporateName}/>
           </div>
           <div className="listing">
             <span>法人身份证号:</span>
@@ -578,11 +599,11 @@ class stadiums extends React.Component {
             <Input className="listingInput" value={this.state.corporatePhone} onChange={this.corporatePhone}/>
           </div>
 
-          <div className="listing">
+          <div className="listing">  
             <span>结算账号:</span>
             <Radio.Group className="accountNum" onChange={this.numRadio} value={this.state.numRadio}>
-              <Radio value={1}>公司银行账号</Radio>
-              <Radio value={2}>法人账号</Radio>
+              <Radio value={0}>公司银行账号</Radio>
+              <Radio value={1}>法人账号</Radio>
             </Radio.Group>
           </div>
 

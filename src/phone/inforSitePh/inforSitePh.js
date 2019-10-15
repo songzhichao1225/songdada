@@ -469,7 +469,6 @@ ziSubmit=()=>{
                 {fileList.length >= 8 ? null : uploadButtonT}
               </Upload>
           </div>
-          <input id="fileImage" class="fileImage" type="file"  accept=""  size="30"></input>
           <div className="listSon">
             <span>场地设施</span>
             <div className="rightLi">
@@ -480,20 +479,20 @@ ziSubmit=()=>{
           <div className="listSon">
             <span>运动项目</span>
             <div className="rightLi">
-              <Checkbox.Group options={options} value={this.state.sport} onChange={this.onChangeCheck} />
+              <Checkbox.Group options={options} value={this.state.sport} onChange={this.onChangeCheck} /> 
             </div>
           </div>
-
+          
           <div className="listSon">
             <span>场馆介绍</span>
             <Input className="right" value={listSon.siteInfo}  onChange={this.siteInfo} />
           </div>
-
+          
           <div className="listSon">
             <span>其他</span>
-            <Input className="right" value={listSon.comment}  onChange={this.comment} />
+            <Input className="right" value={listSon.comment}  onChange={this.comment}/>
           </div>
-
+          
           <Popconfirm
             title="您确定本次修改吗?"
             onConfirm={this.confirm}
@@ -505,13 +504,13 @@ ziSubmit=()=>{
           </Popconfirm>
           <Button className="submit"  style={this.state.issecondaudit===1?{display:'none'}:{display:'block'}}>审核中~</Button>
         </div>
-
+        
         <div className="qualification" style={this.state.flag === 2 ? { display: 'block' } : { display: 'none' }}>
           <div className="listSon">
             <span>营业执照</span>
             <span className="right">通过|长期</span>
           </div>
-
+          
           <div className="listSon">
             <span>身份证</span>
             <Upload
@@ -547,7 +546,7 @@ ziSubmit=()=>{
             <span>法人身份证号</span>
             <Input className="right" value={this.state.corporateId} onChange={this.corporateId}/>
           </div>
-
+          
           <div className="listSon">
             <span>法人手机号</span>
             <Input className="right" value={this.state.corporatePhone} onChange={this.corporatePhone}/>
@@ -555,16 +554,16 @@ ziSubmit=()=>{
           <div className="listSon">
             <span>结算账号:</span>
             <Radio.Group style={{float:'right',marginRight:'1rem'}} onChange={this.numRadio} value={this.state.numRadio}>
-              <Radio value={1}>公司银行账号</Radio>
-              <Radio value={2}>法人账号</Radio>
+              <Radio value={0}>公司银行账号</Radio>
+              <Radio value={1}>法人账号</Radio>
             </Radio.Group>
           </div>
-
+          
           <div className="listSon">
             <span>银行账号</span>
             <Input className="right" value={this.state.corporateCardId} onChange={this.corporateCardId}/>
           </div>
-
+           
           <div className="listSon" style={this.state.upData===true?{display:'none'}:{display:'block'}}>
             <span>开户所在地</span>
             <Select placeholder="银行类型" style={{ width: '5rem', height: '35px',marginLeft:'2.2rem',display:'inline-block', }} loading={this.state.flagOne} onChange={this.typeChange}>

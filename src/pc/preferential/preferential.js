@@ -33,10 +33,11 @@ class preferential extends React.Component {
     appointmenttime: '请选择',//最短可提前预定时间
     comment: '',//备注
     loading: true,//加载
-    DisList: '',//查看某一条有毁活动信息
+    DisList: '',//查看某一条优惠活动信息
     hidden:'',
-    other:'',
+    other:0,
     page:1,
+    perOpen:0
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -72,10 +73,7 @@ class preferential extends React.Component {
     this.setState({
       visible: true,
     });
-    this.setState({
-      runId: [], starttime: '', endtime: '', costperhour: '', startDate: '',
-      endDate: '', number:1, appointmenttime: '请选择', comment: '',DisList:''
-    })
+  
   };
 
   handleOk = e => {
@@ -86,9 +84,15 @@ class preferential extends React.Component {
   };
 
   handleCancel = e => {
-    console.log(e);
+    if(this.state.perOpen===1){
+      this.setState({
+        runId: [], starttime: '', endtime: '', costperhour: '', startDate: '',
+        endDate: '', number:1, appointmenttime: '请选择', comment: '',DisList:''
+      })
+    }
     this.setState({
       visible: false,
+      perOpen:0
     });
   };
   handleChangeOne = e => {
@@ -137,7 +141,7 @@ class preferential extends React.Component {
     this.setState({ costperhour: e })
   }
   handleChangeFive = e => {
-    this.setState({ appointmenttime: e })
+    this.setState({ appointmenttime: parseInt(e) })
   }
   textArea = e => {
     this.setState({ comment: e.target.value })
@@ -207,7 +211,6 @@ class preferential extends React.Component {
       message.error(res.data.msg)
     }else if(res.data.code===4001){
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
     }  else {
       this.setState({ DisList: res.data.data })
       this.setState({
@@ -247,8 +250,7 @@ class preferential extends React.Component {
     }
   }
   updata = (e) => {
-
-    this.setState({ visible: true })
+    this.setState({ visible: true,perOpen:1, })
     this.getFirstDiscount({ uuid: e.target.dataset.uid })
   }
 
