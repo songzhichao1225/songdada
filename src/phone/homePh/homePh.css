@@ -1,7 +1,7 @@
 
 .homePh{
   position: relative;
-  padding-bottom: 4rem;
+  height: 100%;
 }
 
 .homePh .headerTitle{
@@ -30,54 +30,53 @@
   flex: 1;
 }
 .homePh .footer .footerSon>div>a>img{
-  width: 1.6rem;
-  height: 1.6rem;
+  width: 1.3rem;
   display: block;
   margin: 0.3rem auto 0;
 }
 .homePh .footer .footerSon>div>a>span{
   display: block;
   text-align: center;
-  font-size: 0.88rem;
+  font-size: 0.6rem;
   color: #000;
 }
 
 .homePagePh>div:first-child{
   width: 90%;
-  height: 6rem;
-  margin: 1rem auto 0;
+  height: 5.5rem;
+  margin: 0.5rem auto 0;
   background-image: url('../../assets/one.png');
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: cover;
 }
 .homePagePh>div:nth-child(2){
   width: 90%;
-  height: 6rem;
-  margin: 1rem auto 0;
+  height: 5.5rem;
+  margin: 0.5rem auto 0;
   background-image: url('../../assets/two.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
 .homePagePh>div:nth-child(3){
   width: 90%;
-  height: 6rem;
-  margin: 1rem auto 0;
+  height: 5.5rem;
+  margin: 0.5rem auto 0;
   background-image: url('../../assets/three.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
 .homePagePh>div:nth-child(4){
   width: 90%;
-  height: 6rem;
-  margin: 1rem auto 0;
+  height: 5.5rem;
+  margin: 0.5rem auto 0;
   background-image: url('../../assets/four.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
 .homePagePh>div:last-child{
   width: 90%;
-  height: 6rem;
-  margin: 1rem auto 0;
+  height: 5.5rem;
+  margin: 0.5rem auto 0;
   background-image: url('../../assets/five.png');
   background-repeat: no-repeat;
   background-size: 100%;

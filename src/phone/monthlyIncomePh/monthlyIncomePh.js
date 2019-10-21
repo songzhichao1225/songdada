@@ -117,7 +117,7 @@ class monthlyIncomePh extends React.Component {
               </div>
             ))
           }
-           <Pagination className="fenye" current={parseInt(this.state.current)}  pageSize={10} total={this.state.getVenueMoneyList.count} onChange={this.pageChang} />
+           <Pagination className="fenye" current={parseInt(this.state.current)} size="small" pageSize={10} total={this.state.getVenueMoneyList.count} onChange={this.pageChang} />
         </div>
         <Result className={this.state.flag === true ? '' : 'contentNone'} icon={<Icon type="money-collect" theme="twoTone" twoToneColor="#F5A623" />} title="您还没有收入！" />
         

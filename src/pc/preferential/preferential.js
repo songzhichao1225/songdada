@@ -96,7 +96,7 @@ class preferential extends React.Component {
     });
   };
   handleChangeOne = e => {
-    this.setState({ runId: e })
+    this.setState({ runId:e})
     let day = ''
     switch (parseInt(e)) {
       case 1:

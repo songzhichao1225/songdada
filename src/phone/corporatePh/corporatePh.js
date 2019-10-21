@@ -167,7 +167,7 @@ class corporatePh extends React.Component {
           </div>
           <div className="name">
             <Input.Password className="phone"  prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />}  onChange={this.password} type='password' maxLength={8} placeholder="请输入密码" />
-            <span onClick={this.forgetPassword}>忘记密码</span>
+            <span  style={{color:'#D85D27'}} onClick={this.forgetPassword}>忘记密码</span>
           </div>
 
           <div className="loginBtn" onClick={this.onSubmit}>登录</div>

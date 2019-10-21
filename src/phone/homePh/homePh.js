@@ -26,7 +26,6 @@ class homePh extends React.Component {
       this.setState({ getVenue: res.data.data })
       sessionStorage.setItem('score', res.data.data.score)
     }
-
   }
   async gerVenueName(data) {
     const res = await gerVenueName(data, sessionStorage.getItem('venue_token'))
@@ -47,6 +46,9 @@ class homePh extends React.Component {
   commentPh = () => {
     this.props.history.push('/homePh/commentPh')
   }
+  yuYue=()=>{
+    this.props.history.push('/homePh/orderPh')
+  }
 
 
 
@@ -64,8 +66,8 @@ class homePh extends React.Component {
       <div className="homePh">
         <div className="headerTitle" style={this.props.location.pathname === '/homePh/minePh'?{display:'none'}:{display:'block'}}>{this.state.gerVenueName.name}</div>
         <div className={this.props.location.pathname === '/homePh' ? 'homePagePh' : 'none'}>
-          <div><span className="title">今日成功预约</span><div className="content"><span>{this.state.getVenue.today_count}</span><span>单</span></div></div>
-          <div><span className="title">本月成功预约</span><div className="content"><span>{this.state.getVenue.month_count}</span><span>单</span></div></div>
+          <div><span className="title" onClick={this.yuYue}>今日成功预约</span><div className="content"><span>{this.state.getVenue.today_count}</span><span>单</span></div></div>
+          <div><span className="title" onClick={this.yuYue}>本月成功预约</span><div className="content"><span>{this.state.getVenue.month_count}</span><span>单</span></div></div>
           <div><span className="title" onClick={this.dayIncomePh}>今日收入</span><div className="content"><span>￥{this.state.getVenue.today_money}</span></div></div>
           <div><span className="title" onClick={this.monthlyIncomePh}>本月收入</span><div className="content"><span>￥{this.state.getVenue.month_money}</span></div></div>
           <div><span className="title" onClick={this.commentPh}>场馆评分  {this.state.getVenue.score}分</span><div className="content">

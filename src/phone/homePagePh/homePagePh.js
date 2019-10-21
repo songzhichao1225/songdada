@@ -22,6 +22,8 @@ class homePagePh extends React.Component {
 
   }
 
+
+
   monthlyIncomePh=()=>{
     this.props.history.push({pathname:'/homePh/monthlyIncomePh',query:{income:'month'}})
   }

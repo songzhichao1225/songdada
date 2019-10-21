@@ -72,10 +72,10 @@ class withdrawalPh extends React.Component {
         <div className="money">
           <span className="title">提现金额</span>
           <div className="text">
-            <span className="moneySon">￥</span><input value={this.state.value} onChange={this.inputValue} type="number" maxLength={18} />
+            <span className="moneySon">￥</span><input value={this.state.value} onChange={this.inputValue} type="number" style={{float:'right',width:'80%',background:'transparent'}} />
           </div>
           <div className="bottomSpan">
-            <span>可用金额{this.state.money}元</span>
+            <span style={{display:'block'}}>{'可用金额'+this.state.money+'元'}</span>
             <span>到账时间 预计2-3个工作日</span>
             <span>提现时间 每月1号、15号</span>
             <div className="all" onClick={this.all}>全部提现</div>
@@ -83,7 +83,7 @@ class withdrawalPh extends React.Component {
          
         </div>
          <div className="btnMoney" onClick={this.comfirm}>确认提现</div>
-
+         
       </div>
     );
   }

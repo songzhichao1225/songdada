@@ -19,7 +19,7 @@
     width: 80%;
     height: 2.9rem;
     border: none;
-    line-height: 3.06rem;
+    line-height: 3rem;
     display: block;
     float: left;
 }
@@ -27,6 +27,7 @@
   display: block;
   float: right;
   line-height: 3.06rem;
+  font-size: 0.75rem;
 }
 .loginPhTeo .loginBtn{
     width:20.44rem;
@@ -35,7 +36,6 @@
     border-radius:1.34rem;
     margin-top: 2rem;
     font-size:1.06rem;
-    font-weight:600;
     color:rgba(255,255,255,1);
     line-height:2.69rem;
     text-align: center;

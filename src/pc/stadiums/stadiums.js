@@ -127,14 +127,12 @@ class stadiums extends React.Component {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
     }
-    
-
   }
 
   async getVenueOpenBank(data) {
     const res = await getVenueOpenBank(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ type: res.data.data, flagOne: false })
+      this.setState({ type: res.data.data, flagOne:false})
     }
   }
 
@@ -151,26 +149,20 @@ class stadiums extends React.Component {
       this.setState({ backList: res.data.data, flagThree: false })
     }
   }
-
-
   async getVenueOpenBankCity(data) {
     const res = await getVenueOpenBankCity(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ backCity: res.data.data, flagThree: false })
     }
   }
-
-
   componentDidMount() {
     this.getVenueInformation()
     this.getVenueIssecondaudit()
     this.getVenueQualificationInformation()
     this.getVenueOpenBankProvince()
     this.getVenueOpenBank()
-  
-  
   }
-
+  
   async getVenueIssecondaudit(data) {
     const res = await getVenueIssecondaudit(data,sessionStorage.getItem('venue_token'))
       this.setState({issecondaudit:res.data.data.issecondaudit})

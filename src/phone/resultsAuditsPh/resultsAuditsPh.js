@@ -34,7 +34,7 @@ class resultsAuditsPh extends React.Component {
   render() {
     return (
       <div className="resultsAuditsPh">
-        <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span style={{ color: '#D85D27' }}>完善信息 ></span> <span style={{ color: '#D85D27' }}>审核  ></span> <span>成功  ></span> </div>
+        <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span style={{ color: '#D85D27' }}>完善信息 ></span> <span style={{ color: '#D85D27' }}>审核  ></span> <span  style={this.state.islegal===1?{color: '#D85D27' }:{color:'#9B9B9B'}}>成功</span> </div>
          <div className="boss" style={this.state.islegal===0?{display:'block'}:{display:'none'}}>
               <img className="icon" src={require("../../assets/icon_pc.png")} alt="图标"/>
               <span className="text">信息完善成功！等待审核</span>
@@ -43,8 +43,8 @@ class resultsAuditsPh extends React.Component {
          <div className="boss" style={this.state.islegal===2?{display:'block'}:{display:'none'}}>
               <img className="icon" src={require("../../assets/no.png")} alt="图标"/>
               <span className="text">抱歉！未通过审核</span>
-               <span className="content">审核未通过原因如下:<br/> {this.state.content}<br/>联系电话：010-88777777 </span>
-                <span onClick={this.goback} style={{color:'#D85D27'}}> 返回修改信息 </span>
+               <span className="content">审核未通过原因如下:<span style={{color:'#D85D27'}}>{this.state.content}</span><br/>联系电话：010-88777777 </span>
+                <span onClick={this.goback} style={{color:'#D85D27',marginLeft:'1rem'}}> 返回修改信息 </span>
          </div>
          <div className="boss" style={this.state.islegal===1?{display:'block'}:{display:'none'}}>
               <img className="icon" src={require("../../assets/yes.png")} alt="图标"/>

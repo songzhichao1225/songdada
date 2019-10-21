@@ -1,7 +1,7 @@
 import React from 'react';
 import './orderPh.css';
-import { Row, Col, message, Tooltip, Pagination, Modal, Radio, Input, Drawer, DatePicker,Result,Icon } from 'antd';
-import { getReservationActivitieslist, VenueSendMessage, getVenueReservations,getVenueSport,VenueClickCancelPlace } from '../../api';
+import { Row, Col, message, Pagination, Modal, Radio, Input, Drawer, DatePicker, Result, Icon } from 'antd';
+import { getReservationActivitieslist, VenueSendMessage, getVenueReservations, getVenueSport, VenueClickCancelPlace } from '../../api';
 const { TextArea } = Input
 class orderPh extends React.Component {
 
@@ -18,13 +18,16 @@ class orderPh extends React.Component {
     lookList: [],
     macNum: [],
     sportid: 1,
-    sportIdVal:0,
-    statusIdVal:0,
-    flag:false,
-    remList:[],
-    dataString:'',
-    informVisible:false,
-    informList:[],
+    sportIdVal: 0,
+    statusIdVal: 0,
+    flag: false,
+    remList: [],
+    dataString: '',
+    informVisible: false,
+    informList: [],
+    liIndex: 0,
+    left:0,
+    top:0,
     sport: [
       { name: '全部', id: 0 },
       { name: '羽毛球', id: 1 },
@@ -41,9 +44,9 @@ class orderPh extends React.Component {
       { name: '匹配中', id: 1 },
       { name: '待出发', id: 2 },
       { name: '活动中', id: 3 },
-      { name: '待确认解释/待填写结果', id: 4 },
-      { name: '已完成', id: 5 },
+      { name: '待确认结束/待填写结果', id: 4 },
       { name: '待评价', id: 6 },
+      { name: '已完成', id: 5 },
     ]
   };
 
@@ -53,6 +56,8 @@ class orderPh extends React.Component {
     const res = await getVenueReservations(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ lookList: res.data.data, macNum: res.data.data[0].c })
+    } else {
+      this.setState({ lookList: [] })
     }
   }
   async getReservationActivitieslist(data) {
@@ -61,12 +66,12 @@ class orderPh extends React.Component {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
     } else if (res.data.code === 2000) {
-      this.setState({ activeSon: res.data.data.data,informList:res.data.data.data, total: res.data.data.count,flag:false })
-    }else if(res.data.code===4002){
-        this.setState({flag:true})
+      this.setState({ activeSon: res.data.data.data, informList: res.data.data.data, total: res.data.data.count, flag: false })
+    } else if (res.data.code === 4002) {
+      this.setState({ flag: true })
     }
   }
-  
+
 
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -80,7 +85,11 @@ class orderPh extends React.Component {
     this.getReservationActivitieslist({ page: 1, sport: '', status: '', publicuid: '' })
     this.getVenueReservations({ sportid: 1, date: new Date().toLocaleDateString().replace(/\//g, "-") })
     this.getVenueSport()
+
+   
   }
+
+ 
   activityList = () => {
     this.setState({ activityList: true })
     this.getReservationActivitieslist({ page: 1, sport: '', status: '', publicuid: '' })
@@ -90,14 +99,14 @@ class orderPh extends React.Component {
   }
   select = (e) => {
     if (this.state.index === e.currentTarget.dataset.index) {
-
-    } else {
+      this.setState({ index: 'l' })
+    } else if(this.state.index !== e.currentTarget.dataset.index) {
       this.setState({ index: e.currentTarget.dataset.index })
     }
 
   }
   current = (page, pageSize) => {
-    this.getReservationActivitieslist({ page: page, sport:this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '' })
+    this.getReservationActivitieslist({ page: page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '' })
   }
 
   showModal = (e) => {
@@ -154,30 +163,29 @@ class orderPh extends React.Component {
   };
 
   dateChange = (date, dataString) => {
-    this.setState({dataString:dataString})
+    this.setState({ dataString: dataString })
     this.getVenueReservations({ date: dataString, sportid: this.state.sportid })
   }
-  sport=e=>{
-    this.setState({sportIdVal:e.currentTarget.dataset.id})
+  sport = e => {
+    this.setState({ sportIdVal: e.currentTarget.dataset.id })
   }
-  status=e=>{
-    this.setState({statusIdVal:e.currentTarget.dataset.id})
+  status = e => {
+    this.setState({ statusIdVal: e.currentTarget.dataset.id })
   }
-  submitVal=()=>{
+  submitVal = () => {
     this.getReservationActivitieslist({ page: 1, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '' })
     this.setState({
       Drawervisible: false,
     })
   }
 
-  sportName=e=>{
-    console.log(e.currentTarget.dataset.id)
-    this.setState({liNum:e.currentTarget.dataset.id})
-    this.getVenueReservations({ sportid: e.currentTarget.dataset.id, date:this.state.dataString })
+  sportName = e => {
+    this.setState({ liNum: e.currentTarget.dataset.id, liIndex: e.currentTarget.dataset.index })
+    this.getVenueReservations({ sportid: e.currentTarget.dataset.id, date: this.state.dataString })
   }
 
-  informOnClose=()=>{
-    this.setState({informVisible:false})
+  informOnClose = () => {
+    this.setState({ informVisible: false })
   }
 
   async VenueClickCancelPlace(data) {
@@ -192,64 +200,72 @@ class orderPh extends React.Component {
 
   lookPlate = e => {
     let time = e.currentTarget.dataset.time
-   
+
     if (e.currentTarget.dataset.type !== '3' && e.currentTarget.dataset.type !== '2') {
-      if(e.currentTarget.dataset.type==='1'){
-        this.VenueClickCancelPlace({ date: this.state.dataString, time: time, sportid: this.state.liNum,type:e.currentTarget.dataset.type })
-      }else if(e.currentTarget.dataset.type==='4'){
-        this.VenueClickCancelPlace({ date: this.state.dataString, time: time, sportid: this.state.liNum,type:2 })
+      if (e.currentTarget.dataset.type === '1') {
+        this.VenueClickCancelPlace({ date: this.state.dataString, time: time, sportid: this.state.liNum, type: e.currentTarget.dataset.type })
+      } else if (e.currentTarget.dataset.type === '4') {
+        this.VenueClickCancelPlace({ date: this.state.dataString, time: time, sportid: this.state.liNum, type: 2 })
       }
-    }else{
-      this.getReservationActivitieslist({publicuid:e.currentTarget.dataset.uuid,page:1,sport:'',status:''})
-      this.setState({informVisible:true})
+    } else if(e.currentTarget.dataset.type === '3') {
+      this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: '' })
+      this.setState({ informVisible: true })
     }
   }
 
+  scroll = () => {
+    let scrollTop = this.scrollRef.scrollTop;
+    let scrollLeft = this.scrollRef.scrollLeft;
+    this.setState({left:scrollLeft,top:scrollTop})
+  }
+ 
 
   render() {
     return (
       <div className="orderPh">
         <div className="headerNav">
-          <div onClick={this.activityList} style={this.state.activityList === true ? { borderBottom: '0.13rem solid #000' } : { border: 'none' }}>活动列表</div>
-          <div onClick={this.bookingKanban} style={this.state.activityList === false ? { borderBottom: '0.13rem solid #000' } : { border: 'none' }}>预约面板</div>
+          <div onClick={this.activityList} style={this.state.activityList === true ? { borderBottom: '0.06rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>活动列表</div>
+          <div onClick={this.bookingKanban} style={this.state.activityList === false ? { borderBottom: '0.06rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>预约面板</div>
         </div>
+        <div style={{ height: '0.6rem', background: '#f5f5f5' }}></div>
         <div className={this.state.activityList === true ? 'activityList' : 'hidden'}>
-          <Row >
+          <Row style={{ borderBottom: '0.06rem solid #f5f5f5' }}>
             <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 1 }}>ID/项目</Col>
             <Col xs={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 1 }}>时间</Col>
             <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 1 }}>状态</Col>
           </Row>
-          <div style={this.state.flag===false?{display:'block'}:{display:'none'}}>
-          {
-            this.state.activeSon.map((item, i) => (
-              <Row key={i} className="list" data-index={i} onClick={this.select}>
-                <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 2 }}>{'**' + item.orderId.slice(-4)}{item.SportName}</Col>
-                <Col xs={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 2 }}> <Tooltip title={item.StartTime + '—' + item.FinishedTime} trigger='click'>{item.StartTime}....</Tooltip></Col>
-                <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 2 }}>{item.PublicStatus}</Col>
+          <div className='content' style={this.state.flag === false ? { display: 'block' } : { display: 'none' }}>
+            {
+              this.state.activeSon.map((item, i) => (
+                <Row key={i} className="list" data-index={i} onClick={this.select}>
+                  <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 2 }}>{'**' + item.orderId.slice(-4)}{item.SportName}</Col>
+                  <Col className='dateTime' xs={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 2 }}>{item.StartTime}<br/>{item.FinishedTime}</Col>
+                  <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 2 }} style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{item.PublicStatus}</Col>
 
-                <div className={this.state.index === '' + i + '' ? 'select' : 'hidden'}>
-                  <Row>
-                    <Col xs={{ span: 6, offset: 1 }} style={{textAlign: 'left'}} lg={{ span: 6, offset: 2 }}><span style={{ color: '#9B9B9B' }}>金额</span>  {item.SiteMoney}元</Col>
-                    <Col xs={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 2 }}><span style={{ color: '#9B9B9B' }}>支付状态</span>  {item.SiteMoneyStatus}</Col>
-                  </Row>
-                  <Row >
-                    <Col xs={{ span: 6, offset: 1 }} style={{ textAlign: 'left' }} lg={{ span: 6, offset: 2 }}><span style={{ color: '#9B9B9B' }}>应到人数</span>  {item.Shouldarrive}人</Col>
-                    <Col xs={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 2 }}><span style={{ color: '#9B9B9B' }}>已到人数</span>  {item.TrueTo}人</Col>
-                  </Row>
-                  <Row >
-                    <Col xs={{ span: 6, offset: 1 }} style={{textAlign: 'left' }} lg={{ span: 6, offset: 2 }}><span style={{ color: '#9B9B9B' }}>  时长</span>  {item.PlayTime}小时</Col>
-                    <Col xs={{ span: 9, offset: 1 }} lg={{ span: 6, offset: 3 }}></Col>
-                    <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 2 }}><img onClick={this.showModal} data-uid={item.uuid} src={require('../../assets/sendingBtn.png')} alt="发消息" className="sending" /></Col>
-                  </Row>
-                </div>
-              </Row>
-            ))
-          }
+                  <div className={this.state.index === '' + i + '' ? 'select' : 'hidden'}>
+                    <Row >
+                      <Col xs={{ span: 6, offset: 1 }} style={{ textAlign: 'left',height:'2rem',lineHeight:'2rem' }} lg={{ span: 6, offset: 2 }}><span style={{ color: '#9B9B9B' }}>金额</span>  {item.SiteMoney}元</Col>
+                      <Col xs={{ span: 8, offset: 1 }} style={{height:'2rem',lineHeight:'2rem' }} lg={{ span: 6, offset: 2 }}><span style={{ color: '#9B9B9B' }}>支付状态</span>  {item.SiteMoneyStatus}</Col>
+                    </Row>
+                    <Row >
+                      <Col xs={{ span: 6, offset: 1 }} style={{ textAlign: 'left',height:'2rem',lineHeight:'2rem' }}  lg={{ span: 6, offset: 2 }}><span style={{ color: '#9B9B9B',height:'2rem',lineHeight:'2rem' }}>应到人数</span>  {item.Shouldarrive}人</Col>
+                      <Col xs={{ span: 8, offset: 1 }} style={{height:'2rem',lineHeight:'2rem' }}  lg={{ span: 6, offset: 2 }}><span style={{ color: '#9B9B9B',height:'2rem',lineHeight:'2rem' }}>已到人数</span>  {item.TrueTo}人</Col>
+                    </Row>
+                    <Row >
+                      <Col xs={{ span: 6, offset: 1 }} style={{textAlign: 'left',height:'2rem',lineHeight:'2rem' }}  lg={{ span: 6, offset: 2 }}><span style={{ color: '#9B9B9B',height:'2rem',lineHeight:'2rem' }}>  时长</span>  {item.PlayTime}小时</Col>
+                      <Col xs={{ span: 9, offset: 1 }}   lg={{ span: 6, offset: 3 }}></Col>
+                      <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 2 }}><img onClick={this.showModal} data-uid={item.uuid} src={require('../../assets/sendingBtn.png')} alt="发消息" className={item.PublicStatus === '匹配中' ? 'sending' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'sending' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'sending' : 'circumstanceT'} /></Col>
+                    </Row>
+                  </div>
+                </Row>
+              ))
+            }
+            <Pagination className={this.state.activeSon.length > 0 ? 'fenye' : 'hidden'} size="small" defaultCurrent={1} onChange={this.current} total={this.state.total} />
           </div>
-        
-         <Result className={this.state.flag===false ? 'hidden' : ''} icon={<Icon type="bank" theme="twoTone" twoToneColor="#F5A623" />} title="没有活动列表！" />
+
+          <Result className={this.state.activeSon.length > 0 ? 'hidden' : ''} icon={<Icon type="bank" theme="twoTone" twoToneColor="#F5A623" />} title="没有活动列表！" />
           <div className="screen" onClick={this.showDrawer}><span>筛选</span><img src={require('../../assets/shaixuan.png')} alt="筛选" /></div>
-          <Pagination className={this.state.flag===false? 'fenye' : 'hidden'} size="small" defaultCurrent={1} onChange={this.current} total={this.state.total} />
+
           <Modal
             title="发消息"
             visible={this.state.visible}
@@ -280,18 +296,18 @@ class orderPh extends React.Component {
             <div className="drawerBoss">
               {
                 this.state.sport.map((item, i) => (
-                  <div key={i} onClick={this.sport} data-index={i} data-id={item.id} style={parseInt(this.state.sportIdVal)===i?{background:'#D85D27',color:'#fff'}:{}}>{item.name}</div>
-                )) 
+                  <div key={i} onClick={this.sport} data-index={i} data-id={item.id} style={parseInt(this.state.sportIdVal) === i ? { background: '#D85D27', color: '#fff' } : {}}>{item.name}</div>
+                ))
               }
             </div>
             <span style={{ clear: 'both', display: 'block', marginTop: '2rem' }}>活动状态</span>
             <div className="drawerBossTwo">
               {
                 this.state.status.map((item, i) => (
-                  <div key={i} data-id={item.id} onClick={this.status} style={parseInt(this.state.statusIdVal)===i?{background:'#D85D27',color:'#fff'}:{}}>{item.name}</div>
+                  <div key={i} data-id={item.id} onClick={this.status} style={parseInt(this.state.statusIdVal) === i ? { background: '#D85D27', color: '#fff' } : {}}>{item.name}</div>
                 ))
               }
-            </div>       
+            </div>
             <div className="drawerBtn">
               <div onClick={this.onClose}>取消</div>
               <div onClick={this.submitVal}>确定</div>
@@ -305,28 +321,32 @@ class orderPh extends React.Component {
           </div>
           <div className="locaList">
             {
-              this.state.remList.map((item,i)=>(
-                <div key={i} data-id={item.id} onClick={this.sportName}>{item.name}</div>
+              this.state.remList.map((item, i) => (
+                <div key={i} data-id={item.id} data-index={i} onClick={this.sportName} style={parseInt(this.state.liIndex) === i ? { borderBottom: '0.06rem solid #D85D27',color:'#D85D27' } : {}}>{item.name}</div>
               ))
             }
-           
-           
+
+
           </div>
-          <div className="lookList" style={this.state.lookList.length<1?{display:'none'}:{display:'block'}}>
+          <div className="lookList" onScrollCapture={this.scroll}  ref={c => {this.scrollRef = c}} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block' }}>
             <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 3.25 + 'rem' }}>
-              <span></span>
-              {
-                this.state.macNum.map((item, i) => (
-                  <span key={i}>{i + 1}</span>
-                ))
-              }
+              <div className="topFixd" style={{top:this.state.top}}>
+                <span></span>
+                {
+                  this.state.macNum.map((item, i) => (
+                    <span key={i}>{i + 1}</span>
+                  ))
+                }
+              </div>
+              <div style={{height:50}}></div>
               {
                 this.state.lookList.map((index, i) => (
                   <div key={i} className="sonList">
-                    <span>{index.a}</span>
+                    <span style={{ left:this.state.left}}>{index.a}</span>
+                    <span></span>
                     {
                       this.state.lookList[i].c.map((item, i) => (
-                        <span key={i} data-time={index.a} data-num={i+1} data-uuid={item.uuid} data-type={item.type} onClick={this.lookPlate}  style={item.type === 1 ? { background: '#6FB2FF' } : {} && item.type === 2 ? { background: '#E9E9E9' } : {} && item.type === 3 ? { background: '#F5A623' } : {} && item.type === 4 ? { background: 'red' } : {}}></span>
+                        <span key={i} data-time={index.a} data-num={i + 1} data-uuid={item.uuid} data-type={item.type} onClick={this.lookPlate} style={item.type === 1 ? { background: '#6FB2FF' } : {} && item.type === 2 ? { background: '#E9E9E9' } : {} && item.type === 3 ? { background: '#F5A623' } : {} && item.type === 4 ? { background: 'red' } : {}}></span>
                       ))
                     }
                   </div>
@@ -336,57 +356,57 @@ class orderPh extends React.Component {
           </div>
           <DatePicker className="date" placeholder="选择日期" onChange={this.dateChange} />
           <Result className={this.state.lookList.length === 0 ? '' : 'hidden'} icon={<Icon type="reconciliation" theme="twoTone" twoToneColor="#F5A623" />} title="没有预约情况" />
-     
+
           <Drawer
-          title="该场地详细信息"
-          placement="right"
-          closable={false}
-          width='80%'
-          onClose={this.informOnClose}
-          visible={this.state.informVisible}
-        >
-       
-          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
-          <span>活动编号：</span>
-          <span>{this.state.informList.length>0?this.state.informList[0].orderId:''}</span>
-          </div>
-          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
-          <span>项目名称：</span>
-          <span>{this.state.informList.length>0?this.state.informList[0].SportName:''}</span>
-          </div>
-          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
-          <span>开始时间：</span>
-          <span>{this.state.informList.length>0?this.state.informList[0].StartTime:''}</span>
-          </div>
-          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
-          <span>结束时间：</span>
-          <span>{this.state.informList.length>0?this.state.informList[0].FinishedTime:''}</span>
-          </div>
-          <div className="informDrawer" style={{fontSize:'0.75rem'}}> 
-          <span>时长：</span>
-          <span>{this.state.informList.length>0?this.state.informList[0].PlayTime:''}</span>
-          </div>
-          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
-          <span>应到人数：</span>
-          <span>{this.state.informList.length>0?this.state.informList[0].Shouldarrive:''}</span>
-          </div>
-          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
-          <span>已签到人数：</span>
-          <span>{this.state.informList.length>0?this.state.informList[0].TrueTo:''}</span>
-          </div>
-          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
-          <span>活动状态：</span>
-          <span>{this.state.informList.length>0?this.state.informList[0].PublicStatus:''}</span>
-          </div>
-          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
-          <span>场地费金额：</span>
-          <span>{this.state.informList.length>0?this.state.informList[0].SiteMoney:''}</span>
-          </div>
-          <div className="informDrawer" style={{fontSize:'0.75rem'}}>
-          <span>场地费状态：</span>
-          <span>{this.state.informList.length>0?this.state.informList[0].SiteMoneyStatus:''}</span>
-          </div>
-        </Drawer> 
+            title="该场地详细信息"
+            placement="right"
+            closable={false}
+            width='80%'
+            onClose={this.informOnClose}
+            visible={this.state.informVisible}
+          >
+
+            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
+              <span>活动编号：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].orderId : ''}</span>
+            </div>
+            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
+              <span>项目名称：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].SportName : ''}</span>
+            </div>
+            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
+              <span>开始时间：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].StartTime : ''}</span>
+            </div>
+            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
+              <span>结束时间：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].FinishedTime : ''}</span>
+            </div>
+            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
+              <span>时长：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].PlayTime : ''}</span>
+            </div>
+            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
+              <span>应到人数：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].Shouldarrive : ''}</span>
+            </div>
+            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
+              <span>已签到人数：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].TrueTo : ''}</span>
+            </div>
+            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
+              <span>活动状态：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].PublicStatus : ''}</span>
+            </div>
+            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
+              <span>场地费金额：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoney : ''}</span>
+            </div>
+            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
+              <span>场地费状态：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoneyStatus : ''}</span>
+            </div>
+          </Drawer>
         </div>
       </div>
     )

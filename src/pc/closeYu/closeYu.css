@@ -1,0 +1,26 @@
+.closeYu .headTitle{
+    height: 46px;
+    line-height: 46px;
+    padding-left: 25px;
+    font-size: 16px;
+    
+}
+.closeYu .headTitle>span{
+    cursor: pointer;
+}
+.closeYu .rightBtn{
+    width: 70px;
+    height: 30px;
+    background: #F5A623;
+    float: right;
+    margin-right: 40px;
+    margin-top: 8px;
+    border-radius: 4px;
+    color: #fff;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+}
+.hidden{
+    display: none;
+}

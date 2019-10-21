@@ -231,6 +231,23 @@ export function VenueClickCancelPlace(data,headers){    // 场馆端关闭开启
 }
 
 
+export function VenueTemporarilyClosedList(data,headers){    // 临时关闭预约列表
+    return axios.post('/api/VenueTemporarilyClosedList',data, {headers: {'token': headers}})
+}
+
+
+export function VenueTemporarilyClosedDel(data,headers){    // 删除某一条关闭的预约 
+    return axios.post('/api/VenueTemporarilyClosedDel',data, {headers: {'token': headers}})
+}
+
+
+export function VenueTemporarilyClosedSave(data,headers){    // 编辑临时关闭预约 
+    return axios.post('/api/VenueTemporarilyClosedSave',data, {headers: {'token': headers}})
+}
+
+
+
+
 
 
 

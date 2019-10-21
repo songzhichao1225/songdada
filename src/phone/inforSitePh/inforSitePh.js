@@ -452,23 +452,24 @@ ziSubmit=()=>{
             >
               {imageUrl ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
             </Upload>
-          </div>   
+          </div>
           <div className="listSon">
             <span>场地照片</span>
-            <Upload
+              <Upload
                 name="files"
                 action="/api/UploadVenueImgs?type=Venue"
                 listType="picture-card"
                 fileList={fileList}
-                className="addImg"
+                className="addImg" 
                 onPreview={this.handlePreview}
                 onChange={this.handleChangeT}
                 accept="image/*"
                 multiple={false}
               >
                 {fileList.length >= 8 ? null : uploadButtonT}
+                 
               </Upload>
-          </div>
+          </div>                                       
           <div className="listSon">
             <span>场地设施</span>
             <div className="rightLi">

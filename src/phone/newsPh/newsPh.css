@@ -30,8 +30,8 @@
 }
 .newsPh  .recriveSon .img{
     display: block;
-    width: 3rem;
-    height: 3rem;
+    width: 2.5rem;
+    height: 2.5rem;
     float: left;
     margin-left: 0.5rem;
 }
@@ -74,4 +74,8 @@
 }
 .newsPh>.hidden{
   display: none
+ }
+ .newsPh .publish{
+     width: 90%;
+     margin: 2rem auto 0;
  }

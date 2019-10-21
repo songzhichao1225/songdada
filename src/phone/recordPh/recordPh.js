@@ -39,15 +39,15 @@ class recordPh extends React.Component {
           this.state.recordPhList.map((item,i) => (
             <div className="recordSon" key={i}>
               <div className="left">
-                <span>{'**'+item.OpeningBank.slice(-4)}|{'**'+item.BankCard.slice(-4)}|{'**'+item.BankName.slice(-1)}</span>
+                <span>{item.OpeningBank}|{'**'+item.BankCard.slice(-4)}|{'**'+item.BankName.slice(-1)}</span>
                 <span>{item.SubmitDate}</span>
               </div>
               <div className="right">
                 <span>￥{item.RequestMoney}</span>
-                <span>{item.status===1?'待处理':'已处理'}</span>
+                <span>{item.status===1?'待处理':''||item.status===2?'已处理':''&&item.status===3?'未通过':''}</span>
               </div>
             </div>
-          )) 
+          ))
         }
          <Pagination className={this.state.recordPhList.length===0?'hidden':'fenye'} onChange={this.current} defaultCurrent={1} total={this.state.other} />
          <Result className={this.state.recordPhList.length===0?'':'hidden'} icon={<Icon type="account-book" theme="twoTone"  twoToneColor="#F5A623" />} title="没有提现记录" />

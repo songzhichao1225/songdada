@@ -13,7 +13,7 @@ import systemSettings from '../systemSettings/systemSettings';
 import myWallet from '../myWallet/myWallet';
 import comment from '../comment/comment';
 import news from '../news/news';
-
+import closeYu from '../closeYu/closeYu';
 
 
 const { Header, Sider, Content, Footer } = Layout;
@@ -62,6 +62,8 @@ class home extends React.Component {
       sessionStorage.setItem('path', '6');
     } else if (this.props.history.location.pathname === '/home/myWallet') {
       sessionStorage.setItem('path', '7');
+    }else if (this.props.history.location.pathname === '/home/closeYu') {
+      sessionStorage.setItem('path', '6');
     } else if (sessionStorage.getItem('issportid') !== '') {
       this.props.history.location.pathname = '/home/siteSettings'
     }
@@ -84,8 +86,14 @@ class home extends React.Component {
       sessionStorage.setItem('path', '6');
     } else if (this.props.history.location.pathname === '/home/myWallet') {
       sessionStorage.setItem('path', '7');
+    }else if (this.props.history.location.pathname === '/home/closeYu') {
+      sessionStorage.setItem('path', '6');
     }
 
+    if(sessionStorage.getItem('islegal')===0){
+      this.props.history.push('/')
+      message.error('未通过审核！')
+    }
 
 
   }
@@ -334,6 +342,7 @@ class home extends React.Component {
             <Route path="/home/myWallet" component={myWallet} />
             <Route path="/home/comment" component={comment} />
             <Route path="/home/news" component={news} />
+            <Route path="/home/closeYu" component={closeYu} />
           </Content>
           <Footer style={{ textAlign: 'center' }}>Copyright ©2019 北京甲乙电子商务有限公司</Footer>
         </Layout>

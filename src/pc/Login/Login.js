@@ -1,8 +1,8 @@
 import React from 'react';
 import './Login.css';
 import 'antd/dist/antd.css';
-import { _code, _login,VenueSelectSiteName } from '../../api';
-import { Form, Icon, Input, Button, message, Popover,Radio } from 'antd';
+import { _code, _login, VenueSelectSiteName } from '../../api';
+import { Form, Icon, Input, Button, message, Popover, Radio } from 'antd';
 
 class Login extends React.Component {
 
@@ -15,8 +15,8 @@ class Login extends React.Component {
     flag: 'hidden',
     navNum: true,
     visiblePhone: false,
-    selectVeun:[],
-    value:'',
+    selectVeun: [],
+    value: '',
   };
 
   componentDidMount() {
@@ -38,7 +38,7 @@ class Login extends React.Component {
     } else if (e.target.value === '') {
       this.setState({ visiblePhone: true })
     } else {
-      this.setState({ phone: e.target.value, visiblePhone: false})
+      this.setState({ phone: e.target.value, visiblePhone: false })
     }
   }
   code = e => {
@@ -49,12 +49,12 @@ class Login extends React.Component {
   }
   async nacode(data) {
     const res = await _code(data)
-    if(res.data.code!==2000){
-       message.error(res.data.msg)
-    }else{
+    if (res.data.code !== 2000) {
+      message.error(res.data.msg)
+    } else {
       let num = 60
       const timer = setInterval(() => {
-        this.setState({ textT: num--})
+        this.setState({ textT: num-- })
         if (num === -1) {
           clearInterval(timer)
           this.setState({ textT: '获取验证码' })
@@ -62,12 +62,12 @@ class Login extends React.Component {
       }, 1000)
     }
   }
-  
- 
+
+
 
   async login(data) {
     const res = await _login(data)
-    if (res.data.code!==2000) {
+    if (res.data.code !== 2000) {
       message.error(res.data.msg)
     } else {
       sessionStorage.setItem('uuid', res.data.data.uuid);
@@ -79,7 +79,7 @@ class Login extends React.Component {
       sessionStorage.setItem('ismethod', res.data.data.ismethod);
       sessionStorage.setItem('issecondaudit', res.data.data.issecondaudit);
       sessionStorage.setItem('issportid', res.data.data.issportid);
-      
+
       setTimeout(() => {
         if (res.data.data.venue_token) {
           if (res.data.data.issite === 0) {
@@ -100,9 +100,9 @@ class Login extends React.Component {
   async VenueSelectSiteName(data) {
     const res = await VenueSelectSiteName(data)
     if (res.data.code === 2000) {
-      this.setState({selectVeun:res.data.data,value:res.data.data[0].venueloginuuid})
+      this.setState({ selectVeun: res.data.data, value: res.data.data[0].venueloginuuid })
       this.nacode({ "mobile": this.state.phone, "type": 'venuelogin' })
-    }else{
+    } else {
       this.nacode({ "mobile": this.state.phone, "type": 'venuelogin' })
     }
   }
@@ -114,13 +114,13 @@ class Login extends React.Component {
       message.error('请输入手机号')
     }
   }
-  onChange=e=>{
-    this.setState({value:e.target.value})
+  onChange = e => {
+    this.setState({ value: e.target.value })
   }
 
   onSubmit = () => {
     let data = {
-      username: this.state.phone, usercode: this.state.code, userpass: this.state.pass, type: 2, Logintype: 'pc',venueloginuuid:this.state.value
+      username: this.state.phone, usercode: this.state.code, userpass: this.state.pass, type: 2, Logintype: 'pc', venueloginuuid: this.state.value
     }
     this.login(data)
   }
@@ -128,7 +128,7 @@ class Login extends React.Component {
 
   onSubmitT = () => {
     let data = {
-      username: this.state.phone, usercode: this.state.code, userpass: this.state.pass, type: 1, Logintype: 'pc',venueloginuuid:''
+      username: this.state.phone, usercode: this.state.code, userpass: this.state.pass, type: 1, Logintype: 'pc', venueloginuuid: ''
     }
     this.login(data)
   }
@@ -153,7 +153,7 @@ class Login extends React.Component {
               <span>找对手场地管理端</span>
             </div>
             <div className="right">
-              <div className="navTap"><div onClick={this.phoneLogin} style={this.state.navNum===true?{color:'#F5A623'}:{color:'#000'}}>法人登录</div><div style={this.state.navNum===false?{color:'#F5A623'}:{color:'#000'}} onClick={this.nameLogin}>普通登录</div></div>
+              <div className="navTap"><div onClick={this.phoneLogin} style={this.state.navNum === true ? { color: '#F5A623' } : { color: '#000' }}>法人登录</div><div style={this.state.navNum === false ? { color: '#F5A623' } : { color: '#000' }} onClick={this.nameLogin}>普通登录</div></div>
               <div className={this.state.navNum ? 'phoneLoginT' : 'phoneLogin'}>
                 <Form layout="inline" onSubmit={this.handleSubmit} className="form">
                   <Form.Item className="input">
@@ -168,30 +168,30 @@ class Login extends React.Component {
                     <Input onChange={this.code} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="手机验证码" />
                   </Form.Item>
                   <Form.Item className="bind">
-                    <div className={this.state.textT === '获取验证码' ? 'codeBtn' : 'koohidden'}  onClick={this.naCode} >
+                    <div className={this.state.textT === '获取验证码' ? 'codeBtn' : 'koohidden'} onClick={this.naCode} >
                       {this.state.textT}
                     </div>
                     <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'codeBtn'} >
                       {this.state.textT}
                     </div>
                   </Form.Item>
-                  <Form.Item className={this.state.selectVeun.length>0?'input':'selectVeunNone'}>
-                  <Radio.Group className="radio" onChange={this.onChange} value={this.state.value}>
-                   
-                   {
-                     this.state.selectVeun.map((item,i)=>(
-                       <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
-                     ))
-                   }
-                 
-                 </Radio.Group>
+                  <Form.Item className={this.state.selectVeun.length > 0 ? 'input' : 'selectVeunNone'}>
+                    <Radio.Group className="radio" onChange={this.onChange} value={this.state.value}>
+
+                      {
+                        this.state.selectVeun.map((item, i) => (
+                          <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
+                        ))
+                      }
+
+                    </Radio.Group>
                   </Form.Item>
                   <Form.Item className="input" >
                     <Input.Password onChange={this.onPassword} maxLength={8} onPressEnter={this.onSubmit} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" />
                   </Form.Item>
                   <Form.Item className="bind">
                     <Button className="btnSubmit" onClick={this.onSubmit} htmlType="submit">
-                      登录
+                      登录 
                 </Button>
                   </Form.Item>
                 </Form>
@@ -207,7 +207,7 @@ class Login extends React.Component {
                     <Input.Password onChange={this.onPassword} onPressEnter={this.onSubmitT} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" />
                   </Form.Item>
                   <Form.Item className="bind">
-                    <Button className="btnSubmit"  onClick={this.onSubmitT} >
+                    <Button className="btnSubmit" onClick={this.onSubmitT} >
                       登录
                 </Button>
                   </Form.Item>

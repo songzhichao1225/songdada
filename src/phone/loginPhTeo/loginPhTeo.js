@@ -76,11 +76,11 @@ class loginPhTeo extends React.Component {
         <div className="headerTitle">用户名登录</div>
         <div className="loginInput">
           <div className="name">
-            <Input className="phone" autoFocus prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={11}  onChange={this.phone} placeholder="用户名" />
+            <Input className="phone" autoFocus prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />}  onChange={this.phone} placeholder="用户名" />
           </div>
           <div className="name">
-            <Input.Password className="phone" prefix={<Icon type="unlock" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />}  maxLength={8} onChange={this.pssword}  placeholder="请输入密码" />
-            <span onClick={this.forgetPassword}>忘记密码</span>
+            <Input.Password className="phone" prefix={<Icon type="unlock" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />}  onChange={this.pssword}  placeholder="请输入密码" />
+            <span style={{color:'#D85D27'}} onClick={this.forgetPassword}>忘记密码</span>
           </div>
           <div className="loginBtn" onClick={this.submit}>登录</div>
           <div className="footer" style={{marginTop:'1rem'}}>
@@ -88,7 +88,6 @@ class loginPhTeo extends React.Component {
             <span onClick={this.registerPh}>新用户注册</span>
           </div>
         </div>
-
       </div>
     );
   }

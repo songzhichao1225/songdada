@@ -126,24 +126,19 @@ class commentPh extends React.Component {
                 <span style={{ display: 'block', clear: 'both' }}>{item.content}</span>
                 {/* 评论图片 */}
                 <div style={{ display: 'block', clear: 'both' }} className="commentImg">
-
                 </div>
                 <span style={{ display: 'block', clear: 'both' }}>{item.commentDate}</span>
-
                 <div className={item.comment_reply !== null ? 'Stadium' : 'stadiumNone'}>
                   <div className="logoImg"><img src={require("../../assets/kefu.png")} alt="场馆端" /></div>
                   <span className="stadiumText">{item.comment_reply}</span>
-
                 </div>
                 <span className={item.comment_reply !== null ? 'StaiumDate' : 'stadiumNone'}>{item.comment_reply_time}</span>
-
                 <div className="reply" data-uid={item.uid} onClick={this.showModal}><img src={require("../../assets/icon_pc_comment.png")} alt="回复" /></div>
-
               </div>
             ))
 
           }
-{/* 
+{/*
           <Modal
             title="回复该客户"
             footer={null}

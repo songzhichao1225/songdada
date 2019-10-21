@@ -24,8 +24,6 @@ class registerPh extends React.Component {
 
   }
 
-
-
   changID = (e) => {
     this.setState({ Id: e.target.value })
   }
@@ -93,7 +91,6 @@ class registerPh extends React.Component {
   naCode = () => {
       this.nacode({ "mobile": this.state.phone, "type": 'venueregister' })
   }
-
   showModal = e => {
    if (this.state.changeRadio !== true) {
       message.error('请勾选阅读协议')
@@ -106,14 +103,13 @@ class registerPh extends React.Component {
     }
   }
   blurId = e => {
-  
-    this.getPromoteName({ promotid: e.target.value })
+    this.getPromoteName({ promotid: e.target.value})
   }
   async getPromoteName(data) {
     const res = await getPromoteName(data)
     if (res.data.code === 2000) {
       this.setState({ idName:'推广员姓名：'+ res.data.data.promotname+'?', qipao: false })
-    } else {
+    } else {     
       this.setState({ idName:'您没有推广员？', qipao: false })
     }
   }
@@ -125,7 +121,7 @@ class registerPh extends React.Component {
   render() {
     return (
       <div className="registerPh">
-        <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span>完善信息 ></span> <span>审核  ></span> <span>成功  ></span> </div>
+        <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span>完善信息 ></span> <span>审核  ></span> <span>成功</span> </div>
         <div className="bossInput">
 
           <div className="input">
@@ -153,7 +149,7 @@ class registerPh extends React.Component {
             <Input.Password  onChange={this.changePasswordT} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={8} placeholder="确认密码" />
           </div>
           <div className="input line">
-            <Checkbox onChange={this.changeRadio}><span>已阅读并同意</span><span style={{ color: '#D85D27', paddingLeft: '0.5rem' }}>《用户协议》</span></Checkbox>
+            <Checkbox onChange={this.changeRadio}><span style={{fontSize:'0.75rem'}}>已阅读并同意</span><span style={{ color: '#D85D27', paddingLeft: '0.5rem',fontSize:'0.75rem' }}>《用户协议》</span></Checkbox>
           </div>
           <div className="input line">
             <Popconfirm
@@ -167,7 +163,6 @@ class registerPh extends React.Component {
             </Popconfirm>
 
           </div>
-
           <Modal
                 title="注册结果"
                 cancelText=''
@@ -178,8 +173,8 @@ class registerPh extends React.Component {
                 width='100%'
               >
                 <img className="logoRegister" src={require("../../assets/icon_pc.png")} alt="ico" />
-                <span className="modelTitle">恭喜您，注册成功</span>
-                <span className="modelPhone">用户名:{this.state.name}</span>
+                <span className="modelTitlePh">恭喜您，注册成功</span>
+                <span className="modelPhonePh">用户名:{this.state.name}</span>
                 <Button className="modelBtnPh"><a href="#/stadiumInformationPh">下一步</a></Button>
               </Modal>
         </div>

@@ -9,16 +9,16 @@ class statusAudits extends React.Component {
 
 state = {
   islegal:'',
+  content:'',
 };
 
 async getIsStatus(data) {
   const res = await getIsStatus(data,sessionStorage.getItem('venue_token'))
    if(res.data.code===4001){
     this.props.history.push('/')
-    message.error('登陆超时请重新登陆！')
+    message.error('登陆超时请重新登陆!')
   } 
-  this.setState({islegal:res.data.data.islegal})
-
+  this.setState({content:res.data.data.content,islegal:res.data.data.islegal})
 }
 componentDidMount() {
 this.getIsStatus()
@@ -85,9 +85,9 @@ return (
       <span className="titleText">抱歉！未通过审核</span>
       <div className="footer">
         <span>审核未通过原因如下：</span>
-        <span>您的{}、{}未通过审核，请修改</span>
+        <span>您的<span style={{color:'#F5A623'}}>{this.state.content}</span>未通过审核，请返回修改</span>
         <span>联系电话：010-89781234</span>
-        <a href="#/qualification" className="at"> 返回修改信息 </a>
+        <a href="#/perfect" className="at"> 返回修改信息 </a>
       </div>
     </div>
   </div>

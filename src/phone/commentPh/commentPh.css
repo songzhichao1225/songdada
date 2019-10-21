@@ -51,6 +51,8 @@ padding-bottom: 2rem;
 	overflow: hidden;
 	position: relative;
 	padding-bottom: 1rem;
+	padding-left: 0.5rem;
+	padding-top: 0.3rem;
 }
 .commentPh .commentList .Son .headerSon .avatar{
    width: 2rem;

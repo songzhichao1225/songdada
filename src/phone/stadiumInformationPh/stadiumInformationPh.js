@@ -190,7 +190,8 @@ class stadiumInformationPh extends React.Component {
 
     const uploadButton = (
       <div>
-        <img src={require("../../assets/menlian.png")} alt='门脸照' />
+          <Icon type="plus" />
+        <div className="ant-upload-text" style={{fontSize:'0.75rem'}}>门脸照</div>
       </div>
     );
     const { imageUrl } = this.state;
@@ -199,15 +200,14 @@ class stadiumInformationPh extends React.Component {
     const uploadButtonT = (
       <div>
         <Icon type="plus" />
-        <div className="ant-upload-text">场地照</div>
+        <div className="ant-upload-text" style={{fontSize:'0.75rem'}}>场地照</div>
       </div>
     );
    
 
     return (
       <div className="stadiumInformationPh">
-        <div className="headTitle">新用户注册/完善信息</div>
-        <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span style={{ color: '#D85D27' }}>完善信息 ></span> <span>审核  ></span> <span>成功  ></span> </div>
+        <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span style={{ color: '#D85D27' }}>完善信息 ></span> <span>审核  ></span> <span>成功</span> </div>
 
         <div className="headTtitle">完善场馆基本信息</div>
         <div style={{height:'0.63rem',background:'rgba(243,243,243,1)'}}></div>
@@ -283,12 +283,12 @@ class stadiumInformationPh extends React.Component {
 
           <div className="input">
             <span>场地设施</span>
-            <Checkbox.Group options={options} onChange={this.onChangeCheck} /><br /><span className="kong"></span>
+            <Checkbox.Group options={options} style={{fontSize:'0.75rem'}} onChange={this.onChangeCheck} /><br /><span className="kong"></span>
           </div>
 
           <div className="input">
             <span>场地介绍</span>
-            <TextArea rows={3} maxLength={200} onChange={this.textKo} placeholder="请输入场地介绍，如场地规模、特色等。"/>
+            <TextArea rows={3} maxLength={200} onChange={this.textKo} style={{padding:'0'}} placeholder="请输入场地介绍，如场地规模、特色等。"/>
           </div>
            <Button className="btn" onClick={this.next}>下一步</Button>
 

@@ -147,11 +147,9 @@ class forgetPassword extends React.Component {
                   <Input onChange={this.passTwo} maxLength={8} className="phone confirm" />
                 </div>
                 </Form.Item>
-               
-
               <Form.Item>
-                <Button className="confirmBtn" onClick={this.comfir}>确定</Button>
 
+                <Button className="confirmBtn" onClick={this.comfir}>确定</Button>
 
               </Form.Item>
             </Form>

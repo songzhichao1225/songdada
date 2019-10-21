@@ -54,7 +54,7 @@ class information extends React.Component {
     } else if (res.data.code === 2000) {
    
       this.setState({ activityNav: res.data.data, liNum: res.data.data[0].id })
-      this.getVenueReservations({ sportid: res.data.data[0].id , date: this.state.dateString })
+      this.getVenueReservations({ sportid: res.data.data[0].id , date: this.state.dateString }) 
     }
   }
 

@@ -202,7 +202,7 @@ class myWallet extends React.Component {
                   <Col xs={{ span: 7, offset: 0 }}>{item.OpeningBank}|{'*' + item.BankCard.slice(-4)}|{'*' + item.BankName.slice(-1)}</Col>
                   <Col xs={{ span: 4, offset: 0 }}>{item.FinishedDate === null ? '---' : item.FinishedDate}</Col>
                   <Col xs={{ span: 4, offset: 0 }}>￥{item.RequestMoney}</Col>
-                  <Col xs={{ span: 4, offset: 0 }}>{item.status === 1 ? '待处理' : '已处理'}</Col>
+                  <Col xs={{ span: 4, offset: 0 }}>{item.status === 1 ? '待处理' : ''||item.status === 2 ? '已处理' : ''||item.status === 3 ? '未通过' : ''}</Col>
                 </Row>
               ))
             }
@@ -223,6 +223,7 @@ class myWallet extends React.Component {
           <div className="home">
             <span style={{ marginLeft: -15 }}>提现银行卡:</span><span className="textNext">{this.state.walletList.Bankaccount} {this.state.walletList.OpeningBank}</span>
             <div className="listSon">
+              
               <span>提现金额:</span>
               <Input className="input" onChange={this.allNow} value={this.state.moneyYuan} />元
               <span className="all" onClick={this.all}>全部提现</span>
