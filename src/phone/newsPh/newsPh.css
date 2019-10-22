@@ -1,20 +1,25 @@
-.newsPh .headerTitle{
+
+.newsPh{
+    height: 90%;
+    font-size: 0.75rem;
+}
+.newsPh .newsheaderTitle{
    overflow: hidden;
-   padding-left: 1rem;
-   border-bottom: 0.06rem solid #f5f5f5;
+   border-bottom: 0.12rem solid #f5f5f5;
 }
-.newsPh .headerTitle>div{
-    width: 4rem;
-    height: 3rem;
+.newsPh .newsheaderTitle>div{
+
     float: left;
-    color: #9B9B9B;
+    padding: 0.5rem 1rem;
 }
-.newsPh .headerTitle>div:last-child{
+.newsPh .newsheaderTitle>div:last-child{
     margin-left: 1rem;
 }
 .newsPh .receive{
     width: 90%;
-    margin: 2rem auto 0;
+    height: 85%;
+    overflow: hidden;
+    margin: 0 auto;
 }
 .newsPh  .recriveSon{
     overflow: hidden;
@@ -26,7 +31,7 @@
     background:rgba(216,93,39,1);
     border-radius: 50%;
     float: left;
-    margin-top: 1.3rem;
+    margin-top: 5%;
 }
 .newsPh  .recriveSon .img{
     display: block;
@@ -77,5 +82,34 @@
  }
  .newsPh .publish{
      width: 90%;
-     margin: 2rem auto 0;
+     height: 85%;
+     margin: 0 auto;
+    
  }
+ .newsPh .contentScroll{
+     height: 100%;
+     overflow-y: scroll;
+     padding-bottom: 2rem;
+ }
+ .newsPh .pubScroll{
+     height: 100%;
+     overflow-y: scroll;
+     padding-bottom: 2rem;
+ }
+ 
+ .newsPh .contentScroll::-webkit-scrollbar {/*滚动条整体样式*/
+    width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 1px;
+}
+
+.newsPh .pubScroll::-webkit-scrollbar {/*滚动条整体样式*/
+    width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 1px;
+}
+
+.newsPh .ant-result-icon{
+    margin-bottom: 0;
+}
+.newsPh .ant-result-title{
+    font-size: 0.75rem;
+}

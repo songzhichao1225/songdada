@@ -1,7 +1,7 @@
 import React from 'react';
 import './mapPh.css';
 import 'antd/dist/antd.css';
-import { Input } from 'antd';
+import { Input,Icon } from 'antd';
 
 const { Search } = Input;
 
@@ -36,6 +36,9 @@ class mapPh extends React.Component {
     } 
     var local = new BMap.LocalSearch(map, option);
     local.search(data);
+    if(sessionStorage.getItem('inforMap')!==undefined){
+      local.search(sessionStorage.getItem('inforMap'));
+    }
   }
 
 
@@ -48,7 +51,15 @@ class mapPh extends React.Component {
 
   handleClick = e => {
     let dateset = e.target.dataset
-    this.props.history.push({ pathname:'/stadiumInformationPh', query: { lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })
+    if(sessionStorage.getItem('inforMap')!==undefined){
+      this.props.history.push({ pathname:'/homePh/inforSitePh', query: { lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })
+    }else{
+      this.props.history.push({ pathname:'/stadiumInformationPh', query: { lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })
+    }
+   
+  }
+  reture=()=>{
+    this.props.history.goBack()
   }
 
   render() {
@@ -57,6 +68,7 @@ class mapPh extends React.Component {
     })
     return (
       <div className="mapLocation">
+          <Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'5%',top:'2%',zIndex:'99',fontSize:'1rem'}}/>
         <div id="allmap" style={{ position: "absolute", top: 0, left: 0, width: '100vw', height: '100vh' }}>
         </div>
         <div className="search">

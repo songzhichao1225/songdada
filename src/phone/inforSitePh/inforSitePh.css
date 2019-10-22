@@ -1,5 +1,6 @@
 .inforSitePh{
     padding-bottom: 2rem;
+    font-size: 0.75rem;
 }
 .inforSitePh .headTitle{
     height: 3rem;
@@ -11,6 +12,7 @@
     width: 100%;
     height: 3rem;
     border-bottom: 0.06rem solid #f5f5f5;
+    position: relative;
 }
 .inforSitePh .nav .left{
     float: left;
@@ -43,6 +45,7 @@
     border:none;
     box-shadow: none;
     line-height: 3rem;
+    padding-left: 0.8rem;
 }
 .inforSitePh .listSon .rightLi{
     width: 70%;
@@ -52,9 +55,16 @@
     margin-top: 0.5rem;
 }
 .inforSitePh .listSon .rightLi .ant-checkbox-wrapper{
-    width: 5rem;
+    width:40%;
 }
 .inforSitePh .addImg{
+    float: right;
+    width: 70%;
+    padding-left: 11px;
+    margin-top: 0.5rem;
+}
+
+.inforSitePh .ko{
     float: right;
     width: 70%;
     padding-left: 11px;
@@ -97,4 +107,15 @@
 }
 .inforSitePh .ant-select-selection__rendered{
   line-height: 3rem;
+}
+.inforSitePh .ant-input{
+    background: transparent;
+}
+.inforSitePh .ant-upload.ant-upload-select-picture-card{
+    width: 30%;
+    height: 30%;
+}
+.inforSitePh .ant-upload-list-picture-card .ant-upload-list-item{
+    width: 30%;
+    height: 30%;
 }

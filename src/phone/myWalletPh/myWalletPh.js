@@ -1,6 +1,6 @@
 import React from 'react';
 import './myWalletPh.css';
-import { message } from 'antd';
+import { message,Icon } from 'antd';
 import {getVenueMoney } from '../../api';
 
 
@@ -11,7 +11,7 @@ class myWalletPh extends React.Component {
   };
 
   async getVenueMoney(data) {
-    const res = await getVenueMoney(data,sessionStorage.getItem('venue_token'))
+    const res = await getVenueMoney(data,localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
@@ -35,12 +35,15 @@ class myWalletPh extends React.Component {
   recordPh=()=>{
     this.props.history.push('/homePh/recordPh')
   }
+  reture=()=>{
+    this.props.history.goBack()
+  }
 
   render() {
     return (
       <div className="myWalletPh">
          <div className="headBanner">
-           <div className="headerTitle">场馆钱包</div>
+           <div className="headerTitle"><Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'5%',top:'35%'}}/>场馆钱包</div>
            <div className="content">
              <span>账户余额(元)</span>
              <span>{this.state.money}</span>

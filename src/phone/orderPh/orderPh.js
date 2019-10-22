@@ -1,6 +1,6 @@
 import React from 'react';
 import './orderPh.css';
-import { Row, Col, message, Pagination, Modal, Radio, Input, Drawer, DatePicker, Result, Icon } from 'antd';
+import { Row, Col, message, Pagination, Modal, Radio, Input, Drawer, DatePicker, Result, Icon,Spin } from 'antd';
 import { getReservationActivitieslist, VenueSendMessage, getVenueReservations, getVenueSport, VenueClickCancelPlace } from '../../api';
 const { TextArea } = Input
 class orderPh extends React.Component {
@@ -28,6 +28,7 @@ class orderPh extends React.Component {
     liIndex: 0,
     left:0,
     top:0,
+    spin:true,
     sport: [
       { name: '全部', id: 0 },
       { name: '羽毛球', id: 1 },
@@ -48,12 +49,13 @@ class orderPh extends React.Component {
       { name: '待评价', id: 6 },
       { name: '已完成', id: 5 },
     ]
+    
   };
 
 
 
   async getVenueReservations(data) {
-    const res = await getVenueReservations(data, sessionStorage.getItem('venue_token'))
+    const res = await getVenueReservations(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ lookList: res.data.data, macNum: res.data.data[0].c })
     } else {
@@ -61,20 +63,22 @@ class orderPh extends React.Component {
     }
   }
   async getReservationActivitieslist(data) {
-    const res = await getReservationActivitieslist(data, sessionStorage.getItem('venue_token'))
+    const res = await getReservationActivitieslist(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
     } else if (res.data.code === 2000) {
-      this.setState({ activeSon: res.data.data.data, informList: res.data.data.data, total: res.data.data.count, flag: false })
+      this.setState({ activeSon: res.data.data.data, informList: res.data.data.data, total: res.data.data.count, flag: false,spin:false })
     } else if (res.data.code === 4002) {
-      this.setState({ flag: true })
+      this.setState({ flag: true,spin:false })
+    }else{
+      this.setState({spin:false})
     }
   }
 
 
   async getVenueSport(data) {
-    const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
+    const res = await getVenueSport(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ remList: res.data.data, liNum: res.data.data[0].id })
     }
@@ -85,8 +89,6 @@ class orderPh extends React.Component {
     this.getReservationActivitieslist({ page: 1, sport: '', status: '', publicuid: '' })
     this.getVenueReservations({ sportid: 1, date: new Date().toLocaleDateString().replace(/\//g, "-") })
     this.getVenueSport()
-
-   
   }
 
  
@@ -137,7 +139,7 @@ class orderPh extends React.Component {
   }
 
   async VenueSendMessage(data) {
-    const res = await VenueSendMessage(data, sessionStorage.getItem('venue_token'))
+    const res = await VenueSendMessage(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.info(res.data.msg)
       this.setState({ visible: false })
@@ -175,7 +177,7 @@ class orderPh extends React.Component {
   submitVal = () => {
     this.getReservationActivitieslist({ page: 1, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '' })
     this.setState({
-      Drawervisible: false,
+      Drawervisible: false
     })
   }
 
@@ -189,9 +191,9 @@ class orderPh extends React.Component {
   }
 
   async VenueClickCancelPlace(data) {
-    const res = await VenueClickCancelPlace(data, sessionStorage.getItem('venue_token'))
+    const res = await VenueClickCancelPlace(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.getVenueReservations({ sportid: this.state.liNum, date: this.state.dateString })
+      this.getVenueReservations({ sportid: this.state.liNum, date: this.state.dataString })
       message.info(res.data.msg)
     } else {
       message.error('操作失败')
@@ -200,7 +202,6 @@ class orderPh extends React.Component {
 
   lookPlate = e => {
     let time = e.currentTarget.dataset.time
-
     if (e.currentTarget.dataset.type !== '3' && e.currentTarget.dataset.type !== '2') {
       if (e.currentTarget.dataset.type === '1') {
         this.VenueClickCancelPlace({ date: this.state.dataString, time: time, sportid: this.state.liNum, type: e.currentTarget.dataset.type })
@@ -224,8 +225,8 @@ class orderPh extends React.Component {
     return (
       <div className="orderPh">
         <div className="headerNav">
-          <div onClick={this.activityList} style={this.state.activityList === true ? { borderBottom: '0.06rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>活动列表</div>
-          <div onClick={this.bookingKanban} style={this.state.activityList === false ? { borderBottom: '0.06rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>预约面板</div>
+          <div onClick={this.activityList} style={this.state.activityList === true ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>活动列表</div>
+          <div onClick={this.bookingKanban} style={this.state.activityList === false ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>预约面板</div>
         </div>
         <div style={{ height: '0.6rem', background: '#f5f5f5' }}></div>
         <div className={this.state.activityList === true ? 'activityList' : 'hidden'}>
@@ -234,7 +235,7 @@ class orderPh extends React.Component {
             <Col xs={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 1 }}>时间</Col>
             <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 1 }}>状态</Col>
           </Row>
-          <div className='content' style={this.state.flag === false ? { display: 'block' } : { display: 'none' }}>
+          <div className='content'>
             {
               this.state.activeSon.map((item, i) => (
                 <Row key={i} className="list" data-index={i} onClick={this.select}>
@@ -261,9 +262,11 @@ class orderPh extends React.Component {
               ))
             }
             <Pagination className={this.state.activeSon.length > 0 ? 'fenye' : 'hidden'} size="small" defaultCurrent={1} onChange={this.current} total={this.state.total} />
+            <Spin style={{ width: '100%', marginTop: '45%' }} spinning={this.state.spin} />
+            <Result className={this.state.spin===false&&this.state.activeSon.length ===0 ? '' : 'hidden'} icon={<Icon style={{fontSize:'2rem'}} type="bank" theme="twoTone" twoToneColor="#F5A623" />} title="没有活动列表！" />
           </div>
-
-          <Result className={this.state.activeSon.length > 0 ? 'hidden' : ''} icon={<Icon type="bank" theme="twoTone" twoToneColor="#F5A623" />} title="没有活动列表！" />
+         
+         
           <div className="screen" onClick={this.showDrawer}><span>筛选</span><img src={require('../../assets/shaixuan.png')} alt="筛选" /></div>
 
           <Modal
@@ -355,7 +358,7 @@ class orderPh extends React.Component {
             </div>
           </div>
           <DatePicker className="date" placeholder="选择日期" onChange={this.dateChange} />
-          <Result className={this.state.lookList.length === 0 ? '' : 'hidden'} icon={<Icon type="reconciliation" theme="twoTone" twoToneColor="#F5A623" />} title="没有预约情况" />
+          <Result style={{fontSize:'0.75rem'}} className={this.state.lookList.length === 0 ? '' : 'hidden'} icon={<Icon type="reconciliation" style={{fontSize:'2rem'}} theme="twoTone" twoToneColor="#F5A623" />} title="没有预约情况" />
 
           <Drawer
             title="该场地详细信息"

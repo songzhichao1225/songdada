@@ -1,6 +1,6 @@
 import React from 'react';
 import './recordPh.css';
-import { message,Pagination,Result,Icon} from 'antd';
+import { message,Pagination,Result,Icon,Spin} from 'antd';
 import { getVenueWithdrawalList } from '../../api';
 
 
@@ -8,15 +8,16 @@ class recordPh extends React.Component {
 
   state = {
     recordPhList:[],
-    other:0
+    other:0,
+    spin:true
   };
   async getVenueWithdrawalList(data) {
-    const res = await getVenueWithdrawalList(data, sessionStorage.getItem('venue_token'))
+    const res = await getVenueWithdrawalList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
     } else {
-      this.setState({ recordPhList: res.data.data,other:res.data.other })
+      this.setState({ recordPhList: res.data.data,other:res.data.other,spin:false })
     }
   }
 
@@ -29,12 +30,15 @@ class recordPh extends React.Component {
   current=(page,pageSize)=>{
     this.getVenueWithdrawalList({page:page})
   }
+  reture=()=>{
+    this.props.history.goBack()
+  }
 
 
   render() {
     return (
       <div className="recordPh">
-        <div className="headTitle">提现记录</div>
+        <div className="headTitle"> <Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'5%',top:'35%'}}/>提现记录</div>
         { 
           this.state.recordPhList.map((item,i) => (
             <div className="recordSon" key={i}>
@@ -49,8 +53,9 @@ class recordPh extends React.Component {
             </div>
           ))
         }
-         <Pagination className={this.state.recordPhList.length===0?'hidden':'fenye'} onChange={this.current} defaultCurrent={1} total={this.state.other} />
-         <Result className={this.state.recordPhList.length===0?'':'hidden'} icon={<Icon type="account-book" theme="twoTone"  twoToneColor="#F5A623" />} title="没有提现记录" />
+        <Spin spinning={this.state.spin} style={{width:'100%',marginTop:'45%'}}/>
+         <Pagination className={this.state.recordPhList.length===0?'hidden':'fenye'} onChange={this.current} size='small' defaultCurrent={1} total={this.state.other} />
+         <Result className={this.state.spin===false&&this.state.recordPhList.length===0?'':'hidden'} icon={<Icon type="account-book" theme="twoTone" style={{fontSize:'2rem'}}  twoToneColor="#F5A623" />} title="没有提现记录" />
       </div>
     )
   }

@@ -46,14 +46,14 @@ class qualificationPh extends React.Component {
 
 
   async getVenueOpenBank(data) {
-    const res = await getVenueOpenBank(data, sessionStorage.getItem('venue_token'))
+    const res = await getVenueOpenBank(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ type: res.data.data, flag: false })
     }
   }
 
   async getVenueOpenBankProvince(data) {
-    const res = await getVenueOpenBankProvince(data, sessionStorage.getItem('venue_token'))
+    const res = await getVenueOpenBankProvince(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ backProvince: res.data.data, flagTwo: false })
     }
@@ -62,7 +62,7 @@ class qualificationPh extends React.Component {
 
 
   async getVenueOpenBankCity(data) {
-    const res = await getVenueOpenBankCity(data, sessionStorage.getItem('venue_token'))
+    const res = await getVenueOpenBankCity(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ backCity: res.data.data, flagThree: false })
     }
@@ -107,7 +107,7 @@ class qualificationPh extends React.Component {
     this.setState({ value: e.target.value })
   }
   async getIsStatus(data) {
-    const res = await getIsStatus(data, sessionStorage.getItem('venue_token'))
+    const res = await getIsStatus(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
@@ -128,7 +128,7 @@ class qualificationPh extends React.Component {
   }
 
   async getVenueOpenBankList(data) {
-    const res = await getVenueOpenBankList(data, sessionStorage.getItem('venue_token'))
+    const res = await getVenueOpenBankList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ backList: res.data.data, flagThree: false })
     }

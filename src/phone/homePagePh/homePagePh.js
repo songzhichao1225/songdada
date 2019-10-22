@@ -11,7 +11,7 @@ class homePagePh extends React.Component {
    
   };
   async getVenueIndex(data) {
-    const res = await getVenueIndex(data, sessionStorage.getItem('venue_token'))
+    const res = await getVenueIndex(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')

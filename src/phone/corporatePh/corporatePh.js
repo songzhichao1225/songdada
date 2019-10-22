@@ -20,12 +20,12 @@ class corporatePh extends React.Component {
 
 
   componentDidMount() {
-    if (sessionStorage.getItem('venue_token')) {
-      if (sessionStorage.getItem('issite') === '0') {
+    if (localStorage.getItem('venue_token')) {
+      if (localStorage.getItem('issite') === '0') {
         this.props.history.push('/stadiumInformationPh')
-      } else if (sessionStorage.getItem('isqult') === '0') {
+      } else if (localStorage.getItem('isqult') === '0') {
         this.props.history.push('/qualification')
-      } else if (sessionStorage.getItem('isqult') === '1') {
+      } else if (localStorage.getItem('isqult') === '1') {
         this.props.history.push('/resultsAuditsPh')
       }
     }
@@ -62,12 +62,12 @@ class corporatePh extends React.Component {
     if (res.data.code !== 2000) {
       message.error(res.data.msg)
     } else {
-      sessionStorage.setItem('uuid', res.data.data.uuid);
-      sessionStorage.setItem('name', res.data.data.name);
-      sessionStorage.setItem('islegal', res.data.data.islegal);
-      sessionStorage.setItem('venue_token', res.data.data.venue_token);
-      sessionStorage.setItem('issite', res.data.data.issite);
-      sessionStorage.setItem('isqult', res.data.data.isqult);
+      localStorage.setItem('uuid', res.data.data.uuid);
+      localStorage.setItem('name', res.data.data.name);
+      localStorage.setItem('islegal', res.data.data.islegal);
+      localStorage.setItem('venue_token', res.data.data.venue_token);
+      localStorage.setItem('issite', res.data.data.issite);
+      localStorage.setItem('isqult', res.data.data.isqult);
       setTimeout(() => {
         if (res.data.data.venue_token) {
           if (res.data.data.issite === 0) {

@@ -2,9 +2,9 @@ import React from 'react';
 import './commentPh.css';
 import 'antd/dist/antd.css';
 import { getCommentList, getOverallScore,VenueCommentReply } from '../../api';
-import { message,Pagination,Result,Icon  } from 'antd';
+import { message,Pagination,Result,Icon,Modal ,Input } from 'antd';
 
-
+const {TextArea}=Input
 class commentPh extends React.Component {
 
   state = {
@@ -17,7 +17,7 @@ class commentPh extends React.Component {
     current:1,
   };
   async getCommentList(data) {
-    const res = await getCommentList(data, sessionStorage.getItem('venue_token'))
+    const res = await getCommentList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
@@ -26,7 +26,7 @@ class commentPh extends React.Component {
     }
   }
   async getOverallScore(data) {
-    const res = await getOverallScore(data, sessionStorage.getItem('venue_token'))
+    const res = await getOverallScore(data, localStorage.getItem('venue_token'))
     this.setState({ score: res.data.data, scoreSon: res.data.data.score })
   }
 
@@ -62,7 +62,7 @@ class commentPh extends React.Component {
     this.VenueCommentReply({commentid:uid,comment:textArea})
   }
   async VenueCommentReply(data) {
-    const res = await VenueCommentReply(data, sessionStorage.getItem('venue_token'))
+    const res = await VenueCommentReply(data, localStorage.getItem('venue_token'))
     if(res.data.code===2000){
      this.setState({visible:false})
      this.getCommentList({page:1})
@@ -81,13 +81,18 @@ class commentPh extends React.Component {
   
 
 
-
+  reture=()=>{
+    this.props.history.goBack()
+  }
 
   render() {
 
     return (
       <div className="commentPh">
-        <div className="headerTitle">场馆评分</div>
+        <div className="headerTitle">
+        <Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'5%',top:'35%'}}/>
+          场馆评分
+          </div>
         <div className="essence">
           <div className="whole">
             <span>整体评分</span>
@@ -138,7 +143,7 @@ class commentPh extends React.Component {
             ))
 
           }
-{/*
+
           <Modal
             title="回复该客户"
             footer={null}
@@ -147,13 +152,11 @@ class commentPh extends React.Component {
             onCancel={this.handleCancel}
           >
             <TextArea rows={4} maxLength={100} onChange={this.textArea}/>
-
              <div className="commentPhbtn">
                <div onClick={this.handleCancel}>取消</div>
                <div style={{marginLeft:'0.5rem',background:'#F5A623',color:'#fff'}} onClick={this.publish}>发布</div>
              </div>
-           
-          </Modal> */}
+          </Modal> 
 
        
           <Pagination className="fenye" size='small' style={this.state.getCommentList.length>0?{}:{display:'none'}} current={parseInt(this.state.current)}  pageSize={10} total={this.state.getCommentList.length} onChange={this.pageChang} />

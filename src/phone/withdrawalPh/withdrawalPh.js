@@ -1,6 +1,6 @@
 import React from 'react';
 import './withdrawalPh.css';
-import { message } from 'antd';
+import { message,Icon } from 'antd';
 import { getVenueWithdrawalOneList,getVenueMoney, VenueWithdrawal} from '../../api';
 
 
@@ -13,7 +13,7 @@ class withdrawalPh extends React.Component {
   };
 
   async getVenueWithdrawalOneList(data) {
-    const res = await getVenueWithdrawalOneList(data, sessionStorage.getItem('venue_token'))
+    const res = await getVenueWithdrawalOneList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
@@ -23,7 +23,7 @@ class withdrawalPh extends React.Component {
   }
 
   async getVenueMoney(data) {
-    const res = await getVenueMoney(data,sessionStorage.getItem('venue_token'))
+    const res = await getVenueMoney(data,localStorage.getItem('venue_token'))
   
      
       this.setState({money:res.data.data.money})
@@ -41,7 +41,7 @@ class withdrawalPh extends React.Component {
     this.setState({value:this.state.money})
   }
   async VenueWithdrawal(data) {
-    const res = await VenueWithdrawal(data,sessionStorage.getItem('venue_token'))
+    const res = await VenueWithdrawal(data,localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
@@ -57,11 +57,14 @@ class withdrawalPh extends React.Component {
   comfirm=()=>{
     this.VenueWithdrawal({money:this.state.value})
   }
+  reture=()=>{
+    this.props.history.goBack()
+  }
 
   render() {
     return (
       <div className="withdrawalPh">
-        <div className="headTitle">提现</div>
+        <div className="headTitle"><Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'5%',top:'35%'}}/>提现</div>
         <div className="white"></div>
         <div className="bankCards">
           <span>{this.state.withdrawalPh.Settlement === 2 ? '法人账户' : '公司银行账户'}</span>

@@ -1,6 +1,6 @@
 import React from 'react';
 import './untiePhonePh.css';
-import {Input,message } from 'antd';
+import {Input,message,Icon } from 'antd';
 import { _code,VenueBindingPhone} from '../../api';
 
 
@@ -73,7 +73,7 @@ class untiePhonePh extends React.Component {
   }
   
   async VenueBindingPhone(data) {
-    const res = await VenueBindingPhone(data,sessionStorage.getItem('venue_token'))
+    const res = await VenueBindingPhone(data,localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
@@ -90,12 +90,15 @@ class untiePhonePh extends React.Component {
     this.VenueBindingPhone({legalphone:phone,legalcode:codeOne,operatorphone:phoneTwo,operatorcode:codeTwo})
 
   }
-          
+        
+  reture=()=>{
+    this.props.history.goBack()
+  }
 
   render() {
     return (
       <div className="untiePhonePh">
-        <div className="headTitle">解除绑定手机号</div>
+        <div className="headTitle"><Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'5%',top:'35%'}}/>解除绑定手机号</div>
          <div className="listSon">
            <Input maxLength={11} onChange={this.phone} placeholder="请输入法人手机号" />
          </div>

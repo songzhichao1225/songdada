@@ -6,6 +6,7 @@ padding-bottom: 2rem;
 	 border-bottom: 0.06rem solid #f5f5f5;
 	 text-align: center;
 	 line-height: 3rem;
+	 position: relative;
 }
 .commentPh .essence{
 	width: 90%;

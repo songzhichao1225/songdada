@@ -1,6 +1,6 @@
 import React from 'react';
 import './inforSitePh.css';
-import { Input, message, Checkbox, Upload, Icon,Popconfirm,Button,Radio,Select,Tooltip } from 'antd';
+import { Input, message, Checkbox, Upload, Icon,Popconfirm,Button,Radio,Select,Tooltip,Spin } from 'antd';
 import { getVenueInformation,getVenueQualificationInformation,VenueInformationSave,VenueQualificationInformationSave,getVenueIssecondaudit,getVenueOpenBank,getVenueOpenBankList,getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
 const {Option}=Select
 
@@ -73,10 +73,11 @@ class inforSitePh extends React.Component {
     zuo:0,
     imgHoodTwo:'',
     imgHood:'',
+    spin:true
   };
 
   async getVenueInformation(data) {
-    const res = await getVenueInformation(data, sessionStorage.getItem('venue_token'))
+    const res = await getVenueInformation(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
@@ -87,27 +88,36 @@ class inforSitePh extends React.Component {
       for (let i in imgS) {
         arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: imgS[i] })
       }
+      if(this.props.history.location.query!==undefined){
+        this.setState({ listSon: res.data.data, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), imageUrl: res.data.data.firstURL,
+        cgName:res.data.data.name,address:this.props.history.location.query.adddress,linkMan:res.data.data.linkMan,telephone:res.data.data.telephone,siteInfo:res.data.data.siteInfo,
+        fileList: arrImg,comment:res.data.data.comment, lat:this.props.history.location.query.lat,lng:this.props.history.location.query.lng,position:this.props.history.location.query.adddress,spin:false
+      })
+     }else{
       this.setState({ listSon: res.data.data, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), imageUrl: res.data.data.firstURL,
       cgName:res.data.data.name,address:res.data.data.address,linkMan:res.data.data.linkMan,telephone:res.data.data.telephone,siteInfo:res.data.data.siteInfo,
-      fileList: arrImg,comment:res.data.data.comment
+      fileList: arrImg,comment:res.data.data.comment,lat:res.data.data.lat,lng:res.data.data.lng,position:res.data.data.position,spin:false
     })
+     }
+     
     } else {
       message.error(res.data.msg)
     }
   }
  
-
+ 
   async getVenueIssecondaudit(data) {
-    const res = await getVenueIssecondaudit(data,sessionStorage.getItem('venue_token'))
+    const res = await getVenueIssecondaudit(data,localStorage.getItem('venue_token'))
       console.log(res)
       this.setState({issecondaudit:res.data.data.issecondaudit})
   }
 
   async getVenueQualificationInformation(data) {
-    const res = await getVenueQualificationInformation(data,sessionStorage.getItem('venue_token'))
+    const res = await getVenueQualificationInformation(data,localStorage.getItem('venue_token'))
       if(res.data.code===2000){
         let corporate=res.data.data
         let cardImg=corporate.legalFilesURL.replace('|',',').split(',')
+       
          this.setState({imageUrlTwo:corporate.legalBaseURL+'/'+cardImg[0],imageUrlThree:corporate.legalBaseURL+'/'+cardImg[1],
          baseImg:corporate.legalBaseURL,
          imgFile:cardImg[0],imgFileTwo:cardImg[1],
@@ -123,6 +133,8 @@ class inforSitePh extends React.Component {
     this.getVenueIssecondaudit()
     this.getVenueOpenBankProvince()
     this.getVenueOpenBank()
+    
+
   }
   left = () => {
     this.setState({ flag: 1 })
@@ -187,7 +199,7 @@ class inforSitePh extends React.Component {
   }
 
   async VenueInformationSave(data) {
-    const res = await VenueInformationSave(data, sessionStorage.getItem('venue_token'))
+    const res = await VenueInformationSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.info('提交成功')
         this.setState({issecondaudit:0})
@@ -198,7 +210,7 @@ class inforSitePh extends React.Component {
   }
 
   confirm = () => {
-    let { listSon, cgName, address, linkMan, telephone, fileList, imageUrl, sport, facilities, siteInfo, comment } = this.state
+    let { listSon, cgName, address, linkMan, telephone, fileList, imageUrl, sport, facilities, siteInfo, comment,lat,lng,position } = this.state
     let filesURLarr = []
     for (let i in fileList) {
       if (fileList[i].response !== undefined) {
@@ -210,8 +222,8 @@ class inforSitePh extends React.Component {
     if(filesURLarr.length>=2){
       let data = {
         venuename: cgName,
-        lat: listSon.lat,
-        lng: listSon.lng,
+        lat: lat,
+        lng:lng,
         address: address,
         linkMan: linkMan,
         telephone: telephone,
@@ -220,7 +232,7 @@ class inforSitePh extends React.Component {
         facilities: facilities.join(','),
         sport: sport.join(','),
         siteInfo: siteInfo,
-        position: listSon.position,
+        position: position,
         comment: comment,
         type: 2
       }
@@ -268,21 +280,21 @@ corporateCardId=e=>{
   this.setState({corporateCardId:e.target.value})
 }
 async getVenueOpenBank(data) {
-  const res = await getVenueOpenBank(data, sessionStorage.getItem('venue_token'))
+  const res = await getVenueOpenBank(data, localStorage.getItem('venue_token'))
   if (res.data.code === 2000) {
     this.setState({ type: res.data.data, flagOne: false })
   }
 }
 
 async getVenueOpenBankProvince(data) {
-  const res = await getVenueOpenBankProvince(data, sessionStorage.getItem('venue_token'))
+  const res = await getVenueOpenBankProvince(data, localStorage.getItem('venue_token'))
   if (res.data.code === 2000) {
     this.setState({ backProvince: res.data.data, flagTwo: false })
   }
 }
 
 async getVenueOpenBankList(data) {
-  const res = await getVenueOpenBankList(data, sessionStorage.getItem('venue_token'))
+  const res = await getVenueOpenBankList(data, localStorage.getItem('venue_token'))
   if (res.data.code === 2000) {
     this.setState({ backList: res.data.data, flagThree: false })
   }
@@ -290,7 +302,7 @@ async getVenueOpenBankList(data) {
 
 
 async getVenueOpenBankCity(data) {
-  const res = await getVenueOpenBankCity(data, sessionStorage.getItem('venue_token'))
+  const res = await getVenueOpenBankCity(data, localStorage.getItem('venue_token'))
   if (res.data.code === 2000) {
     this.setState({ backCity: res.data.data, flagThree: false })
   }
@@ -321,7 +333,7 @@ corporateOpen=e=>{
 }
 
 async VenueQualificationInformationSave(data) {
-  const res = await VenueQualificationInformationSave(data,sessionStorage.getItem('venue_token'))
+  const res = await VenueQualificationInformationSave(data,localStorage.getItem('venue_token'))
   if (res.data.code === 4001) {
     this.props.history.push('/login')
     message.error('登录超时请重新登录')
@@ -361,6 +373,14 @@ ziSubmit=()=>{
     this.VenueQualificationInformationSave(data)
   }
 }
+reture=()=>{
+  this.props.history.goBack()
+}
+
+mapPh=(e)=>{
+  this.props.history.push('/mapPh')
+  sessionStorage.setItem('inforMap',e.currentTarget.dataset.position)
+}
 
   render() {
     let { listSon } = this.state
@@ -378,38 +398,38 @@ ziSubmit=()=>{
 
     const uploadButton = (
       <div>
-        <Icon type={this.state.loading ? 'loading' : 'plus'} />
-        <div className="ant-upload-text">门脸照</div>
+        <Icon type={this.state.loading ? 'loading' : 'upload'} />
+        <div className="ant-upload-text" style={{fontSize:'0.75rem'}}>门脸照</div>
       </div>
     );
     const { imageUrl,fileList,imageUrlTwo,imageUrlThree} = this.state;
     const uploadButtonT = (
       <div>
-        <Icon type="plus" />
-        <div className="ant-upload-text">场地照</div>
+        <Icon type="upload" />
+        <div className="ant-upload-text" style={{fontSize:'0.75rem'}}>场地照</div>
       </div>
     );
 
     const uploadButtonTwo = (
       <div>
-        <Icon type={this.state.loading ? 'loading' : 'plus'} />
-        <div className="ant-upload-text">正面照</div>
+        <Icon type={this.state.loading ? 'loading' : 'upload'} />
+        <div className="ant-upload-text" style={{fontSize:'0.75rem'}}>正面照</div>
       </div>
     );
     const uploadButtonThree = (
       <div>
-        <Icon type={this.state.loading ? 'loading' : 'plus'} />
-        <div className="ant-upload-text">反面照</div>
+        <Icon type={this.state.loading ? 'loading' : 'upload'} />
+        <div className="ant-upload-text" style={{fontSize:'0.75rem'}}>反面照</div>
       </div>
     );
     return (
       <div className="inforSitePh">
-        <div className="headTitle">场馆信息设置</div>
         <div className="nav">
-          <div className={sessionStorage.getItem('ismethod')==='1'?'left':'width'} style={this.state.flag === 1 ? {color: '#000' } : {}}  onClick={this.left}>基本信息</div>
-          <div className={sessionStorage.getItem('ismethod')==='1'?'right':'none'} style={this.state.flag === 1 ? {} : { color: '#000' }}  onClick={this.right}>资质信息</div>
+        <Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'5%',top:'35%'}}/>
+          <div className={localStorage.getItem('ismethod')==='1'?'left':'width'} style={this.state.flag === 1 ? {color: '#000'} : {}}  onClick={this.left}>基本信息</div>
+          <div className={localStorage.getItem('ismethod')==='1'?'right':'none'} style={this.state.flag === 1 ? {} : { color: '#000' }}  onClick={this.right}>资质信息</div>
         </div> 
-        <div className="basic" style={this.state.flag === 1 ? { display: 'block' } : { display: 'none' }}>
+        <div className="basic" style={this.state.spin===false&&this.state.flag === 1 ? { display: 'block' } : { display: 'none' }}>
           <div className="listSon">
             <span>推广员</span>
             <span className="right" style={{ paddingLeft: '11px' }}>{listSon.promote}</span>
@@ -419,9 +439,9 @@ ziSubmit=()=>{
             <Input className="right" value={this.state.cgName}  onChange={this.cgName}/>
           </div>
           
-          <div className="listSon">
+          <div className="listSon" onClick={this.mapPh}  data-position={listSon.position}>
             <span>场馆位置</span>
-            <Input className="right" value={listSon.position} disabled={true}/>
+            <Input className="right" value={this.state.position}  disabled={true}/>
           </div>
           
           <div className="listSon">
@@ -486,12 +506,12 @@ ziSubmit=()=>{
           
           <div className="listSon">
             <span>场馆介绍</span>
-            <Input className="right" value={listSon.siteInfo}  onChange={this.siteInfo} />
+            <Input className="right" value={this.state.siteInfo}  onChange={this.siteInfo} />
           </div>
           
           <div className="listSon">
             <span>其他</span>
-            <Input className="right" value={listSon.comment}  onChange={this.comment}/>
+            <Input className="right" value={this.state.comment}  onChange={this.comment}/>
           </div>
           
           <Popconfirm
@@ -506,6 +526,8 @@ ziSubmit=()=>{
           <Button className="submit"  style={this.state.issecondaudit===1?{display:'none'}:{display:'block'}}>审核中~</Button>
         </div>
         
+
+        <Spin spinning={this.state.spin} style={{width:'100%',marginTop:'45%'}}/>
         <div className="qualification" style={this.state.flag === 2 ? { display: 'block' } : { display: 'none' }}>
           <div className="listSon">
             <span>营业执照</span>
@@ -517,7 +539,7 @@ ziSubmit=()=>{
             <Upload
               name="files"
               listType="picture-card"
-              className="avatar-uploader addImg"
+              className="avatar-uploader  ko"
               showUploadList={false}
               action="/api/UploadVenueImgs?type=Venue"
               beforeUpload={beforeUpload}
@@ -529,7 +551,7 @@ ziSubmit=()=>{
             <Upload
               name="files"
               listType="picture-card"
-              className="avatar-uploader addImg ko"
+              className="avatar-uploader  ko"
               showUploadList={false}
               action="/api/UploadVenueImgs?type=Venue"
               beforeUpload={beforeUpload}
@@ -554,8 +576,8 @@ ziSubmit=()=>{
           </div>
           <div className="listSon">
             <span>结算账号:</span>
-            <Radio.Group style={{float:'right',marginRight:'1rem'}} onChange={this.numRadio} value={this.state.numRadio}>
-              <Radio value={0}>公司银行账号</Radio>
+            <Radio.Group style={{float:'right',fontSize:'0.75rem',marginRight:'3%'}} onChange={this.numRadio} value={this.state.numRadio}>
+              <Radio value={0}>公司账号</Radio>
               <Radio value={1}>法人账号</Radio>
             </Radio.Group>
           </div>

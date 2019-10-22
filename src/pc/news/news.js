@@ -185,7 +185,7 @@ class news extends React.Component {
     return (
       <div className="news">
         <div className="xiange"></div>
-        <div className="heade"><span>所有消息      </span><span>(共{this.state.sum}条，未读{this.state.isredcount}条)</span><div className="button" onClick={this.sendingMsg}>发消息</div></div>
+        <div className="heade"><span>所有消息   </span><span>(共{this.state.sum}条，未读{this.state.isredcount}条)</span><div className="button" onClick={this.sendingMsg}>发消息</div></div>
         <div className="xiange"></div>
         <div className="content">
           <div className="newsList">

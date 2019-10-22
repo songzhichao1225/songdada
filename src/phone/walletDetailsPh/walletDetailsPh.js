@@ -21,7 +21,7 @@ class walletDetailsPh extends React.Component {
   };
 
   async getVenueMoneyList(data) {
-    const res = await getVenueMoneyList(data, sessionStorage.getItem('venue_token'))
+    const res = await getVenueMoneyList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')

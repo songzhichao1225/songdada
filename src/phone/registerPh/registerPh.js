@@ -1,7 +1,7 @@
 import React from 'react';
 import './registerPh.css';
 import { Button, Input, Checkbox, Popconfirm, Icon,message,Modal } from 'antd';
-import { _register, _code, getPromoteName } from '../../api';
+import { _register, _code, getPromoteName,getIsUserName } from '../../api';
 
 class registerPh extends React.Component {
 
@@ -27,15 +27,26 @@ class registerPh extends React.Component {
   changID = (e) => {
     this.setState({ Id: e.target.value })
   }
+
+  
+
+  async getIsUserName(data) {
+    const res = await getIsUserName(data)
+     if(res.data.code===2000){
+        this.setState({ name: data.name})
+     }else{
+       message.error(res.data.msg)
+       this.setState({ name:''})
+     }
+  }
+
+
   changeName = (e) => {
 
-    if (/[\u4E00-\u9FA5]/g.test(e.target.value)) {
-      this.setState({ visibleName: true })
-    } else if (e.target.value === '') {
-      this.setState({ visibleName: true })
-    } else {
-      this.setState({ name: e.target.value, visibleName: false })
-    }
+      this.getIsUserName({name:e.target.value})
+    
+    
+
   }
   changePhone = (e) => {
       this.setState({ phone: e.target.value })
@@ -62,9 +73,9 @@ class registerPh extends React.Component {
           visible: true,
         });
       }, 1000)
-      sessionStorage.setItem('uuid', res.data.data.venueloginuuid);
-      sessionStorage.setItem('venue_token', res.data.data.token);
-      sessionStorage.setItem('name', res.data.data.name);
+      localStorage.setItem('uuid', res.data.data.venueloginuuid);
+      localStorage.setItem('venue_token', res.data.data.token);
+      localStorage.setItem('name', res.data.data.name);
     } else {
       message.error(res.data.msg)
     }
@@ -129,7 +140,7 @@ class registerPh extends React.Component {
           </div>
 
           <div className="input">
-            <Input  onBlur={this.changeName} prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="请输入用户名" />
+            <Input  onBlur={this.changeName}  prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="请输入用户名" />
           </div>
 
           <div className="input">

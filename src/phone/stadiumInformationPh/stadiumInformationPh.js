@@ -166,7 +166,7 @@ class stadiumInformationPh extends React.Component {
       message.error('最少上传两张场地照')
      }else{
       let data={
-        venueloginuuid:sessionStorage.getItem('uuid'),
+        venueloginuuid:localStorage.getItem('uuid'),
         province:sessionStorage.getItem('province'),
         city:sessionStorage.getItem('city'),
         area:sessionStorage.getItem('county'),

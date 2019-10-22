@@ -1,3 +1,7 @@
+.mapLocation{
+	height: 100%;
+	position: relative;
+}
 .mapLocation .search{
 	width:90%;
 	position: absolute;

@@ -11,7 +11,7 @@ class resultsAuditsPh extends React.Component {
   };
 
   async getIsStatus(data) {
-    const res = await getIsStatus(data,sessionStorage.getItem('venue_token'))
+    const res = await getIsStatus(data,localStorage.getItem('venue_token'))
    if(res.data.code===2000){
      this.setState({islegal:res.data.data.islegal,content:res.data.data.content})
    }

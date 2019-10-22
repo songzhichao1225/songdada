@@ -85,6 +85,11 @@
 .drawerBossTwo>div:nth-child(4n+1){
     margin-left: 0;
 }
+
+.drawerBossTwo>div:last-child{
+    margin-left: 0;
+    clear: both;
+}
 .drawerBtn{
     overflow: hidden;
     margin-top: 4rem;
@@ -245,9 +250,17 @@
 
  .orderPh .dateTime{
      line-height: 1.5rem;
+     margin-top: 3%;
  }
 
 
 .orderPh .ant-input:focus{
    border:none;
+}
+
+.orderPh .ant-result-icon{
+    margin-bottom: 0;
+}
+.orderPh .ant-result-title{
+    font-size: 0.75rem;
 }

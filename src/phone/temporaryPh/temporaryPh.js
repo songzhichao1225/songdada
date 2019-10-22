@@ -1,6 +1,6 @@
 import React from 'react';
 import './temporaryPh.css';
-import { message, Select, DatePicker, Input } from 'antd';
+import { message, Select, DatePicker, Input,Icon } from 'antd';
 import { getVenueSport, VenueTemporarilyClosed } from '../../api';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/zh_CN';
@@ -16,7 +16,7 @@ class temporaryPh extends React.Component {
     comment: '',
   };
   async getVenueSport(data) {
-    const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
+    const res = await getVenueSport(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
@@ -74,7 +74,7 @@ class temporaryPh extends React.Component {
   }
 
   async VenueTemporarilyClosed(data) {
-    const res = await VenueTemporarilyClosed(data, sessionStorage.getItem('venue_token'))
+    const res = await VenueTemporarilyClosed(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
@@ -89,12 +89,14 @@ class temporaryPh extends React.Component {
     this.VenueTemporarilyClosed({ sportid: sportId, sportname: sportName, starttime: startTime, endtime: endTime, comment: comment })
   }
 
-
+  reture=()=>{
+    this.props.history.goBack()
+  }
 
   render() {
     return (
       <div className="temporaryPh">
-        <div className="headTitle">设置临时关闭预约</div>
+        <div className="headTitle"><Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'5%',top:'35%'}}/>设置临时关闭预约</div>
         <div className="listSon">
           <span className="span">运动项目</span>
           <Select defaultValue="请选择" style={{ width: '8rem', border: 'none' }} className="select" onChange={this.handleChange}>
@@ -108,13 +110,13 @@ class temporaryPh extends React.Component {
 
         <div className="listSon">
           <span className="span">有效期（开始时间）</span>
-          <DatePicker showTime={{ defaultValue: moment('00:00', 'HH:mm') }} locale={locale} placeholder="选择时间" className="select" onChange={this.startOnChange} onOk={this.onOk} />
+          <DatePicker showTime={{ defaultValue: moment('00:00', 'HH:mm') }} style={{minWidth:'8rem'}} locale={locale} placeholder="选择时间" className="select" onChange={this.startOnChange} onOk={this.onOk} />
 
         </div>
 
         <div className="listSon">
           <span className="span">有效期（结束时间）</span>
-          <DatePicker showTime={{ defaultValue: moment('00:00', 'HH:mm') }} locale={locale} placeholder="选择时间" className="select" onChange={this.endOnChange} onOk={this.onOk} />
+          <DatePicker showTime={{ defaultValue: moment('00:00', 'HH:mm') }} style={{minWidth:'8rem'}}  locale={locale} placeholder="选择时间" className="select" onChange={this.endOnChange} onOk={this.onOk} />
         </div>
 
         <div className="listSon">

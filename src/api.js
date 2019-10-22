@@ -245,6 +245,11 @@ export function VenueTemporarilyClosedSave(data,headers){    // 编辑临时关�
     return axios.post('/api/VenueTemporarilyClosedSave',data, {headers: {'token': headers}})
 }
 
+export function getIsUserName(data,headers){    // 判断用户名是否已存在
+    return axios.post('/api/getIsUserName',data, {headers: {'token': headers}})
+}
+
+
 
 
 

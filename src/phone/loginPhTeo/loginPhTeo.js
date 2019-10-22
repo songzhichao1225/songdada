@@ -35,12 +35,13 @@ class loginPhTeo extends React.Component {
     if (res.data.code !== 2000) {
       message.error(res.data.msg)
     } else {
-      sessionStorage.setItem('uuid', res.data.data.uuid);
-      sessionStorage.setItem('name', res.data.data.name);
-      sessionStorage.setItem('islegal', res.data.data.islegal);
-      sessionStorage.setItem('venue_token', res.data.data.venue_token);
-      sessionStorage.setItem('issite', res.data.data.issite);
-      sessionStorage.setItem('isqult', res.data.data.isqult);
+      localStorage.setItem('uuid', res.data.data.uuid);
+      localStorage.setItem('name', res.data.data.name);
+      localStorage.setItem('islegal', res.data.data.islegal);
+      localStorage.setItem('venue_token', res.data.data.venue_token);
+      localStorage.setItem('issite', res.data.data.issite);
+      localStorage.setItem('isqult', res.data.data.isqult);
+      localStorage.setItem('ismethod', res.data.data.ismethod);
       setTimeout(() => {
         if (res.data.data.venue_token) {
           if (res.data.data.issite === 0) {
@@ -50,7 +51,6 @@ class loginPhTeo extends React.Component {
           } else if (res.data.data.islegal === 0 || res.data.data.islegal === 2) {
             this.props.history.push('/resultsAuditsPh')
           } else {
-            console.log(666)
             this.props.history.push('/homePh')
           }
         }

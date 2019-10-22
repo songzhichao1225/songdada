@@ -8,6 +8,7 @@
     text-align: center;
     line-height: 3rem;
     color: #fff;
+    position: relative;
 }
 .myWalletPh .headBanner .content{
     margin-left: 2rem;
