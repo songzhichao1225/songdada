@@ -2,21 +2,11 @@ import React from 'react';
 import './systemSettings.css';
 import 'antd/dist/antd.css';
 import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport, VenueTemporarilyClosed, VenueIsClose, getVenueIsClose } from '../../api';
-import { Input, Icon, message, Checkbox, Modal, Select, DatePicker, LocaleProvider, Drawer } from 'antd';
-import moment from 'moment';
-import zh_CN from 'antd/lib/locale-provider/zh_CN';
+import { Input, Icon, message, Checkbox, Drawer } from 'antd';
 import 'moment/locale/zh-cn';
-const { Option } = Select;
 
 
-const { RangePicker } = DatePicker;
-const { TextArea } = Input;
 
-
-function disabledDate(current) {
-  // Can not select days before today and today
-  return current && current < moment().endOf('day');
-}
 
 
 

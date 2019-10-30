@@ -51,7 +51,7 @@ class mapPh extends React.Component {
 
   handleClick = e => {
     let dateset = e.target.dataset
-    if(sessionStorage.getItem('inforMap')!==undefined){
+    if(sessionStorage.getItem('inforMap')!==null){
       this.props.history.push({ pathname:'/homePh/inforSitePh', query: { lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })
     }else{
       this.props.history.push({ pathname:'/stadiumInformationPh', query: { lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })

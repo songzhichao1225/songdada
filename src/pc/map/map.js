@@ -11,7 +11,7 @@ class map extends React.Component {
 
   state = {
     mapList: [],
-    position:''
+    position:'请输入搜索内容'
   };
 
   componentDidMount(data) {
@@ -79,7 +79,7 @@ class map extends React.Component {
         <div id="allmap" style={{ position: "absolute", top: 0, left: 0, width: '100vw', height: '100vh' }}>
         </div>
         <div className="search">
-          <Search placeholder="输入您要搜索的位置" onSearch={this.handleSearch} placeholder={this.state.position} enterButton />
+          <Search  onSearch={this.handleSearch} placeholder={this.state.position} enterButton />
           <ul className="ulList">
             {
               list

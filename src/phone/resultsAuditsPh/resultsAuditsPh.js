@@ -1,6 +1,6 @@
 import React from 'react';
 import './resultsAuditsPh.css';
-import {  } from 'antd';
+import { Icon } from 'antd';
 import { getIsStatus } from '../../api';
 
 class resultsAuditsPh extends React.Component {
@@ -29,12 +29,28 @@ class resultsAuditsPh extends React.Component {
   }
 
 
+  close = () => {
+    var sUserAgent = navigator.userAgent;
+    var mobileAgents = ['Android', 'iPhone'];
+    for (let index = 0; index < mobileAgents.length; index++) {
+      if (sUserAgent.indexOf('Android') > -1) {
+        window.JsAndroid.goBack();
+      } else if (sUserAgent.indexOf('iPhone') > -1) {
+        try {
+          window.webkit.messageHandlers.getCall.postMessage('1');
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
+  }
+
 
 
   render() {
     return (
       <div className="resultsAuditsPh">
-        <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span style={{ color: '#D85D27' }}>完善信息 ></span> <span style={{ color: '#D85D27' }}>审核  ></span> <span  style={this.state.islegal===1?{color: '#D85D27' }:{color:'#9B9B9B'}}>成功</span> </div>
+        <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span style={{ color: '#D85D27' }}>完善信息 ></span> <span style={{ color: '#D85D27' }}>审核  ></span> <span  style={this.state.islegal===1?{color: '#D85D27' }:{color:'#9B9B9B'}}>成功</span> <Icon type="close" onClick={this.close} style={{ position: 'absolute', right: '5%', top: '35%' }} /> </div>
          <div className="boss" style={this.state.islegal===0?{display:'block'}:{display:'none'}}>
               <img className="icon" src={require("../../assets/icon_pc.png")} alt="图标"/>
               <span className="text">信息完善成功！等待审核</span>

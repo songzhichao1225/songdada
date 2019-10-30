@@ -4,7 +4,8 @@
 }
 .orderPh{
     font-size: 0.75rem;
-    height: 80%;
+    height: 100%;
+    position: relative;
 }
 
 .hidden{
@@ -16,11 +17,19 @@
     overflow: hidden;
 }
 .orderPh .activityList .select{
-    width: 90%;
-    margin: 0.5rem auto 0;
+    width: 100%;
+    background: #f3f3f3;
+    color:#333;
+  
 }
+
+
 .orderPh .activityList .list{
-    border-bottom: 0.06rem solid #f5f5f5;
+    border-bottom: 0.06rem solid #e9e9e9;
+}
+.orderPh .headSelect{
+    height: 2rem;
+    background: #f5f5f5;
 }
 
 .orderPh .activityList .list .ant-col>span{
@@ -34,19 +43,19 @@
 }
 .orderPh .activityList .select .sending{
     width: 3.5rem;
-    height: 2rem;
+    height: 1.7rem;
     display: block;
+    margin-right: 1rem;
 }
-.orderPh .activityList .screen{
+.orderPh  .screen{
    position: absolute;
-   top:3.5rem;
+   top:0.5rem;
    right: 1rem;
 }
 .orderPh .hidden{
     display: none;
 }
 .drawerBoss{
-    margin-top: 1rem;
     overflow: hidden;
 }
   .drawerBoss>div{
@@ -67,7 +76,6 @@
 }
 
 .drawerBossTwo{
-    margin-top: 1rem;
     overflow: hidden;
 }
   .drawerBossTwo>div{
@@ -92,7 +100,7 @@
 }
 .drawerBtn{
     overflow: hidden;
-    margin-top: 4rem;
+    margin-top: 1rem;
 }
 .drawerBtn>div{
     width: 49%;
@@ -118,7 +126,7 @@
 
 .bookingKanban .modTitle{
     height: 3rem;
-    border-bottom: 0.06rem solid #f5f5f5
+    border-bottom: 0.06rem solid #e9e9e9
 }
 .bookingKanban .modTitle>span{
     display: block;
@@ -159,7 +167,7 @@
 }
 .bookingKanban .locaList{
     overflow: hidden;
-    width: 100%;
+    width: 105%;
     padding-bottom: 0.5rem;
     overflow-y: scroll;
 }
@@ -175,11 +183,11 @@
    white-space: nowrap;
    height: 100%;
    position: relative;
+   padding-bottom: 10rem;
 }
 
 .bookingKanban .lookList::-webkit-scrollbar {/*滚动条整体样式*/
-    width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
-    height: 1px;
+    display: none;
 }
 .bookingKanban .lookList .topFixd{
     position: absolute;
@@ -197,7 +205,6 @@
     line-height: 1.88rem;
 }
 .bookingKanban .lookList .sonList{
-    overflow: hidden;
     clear: both;
     position: relative;
 }
@@ -209,16 +216,20 @@
     float:left;
     text-align: center;
     line-height: 1.88rem;
-    margin-top: 0.12rem;
 }
 .bookingKanban .lookList .sonList>span:first-child{
     background: #fff;
     position: absolute;
-    transition: 0.2s;
+    transition: 0.1s;
+    line-height: 0.75rem;
+    top: -0.3rem;
+    margin-top: 0;
+    margin-left: 0;
+    height: 2rem;
 }
 .orderPh .date{
    position: absolute;
-   top: 3.2rem;
+   top: 0.2rem;
    right: 1rem;
 }
 .orderPh  .ant-input{
@@ -231,26 +242,29 @@
 
 .orderPh .content{
     height: 100%;
-    padding-bottom: 7rem;
+    padding-bottom: 15rem;
     -webkit-overflow-scrolling: touch;
     overflow-y: scroll;
     white-space: nowrap;
-   
 }
-
 .orderPh .content::-webkit-scrollbar {/*滚动条整体样式*/
-    width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
-    height: 1px;
+   display: none;
 }
 
 .orderPh .ant-input{
     border:none;
     box-shadow: none;
+    background: transparent;
+    font-size: 0.75rem;
+ }
+
+ .orderPh .ant-input::-webkit-input-placeholder {
+     font-size: 0.75rem;
  }
 
  .orderPh .dateTime{
      line-height: 1.5rem;
-     margin-top: 3%;
+     text-align: left;
  }
 
 
@@ -263,4 +277,13 @@
 }
 .orderPh .ant-result-title{
     font-size: 0.75rem;
+}
+
+.orderPh .ant-select-selection{
+    background: transparent;
+}
+.drawerInputOrder .ant-input{
+    border:none;
+    box-shadow: none;
+    padding-left: 0;
 }

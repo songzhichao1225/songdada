@@ -81,8 +81,6 @@ class closeYu extends React.Component {
   }
   componentDidMount() {
     this.VenueTemporarilyClosedList()
-    let myDate=new Date()
-    console.log(myDate.getDate())
     let start = moment().startOf('day').add(1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
     let end = moment().endOf('day').add(1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
     this.setState({ start: start, end: end })

@@ -1,5 +1,4 @@
 .loginPhTeo{
-    margin-top: 1rem;
     width: 100%;
     height: 100%;
     background: #fff;
@@ -30,11 +29,11 @@
   font-size: 0.75rem;
 }
 .loginPhTeo .loginBtn{
-    width:20.44rem;
+    width:90%;
     height:2.69rem;
     background:rgba(216,93,39,1);
     border-radius:1.34rem;
-    margin-top: 2rem;
+    margin: 2rem auto 0;
     font-size:1.06rem;
     color:rgba(255,255,255,1);
     line-height:2.69rem;
@@ -68,4 +67,5 @@
     border-bottom: 0.06rem solid #F5F5F5;
     line-height: 3rem;
     text-align: center;
+    position: relative;
 }

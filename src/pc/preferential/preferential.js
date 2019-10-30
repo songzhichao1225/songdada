@@ -1,7 +1,7 @@
 import React from 'react';
 import './preferential.css';
 import 'antd/dist/antd.css';
-import { getVenueDiscountList, addVenueDiscount, getVenueSport, DelVenueDiscount, getFirstDiscount } from '../../api';
+import { getVenueDiscountList, addVenueDiscount, getVenueSport, DelVenueDiscount, getFirstDiscount,getSetUpFieldSportId } from '../../api';
 import { Select, Row, Col, Modal, TimePicker, InputNumber, Input, message, DatePicker, Spin, Form,Result,Icon,Pagination } from 'antd';
 import moment from 'moment';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
@@ -29,7 +29,7 @@ class preferential extends React.Component {
     costperhour: 0,//价格
     startDate: '',//开始日期
     endDate: '',//结束日期
-    number: 0,//数量
+    number: 1,//数量
     appointmenttime: '请选择',//最短可提前预定时间
     comment: '',//备注
     loading: true,//加载
@@ -37,7 +37,9 @@ class preferential extends React.Component {
     hidden:'',
     other:0,
     page:1,
-    perOpen:0
+    perOpen:0,
+    upSportid:[],
+    numberMax:0,
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -47,6 +49,13 @@ class preferential extends React.Component {
     } 
     this.setState({ ListSport: res.data.data })
   }
+
+
+  async getSetUpFieldSportId(data) {
+    const res = await getSetUpFieldSportId(data, sessionStorage.getItem('venue_token'))
+    this.setState({ upSportid: res.data.data })
+  }
+
 
   async getVenueDiscountList(data) {
     const res = await getVenueDiscountList(data, sessionStorage.getItem('venue_token'))
@@ -61,10 +70,10 @@ class preferential extends React.Component {
     this.getVenueSport()
     this.getVenueDiscountList({ sportid: '', page: '' })
     sessionStorage.setItem('preferential', '')
+    this.getSetUpFieldSportId()
   }
 
   handleChangeSelect = e => {
-    console.log(e)
     sessionStorage.setItem('preferential', e)
     this.getVenueDiscountList({ sportid: e, page: '' })
   }
@@ -77,7 +86,6 @@ class preferential extends React.Component {
   };
 
   handleOk = e => {
-    console.log(e);
     this.setState({
       visible: false,
     });
@@ -126,6 +134,12 @@ class preferential extends React.Component {
       default:
         day = "";
     }
+    let {upSportid}=this.state
+    for(let i in upSportid){
+       if(upSportid[i].sportid===e){
+        this.setState({number:upSportid[i].maxtablecount,numberMax:upSportid[i].maxtablecount})
+       }
+    }
     this.setState({ runName: day })
   }
 
@@ -148,19 +162,20 @@ class preferential extends React.Component {
   }
 
   jian = () => {
-    if (this.state.number > 0) {
+    if (this.state.number > 1) {
       this.setState({ number: this.state.number - 1 })
     }
 
   }
   jia = () => {
-    if (this.state.number < 100) {
+    if (this.state.number < 100&&this.state.number<this.state.numberMax) {
       this.setState({ number: this.state.number + 1 })
+    }else{
+      message.warning('已达场地数量最大值')
     }
   }
 
   onChangeStartDate = (data, dateString) => {
-    console.log(dateString)
     this.setState({ startDate: dateString[0], endDate: dateString[1] })
   }
 
@@ -197,7 +212,6 @@ class preferential extends React.Component {
       enddate: endDate,
       uuid: e.target.dataset.uid
     }
-    console.log(data)
     this.addVenueDiscount(data)
   }
 
@@ -344,8 +358,8 @@ class preferential extends React.Component {
               <span>运动项目</span>
               <Select placeholder="请选择" value={this.state.runId} className="selectModel" style={{ width: 249 }} onChange={this.handleChangeOne}>
                 {
-                  this.state.ListSport.map((item, i) => (
-                    <Option key={i} value={item.id}>{item.name}</Option>
+                  this.state.upSportid.map((item, i) => (
+                    <Option key={i} value={item.sportid}>{item.name}</Option>
                   ))
                 }
               </Select>

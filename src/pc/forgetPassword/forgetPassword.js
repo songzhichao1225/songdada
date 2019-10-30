@@ -44,7 +44,11 @@ class forgetPassword extends React.Component {
   }
   async nacode(data) {
     const res = await _code(data)
-    console.log(res)
+     if(res.data.code===2000){
+      message.info(res.data.msg)
+     }else{
+       message.warning(res.data.msg)
+     }
 
   }
   naCode = () => {
@@ -79,7 +83,6 @@ class forgetPassword extends React.Component {
   }
   comfir=()=>{
     let {phone,value,code,pass,passTwo}=this.state
-    console.log(phone,value,code,pass,passTwo)
     if(pass===passTwo){
       this.VenueForgetPass({phone:phone,pass:passTwo,code:code,venueloginuuid:value})
     }

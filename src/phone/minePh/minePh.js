@@ -46,7 +46,7 @@ class minePh extends React.Component {
 
         <div className="headerbanner">
           <div className="headContent">
-            <img className="avatar" src={localStorage.getItem('avatar')} />
+            <img className="avatar" src={localStorage.getItem('avatar')} alt='头像' />
             <div className="right">
               <span>{localStorage.getItem('name')}</span>
               <span>场地履约率{localStorage.getItem('lyv')}%</span>

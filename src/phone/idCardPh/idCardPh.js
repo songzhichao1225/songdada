@@ -43,8 +43,6 @@ class idCardPh extends React.Component {
       return;
     }
     if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      console.log(info.file.response)
       this.setState({ imageRes: info.file.response.data.baseURL + info.file.response.data.filesURL })
       getBase64(info.file.originFileObj, imageUrl =>
         this.setState({
@@ -55,21 +53,19 @@ class idCardPh extends React.Component {
     }
   };
 
-  handleChangeT = info => {
+  handleChangeT = info => { 
     if (info.file.status === 'uploading') {
       this.setState({ loading: true });
       return;
     }
     if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      console.log(info.file.response)
       this.setState({ imageResT: info.file.response.data.baseURL + info.file.response.data.filesURL,imageUrlBaseT:info.file.response.data.baseURL })
       getBase64(info.file.originFileObj, imageUrlT =>
         this.setState({
           imageUrlT,
           loading: false,
         }),
-      );
+      ); 
     }
   };
 
@@ -80,7 +76,6 @@ class idCardPh extends React.Component {
     this.setState({ previewVisible: false })
   }
 
-
   submit=()=>{
     let {imageRes,imageResT,imageUrlBaseT}=this.state
     if(imageRes===''){
@@ -88,7 +83,6 @@ class idCardPh extends React.Component {
     }else if(imageResT===''){
       message.error('请上传身份证反面照')
     }else{
-
       this.props.history.push({ pathname: '/qualificationPh', query: {imageRes:imageRes,imageResT:imageRes,imageUrlBaseT:imageUrlBaseT } })
     }
    

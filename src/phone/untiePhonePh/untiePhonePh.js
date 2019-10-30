@@ -107,7 +107,7 @@ class untiePhonePh extends React.Component {
          </div>
 
          <div className="listSon">
-           <Input maxLength={11} onChange={this.phoneTwo} placeholder="请输入操作员手机号" />
+           <Input maxLength={11} onChange={this.phoneTwo} placeholder="请输入操作员新手机号" />
          </div>
 
          <div className="listSon">

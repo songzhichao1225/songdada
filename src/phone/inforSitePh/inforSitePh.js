@@ -46,8 +46,8 @@ class inforSitePh extends React.Component {
     linkMan:'',
     telephone:'',
     fileList: [],
-    facilities: '',
-    sport:'',
+    facilities: [],
+    sport:[],
     siteInfo:'',
     comment:'',
     //资质信息 参数
@@ -108,8 +108,7 @@ class inforSitePh extends React.Component {
  
   async getVenueIssecondaudit(data) {
     const res = await getVenueIssecondaudit(data,localStorage.getItem('venue_token'))
-      console.log(res)
-      this.setState({issecondaudit:res.data.data.issecondaudit})
+      this.setState({issecondaudit:parseInt(res.data.data.issecondaudit)})
   }
 
   async getVenueQualificationInformation(data) {
@@ -210,7 +209,7 @@ class inforSitePh extends React.Component {
   }
 
   confirm = () => {
-    let { listSon, cgName, address, linkMan, telephone, fileList, imageUrl, sport, facilities, siteInfo, comment,lat,lng,position } = this.state
+    let {cgName, address, linkMan, telephone, fileList, imageUrl, sport, facilities, siteInfo, comment,lat,lng,position } = this.state
     let filesURLarr = []
     for (let i in fileList) {
       if (fileList[i].response !== undefined) {
@@ -242,8 +241,7 @@ class inforSitePh extends React.Component {
     }
 }
 
-// 资质信息修改 获取
-
+// 资质信息修改 获取 
 handleChangeTwo = info => {
   if (info.file.status === 'uploading') {
     this.setState({ loading: true });
@@ -252,7 +250,7 @@ handleChangeTwo = info => {
   if (info.file.status === 'done') {
     this.setState({ zuo:1,imageUrlTwo: info.file.response.data.baseURL + info.file.response.data.filesURL,imgHood:info.file.response.data.baseURL,loading:false,imgFile:info.file.response.data.filesURL })
   }
-};
+}
 
 handleChangeThree = info => {
   if (info.file.status === 'uploading') {
@@ -263,6 +261,7 @@ handleChangeThree = info => {
     this.setState({ zuo:1, imageUrlThree: info.file.response.data.baseURL + info.file.response.data.filesURL,imgHoodTwo:info.file.response.data.baseURL,loading:false,imgFileTwo:info.file.response.data.filesURL })
   }
 }
+
 corporateName=e=>{
   this.setState({corporateName:e.target.value})
 }
@@ -289,7 +288,7 @@ async getVenueOpenBank(data) {
 async getVenueOpenBankProvince(data) {
   const res = await getVenueOpenBankProvince(data, localStorage.getItem('venue_token'))
   if (res.data.code === 2000) {
-    this.setState({ backProvince: res.data.data, flagTwo: false })
+    this.setState({ backProvince: res.data.data, flagTwo: false})
   }
 }
 
@@ -299,34 +298,29 @@ async getVenueOpenBankList(data) {
     this.setState({ backList: res.data.data, flagThree: false })
   }
 }
-
-
 async getVenueOpenBankCity(data) {
   const res = await getVenueOpenBankCity(data, localStorage.getItem('venue_token'))
   if (res.data.code === 2000) {
     this.setState({ backCity: res.data.data, flagThree: false })
   }
 }
-
 upData=()=>{
   this.setState({upData:false})
 }
 typeChange = e => {
-  this.setState({ bank_id: e })
+  this.setState({ bank_id: e})
 }
 cityChange = e => {
   this.setState({ city_id: e })
 }
 provinceChange = e => {
-    
   this.setState({ province_id: e })
   this.getVenueOpenBankCity({ province_id: e })
-
 }
+
 handleSearch=e=>{
   this.getVenueOpenBankList({bank_id:this.state.bank_id,province_id:this.state.province_id,city_id:this.state.city_id,search_name:e})
 }
-
 
 corporateOpen=e=>{
   this.setState({corporateOpen:e})
@@ -339,11 +333,10 @@ async VenueQualificationInformationSave(data) {
     message.error('登录超时请重新登录')
   } else if(res.data.code===2000){
        message.info('提交成功')
-       this.setState({issecondaudit:1})
+       this.setState({issecondaudit:0})
   }else{
     message.error(res.data.msg)
   }
-    
 }
 
 ziSubmit=()=>{
@@ -368,13 +361,12 @@ ziSubmit=()=>{
       data.legalBaseURL=imgHood
       this.VenueQualificationInformationSave(data)
     }
-
   }else{
     this.VenueQualificationInformationSave(data)
   }
 }
 reture=()=>{
-  this.props.history.goBack()
+  this.props.history.replace('/homePh/minePh')
 }
 
 mapPh=(e)=>{
@@ -395,21 +387,19 @@ mapPh=(e)=>{
       { label: '高尔夫', value:'8'}
     ]
     const optionsTwo = [{ label: 'WiFi', value: '1' }, { label: '停车场', value: '2' }, { label: '淋浴', value: '3' }]
-
     const uploadButton = (
       <div>
         <Icon type={this.state.loading ? 'loading' : 'upload'} />
-        <div className="ant-upload-text" style={{fontSize:'0.75rem'}}>门脸照</div>
+        <div className="ant-upload-text" style={{fontSize:'0.75rem'}}></div>
       </div>
     );
     const { imageUrl,fileList,imageUrlTwo,imageUrlThree} = this.state;
     const uploadButtonT = (
       <div>
-        <Icon type="upload" />
-        <div className="ant-upload-text" style={{fontSize:'0.75rem'}}>场地照</div>
+        <Icon type="upload"/>
+        <div className="ant-upload-text" style={{fontSize:'0.75rem'}}></div>
       </div>
-    );
-
+    )
     const uploadButtonTwo = (
       <div>
         <Icon type={this.state.loading ? 'loading' : 'upload'} />
@@ -425,9 +415,9 @@ mapPh=(e)=>{
     return (
       <div className="inforSitePh">
         <div className="nav">
-        <Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'5%',top:'35%'}}/>
+          <Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'5%',top:'35%',fontSize:'1rem'}}/>
           <div className={localStorage.getItem('ismethod')==='1'?'left':'width'} style={this.state.flag === 1 ? {color: '#000'} : {}}  onClick={this.left}>基本信息</div>
-          <div className={localStorage.getItem('ismethod')==='1'?'right':'none'} style={this.state.flag === 1 ? {} : { color: '#000' }}  onClick={this.right}>资质信息</div>
+          <div className={localStorage.getItem('ismethod')==='1'?'right':'none'} style={this.state.flag === 1 ?  {} : { color: '#000' }}  onClick={this.right}>资质信息</div>
         </div> 
         <div className="basic" style={this.state.spin===false&&this.state.flag === 1 ? { display: 'block' } : { display: 'none' }}>
           <div className="listSon">
@@ -438,12 +428,10 @@ mapPh=(e)=>{
             <span>场馆名称</span>
             <Input className="right" value={this.state.cgName}  onChange={this.cgName}/>
           </div>
-          
           <div className="listSon" onClick={this.mapPh}  data-position={listSon.position}>
             <span>场馆位置</span>
             <Input className="right" value={this.state.position}  disabled={true}/>
           </div>
-          
           <div className="listSon">
             <span>详细地址</span>
             <Input className="right" value={this.state.address} onChange={this.address}/>
@@ -451,11 +439,11 @@ mapPh=(e)=>{
 
           <div className="listSon">
             <span>联系人</span>
-            <Input className="right" value={this.state.linkMan}  onChange={this.linkMan}/>
+            <Input className="right" value={this.state.linkMan} placeholder='联系人姓名'  onChange={this.linkMan}/>
           </div>
           <div className="listSon">
             <span>联系电话</span>
-            <Input className="right" value={this.state.telephone}  onChange={this.telephone}/>
+            <Input className="right" value={this.state.telephone} placeholder="联系人电话" onChange={this.telephone}/>
           </div>
           <div className="listSon">
             <span>门脸照</span>
@@ -489,7 +477,7 @@ mapPh=(e)=>{
                 {fileList.length >= 8 ? null : uploadButtonT}
                  
               </Upload>
-          </div>                                       
+          </div>
           <div className="listSon">
             <span>场地设施</span>
             <div className="rightLi">
@@ -506,14 +494,13 @@ mapPh=(e)=>{
           
           <div className="listSon">
             <span>场馆介绍</span>
-            <Input className="right" value={this.state.siteInfo}  onChange={this.siteInfo} />
+            <Input className="right" value={this.state.siteInfo} placeholder='场馆介绍如：比赛等'  onChange={this.siteInfo} />
           </div>
           
           <div className="listSon">
             <span>其他</span>
-            <Input className="right" value={this.state.comment}  onChange={this.comment}/>
+            <Input className="right" value={this.state.comment} placeholder="利于场馆的信息"  onChange={this.comment}/>
           </div>
-          
           <Popconfirm
             title="您确定本次修改吗?"
             onConfirm={this.confirm}
@@ -521,9 +508,9 @@ mapPh=(e)=>{
             okText="确定"
             cancelText="返回"
           >
-            <Button className="submit" style={this.state.issecondaudit===1?{display:'block'}:{display:'none'}}>提交修改</Button>
+             <Button className="submit" style={this.state.issecondaudit!==0?{display:'block'}:{display:'none'}}>提交修改</Button>
           </Popconfirm>
-          <Button className="submit"  style={this.state.issecondaudit===1?{display:'none'}:{display:'block'}}>审核中~</Button>
+          <Button className="submit"  style={this.state.issecondaudit===0?{display:'block'}:{display:'none'}}>审核中~</Button>
         </div>
         
 
@@ -641,7 +628,7 @@ mapPh=(e)=>{
 
 
 
-
+      
           <Popconfirm
             title="您确定本次修改吗?"
             onConfirm={this.ziSubmit}
@@ -649,11 +636,9 @@ mapPh=(e)=>{
             okText="确定"
             cancelText="返回"
           >
-            <Button className="submit" style={this.state.issecondaudit===1?{display:'block'}:{display:'none'}}>提交修改</Button>
+            <Button className="submit" style={this.state.issecondaudit!==0?{display:'block'}:{display:'none'}}>提交修改</Button>
           </Popconfirm>
-          <Button className="submit"  style={this.state.issecondaudit===1?{display:'none'}:{display:'block'}}>审核中~</Button>
-
-
+          <Button className="submit"  style={this.state.issecondaudit===0?{display:'block'}:{display:'none'}}>审核中~</Button>
         </div>
 
 

@@ -106,7 +106,6 @@ class stadiumInformationPh extends React.Component {
       return;
     }
     if (info.file.status === 'done') {
-      console.log(info.file.response)
       this.setState({ imageRes: info.file.response.data.baseURL + info.file.response.data.filesURL })
       getBase64(info.file.originFileObj, imageUrl =>
         this.setState({
@@ -185,6 +184,23 @@ class stadiumInformationPh extends React.Component {
      }
    }
 
+   close = () => {
+    var sUserAgent = navigator.userAgent;
+    var mobileAgents = ['Android', 'iPhone'];
+    for (let index = 0; index < mobileAgents.length; index++) {
+      if (sUserAgent.indexOf('Android') > -1) {
+        window.JsAndroid.goBack();
+      } else if (sUserAgent.indexOf('iPhone') > -1) {
+        try {
+          window.webkit.messageHandlers.getCall.postMessage('1');
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
+  }
+
+
 
   render() {
 
@@ -207,7 +223,7 @@ class stadiumInformationPh extends React.Component {
 
     return (
       <div className="stadiumInformationPh">
-        <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span style={{ color: '#D85D27' }}>完善信息 ></span> <span>审核  ></span> <span>成功</span> </div>
+        <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span style={{ color: '#D85D27' }}>完善信息 ></span> <span>审核  ></span> <span>成功</span><Icon type="close" onClick={this.close} style={{ position: 'absolute', right: '5%', top: '35%' }} /> </div>
 
         <div className="headTtitle">完善场馆基本信息</div>
         <div style={{height:'0.63rem',background:'rgba(243,243,243,1)'}}></div>

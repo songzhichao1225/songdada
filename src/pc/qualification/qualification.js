@@ -168,7 +168,6 @@ class qualification extends React.Component {
     }
     if (info.file.status === 'done') {
       // Get this url from response in real world.
-      console.log(info.file.response)
       this.setState({ imageRes: info.file.response.data.baseURL + info.file.response.data.filesURL })
       getBase64(info.file.originFileObj, imageUrl =>
         this.setState({
@@ -184,8 +183,6 @@ class qualification extends React.Component {
       return;
     }
     if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      console.log(info.file.response)
       this.setState({ imageReT: info.file.response.data.filesURL, legalBaseURL: info.file.response.data.baseURL })
       getBase64(info.file.originFileObj, imageUrlT =>
         this.setState({

@@ -68,12 +68,26 @@ class loginPhTeo extends React.Component {
     this.props.history.push('/forgetPasswordPh')
   }
 
-
+  close = () => {
+    var sUserAgent = navigator.userAgent;
+    var mobileAgents = ['Android', 'iPhone'];
+    for (let index = 0; index < mobileAgents.length; index++) {
+      if (sUserAgent.indexOf('Android') > -1) {
+        window.JsAndroid.goBack();
+      } else if (sUserAgent.indexOf('iPhone') > -1) {
+        try {
+          window.webkit.messageHandlers.getCall.postMessage('1');
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
+  }
 
   render() {
     return (
       <div className="loginPhTeo">
-        <div className="headerTitle">用户名登录</div>
+        <div className="headerTitle">用户名登录 <Icon type="close" onClick={this.close} style={{ position: 'absolute', right: '5%', top: '35%' }} /></div>
         <div className="loginInput">
           <div className="name">
             <Input className="phone" autoFocus prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />}  onChange={this.phone} placeholder="用户名" />

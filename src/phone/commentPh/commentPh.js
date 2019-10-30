@@ -160,7 +160,7 @@ class commentPh extends React.Component {
 
        
           <Pagination className="fenye" size='small' style={this.state.getCommentList.length>0?{}:{display:'none'}} current={parseInt(this.state.current)}  pageSize={10} total={this.state.getCommentList.length} onChange={this.pageChang} />
-          <Result className={this.state.getCommentList.length === 0 ? '' : 'hidden'} icon={<Icon type="database" theme="twoTone" twoToneColor="#F5A623" />} title="没有场馆评论" />
+          <Result className={this.state.getCommentList.length === 0 ? '' : 'hidden'} icon={<Icon type="database" style={{fontSize:'2rem'}} theme="twoTone" twoToneColor="#F5A623" />} title="没有场馆评论" />
         </div>
 
       </div>

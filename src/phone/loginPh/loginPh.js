@@ -1,7 +1,7 @@
 import React from 'react';
 import './loginPh.css';
 import 'antd/dist/antd.css';
-
+import { Icon } from 'antd';
 
 class loginPh extends React.Component {
 
@@ -19,11 +19,27 @@ class loginPh extends React.Component {
     this.props.history.push('/login')
   }
 
+  close = () => {
+    var sUserAgent = navigator.userAgent;
+    var mobileAgents = ['Android', 'iPhone'];
+    for (let index = 0; index < mobileAgents.length; index++) {
+      if (sUserAgent.indexOf('Android') > -1) {
+        window.JsAndroid.goBack();
+      } else if (sUserAgent.indexOf('iPhone') > -1) {
+        try {
+          window.webkit.messageHandlers.getCall.postMessage('1');
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
+  }
 
 
   render() {
     return (
       <div className="loginPh">
+          <Icon type="close" onClick={this.close} style={{ position:'absolute', left: '5%', top: '1.5%',zIndex:'99' }} />
         <div className="banner">
           <div className="title">成为合作场馆</div>
           <div className="titleBottom">免费引流到店，大幅提高场馆收入</div>

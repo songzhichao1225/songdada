@@ -22,13 +22,14 @@
     border:none;
     box-shadow: none;
     float: left;
+    background: transparent;
 }
 .untiePhonePh .listSon>span{
     display: block;
     width: 6rem;
     height: 1.8rem;
     background:rgba(216,93,39,1);
-    border-radius:0.75rem;
+    border-radius:1.8rem;
     font-size:0.75rem;
     font-family:PingFang-SC;
     font-weight:500;

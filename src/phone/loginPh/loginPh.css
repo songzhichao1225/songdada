@@ -1,6 +1,7 @@
 
 .loginPh {
     padding-bottom: 1rem;
+    position: relative;
 }
 .loginPh .banner{
     width: 100%;

@@ -1,6 +1,6 @@
 import React from 'react';
 import './qualificationPh.css';
-import { Upload, Input, Button, Radio, message,Select,Tooltip } from 'antd';
+import { Upload, Input, Button, Radio, message,Select,Tooltip,Icon } from 'antd';
 import { getIsStatus,getVenueOpenBankList,getVenueOpenBank,getVenueOpenBankProvince,getVenueOpenBankCity,VenueQualifications } from '../../api';
 const { Option } = Select;
 function getBase64(img, callback) {
@@ -184,7 +184,21 @@ async VenueQualifications(data) {
 
 
 
-
+  close = () => {
+    var sUserAgent = navigator.userAgent;
+    var mobileAgents = ['Android', 'iPhone'];
+    for (let index = 0; index < mobileAgents.length; index++) {
+      if (sUserAgent.indexOf('Android') > -1) {
+        window.JsAndroid.goBack();
+      } else if (sUserAgent.indexOf('iPhone') > -1) {
+        try {
+          window.webkit.messageHandlers.getCall.postMessage('1');
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
+  }
 
 
 
@@ -202,7 +216,7 @@ async VenueQualifications(data) {
 
     return (
       <div className="qualificationPh">
-        <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span style={{ color: '#D85D27' }}>完善信息 ></span> <span>审核  ></span> <span>成功  ></span> </div>
+        <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span style={{ color: '#D85D27' }}>完善信息 ></span> <span>审核  ></span> <span>成功  ></span> <Icon type="close" onClick={this.close} style={{ position: 'absolute', right: '5%', top: '35%' }} /> </div>
         <div className="headTtitle">完善场馆资质信息</div>
         <div className="boss">
 

@@ -24,21 +24,26 @@
 .newsPh  .recriveSon{
     overflow: hidden;
     margin-top: 1rem;
+    position: relative;
+    width: 100%;
 }
 .newsPh  .recriveSon .notRead{
     width:0.5rem;
     height:0.5rem;
     background:rgba(216,93,39,1);
     border-radius: 50%;
-    float: left;
-    margin-top: 5%;
+    position: absolute;
+    top: 15%;
+    left: 0;
+    z-index: 99;
+    
 }
 .newsPh  .recriveSon .img{
     display: block;
     width: 2.5rem;
     height: 2.5rem;
     float: left;
-    margin-left: 0.5rem;
+    margin-left: 1rem;
 }
 .newsPh  .recriveSon .content{
     float: left;
@@ -98,13 +103,11 @@
  }
  
  .newsPh .contentScroll::-webkit-scrollbar {/*滚动条整体样式*/
-    width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
-    height: 1px;
+   display: none;
 }
 
 .newsPh .pubScroll::-webkit-scrollbar {/*滚动条整体样式*/
-    width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
-    height: 1px;
+    display: none;
 }
 
 .newsPh .ant-result-icon{

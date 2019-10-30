@@ -1,7 +1,7 @@
 import React from 'react';
 import './register.css';
 import 'antd/dist/antd.css';
-import { _register, _code, getPromoteName } from '../../api';
+import { _register, _code, getPromoteName,getIsUserName } from '../../api';
 import {
   message,
   Input,
@@ -37,6 +37,21 @@ class register extends React.Component {
   changID = (e) => {
     this.setState({ Id: e.target.value })
   }
+
+  
+
+
+  async getIsUserName(data) {
+    const res = await getIsUserName(data)
+    if(res.data.code!==2000){
+      message.error('此用户名已存在')
+      this.setState({name:''})
+    }else{
+      this.setState({ name: data.name, visibleName: false })
+    }
+  }
+
+
   changeName = (e) => {
 
     if (/[\u4E00-\u9FA5]/g.test(e.target.value)) {
@@ -44,7 +59,8 @@ class register extends React.Component {
     } else if (e.target.value === '') {
       this.setState({ visibleName: true })
     } else {
-      this.setState({ name: e.target.value, visibleName: false })
+       this.getIsUserName({name:e.target.value})
+    
     }
   }
   changePhone = (e) => {
@@ -53,7 +69,6 @@ class register extends React.Component {
     } else if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(e.target.value))) {
       this.setState({ visiblePhone: true })
     } else {
-      console.log(666)
       this.setState({ phone: e.target.value, visiblePhone: false })
     }
   }
@@ -72,7 +87,6 @@ class register extends React.Component {
 
   async Ko(data) {
     const res = await _register(data)
-    console.log(res)
     if (res.data.code === 2000) {
       setTimeout(() => {
         this.setState({
@@ -203,10 +217,10 @@ class register extends React.Component {
                 <Button className="huoBtn" onClick={this.naCode}>{this.state.textT}</Button>
                 <Input maxLength={6} onChange={this.changeCode} className="phone code" />
               </div>
-
+      
               <div className="son">
                 <span className="xing">*</span> <span>密码:</span>
-                <Input.Password maxLength={8} onChange={this.changePassword} className="phone" />
+                <Input.Password maxLength={8}  onChange={this.changePassword} className="phone" />
               </div>
 
               <div className="son">

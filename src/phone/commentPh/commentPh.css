@@ -1,5 +1,6 @@
 .commentPh{
 padding-bottom: 2rem;
+background: #fff;
 }
 .commentPh .headerTitle{
 	 height: 3rem;
@@ -162,3 +163,10 @@ padding-bottom: 2rem;
  .commentPhbtn .hidden{
 	 display: none;
  }
+
+ .commentPh .ant-result-icon{
+    margin-bottom: 0;
+}
+.commentPh .ant-result-title{
+    font-size: 0.75rem;
+}

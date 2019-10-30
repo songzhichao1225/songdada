@@ -3,15 +3,24 @@
   position: relative;
   height: 100%;
   overflow: hidden;
+  background: #fff;
+}
+.homePh .kog{
+  position: relative;
+  height: 100%;
+  overflow: hidden;
 }
 
 .homePh .headerTitle{
   height: 3rem;
-  border-bottom: 0.06rem solid #f5f5f5;
+  border-bottom: 0.06rem solid #e9e9e9;
   font-size: 1rem;
   text-align: center;
   line-height: 3rem;
   position: relative;
+}
+.homePh .headSelect{
+  background: #f5f5f5;
 }
 .homePh .footer{
   width: 100%;
@@ -32,32 +41,38 @@
   flex: 1;
 }
 .homePh .footer .footerSon>div>a>img{
-  width: 1.3rem;
+  width: 30%;
   display: block;
   margin: 0.3rem auto 0;
 }
 .homePh .footer .footerSon>div>a>span{
   display: block;
   text-align: center;
-  font-size: 0.6rem;
+  font-size:0.75rem;
   color: #000;
 }
 .homePagePh{
-    height: 120%;
-    padding-bottom: 4rem;
-    -webkit-overflow-scrolling: touch;
-    overflow-y: scroll;
-    white-space: nowrap;
+  height: 100%;
+  padding-bottom: 4rem;
+  -webkit-overflow-scrolling: touch;
+  overflow-y: scroll;
+  white-space: nowrap;
 }
-.homePagePh>div:first-child{
+
+.homePagePh::-webkit-scrollbar {/*滚动条整体样式*/
+  display: none;
+}
+
+
+.homePagePh .homeScroll>div:first-child{
   width: 90%;
   height: 5.5rem;
   margin: 0.5rem auto 0;
   background-image: url('../../assets/one.png');
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 100%;
 }
-.homePagePh>div:nth-child(2){
+.homePagePh .homeScroll>div:nth-child(2){
   width: 90%;
   height: 5.5rem;
   margin: 0.5rem auto 0;
@@ -65,7 +80,7 @@
   background-repeat: no-repeat;
   background-size: 100%;
 }
-.homePagePh>div:nth-child(3){
+.homePagePh .homeScroll>div:nth-child(3){
   width: 90%;
   height: 5.5rem;
   margin: 0.5rem auto 0;
@@ -73,7 +88,7 @@
   background-repeat: no-repeat;
   background-size: 100%;
 }
-.homePagePh>div:nth-child(4){
+.homePagePh .homeScroll>div:nth-child(4){
   width: 90%;
   height: 5.5rem;
   margin: 0.5rem auto 0;
@@ -81,7 +96,7 @@
   background-repeat: no-repeat;
   background-size: 100%;
 }
-.homePagePh>div:nth-child(5){
+.homePagePh .homeScroll>div:nth-child(5){
   width: 90%;
   height: 5.5rem;
   margin: 0.5rem auto 0;
@@ -89,39 +104,47 @@
   background-repeat: no-repeat;
   background-size: 100%;
 }
-.homePagePh>div>.title{
+.homePagePh .homeScroll>div>.title{
   font-size:1rem;
   color:rgba(255,255,255,1);
   display: block;
   padding:1rem 0 0 2rem;
 }
-.homePagePh>div>.content{
+.homePagePh .homeScroll>div>.content{
   margin-left: 2rem;
 }
-.homePagePh>div>.content>span:first-child{
+.homePagePh .homeScroll>div>.content>span:first-child{
   font-size:1.5rem;
   font-weight:600;
   color:rgba(255,255,255,1);
 }
-.homePagePh>div>.content>span:last-child{
+.homePagePh .homeScroll>div>.content>span:last-child{
   font-size:1.13rem;
   font-weight:500;
   color:rgba(255,255,255,1);
 }
-.homePagePh>div>.content>.img{
+.homePagePh .homeScroll>div>.content>.img{
   display: block;
   float: left;
   width: 1rem;
   height: 1rem;
-  margin-top: 1rem;
+  margin-top: 1%;
   background-image: url(../../assets/phonexingzi.png);
   background-repeat: no-repeat;
   background-size: cover;
 }
-.homePagePh>div>.content>.img>img{
+.homePagePh .homeScroll>div>.content>.img>img{
   display: block;
   height: 100%;
 }
 .none{
   display: none;
+}
+ .loadingY{
+   position: absolute;
+   top: 4rem;
+   left: 50%;
+   display: block;
+   font-size: 1.5rem;
+   margin-left: -0.75rem;
 }

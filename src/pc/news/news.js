@@ -99,7 +99,6 @@ class news extends React.Component {
       }
     }
 
-    console.log(koArr)
     this.delVenueNews({ uuid: koArr.join(',')})
     this.setState({ oneChecked: !this.state.oneChecked})
   }
@@ -180,6 +179,10 @@ class news extends React.Component {
      this.VenueNewsSendMessage({comment:this.state.textArea})
   }
 
+  site=(e)=>{
+    this.props.history.push({pathname:'/home/information',query:{uuid:e.target.dataset.id}})
+  }
+
 
   render() {
     return (
@@ -227,7 +230,7 @@ class news extends React.Component {
           >
             <div>{this.state.newsDetail.comment_chk}</div>
             <div>{this.state.newsDetail.intime_chk}</div>
-            <div>{this.state.newsDetail.comment}</div>
+            <div>{this.state.newsDetail.comment}<span onClick={this.site} data-id={this.state.newsDetail.publicuuid} style={this.state.newsDetail.publicuuid!==''?{color:'#F5A623',cursor:'pointer'}:{display:'none'}}>通知场地号</span></div>
             <div>{this.state.newsDetail.intime}</div>
           </Drawer>
         </div>

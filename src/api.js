@@ -249,10 +249,9 @@ export function getIsUserName(data,headers){    // 判断用户名是否已存�
     return axios.post('/api/getIsUserName',data, {headers: {'token': headers}})
 }
 
-
-
-
-
+export function getSetUpFieldSportId(data,headers){    // 场馆端添加优惠活动时查询已经设置了场地设置的运动项目id 
+    return axios.post('/api/getSetUpFieldSportId',data, {headers: {'token': headers}})
+}
 
 
 

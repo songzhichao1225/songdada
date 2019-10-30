@@ -14,7 +14,13 @@ class newsPh extends React.Component {
     otherPush: 1,
     visibleDrawer:false,
     newsDetails:[],
-    spin:true
+    spin:true,
+    clenTop: 0,  //下拉加载参数
+    clickY: 0,
+    moveY: 0,
+    spinFlag: false,
+    newsPage:0,
+    newsPageTwo:0,
   };
   async getVenueNewsList(data) {
     const res = await getVenueNewsList(data, localStorage.getItem('venue_token'))
@@ -23,9 +29,8 @@ class newsPh extends React.Component {
       message.error('登录超时请重新登录')
     } else if (res.data.code === 2000) {
       this.setState({ getVenueNewsList: res.data.data, other: res.data.other.sum })
-    }else{
-      this.setState({spin:false})
     }
+    this.setState({spin:false,spinFlag:false})
   }
 
   async getVenueNewsReceivedList(data) {
@@ -33,6 +38,7 @@ class newsPh extends React.Component {
    if (res.data.code === 2000) {
       this.setState({ getVenueNewsReceivedList: res.data.data, otherPush: res.data.other })
     }
+    this.setState({spinFlag:false})
   }
   async getVenueNewsFirst(data) {
     const res = await getVenueNewsFirst(data, localStorage.getItem('venue_token'))
@@ -51,16 +57,17 @@ class newsPh extends React.Component {
     }
   }
 
-
   componentDidMount() {
     this.getVenueNewsList({ page: 1 })
     this.getVenueNewsReceivedList({ page: 1 })
   }
 
   current = (page, pageSize) => {
+    this.setState({newsPage:page})
     this.getVenueNewsList({ page: page })
   }
   currentPush = (page, pageSize) => {
+    this.setState({newsPageTwo:page})
     this.getVenueNewsReceivedList({ page: page })
   }
   receive = () => {
@@ -83,6 +90,49 @@ class newsPh extends React.Component {
   };
 
 
+  touClick = (e) => {
+    this.setState({ clickY: e.targetTouches[0].clientY })
+  }
+  touMove = (e) => {
+    if (this.state.clickY < e.targetTouches[0].clientY&&this.state.clickY<200) {
+      this.setState({ moveY: e.targetTouches[0].clientY })
+      if (e.targetTouches[0].clientY - this.state.clickY < 80) {
+        this.setState({ spinFlag: true })
+        this.setState({ clenTop: e.targetTouches[0].clientY - this.state.clickY })
+      }
+    }
+  }
+  touEnd = () => {
+    if (this.state.moveY > this.state.clickY+10) {
+      this.getVenueNewsList({ page: this.state.newsPage })
+      if (this.state.spinFlag === false) {
+          this.setState({ clenTop: 0 })
+      }
+    }
+  }
+
+
+  touClickTwo = (e) => {
+    this.setState({ clickY: e.targetTouches[0].clientY })
+  }
+  touMoveTwo = (e) => {
+    if (this.state.clickY < e.targetTouches[0].clientY&&this.state.clickY<200) {
+      this.setState({ moveY: e.targetTouches[0].clientY })
+      if (e.targetTouches[0].clientY - this.state.clickY < 80) {
+        this.setState({ spinFlag: true })
+        this.setState({ clenTop: e.targetTouches[0].clientY - this.state.clickY })
+      }
+    }
+  }
+  touEndTwo = () => {
+    if (this.state.moveY > this.state.clickY+10) {
+      this.getVenueNewsReceivedList({ page: this.state.newsPageTwo })
+      if (this.state.spinFlag === false) {
+          this.setState({ clenTop: 0 })
+      }
+    }
+  }
+
 
 
   render() {
@@ -92,7 +142,8 @@ class newsPh extends React.Component {
           <div onClick={this.receive} style={this.state.flag === 1 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>我收到的</div>
           <div onClick={this.publish} style={this.state.flag === 2 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>我发送的</div>
         </div>
-        <div className="receive" style={this.state.flag === 1 ? { display: 'block' } : { display: 'none' }}>
+        <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block',height:this.state.clenTop,transition: '0.3s',position:'relative' } : { display: 'none' }} ><Icon type="loading" className='loadingY' style={{top:this.state.clenTop/7}} /></div>
+        <div className="receive" style={this.state.flag === 1 ? { display: 'block' } : { display: 'none' }} onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
           <div className="contentScroll">
           {
             this.state.getVenueNewsList.map((item, i) => (
@@ -119,9 +170,9 @@ class newsPh extends React.Component {
           onClose={this.onClose}
           visible={this.state.visibleDrawer}
         >
-          <span style={this.state.newsDetails.comment_chk!==undefined?{display:'block'}:{display:'none'}}>mine：{this.state.newsDetails.comment_chk}</span> 
+          <span style={this.state.newsDetails.comment_chk!==undefined?{display:'block'}:{display:'none'}}>{this.state.newsDetails.comment_chk}</span> 
          <span style={this.state.newsDetails.intime_chk!==undefined?{display:'block',fontSize:'0.6rem',color:'#ccc'}:{display:'none'}}>{this.state.newsDetails.intime_chk}</span>
-          <span style={{display:'block'}}>official：{this.state.newsDetails.comment}</span>
+          <span style={{display:'block'}}>{this.state.newsDetails.comment}</span>
           <span style={{display:'block',fontSize:'0.6rem',color:'#ccc'}}>{this.state.newsDetails.intime}</span>
          
         </Drawer>
@@ -129,7 +180,7 @@ class newsPh extends React.Component {
  
 
  
-        <div className="publish" style={this.state.flag === 2 ? { display: 'block' } : { display: 'none' }}>
+        <div className="publish" style={this.state.flag === 2 ? { display: 'block' } : { display: 'none' }} onTouchMove={this.touMoveTwo} onTouchStart={this.touClickTwo} onTouchEnd={this.touEndTwo}>
           <div className="pubScroll">
           {
             this.state.getVenueNewsReceivedList.map((item, i) => (

@@ -67,6 +67,7 @@ class home extends React.Component {
     } else if (sessionStorage.getItem('issportid') !== '') {
       this.props.history.location.pathname = '/home/siteSettings'
     }
+    console.log('大清隐龙 作者：心静')
   }
 
 
@@ -195,6 +196,7 @@ class home extends React.Component {
       this.setState({ gerVenueName: res.data.data })
     }
   }
+
   income = () => {
     this.props.history.push({ pathname: '/home/myWallet', query: { time: 1 } })
   }
@@ -297,7 +299,7 @@ class home extends React.Component {
             overflowY: 'auto'
           }}>
             <div className={this.state.path !== '/home' ? 'homePageT' : 'homePage'} >
-              <span className="title">{this.state.nookod}! 欢迎使用挑战场馆端</span>
+              <span className="title" style={this.state.nookod!==''?{opacity:'1'}:{opacity:'0'}}>{this.state.nookod}! 欢迎使用找对手场馆端</span>
               <div style={{ height: 8, background: '#F5F5F5', width: '100%' }}></div>
               <div className="divContent">
                 <div onClick={this.income}>
@@ -344,7 +346,7 @@ class home extends React.Component {
             <Route path="/home/news" component={news} />
             <Route path="/home/closeYu" component={closeYu} />
           </Content>
-          <Footer style={{ textAlign: 'center' }}>Copyright ©2019 北京甲乙电子商务有限公司</Footer>
+          <Footer style={{ textAlign: 'center',height:'3%',lineHeight:'3%' }}>Copyright ©2019 北京甲乙电子商务有限公司</Footer>
         </Layout>
       </Layout>
     )

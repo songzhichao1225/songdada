@@ -32,6 +32,8 @@ class forgetPasswordPh extends React.Component {
         }
       }, 1000)
       this.nacode({ "mobile": this.state.phone, "type": 'venueforgetpass' })
+    }else{
+      message.error(res.data.msg)
     }
   }
 
@@ -45,7 +47,11 @@ class forgetPasswordPh extends React.Component {
   }
   async nacode(data) {
     const res = await _code(data)
-    console.log(res)
+    if(res.data.code===2000){
+     message.info(res.data.msg)
+    }else{
+      message.warning(res.data.msg)
+    }
 
   }
   naCode = () => {
@@ -89,6 +95,10 @@ class forgetPasswordPh extends React.Component {
 
 
 
+  reture = () => {
+    this.props.history.goBack()
+  }
+
 
 
 
@@ -96,7 +106,7 @@ class forgetPasswordPh extends React.Component {
   render() {
     return (
       <div className="forgetPasswordPh">
-        <div className="title">忘记密码</div>
+        <div className="title"> <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left: '5%', top: '35%' }} />忘记密码</div>
         <div className="boss">
           <div className="name">
             <Input className="phone" prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />}  maxLength={11}  onChange={this.phoneChange} placeholder="法人手机号" />

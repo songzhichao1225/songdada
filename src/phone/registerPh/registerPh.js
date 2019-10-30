@@ -66,7 +66,6 @@ class registerPh extends React.Component {
 
   async Ko(data) {
     const res = await _register(data)
-    console.log(res)
     if (res.data.code === 2000) {
       setTimeout(() => {
         this.setState({
@@ -126,13 +125,27 @@ class registerPh extends React.Component {
   }
 
 
-
+  close = () => {
+    var sUserAgent = navigator.userAgent;
+    var mobileAgents = ['Android', 'iPhone'];
+    for (let index = 0; index < mobileAgents.length; index++) {
+      if (sUserAgent.indexOf('Android') > -1) {
+        window.JsAndroid.goBack();
+      } else if (sUserAgent.indexOf('iPhone') > -1) {
+        try {
+          window.webkit.messageHandlers.getCall.postMessage('1');
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
+  }
 
 
   render() {
     return (
       <div className="registerPh">
-        <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span>完善信息 ></span> <span>审核  ></span> <span>成功</span> </div>
+        <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span>完善信息 ></span> <span>审核  ></span> <span>成功</span> <Icon type="close" onClick={this.close} style={{ position: 'absolute', right: '5%', top: '35%' }} /></div>
         <div className="bossInput">
 
           <div className="input">

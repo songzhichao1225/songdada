@@ -3,12 +3,11 @@ import './homePh.css';
 import 'antd/dist/antd.css';
 import { Route, Link } from 'react-router-dom';
 import { gerVenueName, getVenueIndex } from '../../api';
-import { message, Icon, Spin } from 'antd';
+import { message, Icon } from 'antd';
 import orderPh from '../orderPh/orderPh';
 import sitePh from '../sitePh/sitePh';
 import newsPh from '../newsPh/newsPh';
 import minePh from '../minePh/minePh';
-
 
 
 class homePh extends React.Component {
@@ -17,7 +16,11 @@ class homePh extends React.Component {
     getVenue: '',
     gerVenueName: '',
     title: '首页',
-    spin: true
+    spin: true,
+    clenTop: 0,
+    clickY: 0,
+    moveY: 0,
+    spinFlag: false,
   };
   async getVenueIndex(data) {
     const res = await getVenueIndex(data, localStorage.getItem('venue_token'))
@@ -25,7 +28,7 @@ class homePh extends React.Component {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
     } else {
-      this.setState({ getVenue: res.data.data, spin: false })
+      this.setState({ getVenue: res.data.data, spin: false, spinFlag: false })
       sessionStorage.setItem('score', res.data.data.score)
     }
   }
@@ -49,7 +52,11 @@ class homePh extends React.Component {
     this.props.history.push('/homePh/commentPh')
   }
   yuYue = () => {
-    this.props.history.push('/homePh/orderPh')
+    this.props.history.push({pathname:'/homePh/orderPh',query:{time:1}})
+  }
+
+  yuYueTwo=()=>{
+    this.props.history.push({pathname:'/homePh/orderPh',query:{time:2}})
   }
 
 
@@ -113,52 +120,78 @@ class homePh extends React.Component {
       if (sUserAgent.indexOf('Android') > -1) {
         window.JsAndroid.goBack();
       } else if (sUserAgent.indexOf('iPhone') > -1) {
-        window.iosDelegate.getCall();
+        try {
+          window.webkit.messageHandlers.getCall.postMessage('1');
+        } catch (error) {
+          console.log(error)
+        }
       }
     }
   }
 
-
+  touClick = (e) => {
+    this.setState({ clickY: e.targetTouches[0].clientY })
+  }
+  touMove = (e) => {
+    if (this.state.clickY < e.targetTouches[0].clientY&&this.state.clickY<200) {
+      this.setState({ moveY: e.targetTouches[0].clientY })
+      if (e.targetTouches[0].clientY - this.state.clickY < 80) {
+        this.setState({ spinFlag: true })
+        this.setState({ clenTop: e.targetTouches[0].clientY - this.state.clickY })
+      }
+    }
+  }
+  touEnd = () => {
+    if (this.state.moveY > this.state.clickY+10) {
+      this.getVenueIndex()
+      if (this.state.spinFlag === false) {
+          this.setState({ clenTop: 0 })
+      }
+    }
+  }
 
   render() {
     return (
       <div className="homePh">
         <div className="headerTitle">
-          <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left: '5%', top: '35%' }} />
           <span style={{ display: 'block', textAlign: 'center' }}>{this.state.title}</span>
-          <Icon type="close" onClick={this.close} style={{ position: 'absolute', right: '5%', top: '35%' }} />
+          <Icon type="close" onClick={this.close} style={{ position: 'absolute', right: '5%', top: '35%' }}/>
         </div>
-        <div className={this.props.location.pathname === '/homePh' && this.state.spin === false ? 'homePagePh' : 'none'}>
-          <div><span className="title" onClick={this.yuYue}>今日成功预约</span><div className="content"><span>{this.state.getVenue.today_count}</span><span>单</span></div></div>
-          <div><span className="title" onClick={this.yuYue}>本月成功预约</span><div className="content"><span>{this.state.getVenue.month_count}</span><span>单</span></div></div>
-          <div><span className="title" onClick={this.dayIncomePh}>今日收入</span><div className="content"><span>￥{this.state.getVenue.today_money}</span></div></div>
-          <div><span className="title" onClick={this.monthlyIncomePh}>本月收入</span><div className="content"><span>￥{this.state.getVenue.month_money}</span></div></div>
-          <div><span className="title" onClick={this.commentPh}>场馆评分  {this.state.getVenue.score}分</span  ><div className="content">
-            <div className="img">
-              <img src={this.state.getVenue.score >= 1 ? require("../../assets/oneXing.png") : require("../../assets/phonexingzi.png") && this.state.getVenue.score < 1 && this.state.getVenue.score > 0 ? require("../../assets/phonexing.png") : require("../../assets/phonexingzi.png")} alt="星" />
+        <div className='kog'>
+        <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block',height:this.state.clenTop,transition: '0.3s',position:'relative' } : { display: 'none' }} ><Icon type="loading" className='loadingY' style={{top:this.state.clenTop/4}} /></div>
+
+        <div className={this.props.location.pathname === '/homePh' && this.state.spin === false ? 'homePagePh' : 'none'} onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}  >
+          <div className="homeScroll" >
+            <div><span className="title" onClick={this.yuYue}>今日成功预约</span><div className="content"><span>{this.state.getVenue.today_count}</span><span>单</span></div></div>
+            <div><span className="title" onClick={this.yuYueTwo}>本月成功预约</span><div className="content"><span>{this.state.getVenue.month_count}</span><span>单</span></div></div>
+            <div><span className="title" onClick={this.dayIncomePh}>今日收入</span><div className="content"><span>￥{this.state.getVenue.today_money}</span></div></div>
+            <div><span className="title" onClick={this.monthlyIncomePh}>本月收入</span><div className="content"><span>￥{this.state.getVenue.month_money}</span></div></div>
+            <div><span className="title" onClick={this.commentPh}>场馆评分  {this.state.getVenue.score}分</span  >
+            <div className="content">
+              <div className="img">
+                <img src={this.state.getVenue.score >= 1 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 1 && this.state.getVenue.score > 0 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
+              </div>
+              <div className="img">
+                <img src={this.state.getVenue.score >= 2 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 2 && this.state.getVenue.score > 1 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
+              </div>
+              <div className="img">
+                <img src={this.state.getVenue.score >= 3 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 3 && this.state.getVenue.score > 2 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
+              </div>
+              <div className="img">
+                <img src={this.state.getVenue.score >= 4 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 4 && this.state.getVenue.score > 3 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
+              </div>
+              <div className="img">
+                <img src={this.state.getVenue.score >= 5 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 5 && this.state.getVenue.score > 4 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
+              </div>
             </div>
-            <div className="img">
-              <img src={this.state.getVenue.score >= 2 ? require("../../assets/oneXing.png") : require("../../assets/phonexingzi.png") && this.state.getVenue.score < 2 && this.state.getVenue.score > 1 ? require("../../assets/phonexing.png") : require("../../assets/phonexingzi.png")} alt="星" />
-            </div>
-            <div className="img">
-              <img src={this.state.getVenue.score >= 3 ? require("../../assets/oneXing.png") : require("../../assets/phonexingzi.png") && this.state.getVenue.score < 3 && this.state.getVenue.score > 2 ? require("../../assets/phonexing.png") : require("../../assets/phonexingzi.png")} alt="星" />
-            </div>
-            <div className="img">
-              <img src={this.state.getVenue.score >= 4 ? require("../../assets/oneXing.png") : require("../../assets/phonexingzi.png") && this.state.getVenue.score < 4 && this.state.getVenue.score > 3 ? require("../../assets/phonexing.png") : require("../../assets/phonexingzi.png")} alt="星" />
-            </div>
-            <div className="img">
-              <img src={this.state.getVenue.score >= 5 ? require("../../assets/oneXing.png") : require("../../assets/phonexingzi.png") && this.state.getVenue.score < 5 && this.state.getVenue.score > 4 ? require("../../assets/phonexing.png") : require("../../assets/phonexingzi.png")} alt="星" />
             </div>
           </div>
-          </div>
-          <Spin style={{ width: '100%', marginTop: '45%' }} spinning={this.state.spin} />
         </div>
-
-
         <Route path="/homePh/orderPh" component={orderPh} />
         <Route path="/homePh/sitePh" component={sitePh} />
         <Route path="/homePh/newsPh" component={newsPh} />
         <Route path="/homePh/minePh" component={minePh} />
+        </div>
         <div className="footer">
           <div className="footerSon">
             <div onClick={this.homePh}>

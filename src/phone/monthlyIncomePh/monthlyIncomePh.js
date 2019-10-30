@@ -4,16 +4,6 @@ import 'antd/dist/antd.css';
 import { getVenueMoneyList } from '../../api';
 import { DatePicker, message,Pagination,Result,Icon,Spin } from 'antd';
 import moment from 'moment';
-let start = moment().startOf('day').subtract(1, 'months')._d.toLocaleDateString().replace(/\//g, "-")
-let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-let startTwo=start.split('-')
-const startDate=startTwo[2]+'-'+startTwo[0]+'-'+startTwo[1]
-let endTwo=end.split('-')
-const endDate=endTwo[2]+'-'+endTwo[0]+'-'+endTwo[1]
-
-let startT = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-let startTwoT=startT.split('-')
-const startDateT=startTwoT[2]+'-'+startTwoT[0]+'-'+startTwoT[1]
 class monthlyIncomePh extends React.Component {
 
   state = {
@@ -27,18 +17,15 @@ class monthlyIncomePh extends React.Component {
   };
   async getVenueMoneyList(data) {
     const res = await getVenueMoneyList(data, localStorage.getItem('venue_token'))
-
     this.setState({getVenueMoneyList: res.data.data,spin:false})
-    
+
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
-    }
-
-
-    if(res.data.data.data!==undefined){
-      this.setState({  moneyList: res.data.data.data,flag:false })
+    }else if(res.data.data.data!==undefined){
+   this.setState({  moneyList: res.data.data.data,flag:false })
     }else{
+      message.warning(res.data.msg)
       this.setState({flag:true})
     }
   }
@@ -75,6 +62,7 @@ class monthlyIncomePh extends React.Component {
   }
   startDate=(data,datastring)=>{
     this.setState({start:datastring})
+    this.getVenueMoneyList({ start: datastring, end: this.state.end, page: this.state.current })
   }
 
   endDate=(data,datastring)=>{
@@ -111,8 +99,9 @@ class monthlyIncomePh extends React.Component {
           <DatePicker className="end" value={moment(this.state.end)} onChange={this.endDate} showToday={false} />
           <span className="text">收入 ￥{this.state.getVenueMoneyList.whereMoney===undefined?'0.00':this.state.getVenueMoneyList.whereMoney}</span>
         </div>
-
+         
         <div className={this.state.flag===false?'content':'contentNone'}>
+          <div className="moneyScroll">
           {
             this.state.moneyList.map((item, i) => (
               <div className="contentSon" key={i} data-time={item.time} data-money={item.money} data-public={item.public} onClick={this.detail}>
@@ -122,12 +111,13 @@ class monthlyIncomePh extends React.Component {
               </div>
             ))
           }
+        
            <Pagination className="fenye" current={parseInt(this.state.current)} size="small" pageSize={10} total={this.state.getVenueMoneyList.count} onChange={this.pageChang} />
+        </div>
         </div>
         <Result className={this.state.spin===false&&this.state.flag === true ? '' : 'contentNone'} icon={<Icon type="money-collect" style={{fontSize:'2rem'}} theme="twoTone" twoToneColor="#F5A623" />} title="您还没有收入" />
         <Spin spinning={this.state.spin} style={{width:'100%',marginTop:'45%'}}/>
        
-
       </div>
     );
   }

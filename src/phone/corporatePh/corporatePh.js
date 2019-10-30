@@ -53,7 +53,11 @@ class corporatePh extends React.Component {
 
   async nacode(data) {
     const res = await _code(data)
-    console.log(res)
+    if(res.data.code===2000){
+     message.info(res.data.msg)
+    }else{
+      message.warning(res.data.msg)
+    }
   }
 
 
@@ -137,10 +141,23 @@ class corporatePh extends React.Component {
     }
     this.login(data)
   }
+
+  close = () => {
+    var sUserAgent = navigator.userAgent;
+    var mobileAgents = ['Android', 'iPhone'];
+    for (let index = 0; index < mobileAgents.length; index++) {
+      if (sUserAgent.indexOf('Android') > -1) {
+        window.JsAndroid.goBack();
+      } else if (sUserAgent.indexOf('iPhone') > -1) {
+        window.iosDelegate.getCall();
+      }
+    }
+  }
+
   render() {
     return (
       <div className="corporatePh">
-        <div className="headerTitle">法人手机号登录</div>
+        <div className="headerTitle">法人手机号登录<Icon type="close" onClick={this.close} style={{ position: 'absolute', right: '5%', top: '35%' }} /></div>
         <div className="loginInput">
           <div className="name">
             <Input className="phone" autoFocus prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={11} onChange={this.phone} placeholder="法人手机号" />
@@ -156,7 +173,6 @@ class corporatePh extends React.Component {
           </div>
           <div className={this.state.selectVeun.length>0?'name':'koohidden'}> 
           <Radio.Group className="radio" onChange={this.onChange} value={this.state.value}>
-
             {
               this.state.selectVeun.map((item, i) => (
                 <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>

@@ -1,3 +1,6 @@
+.monthlyIncomePh{
+  height: 100%;
+}
 .monthlyIncomePh .headerTitle{
   height: 3rem;
   border-bottom:0.06rem solid #f5f5f5;
@@ -48,8 +51,21 @@
 }
 .monthlyIncomePh .content{
   width: 90%;
+  height: 85%;
   margin: 0 auto;
   display: block;
+  padding-bottom: 3rem;
+}
+.monthlyIncomePh .moneyScroll{
+   overflow-y: scroll;
+   white-space: nowrap;
+   height: 100%;
+   position: relative;
+}
+
+.monthlyIncomePh .moneyScroll::-webkit-scrollbar {/*滚动条整体样式*/
+  width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+  height: 1px;
 }
 .monthlyIncomePh .content .contentSon{
   height: 3rem;

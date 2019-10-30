@@ -1,7 +1,7 @@
 import React from 'react';
 import './moneyDetailPh.css';
 import 'antd/dist/antd.css';
-import { message } from 'antd';
+import { message,Icon} from 'antd';
 
 
 
@@ -21,7 +21,6 @@ class moneyDetailPh extends React.Component {
     }else{
       let data=this.props.location.query
      let dataPublic=this.props.location.query.public
-      console.log(dataPublic.split(','))
       this.setState({datatring:data,public:dataPublic.split(',')})
     }
    
@@ -31,13 +30,15 @@ class moneyDetailPh extends React.Component {
 
 
 
- 
+  reture = () => {
+    this.props.history.goBack()
+  }
 
   render() {
     
     return (
       <div className="moneyDetailPh">
-         <div className="headerTitle">查看详情</div>
+         <div className="headerTitle"> <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left: '5%', top: '35%' }} />查看详情</div>
          <div className="title">
            <span>入账金额</span>
            <span>100.00</span>

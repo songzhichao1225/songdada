@@ -1,5 +1,4 @@
 .corporatePh{
-    margin-top: 1rem;
     width: 100%;
     height: 100%;
     background: #fff;
@@ -11,7 +10,7 @@
 }
 .corporatePh .loginInput .name{
     width: 100%;
-    height: 3.06rem;
+    min-height: 3.06rem;
     border-bottom: 0.06rem solid #999;
 }
 .corporatePh .loginInput .name .phone{
@@ -87,5 +86,6 @@
     border-bottom: 0.06rem solid #F5F5F5;
     line-height: 3rem;
     text-align: center;
+    position: relative;
     
 }

@@ -158,6 +158,9 @@ class stadiums extends React.Component {
   componentDidMount() {
     this.getVenueInformation()
     this.getVenueIssecondaudit()
+    setInterval(()=> {
+      this.getVenueIssecondaudit()
+    },50000)
     this.getVenueQualificationInformation()
     this.getVenueOpenBankProvince()
     this.getVenueOpenBank()
@@ -189,8 +192,6 @@ class stadiums extends React.Component {
       return;
     }
     if (info.file.status === 'done') {
-   
-      console.log(info.file.response)
       this.setState({ imageUrl: info.file.response.data.baseURL + info.file.response.data.filesURL,loading:false })
     }
   };
@@ -536,9 +537,9 @@ class stadiums extends React.Component {
             okText="确定"
             cancelText="返回"
           >
-            <Button className="submit" style={this.state.issecondaudit===1?{display:'block'}:{display:'none'}}>提交修改</Button>
+             <Button className="submit" style={this.state.issecondaudit!==0?{display:'block'}:{display:'none'}}>提交修改</Button>
           </Popconfirm>
-          <Button className="submit"  style={this.state.issecondaudit===1?{display:'none'}:{display:'block'}}>审核中~</Button>
+          <Button className="submit"  style={this.state.issecondaudit===0?{display:'block'}:{display:'none'}}>审核中~</Button>
         </div>
 
 
@@ -662,9 +663,9 @@ class stadiums extends React.Component {
             okText="确定"
             cancelText="返回"
           >
-            <Button className="submit" style={this.state.issecondaudit===1?{display:'block'}:{display:'none'}}>提交修改</Button>
+            <Button className="submit" style={this.state.issecondaudit!==0?{display:'block'}:{display:'none'}}>提交修改</Button>
           </Popconfirm>
-          <Button className="submit"  style={this.state.issecondaudit===1?{display:'none'}:{display:'block'}}>审核中~</Button>
+          <Button className="submit"  style={this.state.issecondaudit===0?{display:'block'}:{display:'none'}}>审核中~</Button>
         </div>
       </div >
     );
