@@ -29,7 +29,7 @@ class myWalletPh extends React.Component {
   }
  
   walletDetailsPh=()=>{
-    this.props.history.push('/homePh/walletDetailsPh')
+    this.props.history.push('/homePh/monthlyIncomePh')
   }
 
   recordPh=()=>{
@@ -50,7 +50,7 @@ class myWalletPh extends React.Component {
            </div>
          </div>
          <ul className="mineList">
-           {/* <li onClick={this.walletDetailsPh}><img src={require("../../assets/money.png")} alt="icon"/><span>钱包明细</span><img src={require("../../assets/right.png")}  alt="arrow"/></li> */}
+           <li onClick={this.walletDetailsPh}><img src={require("../../assets/money.png")} alt="icon"/><span>钱包明细</span><img src={require("../../assets/right.png")}  alt="arrow"/></li>
            <li onClick={this.withdrawalPh}><img src={require("../../assets/tixian.png")} alt="icon"/><span>申请提现</span><img src={require("../../assets/right.png")}  alt="arrow"/></li>
            <li onClick={this.recordPh}><img src={require("../../assets/tixianjilu.png")} alt="icon"/><span>提现记录</span><img src={require("../../assets/right.png")}  alt="arrow"/></li>
         </ul>

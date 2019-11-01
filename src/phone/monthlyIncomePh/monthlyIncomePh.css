@@ -13,12 +13,12 @@
   background:rgba(245,245,245,1);
 }
 .monthlyIncomePh .timer .start{
-  width: 7rem;
+  width: 6.5rem;
   height: 2rem;
   margin: 0.5rem 0 0 1rem;
 }
 .monthlyIncomePh .timer .end{
-  width: 7rem;
+  width: 6.5rem;
   height: 2rem;
   margin: 0.5rem 0 0 0;
 }
@@ -60,14 +60,15 @@
    overflow-y: scroll;
    white-space: nowrap;
    height: 100%;
+   width: 100%;
    position: relative;
 }
 
 .monthlyIncomePh .moneyScroll::-webkit-scrollbar {/*滚动条整体样式*/
-  width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
-  height: 1px;
+  display: none;
 }
 .monthlyIncomePh .content .contentSon{
+  width: 100%;
   height: 3rem;
   margin-top: 1rem;
   border-bottom: 0.06rem solid #F5F5F5;

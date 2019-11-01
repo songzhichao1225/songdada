@@ -38,7 +38,6 @@ class homePagePh extends React.Component {
 
   componentDidMount() {
     this.getVenueIndex()
-   
   }
 
 

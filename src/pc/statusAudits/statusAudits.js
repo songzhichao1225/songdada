@@ -25,6 +25,14 @@ this.getIsStatus()
 
 }
 
+login=()=>{
+  this.props.history.replace('/#')
+}
+
+perfect=()=>{
+  this.props.history.replace('/perfect')
+  sessionStorage.setItem('notType',1)
+}
 
 
 
@@ -87,7 +95,8 @@ return (
         <span>审核未通过原因如下：</span>
         <span>您的<span style={{color:'#F5A623'}}>{this.state.content}</span>未通过审核，请返回修改</span>
         <span>联系电话：010-89781234</span>
-        <a href="#/perfect" className="at"> 返回修改信息 </a>
+        <span  style={{fontSize:'14px',color:'#F5A623',cursor:'pointer'}} onClick={this.perfect}> 返回修改信息 </span>
+        <span style={{fontSize:'14px',color:'#F5A623',cursor:'pointer'}} onClick={this.login}>返回重新登录</span>
       </div>
     </div>
   </div>

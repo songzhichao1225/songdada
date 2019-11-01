@@ -7,7 +7,8 @@
     font-size:1rem;
     line-height: 3rem;
     padding-left: 0.5rem;
-    margin-top: 1rem;
+    position: relative;
+    text-align: center;
 }
 .idCardPh .boss{
     width: 100%;

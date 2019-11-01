@@ -330,6 +330,7 @@ async VenueQualificationInformationSave(data) {
   const res = await VenueQualificationInformationSave(data,localStorage.getItem('venue_token'))
   if (res.data.code === 4001) {
     this.props.history.push('/login')
+    
     message.error('登录超时请重新登录')
   } else if(res.data.code===2000){
        message.info('提交成功')
@@ -424,6 +425,9 @@ mapPh=(e)=>{
             <span>推广员</span>
             <span className="right" style={{ paddingLeft: '11px' }}>{listSon.promote}</span>
           </div>
+
+
+
           <div className="listSon">
             <span>场馆名称</span>
             <Input className="right" value={this.state.cgName}  onChange={this.cgName}/>
@@ -458,7 +462,7 @@ mapPh=(e)=>{
               accept="image/*"
               multiple={false}
             >
-              {imageUrl ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+              {imageUrl ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrl} alt="avatar" style={{width: '100%' }} /> : uploadButton}
             </Upload>
           </div>
           <div className="listSon">
@@ -475,7 +479,6 @@ mapPh=(e)=>{
                 multiple={false}
               >
                 {fileList.length >= 8 ? null : uploadButtonT}
-                 
               </Upload>
           </div>
           <div className="listSon">
@@ -526,7 +529,7 @@ mapPh=(e)=>{
             <Upload
               name="files"
               listType="picture-card"
-              className="avatar-uploader  ko"
+              className="avatar-uploader ko"
               showUploadList={false}
               action="/api/UploadVenueImgs?type=Venue"
               beforeUpload={beforeUpload}
@@ -538,7 +541,7 @@ mapPh=(e)=>{
             <Upload
               name="files"
               listType="picture-card"
-              className="avatar-uploader  ko"
+              className="avatar-uploader  ko"    
               showUploadList={false}
               action="/api/UploadVenueImgs?type=Venue"
               beforeUpload={beforeUpload}

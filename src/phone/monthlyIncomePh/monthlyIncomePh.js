@@ -33,10 +33,11 @@ class monthlyIncomePh extends React.Component {
 
 
   componentDidMount() {
-    if(this.props.location.query===undefined){
+    console.log(this.props.location)
+    if(sessionStorage.getItem('income')===undefined){
        this.props.history.goBack()
     }else{
-      if(this.props.location.query.income==='month'){
+      if(sessionStorage.getItem('income')==='month'){
         let myDate=new Date()
         let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
@@ -46,7 +47,7 @@ class monthlyIncomePh extends React.Component {
         let endDate=endTwo[0]+'-'+endTwo[1]+'-'+endTwo[2]
           this.setState({start:startDate,end:endDate})
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
-      }else if(this.props.location.query.income==='day'){
+      }else if(sessionStorage.getItem('income')==='day'){
         let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         let startTwo=start.split('-')
@@ -81,7 +82,6 @@ class monthlyIncomePh extends React.Component {
     this.props.history.push({pathname:'/homePh/monthlyIncomePh/moneyDetailPh',query:e.currentTarget.dataset})
   }
 
-
   reture=()=>{
     this.props.history.goBack()
   }
@@ -91,7 +91,7 @@ class monthlyIncomePh extends React.Component {
       <div className="monthlyIncomePh">
         <div className="headerTitle">
         <Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'5%',top:'35%'}}/>
-        {this.props.location.query!==undefined&&this.props.location.query.income==='month'?'本月收入':'今日收入'}
+        {this.props.location.query!==undefined&&this.props.location.query.income==='month'?'钱包明细':'钱包明细'}
         </div>
         <div className="timer">
           <DatePicker className="start" value={moment(this.state.start)} onChange={this.startDate} showToday={false} /> 

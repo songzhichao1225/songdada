@@ -287,3 +287,10 @@
     box-shadow: none;
     padding-left: 0;
 }
+
+ .orderPh .ant-calendar-picker-icon{
+     right: 20px;
+ }
+ .kodrAwer .ant-drawer-header{
+     padding:16px 4px;
+ } 

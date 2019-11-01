@@ -7,7 +7,7 @@ import {VenueIsClose,getVenueIsClose } from '../../api';
 class sittingPh extends React.Component {
 
   state = {
-    flag:null,
+    flag:false,
   };
 
 
@@ -17,14 +17,18 @@ class sittingPh extends React.Component {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
     } else {
-      
-      this.setState({flag:res.data.data.isclose})
+      if(res.data.data.isclose===1){
+        this.setState({flag:true})
+      }else{
+        this.setState({flag:false})
+      }
     }
   }
 
   async VenueIsClose(data) {
     const res = await VenueIsClose(data,localStorage.getItem('venue_token'))
        if(res.data.code===2000){
+         message.info(res.data.msg)
         this.getVenueIsClose()
        }
   }
@@ -40,7 +44,6 @@ class sittingPh extends React.Component {
      }else if(e===true){
       this.VenueIsClose({close:1})
      }
-    
   }
   temporaryPh=()=>{
     this.props.history.push('/homePh/temporaryPh')
@@ -55,6 +58,7 @@ class sittingPh extends React.Component {
   reture=()=>{
     this.props.history.goBack()
   }
+  
   exitLogin=()=>{
     this.props.history.replace('/login')
     localStorage.removeItem('venue_token')
@@ -64,17 +68,20 @@ class sittingPh extends React.Component {
     return (
       <div className="sittingPh">
         <div className="headTitle"><Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'5%',top:'35%'}}/>设置</div>
-        <div className="siteSon"><img src={require("../../assets/closeYuyue.png")} alt="icon" /><span>关闭场地预约</span><Switch className="switch" defaultChecked={this.state.flag===1?true:false} onChange={this.onChange} /></div>
+        <div className="siteSon"><img src={require("../../assets/closeYuyue.png")} alt="icon"/><span>关闭场地预约</span><Switch className="switch" checked={this.state.flag} onChange={this.onChange} /></div>
+        
         <div className="siteSon" onClick={this.temporaryPh}>
           <img src={require("../../assets/linshi.png")} alt="icon"/>
           <span>设置临时关闭预约时间</span>
           <img className="switch" style={{width:'0.44rem',height:'0.6rem',marginTop:'0.5rem'}} src={require("../../assets/right.png")} alt="arrow"/>
         </div>
+
         <div className="siteSon" onClick={this.untiePhonePh}>
           <img src={require("../../assets/phoneteo.png")} alt="icon"/>
           <span>解除/更换绑定手机号</span>
           <img className="switch" style={{width:'0.44rem',height:'0.6rem',marginTop:'0.5rem'}} src={require("../../assets/right.png")} alt="arrow"/>
         </div>
+
         <div className="siteSon" onClick={this.resetPasswordPh}>
           <img src={require("../../assets/mineSite.png")} alt="icon"/>
           <span>重置密码</span>
@@ -86,7 +93,7 @@ class sittingPh extends React.Component {
           <span>退出登录</span>
           <img className="switch" style={{width:'0.44rem',height:'0.6rem',marginTop:'0.5rem'}} src={require("../../assets/right.png")} alt="arrow"/>
         </div>
-        
+
       </div>
     )
   }

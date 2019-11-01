@@ -72,6 +72,7 @@ class corporatePh extends React.Component {
       localStorage.setItem('venue_token', res.data.data.venue_token);
       localStorage.setItem('issite', res.data.data.issite);
       localStorage.setItem('isqult', res.data.data.isqult);
+      localStorage.setItem('ismethod', res.data.data.ismethod);
       setTimeout(() => {
         if (res.data.data.venue_token) {
           if (res.data.data.issite === 0) {

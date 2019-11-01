@@ -22,14 +22,20 @@ class resultsAuditsPh extends React.Component {
   }
 
   goback=()=>{
-    this.props.history.push('./stadiumInformationPh')
+    this.props.history.replace({pathname:'./stadiumInformationPh',query:{type:1}})
+    sessionStorage.setItem('notType',1)
   }
   homePh=()=>{
     this.props.history.push('./homePh')
+    localStorage.setItem('islegal',1)
+  }
+  login=()=>{
+    this.props.history.replace('/login')
+    localStorage.removeItem('venue_token')
   }
 
 
-  close = () => {
+  close = () => { 
     var sUserAgent = navigator.userAgent;
     var mobileAgents = ['Android', 'iPhone'];
     for (let index = 0; index < mobileAgents.length; index++) {
@@ -44,7 +50,7 @@ class resultsAuditsPh extends React.Component {
       }
     }
   }
-
+ 
 
 
   render() {
@@ -60,7 +66,9 @@ class resultsAuditsPh extends React.Component {
               <img className="icon" src={require("../../assets/no.png")} alt="图标"/>
               <span className="text">抱歉！未通过审核</span>
                <span className="content">审核未通过原因如下:<span style={{color:'#D85D27'}}>{this.state.content}</span><br/>联系电话：010-88777777 </span>
-                <span onClick={this.goback} style={{color:'#D85D27',marginLeft:'1rem'}}> 返回修改信息 </span>
+                <span onClick={this.goback} style={{color:'#D85D27',marginLeft:'1rem',fontSize:'0.75rem'}}> 返回修改信息 </span>
+                <span onClick={this.login} style={{marginLeft:'1rem',display:'block',fontSize:'0.75rem'}}> 返回重新登录 </span>
+
          </div>
          <div className="boss" style={this.state.islegal===1?{display:'block'}:{display:'none'}}>
               <img className="icon" src={require("../../assets/yes.png")} alt="图标"/>

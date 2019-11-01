@@ -89,11 +89,10 @@
   }
   .statusAudits .footer{
 	  width: 100%;
-	  height: 157px;
 	  background: #FAFAFA;
 	  overflow: hidden;
 	  margin-top: 89px;
-	 
+	 padding-bottom: 16px;
   }
   .statusAudits .footer>span{
 	font-size: 16px;
@@ -125,6 +124,7 @@
 	margin:10px 0 0 59px;
 	color: #F5A623;
 	font-size: 14px;
+	padding-top: 12px;
 }
 
   .hidden{

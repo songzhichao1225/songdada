@@ -1,7 +1,7 @@
 import React from 'react';
 import './perfect.css';
 import 'antd/dist/antd.css';
-import { getProvince, getCrty, getArea,PerfectingVenueInformation } from '../../api';
+import { getProvince, getCrty, getArea, PerfectingVenueInformation, getVenueInformation,VenueInformationSave } from '../../api';
 import { Select, Input, Checkbox, Button, Upload, Icon, message, Modal } from 'antd';
 
 
@@ -57,7 +57,7 @@ class perfect extends React.Component {
     handleCity: '',//市,
     handleDistrict: '',//区
     handleName: '',//场馆名称
-    handleAddress: this.props.location.query===undefined?'':this.props.location.query.adddress,//场馆详细地址
+    handleAddress: this.props.location.query === undefined ? '' : this.props.location.query.adddress,//场馆详细地址
     onChangeCheck: '',//运动项目
     onChangeSite: '',//场地设施
     province: '',//获取的省数组
@@ -66,75 +66,110 @@ class perfect extends React.Component {
     loadinng: false,
     previewVisible: false,
     previewImage: '',
-    imageRes:'',//上传门脸照的返回
-    onChangeText:'',//输入框
-    fileList: [
-    ],
+    imageRes: '',//上传门脸照的返回
+    onChangeText: '',//输入框
+    fileList: [],
+    position: '',
+    lat:'',
+    lng:'',
   };
+
+
+
+
+
+
+
+  async getVenueInformation(data) {
+    const res = await getVenueInformation(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 4001) {
+      this.props.history.push('/')
+      message.error('登录超时请重新登录')
+    } else if (res.data.code === 2000) {
+      let imgS = (res.data.data.filesURL).split('|')
+      let arrImg = []
+      for (let i in imgS) {
+        arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: imgS[i] })
+      }
+      this.setState({
+        position: res.data.data.position, handleAddress: res.data.data.address, handleName: res.data.data.name, imageUrl: res.data.data.firstURL, fileList: arrImg,
+        onChangeCheck: res.data.data.sport, onChangeSite: res.data.data.facilities, onChangeText: res.data.data.siteInfo,lat:res.data.data.lat,lng:res.data.data.lng,
+        imageRes:res.data.data.firstURL
+      })
+    }
+  }
+
+
   componentDidMount() {
     this.getProvince()
-    if(sessionStorage.getItem('handleAreaId')!==null){
-      this.getCrty({ parent:sessionStorage.getItem('handleAreaId') })
+    if (sessionStorage.getItem('handleAreaId') !== null) {
+      this.getCrty({ parent: sessionStorage.getItem('handleAreaId') })
     }
-    if(sessionStorage.getItem('handleCityId')!==null){
+    if (sessionStorage.getItem('handleCityId') !== null) {
       this.getArea({ crty: sessionStorage.getItem('handleCityId') })
     }
+    if (sessionStorage.getItem('notType') === '1') {
+      this.getVenueInformation()
+    }
 
-   
-   
+
+
+
   };
 
-  
+
 
 
   handleArea = e => {
-     let {province}=this.state
-     for(let i in  Array.from(province)){
-        if(Array.from(province)[i].id===e){
-          sessionStorage.setItem('handleArea',Array.from(province)[i].name)
-          sessionStorage.setItem('handleAreaId',Array.from(province)[i].id)
-        }
-     }
-    this.getCrty({ parent:sessionStorage.getItem('handleAreaId') })
+    let { province } = this.state
+    for (let i in Array.from(province)) {
+      if (Array.from(province)[i].id === e) {
+        sessionStorage.setItem('handleArea', Array.from(province)[i].name)
+        sessionStorage.setItem('handleAreaId', Array.from(province)[i].id)
+      }
+    }
+    this.getCrty({ parent: sessionStorage.getItem('handleAreaId') })
   }
   handleCity = e => {
-    let {city}=this.state
-     for(let i in  Array.from(city)){
-        if(Array.from(city)[i].id===e){
-          sessionStorage.setItem('handleCity',Array.from(city)[i].name)
-          sessionStorage.setItem('handleCityId',Array.from(city)[i].id)
-        }
-     }
+    let { city } = this.state
+    for (let i in Array.from(city)) {
+      if (Array.from(city)[i].id === e) {
+        sessionStorage.setItem('handleCity', Array.from(city)[i].name)
+        sessionStorage.setItem('handleCityId', Array.from(city)[i].id)
+      }
+    }
     this.getArea({ crty: sessionStorage.getItem('handleCityId') })
   }
   handleDistrict = e => {
-    let {getArea}=this.state
-    for(let i in  Array.from(getArea)){
-       if(Array.from(getArea)[i].id===e){
-         sessionStorage.setItem('handleDistrict',Array.from(getArea)[i].name)
-         sessionStorage.setItem('handleDistrictId',Array.from(getArea)[i].id)
-       }
+    let { getArea } = this.state
+    for (let i in Array.from(getArea)) {
+      if (Array.from(getArea)[i].id === e) {
+        sessionStorage.setItem('handleDistrict', Array.from(getArea)[i].name)
+        sessionStorage.setItem('handleDistrictId', Array.from(getArea)[i].id)
+      }
     }
   }
-  routerMap=()=>{
-    if( sessionStorage.getItem('handleDistrict')!==null){
-      this.props.history.push({ pathname: '/map',query:{type:1} })
-    }else{
-      message.info('请先选择地区')
+  routerMap = () => {
+    if (sessionStorage.getItem('handleDistrict') !== null) {
+      this.props.history.push({ pathname: '/map', query: { type: 1 } })
+    } else {
+      message.warning('请先选择地区')
     }
-   
   }
   handleName = e => {
-    sessionStorage.setItem('handleName',e.target.value)
+    this.setState({ handleName: e.target.value })
+    sessionStorage.setItem('handleName', e.target.value)
   }
   handleAddress = e => {
-    this.setState({handleAddress:e.target.value})
+    this.setState({ handleAddress: e.target.value })
   }
   onChangeCheck = e => {
-    sessionStorage.setItem('onChangeCheck',e)
+    this.setState({ onChangeCheck: e })
+    sessionStorage.setItem('onChangeCheck', e)
   }
   onChangeSite = e => {
-    sessionStorage.setItem('onChangeSite',e)
+    this.setState({ onChangeSite: e })
+    sessionStorage.setItem('onChangeSite', e)
   }
 
   async getProvince(data) {
@@ -159,7 +194,7 @@ class perfect extends React.Component {
     }
     if (info.file.status === 'done') {
       // Get this url from response in real world.
-      this.setState({imageRes:info.file.response.data.baseURL+info.file.response.data.filesURL})
+      this.setState({ imageRes: info.file.response.data.baseURL + info.file.response.data.filesURL })
       getBase64(info.file.originFileObj, imageUrl =>
         this.setState({
           imageUrl,
@@ -183,49 +218,107 @@ class perfect extends React.Component {
     });
   };
 
-   handleChangeT = ({ fileList }) => this.setState({ fileList });
+  handleChangeT = ({ fileList }) => this.setState({ fileList });
 
-   onChangeText=e=>{
-     this.setState({onChangeText:e.target.value})
-   }
+  onChangeText = e => {
+    this.setState({ onChangeText: e.target.value })
+  }
 
-  onClickNex=()=>{
-    let {imageRes,fileList,handleAddress}=this.state
-    let filesURLarr=[]
-    for(let i in fileList){
-      filesURLarr.push(fileList[i].response.data.baseURL+fileList[i].response.data.filesURL)
+
+
+  
+
+
+  async VenueInformationSave(data) {
+    const res = await VenueInformationSave(data,sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.props.history.push('/qualification')
+      message.info(res.data.msg)
+    }else if(res.data.code===4001){
+      this.props.history.push('/')
+      message.error('登录超时请重新登录')
     }
-    if(filesURLarr.length<2){
-          message.warning("至少上传两张场地照片")
-    }else{
-    let sportId=sessionStorage.getItem('onChangeCheck')===null?'':sessionStorage.getItem('onChangeCheck').split(',')
-     let facilitiesId=sessionStorage.getItem('onChangeSite')===null?'':sessionStorage.getItem('onChangeSite').split(',')
-    let data={
-      venueloginuuid:sessionStorage.getItem('uuid'),
-      province:sessionStorage.getItem('handleArea'),
-      city:sessionStorage.getItem('handleCity'),
-      area:sessionStorage.getItem('handleDistrict'),
-      venuename:sessionStorage.getItem('handleName'),
-      lat:this.props.location.query===undefined?'':this.props.location.query.lat,
-      lng:this.props.location.query===undefined?'':this.props.location.query.lng,
-      address:handleAddress,
-      filesURL:filesURLarr===null?'':filesURLarr.join('|'),
-      firstURL:imageRes,
-      sport:sportId===''?[]:sportId.join(','),
-      facilities:facilitiesId===''?[]:facilitiesId.join(','),
-      siteInfo:this.state.onChangeText,
-      position:this.props.location.query.adddress
+  }
+
+  onClickNex = () => {
+    let { imageRes, fileList, handleAddress } = this.state
+
+
+    if (sessionStorage.getItem('notType') === '1') {
+      let filesURLarr = []
+      for (let i in fileList) {
+        if (fileList[i].response === undefined) {
+          filesURLarr.push(fileList[i].url)
+        } else {
+          filesURLarr.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
+        }
+       
+      }
+      if (filesURLarr.length < 2) {
+        message.warning("至少上传两张场地照片")
+      } else {
+        let sportId = sessionStorage.getItem('onChangeCheck') === null ? this.state.onChangeCheck.split(',') : sessionStorage.getItem('onChangeCheck').split(',')
+        let facilitiesId = sessionStorage.getItem('onChangeSite') === null ? this.state.onChangeSite.split(',') : sessionStorage.getItem('onChangeSite').split(',')
+        let data = {
+          venuename: sessionStorage.getItem('handleName'),
+          lat: this.props.location.query === undefined ? this.state.lat : this.props.location.query.lat,
+          lng: this.props.location.query === undefined ? this.state.lng : this.props.location.query.lng,
+          address: handleAddress,
+          filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
+          firstURL: imageRes,
+          sport: sportId === '' ? [] : sportId.join(','), 
+          facilities: facilitiesId === '' ? [] : facilitiesId.join(','),
+          siteInfo: this.state.onChangeText,
+          position: this.props.location.query===undefined?this.state.position:this.props.location.query.adddress,
+          comment:'',
+          type:1,
+          linkMan:'',
+          telephone:'',
+        }
+        this.VenueInformationSave(data)
+      }
+
+    } else {
+      let filesURLarr = []
+      for (let i in fileList) {
+        filesURLarr.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
+      }
+      if (filesURLarr.length < 2) {
+        message.warning("至少上传两张场地照片")
+      } else {
+        let sportId = sessionStorage.getItem('onChangeCheck') === null ? '' : sessionStorage.getItem('onChangeCheck').split(',')
+        let facilitiesId = sessionStorage.getItem('onChangeSite') === null ? '' : sessionStorage.getItem('onChangeSite').split(',')
+        let data = {
+          venueloginuuid: sessionStorage.getItem('uuid'),
+          province: sessionStorage.getItem('handleArea'),
+          city: sessionStorage.getItem('handleCity'),
+          area: sessionStorage.getItem('handleDistrict'),
+          venuename: sessionStorage.getItem('handleName'),
+          lat: this.props.location.query === undefined ? '' : this.props.location.query.lat,
+          lng: this.props.location.query === undefined ? '' : this.props.location.query.lng,
+          address: handleAddress,
+          filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
+          firstURL: imageRes,
+          sport: sportId === '' ? [] : sportId.join(','),
+          facilities: facilitiesId === '' ? [] : facilitiesId.join(','),
+          siteInfo: this.state.onChangeText,
+          position: this.props.location.query.adddress
+        }
+        this.PerfectingVenueInformation(data)
+      }
     }
-     this.PerfectingVenueInformation(data)
+
+
+
+
   }
-  }
- 
+
   async PerfectingVenueInformation(data) {
     const res = await PerfectingVenueInformation(data)
-   if(res.data.code===2000){
-    this.props.history.push('/qualification')
-   }
-   
+    if (res.data.code === 2000) {
+      this.props.history.push('/qualification')
+    }
+
   }
 
 
@@ -250,8 +343,8 @@ class perfect extends React.Component {
         <div className="ant-upload-text">场地照</div>
       </div>
     );
-   
-  
+
+
     return (
       <div className="perfect">
         <div className="header">
@@ -270,7 +363,7 @@ class perfect extends React.Component {
               <span className="titile">场馆基本信息</span>
               <div className="area">
                 <span className="symbol">*</span><span className="boTitle">选择地区</span>
-                <Select defaultValue={sessionStorage.getItem('handleArea')===null?'请选择':sessionStorage.getItem('handleArea')} className="one" style={{ width: 118 }} onChange={this.handleArea}>
+                <Select defaultValue={sessionStorage.getItem('handleArea') === null ? '请选择' : sessionStorage.getItem('handleArea')} className="one" style={{ width: 118 }} onChange={this.handleArea}>
                   {
                     data.map((item, i) => {
                       return <Option key={i} value={item.id} >{item.name}</Option>
@@ -278,7 +371,7 @@ class perfect extends React.Component {
                   }
                 </Select>
                 <span>省</span>
-                <Select defaultValue={sessionStorage.getItem('handleCity')===null?'请选择':sessionStorage.getItem('handleCity')}  className="one" style={{ width: 118 }} onChange={this.handleCity}>
+                <Select defaultValue={sessionStorage.getItem('handleCity') === null ? '请选择' : sessionStorage.getItem('handleCity')} className="one" style={{ width: 118 }} onChange={this.handleCity}>
                   {
                     cityT.map((item, i) => {
                       return <Option key={i} value={item.id}>{item.name}</Option>
@@ -287,7 +380,7 @@ class perfect extends React.Component {
                 </Select>
                 <span>市</span>
 
-                <Select defaultValue={sessionStorage.getItem('handleDistrict')===null?'请选择':sessionStorage.getItem('handleDistrict')}  className="one" style={{ width: 118 }} onChange={this.handleDistrict}>
+                <Select defaultValue={sessionStorage.getItem('handleDistrict') === null ? '请选择' : sessionStorage.getItem('handleDistrict')} className="one" style={{ width: 118 }} onChange={this.handleDistrict}>
                   {
                     getAreaT.map((item, i) => {
                       return <Option key={i} value={item.id}>{item.name}</Option>
@@ -298,7 +391,7 @@ class perfect extends React.Component {
               </div>
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">场馆位置</span>
-                <Input className="nameINput" value={this.props.location.query!==undefined?this.props.location.query.adddress:''} placeholder="请输选择场馆位置" />
+                <Input className="nameINput" value={this.props.location.query !== undefined ? this.props.location.query.adddress : this.state.position} placeholder="请输选择场馆位置" />
                 <img onClick={this.routerMap} className="dingImg" src={require("../../assets/icon_pc_dingwei.png")} alt="" />
               </div>
 
@@ -306,13 +399,13 @@ class perfect extends React.Component {
                 <span className="symbol">*</span><span className="boTitle">详细地址</span>
                 <Input className="nameINput" onChange={this.handleAddress} value={this.state.handleAddress} placeholder="请输入场馆详细地址如门牌号楼层" />
               </div>
-              
+
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">场馆名称</span>
-                <Input className="nameINput" onChange={this.handleName}  placeholder="请输入场馆名称" />
+                <Input className="nameINput" onChange={this.handleName} value={this.state.handleName} placeholder="请输入场馆名称" />
               </div>
 
-              
+
 
               <div className="name">
                 <span className="symbol negative">*</span><span className="boTitle negativeT">门脸照(1张)</span>
@@ -354,17 +447,17 @@ class perfect extends React.Component {
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">运动项目</span><span className="kong"></span>
-                <Checkbox.Group options={plainOptions} onChange={this.onChangeCheck} /><br /><span className="kong"></span>
+                <Checkbox.Group options={plainOptions} onChange={this.onChangeCheck} value={this.state.onChangeCheck} /><br /><span className="kong"></span>
               </div>
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">场地设施</span><span className="kong"></span>
-                <Checkbox.Group options={options} onChange={this.onChangeSite} />
+                <Checkbox.Group options={options} onChange={this.onChangeSite} value={this.state.onChangeSite} />
               </div>
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">场地介绍</span><span className="kong"></span>
-                <TextArea className="textarea" placeholder="请输入场地介绍，如场地规模、特色等。" onChange={this.onChangeText} rows={4} />
+                <TextArea className="textarea" placeholder="请输入场地介绍，如场地规模、特色等。" onChange={this.onChangeText} value={this.state.onChangeText} rows={4} />
               </div>
 
               <div className="prompt">请注意<span>*</span>为必填项</div>

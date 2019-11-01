@@ -1,7 +1,7 @@
 import React from 'react';
 import './qualification.css';
 import 'antd/dist/antd.css';
-import { getIsStatus, VenueQualifications, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity,getVenueOpenBankList } from '../../api';
+import { getIsStatus, VenueQualifications, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity,getVenueOpenBankList,getVenueQualificationInformation } from '../../api';
 import { Input, Radio, Button, Upload, message, Icon, Select,Tooltip } from 'antd';
 const { Option } = Select;
 function getBase64(img, callback) {
@@ -84,6 +84,9 @@ class qualification extends React.Component {
   }
 
 
+  
+
+
   async getVenueOpenBank(data) {
     const res = await getVenueOpenBank(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
@@ -116,11 +119,27 @@ class qualification extends React.Component {
     }
   }
 
+
+  async getVenueQualificationInformation(data) {
+    const res = await getVenueQualificationInformation(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 4001) {
+      this.props.history.push('/')
+      message.error('登陆超时请重新登陆！')
+    }else if(res.data.code===2000){
+     this.setState({imageUrl:res.data.data.lisenceURL,handleName:res.data.data.legalname,handleCardId:res.data.data.legalcard,
+      handlePhone:res.data.data.legalphone,Radiovalue:res.data.data.Settlement,handleBankNum:res.data.data.Bankaccount,openingLine:res.data.data.OpeningBank
+    })
+    }
+  
+  }
+
+
+
   componentDidMount() {
     this.getVenueOpenBank()
     this.getVenueOpenBankProvince()
     this.getIsStatus()
-
+    this.getVenueQualificationInformation()
   }
 
   provinceChange = e => {
@@ -233,7 +252,7 @@ class qualification extends React.Component {
   }
   submit = () => {
     let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageReT, imageReST, } = this.state
-
+    
     let data = {
       siteUUID: siteUUID,
       lisenceURL: imageRes,
@@ -246,7 +265,6 @@ class qualification extends React.Component {
       Bankaccount: handleBankNum,
       OpeningBank: openingLine,
     }
-
     this.VenueQualifications(data)
   }
 
@@ -257,7 +275,7 @@ class qualification extends React.Component {
         <Icon type={this.state.loading ? 'loading' : 'plus'} />
         <div className="ant-upload-text">营业执照</div>
       </div>
-    );
+    )
     const { imageUrl } = this.state;
 
     const uploadButtonT = (
@@ -309,18 +327,18 @@ class qualification extends React.Component {
               </div>
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">法人姓名</span>
-                <Input className="nameINput" onChange={this.handleName} placeholder="请输入法人姓名" />
+                <Input className="nameINput" onChange={this.handleName} value={this.state.handleName} placeholder="请输入法人姓名" />
               </div>
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">法人身份证号</span>
-                <Input className="nameINput cardId" maxLength={18} onChange={this.handleCardId} placeholder="请输入法人身份证号" />
+                <Input className="nameINput cardId" maxLength={18} value={this.state.handleCardId} onChange={this.handleCardId} placeholder="请输入法人身份证号" />
               </div>
-
+              
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">法人手机号</span>
-                <Input className="nameINput phone" maxLength={11} onChange={this.handlePhone} placeholder="请输入11位手机号" />
+                <Input className="nameINput phone" maxLength={11} value={this.state.handlePhone} onChange={this.handlePhone} placeholder="请输入11位手机号" />
               </div>
-
+              
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">法人身份证</span>
                 <Upload
@@ -346,7 +364,7 @@ class qualification extends React.Component {
                 >
                   {imageUrlS ? <img src={imageUrlS} alt="avatar" style={{ width: '100%' }} /> : uploadButtonS}
                 </Upload>
-                {/* <span className="rightText">上传图片小于3M<br />上传图片尺寸在1200px*860px 之内</span> */}
+               
               </div>
 
               <div className="name">
@@ -359,7 +377,7 @@ class qualification extends React.Component {
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">银行账号</span>
-                <Input className="nameINput" maxLength={19} onChange={this.handleBankNum} placeholder="请输入银行卡号" />
+                <Input className="nameINput" maxLength={19} onChange={this.handleBankNum} value={this.state.handleBankNum} placeholder="请输入银行卡号" />
               </div>
 
               <div className="name">
@@ -397,6 +415,7 @@ class qualification extends React.Component {
                   defaultActiveFirstOption={false}
                   showArrow={false}
                   notFoundContent={null}
+                  value={this.state.openingLine}
                 >
                   {
                     this.state.backList.map((item,i)=>(

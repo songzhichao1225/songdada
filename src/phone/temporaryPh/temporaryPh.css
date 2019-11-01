@@ -72,3 +72,6 @@
 .temporaryPh .ant-result-title{
     font-size: 0.75rem;
 }
+.drawerInput .ant-select-arrow{
+    right: 5px;
+}

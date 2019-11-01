@@ -1,7 +1,7 @@
 import React from 'react';
 import './qualificationPh.css';
 import { Upload, Input, Button, Radio, message,Select,Tooltip,Icon } from 'antd';
-import { getIsStatus,getVenueOpenBankList,getVenueOpenBank,getVenueOpenBankProvince,getVenueOpenBankCity,VenueQualifications } from '../../api';
+import { getIsStatus,getVenueOpenBankList,getVenueOpenBank,getVenueOpenBankProvince,getVenueOpenBankCity,VenueQualifications,getVenueQualificationInformation,VenueQualificationInformationSave } from '../../api';
 const { Option } = Select;
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -42,6 +42,9 @@ class qualificationPh extends React.Component {
     city_id: '',//市id
     backList:[],//获取的银行
     openingLine:'',
+    kai:true,
+    kaiText:'请选择银行所在地',
+    imageResOneTwo:'',
   };
 
 
@@ -68,17 +71,31 @@ class qualificationPh extends React.Component {
     }
   }
 
+  
+
+  async getVenueQualificationInformation(data) {
+    const res = await getVenueQualificationInformation(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+     this.setState({imageUrl:res.data.data.lisenceURL,faName:res.data.data.legalname,faIdcard:res.data.data.legalcard,faPhone:res.data.data.legalphone,
+      value:res.data.data.Settlement,cardId:res.data.data.Bankaccount,openingLine:res.data.data.OpeningBank,imageUrlBaseT:res.data.data.legalBaseURL,
+      imageResOneTwo:res.data.data.legalFilesURL,place:'上传成功'})
+    }
+    if (this.props.location.query !== undefined) {
+      this.setState({ place: '上传成功', imageResOneTwo: this.props.location.query.imageRes+'|'+this.props.location.query.imageResT, imageUrlBaseT: this.props.location.query.imageUrlBaseT })
+    }
+  }
+
+
 
 
 
   componentDidMount() {
-    if (this.props.location.query !== undefined) {
-      this.setState({ place: '上传成功', imageRes: this.props.location.query.imageRes, imageResT: this.props.location.query.imageResT, imageUrlBaseT: this.props.location.query.imageUrlBaseT })
-    }
+   
     this.getIsStatus()
     this.getVenueOpenBank()
     this.getVenueOpenBankProvince()
-
+    this.getVenueQualificationInformation()
+    
   }
 
   handleChange = info => {
@@ -87,20 +104,19 @@ class qualificationPh extends React.Component {
       return;
     }
     if (info.file.status === 'done') {
-      // Get this url from response in real world.
       sessionStorage.setItem('yinImg', info.file.response.data.baseURL + info.file.response.data.filesURL)
       this.setState({ imageResOne: info.file.response.data.baseURL + info.file.response.data.filesURL })
       getBase64(info.file.originFileObj, imageUrl =>
         this.setState({
           imageUrl,
           loading: false,
-        }),
-      );
+        })
+      )
     }
-  };
+  }
 
   idCard = () => {
-    this.props.history.push('/idCardPh')
+    this.props.history.push({pathname:'/idCardPh',query:{imageUrlBaseT:this.state.imageUrlBaseT,imageResOneTwo:this.state.imageResOneTwo}})
   }
 
   radioChange = e => {
@@ -145,7 +161,8 @@ class qualificationPh extends React.Component {
   }
  
   cityChange = e => {
-    this.setState({ city_id: e })
+    this.setState({ city_id: e,kai:false,kaiText:'请输入银行关键字'})
+
   }
   handleSearch=e=>{
     this.getVenueOpenBankList({bank_id:this.state.bank_id,province_id:this.state.province_id,city_id:this.state.city_id,search_name:e})
@@ -163,8 +180,38 @@ async VenueQualifications(data) {
     message.error(res.data.msg)
   }
 }
+
+
+
+async VenueQualificationInformationSave(data) {
+  const res = await VenueQualificationInformationSave(data,localStorage.getItem('venue_token'))
+  if (res.data.code === 2000) {
+     this.props.history.push('/resultsAuditsPh')
+     message.info(res.data.msg)
+  }else{
+    message.error(res.data.msg)
+  }
+}
+
+
   submit = () => {
-    let { siteUUID, imageRes, imageResT, imageUrlBaseT, faName, faIdcard, faPhone, value, cardId,openingLine } = this.state
+    let { siteUUID, imageResOneTwo, imageUrlBaseT, faName, faIdcard, faPhone, value, cardId,openingLine } = this.state
+
+   if(sessionStorage.getItem('notType')==='1'){
+    let data = {
+      lisenceURL: sessionStorage.getItem('yinImg'),
+      legalname: faName,
+      legalcard: faIdcard,
+      legalphone: faPhone,
+      legalBaseURL: imageUrlBaseT,
+      legalFilesURL: imageResOneTwo,
+      Settlement: value,
+      Bankaccount: cardId,
+      OpeningBank:openingLine
+    }
+      this.VenueQualificationInformationSave(data)
+   }else{
+
     let data = {
       siteUUID: siteUUID,
       lisenceURL: sessionStorage.getItem('yinImg'),
@@ -172,13 +219,16 @@ async VenueQualifications(data) {
       legalcard: faIdcard,
       legalphone: faPhone,
       legalBaseURL: imageUrlBaseT,
-      legalFilesURL: imageRes + '|' + imageResT,
+      legalFilesURL: imageResOneTwo,
       Settlement: value,
       Bankaccount: cardId,
       OpeningBank:openingLine
     }
-
     this.VenueQualifications(data)
+   }
+
+
+   
   }
 
 
@@ -244,31 +294,31 @@ async VenueQualifications(data) {
 
           <div className="input">
             <span>法人姓名</span>
-            <Input className="select" onChange={this.faName} placeholder="请输入姓名" />
+            <Input className="select" onChange={this.faName} value={this.state.faName} placeholder="请输入姓名" />
           </div>
 
           <div className="input">
             <span>法人身份证号</span>
-            <Input className="select" onChange={this.faIdcard} maxLength={18} placeholder="请输入身份证号" />
+            <Input className="select" onChange={this.faIdcard} value={this.state.faIdcard} maxLength={18} placeholder="请输入身份证号" />
           </div>
 
           <div className="input">
             <span>法人手机号</span>
-            <Input className="select" maxLength={11} onChange={this.faPhone} placeholder="请输入11位手机号码" />
+            <Input className="select" maxLength={11} onChange={this.faPhone} value={this.state.faPhone} placeholder="请输入11位手机号码" />
           </div>
 
 
           <div className="input">
             <span>结算账号</span>
             <Radio.Group className="radio" onChange={this.radioChange} value={this.state.value}>
-              <Radio value={0}>公司银行账户</Radio>
-              <Radio value={1}>法人账号</Radio>
+              <Radio value={0}>公司账户</Radio>
+              <Radio value={1}>法人账户</Radio>
             </Radio.Group>
           </div>
 
           <div className="input">
             <span>银行卡号</span>
-            <Input className="select" maxLength={21} onChange={this.cardId} placeholder="请输入银行卡号" />
+            <Input className="select" maxLength={21} onChange={this.cardId} value={this.state.cardId} placeholder="请输入银行卡号" />
           </div>
 
           <div className="input">
@@ -301,12 +351,15 @@ async VenueQualifications(data) {
             <span>开户行</span>
             <Select
                   showSearch
-                  style={{ width: '15rem', height: '2.9rem',}}
+                  style={{ width: '15rem', height: '2.9rem',background:'transparent',float:'right'}}
                   onSearch={this.handleSearch}
                   onChange={this.openingLine}
                   defaultActiveFirstOption={false}
                   showArrow={false}
                   notFoundContent={null}
+                  disabled={this.state.kai}
+                  placeholder={this.state.kaiText}
+                  value={this.state.openingLine}
                 >
                   {
                     this.state.backList.map((item,i)=>(

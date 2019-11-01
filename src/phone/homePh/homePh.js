@@ -43,10 +43,12 @@ class homePh extends React.Component {
   }
 
   monthlyIncomePh = () => {
-    this.props.history.push({ pathname: '/homePh/monthlyIncomePh', query: { income: 'month' } })
+    this.props.history.push({ pathname: '/homePh/monthlyIncomePh' })
+    sessionStorage.setItem('income','month')
   }
   dayIncomePh = () => {
-    this.props.history.push({ pathname: '/homePh/monthlyIncomePh', query: { income: 'day' } })
+    this.props.history.push({ pathname: '/homePh/monthlyIncomePh'})
+    sessionStorage.setItem('income','day')
   }
   commentPh = () => {
     this.props.history.push('/homePh/commentPh')
@@ -64,6 +66,21 @@ class homePh extends React.Component {
   componentDidMount() {
     this.getVenueIndex()
     this.gerVenueName()
+    
+
+   
+      if (localStorage.getItem('venue_token')) {
+        if (localStorage.getItem('issite') === '0') {
+          this.props.history.push('/stadiumInformationPh')
+        } else if (localStorage.getItem('isqult') === '0') {
+          this.props.history.push('/qualificationPh')
+        } else if (localStorage.getItem('islegal') === '0' || localStorage.getItem('islegal')=== '2') {
+          this.props.history.push('/resultsAuditsPh')
+        }
+      }
+
+   
+
     if (this.props.history.location.pathname === '/homePh') {
       this.setState({ title: '首页' })
     } else if (this.props.history.location.pathname === '/homePh/orderPh') {
@@ -75,7 +92,6 @@ class homePh extends React.Component {
     } else if (this.props.history.location.pathname === '/homePh/minePh') {
       this.setState({ title: '我的' })
     }
-
   }
 
   componentWillReceiveProps() {

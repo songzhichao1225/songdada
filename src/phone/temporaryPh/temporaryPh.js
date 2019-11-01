@@ -1,7 +1,7 @@
 import React from 'react';
 import './temporaryPh.css';
 import { message, Select, Icon, Row, Col, Drawer, DatePicker, Pagination, Popconfirm,Result } from 'antd';
-import { getVenueSport, VenueTemporarilyClosedList, VenueTemporarilyClosedSave, VenueTemporarilyClosedDel } from '../../api';
+import { getVenueSport, VenueTemporarilyClosedList, VenueTemporarilyClosedSave, VenueTemporarilyClosedDel,VenueTemporarilyClosed } from '../../api';
 import moment from 'moment';
 import zh_CN from 'antd/es/date-picker/locale/zh_CN';
 const { Option } = Select;
@@ -132,6 +132,18 @@ class temporaryPh extends React.Component {
     this.setState({ textarea: e.target.value })
   }
 
+  async VenueTemporarilyClosed(data) {
+    const res = await VenueTemporarilyClosed(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 4001) {
+      this.props.history.push('/')
+      message.error('登陆超时请重新登陆！')
+    }else if(res.data.code===2000){
+      this.setState({ visible: false })
+    } else {
+      message.info(res.data.msg)
+      this.VenueTemporarilyClosedList()
+    }
+  }
 
   async VenueTemporarilyClosedSave(data) {
     const res = await VenueTemporarilyClosedSave(data, localStorage.getItem('venue_token'))
@@ -154,6 +166,7 @@ class temporaryPh extends React.Component {
         endtime: EndValue,
         comment: textarea,
       }
+      console.log(666)
       this.VenueTemporarilyClosed(data)
     }else{
       let data = {
@@ -260,10 +273,11 @@ class temporaryPh extends React.Component {
           width={'100%'}
           onClose={this.onClose}
           visible={this.state.visible}
+          bodyStyle={{padding:'5%'}}
         >
           <div className='drawerInput'>
             <span>运动项目</span>
-            <Select placeholder='请选择' style={{ width: 200, border: 'none', boxShadow: 'none' }} value={this.state.sportName} onChange={this.sportChange}>
+            <Select placeholder='请选择' style={{width:'77%',  border: 'none', boxShadow: 'none' }} value={this.state.sportName} onChange={this.sportChange}>
               {
                 this.state.sportList.map((item, i) => (
                   <Option key={i} value={item.id}>{item.name}</Option>
@@ -277,7 +291,7 @@ class temporaryPh extends React.Component {
             <DatePicker
               locale={zh_CN}
               disabledDate={this.disabledStartDate}
-              showTime
+              showTime={{minuteStep:30,secondStep:60}}
               format="YYYY-MM-DD HH:mm"
               value={moment(this.state.startValue)}
               placeholder="开始时间"
@@ -290,7 +304,7 @@ class temporaryPh extends React.Component {
             <DatePicker
               locale={zh_CN}
               disabledDate={this.disabledStartDate}
-              showTime
+              showTime={{minuteStep:30,secondStep:60}}
               format="YYYY-MM-DD HH:mm"
               value={moment(this.state.EndValue)}
               placeholder="结束时间"

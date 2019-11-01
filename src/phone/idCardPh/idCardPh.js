@@ -1,6 +1,6 @@
 import React from 'react';
 import './idCardPh.css';
-import { Upload, Icon, Modal,Button, message } from 'antd';
+import { Upload, Icon, Modal,Button, message, } from 'antd';
 import { } from '../../api';
 
 function getBase64(img, callback) {
@@ -24,6 +24,7 @@ class idCardPh extends React.Component {
 
   state = {
     previewVisible: false,
+    previewVisibleTwo:false,
     imageRes:'',
     imageResT:'',
     imageUrlBaseT:'',
@@ -33,7 +34,16 @@ class idCardPh extends React.Component {
 
 
   componentDidMount() {
-
+  
+     if(this.props.location.query===undefined){
+     this.props.history.goBack()
+     }else{
+      console.log(this.props.location.query.imageResOneTwo.split('|'))
+      this.setState({imageUrl:this.props.location.query.imageUrlBaseT+this.props.location.query.imageResOneTwo.split('|')[0],imageUrlT:this.props.location.query.imageUrlBaseT+this.props.location.query.imageResOneTwo.split('|')[1],
+      imageRes:this.props.location.query.imageResOneTwo.split('|')[0],imageResT:this.props.location.query.imageResOneTwo.split('|')[1],imageUrlBaseT:this.props.location.query.imageUrlBaseT
+    })
+     }
+   
 
   }
 
@@ -43,7 +53,7 @@ class idCardPh extends React.Component {
       return;
     }
     if (info.file.status === 'done') {
-      this.setState({ imageRes: info.file.response.data.baseURL + info.file.response.data.filesURL })
+      this.setState({ imageRes: info.file.response.data.filesURL })
       getBase64(info.file.originFileObj, imageUrl =>
         this.setState({
           imageUrl,
@@ -59,7 +69,7 @@ class idCardPh extends React.Component {
       return;
     }
     if (info.file.status === 'done') {
-      this.setState({ imageResT: info.file.response.data.baseURL + info.file.response.data.filesURL,imageUrlBaseT:info.file.response.data.baseURL })
+      this.setState({ imageResT: info.file.response.data.filesURL,imageUrlBaseT:info.file.response.data.baseURL })
       getBase64(info.file.originFileObj, imageUrlT =>
         this.setState({
           imageUrlT,
@@ -74,6 +84,14 @@ class idCardPh extends React.Component {
   }
   handleCancel = () => {
     this.setState({ previewVisible: false })
+
+  }
+
+  positiveTwo = () => {
+    this.setState({ previewVisibleTwo: true })
+  }
+  handleCancelT = () => {
+    this.setState({ previewVisibleTwo: false })
   }
 
   submit=()=>{
@@ -86,6 +104,10 @@ class idCardPh extends React.Component {
       this.props.history.push({ pathname: '/qualificationPh', query: {imageRes:imageRes,imageResT:imageRes,imageUrlBaseT:imageUrlBaseT } })
     }
    
+  }
+
+  reture=()=>{
+    this.props.history.goBack()
   }
 
 
@@ -114,7 +136,7 @@ class idCardPh extends React.Component {
 
     return (
       <div className="idCardPh">
-        <div className="headTtitle">请上传您的身份证图片</div>
+        <div className="headTtitle">  <Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'5%',top:'35%',fontSize:'1rem'}}/>请上传您的身份证图片</div>
         <div className="boss">
           <div className="input">
             <span>手持身份证正面照</span>  <span style={{ paddingLeft: '20px', color: '#D85D27' }} onClick={this.positive}>示例图</span>
@@ -138,7 +160,7 @@ class idCardPh extends React.Component {
 
 
           <div className="input">
-            <span>手持身份证反面照</span>  <span style={{ paddingLeft: '20px', color: '#D85D27' }} onClick={this.positive}>示例图</span>
+            <span>手持身份证反面照</span>  <span style={{ paddingLeft: '20px', color: '#D85D27' }} onClick={this.positiveTwo}>示例图</span>
             <Upload
               name="files"
               listType="picture-card"
@@ -151,7 +173,7 @@ class idCardPh extends React.Component {
               {imageUrlT ? <img src={imageUrlT} alt="avatar" style={{ width: '100%' }} /> : uploadButtonT}
             </Upload>
           </div>
-          <Modal visible={this.state.previewVisible} footer={null} onCancel={this.handleCancelT}>
+          <Modal visible={this.state.previewVisibleTwo} footer={null} onCancel={this.handleCancelT}>
             <img alt="example" style={{ width: '90%' }} src={require("../../assets/fan.png")} />
           </Modal>
 

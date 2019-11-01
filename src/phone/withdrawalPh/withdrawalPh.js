@@ -24,8 +24,6 @@ class withdrawalPh extends React.Component {
 
   async getVenueMoney(data) {
     const res = await getVenueMoney(data,localStorage.getItem('venue_token'))
-  
-     
       this.setState({money:res.data.data.money})
     
   }
