@@ -32,6 +32,8 @@ class register extends React.Component {
     idName:'',
     qipao:true,
     promotid:'',
+    text:'请输入字母+数字',
+    textTwo:'请输入正确的手机号',
   };
 
   changID = (e) => {
@@ -44,7 +46,7 @@ class register extends React.Component {
   async getIsUserName(data) {
     const res = await getIsUserName(data)
     if(res.data.code!==2000){
-      message.error('此用户名已存在')
+       this.setState({visibleName:true,text:res.data.msg})
       this.setState({name:''})
     }else{
       this.setState({ name: data.name, visibleName: false })
@@ -106,7 +108,7 @@ class register extends React.Component {
   async nacode(data) {
     const res = await _code(data)
     if(res.data.code===4007){
-     message.error(res.data.msg)
+      this.setState({visiblePhone:true,textTwo:res.data.msg})
     }else if(res.data.code===2000){
       let num = 60
       const timer = setInterval(() => {
@@ -151,7 +153,6 @@ class register extends React.Component {
         let data = { name: name, phone: phone, pass: password, promoteid: Id, code: code, Logintype: 'pc' }
         this.Ko(data)
       }
-     
     }
   }
   blurId = e => {
@@ -162,7 +163,7 @@ class register extends React.Component {
      if(res.data.code===2000){
       this.setState({idName:res.data.data.promotname})
      }else{
-      this.setState({idName:'推广员不存在',})
+      this.setState({idName:'推广员不存在'})
      }
   }
   onCancel=e=>{
@@ -195,7 +196,7 @@ class register extends React.Component {
               <div className="son">
                 <span className="xing">*</span> <span>用户名:</span>
                 <Popover
-                  content='请输入英文+数字'
+                  content={this.state.text}
                   visible={this.state.visibleName}
                 >
                   <Input type="text"  onBlur={this.changeName} className="phone" />
@@ -205,7 +206,7 @@ class register extends React.Component {
               <div className="son">
                 <span className="xing">*</span> <span>手机号:</span>
                 <Popover
-                  content='请输入正确的手机号'
+                  content={this.state.textTwo}
                   visible={this.state.visiblePhone}
                 >
                   <Input maxLength={11} onBlur={this.changePhone} className="phone" />
@@ -215,17 +216,17 @@ class register extends React.Component {
               <div className="son">
                 <span className="xing">*</span> <span>验证码:</span>
                 <Button className="huoBtn" onClick={this.naCode}>{this.state.textT}</Button>
-                <Input maxLength={6} onChange={this.changeCode} className="phone code" />
+                <Input maxLength={6} type="text" onChange={this.changeCode} className="phone code" />
               </div>
       
               <div className="son">
                 <span className="xing">*</span> <span>密码:</span>
-                <Input.Password maxLength={8}  onChange={this.changePassword} className="phone" />
+                <Input  onFocus={this.onfoucs} maxLength={8} onChange={this.changePassword} className="phone" />
               </div>
 
               <div className="son">
                 <span className="xing">*</span> <span>确认密码:</span>
-                <Input.Password maxLength={8} onChange={this.changePasswordT} className="phone" />
+                <Input maxLength={8} onChange={this.changePasswordT} className="phone" />
               </div>
 
               <div className="agreement"><Radio onChange={this.changeRadio}><span>我已阅读并同意</span><span className="color">《用户协议》</span></Radio></div>

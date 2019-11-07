@@ -116,9 +116,10 @@ float: left;
 	color: #9B9B9B;
 	float: left;
 	margin-top: 20px;
-	text-align: center;
+	text-align: left;
 	width: 100%;
 	margin-bottom: 20px;
+	padding-left: 100px;
 }
 .perfect .negative{
 	margin-left: -17px;

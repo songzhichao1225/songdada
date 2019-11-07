@@ -1,7 +1,7 @@
 import React from 'react';
 import './qualificationPh.css';
-import { Upload, Input, Button, Radio, message,Select,Tooltip,Icon } from 'antd';
-import { getIsStatus,getVenueOpenBankList,getVenueOpenBank,getVenueOpenBankProvince,getVenueOpenBankCity,VenueQualifications,getVenueQualificationInformation,VenueQualificationInformationSave } from '../../api';
+import { Upload, Input, Button, Radio, message, Select, Tooltip, Icon } from 'antd';
+import { getIsStatus, getVenueOpenBankList, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity, VenueQualifications, getVenueQualificationInformation, VenueQualificationInformationSave } from '../../api';
 const { Option } = Select;
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -40,11 +40,11 @@ class qualificationPh extends React.Component {
     bank_id: '',//类型Id
     province_id: '',//省Id
     city_id: '',//市id
-    backList:[],//获取的银行
-    openingLine:'',
-    kai:true,
-    kaiText:'请选择银行所在地',
-    imageResOneTwo:'',
+    backList: [],//获取的银行
+    openingLine: '',
+    kai: true,
+    kaiText: '请选择银行所在地',
+    imageResOneTwo: '',
   };
 
 
@@ -71,31 +71,38 @@ class qualificationPh extends React.Component {
     }
   }
 
-  
+
 
   async getVenueQualificationInformation(data) {
     const res = await getVenueQualificationInformation(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-     this.setState({imageUrl:res.data.data.lisenceURL,faName:res.data.data.legalname,faIdcard:res.data.data.legalcard,faPhone:res.data.data.legalphone,
-      value:res.data.data.Settlement,cardId:res.data.data.Bankaccount,openingLine:res.data.data.OpeningBank,imageUrlBaseT:res.data.data.legalBaseURL,
-      imageResOneTwo:res.data.data.legalFilesURL,place:'上传成功'})
+      this.setState({
+         faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
+        value: res.data.data.Settlement, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, imageUrlBaseT: res.data.data.legalBaseURL,
+        imageResOneTwo: res.data.data.legalFilesURL, 
+      })
+      if(res.data.data.legalBaseURL!==''){
+      this.setState({place:'上传成功'})
+      }
+      console.log(sessionStorage.getItem('yinImg'))
+      if(sessionStorage.getItem('yinImg')!==null){
+          this.setState({imageUrl:'https://app.tiaozhanmeiyitian.com/'+sessionStorage.getItem('yinImg')})
+      }else{
+        this.setState({imageUrl: res.data.data.lisenceURL})
+      }
     }
     if (this.props.location.query !== undefined) {
-      this.setState({ place: '上传成功', imageResOneTwo: this.props.location.query.imageRes+'|'+this.props.location.query.imageResT, imageUrlBaseT: this.props.location.query.imageUrlBaseT })
+      this.setState({ place: '上传成功', imageResOneTwo: this.props.location.query.imageRes + '|' + this.props.location.query.imageResT, imageUrlBaseT: this.props.location.query.imageUrlBaseT })
     }
   }
 
 
 
-
-
   componentDidMount() {
-   
     this.getIsStatus()
     this.getVenueOpenBank()
     this.getVenueOpenBankProvince()
     this.getVenueQualificationInformation()
-    
   }
 
   handleChange = info => {
@@ -116,7 +123,7 @@ class qualificationPh extends React.Component {
   }
 
   idCard = () => {
-    this.props.history.push({pathname:'/idCardPh',query:{imageUrlBaseT:this.state.imageUrlBaseT,imageResOneTwo:this.state.imageResOneTwo}})
+    this.props.history.push({ pathname: '/idCardPh', query: { imageUrlBaseT: this.state.imageUrlBaseT, imageResOneTwo: this.state.imageResOneTwo } })
   }
 
   radioChange = e => {
@@ -150,88 +157,95 @@ class qualificationPh extends React.Component {
     }
   }
   provinceChange = e => {
-    
-    this.setState({ province_id: e })
-    this.getVenueOpenBankCity({ province_id: e })
+    if(this.state.bank_id!==''){
+      this.setState({ province_id: e })
+      this.getVenueOpenBankCity({ province_id: e })
+    }else{
+      message.warning('请选择银行类型')
+      this.getVenueOpenBankCity({ province_id: e })
+    }
 
   }
 
   typeChange = e => {
-    this.setState({ bank_id: e })
+  
+    if(this.state.city_id!==''){
+       this.setState({kai:false,bank_id: e })
+    }else{
+      this.setState({ bank_id: e })
+    }
   }
- 
+
   cityChange = e => {
-    this.setState({ city_id: e,kai:false,kaiText:'请输入银行关键字'})
-
+    if(this.state.bank_id!==''){
+      this.setState({ city_id: e, kai: false, kaiText: '请输入银行关键字' })
+    }else{
+      this.setState({ city_id: e,kaiText: '请输入银行关键字' })
+    }
+     
   }
-  handleSearch=e=>{
-    this.getVenueOpenBankList({bank_id:this.state.bank_id,province_id:this.state.province_id,city_id:this.state.city_id,search_name:e})
-}
-openingLine = e => {
-  this.setState({ openingLine: e})
-}
-
-async VenueQualifications(data) {
-  const res = await VenueQualifications(data)
-  if (res.data.code === 2000) {
-     this.props.history.push('/resultsAuditsPh')
-     message.info(res.data.msg)
-  }else{
-    message.error(res.data.msg)
+  handleSearch = e => {
+    this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
   }
-}
-
-
-
-async VenueQualificationInformationSave(data) {
-  const res = await VenueQualificationInformationSave(data,localStorage.getItem('venue_token'))
-  if (res.data.code === 2000) {
-     this.props.history.push('/resultsAuditsPh')
-     message.info(res.data.msg)
-  }else{
-    message.error(res.data.msg)
+  openingLine = e => {
+    this.setState({ openingLine: e })
   }
-}
+
+  async VenueQualifications(data) {
+    const res = await VenueQualifications(data)
+    if (res.data.code === 2000) {
+      this.props.history.push('/resultsAuditsPh')
+      message.info(res.data.msg)
+    } else {
+      message.error(res.data.msg)
+    }
+  }
+
+
+
+  async VenueQualificationInformationSave(data) {
+    const res = await VenueQualificationInformationSave(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.props.history.push('/resultsAuditsPh')
+      message.info(res.data.msg)
+    } else {
+      message.error(res.data.msg)
+    }
+  }
 
 
   submit = () => {
-    let { siteUUID, imageResOneTwo, imageUrlBaseT, faName, faIdcard, faPhone, value, cardId,openingLine } = this.state
+    let { siteUUID, imageResOneTwo,imageUrlBaseT, faName, faIdcard, faPhone, value, cardId, openingLine } = this.state
 
-   if(sessionStorage.getItem('notType')==='1'){
-    let data = {
-      lisenceURL: sessionStorage.getItem('yinImg'),
-      legalname: faName,
-      legalcard: faIdcard,
-      legalphone: faPhone,
-      legalBaseURL: imageUrlBaseT,
-      legalFilesURL: imageResOneTwo,
-      Settlement: value,
-      Bankaccount: cardId,
-      OpeningBank:openingLine
-    }
+    if (sessionStorage.getItem('notType') === '1') {
+      let data = {
+        lisenceURL: sessionStorage.getItem('yinImg'),
+        legalname: faName,
+        legalcard: faIdcard,
+        legalphone: faPhone,
+        legalBaseURL: imageUrlBaseT,
+        legalFilesURL: imageResOneTwo,
+        Settlement: value,
+        Bankaccount: cardId,
+        OpeningBank: openingLine
+      }
       this.VenueQualificationInformationSave(data)
-   }else{
-
-    let data = {
-      siteUUID: siteUUID,
-      lisenceURL: sessionStorage.getItem('yinImg'),
-      legalname: faName,
-      legalcard: faIdcard,
-      legalphone: faPhone,
-      legalBaseURL: imageUrlBaseT,
-      legalFilesURL: imageResOneTwo,
-      Settlement: value,
-      Bankaccount: cardId,
-      OpeningBank:openingLine
+    } else {
+      let data = {
+        siteUUID: siteUUID,
+        lisenceURL: sessionStorage.getItem('yinImg'),
+        legalname: faName,
+        legalcard: faIdcard,
+        legalphone: faPhone,
+        legalBaseURL: imageUrlBaseT,
+        legalFilesURL: imageResOneTwo,
+        Settlement: value,
+        Bankaccount: cardId,
+        OpeningBank: openingLine
+      }
+      this.VenueQualifications(data)
     }
-    this.VenueQualifications(data)
-   }
-
-
-   
   }
-
-
 
 
   close = () => {
@@ -257,7 +271,8 @@ async VenueQualificationInformationSave(data) {
 
     const uploadButton = (
       <div>
-        <img src={require("../../assets/menlian.png")} alt='门脸照' />
+          <Icon type="plus" />
+        <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}>营业执照</div>
       </div>
     );
     const { imageUrl } = this.state;
@@ -285,11 +300,10 @@ async VenueQualificationInformationSave(data) {
             </Upload>
           </div>
 
-
           <div className="input" onClick={this.idCard}>
             <span>法人身份证</span>
             <img className="arow" src={require("../../assets/right.png")} alt="arrow" />
-            <Input className="select" disabled={true} placeholder={this.state.place} />
+            <Input className="select" style={{ width: '65%' }} disabled={true} placeholder={this.state.place} />
           </div>
 
           <div className="input">
@@ -322,55 +336,60 @@ async VenueQualificationInformationSave(data) {
           </div>
 
           <div className="input">
+            <span>银行类型</span>
+            <Select placeholder="银行类型" style={{ width: '67%', height: '2.9rem', float: 'right' }} loading={this.state.flag} onChange={this.typeChange}>
+              {
+                this.state.type.map((item, i) => (
+                  <Option key={i} value={item.bank_id}>{item.bank_name}</Option>
+                ))
+              }
+            </Select>
+          </div>
+
+          <div className="input">
             <span>开户所在地</span>
-            <Select placeholder="银行类型" style={{ width: '5rem', height: '2.9rem' }} loading={this.state.flag} onChange={this.typeChange}>
-                  {
-                    this.state.type.map((item, i) => (
-                      <Option key={i} value={item.bank_id}>{item.bank_name}</Option>
-                    ))
-                  }
-                </Select>
-                <Select placeholder="所在省" style={{ width: '5rem', height: '2.9rem' }} loading={this.state.flagTwo} onChange={this.provinceChange}>
-                  {
-                    this.state.backProvince.map((item, i) => (
-                      <Option key={i} value={item.province_id}>{item.province}</Option>
-                    ))
-                  }
-                </Select>
-                <Select placeholder="所在市" style={{ width: '5rem', height: '2.9rem'}} loading={this.state.flagThree} onChange={this.cityChange}>
-                  {
-                    this.state.backCity.map((item, i) => (
-                      <Option key={i} value={item.city_id}>{item.city}</Option>
-                    ))
-                  }
-                </Select>
+            <Select placeholder="所在市" style={{ width: '33.5%', height: '2.9rem', float: 'right' }} loading={this.state.flagThree} onChange={this.cityChange}>
+              {
+                this.state.backCity.map((item, i) => (
+                  <Option key={i} value={item.city_id}>{item.city}</Option>
+                ))
+              }
+            </Select>
+            <Select placeholder="所在省" style={{ width: '33.5%', height: '2.9rem', float: 'right' }} loading={this.state.flagTwo} onChange={this.provinceChange}>
+              {
+                this.state.backProvince.map((item, i) => (
+                  <Option key={i} value={item.province_id}>{item.province}</Option>
+                ))
+              }
+            </Select>
+
           </div>
 
 
           <div className="input">
             <span>开户行</span>
             <Select
-                  showSearch
-                  style={{ width: '15rem', height: '2.9rem',background:'transparent',float:'right'}}
-                  onSearch={this.handleSearch}
-                  onChange={this.openingLine}
-                  defaultActiveFirstOption={false}
-                  showArrow={false}
-                  notFoundContent={null}
-                  disabled={this.state.kai}
-                  placeholder={this.state.kaiText}
-                  value={this.state.openingLine}
-                >
-                  {
-                    this.state.backList.map((item,i)=>(
-                      <Option key={i} value={item.sub_branch_name} alt={item.sub_branch_name}>
-                        <Tooltip title={item.sub_branch_name}>
+              showSearch
+              style={{ width: '67%', height: '2.9rem', background: 'transparent', float: 'right' }}
+              onSearch={this.handleSearch}
+              onChange={this.openingLine}
+              defaultActiveFirstOption={false}
+              showArrow={false}
+              notFoundContent={null}
+              disabled={this.state.kai}
+              placeholder={this.state.kaiText}
+              value={this.state.openingLine}
+            >
+              {
+                this.state.backList.map((item, i) => (
+                  <Option key={i} value={item.sub_branch_name} alt={item.sub_branch_name}>
+                    <Tooltip title={item.sub_branch_name}>
                       <span>{item.sub_branch_name}</span>
                     </Tooltip></Option>
-                    ))
-                  } 
-                </Select>
-          </div> 
+                ))
+              }
+            </Select>
+          </div>
 
 
 

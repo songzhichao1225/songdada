@@ -1,12 +1,11 @@
 import React from 'react';
 import './preferential.css';
 import 'antd/dist/antd.css';
-import { getVenueDiscountList, addVenueDiscount, getVenueSport, DelVenueDiscount, getFirstDiscount,getSetUpFieldSportId } from '../../api';
-import { Select, Row, Col, Modal, TimePicker, InputNumber, Input, message, DatePicker, Spin, Form,Result,Icon,Pagination } from 'antd';
+import { getVenueDiscountList, addVenueDiscount, getVenueSport, DelVenueDiscount, getFirstDiscount, getSetUpFieldSportId } from '../../api';
+import { Select, Row, Col, Modal, InputNumber, Input, message, DatePicker, Spin, Form, Result, Icon, Pagination } from 'antd';
 import moment from 'moment';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import 'moment/locale/zh-cn';
-const format = 'HH:mm';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY-MM-DD';
@@ -24,8 +23,8 @@ class preferential extends React.Component {
     runId: [],//运动项目id
     runName: '请选择',//运动项目名称
     openday: '',//营业时间段Id
-    starttime: '',//开始时间
-    endtime: '',//结束时间
+    starttime: '00:00',//开始时间
+    endtime: '00:00',//结束时间
     costperhour: 0,//价格
     startDate: '',//开始日期
     endDate: '',//结束日期
@@ -34,19 +33,70 @@ class preferential extends React.Component {
     comment: '',//备注
     loading: true,//加载
     DisList: '',//查看某一条优惠活动信息
-    hidden:'',
-    other:0,
-    page:1,
-    perOpen:0,
-    upSportid:[],
-    numberMax:0,
+    hidden: '',
+    other: 0,
+    page: 1,
+    perOpen: 0,
+    upSportid: [],
+    numberMax: 0,
+    time: [
+      { name: '00:00' },
+      { name: '00:30' },
+      { name: '01:00' },
+      { name: '01:30' },
+      { name: '02:00' },
+      { name: '02:30' },
+      { name: '03:00' },
+      { name: '03:30' },
+      { name: '04:00' },
+      { name: '04:30' },
+      { name: '05:00' },
+      { name: '05:30' },
+      { name: '06:00' },
+      { name: '06:30' },
+      { name: '07:00' },
+      { name: '07:30' },
+      { name: '08:00' },
+      { name: '08:30' },
+      { name: '09:00' },
+      { name: '09:30' },
+      { name: '10:00' },
+      { name: '10:30' },
+      { name: '11:00' },
+      { name: '11:30' },
+      { name: '12:00' },
+      { name: '12:30' },
+      { name: '13:00' },
+      { name: '13:30' },
+      { name: '14:00' },
+      { name: '14:30' },
+      { name: '15:00' },
+      { name: '15:30' },
+      { name: '16:00' },
+      { name: '16:30' },
+      { name: '17:00' },
+      { name: '17:30' },
+      { name: '18:00' },
+      { name: '18:30' },
+      { name: '19:00' },
+      { name: '19:30' },
+      { name: '20:00' },
+      { name: '20:30' },
+      { name: '21:00' },
+      { name: '21:30' },
+      { name: '22:00' },
+      { name: '22:30' },
+      { name: '23:00' },
+      { name: '23:30' },
+      { name: '24:00' },
+    ]
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
-     if(res.data.code===4001){
+    if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
-    } 
+    }
     this.setState({ ListSport: res.data.data })
   }
 
@@ -60,9 +110,9 @@ class preferential extends React.Component {
   async getVenueDiscountList(data) {
     const res = await getVenueDiscountList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ list: res.data.data,other:res.data.other, loading: false,hidden:true })
-    }else {
-      this.setState({ list: res.data.data, loading: false,hidden:false })
+      this.setState({ list: res.data.data, other: res.data.other, loading: false, hidden: true })
+    } else {
+      this.setState({ list: res.data.data, loading: false, hidden: false })
     }
   }
 
@@ -82,7 +132,7 @@ class preferential extends React.Component {
     this.setState({
       visible: true,
     });
-  
+
   };
 
   handleOk = e => {
@@ -92,19 +142,19 @@ class preferential extends React.Component {
   };
 
   handleCancel = e => {
-    if(this.state.perOpen===1){
+    if (this.state.perOpen === 1) {
       this.setState({
         runId: [], starttime: '', endtime: '', costperhour: '', startDate: '',
-        endDate: '', number:1, appointmenttime: '请选择', comment: '',DisList:''
+        endDate: '', number: 1, appointmenttime: '请选择', comment: '', DisList: ''
       })
     }
     this.setState({
       visible: false,
-      perOpen:0
+      perOpen: 0
     });
   };
   handleChangeOne = e => {
-    this.setState({ runId:e})
+    this.setState({ runId: e })
     let day = ''
     switch (parseInt(e)) {
       case 1:
@@ -134,22 +184,22 @@ class preferential extends React.Component {
       default:
         day = "";
     }
-    let {upSportid}=this.state
-    for(let i in upSportid){
-       if(upSportid[i].sportid===e){
-        this.setState({number:upSportid[i].maxtablecount,numberMax:upSportid[i].maxtablecount})
-       }
+    let { upSportid } = this.state
+    for (let i in upSportid) {
+      if (upSportid[i].sportid === e) {
+        this.setState({ number: upSportid[i].maxtablecount, numberMax: upSportid[i].maxtablecount })
+      }
     }
     this.setState({ runName: day })
   }
 
 
-  handleChangThree = (value, dateString) => {
+  handleChangThree = (e) => {
 
-    this.setState({ starttime: dateString })
+    this.setState({ starttime: e })
   }
-  endtime = (value, dateString) => {
-    this.setState({ endtime: dateString })
+  endtime = (e) => {
+    this.setState({ endtime: e })
   }
   money = e => {
     this.setState({ costperhour: e })
@@ -168,9 +218,9 @@ class preferential extends React.Component {
 
   }
   jia = () => {
-    if (this.state.number < 100&&this.state.number<this.state.numberMax) {
+    if (this.state.number < 100 && this.state.number < this.state.numberMax) {
       this.setState({ number: this.state.number + 1 })
-    }else{
+    } else {
       message.warning('已达场地数量最大值')
     }
   }
@@ -185,10 +235,10 @@ class preferential extends React.Component {
     const res = await addVenueDiscount(data, sessionStorage.getItem('venue_token'))
     if (res.data.code !== 2000) {
       message.error(res.data.msg)
-    }else if(res.data.code===4001){
+    } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
-    }  else {
+    } else {
       this.setState({
         visible: false,
       });
@@ -223,9 +273,9 @@ class preferential extends React.Component {
     let datefor = res.data.data
     if (res.data.code !== 2000) {
       message.error(res.data.msg)
-    }else if(res.data.code===4001){
+    } else if (res.data.code === 4001) {
       this.props.history.push('/')
-    }  else {
+    } else {
       this.setState({ DisList: res.data.data })
       this.setState({
         runId: datefor.sportid, starttime: datefor.starttime, endtime: datefor.endtime, costperhour: datefor.costperhour, startDate: datefor.fromdate,
@@ -264,7 +314,7 @@ class preferential extends React.Component {
     }
   }
   updata = (e) => {
-    this.setState({ visible: true,perOpen:1, })
+    this.setState({ visible: true, perOpen: 1, })
     this.getFirstDiscount({ uuid: e.target.dataset.uid })
   }
 
@@ -274,10 +324,10 @@ class preferential extends React.Component {
     const res = await DelVenueDiscount(data, sessionStorage.getItem('venue_token'))
     if (res.data.code !== 200) {
       message.error(res.data.msg)
-    }else if(res.data.code===4001){
+    } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
-    }  else {
+    } else {
       message.info('删除成功')
     }
   }
@@ -286,9 +336,9 @@ class preferential extends React.Component {
     this.getVenueDiscountList({ sportid: sessionStorage.getItem('preferential'), page: this.state.page })
   }
 
-  current=(page,pageSize)=>{
-    this.setState({page:page})
-    this.getVenueDiscountList({sportid:sessionStorage.getItem('siteSettings'),page:page})
+  current = (page, pageSize) => {
+    this.setState({ page: page })
+    this.getVenueDiscountList({ sportid: sessionStorage.getItem('siteSettings'), page: page })
   }
   render() {
     return (
@@ -310,18 +360,18 @@ class preferential extends React.Component {
 
 
         <Spin spinning={this.state.loading} style={{ minHeight: 600 }} size="large">
-        <div className={this.state.hidden===true?'siteList':'hidden'} >
-          <Row className="rowConten">
-            <Col xs={{ span: 2 }}>运动项目</Col>
-            <Col xs={{ span: 2 }}>开始时间</Col>
-            <Col xs={{ span: 2 }}>结束时间</Col>
-            <Col xs={{ span: 2 }}>价格<span className="fontColor">元/时</span></Col>
-            <Col xs={{ span: 5 }}>有效日期</Col>
-            <Col xs={{ span: 3 }}>预留场地数量</Col>
-            <Col xs={{ span: 3 }}>最短提前预定时间</Col>
-            <Col xs={{ span: 2 }}>操作</Col>
-          </Row>
-          
+          <div className={this.state.hidden === true ? 'siteList' : 'hidden'} >
+            <Row className="rowConten">
+              <Col xs={{ span: 2 }}>运动项目</Col>
+              <Col xs={{ span: 2 }}>开始时间</Col>
+              <Col xs={{ span: 2 }}>结束时间</Col>
+              <Col xs={{ span: 2 }}>价格<span className="fontColor">元/时</span></Col>
+              <Col xs={{ span: 5 }}>有效日期</Col>
+              <Col xs={{ span: 3 }}>预留场地数量</Col>
+              <Col xs={{ span: 3 }}>最短提前预定时间</Col>
+              <Col xs={{ span: 2 }}>操作</Col>
+            </Row>
+            
             <div className="dataList" >
               {
                 this.state.list.map((item, i) => (
@@ -338,12 +388,12 @@ class preferential extends React.Component {
                 ))
               }
             </div>
-        </div>
-        <Pagination className={this.state.hidden===true?'fenye':'hidden'} defaultCurrent={1} total={this.state.other} onChange={this.current} />
-          <Result className={this.state.hidden===true?'hidden':''} icon={<Icon type="gift" theme="twoTone"  twoToneColor="#F5A623"/>}title="您没有优惠活动！"/>
-         </Spin>
+          </div>
+          <Pagination className={this.state.hidden === true ? 'fenye' : 'hidden'} defaultCurrent={1} total={this.state.other} onChange={this.current} />
+          <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<Icon type="gift" theme="twoTone" twoToneColor="#F5A623" />} title="您没有优惠活动！" />
+        </Spin>
 
-        
+
 
         <Modal
           title="添加优惠活动"
@@ -367,12 +417,27 @@ class preferential extends React.Component {
 
             <div className="modelList">
               <span>开始时间</span>
-              <TimePicker className="startTime" value={this.state.starttime === undefined || this.state.starttime === '' ? null : moment(this.state.starttime, format)} placeholder="请选择时间" minuteStep={30} defaultValue={moment('00:00', format)} format={format} onChange={this.handleChangThree} />
+              <Select value={this.state.starttime} className="startTime" onChange={this.handleChangThree} placeholder="开始时间" >
+                {
+                  this.state.time.map((item, i) => (
+                    <Option key={i} value={item.name}>{item.name}</Option>
+                  ))
+                }
+              </Select>
+              {/* <TimePicker className="startTime" value={this.state.starttime === undefined || this.state.starttime === '' ? null : moment(this.state.starttime, format)} placeholder="请选择时间" minuteStep={30} defaultValue={moment('00:00', format)} format={format} onChange={this.handleChangThree} /> */}
             </div>
-
+ 
             <div className="modelList">
               <span>结束时间</span>
-              <TimePicker className="startTime" value={this.state.endtime === undefined || this.state.endtime === '' ? null : moment(this.state.endtime, format)} placeholder="请选择时间" minuteStep={30} defaultValue={moment('00:00', format)} format={format} onChange={this.endtime} />
+
+              <Select value={this.state.endtime} className="startTime"  onChange={this.endtime} placeholder="开始时间" >
+                  {
+                    this.state.time.map((item, i) => (
+                      <Option key={i} value={item.name}>{item.name}</Option>
+                    ))
+                  }
+                </Select>
+              {/* <TimePicker className="startTime" value={this.state.endtime === undefined || this.state.endtime === '' ? null : moment(this.state.endtime, format)} placeholder="请选择时间" minuteStep={30} defaultValue={moment('00:00', format)} format={format} onChange={this.endtime} /> */}
             </div>
 
             <div className="modelList">
@@ -396,7 +461,7 @@ class preferential extends React.Component {
 
             <div className="modelList">
               <span>最短提前预定时间</span>
-              <Select defaultValue="请选择" placeholder="请选择" value={this.state.appointmenttime===0?'0分钟':[]&&this.state.appointmenttime===30?'30分钟':[]&&this.state.appointmenttime===60?'60分钟':[]&&this.state.appointmenttime===120?'120分钟':[]&&this.state.appointmenttime===180?'180分钟':[]} className="selectModel" style={{ width: 249 }} onChange={this.handleChangeFive}>
+              <Select defaultValue="请选择" placeholder="请选择" value={this.state.appointmenttime === 0 ? '0分钟' : [] && this.state.appointmenttime === 30 ? '30分钟' : [] && this.state.appointmenttime === 60 ? '60分钟' : [] && this.state.appointmenttime === 120 ? '120分钟' : [] && this.state.appointmenttime === 180 ? '180分钟' : []} className="selectModel" style={{ width: 249 }} onChange={this.handleChangeFive}>
                 <Option value="0">0分钟</Option>
                 <Option value="30">30分钟</Option>
                 <Option value="60">60分钟</Option>

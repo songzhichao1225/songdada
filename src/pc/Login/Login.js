@@ -13,7 +13,7 @@ class Login extends React.Component {
     pass: '',//密码
     textT: '获取验证码',
     flag: 'hidden',
-    navNum: true,
+    navNum: false,
     visiblePhone: false,
     selectVeun: [],
     value: '',
@@ -94,7 +94,6 @@ class Login extends React.Component {
         }
       }, 1000)
     }
-
   }
 
   async VenueSelectSiteName(data) {
@@ -153,7 +152,10 @@ class Login extends React.Component {
               <span>找对手场地管理端</span>
             </div>
             <div className="right">
-              <div className="navTap"><div onClick={this.phoneLogin} style={this.state.navNum === true ? { color: '#F5A623' } : { color: '#000' }}>法人登录</div><div style={this.state.navNum === false ? { color: '#F5A623' } : { color: '#000' }} onClick={this.nameLogin}>普通登录</div></div>
+              <div className="navTap">
+                <div style={this.state.navNum === false ? { color: '#F5A623' } : { color: '#000' }} onClick={this.nameLogin}>普通登录</div>
+                <div onClick={this.phoneLogin} style={this.state.navNum === true ? { color: '#F5A623' } : { color: '#000' }}>法人登录</div>
+              </div>
               <div className={this.state.navNum ? 'phoneLoginT' : 'phoneLogin'}>
                 <Form layout="inline" onSubmit={this.handleSubmit} className="form">
                   <Form.Item className="input">
@@ -191,7 +193,7 @@ class Login extends React.Component {
                   </Form.Item>
                   <Form.Item className="bind">
                     <Button className="btnSubmit" onClick={this.onSubmit} htmlType="submit">
-                      登录 
+                      登录
                 </Button>
                   </Form.Item>
                 </Form>

@@ -92,7 +92,10 @@ class orderPh extends React.Component {
   async getVenueSport(data) {
     const res = await getVenueSport(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ remList: res.data.data, liNum: res.data.data[0].id })
+      if(res.data.data.length>0){
+        this.setState({ remList: res.data.data, liNum: res.data.data[0].id })
+      }
+      
     }
   }
 
@@ -322,7 +325,7 @@ class orderPh extends React.Component {
                 this.state.activeSon.map((item, i) => (
                   <Row key={i} className="list" data-index={i} onClick={this.select}>
                     <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 2 }}>{'**' + item.orderId.slice(-4)}{item.SportName}</Col>
-                    <Col className='dateTime' xs={{ span: 8, offset: 2 }} lg={{ span: 6, offset: 2 }}>{item.StartTime}<br />{item.FinishedTime}</Col>
+                    <Col className='dateTime' xs={{ span: 8, offset: 2 }} lg={{ span: 6, offset: 2 }}>{item.StartTime}<br/>{item.FinishedTime}</Col>
                     <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 2 }} style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{item.PublicStatus}</Col>
                     <div className={this.state.index === '' + i + '' ? 'select':'hidden'}>
                       <Row style={{ paddingTop: '0.5rem' }}>

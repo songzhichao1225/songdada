@@ -44,6 +44,9 @@ class information extends React.Component {
     informList: [],
     start: '',
     end: '',
+    lastTime:'',
+    
+
   };
 
   async getVenueSport(data) {
@@ -129,14 +132,19 @@ class information extends React.Component {
     const res = await getVenueReservations(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ lookList: res.data.data, macNum: res.data.data[0].c })
+      if(parseInt(res.data.data[res.data.data.length-1].a.slice(0,2))<24){
+        if(res.data.data[res.data.data.length-1].a.slice(-2)==='00'){
+          this.setState({lastTime:parseInt(res.data.data[res.data.data.length-1].a.slice(0,2))+':30'})
+       }else if(res.data.data[res.data.data.length-1].a.slice(-2)==='30'){
+         this.setState({lastTime:parseInt(res.data.data[res.data.data.length-1].a.slice(0,2))+1+':00'})
+       }
+      }
     } else if (res.data.code === 4005) {
       this.setState({ lookList: res.data.data })
     } else if (res.data.code === 4003) {
       this.setState({ lookList: [] })
     }
   }
-
-
 
 
 
@@ -347,17 +355,21 @@ class information extends React.Component {
                 ))
               }
               {
-                this.state.lookList.map((index, i) => (
+                this.state.lookList.map((index, i) => (  
                   <div key={i} className="sonList">
                     <span>{index.a}</span>
+                    
                     {
                       this.state.lookList[i].c.map((item, i) => (
                         <span key={i} data-time={index.a} data-num={i + 1} data-uuid={item.uuid} data-type={item.type} onClick={this.lookPlate} style={item.type === 1 ? { background: '#6FB2FF', cursor: 'pointer' } : {} && item.type === 2 ? { background: '#E9E9E9' } : {} && item.type === 3 ? { background: '#F5A623', cursor: 'pointer' } : {} && item.type === 4 ? { background: 'red', cursor: 'pointer' } : {}}></span>
                       ))
                     }
+                   
                   </div>
+                  
                 ))
               }
+               <span style={{marginTop:'-16px'}}>{this.state.lastTime}</span>
             </div>
           </div>
           <Result className={this.state.lookList.length === 0 ? '' : 'hidden'} icon={<Icon type="fund" theme="twoTone" twoToneColor="#F5A623" />} title="您没有预约情况！" />

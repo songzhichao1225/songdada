@@ -281,7 +281,6 @@
      line-height: 1.88rem;
  }
  .orderList .lookList .sonList{
-     overflow: hidden;
      clear: both;
  }
  .orderList .lookList .sonList>span{
@@ -291,8 +290,10 @@
      margin-left: 0.12rem;
      float:left;
      text-align: center;
-     line-height: 1.88rem;
      margin-top: 0.12rem;
+ }
+ .orderList .lookList .sonList>span:first-child{
+     margin-top: -8px;
  }
  .informDrawer{
      margin-top: 15px;

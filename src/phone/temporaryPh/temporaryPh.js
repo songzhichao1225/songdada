@@ -139,6 +139,7 @@ class temporaryPh extends React.Component {
       message.error('登陆超时请重新登陆！')
     }else if(res.data.code===2000){
       this.setState({ visible: false })
+      this.VenueTemporarilyClosedList()
     } else {
       message.info(res.data.msg)
       this.VenueTemporarilyClosedList()

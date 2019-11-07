@@ -1,12 +1,11 @@
 import React from 'react';
 import './sitePh.css';
-import { message, Row, Col, Input, Pagination, Drawer, Select, TimePicker, DatePicker, Result, Icon, Popconfirm, Spin,InputNumber  } from 'antd';
-import { getVenueFieldList, getVenueSport, addVenueField, getFirstField, getVenueDiscountList, addVenueDiscount, delVenueField, DelVenueDiscount, getFirstDiscount,getSetUpFieldSportId } from '../../api';
+import { message, Row, Col, Input, Pagination, Drawer, Select, DatePicker, Result, Icon, Popconfirm, Spin, InputNumber } from 'antd';
+import { getVenueFieldList, getVenueSport, addVenueField, getFirstField, getVenueDiscountList, addVenueDiscount, delVenueField, DelVenueDiscount, getFirstDiscount, getSetUpFieldSportId } from '../../api';
 
 import moment from 'moment';
 import zh_CN from 'antd/es/date-picker/locale/zh_CN';
 
-const format = 'HH:mm';
 
 
 const { Option } = Select;
@@ -31,8 +30,8 @@ class sitePh extends React.Component {
     addsporId: [],
     runName: '',
     dateChange: '',
-    startTime: '0:00',
-    endTime: '0:00',
+    startTime: '00:00',
+    endTime: '00:00',
     price: '',
     num: '',
     weekChange: [],
@@ -52,8 +51,8 @@ class sitePh extends React.Component {
     projectTwoName: [],
     startDateTwo: undefined,
     endDateTwo: undefined,
-    startTimeTwo: '0:00',
-    endTimeTwo: '0:00',
+    startTimeTwo: '00:00',
+    endTimeTwo: '00:00',
     priceTwo: '',
     numTwo: 0,
     timeChangeTwo: [],
@@ -70,8 +69,62 @@ class sitePh extends React.Component {
     clickY: 0,
     moveY: 0,
     spinFlag: false,
-    upSportid:[],
-    numTwoMax:0,
+    upSportid: [],
+    numTwoMax: 0,
+    time: [
+      { name: '00:00' },
+      { name: '00:30' },
+      { name: '01:00' },
+      { name: '01:30' },
+      { name: '02:00' },
+      { name: '02:30' },
+      { name: '03:00' },
+      { name: '03:30' },
+      { name: '04:00' },
+      { name: '04:30' },
+      { name: '05:00' },
+      { name: '05:30' },
+      { name: '06:00' },
+      { name: '06:30' },
+      { name: '07:00' },
+      { name: '07:30' },
+      { name: '08:00' },
+      { name: '08:30' },
+      { name: '09:00' },
+      { name: '09:30' },
+      { name: '10:00' },
+      { name: '10:30' },
+      { name: '11:00' },
+      { name: '11:30' },
+      { name: '12:00' },
+      { name: '12:30' },
+      { name: '13:00' },
+      { name: '13:30' },
+      { name: '14:00' },
+      { name: '14:30' },
+      { name: '15:00' },
+      { name: '15:30' },
+      { name: '16:00' },
+      { name: '16:30' },
+      { name: '17:00' },
+      { name: '17:30' },
+      { name: '18:00' },
+      { name: '18:30' },
+      { name: '19:00' },
+      { name: '19:30' },
+      { name: '20:00' },
+      { name: '20:30' },
+      { name: '21:00' },
+      { name: '21:30' },
+      { name: '22:00' },
+      { name: '22:30' },
+      { name: '23:00' },
+      { name: '23:30' },
+      { name: '24:00' },
+    ]
+
+
+
   };
   async getVenueFieldList(data) {
     const res = await getVenueFieldList(data, localStorage.getItem('venue_token'))
@@ -94,8 +147,8 @@ class sitePh extends React.Component {
         }
       }
       this.setState({ getVenueFieldList: res.data.data, total: res.data.other })
-    }else{
-      this.setState({getVenueFieldList:[]})
+    } else {
+      this.setState({ getVenueFieldList: [] })
     }
     this.setState({ spinFlag: false })
     setTimeout(() => {
@@ -109,7 +162,7 @@ class sitePh extends React.Component {
   }
 
   activityChangeTwo = e => {
-    this.setState({ activitySportId: e, selectNumTwo: 'l'})
+    this.setState({ activitySportId: e, selectNumTwo: 'l' })
     this.getVenueDiscountList({ sportid: e, page: '' })
   }
 
@@ -124,7 +177,7 @@ class sitePh extends React.Component {
   }
 
 
-  
+
 
   async getSetUpFieldSportId(data) {
     const res = await getSetUpFieldSportId(data, localStorage.getItem('venue_token'))
@@ -245,7 +298,7 @@ class sitePh extends React.Component {
     this.setState({ DrawerVisible: true })
     this.setState({
       addsporId: [], runName: '', dateChange: [],
-      startTime: '0:00', endTime: '0:00', price: '', num: '',
+      startTime: '00:00', endTime: '00:00', price: '', num: '',
       weekChange: [], timeChange: [], comment: ''
     })
   }
@@ -254,7 +307,7 @@ class sitePh extends React.Component {
     this.setState({ Youvisible: true })
     this.setState({
       projectTwoId: '', projectTwoName: [], startDateTwo: undefined, endDateTwo: undefined,
-      startTimeTwo: '0:00', endTimeTwo: '0:00', priceTwo: '',
+      startTimeTwo: '00:00', endTimeTwo: '00:00', priceTwo: '',
       numTwo: 0, timeChangeTwo: [], commentTwo: ''
     })
   }
@@ -352,11 +405,11 @@ class sitePh extends React.Component {
       this.setState({ opendayname: day })
     }
   }
-  startTime = (date, dateString) => {
-    this.setState({ startTime: dateString })
+  startTime = (e) => {
+    this.setState({ startTime: e })
   }
-  endTime = (date, dateString) => {
-    this.setState({ endTime: dateString })
+  endTime = (e) => {
+    this.setState({ endTime: e })
   }
   price = e => {
     this.setState({ price: e.target.value })
@@ -410,7 +463,6 @@ class sitePh extends React.Component {
       }
       this.addVenueField(data)
     }
-
   }
   editor = e => {
     this.setState({ editorListId: e.currentTarget.dataset.uuid })
@@ -469,12 +521,12 @@ class sitePh extends React.Component {
       default:
         day = "";
     }
-    let {upSportid}=this.state
-    for(let i in upSportid){
-      if(upSportid[i].sportid===e){
-        this.setState({numTwoMax:parseInt(upSportid[i].maxtablecount),numTwo:parseInt(upSportid[i].maxtablecount)})
+    let { upSportid } = this.state
+    for (let i in upSportid) {
+      if (upSportid[i].sportid === e) {
+        this.setState({ numTwoMax: parseInt(upSportid[i].maxtablecount), numTwo: parseInt(upSportid[i].maxtablecount) })
       }
-    } 
+    }
 
     this.setState({ projectTwoName: day })
   }
@@ -484,18 +536,18 @@ class sitePh extends React.Component {
   endDateTwo = (date, dateString) => {
     this.setState({ endDateTwo: dateString })
   }
-  startTimeTwo = (date, dateString) => {
-    this.setState({ startTimeTwo: dateString })
+  startTimeTwo = (e) => {
+    this.setState({ startTimeTwo: e })
   }
 
-  endTimeTwo = (date, dateString) => {
-    this.setState({ endTimeTwo: dateString })
+  endTimeTwo = (e) => {
+    this.setState({ endTimeTwo: e })
   }
   priceTwo = e => {
     this.setState({ priceTwo: e.target.value })
   }
   numTwo = e => {
-    this.setState({ numTwo:e })
+    this.setState({ numTwo: e })
   }
   timeChangeTwo = e => {
     this.setState({ timeChangeTwo: parseInt(e) })
@@ -715,7 +767,7 @@ class sitePh extends React.Component {
             onClose={this.drawerClose}
             visible={this.state.DrawerVisible}
             closable={true}
-            bodyStyle={{padding:0}}
+            bodyStyle={{ padding: 0 }}
           >
             <div className='drawSite'>
               <div className="sitePhlistSon">
@@ -754,12 +806,31 @@ class sitePh extends React.Component {
               </div>
               <div className="sitePhlistSon">
                 <span>开始时间</span>
-                <TimePicker style={{ float: 'right', width: '50%' }} inputReadOnly={true} defaultValue={moment(this.state.startTime, format)} autoFocus={false} minuteStep={30} onChange={this.startTime} placeholder="开始时间" format={format} />
+                <Select value={this.state.startTime} style={{ float: 'right', width: '50%' }} onChange={this.startTime} placeholder="开始时间" >
+                  {
+                    this.state.time.map((item, i) => (
+                      <Option key={i} value={item.name}>{item.name}</Option>
+                    ))
+                  }
+                </Select>
+
+                {/* <TimePicker style={{ float: 'right', width: '50%' }} inputReadOnly={true} defaultValue={moment(this.state.startTime, format)} autoFocus={false} minuteStep={30} onChange={this.startTime} placeholder="开始时间" format={format} /> */}
+
               </div>
+
 
               <div className="sitePhlistSon">
                 <span>结束时间</span>
-                <TimePicker style={{ float: 'right', width: '50%' }} inputReadOnly={true} onChange={this.endTime} minuteStep={30} defaultValue={moment(this.state.endTime, format)} format={format} />
+
+                <Select value={this.state.endTime} style={{ float: 'right', width: '50%' }} onChange={this.endTime} placeholder="开始时间" >
+                  {
+                    this.state.time.map((item, i) => (
+                      <Option key={i} value={item.name}>{item.name}</Option>
+                    ))
+                  }
+                </Select>
+
+                {/* <TimePicker style={{ float: 'right', width: '50%' }} inputReadOnly={true} onChange={this.endTime} minuteStep={30} defaultValue={moment(this.state.endTime, format)} format={format} /> */}
               </div>
 
               <div className="sitePhlistSon">
@@ -815,7 +886,7 @@ class sitePh extends React.Component {
         <div className={this.state.clickNum === 2 ? 'preferential' : 'none'} onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
           <Row style={{ color: '#9B9B9B', borderBottom: '0.06rem solid #e9e9e9' }}>
             <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6 }}>
-              <Select defaultValue="运动项目" dropdownStyle={{ textAlign: 'left',marginTop:'0' }} style={{ width: '100%', textAlign: 'left', background: 'transparent' }} onChange={this.activityChangeTwo}>
+              <Select defaultValue="运动项目" dropdownStyle={{ textAlign: 'left', marginTop: '0' }} style={{ width: '100%', textAlign: 'left', background: 'transparent' }} onChange={this.activityChangeTwo}>
                 <Option value='0'>全部</Option>
                 {
                   this.state.sportList.map((item, i) => (
@@ -857,7 +928,7 @@ class sitePh extends React.Component {
                         <img className="upLoad" style={{ right: '13%' }} onClick={this.per} data-uuid={item.uid} src={require("../../assets/delet.png")} alt="删除" />
                       </Popconfirm></Col>
                     </Row>
-                 
+
                   </div>
                 </div>
               ))
@@ -902,11 +973,27 @@ class sitePh extends React.Component {
           </div>
           <div className="SzSon">
             <span>开始时间</span>
-            <TimePicker style={{ float: 'right', width: '50%' }} inputReadOnly={true} onChange={this.startTimeTwo} minuteStep={30} defaultValue={moment(this.state.startTimeTwo, format)} format={format} />
+
+            <Select value={this.state.startTimeTwo} style={{ float: 'right', width: '50%' }} onChange={this.startTimeTwo} placeholder="开始时间" >
+              {
+                this.state.time.map((item, i) => (
+                  <Option key={i} value={item.name}>{item.name}</Option>
+                ))
+              }
+            </Select>
+            {/* <TimePicker style={{ float: 'right', width: '50%' }} inputReadOnly={true} onChange={this.startTimeTwo} minuteStep={30} defaultValue={moment(this.state.startTimeTwo, format)} format={format} /> */}
           </div>
           <div className="SzSon">
             <span>结束时间</span>
-            <TimePicker style={{ float: 'right', width: '50%' }} inputReadOnly={true} onChange={this.endTimeTwo} minuteStep={30} defaultValue={moment(this.state.endTimeTwo, format)} format={format} />
+            <Select value={this.state.endTimeTwo} style={{ float: 'right', width: '50%' }} onChange={this.endTimeTwo} placeholder="开始时间" >
+              {
+                this.state.time.map((item, i) => (
+                  <Option key={i} value={item.name}>{item.name}</Option>
+                ))
+              }
+            </Select>
+
+            {/* <TimePicker style={{ float: 'right', width: '50%' }} inputReadOnly={true} onChange={this.endTimeTwo} minuteStep={30} defaultValue={moment(this.state.endTimeTwo, format)} format={format} /> */}
           </div>
           <div className="SzSon">
             <span>价格(元/时)</span>
@@ -914,7 +1001,7 @@ class sitePh extends React.Component {
           </div>
           <div className="SzSon">
             <span>数量</span>
-            <InputNumber  style={{ width: '50%', border: 'none', height: '1.9rem', float: 'right', boxShadow: 'none' }} min={1}  max={this.state.numTwoMax} value={this.state.numTwo} onChange={this.numTwo} placeholder="请输入" />
+            <InputNumber style={{ width: '50%', border: 'none', height: '1.9rem', float: 'right', boxShadow: 'none' }} min={1} max={this.state.numTwoMax} value={this.state.numTwo} onChange={this.numTwo} placeholder="请输入" />
           </div>
           <div className="SzSon">
             <span>最短提前预定时间</span>
@@ -933,7 +1020,7 @@ class sitePh extends React.Component {
           <div className="sitePhsubmit" onClick={this.submitTwo}>提交</div>
           {/* <div className="sitePhclose" onClick={this.drawerCloseTwo}>取消</div> */}
         </Drawer>
-      </div> 
+      </div>
     )
   }
 }

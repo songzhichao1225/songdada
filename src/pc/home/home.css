@@ -113,11 +113,11 @@
 .homePage .divContent{
     overflow: hidden;
     margin-left: 25px;
-    min-width: 1600px;
+    min-width: 1300px;
   
 }
 .homePage .divContent>div{
-    width: 280px;
+    width: 18%;
     height: 190px;
     margin-left: 2%;
     float: left;
@@ -193,8 +193,8 @@
 }
 .homePage .xing>img{
     margin-left: 5px;
-    width: 34px;
-    height: 34px;
+    width: 25px;
+    height: 25px;
 }
 .homePage .xing>img:first-child{
    margin-left: 15px;

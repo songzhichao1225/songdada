@@ -1,8 +1,8 @@
 import React from 'react';
 import './qualification.css';
 import 'antd/dist/antd.css';
-import { getIsStatus, VenueQualifications, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity,getVenueOpenBankList,getVenueQualificationInformation } from '../../api';
-import { Input, Radio, Button, Upload, message, Icon, Select,Tooltip } from 'antd';
+import { getIsStatus, VenueQualifications, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity, getVenueOpenBankList, getVenueQualificationInformation, VenueQualificationInformationSave } from '../../api';
+import { Input, Radio, Button, Upload, message, Icon, Select, Tooltip } from 'antd';
 const { Option } = Select;
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -71,7 +71,7 @@ class qualification extends React.Component {
     bank_id: '',//类型Id
     province_id: '',//省Id
     city_id: '',//市id
-    backList:[],//获取的银行
+    backList: [],//获取的银行
   };
 
   async getIsStatus(data) {
@@ -84,7 +84,7 @@ class qualification extends React.Component {
   }
 
 
-  
+
 
 
   async getVenueOpenBank(data) {
@@ -110,7 +110,7 @@ class qualification extends React.Component {
     }
   }
 
-  
+
 
   async getVenueOpenBankList(data) {
     const res = await getVenueOpenBankList(data, sessionStorage.getItem('venue_token'))
@@ -125,12 +125,14 @@ class qualification extends React.Component {
     if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
-    }else if(res.data.code===2000){
-     this.setState({imageUrl:res.data.data.lisenceURL,handleName:res.data.data.legalname,handleCardId:res.data.data.legalcard,
-      handlePhone:res.data.data.legalphone,Radiovalue:res.data.data.Settlement,handleBankNum:res.data.data.Bankaccount,openingLine:res.data.data.OpeningBank
-    })
+    } else if (res.data.code === 2000) {
+      this.setState({
+        imageUrl: res.data.data.lisenceURL, handleName: res.data.data.legalname, handleCardId: res.data.data.legalcard, imageRes: res.data.data.lisenceURL,
+        handlePhone: res.data.data.legalphone, Radiovalue: res.data.data.Settlement, handleBankNum: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, legalBaseURL: res.data.data.legalBaseURL,
+        imageReT: res.data.data.legalFilesURL.split('|')[0], imageReST: res.data.data.legalFilesURL.split('|')[1], imageUrlT: res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0],
+        imageUrlS: res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1]
+      })
     }
-  
   }
 
 
@@ -143,7 +145,7 @@ class qualification extends React.Component {
   }
 
   provinceChange = e => {
-    
+
     this.setState({ province_id: e })
     this.getVenueOpenBankCity({ province_id: e })
 
@@ -152,13 +154,13 @@ class qualification extends React.Component {
   typeChange = e => {
     this.setState({ bank_id: e })
   }
- 
+
   cityChange = e => {
     this.setState({ city_id: e })
   }
 
-  handleSearch=e=>{
-       this.getVenueOpenBankList({bank_id:this.state.bank_id,province_id:this.state.province_id,city_id:this.state.city_id,search_name:e})
+  handleSearch = e => {
+    this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
   }
 
 
@@ -176,7 +178,7 @@ class qualification extends React.Component {
     this.setState({ handleBankNum: e.target.value })
   }
   openingLine = e => {
-    this.setState({ openingLine: e})
+    this.setState({ openingLine: e })
   }
 
 
@@ -248,24 +250,53 @@ class qualification extends React.Component {
     } else {
       this.props.history.push('/statusAudits')
     }
-
   }
+
+
+
+
+  async VenueQualificationInformationSave(data) {
+    const res = await VenueQualificationInformationSave(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code !== 2000) {
+      message.error(res.data.msg)
+    } else {
+      this.props.history.push('/statusAudits')
+    }
+  }
+
+
   submit = () => {
     let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageReT, imageReST, } = this.state
-    
-    let data = {
-      siteUUID: siteUUID,
-      lisenceURL: imageRes,
-      legalname: handleName,
-      legalcard: handleCardId,
-      legalphone: handlePhone,
-      legalBaseURL: legalBaseURL,
-      legalFilesURL: imageReT + '|' + imageReST,
-      Settlement: Radiovalue,
-      Bankaccount: handleBankNum,
-      OpeningBank: openingLine,
+    if (sessionStorage.getItem('notType') === '1') {
+
+      let data = {
+        lisenceURL: imageRes,
+        legalname: handleName,
+        legalcard: handleCardId,
+        legalphone: handlePhone,
+        legalBaseURL: legalBaseURL,
+        legalFilesURL: imageReT + '|' + imageReST,
+        Settlement: Radiovalue,
+        Bankaccount: handleBankNum,
+        OpeningBank: openingLine,
+      }
+      this.VenueQualificationInformationSave(data)
+    } else {
+      let data = {
+        siteUUID: siteUUID,
+        lisenceURL: imageRes,
+        legalname: handleName,
+        legalcard: handleCardId,
+        legalphone: handlePhone,
+        legalBaseURL: legalBaseURL,
+        legalFilesURL: imageReT + '|' + imageReST,
+        Settlement: Radiovalue,
+        Bankaccount: handleBankNum,
+        OpeningBank: openingLine,
+      }
+      this.VenueQualifications(data)
     }
-    this.VenueQualifications(data)
+
   }
 
 
@@ -323,7 +354,6 @@ class qualification extends React.Component {
                 >
                   {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
                 </Upload>
-                {/* <span className="rightText">上传图片小于3M<br />上传图片尺寸在1200px*860px 之内</span> */}
               </div>
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">法人姓名</span>
@@ -332,8 +362,8 @@ class qualification extends React.Component {
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">法人身份证号</span>
                 <Input className="nameINput cardId" maxLength={18} value={this.state.handleCardId} onChange={this.handleCardId} placeholder="请输入法人身份证号" />
-              </div>
-              
+              </div> 
+               
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">法人手机号</span>
                 <Input className="nameINput phone" maxLength={11} value={this.state.handlePhone} onChange={this.handlePhone} placeholder="请输入11位手机号" />
@@ -352,7 +382,7 @@ class qualification extends React.Component {
                 >
                   {imageUrlT ? <img src={imageUrlT} alt="avatar" style={{ width: '100%' }} /> : uploadButtonT}
                 </Upload>
-
+                
                 <Upload
                   name="files"
                   listType="picture-card"
@@ -364,7 +394,6 @@ class qualification extends React.Component {
                 >
                   {imageUrlS ? <img src={imageUrlS} alt="avatar" style={{ width: '100%' }} /> : uploadButtonS}
                 </Upload>
-               
               </div>
 
               <div className="name">
@@ -374,12 +403,12 @@ class qualification extends React.Component {
                   <Radio value={1}>法人账号</Radio>
                 </Radio.Group>
               </div>
-
+              
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">银行账号</span>
                 <Input className="nameINput" maxLength={19} onChange={this.handleBankNum} value={this.state.handleBankNum} placeholder="请输入银行卡号" />
               </div>
-
+              
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">开户行所在地</span>
                 <Select placeholder="银行类型" style={{ width: 120, height: '35px', marginLeft: '27px' }} loading={this.state.flag} onChange={this.typeChange}>
@@ -404,7 +433,7 @@ class qualification extends React.Component {
                   }
                 </Select>
               </div>
-
+              
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">开户行</span>
                 <Select
@@ -418,24 +447,24 @@ class qualification extends React.Component {
                   value={this.state.openingLine}
                 >
                   {
-                    this.state.backList.map((item,i)=>(
+                    this.state.backList.map((item, i) => (
                       <Option key={i} value={item.sub_branch_name} alt={item.sub_branch_name}>
                         <Tooltip title={item.sub_branch_name}>
-                      <span>{item.sub_branch_name}</span>
-                    </Tooltip></Option>
+                          <span>{item.sub_branch_name}</span>
+                        </Tooltip>
+                      </Option>
                     ))
-                  } 
+                  }
                 </Select>
-              
+
               </div>
               <div className="prompt">请注意<span>*</span>为必填项</div>
               <Button className="next" onClick={this.submit}>提交</Button>
             </div>
           </div>
         </div>
-
       </div>
-    );
+    )
   }
 }
 

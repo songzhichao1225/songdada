@@ -27,6 +27,7 @@ this.getIsStatus()
 
 login=()=>{
   this.props.history.replace('/#')
+  sessionStorage.removeItem('venue_token')
 }
 
 perfect=()=>{

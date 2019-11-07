@@ -27,7 +27,7 @@
 .qualificationPh .boss .input{
     width: 95%;
     min-height: 3rem;
-    margin: 1rem 0 0 2.5%;
+    margin: 0 0 0 2.5%;
     border-bottom: 0.06rem solid #f3f3f3;
     float: left;
 }
@@ -97,7 +97,7 @@
     margin-top: 8px;
 }
 .qualificationPh .radio{
-    width: 75%;
+    width: 67%;
     float: right;
     margin:0.88rem 0 0 0;
 }
@@ -125,4 +125,12 @@
 }
 .qualificationPh .ant-select-selection__rendered{
     line-height: 2.9rem;
+}
+
+.qualificationPh span.ant-radio + *{
+    padding: 0;
+}
+
+.qualificationPh .ant-select-selection__rendered{
+    margin-left: 0;
 }

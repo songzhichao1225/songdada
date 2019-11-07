@@ -9,8 +9,8 @@ class monthlyIncomePh extends React.Component {
   state = {
     getVenueMoneyList: '',
     moneyList: [],
-    start:'',
-    end:'',
+    start:null,
+    end:null,
     current:'1',
     flag:'',
     spin:true,
@@ -97,7 +97,7 @@ class monthlyIncomePh extends React.Component {
           <DatePicker className="start" value={moment(this.state.start)} onChange={this.startDate} showToday={false} /> 
           至 
           <DatePicker className="end" value={moment(this.state.end)} onChange={this.endDate} showToday={false} />
-          <span className="text">收入 ￥{this.state.getVenueMoneyList.whereMoney===undefined?'0.00':this.state.getVenueMoneyList.whereMoney}</span>
+          <span className="text">收入￥{this.state.getVenueMoneyList.whereMoney===undefined?'0.00':this.state.getVenueMoneyList.whereMoney}</span>
         </div>
          
         <div className={this.state.flag===false?'content':'contentNone'}>

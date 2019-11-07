@@ -37,10 +37,14 @@ class idCardPh extends React.Component {
   
      if(this.props.location.query===undefined){
      this.props.history.goBack()
-     }else{
-      console.log(this.props.location.query.imageResOneTwo.split('|'))
+     }else if(this.props.location.query.imageResOneTwo!==''){
+      console.log(this.props.location.query.imageUrlBaseT+this.props.location.query.imageResOneTwo.split('|')[1])
       this.setState({imageUrl:this.props.location.query.imageUrlBaseT+this.props.location.query.imageResOneTwo.split('|')[0],imageUrlT:this.props.location.query.imageUrlBaseT+this.props.location.query.imageResOneTwo.split('|')[1],
       imageRes:this.props.location.query.imageResOneTwo.split('|')[0],imageResT:this.props.location.query.imageResOneTwo.split('|')[1],imageUrlBaseT:this.props.location.query.imageUrlBaseT
+    })
+     }else{
+      this.setState({imageUrl:this.props.location.query.imageUrlBaseT+this.props.location.query.imageResOneTwo.split('|')[0],imageUrlT:this.props.location.query.imageUrlBaseT+this.props.location.query.imageResOneTwo.split('|')[0],
+      imageRes:this.props.location.query.imageResOneTwo.split('|')[0],imageResT:this.props.location.query.imageResOneTwo.split('|')[0],imageUrlBaseT:this.props.location.query.imageUrlBaseT
     })
      }
    
@@ -101,7 +105,7 @@ class idCardPh extends React.Component {
     }else if(imageResT===''){
       message.error('请上传身份证反面照')
     }else{
-      this.props.history.push({ pathname: '/qualificationPh', query: {imageRes:imageRes,imageResT:imageRes,imageUrlBaseT:imageUrlBaseT } })
+      this.props.history.push({ pathname: '/qualificationPh', query: {imageRes:imageRes,imageResT:imageResT,imageUrlBaseT:imageUrlBaseT } })
     }
    
   }

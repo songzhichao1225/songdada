@@ -247,8 +247,8 @@ class stadiumInformationPh extends React.Component {
       for (let i in fileList) {
         arrimg.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
       }
-      if (arrimg.length < 2) {
-        message.error('最少上传两张场地照')
+      if (arrimg.length < 3) {
+        message.error('最少上传三张场地照')
       } else {
         let data = {
           venueloginuuid: localStorage.getItem('uuid'),
@@ -261,8 +261,8 @@ class stadiumInformationPh extends React.Component {
           address: address,
           filesURL: arrimg.join('|'),
           firstURL: imageRes,
-          sport: onChangeRun.join('|'),
-          facilities: onChangeCheck.join('|'),
+          sport:onChangeRun===''?'':onChangeRun.join(','),
+          facilities:onChangeCheck===''?'':onChangeCheck.join(','),
           siteInfo: textKo,
           position: addressXian,
         }

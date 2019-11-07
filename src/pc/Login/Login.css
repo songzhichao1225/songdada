@@ -70,7 +70,7 @@
 	display: block;
 	width:300px;
 	min-height: 50px;
-	margin-top: 20px;
+	margin-top: 30px;
 }
 .login .content  .right  .code{
 	width: 211px;
@@ -92,6 +92,7 @@
 	margin-left: -16px;
 	
 }
+
 .login .ant-col{
    width: 100%;
 }

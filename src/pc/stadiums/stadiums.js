@@ -1,8 +1,8 @@
 import React from 'react';
 import './stadiums.css';
 import 'antd/dist/antd.css';
-import { getVenueInformation, VenueInformationSave,getVenueIssecondaudit,getVenueQualificationInformation,getVenueOpenBank,VenueQualificationInformationSave,getVenueOpenBankList,getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
-import { Modal, Upload, Input, Icon, message, Checkbox, Button, Popconfirm,Radio,Select,Tooltip } from 'antd';
+import { getVenueInformation, VenueInformationSave, getVenueIssecondaudit, getVenueQualificationInformation, getVenueOpenBank, VenueQualificationInformationSave, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
+import { Modal, Upload, Input, Icon, message, Checkbox, Button, Popconfirm, Radio, Select, Tooltip } from 'antd';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -64,25 +64,25 @@ class stadiums extends React.Component {
     siteInfo: '',
     comment: '',
     flag: true,
-    issecondaudit:1,
-    imageUrlBase:'',//身份证公共路径
-    imageUrlTwo:'',//身份证正面照
-    imageUrlThree:'',//身份证反面照
-    corporateName:'',//法人姓名
-    corporateId:'',//法人身份证号
-    corporatePhone:'',//法人手机号
-    numRadio:1,//账号类型
-    corporateCardId:'',//法人银行卡号
-    corporateOpen:'',//开户行
-    lisenceURL:'',//营业执照
-    imgFile:'',
-    imgFileTwo:'',
-    imagesBasellFe:'',
-    imagesBasellFeTwo:'',
-    baseImg:'',
-    imgHood:'',
-    imgHoodTwo:'',
-    zuo:0,
+    issecondaudit: 1,
+    imageUrlBase: '',//身份证公共路径
+    imageUrlTwo: '',//身份证正面照
+    imageUrlThree: '',//身份证反面照
+    corporateName: '',//法人姓名
+    corporateId: '',//法人身份证号
+    corporatePhone: '',//法人手机号
+    numRadio: 1,//账号类型
+    corporateCardId: '',//法人银行卡号
+    corporateOpen: '',//开户行
+    lisenceURL: '',//营业执照
+    imgFile: '',
+    imgFileTwo: '',
+    imagesBasellFe: '',
+    imagesBasellFeTwo: '',
+    baseImg: '',
+    imgHood: '',
+    imgHoodTwo: '',
+    zuo: 0,
 
     flagOne: true,
     flagTwo: true,
@@ -93,37 +93,37 @@ class stadiums extends React.Component {
     bank_id: '',//类型Id
     province_id: '',//省Id
     city_id: '',//市id
-    backList:[],//获取的银行
-    upData:true
+    backList: [],//获取的银行
+    upData: true
   };
 
   async getVenueInformation(data) {
     const res = await getVenueInformation(data, sessionStorage.getItem('venue_token'))
-    if(res.data.code===2000){
+    if (res.data.code === 2000) {
       let imgS = (res.data.data.filesURL).split('|')
       let arrImg = []
       for (let i in imgS) {
         arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: imgS[i] })
       }
-    
-      if(this.props.location.query!==undefined&&this.props.location.query.name!=='sunny'){
+
+      if (this.props.location.query !== undefined && this.props.location.query.name !== 'sunny') {
         this.setState({
-          adddress:this.props.location.query.adddress,
-          handleAddress:this.props.location.query.adddress,
-          lat:this.props.location.query.lat,
-          lng:this.props.location.query.lng,
+          adddress: this.props.location.query.title,
+          handleAddress: this.props.location.query.adddress,
+          lat: this.props.location.query.lat,
+          lng: this.props.location.query.lng,
           informationList: res.data.data, name: res.data.data.name,
-        contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone,  imageUrl: res.data.data.firstURL,
-        fileList: arrImg, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
+          contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, imageUrl: res.data.data.firstURL,
+          fileList: arrImg, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
         })
-      }else if(this.props.location.query===undefined||this.props.location.query.name==='sunny'){
+      } else if (this.props.location.query === undefined || this.props.location.query.name === 'sunny') {
         this.setState({
           informationList: res.data.data, name: res.data.data.name, handleAddress: res.data.data.address,
           contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, adddress: res.data.data.position, imageUrl: res.data.data.firstURL,
           fileList: arrImg, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
         })
       }
-    }else if(res.data.code===4001){
+    } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
     }
@@ -132,7 +132,7 @@ class stadiums extends React.Component {
   async getVenueOpenBank(data) {
     const res = await getVenueOpenBank(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ type: res.data.data, flagOne:false})
+      this.setState({ type: res.data.data, flagOne: false })
     }
   }
 
@@ -158,33 +158,35 @@ class stadiums extends React.Component {
   componentDidMount() {
     this.getVenueInformation()
     this.getVenueIssecondaudit()
-    setInterval(()=> {
+    setInterval(() => {
       this.getVenueIssecondaudit()
-    },50000)
+    }, 50000)
     this.getVenueQualificationInformation()
     this.getVenueOpenBankProvince()
     this.getVenueOpenBank()
   }
-  
+
   async getVenueIssecondaudit(data) {
-    const res = await getVenueIssecondaudit(data,sessionStorage.getItem('venue_token'))
-      this.setState({issecondaudit:res.data.data.issecondaudit})
+    const res = await getVenueIssecondaudit(data, sessionStorage.getItem('venue_token'))
+    this.setState({ issecondaudit: res.data.data.issecondaudit })
   }
 
   async getVenueQualificationInformation(data) {
-    const res = await getVenueQualificationInformation(data,sessionStorage.getItem('venue_token'))
-      if(res.data.code===2000){
-        let corporate=res.data.data
-        let cardImg=corporate.legalFilesURL.replace('|',',').split(',')
-         this.setState({imageUrlTwo:corporate.legalBaseURL+'/'+cardImg[0],imageUrlThree:corporate.legalBaseURL+'/'+cardImg[1],
-         baseImg:corporate.legalBaseURL,
-         imgFile:cardImg[0],imgFileTwo:cardImg[1],
-          corporateName:corporate.legalname,corporateId:corporate.legalcard,corporatePhone:corporate.legalphone,
-          numRadio:corporate.Settlement,corporateCardId:corporate.Bankaccount,corporateOpen:corporate.OpeningBank,lisenceURL:corporate.lisenceURL})
-      }
+    const res = await getVenueQualificationInformation(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      let corporate = res.data.data
+      let cardImg = corporate.legalFilesURL.replace('|', ',').split(',')
+      this.setState({
+        imageUrlTwo: corporate.legalBaseURL + '/' + cardImg[0], imageUrlThree: corporate.legalBaseURL + '/' + cardImg[1],
+        baseImg: corporate.legalBaseURL,
+        imgFile: cardImg[0], imgFileTwo: cardImg[1],
+        corporateName: corporate.legalname, corporateId: corporate.legalcard, corporatePhone: corporate.legalphone,
+        numRadio: corporate.Settlement, corporateCardId: corporate.Bankaccount, corporateOpen: corporate.OpeningBank, lisenceURL: corporate.lisenceURL
+      })
+    }
   }
 
-  
+
 
   handleChange = info => {
     if (info.file.status === 'uploading') {
@@ -192,7 +194,7 @@ class stadiums extends React.Component {
       return;
     }
     if (info.file.status === 'done') {
-      this.setState({ imageUrl: info.file.response.data.baseURL + info.file.response.data.filesURL,loading:false })
+      this.setState({ imageUrl: info.file.response.data.baseURL + info.file.response.data.filesURL, loading: false })
     }
   };
 
@@ -213,12 +215,10 @@ class stadiums extends React.Component {
     });
   };
   routerMap = () => {
-    this.props.history.push({ pathname: '/map',query:{type:2} })
-    sessionStorage.setItem('handleCity',this.state.adddress)
-    
+    this.props.history.push({ pathname: '/map', query: { type: this.state.adddress } })
+    sessionStorage.setItem('handleCity', this.state.adddress)
+    sessionStorage.setItem('hanclick', 2)
   }
-
-
 
   handleName = e => {
     this.setState({ name: e.target.value })
@@ -246,13 +246,13 @@ class stadiums extends React.Component {
   }
   onChangeText = e => {
     this.setState({ siteInfo: e.target.value })
-    if( e.target.value.length===200){
+    if (e.target.value.length === 200) {
       message.error('最多输入200字')
     }
   }
   onChangeTextTwo = e => {
     this.setState({ comment: e.target.value })
-    if( e.target.value.length>200){
+    if (e.target.value.length > 200) {
       message.error('最多输入200字')
     }
   }
@@ -262,7 +262,7 @@ class stadiums extends React.Component {
     const res = await VenueInformationSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.info('提交成功')
-        this.setState({issecondaudit:0})
+      this.setState({ issecondaudit: 0 })
       this.getVenueInformation()
     } else {
       message.error(res.data.msg)
@@ -270,36 +270,36 @@ class stadiums extends React.Component {
   }
 
   confirm = () => {
-      let { informationList, name, handleAddress, contacts, contactNumber, fileList, adddress, imageUrl, sport, facilities, siteInfo, comment } = this.state
-      let filesURLarr = []
-      for (let i in fileList) {
-        if (fileList[i].response !== undefined) {
-          filesURLarr.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
-        } else if (fileList[i].response === undefined) {
-          filesURLarr.push(fileList[i].url)
-        }
+    let { informationList, name, handleAddress, contacts, contactNumber, fileList, adddress, imageUrl, sport, facilities, siteInfo, comment } = this.state
+    let filesURLarr = []
+    for (let i in fileList) {
+      if (fileList[i].response !== undefined) {
+        filesURLarr.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
+      } else if (fileList[i].response === undefined) {
+        filesURLarr.push(fileList[i].url)
       }
-      if(filesURLarr.length>=2){
-        let data = {
-          venuename: name,
-          lat: informationList.lat,
-          lng: informationList.lng,
-          address: handleAddress,
-          linkMan: contacts,
-          telephone: contactNumber,
-          firstURL: imageUrl,
-          filesURL: filesURLarr.join('|'),
-          facilities: facilities.join(','),
-          sport: sport.join(','),
-          siteInfo: siteInfo,
-          position: adddress,
-          comment: comment,
-          type: 2
-        }
-        this.VenueInformationSave(data)
-      }else{
-        message.error('至少上传两张室内照')
+    }
+    if (filesURLarr.length >= 2) {
+      let data = {
+        venuename: name,
+        lat: informationList.lat,
+        lng: informationList.lng,
+        address: handleAddress,
+        linkMan: contacts,
+        telephone: contactNumber,
+        firstURL: imageUrl,
+        filesURL: filesURLarr.join('|'),
+        facilities: facilities.join(','),
+        sport: sport.join(','),
+        siteInfo: siteInfo,
+        position: adddress,
+        comment: comment,
+        type: 2
       }
+      this.VenueInformationSave(data)
+    } else {
+      message.error('至少上传两张室内照')
+    }
   }
   basic = () => {
     this.setState({ flag: true })
@@ -308,8 +308,8 @@ class stadiums extends React.Component {
     this.setState({ flag: false })
   }
 
-  numRadio=e=>{
-    this.setState({numRadio:e.target.value})
+  numRadio = e => {
+    this.setState({ numRadio: e.target.value })
   }
 
   handleChangeTwo = info => {
@@ -318,7 +318,7 @@ class stadiums extends React.Component {
       return;
     }
     if (info.file.status === 'done') {
-      this.setState({ zuo:1,imageUrlTwo: info.file.response.data.baseURL + info.file.response.data.filesURL,imgHood:info.file.response.data.baseURL,loading:false,imgFile:info.file.response.data.filesURL })
+      this.setState({ zuo: 1, imageUrlTwo: info.file.response.data.baseURL + info.file.response.data.filesURL, imgHood: info.file.response.data.baseURL, loading: false, imgFile: info.file.response.data.filesURL })
     }
   };
 
@@ -328,63 +328,63 @@ class stadiums extends React.Component {
       return;
     }
     if (info.file.status === 'done') {
-      this.setState({ zuo:1, imageUrlThree: info.file.response.data.baseURL + info.file.response.data.filesURL,imgHoodTwo:info.file.response.data.baseURL,loading:false,imgFileTwo:info.file.response.data.filesURL })
+      this.setState({ zuo: 1, imageUrlThree: info.file.response.data.baseURL + info.file.response.data.filesURL, imgHoodTwo: info.file.response.data.baseURL, loading: false, imgFileTwo: info.file.response.data.filesURL })
     }
   };
 
 
-  corporateName=e=>{
-    this.setState({corporateName:e.target.value})
+  corporateName = e => {
+    this.setState({ corporateName: e.target.value })
   }
-  corporateId=e=>{
-    this.setState({corporateId:e.target.value})
+  corporateId = e => {
+    this.setState({ corporateId: e.target.value })
   }
-  corporatePhone=e=>{
-    this.setState({corporatePhone:e.target.value})
+  corporatePhone = e => {
+    this.setState({ corporatePhone: e.target.value })
   }
-  corporateCardId=e=>{
-    this.setState({corporateCardId:e.target.value})
+  corporateCardId = e => {
+    this.setState({ corporateCardId: e.target.value })
   }
-  corporateOpen=e=>{
-    this.setState({corporateOpen:e})
+  corporateOpen = e => {
+    this.setState({ corporateOpen: e })
   }
 
-  
+
   async VenueQualificationInformationSave(data) {
-    const res = await VenueQualificationInformationSave(data,sessionStorage.getItem('venue_token'))
+    const res = await VenueQualificationInformationSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
-    } else if(res.data.code===2000){
-         message.info('提交成功')
-    }else{
+    } else if (res.data.code === 2000) {
+      message.info('提交成功')
+    } else {
       message.error(res.data.msg)
     }
-      
+
   }
-  ziSubmit=()=>{
-    let {zuo,imgHoodTwo,imgHood,baseImg,lisenceURL,corporateName,corporateId,corporatePhone,numRadio,corporateCardId,corporateOpen,imgFile,imgFileTwo}=this.state
-    let data={
-      legalname:corporateName,
-      legalcard:corporateId,
-      legalphone:corporatePhone,
-      Settlement:numRadio,
-      Bankaccount:corporateCardId,
-      OpeningBank:corporateOpen,
-      lisenceURL:lisenceURL,
-      legalBaseURL:baseImg,
-      legalFilesURL:imgFile+'|'+imgFileTwo
+  ziSubmit = () => {
+    let { zuo, imgHoodTwo, imgHood, baseImg, lisenceURL, corporateName, corporateId, corporatePhone, numRadio, corporateCardId, corporateOpen, imgFile, imgFileTwo } = this.state
+    let data = {
+      legalname: corporateName,
+      legalcard: corporateId,
+      legalphone: corporatePhone,
+      Settlement: numRadio,
+      Bankaccount: corporateCardId,
+      OpeningBank: corporateOpen,
+      lisenceURL: lisenceURL,
+      legalBaseURL: baseImg,
+      legalFilesURL: imgFile + '|' + imgFileTwo
     }
-    if(zuo===1){
-      if(imgHood===''){
-       message.error('请更换身份证正面照')
-      }else if(imgHoodTwo===''){
+    if (zuo === 1) {
+      if (imgHood === '') {
+        message.error('请更换身份证正面照')
+      } else if (imgHoodTwo === '') {
         message.error('请更换身份证反面照')
-      }else{
-        data.legalBaseURL=imgHood
+      } else {
+        data.legalBaseURL = imgHood
         this.VenueQualificationInformationSave(data)
       }
-    }else{
+    } else {
       this.VenueQualificationInformationSave(data)
     }
   }
@@ -393,7 +393,7 @@ class stadiums extends React.Component {
     this.setState({ bank_id: e })
   }
   provinceChange = e => {
-    
+
     this.setState({ province_id: e })
     this.getVenueOpenBankCity({ province_id: e })
 
@@ -402,13 +402,13 @@ class stadiums extends React.Component {
     this.setState({ city_id: e })
   }
 
-  upData=()=>{
-    this.setState({upData:false})
+  upData = () => {
+    this.setState({ upData: false })
   }
 
-  handleSearch=e=>{
-    this.getVenueOpenBankList({bank_id:this.state.bank_id,province_id:this.state.province_id,city_id:this.state.city_id,search_name:e})
-}
+  handleSearch = e => {
+    this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
+  }
 
 
   render() {
@@ -430,7 +430,7 @@ class stadiums extends React.Component {
         <div className="ant-upload-text">反面照</div>
       </div>
     );
-    const { imageUrl,imageUrlTwo,imageUrlThree } = this.state;
+    const { imageUrl, imageUrlTwo, imageUrlThree } = this.state;
     const { previewVisible, previewImage, fileList } = this.state;
     const uploadButtonT = (
       <div>
@@ -442,7 +442,7 @@ class stadiums extends React.Component {
       <div className="stadiums">
         <div className="navTap">
           <div className={this.state.flag === true ? 'background' : 'div'} onClick={this.basic}>基本信息</div>
-          <div className={this.state.flag === true? 'div' : 'background'} style={sessionStorage.getItem('ismethod')==='1'?{display:'block'}:{display:'none'}} onClick={this.qualification}>场馆资质</div>
+          <div className={this.state.flag === true ? 'div' : 'background'} style={sessionStorage.getItem('ismethod') === '1' ? { display: 'block' } : { display: 'none' }} onClick={this.qualification}>场馆资质</div>
         </div>
         <div className="xiange"></div>
 
@@ -458,7 +458,7 @@ class stadiums extends React.Component {
           </div>
           <div className="name">
             <span className="boTitle">场馆位置:</span>
-            <Input className="nameINput" value={this.state.adddress} />  
+            <Input className="nameINput" value={this.state.adddress} />
             {/* <Input className="nameINput" value={this.props.location.query !== undefined ? this.props.location.query.adddress : this.state.adddress}  /> */}
             <img onClick={this.routerMap} className="dingImg" src={require("../../assets/icon_pc_dingwei.png")} alt="" />
           </div>
@@ -474,7 +474,7 @@ class stadiums extends React.Component {
             <span className="boTitle">联系电话:</span>
             <Input className="nameINput" maxLength={11} value={this.state.contactNumber} onInput={this.contactNumber} />
           </div>
-        
+
           <div className="name">
             <span className="boTitle">门脸照:</span>
             <Upload
@@ -485,6 +485,7 @@ class stadiums extends React.Component {
               action="/api/UploadVenueImgs?type=Venue"
               beforeUpload={beforeUpload}
               onChange={this.handleChange}
+              accept=".jpg, .jpeg, .png"
             >
               {imageUrl ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
             </Upload>
@@ -528,7 +529,7 @@ class stadiums extends React.Component {
             <span className="boTitle">其他:</span><span className="kong"></span>
             <TextArea className="textarea" maxLength={200} value={this.state.comment} placeholder="请输入场地其他介绍，如比赛、特色等。" onChange={this.onChangeTextTwo} rows={2} />
           </div>
-
+          
 
           <Popconfirm
             title="您确定本次修改吗?"
@@ -537,9 +538,9 @@ class stadiums extends React.Component {
             okText="确定"
             cancelText="返回"
           >
-             <Button className="submit" style={this.state.issecondaudit!==0?{display:'block'}:{display:'none'}}>提交修改</Button>
+            <Button className="submit" style={this.state.issecondaudit !== 0 ? { display: 'block' } : { display: 'none' }}>提交修改</Button>
           </Popconfirm>
-          <Button className="submit"  style={this.state.issecondaudit===0?{display:'block'}:{display:'none'}}>审核中~</Button>
+          <Button className="submit" style={this.state.issecondaudit === 0 ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
         </div>
 
 
@@ -547,7 +548,7 @@ class stadiums extends React.Component {
         <div className={this.state.flag === true ? 'none' : 'qualification'}>
           <div className="listing">
             <span>营业执照:</span>
-            <span style={{lineHeight:'38px',display:'block'}}>通过|长期</span>
+            <span style={{ lineHeight: '38px', display: 'block' }}>通过|长期</span>
           </div>
 
           <div className="listing">
@@ -560,10 +561,11 @@ class stadiums extends React.Component {
               action="/api/UploadVenueImgs?type=Venue"
               beforeUpload={beforeUpload}
               onChange={this.handleChangeTwo}
+              accept=".jpg, .jpeg, .png"
             >
               {imageUrlTwo ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrlTwo} alt="avatar" style={{ width: '100%' }} /> : uploadButtonTwo}
             </Upload>
-           <div style={{clear:'both'}}></div>
+            <div style={{ clear: 'both' }}></div>
             <Upload
               name="files"
               listType="picture-card"
@@ -572,27 +574,28 @@ class stadiums extends React.Component {
               action="/api/UploadVenueImgs?type=Venue"
               beforeUpload={beforeUpload}
               onChange={this.handleChangeThree}
+              accept=".jpg, .jpeg, .png"
             >
               {imageUrlThree ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrlThree} alt="avatar" style={{ width: '100%' }} /> : uploadButtonThree}
             </Upload>
-           
+
           </div>
 
           <div className="listing">
             <span>法人姓名:</span>
-            <Input className="listingInput" value={this.state.corporateName} onChange={this.corporateName}/>
+            <Input className="listingInput" value={this.state.corporateName} onChange={this.corporateName} />
           </div>
           <div className="listing">
             <span>法人身份证号:</span>
-            <Input className="listingInput" value={this.state.corporateId}  onChange={this.corporateId}/>
+            <Input className="listingInput" value={this.state.corporateId} onChange={this.corporateId} />
+          </div>
+          
+          <div className="listing">
+            <span>法人手机号:</span>
+            <Input className="listingInput" value={this.state.corporatePhone} onChange={this.corporatePhone} />
           </div>
 
           <div className="listing">
-            <span>法人手机号:</span>
-            <Input className="listingInput" value={this.state.corporatePhone} onChange={this.corporatePhone}/>
-          </div>
-
-          <div className="listing">  
             <span>结算账号:</span>
             <Radio.Group className="accountNum" onChange={this.numRadio} value={this.state.numRadio}>
               <Radio value={0}>公司银行账号</Radio>
@@ -605,54 +608,54 @@ class stadiums extends React.Component {
             <Input className="listingInput" value={this.state.corporateCardId} onChange={this.corporateCardId} />
           </div>
 
-          <div className="listing" style={this.state.upData===true?{display:'none'}:{display:'block'}}>
+          <div className="listing" style={this.state.upData === true ? { display: 'none' } : { display: 'block' }}>
             <span>开户所在地</span>
             <Select placeholder="银行类型" style={{ width: 120, height: '35px', marginLeft: '18px' }} loading={this.state.flagOne} onChange={this.typeChange}>
-                  {
-                    this.state.type.map((item, i) => (
-                      <Option key={i} value={item.bank_id}>{item.bank_name}</Option>
-                    ))
-                  }
-                </Select>
-                <Select placeholder="所在省" style={{ width: 120, height: '35px', marginLeft: '18px' }} loading={this.state.flagTwo} onChange={this.provinceChange}>
-                  {
-                    this.state.backProvince.map((item, i) => (
-                      <Option key={i} value={item.province_id}>{item.province}</Option>
-                    ))
-                  }
-                </Select>
-                <Select placeholder="所在市" style={{ width: 120, height: '35px', marginLeft: '18px' }} loading={this.state.flagThree} onChange={this.cityChange}>
-                  {
-                    this.state.backCity.map((item, i) => (
-                      <Option key={i} value={item.city_id}>{item.city}</Option>
-                    ))
-                  }
-                </Select>
+              {
+                this.state.type.map((item, i) => (
+                  <Option key={i} value={item.bank_id}>{item.bank_name}</Option>
+                ))
+              }
+            </Select>
+            <Select placeholder="所在省" style={{ width: 120, height: '35px', marginLeft: '18px' }} loading={this.state.flagTwo} onChange={this.provinceChange}>
+              {
+                this.state.backProvince.map((item, i) => (
+                  <Option key={i} value={item.province_id}>{item.province}</Option>
+                ))
+              }
+            </Select>
+            <Select placeholder="所在市" style={{ width: 120, height: '35px', marginLeft: '18px' }} loading={this.state.flagThree} onChange={this.cityChange}>
+              {
+                this.state.backCity.map((item, i) => (
+                  <Option key={i} value={item.city_id}>{item.city}</Option>
+                ))
+              }
+            </Select>
           </div>
-       
-       
+
+
           <div className="listing">
             <span>开户行:</span>
             <Select
-                  showSearch
-                  style={{ width: 273, height: '36px', marginLeft: '18px',float:'left' }}
-                  onSearch={this.handleSearch}
-                  onChange={this.corporateOpen}
-                  defaultActiveFirstOption={false}
-                  showArrow={false}
-                  notFoundContent={null}
-                  disabled={this.state.upData}
-                  value={this.state.corporateOpen}
-                >
-                  {
-                    this.state.backList.map((item,i)=>(
-                      <Option key={i} value={item.sub_branch_name} alt={item.sub_branch_name}>
-                        <Tooltip title={item.sub_branch_name}>
+              showSearch
+              style={{ width: 273, height: '36px', marginLeft: '18px', float: 'left' }}
+              onSearch={this.handleSearch}
+              onChange={this.corporateOpen}
+              defaultActiveFirstOption={false}
+              showArrow={false}
+              notFoundContent={null}
+              disabled={this.state.upData}
+              value={this.state.corporateOpen}
+            >
+              {
+                this.state.backList.map((item, i) => (
+                  <Option key={i} value={item.sub_branch_name} alt={item.sub_branch_name}>
+                    <Tooltip title={item.sub_branch_name}>
                       <span>{item.sub_branch_name}</span>
                     </Tooltip></Option>
-                    ))
-                  } 
-                </Select>
+                ))
+              }
+            </Select>
             <span onClick={this.upData}>修改</span>
           </div>
 
@@ -663,9 +666,9 @@ class stadiums extends React.Component {
             okText="确定"
             cancelText="返回"
           >
-            <Button className="submit" style={this.state.issecondaudit!==0?{display:'block'}:{display:'none'}}>提交修改</Button>
+            <Button className="submit" style={this.state.issecondaudit !== 0 ? { display: 'block' } : { display: 'none' }}>提交修改</Button>
           </Popconfirm>
-          <Button className="submit"  style={this.state.issecondaudit===0?{display:'block'}:{display:'none'}}>审核中~</Button>
+          <Button className="submit" style={this.state.issecondaudit === 0 ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
         </div>
       </div >
     );

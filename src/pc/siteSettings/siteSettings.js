@@ -2,9 +2,7 @@ import React from 'react';
 import './siteSettings.css';
 import 'antd/dist/antd.css';
 import { getVenueFieldList, addVenueField, getVenueSport, getFirstField, delVenueField } from '../../api';
-import { Select, Row, Col, Modal, TimePicker, InputNumber, Input, message, Spin, Result, Icon, Pagination, Popconfirm } from 'antd';
-import moment from 'moment';
-const format = 'HH:mm';
+import { Select, Row, Col, Modal, InputNumber, Input, message, Spin, Result, Icon, Pagination, Popconfirm } from 'antd';
 const { Option } = Select;
 
 
@@ -27,8 +25,8 @@ class siteSettings extends React.Component {
     runName: '',//运动项目名称
     openday: [],//营业时间段Id
     opendayname: '',//营业时间端名称
-    starttime: '',//开始时间
-    endtime: '',//结束时间
+    starttime: '00:00',//开始时间
+    endtime: '00:00',//结束时间
     costperhour: '',//价格
     number: 1,//数量
     maxScheduledDate: '',//最长可预定日期、
@@ -42,6 +40,57 @@ class siteSettings extends React.Component {
     deletUid: 0,
     maxScheduledDateName: [],
     siteEditor:0,//场地设置打开修改
+    time: [
+      { name: '00:00' },
+      { name: '00:30' },
+      { name: '01:00' },
+      { name: '01:30' },
+      { name: '02:00' },
+      { name: '02:30' },
+      { name: '03:00' },
+      { name: '03:30' },
+      { name: '04:00' },
+      { name: '04:30' },
+      { name: '05:00' },
+      { name: '05:30' },
+      { name: '06:00' },
+      { name: '06:30' },
+      { name: '07:00' },
+      { name: '07:30' },
+      { name: '08:00' },
+      { name: '08:30' },
+      { name: '09:00' },
+      { name: '09:30' },
+      { name: '10:00' },
+      { name: '10:30' },
+      { name: '11:00' },
+      { name: '11:30' },
+      { name: '12:00' },
+      { name: '12:30' },
+      { name: '13:00' },
+      { name: '13:30' },
+      { name: '14:00' },
+      { name: '14:30' },
+      { name: '15:00' },
+      { name: '15:30' },
+      { name: '16:00' },
+      { name: '16:30' },
+      { name: '17:00' },
+      { name: '17:30' },
+      { name: '18:00' },
+      { name: '18:30' },
+      { name: '19:00' },
+      { name: '19:30' },
+      { name: '20:00' },
+      { name: '20:30' },
+      { name: '21:00' },
+      { name: '21:30' },
+      { name: '22:00' },
+      { name: '22:30' },
+      { name: '23:00' },
+      { name: '23:30' },
+      { name: '24:00' },
+    ]
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -188,12 +237,12 @@ class siteSettings extends React.Component {
     }
   }
 
-  handleChangThree = (value, dateString) => {
+  handleChangThree = (e) => {
 
-    this.setState({ starttime: dateString })
+    this.setState({ starttime: e })
   }
-  endtime = (value, dateString) => {
-    this.setState({ endtime: dateString })
+  endtime = (e) => {
+    this.setState({ endtime: e })
   }
   money = e => {
     this.setState({ costperhour: e })
@@ -498,12 +547,26 @@ class siteSettings extends React.Component {
 
           <div className="modelList">
             <span>开始时间</span>
-            <TimePicker className="startTime" placeholder="请选择时间" value={this.state.starttime === undefined || this.state.starttime === '' ? null : moment(this.state.starttime, format)} minuteStep={30} defaultValue={moment('00:00', format)} format={format} onChange={this.handleChangThree} />
+            <Select value={this.state.starttime} className="startTime"  onChange={this.handleChangThree} placeholder="开始时间" >
+                  {
+                    this.state.time.map((item, i) => (
+                      <Option key={i} value={item.name}>{item.name}</Option>
+                    ))
+                  }
+                </Select>
+            {/* <TimePicker className="startTime" placeholder="请选择时间" value={this.state.starttime === undefined || this.state.starttime === '' ? null : moment(this.state.starttime, format)} minuteStep={30} defaultValue={moment('00:00', format)} format={format} onChange={this.handleChangThree} /> */}
           </div>
            
           <div className="modelList">
             <span>结束时间</span>
-            <TimePicker className="startTime" placeholder="请选择时间" value={this.state.endtime === undefined || this.state.endtime === '' ? null : moment(this.state.endtime, format)} minuteStep={30} defaultValue={moment('00:00', format)} format={format} onChange={this.endtime} />
+            <Select value={this.state.endtime} className="startTime"  onChange={this.endtime} placeholder="开始时间" >
+                  {
+                    this.state.time.map((item, i) => (
+                      <Option key={i} value={item.name}>{item.name}</Option>
+                    ))
+                  }
+                </Select>
+            {/* <TimePicker className="startTime" placeholder="请选择时间" value={this.state.endtime === undefined || this.state.endtime === '' ? null : moment(this.state.endtime, format)} minuteStep={30} defaultValue={moment('00:00', format)} format={format} onChange={this.endtime} /> */}
           </div>
           
           <div className="modelList">

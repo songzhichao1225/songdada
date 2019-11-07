@@ -91,6 +91,7 @@ class perfect extends React.Component {
       for (let i in imgS) {
         arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: imgS[i] })
       }
+      localStorage.setItem('handleName', res.data.data.name)
       this.setState({
         position: res.data.data.position, handleAddress: res.data.data.address, handleName: res.data.data.name, imageUrl: res.data.data.firstURL, fileList: arrImg,
         onChangeCheck: res.data.data.sport, onChangeSite: res.data.data.facilities, onChangeText: res.data.data.siteInfo,lat:res.data.data.lat,lng:res.data.data.lng,
@@ -102,20 +103,17 @@ class perfect extends React.Component {
 
   componentDidMount() {
     this.getProvince()
-    if (sessionStorage.getItem('handleAreaId') !== null) {
-      this.getCrty({ parent: sessionStorage.getItem('handleAreaId') })
+    if (localStorage.getItem('handleAreaId') !== null) {
+      this.getCrty({ parent: localStorage.getItem('handleAreaId') })
     }
-    if (sessionStorage.getItem('handleCityId') !== null) {
-      this.getArea({ crty: sessionStorage.getItem('handleCityId') })
+    if (localStorage.getItem('handleCityId') !== null) {
+      this.getArea({ crty: localStorage.getItem('handleCityId') })
     }
     if (sessionStorage.getItem('notType') === '1') {
       this.getVenueInformation()
     }
 
-
-
-
-  };
+  }
 
 
 
@@ -124,41 +122,42 @@ class perfect extends React.Component {
     let { province } = this.state
     for (let i in Array.from(province)) {
       if (Array.from(province)[i].id === e) {
-        sessionStorage.setItem('handleArea', Array.from(province)[i].name)
-        sessionStorage.setItem('handleAreaId', Array.from(province)[i].id)
+        localStorage.setItem('handleArea', Array.from(province)[i].name)
+        localStorage.setItem('handleAreaId', Array.from(province)[i].id)
       }
     }
-    this.getCrty({ parent: sessionStorage.getItem('handleAreaId') })
+    this.getCrty({ parent: localStorage.getItem('handleAreaId') })
   }
   handleCity = e => {
     let { city } = this.state
     for (let i in Array.from(city)) {
       if (Array.from(city)[i].id === e) {
-        sessionStorage.setItem('handleCity', Array.from(city)[i].name)
-        sessionStorage.setItem('handleCityId', Array.from(city)[i].id)
+        localStorage.setItem('handleCity', Array.from(city)[i].name)
+        localStorage.setItem('handleCityId', Array.from(city)[i].id)
       }
     }
-    this.getArea({ crty: sessionStorage.getItem('handleCityId') })
+    this.getArea({ crty: localStorage.getItem('handleCityId') })
   }
   handleDistrict = e => {
     let { getArea } = this.state
     for (let i in Array.from(getArea)) {
       if (Array.from(getArea)[i].id === e) {
-        sessionStorage.setItem('handleDistrict', Array.from(getArea)[i].name)
-        sessionStorage.setItem('handleDistrictId', Array.from(getArea)[i].id)
+        localStorage.setItem('handleDistrict', Array.from(getArea)[i].name)
+        localStorage.setItem('handleDistrictId', Array.from(getArea)[i].id)
       }
     }
   }
   routerMap = () => {
-    if (sessionStorage.getItem('handleDistrict') !== null) {
-      this.props.history.push({ pathname: '/map', query: { type: 1 } })
+    if (localStorage.getItem('handleDistrict') !== null) {
+      this.props.history.push({ pathname: '/map', query: { type: localStorage.getItem('handleDistrict') } })
+      sessionStorage.setItem('hanclick',1)
     } else {
       message.warning('请先选择地区')
     }
   }
   handleName = e => {
     this.setState({ handleName: e.target.value })
-    sessionStorage.setItem('handleName', e.target.value)
+    localStorage.setItem('handleName', e.target.value)
   }
   handleAddress = e => {
     this.setState({ handleAddress: e.target.value })
@@ -237,6 +236,8 @@ class perfect extends React.Component {
     }else if(res.data.code===4001){
       this.props.history.push('/')
       message.error('登录超时请重新登录')
+    }else{
+      message.error(res.data.msg)
     }
   }
 
@@ -260,7 +261,7 @@ class perfect extends React.Component {
         let sportId = sessionStorage.getItem('onChangeCheck') === null ? this.state.onChangeCheck.split(',') : sessionStorage.getItem('onChangeCheck').split(',')
         let facilitiesId = sessionStorage.getItem('onChangeSite') === null ? this.state.onChangeSite.split(',') : sessionStorage.getItem('onChangeSite').split(',')
         let data = {
-          venuename: sessionStorage.getItem('handleName'),
+          venuename: localStorage.getItem('handleName'),
           lat: this.props.location.query === undefined ? this.state.lat : this.props.location.query.lat,
           lng: this.props.location.query === undefined ? this.state.lng : this.props.location.query.lng,
           address: handleAddress,
@@ -269,13 +270,14 @@ class perfect extends React.Component {
           sport: sportId === '' ? [] : sportId.join(','), 
           facilities: facilitiesId === '' ? [] : facilitiesId.join(','),
           siteInfo: this.state.onChangeText,
-          position: this.props.location.query===undefined?this.state.position:this.props.location.query.adddress,
+          position: this.props.location.query===undefined?this.state.position:this.props.location.query.title,
           comment:'',
           type:1,
           linkMan:'',
           telephone:'',
         }
-        this.VenueInformationSave(data)
+        console.log(data)
+        // this.VenueInformationSave(data)
       }
 
     } else {
@@ -290,33 +292,31 @@ class perfect extends React.Component {
         let facilitiesId = sessionStorage.getItem('onChangeSite') === null ? '' : sessionStorage.getItem('onChangeSite').split(',')
         let data = {
           venueloginuuid: sessionStorage.getItem('uuid'),
-          province: sessionStorage.getItem('handleArea'),
-          city: sessionStorage.getItem('handleCity'),
-          area: sessionStorage.getItem('handleDistrict'),
-          venuename: sessionStorage.getItem('handleName'),
+          province: localStorage.getItem('handleArea'),
+          city: localStorage.getItem('handleCity'),
+          area: localStorage.getItem('handleDistrict'),
+          venuename: localStorage.getItem('handleName'),
           lat: this.props.location.query === undefined ? '' : this.props.location.query.lat,
           lng: this.props.location.query === undefined ? '' : this.props.location.query.lng,
           address: handleAddress,
           filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
           firstURL: imageRes,
           sport: sportId === '' ? [] : sportId.join(','),
-          facilities: facilitiesId === '' ? [] : facilitiesId.join(','),
+          facilities: facilitiesId === '' ? '' : facilitiesId.join(','),
           siteInfo: this.state.onChangeText,
-          position: this.props.location.query.adddress
+          position: this.props.location.query.title
         }
         this.PerfectingVenueInformation(data)
       }
     }
-
-
-
-
   }
 
   async PerfectingVenueInformation(data) {
     const res = await PerfectingVenueInformation(data)
     if (res.data.code === 2000) {
       this.props.history.push('/qualification')
+    }else{
+      message.error(res.data.msg)
     }
 
   }
@@ -363,7 +363,7 @@ class perfect extends React.Component {
               <span className="titile">场馆基本信息</span>
               <div className="area">
                 <span className="symbol">*</span><span className="boTitle">选择地区</span>
-                <Select defaultValue={sessionStorage.getItem('handleArea') === null ? '请选择' : sessionStorage.getItem('handleArea')} className="one" style={{ width: 118 }} onChange={this.handleArea}>
+                <Select defaultValue={localStorage.getItem('handleArea') === null ? '请选择' : localStorage.getItem('handleArea')} className="one" style={{ width: 118 }} onChange={this.handleArea}>
                   {
                     data.map((item, i) => {
                       return <Option key={i} value={item.id} >{item.name}</Option>
@@ -371,7 +371,7 @@ class perfect extends React.Component {
                   }
                 </Select>
                 <span>省</span>
-                <Select defaultValue={sessionStorage.getItem('handleCity') === null ? '请选择' : sessionStorage.getItem('handleCity')} className="one" style={{ width: 118 }} onChange={this.handleCity}>
+                <Select defaultValue={localStorage.getItem('handleCity') === null ? '请选择' : localStorage.getItem('handleCity')} className="one" style={{ width: 118 }} onChange={this.handleCity}>
                   {
                     cityT.map((item, i) => {
                       return <Option key={i} value={item.id}>{item.name}</Option>
@@ -380,7 +380,7 @@ class perfect extends React.Component {
                 </Select>
                 <span>市</span>
 
-                <Select defaultValue={sessionStorage.getItem('handleDistrict') === null ? '请选择' : sessionStorage.getItem('handleDistrict')} className="one" style={{ width: 118 }} onChange={this.handleDistrict}>
+                <Select defaultValue={localStorage.getItem('handleDistrict') === null ? '请选择' : localStorage.getItem('handleDistrict')} className="one" style={{ width: 118 }} onChange={this.handleDistrict}>
                   {
                     getAreaT.map((item, i) => {
                       return <Option key={i} value={item.id}>{item.name}</Option>
@@ -391,13 +391,13 @@ class perfect extends React.Component {
               </div>
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">场馆位置</span>
-                <Input className="nameINput" value={this.props.location.query !== undefined ? this.props.location.query.adddress : this.state.position} placeholder="请输选择场馆位置" />
+                <Input className="nameINput" value={this.props.location.query !== undefined ? this.props.location.query.title : this.state.position} placeholder="请输选择场馆位置" />
                 <img onClick={this.routerMap} className="dingImg" src={require("../../assets/icon_pc_dingwei.png")} alt="" />
               </div>
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">详细地址</span>
-                <Input className="nameINput" onChange={this.handleAddress} value={this.state.handleAddress} placeholder="请输入场馆详细地址如门牌号楼层" />
+                <Input className="nameINput" onChange={this.handleAddress} value={this.props.location.query !== undefined ? this.props.location.query.adddress : this.state.handleAddress} placeholder="请输入场馆详细地址如门牌号楼层" />
               </div>
 
               <div className="name">
@@ -417,6 +417,7 @@ class perfect extends React.Component {
                   action="/api/UploadVenueImgs?type=Venue"
                   beforeUpload={beforeUpload}
                   onChange={this.handleChange}
+                  accept=".jpg, .jpeg, .png"
                 >
                   {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
                 </Upload>

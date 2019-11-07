@@ -164,3 +164,8 @@
 	margin-left: -52px;
 	color:#fff;
 }
+
+
+.register .ant-input{
+	height: 2.5rem;
+}

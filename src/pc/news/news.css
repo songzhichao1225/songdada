@@ -58,8 +58,7 @@
     
 }
 .news .newsList .textOne{
-    width:800px;
-    height:44px;
+    width:50%;
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;

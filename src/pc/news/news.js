@@ -208,7 +208,7 @@ class news extends React.Component {
                 <Checkbox className="check" onChange={this.onChange} index={i} checked={item.cheched} value={item.uuid}></Checkbox>
                 <div style={{ float: 'left', marginTop: '12px', marginLeft: 20 }}><img src={item.isred === 0 ? require('../../assets/news.png') : require('../../assets/oldNews.png')} alt="news" />&nbsp;&nbsp;系统消息</div>
                 <span className="textOne" data-uuid={item.uuid} onClick={this.consult}>{item.comment}</span>
-                <span style={{ paddingLeft: 80, lineHeight: '44px' }}>{item.intime}</span>
+                <span style={{ paddingLeft: '3%', lineHeight: '44px' }}>{item.intime}</span>
                 <Popconfirm
                   title="您确定删除本条消息吗?"
                   onConfirm={this.confirm}
@@ -235,7 +235,7 @@ class news extends React.Component {
           </Drawer>
         </div>
         <Modal
-          title="给挑战服务器发消息"
+          title="给找对手平台发消息"
           visible={this.state.visibleTwo}
           onCancel={this.handleCancel}
         >
