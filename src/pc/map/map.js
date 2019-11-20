@@ -45,57 +45,55 @@ class map extends React.Component {
 
     // local.search(data)
      if(this.props.location.query!==undefined){
-       console.log(this.props.location.query.type)
       this.setState({position:this.props.location.query.type})
+        this.look(this.props.location.query.type)
      }
   
-    this.look()
   }
 
 
-  look=()=>{
-    let map = new BMap.Map("allmap"); // 创建Map实例
-    map.enableScrollWheelZoom(true);
-    let myGeo = new BMap.Geocoder();
-    // 将地址解析结果显示在地图上，并调整地图视野    
-    myGeo.getPoint(this.state.position, function (point) {
+  look=(data)=>{
+    let map = new BMap.Map("allmap") // 创建Map实例
+    map.enableScrollWheelZoom(true)
+    let myGeo = new BMap.Geocoder()
+    // 将地址解析结果显示在地图上，并调整地图视野   
+    myGeo.getPoint(localStorage.getItem('handleCity'), function (point) {
       if (point) {
-        map.centerAndZoom(point, 16);
-      
+        map.centerAndZoom(point, 16)
         map.addEventListener("click", (e)=>{
           map.clearOverlays()
-          var marker = new BMap.Marker(e.point);  // 创建标注
-          map.addOverlay(marker);
-          var pt = marker.getPosition();
+          var marker = new BMap.Marker(e.point) // 创建标注
+          map.addOverlay(marker)
+          var pt = marker.getPosition()
           myGeo.getLocation(pt, function (rs) {
-            var addComp = rs.addressComponents;
+            var addComp = rs.addressComponents
             local.search(addComp.city+addComp.district+addComp.street+addComp.streetNumber)
-          });
-        });
+          })
+        })
       }
-    })
-    
+    }) 
+
     let that = this
      let option = {
-      renderOptions: { map: map, panel: "results" }, onSearchComplete: function (results) {
+      renderOptions: { map: map, panel:"r-results" }, onSearchComplete:function (results) {
         if (results !== undefined) {
-          that.setState({ mapList: results.Qq })
+          that.setState({ mapList: results.Sq })
         }
       }
     }
-    let local = new BMap.LocalSearch(map, option);
-    local.search(this.state.position)
+    let local = new BMap.LocalSearch(map, option)
+    local.search(data)
+
+
+
   }
-
-
 
   handleSearch = e => {
     this.setState({ position: e })
-    this.look()
+    this.look(e)
   }
 
   handleClick = e => {
-
     let dateset = e.target.dataset
     if (sessionStorage.getItem('hanclick') === '1') {
       this.props.history.push({ pathname: '/perfect', query: {title:dateset.til,lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })
@@ -103,7 +101,7 @@ class map extends React.Component {
       this.props.history.push({ pathname: '/home/stadiums', query: {title:dateset.til, lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })
     }
   }
-
+  
   render() {
     let list = this.state.mapList.map((val, i) => {
       return <li key={i} onClick={this.handleClick} data-til={val.title} data-lat={val.point.lat} data-lng={val.point.lng} data-adress={val.address}><span data-til={val.title} data-lat={val.point.lat} data-lng={val.point.lng} data-adress={val.address}>{val.title}</span><span data-til={val.title} data-lat={val.point.lat} data-lng={val.point.lng} data-adress={val.address} >{val.address}</span></li>
@@ -113,7 +111,7 @@ class map extends React.Component {
         <div id="allmap" style={{ position: "absolute", top: 0, left: 0, width: '100vw', height: '100vh' }}>
         </div>
         <div className="search">
-          <Search onSearch={this.handleSearch} placeholder={this.state.position} enterButton />
+          <Search onSearch={this.handleSearch} placeholder={this.state.position} enterButton/>
           <ul className="ulList">
             {
               list

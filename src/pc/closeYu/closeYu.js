@@ -1,7 +1,7 @@
 import React from 'react';
 import './closeYu.css';
 import 'antd/dist/antd.css';
-import { VenueTemporarilyClosedList, getVenueSport, VenueTemporarilyClosed, VenueTemporarilyClosedDel,VenueTemporarilyClosedSave } from '../../api';
+import { VenueTemporarilyClosedList,VenueTemporarilyClosed, VenueTemporarilyClosedDel,VenueTemporarilyClosedSave,getSetUpFieldSportId } from '../../api';
 import { message, Modal, Select, DatePicker, Input, LocaleProvider, Row, Col, Popconfirm, Result, Icon,Pagination } from 'antd';
 
 import moment from 'moment';
@@ -64,19 +64,16 @@ class closeYu extends React.Component {
   }
 
 
-  async getVenueSport(data) {
-    const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
-    } else {
-      this.setState({ ListSport: res.data.data })
-    }
+  
+
+  async getSetUpFieldSportId(data) {
+    const res = await getSetUpFieldSportId(data, sessionStorage.getItem('venue_token'))
+     this.setState({ListSport:res.data.data})
   }
 
 
   model = () => {
-    this.getVenueSport()
+    this.getSetUpFieldSportId()
     this.setState({ visible: true })
   }
   componentDidMount() {
@@ -84,8 +81,8 @@ class closeYu extends React.Component {
     let start = moment().startOf('day').add(1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
     let end = moment().endOf('day').add(1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
     this.setState({ start: start, end: end })
+    this.getSetUpFieldSportId()
   }
-
 
   next = () => {
     this.props.history.goBack()

@@ -22,7 +22,7 @@ class resultsAuditsPh extends React.Component {
   }
 
   goback=()=>{
-    this.props.history.replace({pathname:'./stadiumInformationPh',query:{type:1}})
+    this.props.history.replace({pathname:'./stadiumInformationPh'})
     sessionStorage.setItem('notType',1)
   }
   homePh=()=>{

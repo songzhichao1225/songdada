@@ -3,11 +3,12 @@ import './homePh.css';
 import 'antd/dist/antd.css';
 import { Route, Link } from 'react-router-dom';
 import { gerVenueName, getVenueIndex } from '../../api';
-import { message, Icon } from 'antd';
+import { message, Icon,notification } from 'antd';
 import orderPh from '../orderPh/orderPh';
 import sitePh from '../sitePh/sitePh';
 import newsPh from '../newsPh/newsPh';
 import minePh from '../minePh/minePh';
+import orderPhT from '../orderPhT/orderPhT';
 
 
 class homePh extends React.Component {
@@ -54,11 +55,13 @@ class homePh extends React.Component {
     this.props.history.push('/homePh/commentPh')
   }
   yuYue = () => {
-    this.props.history.push({pathname:'/homePh/orderPh',query:{time:1}})
+    this.props.history.push({pathname:'/homePh/orderPhT',query:{time:1}})
+    this.setState({ title: '今日预约' })
   }
 
   yuYueTwo=()=>{
-    this.props.history.push({pathname:'/homePh/orderPh',query:{time:2}})
+    this.props.history.push({pathname:'/homePh/orderPhT',query:{time:2}})
+    this.setState({ title: '本月预约' })
   }
 
 
@@ -66,9 +69,6 @@ class homePh extends React.Component {
   componentDidMount() {
     this.getVenueIndex()
     this.gerVenueName()
-    
-
-   
       if (localStorage.getItem('venue_token')) {
         if (localStorage.getItem('issite') === '0') {
           this.props.history.push('/stadiumInformationPh')
@@ -92,6 +92,20 @@ class homePh extends React.Component {
     } else if (this.props.history.location.pathname === '/homePh/minePh') {
       this.setState({ title: '我的' })
     }
+
+
+      //这里的ip地址改为自己服务器的ip地址
+      var ws = new WebSocket("wss://venue.tiaozhanmeiyitian.com/socket");
+      ws.onopen = function () {
+        ws.send(sessionStorage.getItem('siteuid'))
+      } 
+      ws.onmessage = function (e) {
+        let message_info = JSON.parse(e.data)
+        let msg = new SpeechSynthesisUtterance(message_info.percent)
+        window.speechSynthesis.speak(msg)
+        notification.open({description:message_info.percent})
+      }
+  
   }
 
   componentWillReceiveProps() {
@@ -114,7 +128,7 @@ class homePh extends React.Component {
     this.setState({ title: '首页' })
   }
   orderPh = () => {
-    this.setState({ title: '预约信息' })
+    this.setState({ title: '预约信息',refs:1 })
   }
   sitePh = () => {
     this.setState({ title: '场地设置' })
@@ -178,8 +192,8 @@ class homePh extends React.Component {
 
         <div className={this.props.location.pathname === '/homePh' && this.state.spin === false ? 'homePagePh' : 'none'} onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}  >
           <div className="homeScroll" >
-            <div><span className="title" onClick={this.yuYue}>今日成功预约</span><div className="content"><span>{this.state.getVenue.today_count}</span><span>单</span></div></div>
-            <div><span className="title" onClick={this.yuYueTwo}>本月成功预约</span><div className="content"><span>{this.state.getVenue.month_count}</span><span>单</span></div></div>
+            <div><span className="title" onClick={this.yuYue}>今日预约</span><div className="content"><span>{this.state.getVenue.today_count}</span><span>单</span></div></div>
+            <div><span className="title" onClick={this.yuYueTwo}>本月预约</span><div className="content"><span>{this.state.getVenue.month_count}</span><span>单</span></div></div>
             <div><span className="title" onClick={this.dayIncomePh}>今日收入</span><div className="content"><span>￥{this.state.getVenue.today_money}</span></div></div>
             <div><span className="title" onClick={this.monthlyIncomePh}>本月收入</span><div className="content"><span>￥{this.state.getVenue.month_money}</span></div></div>
             <div><span className="title" onClick={this.commentPh}>场馆评分  {this.state.getVenue.score}分</span  >
@@ -207,6 +221,7 @@ class homePh extends React.Component {
         <Route path="/homePh/sitePh" component={sitePh} />
         <Route path="/homePh/newsPh" component={newsPh} />
         <Route path="/homePh/minePh" component={minePh} />
+        <Route path="/homePh/orderPhT" component={orderPhT} />
         </div>
         <div className="footer">
           <div className="footerSon">

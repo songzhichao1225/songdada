@@ -22,20 +22,19 @@
 	width: 50px;
 }
 .mapLocation .ulList{
-	width: 83%;
+	width: 100%;
 	background: #fff;
-	list-style: none;
 	overflow: hidden;
-	padding-top: 20px;
+	padding-top: 0.5rem;
+	font-size: 0.75rem;
+	margin-left: 0;
+	padding-left: 0;
 }
 .mapLocation .ulList li{
 	width:100%;
-	height: 2rem;
-	margin-left:-40px; 
-	height: 60px;
 	padding-left: 10px;
-	
-
+	list-style: none;
+    margin-top: 0.5rem;
 	
 }
 
@@ -51,7 +50,6 @@
 	margin-top: 10px;
 }
 .mapLocation .ulList li span:last-child{
-	margin-top: 10px;
 	overflow: hidden;
 	display: block;
 	width: 100%;

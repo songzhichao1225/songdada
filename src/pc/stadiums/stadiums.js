@@ -373,7 +373,8 @@ class stadiums extends React.Component {
       OpeningBank: corporateOpen,
       lisenceURL: lisenceURL,
       legalBaseURL: baseImg,
-      legalFilesURL: imgFile + '|' + imgFileTwo
+      legalFilesURL: imgFile + '|' + imgFileTwo,
+      type:2
     }
     if (zuo === 1) {
       if (imgHood === '') {
@@ -393,10 +394,8 @@ class stadiums extends React.Component {
     this.setState({ bank_id: e })
   }
   provinceChange = e => {
-
     this.setState({ province_id: e })
     this.getVenueOpenBankCity({ province_id: e })
-
   }
   cityChange = e => {
     this.setState({ city_id: e })

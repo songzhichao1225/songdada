@@ -318,12 +318,11 @@
  .dateSelect{
      height:46px;
  }
-
  .changNum{
-    width: 100px;
-    height: 20px;
-    margin-top: 20px;
-}
-.changName>.ant-select-selection--single{
-    height: 30px;
-}
+     width: 100px;
+     height: 20px;
+     margin-top: 20px;
+ }
+ .changName>.ant-select-selection--single{
+     height: 30px;
+ }

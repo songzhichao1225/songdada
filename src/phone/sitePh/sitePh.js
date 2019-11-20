@@ -1,5 +1,6 @@
 import React from 'react';
 import './sitePh.css';
+import { Picker, List, WhiteSpace } from 'antd-mobile';
 import { message, Row, Col, Input, Pagination, Drawer, Select, DatePicker, Result, Icon, Popconfirm, Spin, InputNumber } from 'antd';
 import { getVenueFieldList, getVenueSport, addVenueField, getFirstField, getVenueDiscountList, addVenueDiscount, delVenueField, DelVenueDiscount, getFirstDiscount, getSetUpFieldSportId } from '../../api';
 
@@ -644,7 +645,7 @@ class sitePh extends React.Component {
 
 
   touClick = (e) => {
-    this.setState({ clickY: e.targetTouches[0].clientY })
+    this.setState({ clickY: e.targetTouches[0].clientY})
   }
   touMove = (e) => {
     if (this.state.clickY < e.targetTouches[0].clientY && this.state.clickY < 200) {
@@ -737,7 +738,7 @@ class sitePh extends React.Component {
 
                     <Row className="detail">
                       <Col className="oneCol" xs={{ span: 9 }} lg={{ span: 6 }}>最长可预定 {item.date}</Col>
-                      <Col xs={{ span: 7, offset: 2 }} style={{ textAlign: 'left' }} lg={{ span: 6 }}>最短预定 {item.appointmenttime + '分钟'}</Col>
+                      <Col xs={{ span: 7, offset: 2 }} style={{ textAlign: 'left' }} lg={{ span: 6 }}>最短预定 {item.appointmenttime/60 + '小时'}</Col>
                       <Col xs={{ span: 6 }} lg={{ span: 6 }}>  <Popconfirm
                         title="你确定要删除吗?"
                         onConfirm={this.siteDelet}
@@ -748,9 +749,6 @@ class sitePh extends React.Component {
                         <img className="upLoad" style={{ right: '1.5rem' }} onClick={this.mood} data-uuid={item.uid} src={require("../../assets/delet.png")} alt="删除" />
                       </Popconfirm></Col>
                     </Row>
-
-
-
                   </div>
                 </div>
               ))
@@ -806,7 +804,7 @@ class sitePh extends React.Component {
               </div>
               <div className="sitePhlistSon">
                 <span>开始时间</span>
-                <Select value={this.state.startTime} style={{ float: 'right', width: '50%' }} onChange={this.startTime} placeholder="开始时间" >
+                <Select value={this.state.startTime} style={{ float: 'right', width: '50%' }} defaultActiveFirstOption={false} onChange={this.startTime} placeholder="开始时间" >
                   {
                     this.state.time.map((item, i) => (
                       <Option key={i} value={item.name}>{item.name}</Option>
@@ -822,20 +820,26 @@ class sitePh extends React.Component {
               <div className="sitePhlistSon">
                 <span>结束时间</span>
 
-                <Select value={this.state.endTime} style={{ float: 'right', width: '50%' }} onChange={this.endTime} placeholder="开始时间" >
-                  {
+                <Select value={this.state.endTime} style={{ float: 'right', width: '50%' }} defaultActiveFirstOption={false} onChange={this.endTime} placeholder="开始时间" >
+                  { 
                     this.state.time.map((item, i) => (
                       <Option key={i} value={item.name}>{item.name}</Option>
                     ))
                   }
                 </Select>
 
+
+
+
                 {/* <TimePicker style={{ float: 'right', width: '50%' }} inputReadOnly={true} onChange={this.endTime} minuteStep={30} defaultValue={moment(this.state.endTime, format)} format={format} /> */}
               </div>
 
+            
+
+
               <div className="sitePhlistSon">
                 <span>价格(元/时)</span>
-                <Input style={{ width: '50%', border: 'none', height: '2rem', float: 'right', boxShadow: 'none' }} value={this.state.price} onChange={this.price} placeholder="请输入" type="number" />
+                <Input style={{ width: '50%', border: 'none', height: '2rem', float: 'right', boxShadow: 'none' }  } value={this.state.price} onChange={this.price} placeholder="请输入" type="number" />
               </div>
               <div className="sitePhlistSon">
                 <span>数量</span>
@@ -864,13 +868,31 @@ class sitePh extends React.Component {
                   style={{ width: '50%', float: 'right' }}
                   placeholder="请选择"
                   onChange={this.timeChange}
-                  value={this.state.timeChange === 0 ? '0分钟' : [] && this.state.timeChange === 30 ? '30分钟' : [] && this.state.timeChange === 60 ? '60分钟' : [] && this.state.timeChange === 120 ? '120分钟' : [] && this.state.timeChange === 180 ? '180分钟' : []}
+                  value={
+                    this.state.timeChange === 0 ? '0分钟' : []
+                     && this.state.timeChange === 30 ? '30分钟' : []
+                      && this.state.timeChange === 60 ? '60分钟' : []
+                       && this.state.timeChange === 120 ? '2小时' : [] 
+                       && this.state.timeChange === 180 ? '3小时' : []
+                       && this.state.timeChange === 240 ? '4小时' : []
+                       && this.state.timeChange === 300 ? '5小时' : []
+                       && this.state.timeChange === 360 ? '6小时' : []
+                       && this.state.timeChange === 1440 ? '24小时' : []
+                       && this.state.timeChange === 2880 ? '48小时' : []
+                       && this.state.timeChange === 4320 ? '72小时' : []
+                      }
                 >
                   <Option value='0'>0分钟</Option>
                   <Option value='30'>30分钟</Option>
                   <Option value='60'>60分钟</Option>
-                  <Option value='120'>120分钟</Option>
-                  <Option value='180'>180分钟</Option>
+                  <Option value='120'>2小时</Option>
+                  <Option value='180'>3小时</Option>
+                  <Option value='240'>4小时</Option>
+                  <Option value='300'>5小时</Option>
+                  <Option value='360'>6小时</Option>
+                  <Option value='1440'>24小时</Option>
+                  <Option value='2880'>48小时</Option>
+                  <Option value='4320'>72小时</Option>
                 </Select>
               </div>
 
@@ -974,7 +996,7 @@ class sitePh extends React.Component {
           <div className="SzSon">
             <span>开始时间</span>
 
-            <Select value={this.state.startTimeTwo} style={{ float: 'right', width: '50%' }} onChange={this.startTimeTwo} placeholder="开始时间" >
+            <Select value={this.state.startTimeTwo} style={{ float: 'right', width: '50%' }} defaultActiveFirstOption={false} onChange={this.startTimeTwo} placeholder="开始时间" >
               {
                 this.state.time.map((item, i) => (
                   <Option key={i} value={item.name}>{item.name}</Option>
@@ -985,7 +1007,7 @@ class sitePh extends React.Component {
           </div>
           <div className="SzSon">
             <span>结束时间</span>
-            <Select value={this.state.endTimeTwo} style={{ float: 'right', width: '50%' }} onChange={this.endTimeTwo} placeholder="开始时间" >
+            <Select value={this.state.endTimeTwo} style={{ float: 'right', width: '50%' }} defaultActiveFirstOption={false} onChange={this.endTimeTwo} placeholder="开始时间" >
               {
                 this.state.time.map((item, i) => (
                   <Option key={i} value={item.name}>{item.name}</Option>
@@ -1005,7 +1027,8 @@ class sitePh extends React.Component {
           </div>
           <div className="SzSon">
             <span>最短提前预定时间</span>
-            <Select style={{ width: '50%', float: 'right' }} placeholder="请选择" value={this.state.timeChangeTwo === 0 ? '0分钟' : [] && this.state.timeChangeTwo === 30 ? '30分钟' : [] && this.state.timeChangeTwo === 60 ? '60分钟' : [] && this.state.timeChangeTwo === 120 ? '120分钟' : [] && this.state.timeChangeTwo === 180 ? '180分钟' : []} onChange={this.timeChangeTwo}>
+            <Select style={{ width: '50%', float: 'right' }} 
+            placeholder="请选择" value={this.state.timeChangeTwo === 0 ? '0分钟' : [] && this.state.timeChangeTwo === 30 ? '30分钟' : [] && this.state.timeChangeTwo === 60 ? '60分钟' : [] && this.state.timeChangeTwo === 120 ? '120分钟' : [] && this.state.timeChangeTwo === 180 ? '180分钟' : []} onChange={this.timeChangeTwo}>
               <Option value='0'>0分钟</Option>
               <Option value='30'>30分钟</Option>
               <Option value='60'>60分钟</Option>

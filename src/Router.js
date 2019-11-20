@@ -13,6 +13,7 @@ import home from './pc/home/home';
 
 
 
+
 const BasicRoute = () => (
     <HashRouter>
         <Switch>
@@ -23,7 +24,6 @@ const BasicRoute = () => (
             <Route exact path="/qualification" component={qualification}/>
             <Route exact path="/map" component={map}/>
             <Route exact path="/statusAudits" component={statusAudits}/>
-            
             <Route  path="/home" component={home}/>
         </Switch>
     </HashRouter>

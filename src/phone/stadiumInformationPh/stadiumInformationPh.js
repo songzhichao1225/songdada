@@ -86,9 +86,9 @@ class stadiumInformationPh extends React.Component {
 
 
 
-  componentDidMount() {
-    if (this.props.location.query !== undefined) {
-
+  componentDidMount() { 
+    console.log(this.props.location.query)
+ 
       if (sessionStorage.getItem('notType')=== '1') {
         this.getVenueInformation()
       } else {
@@ -99,7 +99,7 @@ class stadiumInformationPh extends React.Component {
           lng: this.props.location.query.lng
         })
       }
-    }
+    
   }
 
 
@@ -122,7 +122,6 @@ class stadiumInformationPh extends React.Component {
     } else {
       message.error('请选择省市区')
     }
-
   }
   xaingxi = e => {
     this.setState({ addressXian: e.target.value })
@@ -140,9 +139,9 @@ class stadiumInformationPh extends React.Component {
           imageUrl,
           loading: false,
         }),
-      );
+      )
     }
-  };
+  }
 
   handlePreview = async file => {
     if (!file.url && !file.preview) {
@@ -152,8 +151,8 @@ class stadiumInformationPh extends React.Component {
     this.setState({
       previewImage: file.url || file.preview,
       previewVisible: true,
-    });
-  };
+    })
+  }
 
   handleChangeT = ({ fileList }) => this.setState({ fileList });
 
@@ -269,8 +268,6 @@ class stadiumInformationPh extends React.Component {
         this.PerfectingVenueInformation(data)
       }
     }
-
-
   }
 
   close = () => {
@@ -333,13 +330,13 @@ class stadiumInformationPh extends React.Component {
 
           <div className="input">
             <span>场馆位置</span>
-            <Input className="select" value={this.state.address} placeholder="请选择" />
+            <Input className="select" value={this.props.location.query!==undefined?this.props.location.query.title:this.state.address} placeholder="请选择" />
             <img className="imgAddress" onClick={this.mapPh} src={require("../../assets/icon_pc_dingwei.png")} alt="地址" />
           </div>
 
           <div className="input">
             <span>详细地址</span>
-            <Input className="select" value={this.state.addressXian} onChange={this.xaingxi} placeholder="请输入" />
+            <Input className="select" value={this.props.location.query!==undefined?this.props.location.query.adddress:this.state.addressXian} onChange={this.xaingxi} placeholder="请输入" />
           </div>
 
           <div className="input">

@@ -417,7 +417,7 @@ class preferential extends React.Component {
 
             <div className="modelList">
               <span>开始时间</span>
-              <Select value={this.state.starttime} className="startTime" onChange={this.handleChangThree} placeholder="开始时间" >
+              <Select value={this.state.starttime} className="startTime" defaultActiveFirstOption={false} onChange={this.handleChangThree} placeholder="开始时间" >
                 {
                   this.state.time.map((item, i) => (
                     <Option key={i} value={item.name}>{item.name}</Option>
@@ -430,7 +430,7 @@ class preferential extends React.Component {
             <div className="modelList">
               <span>结束时间</span>
 
-              <Select value={this.state.endtime} className="startTime"  onChange={this.endtime} placeholder="开始时间" >
+              <Select value={this.state.endtime} className="startTime" defaultActiveFirstOption={false}  onChange={this.endtime} placeholder="开始时间" >
                   {
                     this.state.time.map((item, i) => (
                       <Option key={i} value={item.name}>{item.name}</Option>

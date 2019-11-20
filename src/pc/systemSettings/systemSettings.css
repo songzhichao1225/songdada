@@ -28,6 +28,9 @@
     margin-top: 8px;
     
 }
+.systemSettings .feedback{
+    margin-top: 20px;
+}
 .systemSettings .listNone{
     display: none;
 }

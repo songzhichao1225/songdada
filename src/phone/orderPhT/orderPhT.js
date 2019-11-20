@@ -1,5 +1,5 @@
 import React from 'react';
-import './orderPh.css';
+import './orderPhT.css';
 import { Row, Col, message, Pagination, Modal, Radio, Input, Drawer, DatePicker, Result, Icon, Spin } from 'antd';
 import { getReservationActivitieslist, VenueSendMessage, getVenueReservations, getVenueSport, VenueClickCancelPlace } from '../../api';
 
@@ -8,7 +8,7 @@ import zh_CN from 'antd/es/date-picker/locale/zh_CN'
 const { TextArea } = Input
 
 
-class orderPh extends React.Component {
+class orderPhT extends React.Component {
 
   state = {
     activityList: true,
@@ -508,4 +508,4 @@ class orderPh extends React.Component {
   }
 }
 
-export default orderPh;
+export default orderPhT;

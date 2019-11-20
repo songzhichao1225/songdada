@@ -1,8 +1,8 @@
 import React from 'react';
-import './information.css';
+import './appointmentList.css';
 import 'antd/dist/antd.css';
-import { Input, Button, Row, Col, Select, Pagination, Spin, message, Result, Icon, DatePicker, Modal, Radio, Drawer,InputNumber } from 'antd';
-import { getReservationActivitieslist, getVenueReservations, getVenueSport, VenueSendMessage, VenueClickCancelPlace,VenueNewsHistoricalRecord } from '../../api';
+import { Input, Button, Row, Col, Select, Pagination, Spin, message, Result, Icon, DatePicker, Modal, Radio, Drawer, InputNumber } from 'antd';
+import { getReservationActivitieslist, getVenueReservations, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord } from '../../api';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -13,7 +13,7 @@ const { TextArea } = Input;
 
 const antIcon = <Icon type="sync" style={{ fontSize: 24, color: 'black' }} spin />;
 
-class information extends React.Component {
+class appointmentList extends React.Component {
 
   state = {
     number: '1',
@@ -45,11 +45,10 @@ class information extends React.Component {
     start: '开始日期',
     end: '结束日期',
     lastTime: '',
-    text:'',
-    changNum:0,
-    changName:[0],
-    History:false,
-    historyNews:[],
+    changNum: 0,
+    changName: [0],
+    History: false,
+    historyNews: [],
     minHeight: sessionStorage.getItem('min-height'),
     left:'',
     top:'',
@@ -74,7 +73,7 @@ class information extends React.Component {
       if (this.props.location.query.time === 1) {
         let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-        this.setState({ start: start, end: end,text:'今日' })
+        this.setState({ start: start, end: end })
         this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: start, enddate: end })
         setInterval(() => {
           this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: start, enddate: end })
@@ -83,7 +82,7 @@ class information extends React.Component {
         let myDate = new Date()
         let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-        this.setState({ start: start, end: end,text:'本月' })
+        this.setState({ start: start, end: end })
         this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: start, enddate: end })
         setInterval(() => {
           this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: start, enddate: end })
@@ -106,20 +105,19 @@ class information extends React.Component {
         this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
       }, 1000 * 60 * 5)
     }
-
   }
 
-  dateonChangeS=(date,dateString)=>{
-        this.setState({start:dateString[0],end:dateString[1]})
-       this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: dateString[0], enddate: dateString[1] })
+  dateonChangeS = (date, dateString) => {
+    this.setState({ start: dateString[0], end: dateString[1] })
+    this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: dateString[0], enddate: dateString[1] })
   }
 
   current = (page, pageSize) => {
     this.setState({ page: page })
-    if(this.state.start==='开始日期'){
-      this.getReservationActivitieslist({ page:page, sport: this.state.sport, status: this.state.status, startdate: '', enddate:'' })
-    }else{
-      this.getReservationActivitieslist({ page:page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
+    if (this.state.start === '开始日期') {
+      this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '' })
+    } else {
+      this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
     }
   }
 
@@ -163,19 +161,22 @@ class information extends React.Component {
 
   nameChang = (e) => {
     this.setState({ sport: e })
-    if(this.state.start==='开始日期'){
-      this.getReservationActivitieslist({ page: this.state.page, sport: e, status: this.state.status, startdate: '', enddate:'' })
-    }else{
+
+    if (this.state.start === '开始日期') {
+      this.getReservationActivitieslist({ page: this.state.page, sport: e, status: this.state.status, startdate: '', enddate: '' })
+    } else {
       this.getReservationActivitieslist({ page: this.state.page, sport: e, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
     }
   }
   activityChang = (e) => {
     this.setState({ status: e })
-    if(this.state.start==='开始日期'){
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: e, startdate: '', enddate:'' })
-    }else{
+
+    if (this.state.start === '开始日期') {
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: e, startdate: '', enddate: '' })
+    } else {
       this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: e, startdate: this.state.start, enddate: this.state.end })
     }
+
   }
   clickLi = (e) => {
     this.getVenueReservations({ sportid: e.target.dataset.num, date: this.state.dateString })
@@ -187,11 +188,7 @@ class information extends React.Component {
   }
   Oneloading = () => {
     this.setState({ Oneloading: true })
-    if(this.state.start==='开始日期'){
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate:'' })
-    }else{
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
-    }
+    this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
   }
   handleCancel = () => {
     this.setState({ visible: false })
@@ -202,18 +199,19 @@ class information extends React.Component {
     if (res.data.code === 2000) {
       message.info(res.data.msg)
       this.setState({ visible: false })
-      if(this.state.start==='开始日期'){
-        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate:'' })
-      }else{
+      if (this.state.start === '开始日期') {
+        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '' })
+      } else {
         this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
       }
     } else {
       message.error(res.data.msg)
+
     }
   }
 
   sending = e => {
-    this.setState({ visible: true, publicUUID: e.currentTarget.dataset.uid,changNum:e.currentTarget.dataset.siteid,changName:e.currentTarget.dataset.sitenum  })
+    this.setState({ visible: true, publicUUID: e.currentTarget.dataset.uid, changNum: e.currentTarget.dataset.siteid, changName: e.currentTarget.dataset.sitenum })
   }
   sendCheck = e => {
 
@@ -228,12 +226,10 @@ class information extends React.Component {
     this.setState({ textArea: e.target.value })
   }
   sendingMessage = e => {
-    let { publicUUID, sendCheck, textArea,changNum,changName } = this.state
-    this.VenueSendMessage({ type: sendCheck, publicUUID: publicUUID, content: textArea,venueid:changNum,venuenumber:changName  })
-    
-    }
-    
-   
+    let { publicUUID, sendCheck, textArea, changNum, changName } = this.state
+    this.VenueSendMessage({ type: sendCheck, publicUUID: publicUUID, content: textArea, venueid: changNum, venuenumber: changName })
+
+  }
 
 
 
@@ -266,33 +262,28 @@ class information extends React.Component {
     this.setState({ informVisible: false })
   }
 
-  changNum=(e)=>{
-   
-      this.setState({changNum:e})
-    
-    
-   }
+  changNum = (e) => {
 
-   
-  changName=(e)=>{
-    this.setState({changName:e})
+    this.setState({ changNum: e })
   }
 
+  changName = (e) => {
+    this.setState({ changName: e })
+  }
 
-   async VenueNewsHistoricalRecord(data) {
+  async VenueNewsHistoricalRecord(data) {
     const res = await VenueNewsHistoricalRecord(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-       this.setState({historyNews:res.data.data})
-    } 
+      this.setState({ historyNews: res.data.data })
+    }
   }
 
-  History=()=>{
-    this.setState({History:true})
-   this.VenueNewsHistoricalRecord({publicuuid:this.state.publicUUID})
+  History = () => {
+    this.setState({ History: true })
+    this.VenueNewsHistoricalRecord({ publicuuid: this.state.publicUUID })
   }
-
-   historyClose=()=>{
-    this.setState({History:false})
+  historyClose = () => {
+    this.setState({ History: false })
   }
 
   scroll = () => {
@@ -301,7 +292,6 @@ class information extends React.Component {
     this.setState({ left: scrollLeft, top: scrollTop })
   }
  
-
   render() {
 
     let userMessage;
@@ -322,7 +312,7 @@ class information extends React.Component {
                 <Col xs={{ span: 2 }}>{item.SiteMoney}</Col>
                 <Col xs={{ span: 2 }}>{item.SiteMoneyStatus}</Col>
                 <Col xs={{ span: 2 }}>
-                  <img className={item.PublicStatus === '匹配中' ? 'img' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'img' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'img' : 'circumstanceT'} data-uid={item.uuid} data-siteid={item.venueid} onClick={this.sending} src={require("../../assets/icon_pc_faNews.png")} alt="发送消息" />
+                  <img className={item.PublicStatus === '匹配中' ? 'img' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'img' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'img' : 'circumstanceT'} data-uid={item.uuid} data-siteid={item.venueid} data-sitenum={item.venuenumber} onClick={this.sending} src={require("../../assets/icon_pc_faNews.png")} alt="发送消息" />
                 </Col>
               </Row>
             ))
@@ -339,7 +329,7 @@ class information extends React.Component {
 
       <div className="orderList">
         <div className="navTab">
-    <Button onClick={this.handelClick} className={this.state.number === '1' ? 'colorGo' : 'colorNot'} data-num='1'>{this.state.text}活动列表</Button>
+          <Button onClick={this.handelClick} className={this.state.number === '1' ? 'colorGo' : 'colorNot'} data-num='1'>预约活动列表</Button>
           <Button onClick={this.handelClick} data-num='2' className={this.state.number === '2' ? 'colorGo' : 'colorNot'}>场地预约情况</Button>
           <div className="sping"> <Icon type="sync" className={this.state.Oneloading === true || this.state.number === '2' ? 'hidden' : 'block'} onClick={this.Oneloading} style={{ fontSize: 24, marginTop: 15 }} /><Spin indicator={antIcon} spinning={this.state.Oneloading} /></div>
         </div>
@@ -421,6 +411,7 @@ class information extends React.Component {
             <li className="dateSelect"><DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={zh_CN} placeholder="请选择日期" className="DatePicker" onChange={this.dateChange} /></li>
           </ul>
           <div className="xiange"></div>
+         
           <div className="lookList" onScrollCapture={this.scroll} ref={c => { this.scrollRef = c }} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block',height:this.state.minHeight-250+'px' }}>
             <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 52 + 'px' }}>
               <div className="topFixd" style={{ top: this.state.top, minWidth: '100%',width: '' + (this.state.macNum.length + 1) * 53 + 'px' }}>
@@ -439,8 +430,8 @@ class information extends React.Component {
                     <span></span>
                     {
                       this.state.lookList[i].c.map((item, i) => (
-                        <span key={i} data-time={index.a} data-num={i + 1} data-uuid={item.uuid} data-type={item.type} on0C1lick={this.lookPlate} style={item.type === 1 ? { background: '#6FB2FF', marginTop: '0.12rem' } : {} && item.type === 2 ? { background: '#E9E9E9', marginTop: '0.12rem' } : {} && item.type === 3 ? { background: '#F5A623', marginTop: '0.12rem' } : {} && item.type === 4 ? { background: 'red', marginTop: '0.12rem' } : {}}></span>
-                      )) 
+                        <span key={i} data-time={index.a} data-num={i + 1} data-uuid={item.uuid} data-type={item.type} onClick={this.lookPlate} style={item.type === 1 ? { background: '#6FB2FF', marginTop: '0.12rem' } : {} && item.type === 2 ? { background: '#E9E9E9', marginTop: '0.12rem' } : {} && item.type === 3 ? { background: '#F5A623', marginTop: '0.12rem' } : {} && item.type === 4 ? { background: 'red', marginTop: '0.12rem' } : {}}></span>
+                      ))
                     }
                   </div>
                 ))
@@ -449,7 +440,7 @@ class information extends React.Component {
           </div>
           <Result className={this.state.lookList.length === 0 ? '' : 'hidden'} icon={<Icon type="fund" theme="twoTone" twoToneColor="#F5A623" />} title="您没有预约情况！" />
         </div>
-        <Modal 
+        <Modal
           title="给参与人员发送消息"
           visible={this.state.visible}
           onCancel={this.handleCancel}
@@ -458,24 +449,24 @@ class information extends React.Component {
             <Radio value={1}>预留场地</Radio>
             <Radio value={2}>未预留场地</Radio>
           </Radio.Group>
-          <div style={this.state.sendCheck===1?{}:{display:'none'}}>
-          <span>场馆号</span> <Select className='changName' value={this.state.changName}  onChange={this.changName} style={{width:100,height:30}}>
-                  <Option value="0">0</Option>
-                  <Option value="1">1</Option>
-                  <Option value="2">2</Option>
-                  <Option value="3">3</Option>
-                  <Option value="4">4</Option>
-                  <Option value="5">5</Option>
-                  <Option value="6">6</Option>
-                  <Option value="7">7</Option>
-                  <Option value="8">8</Option>
-                  <Option value="9">9</Option>
-          </Select>
-         
-         <span>场地号</span> <InputNumber  style={{height:'30px'}}  max={999} value={this.state.changNum}  placeholder="场地号" onChange={this.changNum} className="changNum"/>
-          </div>               
+          <div style={this.state.sendCheck === 1 ? {} : { display: 'none' }}>
+            <span>场馆号</span> <Select className='changName' value={this.state.changName} onChange={this.changName} style={{ width: 100, height: 30 }}>
+              <Option value="0">0</Option>
+              <Option value="1">1</Option>
+              <Option value="2">2</Option>
+              <Option value="3">3</Option>
+              <Option value="4">4</Option>
+              <Option value="5">5</Option>
+              <Option value="6">6</Option>
+              <Option value="7">7</Option>
+              <Option value="8">8</Option>
+              <Option value="9">9</Option>
+            </Select>
+
+            <span style={{ paddingLeft: 20 }}>场地号</span> <InputNumber style={{ height: '30px' }} max={999} value={this.state.changNum} placeholder="场地号" onChange={this.changNum} className="changNum" />
+          </div>
           <TextArea style={{ marginTop: '20px' }} className="sending" maxLength={200} placeholder={this.state.placeholder} onChange={this.textArea} rows={4} />
-          <div style={{clear:'both',height:'30px',marginTop:'10px'}}><span style={{ float: 'left' }}>还可以输入{200 - this.state.textArea.length}字</span>  <span style={{display:'block',float:'right',color:'#F5A623',cursor:'pointer'}} onClick={this.History}>历史记录...</span></div>
+          <div style={{ clear: 'both', height: '30px', marginTop: '10px' }}><span style={{ float: 'left' }}>还可以输入{200 - this.state.textArea.length}字</span>  <span style={{ display: 'block', float: 'right', color: '#F5A623', cursor: 'pointer' }} onClick={this.History}>历史记录...</span></div>
           <div className="sending">
             <div onClick={this.handleCancel}>取消</div>
             <div onClick={this.sendingMessage}>发送</div>
@@ -533,8 +524,6 @@ class information extends React.Component {
         </Drawer>
 
 
-
-     
         <Drawer
           title="消息发送历史记录"
           placement="right"
@@ -543,18 +532,19 @@ class information extends React.Component {
           onClose={this.historyClose}
           visible={this.state.History}
         >
-          <div style={this.state.historyNews.length===0?{display:'block'}:{display:'none'}}>没有历史记录...</div>
-          <div style={this.state.historyNews.length>0?{display:'block'}:{display:'none'}}>
-         {
-           this.state.historyNews.map((item,i)=>(
-           <div key={i} style={{marginTop:'15px'}}>
-             <span style={{display:'block'}}>{item.comment}</span>
-             <span style={{display:'block'}}>{item.intime}</span>
-           </div>
-           ))
-         }
-         </div>
+          <div style={this.state.historyNews.length === 0 ? { display: 'block' } : { display: 'none' }}>没有历史记录...</div>
+          <div style={this.state.historyNews.length > 0 ? { display: 'block' } : { display: 'none' }}>
+            {
+              this.state.historyNews.map((item, i) => (
+                <div key={i} style={{ marginTop: '15px' }}>
+                  <span style={{ display: 'block' }}>{item.comment}</span>
+                  <span style={{ display: 'block' }}>{item.intime}</span>
+                </div>
+              ))
+            }
+          </div>
         </Drawer>
+
 
 
       </div>
@@ -562,4 +552,4 @@ class information extends React.Component {
   }
 }
 
-export default information;
+export default appointmentList;

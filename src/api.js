@@ -253,6 +253,11 @@ export function getSetUpFieldSportId(data,headers){    // 场馆端添加优惠�
     return axios.post('/api/getSetUpFieldSportId',data, {headers: {'token': headers}})
 }
 
+export function VenueNewsHistoricalRecord(data,headers){    // 场馆针对某个活动给用户发送消息后的记录
+    return axios.post('/api/VenueNewsHistoricalRecord',data, {headers: {'token': headers}})
+}
+
+
 
 
 

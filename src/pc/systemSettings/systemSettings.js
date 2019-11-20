@@ -1,11 +1,11 @@
 import React from 'react';
 import './systemSettings.css';
 import 'antd/dist/antd.css';
-import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport, VenueTemporarilyClosed, VenueIsClose, getVenueIsClose } from '../../api';
+import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport, VenueTemporarilyClosed, VenueIsClose, getVenueIsClose,VenueNewsSendMessage } from '../../api';
 import { Input, Icon, message, Checkbox, Drawer } from 'antd';
 import 'moment/locale/zh-cn';
 
-
+const {TextArea }=Input
 
 
 
@@ -39,6 +39,9 @@ class systemSettings extends React.Component {
     textArea: '',
     isClose: '',
     Drawervisible: false,
+    bot:false,
+    textNum:0,
+    textAreaT:'',
   }
 
   showDrawer = () => {
@@ -335,7 +338,31 @@ class systemSettings extends React.Component {
   closeYu = () => {
     this.props.history.push("/home/closeYu")
   }
+  feedBack=()=>{
+    this.setState({bot:!this.state.bot})
+  }
+  text=e=>{
 
+    this.setState({textNum:e.target.value.length,textAreaT:e.target.value})
+  
+  }
+
+  
+
+
+  async VenueNewsSendMessage(data) {
+    const res = await VenueNewsSendMessage(data, sessionStorage.getItem('venue_token'))
+      message.info(res.data.msg)
+      this.setState({bot:false})
+  }
+
+  subfeed=()=>{
+    if(this.state.textAreaT!==''){
+      this.VenueNewsSendMessage({comment:this.state.textAreaT})
+    }else{
+      message.warning('请输入意见反馈')
+    }
+  }
   render() {
     return (
       <div className="systemSettings" style={{ height: parseInt(sessionStorage.getItem('min-height')) }}>
@@ -360,6 +387,14 @@ class systemSettings extends React.Component {
             <li onClick={this.showDrawer}>关于我们</li>
             <li>客服电话 （010-120101021）</li>
             <li>帮助中心</li>
+            <li><span style={{marginTop:0}} onClick={this.feedBack}>意见反馈</span>
+             <div className='feedback' style={this.state.bot===true?{display:'block'}:{display:'none'}}>
+               <TextArea  style={{width:'300px',minHeight:'60px'}} maxLength={200} autosize={true} placeholder='输入意见反馈' onChange={this.text}/>
+               <span style={{marginLeft:'10px',padding:'4px 20px',background:'#F5A623',color:'#fff',fontSize:'16px'}} onClick={this.subfeed}>提交</span>
+               <div>{this.state.textNum}/200</div>
+
+             </div>
+            </li>
           </ul>
         </div>
 
@@ -427,8 +462,14 @@ class systemSettings extends React.Component {
           <span style={{ display: 'block', marginTop: '30px' }}>挑战约球的创始团队来自阿里巴巴、GOOGLE、舒适堡、格力，及全球连锁酒店顶级管理人士。一群狂热的健身&互联网信徒，乐刻运动是一个充满极客精神以追求极致的态度为都市年轻人提供健身服务的创业公司。致力于成为混乱的国内健身行业的颠覆者。</span>
           <span style={{ display: 'block', marginTop: '30px' }}>在健身房行业，中美差距正在拉大。乐刻的创始人韩伟想参考的正是小型健身房模式，他为此准备了接近一年时间，对比模式、做市场调研、考察门店，将24小时不打烊的小型健身房正式带入中国市场。</span>
         </Drawer>
+
+
+
+
+
+
       </div>
-    );
+    )
   }
 }
 

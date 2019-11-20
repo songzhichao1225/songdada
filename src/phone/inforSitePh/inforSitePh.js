@@ -528,7 +528,7 @@ class inforSitePh extends React.Component {
             <span>营业执照</span>
             <span className="right">通过|长期</span>
           </div>
-
+          
           <div className="listSon">
             <span>身份证</span>
             <Upload
@@ -585,7 +585,7 @@ class inforSitePh extends React.Component {
           <div className="listSon" style={this.state.upData === true ? { display: 'none' } : { display: 'block' }}>
             <span>开户所在地</span>
             <Select placeholder="银行类型" style={{ width: '5rem', height: '35px', marginLeft: '2.2rem', display: 'inline-block', }} loading={this.state.flagOne} onChange={this.typeChange}>
-              {
+              { 
                 this.state.type.map((item, i) => (
                   <Option key={i} value={item.bank_id}>{item.bank_name}</Option>
                 ))
@@ -593,7 +593,7 @@ class inforSitePh extends React.Component {
             </Select>
             <Select placeholder="所在省" style={{ width: '5rem', height: '35px', marginLeft: '0.2rem', display: 'inline-block' }} loading={this.state.flagTwo} onChange={this.provinceChange}>
               {
-                this.state.backProvince.map((item, i) => (
+                this.state.backProvince.map((item,i) => (
                   <Option key={i} value={item.province_id}>{item.province}</Option>
                 ))
               }
@@ -633,10 +633,7 @@ class inforSitePh extends React.Component {
             </Select>
             <span onClick={this.upData} style={{ marginLeft: '0.5rem', color: '#D85D27' }}>修改</span>
           </div>
-
-
-
-
+          
           <Popconfirm
             title="您确定本次修改吗?"
             onConfirm={this.ziSubmit}

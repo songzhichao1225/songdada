@@ -72,11 +72,9 @@ class perfect extends React.Component {
     position: '',
     lat:'',
     lng:'',
+    handelPerson:'',
+    handleTelephone:'',
   };
-
-
-
-
 
 
 
@@ -95,7 +93,7 @@ class perfect extends React.Component {
       this.setState({
         position: res.data.data.position, handleAddress: res.data.data.address, handleName: res.data.data.name, imageUrl: res.data.data.firstURL, fileList: arrImg,
         onChangeCheck: res.data.data.sport, onChangeSite: res.data.data.facilities, onChangeText: res.data.data.siteInfo,lat:res.data.data.lat,lng:res.data.data.lng,
-        imageRes:res.data.data.firstURL
+        imageRes:res.data.data.firstURL,handelPerson:res.data.data.linkMan,handleTelephone:res.data.data.telephone
       })
     }
   }
@@ -149,7 +147,7 @@ class perfect extends React.Component {
   }
   routerMap = () => {
     if (localStorage.getItem('handleDistrict') !== null) {
-      this.props.history.push({ pathname: '/map', query: { type: localStorage.getItem('handleDistrict') } })
+      this.props.history.push({ pathname: '/map', query: { type: localStorage.getItem('handleDistrict'),city:localStorage.getItem('handleCity') } })
       sessionStorage.setItem('hanclick',1)
     } else {
       message.warning('请先选择地区')
@@ -188,8 +186,8 @@ class perfect extends React.Component {
 
   handleChange = info => {
     if (info.file.status === 'uploading') {
-      this.setState({ loading: true });
-      return;
+      this.setState({ loading: true })
+      return
     }
     if (info.file.status === 'done') {
       // Get this url from response in real world.
@@ -214,8 +212,8 @@ class perfect extends React.Component {
     this.setState({
       previewImage: file.url || file.preview,
       previewVisible: true,
-    });
-  };
+    })
+  }
 
   handleChangeT = ({ fileList }) => this.setState({ fileList });
 
@@ -242,7 +240,7 @@ class perfect extends React.Component {
   }
 
   onClickNex = () => {
-    let { imageRes, fileList, handleAddress } = this.state
+    let { imageRes, fileList, handleAddress,handelPerson,handleTelephone } = this.state
 
 
     if (sessionStorage.getItem('notType') === '1') {
@@ -273,11 +271,10 @@ class perfect extends React.Component {
           position: this.props.location.query===undefined?this.state.position:this.props.location.query.title,
           comment:'',
           type:1,
-          linkMan:'',
-          telephone:'',
+          linkMan:handelPerson,
+          telephone:handleTelephone,
         }
-        console.log(data)
-        // this.VenueInformationSave(data)
+        this.VenueInformationSave(data)
       }
 
     } else {
@@ -304,7 +301,9 @@ class perfect extends React.Component {
           sport: sportId === '' ? [] : sportId.join(','),
           facilities: facilitiesId === '' ? '' : facilitiesId.join(','),
           siteInfo: this.state.onChangeText,
-          position: this.props.location.query.title
+          position: this.props.location.query.title,
+          linkMan:handelPerson,
+          telephone:handleTelephone,
         }
         this.PerfectingVenueInformation(data)
       }
@@ -318,8 +317,14 @@ class perfect extends React.Component {
     }else{
       message.error(res.data.msg)
     }
-
   }
+
+  handelPerson=(e)=>{
+    this.setState({handelPerson:e.target.value})
+  }
+  handleTelephone=(e)=>{
+   this.setState({handleTelephone:e.target.value})
+  } 
 
 
   render() {
@@ -333,16 +338,16 @@ class perfect extends React.Component {
         <Icon type={this.state.loading ? 'loading' : 'plus'} />
         <div className="ant-upload-text">门脸照</div>
       </div>
-    );
-    const { imageUrl } = this.state;
+    )
+    const { imageUrl } = this.state
 
-    const { previewVisible, previewImage, fileList } = this.state;
+    const { previewVisible, previewImage, fileList } = this.state
     const uploadButtonT = (
       <div>
         <Icon type="plus" />
         <div className="ant-upload-text">场地照</div>
       </div>
-    );
+    )
 
 
     return (
@@ -397,7 +402,7 @@ class perfect extends React.Component {
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">详细地址</span>
-                <Input className="nameINput" onChange={this.handleAddress} value={this.props.location.query !== undefined ? this.props.location.query.adddress : this.state.handleAddress} placeholder="请输入场馆详细地址如门牌号楼层" />
+                <Input className="nameINput" onChange={this.handleAddress} value={this.state.handleAddress} placeholder="请输入场馆详细地址如门牌号楼层" />
               </div>
 
               <div className="name">
@@ -405,7 +410,15 @@ class perfect extends React.Component {
                 <Input className="nameINput" onChange={this.handleName} value={this.state.handleName} placeholder="请输入场馆名称" />
               </div>
 
+              <div className="name">
+                <span className="symbol">*</span><span className="boTitle">&nbsp;&nbsp;&nbsp;&nbsp;联系人</span>
+                <Input className="nameINput" onChange={this.handelPerson} value={this.state.handelPerson}  placeholder="请输入联系人姓名" />
+              </div>
 
+              <div className="name">
+                <span className="symbol">*</span><span className="boTitle">联系电话</span>
+                <Input className="nameINput" maxLength={11} onChange={this.handleTelephone} value={this.state.handleTelephone} placeholder="请输入联系人电话" />
+              </div>
 
               <div className="name">
                 <span className="symbol negative">*</span><span className="boTitle negativeT">门脸照(1张)</span>

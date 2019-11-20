@@ -126,12 +126,22 @@ class qualification extends React.Component {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
     } else if (res.data.code === 2000) {
-      this.setState({
-        imageUrl: res.data.data.lisenceURL, handleName: res.data.data.legalname, handleCardId: res.data.data.legalcard, imageRes: res.data.data.lisenceURL,
-        handlePhone: res.data.data.legalphone, Radiovalue: res.data.data.Settlement, handleBankNum: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, legalBaseURL: res.data.data.legalBaseURL,
-        imageReT: res.data.data.legalFilesURL.split('|')[0], imageReST: res.data.data.legalFilesURL.split('|')[1], imageUrlT: res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0],
-        imageUrlS: res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1]
-      })
+      if(res.data.data.legalFilesURL!==''){
+        this.setState({
+          imageUrl: res.data.data.lisenceURL, handleName: res.data.data.legalname, handleCardId: res.data.data.legalcard, imageRes: res.data.data.lisenceURL,
+          handlePhone: res.data.data.legalphone, Radiovalue: res.data.data.Settlement, handleBankNum: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, legalBaseURL: res.data.data.legalBaseURL,
+          imageReT: res.data.data.legalFilesURL.split('|')[0], imageReST: res.data.data.legalFilesURL.split('|')[1], imageUrlT: res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0],
+          imageUrlS: res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1]
+        })
+      }else{
+        this.setState({
+          imageUrl: res.data.data.lisenceURL, handleName: res.data.data.legalname, handleCardId: res.data.data.legalcard, imageRes: res.data.data.lisenceURL,
+          handlePhone: res.data.data.legalphone, Radiovalue: res.data.data.Settlement, handleBankNum: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, legalBaseURL: res.data.data.legalBaseURL,
+          imageReT: res.data.data.legalFilesURL.split('|')[0], imageReST: res.data.data.legalFilesURL.split('|')[1], imageUrlT: res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0],
+          imageUrlS: ''
+        })
+      }
+      
     }
   }
 

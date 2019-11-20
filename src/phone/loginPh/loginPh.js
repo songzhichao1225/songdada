@@ -40,7 +40,7 @@ class loginPh extends React.Component {
     return (
       <div className="loginPh">
           <Icon type="close" onClick={this.close} style={{ position:'absolute', left: '5%', top: '1.5%',zIndex:'99' }} />
-        <div className="banner">
+        <div className="banner">   
           <div className="title">成为合作场馆</div>
           <div className="titleBottom">免费引流到店，大幅提高场馆收入</div>
           <div className="loginBtn" onClick={this.login}>登录</div>
@@ -48,11 +48,7 @@ class loginPh extends React.Component {
         <div className="center">
           <img src={require("../../assets/phoneOne (1).png")} alt=""/>
         </div>
-        <div className="footer">
-          <img src={require("../../assets/phoneOne (2).png")} alt=""/>
-        </div>
         <div className="footerBtn" onClick={this.login}>登录/注册成为合作场馆</div>
-
 
       </div>
     );

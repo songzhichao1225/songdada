@@ -15,7 +15,7 @@
 }
 .loginPhTeo .loginInput .name .phone{
     outline: none;
-    width: 80%;
+    width: 70%;
     height: 2.9rem;
     border: none;
     line-height: 3rem;
@@ -24,7 +24,7 @@
 }
 .loginPhTeo .loginInput .name>span{
   display: block;
-  float: right;
+  float: left;
   line-height: 3.06rem;
   font-size: 0.75rem;
 }
@@ -43,13 +43,13 @@
    display: block;
    float: left;
    font-size:0.75rem;
-   padding: 0.4rem;
+   padding: 1rem;
 }
 .loginPhTeo .footer>span:last-child{
     display: block;
     float: right;
     font-size:0.75rem;
-    padding: 0.4rem;
+    padding: 1rem;
  }
  .loginPhTeo .ant-input{
      border: none;

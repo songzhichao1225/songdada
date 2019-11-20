@@ -1,5 +1,5 @@
 .header{
-    height: 124px;
+    height: 80px;
     background: #374D66;
 }
 .sider{
@@ -33,14 +33,14 @@
   float: left
 }
 .Gname>img{
-    margin-top: 44px;
+    margin-top: 22px;
     float: left;
 }
 .Gname>span{
     display: block;
     font-size: 24px;
     color: #FFFFFF;
-    line-height: 124px;
+    line-height: 80px;
     margin-left: 20px;
     float: left;
 }
@@ -52,7 +52,7 @@
     font-size: 16px;
     color: #FFFFFF;
     display: block;
-    margin-top: 30px;
+    margin-top: 10px;
 
 }
 .time .new{
@@ -78,9 +78,13 @@
 .time .number>span{
     font-size: 10px;
     color: #fff;
-    line-height: 18px;
+    line-height: 17px;
     text-align: center;
-    
+    display: block;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap
+
 }
 .time .lvyue{
     font-size: 16px;
@@ -116,13 +120,17 @@
     min-width: 1300px;
   
 }
+.homePage .divContent>div:nth-child(3){
+clear: left;
+ margin-left: 0;
+}
 .homePage .divContent>div{
     width: 18%;
-    height: 190px;
+    height: 140px;
     margin-left: 2%;
     float: left;
     background: red;
-    margin-top: 80px; 
+    margin-top: 30px; 
     cursor: pointer;
 }
 .homePage .divContent>div:first-child{
@@ -168,7 +176,7 @@
     font-size: 22px;
     display: block;
     color: #FFFFFF;
-    margin-top: 55px;
+    margin-top: 30%;
     margin-left: 17px;
 }
 .homePage .divContent .left span:last-child{
@@ -179,14 +187,14 @@
 }
 .homePage .divContent  .right{
     width: 60px;
-    height: 190px;
+    height: 100%;
     background: #F4B243;
     border-radius: 0 6px 6px 0;
     float: right;
 }
 .homePage .divContent  .right img{
     display: block;
-    margin: 73px auto 0;
+    margin: 70% auto 0;
 }
 .homePage .xing{
     margin-top: 10px;

@@ -46,6 +46,7 @@
     box-shadow: none;
     line-height: 3rem;
     padding-left: 0.8rem;
+    font-size: 0.75rem;
 }
 .inforSitePh .listSon .rightLi{
     width: 80%;
@@ -53,6 +54,7 @@
     float: right;
     padding-left: 11px;
     margin-top: 0.5rem;
+    font-size: 0.75rem;
 }
 .inforSitePh .listSon .rightLi .ant-checkbox-wrapper{
     width:40%;
@@ -62,6 +64,9 @@
     width: 80%;
     padding-left: 11px;
     margin-top: 0.5rem;
+}
+.inforSitePh .ant-checkbox-wrapper{
+    font-size: 0.75rem;
 }
 
 .inforSitePh .ko{
@@ -88,6 +93,7 @@
     width: 100%;
     line-height: 3rem;
     text-align: center; 
+    font-size: 1rem;
 }
 .inforSitePh .submit{
 	width: 80%;

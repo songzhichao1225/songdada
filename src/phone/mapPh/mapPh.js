@@ -41,20 +41,17 @@ class mapPh extends React.Component {
     }
   }
 
-
-
-
-
   handleSearch = e => {
     this.componentDidMount(e)
   }
 
   handleClick = e => {
     let dateset = e.target.dataset
+    console.log(dateset)
     if(sessionStorage.getItem('inforMap')!==null){
-      this.props.history.push({ pathname:'/homePh/inforSitePh', query: { lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })
+      this.props.history.push({ pathname:'/homePh/inforSitePh', query: {title:dateset.til, lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })
     }else{
-      this.props.history.push({ pathname:'/stadiumInformationPh', query: { lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })
+      this.props.history.push({ pathname:'/stadiumInformationPh', query: {title:dateset.til,lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })
     }
    
   }
@@ -64,7 +61,7 @@ class mapPh extends React.Component {
 
   render() {
     let list = this.state.mapList.map((val, i) => {
-      return <li key={i} onClick={this.handleClick} data-lat={val.point.lat} data-lng={val.point.lng} data-adress={val.address}><span data-lat={val.point.lat} data-lng={val.point.lng} data-adress={val.address}>{val.title}</span><span data-lat={val.point.lat} data-lng={val.point.lng} data-adress={val.address} >{val.address}</span></li>
+      return <li key={i} onClick={this.handleClick} data-til={val.title} data-lat={val.point.lat} data-lng={val.point.lng} data-adress={val.address}><span  data-til={val.title} data-lat={val.point.lat} data-lng={val.point.lng} data-adress={val.address}>{val.title}</span><span  data-til={val.title} data-lat={val.point.lat} data-lng={val.point.lng} data-adress={val.address} >{val.address}</span></li>
     })
     return (
       <div className="mapLocation">
