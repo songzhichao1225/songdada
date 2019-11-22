@@ -158,9 +158,6 @@ class stadiums extends React.Component {
   componentDidMount() {
     this.getVenueInformation()
     this.getVenueIssecondaudit()
-    setInterval(() => {
-      this.getVenueIssecondaudit()
-    }, 50000)
     this.getVenueQualificationInformation()
     this.getVenueOpenBankProvince()
     this.getVenueOpenBank()

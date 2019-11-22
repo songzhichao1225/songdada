@@ -4,6 +4,7 @@ import { message, Result, Icon, Pagination,Drawer,Spin } from 'antd';
 import { getVenueNewsList, getVenueNewsReceivedList,getVenueNewsFirst,VenueNewsSaveIsRead } from '../../api';
 
 
+
 class newsPh extends React.Component {
 
   state = {
@@ -21,6 +22,11 @@ class newsPh extends React.Component {
     spinFlag: false,
     newsPage:0,
     newsPageTwo:0,
+
+
+
+   
+
   };
   async getVenueNewsList(data) {
     const res = await getVenueNewsList(data, localStorage.getItem('venue_token'))
@@ -145,6 +151,7 @@ class newsPh extends React.Component {
         <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block',height:this.state.clenTop,transition: '0.3s',position:'relative' } : { display: 'none' }} ><Icon type="loading" className='loadingY' style={{top:this.state.clenTop/7}} /></div>
         <div className="receive" style={this.state.flag === 1 ? { display: 'block' } : { display: 'none' }} onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
           <div className="contentScroll">
+         
           {
             this.state.getVenueNewsList.map((item, i) => (
               <div className="recriveSon" key={i} onClick={this.details} data-uid={item.uuid}>

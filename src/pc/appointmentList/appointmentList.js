@@ -50,8 +50,8 @@ class appointmentList extends React.Component {
     History: false,
     historyNews: [],
     minHeight: sessionStorage.getItem('min-height'),
-    left:'',
-    top:'',
+    left: '',
+    top: '',
   };
 
   async getVenueSport(data) {
@@ -75,35 +75,27 @@ class appointmentList extends React.Component {
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         this.setState({ start: start, end: end })
         this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: start, enddate: end })
-        setInterval(() => {
-          this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: start, enddate: end })
-        }, 1000 * 60 * 5)
+
       } else if (this.props.location.query.time === 2) {
         let myDate = new Date()
         let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         this.setState({ start: start, end: end })
         this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: start, enddate: end })
-        setInterval(() => {
-          this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: start, enddate: end })
-        }, 1000 * 60 * 5)
+
       } else if (this.props.location.query.uuid) {
         let myDate = new Date()
         let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         this.setState({ start: start, end: end })
         this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: start, enddate: end })
-        setInterval(() => {
-          this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: start, enddate: end })
-        }, 1000 * 60 * 5)
+
 
         this.setState({ visible: true, publicUUID: this.props.location.query.uuid })
       }
     } else {
       this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
-      setInterval(() => {
-        this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
-      }, 1000 * 60 * 5)
+
     }
   }
 
@@ -145,9 +137,20 @@ class appointmentList extends React.Component {
       this.setState({ lookList: res.data.data, macNum: res.data.data[0].c })
       if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 24) {
         if (res.data.data[res.data.data.length - 1].a.slice(-2) === '00') {
-          this.setState({ lastTime: parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + ':30' })
+
+          if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 10) {
+            this.setState({ lastTime: '0' + (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2))) + ':30' })
+          } else {
+            this.setState({ lastTime: parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + ':30' })
+          }
         } else if (res.data.data[res.data.data.length - 1].a.slice(-2) === '30') {
-          this.setState({ lastTime: parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1 + ':00' })
+
+          if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1 < 10) {
+            this.setState({ lastTime: '0' + (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1) + ':00' })
+          } else {
+            this.setState({ lastTime: parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1 + ':00' })
+          }
+
         }
       }
     } else if (res.data.code === 4005) {
@@ -176,7 +179,6 @@ class appointmentList extends React.Component {
     } else {
       this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: e, startdate: this.state.start, enddate: this.state.end })
     }
-
   }
   clickLi = (e) => {
     this.getVenueReservations({ sportid: e.target.dataset.num, date: this.state.dateString })
@@ -188,7 +190,11 @@ class appointmentList extends React.Component {
   }
   Oneloading = () => {
     this.setState({ Oneloading: true })
-    this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
+    if (this.state.start === '开始日期') {
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '' })
+    } else {
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
+    }
   }
   handleCancel = () => {
     this.setState({ visible: false })
@@ -206,15 +212,14 @@ class appointmentList extends React.Component {
       }
     } else {
       message.error(res.data.msg)
-
     }
   }
 
   sending = e => {
     this.setState({ visible: true, publicUUID: e.currentTarget.dataset.uid, changNum: e.currentTarget.dataset.siteid, changName: e.currentTarget.dataset.sitenum })
   }
-  sendCheck = e => {
 
+  sendCheck = e => {
     this.setState({ sendCheck: e.target.value })
     if (e.target.value === 2) {
       this.setState({ placeholder: '请说明未预留场地原因' })
@@ -228,11 +233,7 @@ class appointmentList extends React.Component {
   sendingMessage = e => {
     let { publicUUID, sendCheck, textArea, changNum, changName } = this.state
     this.VenueSendMessage({ type: sendCheck, publicUUID: publicUUID, content: textArea, venueid: changNum, venuenumber: changName })
-
   }
-
-
-
 
   async VenueClickCancelPlace(data) {
     const res = await VenueClickCancelPlace(data, sessionStorage.getItem('venue_token'))
@@ -243,6 +244,8 @@ class appointmentList extends React.Component {
       message.error('操作失败')
     }
   }
+
+
 
   lookPlate = e => {
     let time = e.currentTarget.dataset.time
@@ -258,12 +261,15 @@ class appointmentList extends React.Component {
     }
   }
 
+
+
   informOnClose = () => {
     this.setState({ informVisible: false })
   }
 
-  changNum = (e) => {
 
+
+  changNum = (e) => {
     this.setState({ changNum: e })
   }
 
@@ -291,7 +297,7 @@ class appointmentList extends React.Component {
     let scrollLeft = this.scrollRef.scrollLeft;
     this.setState({ left: scrollLeft, top: scrollTop })
   }
- 
+
   render() {
 
     let userMessage;
@@ -411,10 +417,10 @@ class appointmentList extends React.Component {
             <li className="dateSelect"><DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={zh_CN} placeholder="请选择日期" className="DatePicker" onChange={this.dateChange} /></li>
           </ul>
           <div className="xiange"></div>
-         
-          <div className="lookList" onScrollCapture={this.scroll} ref={c => { this.scrollRef = c }} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block',height:this.state.minHeight-250+'px' }}>
+
+          <div className="lookList" onScrollCapture={this.scroll} ref={c => { this.scrollRef = c }} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block', height: this.state.minHeight - 250 + 'px' }}>
             <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 52 + 'px' }}>
-              <div className="topFixd" style={{ top: this.state.top, minWidth: '100%',width: '' + (this.state.macNum.length + 1) * 53 + 'px' }}>
+              <div className="topFixd" style={{ top: this.state.top, minWidth: '100%', width: '' + (this.state.macNum.length + 1) * 53 + 'px' }}>
                 <span></span>
                 {
                   this.state.macNum.map((item, i) => (
@@ -426,7 +432,7 @@ class appointmentList extends React.Component {
               {
                 this.state.lookList.map((index, i) => (
                   <div key={i} className="sonList">
-                 <span style={{ left: this.state.left }}>{index.a}<br/>{i===this.state.lookList.length-1?this.state.lastTime:''}</span>
+                    <span style={{ left: this.state.left }}>{index.a}<br />{i === this.state.lookList.length - 1 ? this.state.lastTime : ''}</span>
                     <span></span>
                     {
                       this.state.lookList[i].c.map((item, i) => (
@@ -450,7 +456,8 @@ class appointmentList extends React.Component {
             <Radio value={2}>未预留场地</Radio>
           </Radio.Group>
           <div style={this.state.sendCheck === 1 ? {} : { display: 'none' }}>
-            <span>场馆号</span> <Select className='changName' value={this.state.changName} onChange={this.changName} style={{ width: 100, height: 30 }}>
+            <span>场馆号</span>
+            <Select className='changName' value={this.state.changName} onChange={this.changName} style={{ width: 100, height: 30 }}>
               <Option value="0">0</Option>
               <Option value="1">1</Option>
               <Option value="2">2</Option>
@@ -462,7 +469,6 @@ class appointmentList extends React.Component {
               <Option value="8">8</Option>
               <Option value="9">9</Option>
             </Select>
-
             <span style={{ paddingLeft: 20 }}>场地号</span> <InputNumber style={{ height: '30px' }} max={999} value={this.state.changNum} placeholder="场地号" onChange={this.changNum} className="changNum" />
           </div>
           <TextArea style={{ marginTop: '20px' }} className="sending" maxLength={200} placeholder={this.state.placeholder} onChange={this.textArea} rows={4} />
@@ -480,7 +486,6 @@ class appointmentList extends React.Component {
           onClose={this.informOnClose}
           visible={this.state.informVisible}
         >
-
           <div className="informDrawer">
             <span>活动编号：</span>
             <span>{this.state.informList.length > 0 ? this.state.informList[0].orderId : ''}</span>
@@ -522,8 +527,6 @@ class appointmentList extends React.Component {
             <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoneyStatus : ''}</span>
           </div>
         </Drawer>
-
-
         <Drawer
           title="消息发送历史记录"
           placement="right"
@@ -544,11 +547,8 @@ class appointmentList extends React.Component {
             }
           </div>
         </Drawer>
-
-
-
       </div>
-    );
+    )
   }
 }
 

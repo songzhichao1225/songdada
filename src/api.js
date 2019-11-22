@@ -257,6 +257,9 @@ export function VenueNewsHistoricalRecord(data,headers){    // 场馆针对某�
     return axios.post('/api/VenueNewsHistoricalRecord',data, {headers: {'token': headers}})
 }
 
+export function getVenueHelpCenter(data,headers){    // 场馆帮助中心
+    return axios.post('/api/getVenueHelpCenter',data, {headers: {'token': headers}})
+}
 
 
 

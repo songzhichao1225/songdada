@@ -1,11 +1,11 @@
 import React from 'react';
 import './systemSettings.css';
 import 'antd/dist/antd.css';
-import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport, VenueTemporarilyClosed, VenueIsClose, getVenueIsClose,VenueNewsSendMessage } from '../../api';
-import { Input, Icon, message, Checkbox, Drawer } from 'antd';
+import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport, VenueTemporarilyClosed, VenueIsClose, getVenueIsClose, VenueNewsSendMessage, getVenueHelpCenter } from '../../api';
+import { Input, Icon, message, Checkbox, Drawer,Pagination } from 'antd';
 import 'moment/locale/zh-cn';
 
-const {TextArea }=Input
+const { TextArea } = Input
 
 
 
@@ -21,7 +21,7 @@ class systemSettings extends React.Component {
     text: '',
     textT: '获取验证码',
     textTwo: '获取验证码',
-    textOne:'获取验证码',
+    textOne: '获取验证码',
     phone: '',
     code: '',
     passWord: '',
@@ -39,9 +39,12 @@ class systemSettings extends React.Component {
     textArea: '',
     isClose: '',
     Drawervisible: false,
-    bot:false,
-    textNum:0,
-    textAreaT:'',
+    bot: false,
+    textNum: 0,
+    textAreaT: '',
+    help: false,
+    helpList: [],
+    other:0,
   }
 
   showDrawer = () => {
@@ -52,6 +55,7 @@ class systemSettings extends React.Component {
   onClose = () => {
     this.setState({
       Drawervisible: false,
+      help:false
     });
   }
 
@@ -65,6 +69,10 @@ class systemSettings extends React.Component {
       this.setState({ isClose: res.data.data.isclose })
     }
   }
+
+
+
+
   componentDidMount() {
     this.getVenueIsClose()
   }
@@ -103,9 +111,9 @@ class systemSettings extends React.Component {
 
   async nacode(data) {
     const res = await _code(data)
-    if(res.data.code===2000){
+    if (res.data.code === 2000) {
       message.info(res.data.msg)
-    }else{
+    } else {
       message.error(res.data.msg)
     }
   }
@@ -129,7 +137,7 @@ class systemSettings extends React.Component {
         this.setState({ textT: num-- })
         if (num === -1) {
           clearInterval(timer)
-          this.setState({ textT:'获取验证码'})
+          this.setState({ textT: '获取验证码' })
         }
       }, 1000)
       this.nacode({ "mobile": this.state.phone, "type": 'venuesavepass' })
@@ -157,7 +165,7 @@ class systemSettings extends React.Component {
   }
 
 
-  
+
   naCodeOutie = () => {
     if (this.state.corporatePhone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.corporatePhone))) {
       let num = 60
@@ -297,20 +305,6 @@ class systemSettings extends React.Component {
     let dateR = date.getDate()
     let hour = date.getHours()
     let minutes = date.getMinutes()
-    // if (month < 10) {
-    //   month = "0" + month;
-    // }
-    // if (dateR < 10) {
-    //   dateR = "0" + date;
-    // }
-    // if (hour < 10) {
-    //   hour = "0" + hour;
-    // }
-    // if (minutes < 10) {
-    //   minutes = "0" + minutes;
-    // }
-
-
     var time = year + "-" + month + "-" + dateR + " " + hour + ":" + minutes; //2009-06-12 17:18:05
     return time;
   }
@@ -330,39 +324,50 @@ class systemSettings extends React.Component {
   }
   modelSubmit = () => {
     let { runName, runId, start, end, textArea, } = this.state
-
     this.VenueTemporarilyClosed({ sportid: runId, sportname: runName, starttime: start, endtime: end, comment: textArea })
-
   }
 
   closeYu = () => {
     this.props.history.push("/home/closeYu")
   }
-  feedBack=()=>{
-    this.setState({bot:!this.state.bot})
+  feedBack = () => {
+    this.setState({ bot: !this.state.bot })
   }
-  text=e=>{
+  text = e => {
 
-    this.setState({textNum:e.target.value.length,textAreaT:e.target.value})
-  
+    this.setState({ textNum: e.target.value.length, textAreaT: e.target.value })
+
   }
-
-  
-
-
   async VenueNewsSendMessage(data) {
     const res = await VenueNewsSendMessage(data, sessionStorage.getItem('venue_token'))
-      message.info(res.data.msg)
-      this.setState({bot:false})
+    message.info(res.data.msg)
+    this.setState({ bot: false })
   }
 
-  subfeed=()=>{
-    if(this.state.textAreaT!==''){
-      this.VenueNewsSendMessage({comment:this.state.textAreaT})
-    }else{
+  subfeed = () => {
+    if (this.state.textAreaT !== '') {
+      this.VenueNewsSendMessage({ comment: this.state.textAreaT })
+    } else {
       message.warning('请输入意见反馈')
     }
   }
+
+
+  async getVenueHelpCenter(data) {
+    const res = await getVenueHelpCenter(data, sessionStorage.getItem('venue_token'))
+    this.setState({ helpList: res.data.data,other:res.data.other })
+  }
+
+  help = () => {
+    this.getVenueHelpCenter()
+    this.setState({ help: true })
+  }
+  current=(page,pageSize)=>{
+    this.getVenueHelpCenter({page:page})
+  }
+
+
+
   render() {
     return (
       <div className="systemSettings" style={{ height: parseInt(sessionStorage.getItem('min-height')) }}>
@@ -386,14 +391,14 @@ class systemSettings extends React.Component {
             </li>
             <li onClick={this.showDrawer}>关于我们</li>
             <li>客服电话 （010-120101021）</li>
-            <li>帮助中心</li>
-            <li><span style={{marginTop:0}} onClick={this.feedBack}>意见反馈</span>
-             <div className='feedback' style={this.state.bot===true?{display:'block'}:{display:'none'}}>
-               <TextArea  style={{width:'300px',minHeight:'60px'}} maxLength={200} autosize={true} placeholder='输入意见反馈' onChange={this.text}/>
-               <span style={{marginLeft:'10px',padding:'4px 20px',background:'#F5A623',color:'#fff',fontSize:'16px'}} onClick={this.subfeed}>提交</span>
-               <div>{this.state.textNum}/200</div>
+            <li onClick={this.help}>帮助中心</li>
+            <li><span style={{ marginTop: 0 }} onClick={this.feedBack}>意见反馈</span>
+              <div className='feedback' style={this.state.bot === true ? { display: 'block' } : { display: 'none' }}>
+                <TextArea style={{ width: '300px', minHeight: '60px' }} maxLength={200} autosize={true} placeholder='输入意见反馈' onChange={this.text} />
+                <span style={{ marginLeft: '10px', padding: '4px 20px', background: '#F5A623', color: '#fff', fontSize: '16px' }} onClick={this.subfeed}>提交</span>
+                <div>{this.state.textNum}/200</div>
 
-             </div>
+              </div>
             </li>
           </ul>
         </div>
@@ -461,6 +466,27 @@ class systemSettings extends React.Component {
           <span style={{ display: 'block' }}>挑战约球，2019年在北京成立，是由北京甲乙电子商务技术有限公司开发，是国内领先的运动O2O平台，全国规模最大的24小时连锁健身品牌</span>
           <span style={{ display: 'block', marginTop: '30px' }}>挑战约球的创始团队来自阿里巴巴、GOOGLE、舒适堡、格力，及全球连锁酒店顶级管理人士。一群狂热的健身&互联网信徒，乐刻运动是一个充满极客精神以追求极致的态度为都市年轻人提供健身服务的创业公司。致力于成为混乱的国内健身行业的颠覆者。</span>
           <span style={{ display: 'block', marginTop: '30px' }}>在健身房行业，中美差距正在拉大。乐刻的创始人韩伟想参考的正是小型健身房模式，他为此准备了接近一年时间，对比模式、做市场调研、考察门店，将24小时不打烊的小型健身房正式带入中国市场。</span>
+        </Drawer>
+
+
+        <Drawer
+          title="帮助中心"
+          placement="right"
+          closable={false}
+          width={'50%'}
+          onClose={this.onClose}
+          visible={this.state.help}
+        >
+          {
+            this.state.helpList.map((item, i) => (
+              <div key={i} style={{ marginTop: '30px' }}>
+                <div style={{fontSize:'16px',color:'#F5A623'}}>{item.title}</div>
+                <div style={{fontSize:'14px',marginTop:'10px'}}>{item.content}</div>
+              </div>
+            ))
+          }
+          <Pagination className='fenye' defaultCurrent={1} onChange={this.current} total={this.state.other} />
+          
         </Drawer>
 
 

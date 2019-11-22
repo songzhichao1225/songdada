@@ -1,6 +1,6 @@
 import React from 'react';
 import './sitePh.css';
-import { Picker, List, WhiteSpace } from 'antd-mobile';
+
 import { message, Row, Col, Input, Pagination, Drawer, Select, DatePicker, Result, Icon, Popconfirm, Spin, InputNumber } from 'antd';
 import { getVenueFieldList, getVenueSport, addVenueField, getFirstField, getVenueDiscountList, addVenueDiscount, delVenueField, DelVenueDiscount, getFirstDiscount, getSetUpFieldSportId } from '../../api';
 
@@ -739,7 +739,8 @@ class sitePh extends React.Component {
                     <Row className="detail">
                       <Col className="oneCol" xs={{ span: 9 }} lg={{ span: 6 }}>最长可预定 {item.date}</Col>
                       <Col xs={{ span: 7, offset: 2 }} style={{ textAlign: 'left' }} lg={{ span: 6 }}>最短预定 {item.appointmenttime/60 + '小时'}</Col>
-                      <Col xs={{ span: 6 }} lg={{ span: 6 }}>  <Popconfirm
+                      <Col xs={{ span: 6 }} lg={{ span: 6 }}>  
+                      <Popconfirm
                         title="你确定要删除吗?"
                         onConfirm={this.siteDelet}
                         onCancel={this.siteCancel}

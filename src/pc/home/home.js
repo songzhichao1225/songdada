@@ -66,6 +66,7 @@ class home extends React.Component {
     } else if (this.props.history.location.pathname === '/home/closeYu') {
       sessionStorage.setItem('path', '6');
     } 
+
     //这里的ip地址改为自己服务器的ip地址
     var ws = new WebSocket("wss://venue.tiaozhanmeiyitian.com/socket");
     ws.onopen = function () {
@@ -75,7 +76,7 @@ class home extends React.Component {
       let message_info = JSON.parse(e.data)      
       let msg = new SpeechSynthesisUtterance(message_info.percent)
       window.speechSynthesis.speak(msg)
-      notification.open({description:message_info.percent})   
+      notification.open({description:message_info.percent})      
     }
   }
   componentWillReceiveProps() {
@@ -89,11 +90,11 @@ class home extends React.Component {
     }  else if (this.props.history.location.pathname === '/home/siteSettings') {
       sessionStorage.setItem('path', '3');
     } else if (this.props.history.location.pathname === '/home/preferential') {
-      sessionStorage.setItem('path', '4');
+      sessionStorage.setItem('path', '4'); 
     } else if (this.props.history.location.pathname === '/home/stadiums') {
       sessionStorage.setItem('path', '5');
-    } else if (this.props.history.location.pathname === '/home/systemSettings') {
-      sessionStorage.setItem('path', '6');
+    } else if (this.props.history.location.pathname === '/home/systemSettings') { 
+      sessionStorage.setItem('path', '6'); 
     } else if (this.props.history.location.pathname === '/home/myWallet') {
       sessionStorage.setItem('path', '7');
     } else if (this.props.history.location.pathname === '/home/closeYu') {
@@ -210,7 +211,7 @@ class home extends React.Component {
 
   mounthOrder = () => {
     this.props.history.push({ pathname: '/home/information', query: { time: 1 } })
-  }
+  } 
 
   mounthOrderTwo = () => {
     this.props.history.push({ pathname: '/home/information', query: { time: 2 }})
@@ -246,12 +247,12 @@ class home extends React.Component {
                 <i className="anticon anticon-gift">
                   <svg t="1571136349374" className="icon" viewBox="64 64 896 896" version="1.1" fill="currentColor" p-i='true'  d="1831" width="1em" height="1em"><path d="M424.9 142.4c0.1 0.1 0.3 0.2 0.3 0.3V878c-0.1 0.1-0.2 0.3-0.3 0.3H145.6c-0.1-0.1-0.3-0.2-0.3-0.3V142.7c0.1-0.1 0.2-0.3 0.3-0.3h279.3m0-80H145.5c-44.2 0-80.3 36.1-80.3 80.3v735.4c0 44.2 36.1 80.3 80.3 80.3h279.4c44.2 0 80.3-36.1 80.3-80.3V142.7c0-44.1-36.1-80.3-80.3-80.3z" p-id="2437"></path><path d="M879.8 142.9c0.1 0.1 0.3 0.2 0.3 0.3v341c-0.1 0.1-0.2 0.3-0.3 0.3H631.4c-0.1-0.1-0.3-0.2-0.3-0.3v-341c0.1-0.1 0.2-0.3 0.3-0.3h248.4m0-80H631.3c-44.2 0-80.3 36.1-80.3 80.3v341c0 44.2 36.1 80.3 80.3 80.3h248.5c44.2 0 80.3-36.1 80.3-80.3v-341c0-44.1-36.1-80.3-80.3-80.3z" p-id="2438"></path><path d="M880.2 688.1c0.1 0.1 0.3 0.2 0.3 0.3v189.7c-0.1 0.1-0.2 0.3-0.3 0.3H631.8c-0.1-0.1-0.3-0.2-0.3-0.3V688.4c0.1-0.1 0.2-0.3 0.3-0.3h248.4m0-80H631.7c-44.2 0-80.3 36.1-80.3 80.3v189.8c0 44.2 36.1 80.3 80.3 80.3h248.5c44.2 0 80.3-36.1 80.3-80.3V688.4c0-44.2-36.1-80.3-80.3-80.3z" p-id="2439"></path></svg>
                 </i>
-                <span>场地设置</span>
+                <span>场地设置</span> 
               </Link>
-            </Menu.Item> 
+            </Menu.Item>
             <Menu.Item key="4">
               <Link to="/home/preferential">
-                <Icon type="gift" />
+                <Icon type="gift" /> 
                 <span>优惠活动</span>
               </Link>
             </Menu.Item>
@@ -264,7 +265,7 @@ class home extends React.Component {
               </Link>
             </Menu.Item>
             
-
+            
             <Menu.Item key="6">
               <Link to="/home/systemSettings">
                 <Icon  type="setting" />
@@ -345,7 +346,7 @@ class home extends React.Component {
             <Route path="/home/myWallet" component={myWallet} />
             <Route path="/home/comment" component={comment} />
             <Route path="/home/news" component={news} />
-            <Route path="/home/closeYu" component={closeYu} />
+            <Route path="/home/closeYu" component={closeYu} /> 
             <Route path="/home/appointmentList" component={appointmentList} />
           </Content>
           <Footer style={{ textAlign: 'center', height: '3%', lineHeight: '3%' }}>Copyright ©2019 北京甲乙网络科技有限公司</Footer>
