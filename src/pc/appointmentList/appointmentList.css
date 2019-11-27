@@ -299,6 +299,7 @@
     float:left;
     text-align: center;
     line-height: 1.88rem;
+    cursor: pointer;
 }
 .orderList .lookList .sonList>span:first-child{
     background: #fff;

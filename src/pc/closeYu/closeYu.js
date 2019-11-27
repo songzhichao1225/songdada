@@ -68,6 +68,7 @@ class closeYu extends React.Component {
 
   async getSetUpFieldSportId(data) {
     const res = await getSetUpFieldSportId(data, sessionStorage.getItem('venue_token'))
+    console.log(res.data.data)
      this.setState({ListSport:res.data.data})
   }
 
@@ -113,6 +114,7 @@ class closeYu extends React.Component {
     return time;
   }
   handleChangeSelect = e => {
+    console.log(e)
     this.setState({ runId: e })
     let day = ''
     switch (parseInt(e)) {
@@ -155,10 +157,12 @@ class closeYu extends React.Component {
     if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
-    } else {
+    } else if(res.data.data.code===2000) {
       this.setState({ visible: false })
       message.info(res.data.msg)
       this.VenueTemporarilyClosedList()
+    }else{
+      message.warning(res.data.msg)
     }
   }
 
@@ -248,7 +252,7 @@ class closeYu extends React.Component {
                 <Col xs={{ span: 7, offset: 0 }}>{item.starttime}</Col>
                 <Col xs={{ span: 4, offset: 0 }}>{item.endtime}</Col>
                 <Col xs={{ span: 4, offset: 0 }}>
-                  <img onClick={this.update} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;
+                  {/* <img onClick={this.update} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp; */}
                  <Popconfirm
                     title="你确定要删除本条信息吗?"
                     onConfirm={this.confirm}
@@ -281,7 +285,7 @@ class closeYu extends React.Component {
             <Select placeholder="请选择" className="selectN" style={{ width: 350, marginLeft: 15 }} value={this.state.runName} onChange={this.handleChangeSelect}>
               {
                 this.state.ListSport.map((item, i) => (
-                  <Option key={i} value={item.id}>{item.name}</Option>
+                  <Option key={i} value={item.sportid}>{item.name}</Option>
                 ))
               }
             </Select>  

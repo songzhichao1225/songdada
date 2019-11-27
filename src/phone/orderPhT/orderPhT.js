@@ -1,7 +1,7 @@
 import React from 'react';
 import './orderPhT.css';
 import { Row, Col, message, Pagination, Modal, Radio, Input, Drawer, DatePicker, Result, Icon, Spin } from 'antd';
-import { getReservationActivitieslist, VenueSendMessage, getVenueReservations, getVenueSport, VenueClickCancelPlace } from '../../api';
+import { getReservationActivitieslist, VenueSendMessage, getVenueReservationss, getVenueSport, VenueClickCancelPlace } from '../../api';
 
 import moment from 'moment';
 import zh_CN from 'antd/es/date-picker/locale/zh_CN'
@@ -66,8 +66,8 @@ class orderPhT extends React.Component {
 
 
 
-  async getVenueReservations(data) {
-    const res = await getVenueReservations(data, localStorage.getItem('venue_token'))
+  async getVenueReservationss(data) {
+    const res = await getVenueReservationss(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ lookList: res.data.data, macNum: res.data.data[0].c })
     } else {
@@ -101,7 +101,7 @@ class orderPhT extends React.Component {
 
   componentDidMount() {
     this.setState({ dataString: new Date().toLocaleDateString().replace(/\//g, "-") })
-    this.getVenueReservations({ sportid: 1, date: new Date().toLocaleDateString().replace(/\//g, "-") })
+    this.getVenueReservationss({ sportid: 1, date: new Date().toLocaleDateString().replace(/\//g, "-") })
     this.getVenueSport()
 
     if (this.props.location.query !== undefined) {
@@ -216,7 +216,7 @@ class orderPhT extends React.Component {
 
   dateChange = (date, dataString) => { 
     this.setState({ dataString: dataString })
-    this.getVenueReservations({ date: dataString, sportid: this.state.sportid })
+    this.getVenueReservationss({ date: dataString, sportid: this.state.sportid })
   }
   sport = e => {
     this.setState({ sportIdVal: e.currentTarget.dataset.id })
@@ -242,7 +242,7 @@ class orderPhT extends React.Component {
 
   sportName = e => {
     this.setState({ liNum: e.currentTarget.dataset.id, liIndex: e.currentTarget.dataset.index })
-    this.getVenueReservations({ sportid: e.currentTarget.dataset.id, date: this.state.dataString })
+    this.getVenueReservationss({ sportid: e.currentTarget.dataset.id, date: this.state.dataString })
   }
 
   informOnClose = () => {
@@ -252,7 +252,7 @@ class orderPhT extends React.Component {
   async VenueClickCancelPlace(data) {
     const res = await VenueClickCancelPlace(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.getVenueReservations({ sportid: this.state.liNum, date: this.state.dataString })
+      this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.dataString })
       message.info(res.data.msg)
     } else {
       message.error('操作失败')
@@ -451,7 +451,7 @@ class orderPhT extends React.Component {
               }
             </div>
           </div>
-          <DatePicker className="date" placeholder="选择日期" locale={zh_CN} onChange={this.dateChange} />
+          <DatePicker className="dateT" placeholder="选择日期" locale={zh_CN} onChange={this.dateChange} />
           <Result style={{ fontSize: '0.75rem' }} className={this.state.lookList.length === 0 ? '' : 'hidden'} icon={<Icon type="reconciliation" style={{ fontSize: '2rem' }} theme="twoTone" twoToneColor="#F5A623" />} title="没有预约情况" />
           <Drawer
             title="该场地详细信息"

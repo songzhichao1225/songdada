@@ -1,8 +1,8 @@
 import React from 'react';
 import './appointmentList.css';
 import 'antd/dist/antd.css';
-import { Input, Button, Row, Col, Select, Pagination, Spin, message, Result, Icon, DatePicker, Modal, Radio, Drawer, InputNumber } from 'antd';
-import { getReservationActivitieslist, getVenueReservations, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord } from '../../api';
+import { Input, Button, Row, Col, Select, Pagination, Spin, message, Result, Icon, DatePicker, Modal, Radio, Drawer, InputNumber, Tooltip } from 'antd';
+import { getReservationActivitieslist, getVenueReservationss, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord, VenueRemarksLabel } from '../../api';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -17,7 +17,7 @@ class appointmentList extends React.Component {
 
   state = {
     number: '1',
-    sport: '',
+    sport: 0,
     status: '',
     listNot: '',
     list: [],
@@ -32,7 +32,7 @@ class appointmentList extends React.Component {
     Oneloading: false,
     other: '',
     visible: false,
-    sendCheck: 1,
+    sendCheck: 2,
     textArea: '',
     publicUUID: '',
     placeholder: '其他说明（选填）',
@@ -52,6 +52,18 @@ class appointmentList extends React.Component {
     minHeight: sessionStorage.getItem('min-height'),
     left: '',
     top: '',
+    time: '',
+    num: '',
+    info: false,
+    placeName: '',
+    placePhone: '',
+    placeHui: '',
+    placeQi: '',
+    nownum: '',
+    nowtime: '',
+    lotime: [],
+    tooltip: false,
+    otherObj: '',
   };
 
   async getVenueSport(data) {
@@ -61,14 +73,13 @@ class appointmentList extends React.Component {
       message.error('登陆超时请重新登陆！')
     } else if (res.data.code === 2000) {
       this.setState({ activityNav: res.data.data, liNum: res.data.data[0].id })
-      this.getVenueReservations({ sportid: res.data.data[0].id, date: this.state.dateString })
+      this.getVenueReservationss({ sportid: res.data.data[0].id, date: this.state.dateString, types: 1 })
     }
   }
 
   componentDidMount() {
     this.getVenueSport()
     this.setState({ dateString: new Date().toLocaleDateString().replace(/\//g, "-") })
-    console.log(this.props.location.query)
     if (this.props.location.query !== undefined) {
       if (this.props.location.query.time === 1) {
         let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
@@ -89,8 +100,6 @@ class appointmentList extends React.Component {
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         this.setState({ start: start, end: end })
         this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: start, enddate: end })
-
-
         this.setState({ visible: true, publicUUID: this.props.location.query.uuid })
       }
     } else {
@@ -131,9 +140,25 @@ class appointmentList extends React.Component {
   }
 
 
-  async getVenueReservations(data) {
-    const res = await getVenueReservations(data, sessionStorage.getItem('venue_token'))
+  async getVenueReservationss(data) {
+    const res = await getVenueReservationss(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
+      // let obj=res.data.data[0].c
+      // var arr=[]
+      //    for(let i in obj){
+      //          arr.push(obj[i])
+      //    }
+
+      //    let arrObj={}
+      //   let arrT=[]
+      //    for(let i in res.data.data){
+      //     arrT.push(res.data.data[i].c)
+      //    }
+      //    console.log(arrT)
+      //    for(let i in arrT){
+
+      //    }
+
       this.setState({ lookList: res.data.data, macNum: res.data.data[0].c })
       if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 24) {
         if (res.data.data[res.data.data.length - 1].a.slice(-2) === '00') {
@@ -181,12 +206,12 @@ class appointmentList extends React.Component {
     }
   }
   clickLi = (e) => {
-    this.getVenueReservations({ sportid: e.target.dataset.num, date: this.state.dateString })
+    this.getVenueReservationss({ sportid: e.target.dataset.num, date: this.state.dateString, types: 1 })
     this.setState({ dianIndex: e.target.dataset.index, liNum: e.target.dataset.num })
   }
   dateChange = (data, datatring) => {
     this.setState({ dateString: datatring })
-    this.getVenueReservations({ sportid: this.state.liNum, date: datatring })
+    this.getVenueReservationss({ sportid: this.state.liNum, date: datatring, types: 1 })
   }
   Oneloading = () => {
     this.setState({ Oneloading: true })
@@ -197,7 +222,7 @@ class appointmentList extends React.Component {
     }
   }
   handleCancel = () => {
-    this.setState({ visible: false })
+    this.setState({ visible: false, info: false })
   }
 
   async VenueSendMessage(data) {
@@ -238,8 +263,9 @@ class appointmentList extends React.Component {
   async VenueClickCancelPlace(data) {
     const res = await VenueClickCancelPlace(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.getVenueReservations({ sportid: this.state.liNum, date: this.state.dateString })
+      this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.dateString, types: 1 })
       message.info(res.data.msg)
+      this.setState({ info: false, lotime: [] })
     } else {
       message.error('操作失败')
     }
@@ -248,12 +274,26 @@ class appointmentList extends React.Component {
 
 
   lookPlate = e => {
+
     let time = e.currentTarget.dataset.time
+    let uuid = e.currentTarget.dataset.uuid
+    let lotime = e.currentTarget.dataset.lo
+    let num = e.currentTarget.dataset.num
     if (e.currentTarget.dataset.type !== '3' && e.currentTarget.dataset.type !== '2') {
       if (e.currentTarget.dataset.type === '1') {
-        this.VenueClickCancelPlace({ date: this.state.dateString, time: time, sportid: this.state.liNum, type: e.currentTarget.dataset.type })
+        if (this.state.lotime.length > 0) {
+          if (this.state.lotime.indexOf(lotime) !== -1) {
+            this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
+          } else {
+            this.setState({ lotime: [...this.state.lotime, lotime] })
+          }
+        } else {
+
+          this.setState({ lotime: [...this.state.lotime, lotime] })
+        }
+
       } else if (e.currentTarget.dataset.type === '4') {
-        this.VenueClickCancelPlace({ date: this.state.dateString, time: time, sportid: this.state.liNum, type: 2 })
+        this.VenueClickCancelPlace({ date: this.state.dateString, uuid: uuid, time: time, venueid: num, sportid: this.state.liNum, other: '', type: 2 })
       }
     } else if (e.currentTarget.dataset.type === "3") {
       this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: '' })
@@ -297,6 +337,76 @@ class appointmentList extends React.Component {
     let scrollLeft = this.scrollRef.scrollLeft;
     this.setState({ left: scrollLeft, top: scrollTop })
   }
+
+
+
+
+  async VenueRemarksLabel(data) {
+    const res = await VenueRemarksLabel(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      let ko = JSON.parse(res.data.data)
+      console.log(ko.placeName)
+      let arrObj = <div>
+        <div>姓名：{ko.placeName}</div>
+        <div>手机号：{ko.placePhone}</div>
+        <div>会员卡号：{ko.placeHui}</div>
+        <div>其他：{ko.placeQi}</div>
+      </div>
+      this.setState({ otherObj: arrObj })
+    }
+  }
+
+
+
+  menu = (e) => {
+    if (e.currentTarget.dataset.type === '1') {
+      this.setState({ otherObj: '' })
+      if (this.state.lotime.length !== 0) {
+        let num = ''
+        let time = ''
+        for (let i in this.state.lotime) {
+          num += this.state.lotime[i].split('-')[1] + ','
+          time += this.state.lotime[i].split('-')[0] + ','
+        }
+        this.setState({ info: true, num: num, time: time })
+      } else {
+        message.warning('请选择场地')
+      }
+    } else if (e.currentTarget.dataset.type === '4') {
+      this.VenueRemarksLabel({ uuid: e.currentTarget.dataset.uuid })
+
+    } else {
+      this.setState({ otherObj: '' })
+    }
+
+  }
+  placeName = e => {
+    this.setState({ placeName: e.target.value })
+  }
+  placePhone = e => {
+    this.setState({ placePhone: e.target.value })
+  }
+
+  placeHui = e => {
+    this.setState({ placeHui: e.target.value })
+  }
+  placeQi = e => {
+    this.setState({ placeQi: e.target.value })
+  }
+
+
+
+  placeSubmit = () => {
+    let { num, time, placeHui, placeName, placePhone, placeQi } = this.state
+    let obj = {
+      placeHui: placeHui,
+      placeName: placeName,
+      placePhone: placePhone,
+      placeQi: placeQi,
+    }
+    this.VenueClickCancelPlace({ uuid: '', date: this.state.dateString, venueid: num.slice(0, num.length - 1), other: JSON.stringify(obj), time: time.slice(0, time.length - 1), sportid: this.state.liNum, type: 1 })
+  }
+
 
   render() {
 
@@ -353,7 +463,7 @@ class appointmentList extends React.Component {
           <div className="xiange"></div>
           <Spin spinning={this.state.loading} style={{ minHeight: 600 }} size="large">
 
-            <Row className="rowConten">
+            <Row className="rowConten"> 
               <Col xs={{ span: 3 }}>活动编号</Col>
               <Col xs={{ span: 2 }}>
                 <Select className="selectName" defaultValue="项目名称" style={{ width: 100 }} onChange={this.nameChang}>
@@ -436,7 +546,22 @@ class appointmentList extends React.Component {
                     <span></span>
                     {
                       this.state.lookList[i].c.map((item, i) => (
-                        <span key={i} data-time={index.a} data-num={i + 1} data-uuid={item.uuid} data-type={item.type} onClick={this.lookPlate} style={item.type === 1 ? { background: '#6FB2FF', marginTop: '0.12rem' } : {} && item.type === 2 ? { background: '#E9E9E9', marginTop: '0.12rem' } : {} && item.type === 3 ? { background: '#F5A623', marginTop: '0.12rem' } : {} && item.type === 4 ? { background: 'red', marginTop: '0.12rem' } : {}}></span>
+                        <Tooltip key={i} placement="top" trigger='contextMenu' title={this.state.otherObj}>
+                          <span
+                            className='spanFa'
+
+                            data-time={index.a}
+                            data-num={i + 1}
+                            data-uuid={item.uuid}
+                            data-type={item.type}
+                            onClick={this.lookPlate}
+                            onContextMenu={this.menu}
+                            data-lo={index.a + '-' + (i + 1)}
+                            style={item.type === 1 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 2 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff', opacity: '.3' } : {} && item.type === 3 ? { background: '#F5A623', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 4 ? { background: 'red', marginTop: '0.12rem', color: '#fff' } : {}}
+                          >
+                            {this.state.lotime.indexOf(index.a + '-' + (i + 1)) !== -1 ? <Icon type="check" /> : ''}
+                          </span>
+                        </Tooltip>
                       ))
                     }
                   </div>
@@ -452,7 +577,7 @@ class appointmentList extends React.Component {
           onCancel={this.handleCancel}
         >
           <Radio.Group onChange={this.sendCheck} value={this.state.sendCheck}>
-            <Radio value={1}>预留场地</Radio>
+            {/* <Radio value={1}>预留场地</Radio> */}
             <Radio value={2}>未预留场地</Radio>
           </Radio.Group>
           <div style={this.state.sendCheck === 1 ? {} : { display: 'none' }}>
@@ -547,6 +672,34 @@ class appointmentList extends React.Component {
             }
           </div>
         </Drawer>
+
+
+        <Modal
+          title="输入场地信息"
+          visible={this.state.info}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+        >
+          <div style={{ overflow: 'hidden' }}>
+            <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>姓名：  </span>
+            <Input style={{ width: 250, float: 'left' }} onChange={this.placeName} placeholder='(选填)' />
+          </div>
+          <div style={{ overflow: 'hidden', marginTop: '10px' }}>
+            <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>手机号：</span>
+            <Input style={{ width: 250, float: 'left' }} onChange={this.placePhone} placeholder="(选填)" />
+          </div>
+          <div style={{ overflow: 'hidden', marginTop: '10px' }}>
+            <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>会员卡卡号：</span>
+            <Input style={{ width: 250, float: 'left' }} onChange={this.placeHui} placeholder="(选填)" />
+          </div>
+          <div style={{ overflow: 'hidden', marginTop: '10px' }}>
+            <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>其他：</span>
+            <Input style={{ width: 250, float: 'left' }} onChange={this.placeQi} placeholder="(选填)" />
+          </div>
+          <span onClick={this.placeSubmit} style={{ cursor: 'pointer', padding: '4px 8px', background: '#F5A623', color: '#fff', float: 'right', marginRight: '125px', marginTop: '20px' }}>提交</span>
+        </Modal>
+
+
       </div>
     )
   }

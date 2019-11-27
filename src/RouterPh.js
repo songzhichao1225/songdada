@@ -23,7 +23,7 @@ import temporaryPh from './phone/temporaryPh/temporaryPh';
 import untiePhonePh from './phone/untiePhonePh/untiePhonePh';
 import resetPasswordPh from './phone/resetPasswordPh/resetPasswordPh';
 import inforSitePh from './phone/inforSitePh/inforSitePh';
-
+import appOrder from './phone/appOrder/appOrder';
 
 
 const BasicRoute = () => (
@@ -52,7 +52,8 @@ const BasicRoute = () => (
             <Route exact path="/homePh/resetPasswordPh" component={resetPasswordPh}/>
             <Route exact path="/homePh/inforSitePh" component={inforSitePh}/>
             <Route  path="/homePh" component={homePh}/>
-         
+            <Route exact path="/appOrder" component={appOrder}/>
+            
             
 
             

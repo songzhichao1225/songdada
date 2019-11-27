@@ -63,8 +63,8 @@ export function VenueSendMessage(data,headers){    //预约活动列表发送消
     return axios.post('/api/VenueSendMessage',data, {headers: {'token': headers}})
 }
 
-export function getVenueReservations(data,headers){    //场地预约情况
-    return axios.post('/api/getVenueReservations',data, {headers: {'token': headers}})
+export function getVenueReservationss(data,headers){    //场地预约情况
+    return axios.post('/api/getVenueReservationss',data, {headers: {'token': headers}})
 }
 
 export function getVenueFieldList(data,headers){    //场地设置列表
@@ -263,6 +263,16 @@ export function getVenueHelpCenter(data,headers){    // 场馆帮助中心
 
 
 
+export function VenueRemarksLabel(data,headers){    // 场馆端取消场地后的线下备注标签内容
+    return axios.post('/api/VenueRemarksLabel',data, {headers: {'token': headers}})
+}
+
+
+
+
+export function getAppVenueReservation(data){    //用户app端进行选择活动时间
+    return axios.post('/api/getAppVenueReservation',data)
+}
 
 
 

@@ -183,7 +183,6 @@
    white-space: nowrap;
    height: 100%;
    position: relative;
-   padding-bottom: 10rem;
 }
 
 .bookingKanban .lookList::-webkit-scrollbar {/*滚动条整体样式*/
@@ -227,7 +226,7 @@
     margin-left: 0;
     height: 2rem;
 }
-.orderPh .date{
+.orderPh .dateT{
    position: absolute;
    top: 0.2rem;
    right: 1rem;
@@ -240,14 +239,14 @@
     display: none;
 }
 
-.orderPh .content{
+.orderPh .contentT{
     height: 100%;
     padding-bottom: 15rem;
     -webkit-overflow-scrolling: touch;
     overflow-y: scroll;
     white-space: nowrap;
 }
-.orderPh .content::-webkit-scrollbar {/*滚动条整体样式*/
+.orderPh .contentT::-webkit-scrollbar {/*滚动条整体样式*/
    display: none;
 }
 

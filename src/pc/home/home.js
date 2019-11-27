@@ -283,7 +283,7 @@ class home extends React.Component {
           </Menu>
         </Sider>
         <Layout>
-          <Header className="header">
+          <Header className="headerTor">
             <div className="Gname">
               <img src={require("../../assets/icon_logo_Gname.png")} alt="logo" />
               <span>{this.state.gerVenueName.name}</span>
