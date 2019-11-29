@@ -117,25 +117,25 @@
     background:rgba(216,93,39,1);
     color: #fff;
 }
-.bookingKanban{
+.orderPh .bookingKanban{
     height: 100%;
     padding-bottom: 7rem;
 }
 
 
 
-.bookingKanban .modTitle{
+.orderPh .bookingKanban .modTitle{
     height: 3rem;
     border-bottom: 0.06rem solid #e9e9e9
 }
-.bookingKanban .modTitle>span{
+.orderPh .bookingKanban .modTitle>span{
     display: block;
     line-height: 3rem;
     float: left;
     margin-left: 0.3rem;
     font-size:0.75rem;
 }
-.bookingKanban .modTitle>.blue{
+.orderPh .bookingKanban .modTitle>.blue{
     width:1rem;
     height:1rem;
     background:rgba(86,165,255,1);
@@ -143,7 +143,7 @@
     margin-top: 1rem;
 }
 
-.bookingKanban .modTitle>.white{
+.orderPh .bookingKanban .modTitle>.white{
     width:1rem;
     height:1rem;
     background:rgba(233,233,233,1);
@@ -151,50 +151,50 @@
     margin-top: 1rem;
 }
 
-.bookingKanban .modTitle>.yellow{
+.orderPh .bookingKanban .modTitle>.yellow{
     width:1rem;
     height:1rem;
     background:rgba(245,166,35,1);
     border-radius:0.13rem;
     margin-top: 1rem;
 }
-.bookingKanban .modTitle>.red{
+.orderPh .bookingKanban .modTitle>.red{
     width:1rem;
     height:1rem;
     background:red;
     border-radius:0.13rem;
     margin-top: 1rem;
 }
-.bookingKanban .locaList{
+.orderPh .bookingKanban .locaList{
     overflow: hidden;
     width: 105%;
     padding-bottom: 0.5rem;
     overflow-y: scroll;
 }
-.bookingKanban .locaList>div{
+.orderPh .bookingKanban .locaList>div{
     float: left;
     margin-top: 0.3rem;
     margin-left: 0.5rem;
     overflow: hidden;
     color:rgba(155,155,155,1);
 }
-.bookingKanban .lookList{
+.orderPh .bookingKanban .lookList{
    overflow-y: scroll;
    white-space: nowrap;
    height: 100%;
    position: relative;
 }
 
-.bookingKanban .lookList::-webkit-scrollbar {/*滚动条整体样式*/
+.orderPh .bookingKanban .lookList::-webkit-scrollbar {/*滚动条整体样式*/
     display: none;
 }
-.bookingKanban .lookList .topFixd{
+.orderPh .bookingKanban .lookList .topFixd{
     position: absolute;
     z-index: 9;
     background: #fff;
     transition: 0.2s;
 }
-.bookingKanban .lookList .headerSon .topFixd>span{
+.orderPh .bookingKanban .lookList .headerSon .topFixd>span{
     width:3.13rem;
     height:1.88rem; 
     display: block;
@@ -203,11 +203,11 @@
     text-align: center;
     line-height: 1.88rem;
 }
-.bookingKanban .lookList .sonList{
+.orderPh .bookingKanban .lookList .sonList{
     clear: both;
     position: relative;
 }
-.bookingKanban .lookList .sonList>span{
+.orderPh .bookingKanban .lookList .sonList>span{
     width:3.13rem;
     height:1.88rem; 
     display: block;
@@ -216,7 +216,7 @@
     text-align: center;
     line-height: 1.88rem;
 }
-.bookingKanban .lookList .sonList>span:first-child{
+.orderPh .bookingKanban .lookList .sonList>span:first-child{
     background: #fff;
     position: absolute;
     transition: 0.1s;

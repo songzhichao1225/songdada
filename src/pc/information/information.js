@@ -1,7 +1,7 @@
 import React from 'react';
 import './information.css';
 import 'antd/dist/antd.css';
-import { Input, Button, Row, Col, Select, Pagination, Spin, message, Result, Icon, DatePicker, Modal, Radio, Drawer, InputNumber, Tooltip } from 'antd';
+import { Input, Button, Row, Col, Select, Pagination, Spin, message, Result, Icon, DatePicker, Modal, Radio, Drawer, InputNumber } from 'antd';
 import { getReservationActivitieslist, getVenueReservationss, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord, VenueRemarksLabel } from '../../api';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
@@ -32,7 +32,7 @@ class information extends React.Component {
     Oneloading: false,
     other: '',
     visible: false,
-    sendCheck: 1,
+    sendCheck: 2,
     textArea: '',
     publicUUID: '',
     placeholder: '其他说明（选填）',
@@ -64,6 +64,7 @@ class information extends React.Component {
     lotime: [],
     tooltip: false,
     otherObj: '',
+    menu:2,
   };
 
   async getVenueSport(data) {
@@ -288,7 +289,6 @@ class information extends React.Component {
             this.setState({ lotime: [...this.state.lotime, lotime] })
           }
         } else {
-
           this.setState({ lotime: [...this.state.lotime, lotime] })
         }
 
@@ -345,22 +345,22 @@ class information extends React.Component {
     const res = await VenueRemarksLabel(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       let ko = JSON.parse(res.data.data)
-      console.log(ko.placeName)
       let arrObj = <div>
         <div>姓名：{ko.placeName}</div>
         <div>手机号：{ko.placePhone}</div>
         <div>会员卡号：{ko.placeHui}</div>
         <div>其他：{ko.placeQi}</div>
       </div>
-      this.setState({ otherObj: arrObj })
+      this.setState({ otherObj: arrObj,menu:1,History:true })
     }
   }
 
 
 
   menu = (e) => {
+  
     if (e.currentTarget.dataset.type === '1') {
-      this.setState({ otherObj: '' })
+      this.setState({ otherObj: '',menu:2 })
       if (this.state.lotime.length !== 0) {
         let num = ''
         let time = ''
@@ -376,7 +376,7 @@ class information extends React.Component {
       this.VenueRemarksLabel({ uuid: e.currentTarget.dataset.uuid })
 
     } else {
-      this.setState({ otherObj: '' })
+      this.setState({ otherObj: '',menu:2 })
     }
 
   }
@@ -409,7 +409,6 @@ class information extends React.Component {
 
 
   render() {
-
     let userMessage;
     if (this.state.list.length !== 0) {
       userMessage = (
@@ -546,10 +545,10 @@ class information extends React.Component {
                     <span></span>
                     {
                       this.state.lookList[i].c.map((item, i) => (
-                        <Tooltip key={i} placement="top" trigger='contextMenu' title={this.state.otherObj}>
+                        // <Tooltip key={i} placement="top" trigger='contextMenu' title={this.state.otherObj}>
                           <span
                             className='spanFa'
-
+                            key={i}
                             data-time={index.a}
                             data-num={i + 1}
                             data-uuid={item.uuid}
@@ -561,7 +560,7 @@ class information extends React.Component {
                           >
                             {this.state.lotime.indexOf(index.a + '-' + (i + 1)) !== -1 ? <Icon type="check" /> : ''}
                           </span>
-                        </Tooltip>
+                        // </Tooltip>
                       ))
                     }
                   </div>
@@ -577,7 +576,7 @@ class information extends React.Component {
           onCancel={this.handleCancel}
         >
           <Radio.Group onChange={this.sendCheck} value={this.state.sendCheck}>
-            <Radio value={1}>预留场地</Radio>
+            {/* <Radio value={1}>预留场地</Radio> */}
             <Radio value={2}>未预留场地</Radio>
           </Radio.Group>
           <div style={this.state.sendCheck === 1 ? {} : { display: 'none' }}>
@@ -653,13 +652,14 @@ class information extends React.Component {
           </div>
         </Drawer>
         <Drawer
-          title="消息发送历史记录"
+          title={this.state.meun!==1?'消息发送记录':'预约情况详情'}
           placement="right"
           closable={false}
           width='400px'
           onClose={this.historyClose}
           visible={this.state.History}
         >
+          <div style={this.state.menu!==1?{display:'block'}:{display:'none'}}>
           <div style={this.state.historyNews.length === 0 ? { display: 'block' } : { display: 'none' }}>没有历史记录...</div>
           <div style={this.state.historyNews.length > 0 ? { display: 'block' } : { display: 'none' }}>
             {
@@ -671,6 +671,11 @@ class information extends React.Component {
               ))
             }
           </div>
+          </div>
+          <div style={this.state.menu===1?{display:'block'}:{display:'none'}}>
+            {this.state.otherObj}
+          </div>
+         
         </Drawer>
 
 

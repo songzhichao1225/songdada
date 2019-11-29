@@ -277,6 +277,13 @@ export function getAppVenueReservation(data){    //用户app端进行选择活�
 
 
 
+export function checkChooseTimes(data,headers){    // 检测发布者发布活动时间 
+    return axios.post('/api/checkChooseTimes',data, {headers: {'token': headers}})
+}
+
+
+
+
 
 
 

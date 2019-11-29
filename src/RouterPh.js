@@ -53,11 +53,6 @@ const BasicRoute = () => (
             <Route exact path="/homePh/inforSitePh" component={inforSitePh}/>
             <Route  path="/homePh" component={homePh}/>
             <Route exact path="/appOrder" component={appOrder}/>
-            
-            
-
-            
-            
         </Switch>
     </HashRouter>
 );

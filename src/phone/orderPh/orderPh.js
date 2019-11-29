@@ -92,16 +92,16 @@ class orderPh extends React.Component {
   async getVenueSport(data) {
     const res = await getVenueSport(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      if(res.data.data.length>0){
+      if (res.data.data.length > 0) {
         this.setState({ remList: res.data.data, liNum: res.data.data[0].id })
       }
-      
+
     }
   }
 
   componentDidMount() {
     this.setState({ dataString: new Date().toLocaleDateString().replace(/\//g, "-") })
-    this.getVenueReservationss({ sportid: 1, date: new Date().toLocaleDateString().replace(/\//g, "-") ,types:1})
+    this.getVenueReservationss({ sportid: 1, date: new Date().toLocaleDateString().replace(/\//g, "-"), types: 1 })
     this.getVenueSport()
 
     if (this.props.location.query !== undefined) {
@@ -214,9 +214,9 @@ class orderPh extends React.Component {
     })
   }
 
-  dateChange = (date, dataString) => { 
+  dateChange = (date, dataString) => {
     this.setState({ dataString: dataString })
-    this.getVenueReservationss({ date: dataString, sportid: this.state.sportid,types:1 })
+    this.getVenueReservationss({ date: dataString, sportid: this.state.sportid, types: 1 })
   }
   sport = e => {
     this.setState({ sportIdVal: e.currentTarget.dataset.id })
@@ -242,7 +242,7 @@ class orderPh extends React.Component {
 
   sportName = e => {
     this.setState({ liNum: e.currentTarget.dataset.id, liIndex: e.currentTarget.dataset.index })
-    this.getVenueReservationss({ sportid: e.currentTarget.dataset.id, date: this.state.dataString,types:1 })
+    this.getVenueReservationss({ sportid: e.currentTarget.dataset.id, date: this.state.dataString, types: 1 })
   }
 
   informOnClose = () => {
@@ -252,7 +252,7 @@ class orderPh extends React.Component {
   async VenueClickCancelPlace(data) {
     const res = await VenueClickCancelPlace(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.dataString,types:1 })
+      this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.dataString, types: 1 })
       message.info(res.data.msg)
     } else {
       message.error('操作失败')
@@ -309,10 +309,10 @@ class orderPh extends React.Component {
           <div onClick={this.bookingKanban} style={this.state.activityList === false ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>预约面板</div>
         </div>
         <div className='headSelect' style={this.state.spinFlag === false ? { display: 'none' } : { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' }} ><Icon type="loading" className='loadingY' style={{ top: this.state.clenTop / 4 }} /></div>
-       
+
         <div style={{ height: '0.6rem', background: '#f5f5f5' }}  ></div>
         <div className={this.state.activityList === true ? 'activityList' : 'hidden'}>
-        <div className="screen" onClick={this.showDrawer}><span style={{ paddingRight: '0.2rem' }}>筛选</span><img style={{ marginTop: '-0.2rem' }} src={require('../../assets/shaixuan.png')} alt="筛选" /></div>
+          <div className="screen" onClick={this.showDrawer}><span style={{ paddingRight: '0.2rem' }}>筛选</span><img style={{ marginTop: '-0.2rem' }} src={require('../../assets/shaixuan.png')} alt="筛选" /></div>
 
           <Row style={{ borderBottom: '0.06rem solid #f5f5f5' }}>
             <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 1 }}>ID/项目</Col>
@@ -325,9 +325,9 @@ class orderPh extends React.Component {
                 this.state.activeSon.map((item, i) => (
                   <Row key={i} className="list" data-index={i} onClick={this.select}>
                     <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 2 }}>{'**' + item.orderId.slice(-4)}{item.SportName}</Col>
-                    <Col className='dateTime' xs={{ span: 8, offset: 2 }} lg={{ span: 6, offset: 2 }}>{item.StartTime}<br/>{item.FinishedTime}</Col>
+                    <Col className='dateTime' xs={{ span: 8, offset: 2 }} lg={{ span: 6, offset: 2 }}>{item.StartTime}<br />{item.FinishedTime}</Col>
                     <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 2 }} style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{item.PublicStatus}</Col>
-                    <div className={this.state.index === '' + i + '' ? 'select':'hidden'}>
+                    <div className={this.state.index === '' + i + '' ? 'select' : 'hidden'}>
                       <Row style={{ paddingTop: '0.5rem' }}>
                         <Col xs={{ span: 6, offset: 1 }} style={{ textAlign: 'left', height: '2rem', lineHeight: '2rem' }} lg={{ span: 6, offset: 2 }}><span >金额</span>  {item.SiteMoney}元</Col>
                         <Col xs={{ span: 8, offset: 2 }} style={{ height: '2rem', lineHeight: '2rem', textAlign: 'left' }} lg={{ span: 6, offset: 2 }}><span >支付状态</span>  {item.SiteMoneyStatus}</Col>
@@ -350,8 +350,8 @@ class orderPh extends React.Component {
             <Spin style={{ width: '100%', marginTop: '45%' }} spinning={this.state.spin} />
             <Result className={this.state.spin === false && this.state.activeSon.length === 0 ? '' : 'hidden'} icon={<Icon style={{ fontSize: '2rem' }} type="bank" theme="twoTone" twoToneColor="#F5A623" />} title="没有活动列表" />
           </div>
-          
-          
+
+
           <Modal
             title="发消息"
             visible={this.state.visible}
@@ -399,10 +399,10 @@ class orderPh extends React.Component {
             <div className='drawerInputOrder'>
               <span style={{ clear: 'both', display: 'block', marginTop: '1rem' }}>选择日期</span>
               <div style={{ width: '100%', height: '3rem', borderBottom: '0.06rem solid #f5f5f5' }}>
-                <DatePicker onChange={this.drawerInputOrderDate} value={this.state.start===''?null:moment(this.state.start)} locale={zh_CN} style={{width: '100%' }} placeholder='开始日期' />
+                <DatePicker onChange={this.drawerInputOrderDate} value={this.state.start === '' ? null : moment(this.state.start)} locale={zh_CN} style={{ width: '100%' }} placeholder='开始日期' />
               </div>
               <div style={{ width: '100%', height: '3rem', borderBottom: '0.06rem solid #f5f5f5' }}>
-                <DatePicker onChange={this.drawerInputOrderDateTwo} value={this.state.start===''?null:moment(this.state.end)}  locale={zh_CN} style={{ width: '100%' }} placeholder='结束日期' />
+                <DatePicker onChange={this.drawerInputOrderDateTwo} value={this.state.start === '' ? null : moment(this.state.end)} locale={zh_CN} style={{ width: '100%' }} placeholder='结束日期' />
               </div>
             </div>
             <div className="drawerBtn">
@@ -422,8 +422,8 @@ class orderPh extends React.Component {
                 <div key={i} data-id={item.id} data-index={i} onClick={this.sportName} style={parseInt(this.state.liIndex) === i ? { borderBottom: '0.06rem solid #D85D27', color: '#D85D27' } : {}}>{item.name}</div>
               ))
             }
-            
-            
+
+
           </div>
           <div className="lookList" onScrollCapture={this.scroll} ref={c => { this.scrollRef = c }} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block' }}>
             <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 3.25 + 'rem' }}>
@@ -463,23 +463,23 @@ class orderPh extends React.Component {
           >
             <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
               <span>活动编号：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].orderId:''}</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].orderId : ''}</span>
             </div>
             <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
               <span>项目名称：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].SportName: ''}</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].SportName : ''}</span>
             </div>
             <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
               <span>开始时间：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].StartTime: ''}</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].StartTime : ''}</span>
             </div>
             <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
               <span>结束时间：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].FinishedTime: ''}</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].FinishedTime : ''}</span>
             </div>
             <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
               <span>时长：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].PlayTime: ''}</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].PlayTime : ''}</span>
             </div>
             <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
               <span>应到人数：</span>
@@ -487,17 +487,17 @@ class orderPh extends React.Component {
             </div>
             <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
               <span>已签到人数：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].TrueTo:''}</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].TrueTo : ''}</span>
             </div>
             <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
               <span>活动状态：</span>
               <span>{this.state.informList.length > 0 ? this.state.informList[0].PublicStatus : ''}</span>
             </div>
-            <div className="informDrawer" style={{ fontSize:'0.75rem'}}>
+            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
               <span>场地费金额：</span>
               <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoney : ''}</span>
             </div>
-            <div className="informDrawer" style={{ fontSize:'0.75rem'}}>
+            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
               <span>场地费状态：</span>
               <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoneyStatus : ''}</span>
             </div>
