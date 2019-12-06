@@ -1,6 +1,9 @@
 import React from 'react';
 import './stadiumInformationPh.css';
-import { Input, Cascader, Upload, Checkbox, Icon, Modal, Button, message } from 'antd';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import { Input, Cascader, Upload, Checkbox, Icon, Modal, Button } from 'antd';
 import { PerfectingVenueInformation, getVenueInformation, VenueInformationSave } from '../../api';
 let arr = require('./address.json');
 const { TextArea } = Input;
@@ -67,7 +70,7 @@ class stadiumInformationPh extends React.Component {
     const res = await getVenueInformation(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     } else if (res.data.code === 2000) {
       let imgS = (res.data.data.filesURL).split('|')
       let arrImg = []
@@ -91,7 +94,7 @@ class stadiumInformationPh extends React.Component {
  
       if (sessionStorage.getItem('notType')=== '1') {
         this.getVenueInformation()
-      } else {
+      } else if(this.props.location.query!==undefined) {
         this.setState({
           addressXian: this.props.location.query.adddress,
           address: this.props.location.query.adddress,
@@ -120,7 +123,7 @@ class stadiumInformationPh extends React.Component {
     if (sessionStorage.getItem('addressId') !== null) {
       this.props.history.push('/mapPh')
     } else {
-      message.error('请选择省市区')
+      Toast.fail('请选择省市区', 1);
     }
   }
   xaingxi = e => {
@@ -161,11 +164,11 @@ class stadiumInformationPh extends React.Component {
   async PerfectingVenueInformation(data) {
     const res = await PerfectingVenueInformation(data)
     if (res.data.code === 2000) {
-      message.info(res.data.msg)
+      Toast.success(res.data.msg, 1);
       sessionStorage.setItem('siteId', res.data.data.siteUUID)
       this.props.history.push('/qualificationPh')
     } else {
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
       this.props.history.push('/login')
     }
   }
@@ -190,9 +193,9 @@ class stadiumInformationPh extends React.Component {
     const res = await VenueInformationSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     } else if (res.data.code === 2000) {
-      message.info(res.data.msg)
+      Toast.success(res.data.msg, 1);
       sessionStorage.setItem('siteId', res.data.data.siteUUID)
       this.props.history.push('/qualificationPh')
     }
@@ -247,7 +250,7 @@ class stadiumInformationPh extends React.Component {
         arrimg.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
       }
       if (arrimg.length < 3) {
-        message.error('最少上传三张场地照')
+        Toast.fail('最少上传三张场地照', 1);
       } else {
         let data = {
           venueloginuuid: localStorage.getItem('uuid'),

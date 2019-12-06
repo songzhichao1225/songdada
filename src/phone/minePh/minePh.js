@@ -1,6 +1,9 @@
 import React from 'react';
 import './minePh.css';
-import { Drawer, Input, message,Pagination } from 'antd';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import { Drawer, Input,Pagination } from 'antd';
 import { VenueNewsSendMessage,getVenueHelpCenter } from '../../api';
 
 const { TextArea } = Input
@@ -61,7 +64,7 @@ class minePh extends React.Component {
   async VenueNewsSendMessage(data) {
     const res = await VenueNewsSendMessage(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info(res.data.msg)
+      Toast.success(res.data.msg, 1);
       this.setState({ fanKui: false })
     }
   }

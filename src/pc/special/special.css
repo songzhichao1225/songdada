@@ -1,0 +1,199 @@
+.siteStting .header{
+   height: 46px;
+   background: #fff;
+   margin-top: 8px;
+}
+
+.siteStting .header>span{
+    font-size: 16px;
+    color: #4A4A4A;
+    padding-left: 25px;
+    line-height: 46px;
+    display: block;
+    float: left;
+}
+.siteStting .header .selectN{
+    margin-left: 12px;
+    float: left;
+    margin-top: 10px;
+}
+.siteStting .header .addList{
+    width: 50px;
+    height: 22px;
+    background: #F5A623;
+    border-radius: 2px; 
+    font-size: 12px;
+    color: #FFFFFF;
+    line-height: 22px;
+    float: right;
+    text-align: center;
+    margin-right: 40px;
+    margin-top: 12px;
+    cursor: pointer;
+}
+.siteStting .siteList{
+    background: #fff;
+    padding-bottom: 30px;
+    display: block;
+}
+.siteStting .siteList .rowConten{
+    border-bottom: 1px solid #E1E0E1;
+}
+.siteStting .siteList .dataList .rowList{
+    border-bottom:1px  solid #E1E0E1;
+}
+.siteStting .siteList .dataList .fenye{
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    margin-top: 60px;
+}
+
+.ant-modal-header{
+    padding:8px 16px;
+    background: #F5A623;
+   
+}
+.ant-modal-title{
+    font-size: 15px;
+    color: #fff;
+}
+
+.ant-modal-close{
+    top:-10px;
+    right:10px;
+}
+.ant-modal-close-x{
+    width: 18px;
+    height: 18px;
+    top:-20px;
+}
+.ant-modal-footer{
+   display: none;
+}
+
+.ant-modal-content{
+    overflow: hidden;
+    padding-bottom: 30px;
+}
+.modelList{
+    overflow: hidden;
+    position: relative;
+    height: 26px;
+    margin-top: 15px;
+}
+.modelList>span{
+  display: block;
+  float: left;
+  margin-left: 19px;
+  line-height: 26px;
+}
+.modelList>span:nth-child(2){
+    color: #9B9B9B;
+}
+.ant-select-selection--single{
+    height: 26px;
+}
+.ant-select-selection__rendered{
+    line-height: 26px;
+}
+.modelList .selectModel{
+   float: right;
+   margin-right: 150px;
+   height: 26px;
+
+}
+.modelList .startTime{
+    width: 249px;
+    height: 26px;
+    float: right;
+    margin-right: 150px;
+}
+.ant-time-picker-input{
+    height: 26px;
+}
+.ant-input-number-input-wrap{
+    height: 26px;
+}
+.ant-input-number{
+    line-height: 26px;
+}
+.ant-input-number-input{
+    height: 26px;
+}
+.modelList .jian{
+    width: 26px;
+    height: 26px;
+    background: #F5F5F5;
+    display: inline-block;
+    text-align: center;
+    line-height: 26px;
+    cursor: pointer;
+}
+.modelList .jia{
+    width: 26px;
+    height: 26px;
+    background: #F5F5F5;
+    display: inline-block;
+    text-align: center;
+    line-height: 26px;
+    cursor: pointer;
+}
+
+.modelListT{
+    overflow: hidden;
+    position: relative;
+    height: 55px;
+    margin-top: 15px;
+}
+.modelListT>span{
+  display: block;
+  float: left;
+  margin-left: 19px;
+  line-height: 26px;
+}
+.modelListT .textArea{
+    width: 350px;
+    height: 55px;
+    float: right;
+    margin-right: 50px;
+}
+ .submit{
+    width: 50px;
+    height: 22px;
+    text-align: center;
+    line-height: 22px;
+    background: #F5A623;
+    border-radius: 2px;
+    color: #fff;
+    float: right;
+    margin-top: 40px;
+    margin-right: 50px;
+    cursor: pointer;
+}
+.fontColor{
+    font-size: 12px;
+color: #9B9B9B;
+}
+
+
+.mookodg{
+    display: block;
+    font-size: 30px;
+    padding: 20px 0;
+    text-align: center;
+}
+.ant-calendar-picker>span{
+    height: 26px;
+    line-height: 26px;
+}
+.mookodgGod{
+    display: none
+}
+.xiange{
+    height: 8px;
+    background: #F5F5F5
+}
+.hidden{
+    display: none
+}

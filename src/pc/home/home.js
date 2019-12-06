@@ -3,7 +3,7 @@ import { Route, Link } from 'react-router-dom';
 import './home.css';
 import 'antd/dist/antd.css';
 import { getVenueIndex, gerVenueName } from '../../api';
-import { Layout, Menu, Icon, message,notification } from 'antd';
+import { Layout, Menu, Icon, message, notification } from 'antd';
 import homePage from '../homePage/homePage';
 import information from '../information/information';
 import siteSettings from '../siteSettings/siteSettings';
@@ -14,7 +14,9 @@ import myWallet from '../myWallet/myWallet';
 import comment from '../comment/comment';
 import news from '../news/news';
 import closeYu from '../closeYu/closeYu';
-import appointmentList from '../appointmentList/appointmentList'
+import appointmentList from '../appointmentList/appointmentList';
+import special from '../special/special';
+
 
 const { Header, Sider, Content, Footer } = Layout;
 
@@ -40,7 +42,7 @@ class home extends React.Component {
 
   componentDidMount() {
     sessionStorage.setItem('path', '1');
-    this.setState({ minheight: document.body.scrollHeight,path: this.props.history.location.pathname })
+    this.setState({ minheight: document.body.scrollHeight, path: this.props.history.location.pathname })
     this.getVenueIndex()
     this.gerVenueName()
     setInterval(() => {
@@ -49,11 +51,11 @@ class home extends React.Component {
 
     if (this.props.history.location.pathname === '/home') {
       sessionStorage.setItem('path', '1');
-    }else if (this.props.history.location.pathname === '/home/news') {
+    } else if (this.props.history.location.pathname === '/home/news') {
       sessionStorage.setItem('path', '1');
-    }else if (this.props.history.location.pathname === '/home/appointmentList') {
+    } else if (this.props.history.location.pathname === '/home/appointmentList') {
       sessionStorage.setItem('path', '2');
-    }  else if (this.props.history.location.pathname === '/home/siteSettings') {
+    } else if (this.props.history.location.pathname === '/home/siteSettings') {
       sessionStorage.setItem('path', '3');
     } else if (this.props.history.location.pathname === '/home/preferential') {
       sessionStorage.setItem('path', '4');
@@ -65,7 +67,9 @@ class home extends React.Component {
       sessionStorage.setItem('path', '7');
     } else if (this.props.history.location.pathname === '/home/closeYu') {
       sessionStorage.setItem('path', '6');
-    } 
+    } else if (this.props.history.location.pathname === '/home/special') {
+      sessionStorage.setItem('path', '8');
+    }
 
     //这里的ip地址改为自己服务器的ip地址
     var ws = new WebSocket("wss://venue.tiaozhanmeiyitian.com/socket");
@@ -73,32 +77,34 @@ class home extends React.Component {
       ws.send(sessionStorage.getItem('siteuid'))
     }
     ws.onmessage = function (e) {
-      let message_info = JSON.parse(e.data)      
+      let message_info = JSON.parse(e.data)
       let msg = new SpeechSynthesisUtterance(message_info.percent)
       window.speechSynthesis.speak(msg)
-      notification.open({description:message_info.percent})      
+      notification.open({ description: message_info.percent })
     }
   }
   componentWillReceiveProps() {
     this.setState({ path: this.props.history.location.pathname })
     if (this.props.history.location.pathname === '/home') {
       sessionStorage.setItem('path', '1');
-    }else if (this.props.history.location.pathname === '/homenews') {
+    } else if (this.props.history.location.pathname === '/homenews') {
       sessionStorage.setItem('path', '1');
-    }else if (this.props.history.location.pathname === '/home/appointmentList') {
+    } else if (this.props.history.location.pathname === '/home/appointmentList') {
       sessionStorage.setItem('path', '2');
-    }  else if (this.props.history.location.pathname === '/home/siteSettings') {
+    } else if (this.props.history.location.pathname === '/home/siteSettings') {
       sessionStorage.setItem('path', '3');
     } else if (this.props.history.location.pathname === '/home/preferential') {
-      sessionStorage.setItem('path', '4'); 
+      sessionStorage.setItem('path', '4');
     } else if (this.props.history.location.pathname === '/home/stadiums') {
       sessionStorage.setItem('path', '5');
-    } else if (this.props.history.location.pathname === '/home/systemSettings') { 
-      sessionStorage.setItem('path', '6'); 
+    } else if (this.props.history.location.pathname === '/home/systemSettings') {
+      sessionStorage.setItem('path', '6');
     } else if (this.props.history.location.pathname === '/home/myWallet') {
       sessionStorage.setItem('path', '7');
     } else if (this.props.history.location.pathname === '/home/closeYu') {
       sessionStorage.setItem('path', '6');
+    } else if (this.props.history.location.pathname === '/home/special') {
+      sessionStorage.setItem('path', '8');
     }
 
     if (sessionStorage.getItem('islegal') === 0) {
@@ -116,7 +122,7 @@ class home extends React.Component {
     let myDate = new Date();
     let day = ''
     switch (myDate.getDay()) {
-      case 0: 
+      case 0:
         day = "星期天";
         break;
       case 1:
@@ -152,7 +158,7 @@ class home extends React.Component {
     } else {
       Tdate = myDate.getDate()
     }
-    let Thours = "" 
+    let Thours = ""
     if (myDate.getHours() < 10) {
       Thours = "0" + myDate.getHours()
     } else {
@@ -203,7 +209,7 @@ class home extends React.Component {
   }
 
   income = () => {
-    this.props.history.push({ pathname: '/home/myWallet', query: { time: 1}})
+    this.props.history.push({ pathname: '/home/myWallet', query: { time: 1 } })
   }
   daysIncome = () => {
     this.props.history.push({ pathname: '/home/myWallet', query: { time: 2 } })
@@ -211,10 +217,10 @@ class home extends React.Component {
 
   mounthOrder = () => {
     this.props.history.push({ pathname: '/home/information', query: { time: 1 } })
-  } 
+  }
 
   mounthOrderTwo = () => {
-    this.props.history.push({ pathname: '/home/information', query: { time: 2 }})
+    this.props.history.push({ pathname: '/home/information', query: { time: 2 } })
   }
   news = () => {
     this.props.history.push("/home/news")
@@ -224,7 +230,7 @@ class home extends React.Component {
       <Layout style={{ height: '100%' }}>
         <Sider trigger={null} collapsible collapsed={this.state.collapsed} width={190} className="sider">
           <div className="logo">
-            <img style={{  height: 40, marginLeft: 45, marginTop: 22 }}
+            <img style={{ height: 40, marginLeft: 45, marginTop: 22 }}
               src={require("../../assets/tiaozhanicon.png")} alt="logo" />
           </div>
           <Menu theme="dark" mode="inline" selectedKeys={[sessionStorage.getItem('path')]} onSelect={this.kood}>
@@ -245,30 +251,38 @@ class home extends React.Component {
             <Menu.Item key="3">
               <Link to="/home/siteSettings">
                 <i className="anticon anticon-gift">
-                  <svg t="1571136349374" className="icon" viewBox="64 64 896 896" version="1.1" fill="currentColor" p-i='true'  d="1831" width="1em" height="1em"><path d="M424.9 142.4c0.1 0.1 0.3 0.2 0.3 0.3V878c-0.1 0.1-0.2 0.3-0.3 0.3H145.6c-0.1-0.1-0.3-0.2-0.3-0.3V142.7c0.1-0.1 0.2-0.3 0.3-0.3h279.3m0-80H145.5c-44.2 0-80.3 36.1-80.3 80.3v735.4c0 44.2 36.1 80.3 80.3 80.3h279.4c44.2 0 80.3-36.1 80.3-80.3V142.7c0-44.1-36.1-80.3-80.3-80.3z" p-id="2437"></path><path d="M879.8 142.9c0.1 0.1 0.3 0.2 0.3 0.3v341c-0.1 0.1-0.2 0.3-0.3 0.3H631.4c-0.1-0.1-0.3-0.2-0.3-0.3v-341c0.1-0.1 0.2-0.3 0.3-0.3h248.4m0-80H631.3c-44.2 0-80.3 36.1-80.3 80.3v341c0 44.2 36.1 80.3 80.3 80.3h248.5c44.2 0 80.3-36.1 80.3-80.3v-341c0-44.1-36.1-80.3-80.3-80.3z" p-id="2438"></path><path d="M880.2 688.1c0.1 0.1 0.3 0.2 0.3 0.3v189.7c-0.1 0.1-0.2 0.3-0.3 0.3H631.8c-0.1-0.1-0.3-0.2-0.3-0.3V688.4c0.1-0.1 0.2-0.3 0.3-0.3h248.4m0-80H631.7c-44.2 0-80.3 36.1-80.3 80.3v189.8c0 44.2 36.1 80.3 80.3 80.3h248.5c44.2 0 80.3-36.1 80.3-80.3V688.4c0-44.2-36.1-80.3-80.3-80.3z" p-id="2439"></path></svg>
+                  <svg t="1571136349374" className="icon" viewBox="64 64 896 896" version="1.1" fill="currentColor" p-i='true' d="1831" width="1em" height="1em"><path d="M424.9 142.4c0.1 0.1 0.3 0.2 0.3 0.3V878c-0.1 0.1-0.2 0.3-0.3 0.3H145.6c-0.1-0.1-0.3-0.2-0.3-0.3V142.7c0.1-0.1 0.2-0.3 0.3-0.3h279.3m0-80H145.5c-44.2 0-80.3 36.1-80.3 80.3v735.4c0 44.2 36.1 80.3 80.3 80.3h279.4c44.2 0 80.3-36.1 80.3-80.3V142.7c0-44.1-36.1-80.3-80.3-80.3z" p-id="2437"></path><path d="M879.8 142.9c0.1 0.1 0.3 0.2 0.3 0.3v341c-0.1 0.1-0.2 0.3-0.3 0.3H631.4c-0.1-0.1-0.3-0.2-0.3-0.3v-341c0.1-0.1 0.2-0.3 0.3-0.3h248.4m0-80H631.3c-44.2 0-80.3 36.1-80.3 80.3v341c0 44.2 36.1 80.3 80.3 80.3h248.5c44.2 0 80.3-36.1 80.3-80.3v-341c0-44.1-36.1-80.3-80.3-80.3z" p-id="2438"></path><path d="M880.2 688.1c0.1 0.1 0.3 0.2 0.3 0.3v189.7c-0.1 0.1-0.2 0.3-0.3 0.3H631.8c-0.1-0.1-0.3-0.2-0.3-0.3V688.4c0.1-0.1 0.2-0.3 0.3-0.3h248.4m0-80H631.7c-44.2 0-80.3 36.1-80.3 80.3v189.8c0 44.2 36.1 80.3 80.3 80.3h248.5c44.2 0 80.3-36.1 80.3-80.3V688.4c0-44.2-36.1-80.3-80.3-80.3z" p-id="2439"></path></svg>
                 </i>
-                <span>场地设置</span> 
+                <span>场地设置</span>
               </Link>
             </Menu.Item>
             <Menu.Item key="4">
               <Link to="/home/preferential">
-                <Icon type="gift" /> 
+                <Icon type="gift" />
                 <span>优惠活动</span>
               </Link>
             </Menu.Item>
+            <Menu.Item key="8">
+              <Link to="/home/special">
+                <i className="anticon anticon-gift">
+                  <svg t="1575597370225" className="icon" viewBox="64 64 896 896" version="1.1" fill="currentColor" width="1rem" height="1rem"><path d="M351.962 128.277l128.1-0.154 0.077 64-128.1 0.154zM255.804 64.339l64-0.077 0.192 159.9-64 0.077zM512.004 64.038l64-0.076 0.192 159.9-64 0.076z" p-id="1703"></path><path d="M160.9 896c-17.7 0-32-14.3-32-31.9l-0.8-639.6c0-17.7 14.3-32 32-32l64.1-0.1-0.1-64-64.1 0.1c-53.1 0.1-96 43.1-96 96.1l0.8 639.6c0.1 53 43.1 95.9 96.2 95.8l511.7-0.6-0.1-64-511.7 0.6z" p-id="1704"></path><path d="M513.1 702.7l-287.8 0.3c-17.7 0-32 14.3-32 32s14.3 32 32 31.9l287.8-0.3c17.7 0 32-14.3 32-32 0-17.6-14.3-31.9-32-31.9zM225.1 511.2c-17.7 0-32 14.3-32 32s14.3 32 32 31.9l383.8-0.5c17.7 0 32-14.3 32-32s-14.3-32-32-31.9l-383.8 0.5zM224.9 319.3c-17.7 0-32 14.3-32 32s14.3 32 32 31.9l383.8-0.5c17.7 0 32-14.3 32-32s-14.3-32-32-31.9l-383.8 0.5zM768.1 223.7c-0.1-53-43.1-95.9-96.1-95.8l-64 0.1 0.1 64 64-0.1c17.7 0 32 14.3 32 31.9l0.4 352.2h64l-0.4-352.3zM950.6 790.6L816.1 925c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.7 0-45.2l79.8-79.7L608 800c-12.9 0-24.6-7.8-29.6-19.8s-2.2-25.7 6.9-34.9L700 630.7c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-60 60H928c12.9 0 24.6 7.8 29.6 19.8 4.9 11.9 2.2 25.7-7 34.8z" p-id="1705"></path></svg>
+                </i>
+                <span>特殊场地</span>
+              </Link>
+            </Menu.Item>
             <Menu.Item key="5">
-              <Link to={{ pathname: '/home/stadiums', query: { name: 'sunny' }}}>
+              <Link to={{ pathname: '/home/stadiums', query: { name: 'sunny' } }}>
                 <i className="anticon anticon-gift" >
                   <svg t="1571135424567" className="icon" viewBox="64 64 896 896" version="1.1" fill="currentColor" p-id="1831" width="1em" height="1em"><path d="M25.6 414.72C223.744 249.9584 412.928 176.6912 593.0496 195.072v823.9616H25.6V414.72z m216.1664 24.7296v192.256h135.168V439.4496h-135.168z m0 274.6368v192.256h135.168v-192.256h-135.168zM998.4 222.464C944.3328 57.7024 827.2384-15.5648 647.1168 2.7648v1016.2176H998.4V222.464z" p-id="1832"></path></svg>
                 </i>
                 <span>场馆信息</span>
               </Link>
             </Menu.Item>
-            
-            
+
+
             <Menu.Item key="6">
               <Link to="/home/systemSettings">
-                <Icon  type="setting" />
+                <Icon type="setting" />
                 <span>系统设置</span>
               </Link>
             </Menu.Item>
@@ -324,7 +338,7 @@ class home extends React.Component {
                   <div className="right"><img src={require("../../assets/icon_pc_biji.png")} alt="icon" /></div>
                 </div>
                 <div onClick={this.lppd}>
-                  <div className="left"><span style={{marginTop:'20%'}}>场馆评分{this.state.getVenue.score}分</span>
+                  <div className="left"><span style={{ marginTop: '20%' }}>场馆评分{this.state.getVenue.score}分</span>
                     <div className="xing">
                       <img src={this.state.getVenue.score >= 1 ? require('../../assets/50xing (3).png') : require('../../assets/oneXing.png') && this.state.getVenue.score < 1 && this.state.getVenue.score > 0 ? require('../../assets/50xing (1).png') : require('../../assets/oneXing.png')} alt="666" />
                       <img src={this.state.getVenue.score >= 2 ? require('../../assets/50xing (3).png') : require('../../assets/oneXing.png') && this.state.getVenue.score < 2 && this.state.getVenue.score > 1 ? require('../../assets/50xing (1).png') : require('../../assets/oneXing.png')} alt="666" />
@@ -346,10 +360,12 @@ class home extends React.Component {
             <Route path="/home/myWallet" component={myWallet} />
             <Route path="/home/comment" component={comment} />
             <Route path="/home/news" component={news} />
-            <Route path="/home/closeYu" component={closeYu} /> 
+            <Route path="/home/closeYu" component={closeYu} />
             <Route path="/home/appointmentList" component={appointmentList} />
+            <Route path="/home/special" component={special} />
+
           </Content>
-          <Footer style={{ textAlign: 'center', height: '3%', lineHeight: '3%' }}>Copyright ©2019 北京甲乙网络科技有限公司</Footer>
+          <Footer style={{ textAlign: 'center', height: '3%', lineHeight: '3%' }}>Copyright ©2019 北京甲乙电子商务有限公司</Footer>
         </Layout>
       </Layout>
     )

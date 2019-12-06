@@ -1,6 +1,8 @@
 .inforSitePh{
     padding-bottom: 2rem;
     font-size: 0.75rem;
+    background: #fff;
+    height: 100%;
 }
 .inforSitePh .headTitle{
     height: 3rem;
@@ -22,6 +24,13 @@
     font-size: 1rem;
     color: #9B9B9B;
 }
+
+
+.inforSitePh .basic::-webkit-scrollbar {/*滚动条整体样式*/
+    display: none;
+ }
+
+
 .inforSitePh .nav .right{
     float: left;
     width: 50%;

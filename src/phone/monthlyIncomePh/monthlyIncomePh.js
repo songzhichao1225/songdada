@@ -2,7 +2,10 @@ import React from 'react';
 import './monthlyIncomePh.css';
 import 'antd/dist/antd.css';
 import { getVenueMoneyList } from '../../api';
-import { DatePicker, message,Pagination,Result,Icon,Spin } from 'antd';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import { DatePicker,Pagination,Result,Icon,Spin } from 'antd';
 import moment from 'moment';
 class monthlyIncomePh extends React.Component {
 
@@ -21,11 +24,11 @@ class monthlyIncomePh extends React.Component {
 
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     }else if(res.data.data.data!==undefined){
    this.setState({  moneyList: res.data.data.data,flag:false })
     }else{
-      message.warning(res.data.msg)
+      Toast.fail(res.data.msg, 1);
       this.setState({flag:true})
     }
   }

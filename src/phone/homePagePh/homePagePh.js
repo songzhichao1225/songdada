@@ -1,8 +1,9 @@
 import React from 'react';
 import './homePagePh.css';
 import 'antd/dist/antd.css';
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
 import { getVenueIndex } from '../../api';
-import { message } from 'antd';
 
 class homePagePh extends React.Component {
 
@@ -14,7 +15,7 @@ class homePagePh extends React.Component {
     const res = await getVenueIndex(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     } else {
       this.setState({ getVenue: res.data.data })
     sessionStorage.setItem('score',res.data.data.score)

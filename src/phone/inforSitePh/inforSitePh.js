@@ -1,6 +1,9 @@
 import React from 'react';
 import './inforSitePh.css';
-import { Input, message, Checkbox, Upload, Icon, Popconfirm, Button, Radio, Select, Tooltip, Spin } from 'antd';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import { Input, Checkbox, Upload, Icon, Popconfirm, Button, Radio, Select, Tooltip, Spin } from 'antd';
 import { getVenueInformation, getVenueQualificationInformation, VenueInformationSave, VenueQualificationInformationSave, getVenueIssecondaudit, getVenueOpenBank, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
 const { Option } = Select
 
@@ -14,11 +17,11 @@ function getBase64(img, callback) {
 function beforeUpload(file) {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
   if (!isJpgOrPng) {
-    message.error('只能使用JPG/PNG格式！');
+    Toast.fail('只能使用JPG/PNG格式！', 1);
   }
   const isLt2M = file.size / 1024 / 1024 < 2;
   if (!isLt2M) {
-    message.error('图片不能超过2MB!');
+    Toast.fail('图片不能超过2MB', 1);
   }
   return isJpgOrPng && isLt2M;
 }
@@ -80,7 +83,7 @@ class inforSitePh extends React.Component {
     const res = await getVenueInformation(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     } else if (res.data.code === 2000) {
 
       let imgS = (res.data.data.filesURL).split('|')
@@ -103,7 +106,8 @@ class inforSitePh extends React.Component {
       }
 
     } else {
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
+
     }
   }
 
@@ -205,11 +209,13 @@ class inforSitePh extends React.Component {
   async VenueInformationSave(data) {
     const res = await VenueInformationSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info('提交成功')
+      Toast.success('提交成功', 1);
+
       this.setState({ issecondaudit: 0 })
       this.getVenueInformation()
     } else {
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
+
     }
   }
 
@@ -242,7 +248,8 @@ class inforSitePh extends React.Component {
       }
       this.VenueInformationSave(data)
     } else {
-      message.error('至少上传两张室内照')
+      Toast.fail('至少上传两张室内照', 1);
+
     }
   }
 
@@ -336,12 +343,15 @@ class inforSitePh extends React.Component {
     if (res.data.code === 4001) {
       this.props.history.push('/login')
 
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
+
     } else if (res.data.code === 2000) {
-      message.info('提交成功')
+      Toast.success('提交成功', 1);
+
       this.setState({ issecondaudit: 0 })
     } else {
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
+
     }
   }
 
@@ -360,9 +370,11 @@ class inforSitePh extends React.Component {
     }
     if (zuo === 1) {
       if (imgHood === '') {
-        message.error('请更换身份证正面照')
+      Toast.fail('请更换身份证正面照', 1);
+
       } else if (imgHoodTwo === '') {
-        message.error('请更换身份证反面照')
+        Toast.fail('请更换身份证反面照', 1);
+
       } else {
         data.legalBaseURL = imgHood
         this.VenueQualificationInformationSave(data)
@@ -425,7 +437,7 @@ class inforSitePh extends React.Component {
           <div className={localStorage.getItem('ismethod') === '1' ? 'left' : 'width'} style={this.state.flag === 1 ? { color: '#000' } : {}} onClick={this.left}>基本信息</div>
           <div className={localStorage.getItem('ismethod') === '1' ? 'right' : 'none'} style={this.state.flag === 1 ? {} : { color: '#000' }} onClick={this.right}>资质信息</div>
         </div>
-        <div className="basic" style={this.state.spin === false && this.state.flag === 1 ? { display: 'block' } : { display: 'none' }}>
+        <div className="basic" style={this.state.spin === false && this.state.flag === 1 ? { display: 'block',overflowY:'scroll',height:'100%' } : { display: 'none' }}>
           <div className="listSon">
             <span>推广员</span>
             <span className="right" style={{ paddingLeft: '11px' }}>{listSon.promote}</span>

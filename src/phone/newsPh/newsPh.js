@@ -1,6 +1,9 @@
 import React from 'react';
 import './newsPh.css';
-import { message, Result, Icon, Pagination,Drawer,Spin } from 'antd';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import { Result, Icon, Pagination,Drawer,Spin } from 'antd';
 import { getVenueNewsList, getVenueNewsReceivedList,getVenueNewsFirst,VenueNewsSaveIsRead } from '../../api';
 
 
@@ -32,7 +35,7 @@ class newsPh extends React.Component {
     const res = await getVenueNewsList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     } else if (res.data.code === 2000) {
       this.setState({ getVenueNewsList: res.data.data, other: res.data.other.sum })
     }

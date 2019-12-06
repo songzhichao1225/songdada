@@ -1,6 +1,9 @@
 import React from 'react';
 import './walletDetailsPh.css';
-import { DatePicker, message, Pagination,Result,Icon } from 'antd';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import { DatePicker, Pagination,Result,Icon } from 'antd';
 import { getVenueMoneyList } from '../../api';
 import moment from 'moment';
 let start = moment().startOf('day').subtract(1, 'months')._d.toLocaleDateString().replace(/\//g, "-")
@@ -24,7 +27,7 @@ class walletDetailsPh extends React.Component {
     const res = await getVenueMoneyList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     } else if (res.data.code === 2000) {
       this.setState({ details: res.data.data.data, other: res.data.data })
     }

@@ -1,6 +1,9 @@
 import React from 'react';
 import './untiePhonePh.css';
-import {Input,message,Icon } from 'antd';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import {Input,Icon } from 'antd';
 import { _code,VenueBindingPhone} from '../../api';
 
 
@@ -30,7 +33,7 @@ class untiePhonePh extends React.Component {
   async nacode(data) {
     const res = await _code(data)
     if(res.data.code!==2000){
-       message.error(res.data.msg)
+       Toast.fail(res.data.msg, 1);
     }else{
       let num = 60
       const timer = setInterval(() => {
@@ -46,7 +49,7 @@ class untiePhonePh extends React.Component {
   async nacodeTwo(data) {
     const res = await _code(data)
     if(res.data.code!==2000){
-       message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
     }else{
       let num = 60
       const timer = setInterval(() => {
@@ -76,9 +79,9 @@ class untiePhonePh extends React.Component {
     const res = await VenueBindingPhone(data,localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     } else {
-      message.info(res.data.msg)
+      Toast.success(res.data.msg, 1);
       this.props.history.goBack()
     }
   }

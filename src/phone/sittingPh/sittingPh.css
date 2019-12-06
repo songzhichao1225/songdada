@@ -1,5 +1,7 @@
 .sittingPh{
     font-size: 0.75rem;
+    height: 100%;
+    background: #fff;
 }
 .sittingPh .headTitle{
     height: 3rem;

@@ -1,6 +1,9 @@
 import React from 'react';
 import './sittingPh.css';
-import {Switch,message,Icon } from 'antd';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import {Switch,Icon } from 'antd';
 import {VenueIsClose,getVenueIsClose } from '../../api';
 
 
@@ -15,7 +18,7 @@ class sittingPh extends React.Component {
     const res = await getVenueIsClose(data,localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     } else {
       if(res.data.data.isclose===1){
         this.setState({flag:true})
@@ -28,7 +31,7 @@ class sittingPh extends React.Component {
   async VenueIsClose(data) {
     const res = await VenueIsClose(data,localStorage.getItem('venue_token'))
        if(res.data.code===2000){
-         message.info(res.data.msg)
+         Toast.success(res.data.msg, 1);
         this.getVenueIsClose()
        }
   }

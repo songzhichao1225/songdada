@@ -2,7 +2,7 @@ import React from 'react';
 import './information.css';
 import 'antd/dist/antd.css';
 import { Input, Button, Row, Col, Select, Pagination, Spin, message, Result, Icon, DatePicker, Modal, Radio, Drawer, InputNumber } from 'antd';
-import { getReservationActivitieslist, getVenueReservationss, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord, VenueRemarksLabel } from '../../api';
+import { getReservationActivitieslist, getVenueReservationss, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord, VenueRemarksLabel,getVenueNumberTitleList,getVenueNumberTitleSave } from '../../api';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -65,6 +65,7 @@ class information extends React.Component {
     tooltip: false,
     otherObj: '',
     menu:2,
+    topNumList:[]
   };
 
   async getVenueSport(data) {
@@ -74,9 +75,23 @@ class information extends React.Component {
       message.error('登陆超时请重新登陆！')
     } else if (res.data.code === 2000) {
       this.setState({ activityNav: res.data.data, liNum: res.data.data[0].id })
-      this.getVenueReservationss({ sportid: res.data.data[0].id, date: this.state.dateString, types: 1 })
+     
+      this.getVenueNumberTitleList({sportid:res.data.data[0].id})
     }
   }
+
+  
+
+
+  async getVenueNumberTitleList(data) {
+    const res = await getVenueNumberTitleList(data, sessionStorage.getItem('venue_token'))
+     if (res.data.code === 2000) {
+      this.setState({topNumList:res.data.data})
+      this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.dateString, types: 1 })
+    }
+  }
+
+
 
   componentDidMount() {
     this.getVenueSport()
@@ -144,21 +159,10 @@ class information extends React.Component {
   async getVenueReservationss(data) {
     const res = await getVenueReservationss(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      // let obj=res.data.data[0].c
-      // var arr=[]
-      //    for(let i in obj){
-      //          arr.push(obj[i])
-      //    }
-
-      //    let arrObj={}
-      //   let arrT=[]
-      //    for(let i in res.data.data){
-      //     arrT.push(res.data.data[i].c)
-      //    }
-      //    console.log(arrT)
-      //    for(let i in arrT){
-
-      //    }
+         for(let j in this.state.topNumList){
+          res.data.data[0].c[this.state.topNumList[j].venueid-1].title=this.state.topNumList[j].title
+          res.data.data[0].c[this.state.topNumList[j].venueid-1].uuid=this.state.topNumList[j].uuid
+         }
 
       this.setState({ lookList: res.data.data, macNum: res.data.data[0].c })
       if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 24) {
@@ -275,7 +279,6 @@ class information extends React.Component {
 
 
   lookPlate = e => {
-
     let time = e.currentTarget.dataset.time
     let uuid = e.currentTarget.dataset.uuid
     let lotime = e.currentTarget.dataset.lo
@@ -392,6 +395,25 @@ class information extends React.Component {
   }
   placeQi = e => {
     this.setState({ placeQi: e.target.value })
+  }
+
+  
+
+
+  
+  async getVenueNumberTitleSave(data) {
+    const res = await getVenueNumberTitleSave(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+         message.info(res.data.msg)
+    }
+  }
+
+
+  tilBlur=e=>{
+    
+    this.getVenueNumberTitleSave({sportid:this.state.liNum,veneuid:e.currentTarget.dataset.num,title:e.target.value,uuid:e.currentTarget.dataset.uuid})
+
+
   }
 
 
@@ -520,9 +542,6 @@ class information extends React.Component {
             }
           </ul>
           <ul className="rightNav">
-            {/* <li>今天</li>
-            <li>明天</li>
-            <li>后天</li> */}
             <li className="dateSelect"><DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={zh_CN} placeholder="请选择日期" className="DatePicker" onChange={this.dateChange} /></li>
           </ul>
           <div className="xiange"></div>
@@ -533,11 +552,11 @@ class information extends React.Component {
                 <span></span>
                 {
                   this.state.macNum.map((item, i) => (
-                    <span key={i}>{i + 1}</span>
+                  <span key={i}>{i + 1}<Input style={{height:'26px',padding:'0',textAlign:'center'}} placeholder={item.title} data-uuid={item.uuid} data-num={i+1} onChange={this.tilChange} onBlur={this.tilBlur} maxLength={5}/></span>
                   ))
-                }
+                } 
               </div>
-              <div style={{ height: 50 }}></div>
+              <div style={{ height: 80 }}></div>
               {
                 this.state.lookList.map((index, i) => (
                   <div key={i} className="sonList">
@@ -545,7 +564,6 @@ class information extends React.Component {
                     <span></span>
                     {
                       this.state.lookList[i].c.map((item, i) => (
-                        // <Tooltip key={i} placement="top" trigger='contextMenu' title={this.state.otherObj}>
                           <span
                             className='spanFa'
                             key={i}
@@ -559,6 +577,7 @@ class information extends React.Component {
                             style={item.type === 1 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 2 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff', opacity: '.3' } : {} && item.type === 3 ? { background: '#F5A623', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 4 ? { background: 'red', marginTop: '0.12rem', color: '#fff' } : {}}
                           >
                             {this.state.lotime.indexOf(index.a + '-' + (i + 1)) !== -1 ? <Icon type="check" /> : ''}
+                            {item.type === 1?item.money:''}
                           </span>
                         // </Tooltip>
                       ))

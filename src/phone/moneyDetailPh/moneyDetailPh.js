@@ -1,7 +1,10 @@
 import React from 'react';
 import './moneyDetailPh.css';
 import 'antd/dist/antd.css';
-import { message,Icon} from 'antd';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import { Icon} from 'antd';
 
 
 
@@ -15,7 +18,7 @@ class moneyDetailPh extends React.Component {
 
   componentDidMount() {
     if(this.props.location.query===undefined){
-      message.error('数据丢失重新进入')
+      Toast.fail('数据丢失重新进入', 1);
        this.props.history.goBack()
     }else{
       let data=this.props.location.query

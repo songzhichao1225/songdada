@@ -1,3 +1,7 @@
+.recordPh{
+  background: #fff;
+  height: 100%;
+}
 .recordPh .headTitle{
     height: 3rem;
     border-bottom:0.06rem solid #f5f5f5;

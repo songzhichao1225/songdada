@@ -1,8 +1,10 @@
 import React from 'react';
 import './corporatePh.css';
 import 'antd/dist/antd.css';
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
 import { _login, VenueSelectSiteName, _code } from '../../api';
-import { message, Input,Radio,Icon } from 'antd';
+import { Input,Radio,Icon } from 'antd';
 
 class corporatePh extends React.Component {
 
@@ -54,9 +56,10 @@ class corporatePh extends React.Component {
   async nacode(data) {
     const res = await _code(data)
     if(res.data.code===2000){
-     message.info(res.data.msg)
+     Toast.success(res.data.msg, 1);
     }else{
-      message.warning(res.data.msg)
+      
+      Toast.fail(res.data.msg, 1);
     }
   }
 
@@ -64,7 +67,7 @@ class corporatePh extends React.Component {
   async login(data) {
     const res = await _login(data)
     if (res.data.code !== 2000) {
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
     } else {
       localStorage.setItem('uuid', res.data.data.uuid);
       localStorage.setItem('name', res.data.data.name);
@@ -109,7 +112,7 @@ class corporatePh extends React.Component {
       }, 1000)
       this.nacode({ "mobile": this.state.phone, "type": 'venuelogin' })
     }else{
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
     }
   }
 
@@ -128,7 +131,7 @@ class corporatePh extends React.Component {
     if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
       this.VenueSelectSiteName({ phone: this.state.phone })
     } else {
-      message.error('请输入手机号')
+      Toast.fail('请输入手机号', 1);
     }
   }
 

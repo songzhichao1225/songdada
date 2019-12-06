@@ -276,11 +276,10 @@
     position: absolute;
     z-index: 9;
     background: #fff;
-    transition: 0.2s;
 }
 .orderList .lookList .headerSon .topFixd>span{
     width:3.13rem;
-    height:1.88rem; 
+    height:2.88rem; 
     display: block;
     margin-left: 0.12rem;
     display: inline-block;

@@ -1,6 +1,9 @@
 import React from 'react';
 import './temporaryPh.css';
-import { message, Select, Icon, Row, Col, Drawer, DatePicker, Pagination, Popconfirm,Result } from 'antd';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import { Select, Icon, Row, Col, Drawer, DatePicker, Pagination, Popconfirm,Result } from 'antd';
 import { getVenueSport, VenueTemporarilyClosedList, VenueTemporarilyClosedSave, VenueTemporarilyClosedDel,VenueTemporarilyClosed } from '../../api';
 import moment from 'moment';
 import zh_CN from 'antd/es/date-picker/locale/zh_CN';
@@ -34,7 +37,7 @@ class temporaryPh extends React.Component {
     const res = await getVenueSport(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     } else {
       this.setState({ sportList: res.data.data })
     }
@@ -45,7 +48,7 @@ class temporaryPh extends React.Component {
     const res = await VenueTemporarilyClosedList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     } else {
        this.setState({spinFlag:false })
       if(this.state.upUUid!==''){
@@ -136,12 +139,12 @@ class temporaryPh extends React.Component {
     const res = await VenueTemporarilyClosed(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      Toast.fail('登录超时请重新登录', 1);
     }else if(res.data.code===2000){
       this.setState({ visible: false })
       this.VenueTemporarilyClosedList()
     } else {
-      message.info(res.data.msg)
+      Toast.success(res.data.msg, 1);
       this.VenueTemporarilyClosedList()
     }
   }
@@ -150,9 +153,9 @@ class temporaryPh extends React.Component {
     const res = await VenueTemporarilyClosedSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     } else {
-      message.info(res.data.msg)
+      Toast.success(res.data.msg, 1);
       this.setState({ visible: false })
       this.VenueTemporarilyClosedList()
     }
@@ -192,9 +195,10 @@ class temporaryPh extends React.Component {
     const res = await VenueTemporarilyClosedDel(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     } else {
-      message.info(res.data.msg)
+      Toast.success(res.data.msg, 1);
+
       this.VenueTemporarilyClosedList()
     }
   }

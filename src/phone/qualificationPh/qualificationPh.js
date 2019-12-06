@@ -1,6 +1,9 @@
 import React from 'react';
 import './qualificationPh.css';
-import { Upload, Input, Button, Radio, message, Select, Tooltip, Icon } from 'antd';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import { Upload, Input, Button, Radio, Select, Tooltip, Icon } from 'antd';
 import { getIsStatus, getVenueOpenBankList, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity, VenueQualifications, getVenueQualificationInformation, VenueQualificationInformationSave } from '../../api';
 const { Option } = Select;
 function getBase64(img, callback) {
@@ -133,7 +136,7 @@ class qualificationPh extends React.Component {
     const res = await getIsStatus(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      Toast.fail('登陆超时请重新登陆！', 1);
     }
     this.setState({ siteUUID: res.data.data.siteUid })
   }
@@ -161,7 +164,8 @@ class qualificationPh extends React.Component {
       this.setState({ province_id: e })
       this.getVenueOpenBankCity({ province_id: e })
     }else{
-      message.warning('请选择银行类型')
+      Toast.fail('请选择银行类型', 1);
+      
       this.getVenueOpenBankCity({ province_id: e })
     }
 
@@ -195,9 +199,11 @@ class qualificationPh extends React.Component {
     const res = await VenueQualifications(data)
     if (res.data.code === 2000) {
       this.props.history.push('/resultsAuditsPh')
-      message.info(res.data.msg)
+      Toast.success(res.data.msg, 1);
+
     } else {
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
+
     }
   }
 
@@ -207,9 +213,10 @@ class qualificationPh extends React.Component {
     const res = await VenueQualificationInformationSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.props.history.push('/resultsAuditsPh')
-      message.info(res.data.msg)
+      Toast.success(res.data.msg, 1);
+      
     } else {
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
     }
   }
 

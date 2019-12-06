@@ -1,6 +1,9 @@
 import React from 'react';
 import './myWalletPh.css';
-import { message,Icon } from 'antd';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import { Icon } from 'antd';
 import {getVenueMoney } from '../../api';
 
 
@@ -14,7 +17,7 @@ class myWalletPh extends React.Component {
     const res = await getVenueMoney(data,localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     } else {
       this.setState({money:res.data.data.money})
     }

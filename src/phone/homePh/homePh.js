@@ -3,7 +3,11 @@ import './homePh.css';
 import 'antd/dist/antd.css';
 import { Route, Link } from 'react-router-dom';
 import { gerVenueName, getVenueIndex } from '../../api';
-import { message, Icon,notification } from 'antd';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import { Icon,notification } from 'antd';
+
 import orderPh from '../orderPh/orderPh';
 import sitePh from '../sitePh/sitePh';
 import newsPh from '../newsPh/newsPh';
@@ -27,7 +31,7 @@ class homePh extends React.Component {
     const res = await getVenueIndex(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     } else {
       this.setState({ getVenue: res.data.data, spin: false, spinFlag: false })
       sessionStorage.setItem('score', res.data.data.score)
@@ -39,6 +43,7 @@ class homePh extends React.Component {
     localStorage.setItem('name', res.data.data.name)
     localStorage.setItem('avatar', "https://app.tiaozhanmeiyitian.com/" + res.data.data.siteimg)
     localStorage.setItem('lyv', res.data.data.rate)
+    localStorage.setItem('siteUid',res.data.data.siteuid)
     this.setState({ gerVenueName: res.data.data })
 
   }

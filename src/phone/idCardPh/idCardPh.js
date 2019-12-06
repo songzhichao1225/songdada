@@ -1,6 +1,9 @@
 import React from 'react';
 import './idCardPh.css';
-import { Upload, Icon, Modal,Button, message, } from 'antd';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import { Upload, Icon, Modal,Button} from 'antd';
 import { } from '../../api';
 
 function getBase64(img, callback) {
@@ -101,9 +104,9 @@ class idCardPh extends React.Component {
   submit=()=>{
     let {imageRes,imageResT,imageUrlBaseT}=this.state
     if(imageRes===''){
-      message.error('请上传身份证正面照')
+      Toast.fail('请上传身份证正面照', 1);
     }else if(imageResT===''){
-      message.error('请上传身份证反面照')
+      Toast.fail('请上传身份证反面照', 1);
     }else{
       this.props.history.push({ pathname: '/qualificationPh', query: {imageRes:imageRes,imageResT:imageResT,imageUrlBaseT:imageUrlBaseT } })
     }

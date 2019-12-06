@@ -536,7 +536,6 @@ class siteSettings extends React.Component {
             <span>休息日/工作日</span>
             <Select placeholder="请选择" mode={this.state.siteEditor === 1 ? '' : 'multiple'} className="selectModel"
               value={this.state.siteEditor === 1 ? this.state.openday === 0 ? '周日' : [] && this.state.openday === 1 ? '周一' : [] && this.state.openday === 2 ? '周二' : [] && this.state.openday === 3 ? '周三' : [] && this.state.openday === 4 ? '周四' : [] && this.state.openday === 5 ? '周五' : [] && this.state.openday === 6 ? '周六' : [] : this.state.openday}
-
               style={{ width: 249, height: 'auto' }} onChange={this.handleChangeTwo}>
               <Option value="1">周一</Option>
               <Option value="2">周二</Option>

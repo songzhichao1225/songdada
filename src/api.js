@@ -281,6 +281,30 @@ export function checkChooseTimes(data,headers){    // 检测发布者发布活�
     return axios.post('/api/checkChooseTimes',data, {headers: {'token': headers}})
 }
 
+export function getVenueSpecialList(data,headers){    // 特殊场地号列表
+    return axios.post('/api/getVenueSpecialList',data, {headers: {'token': headers}})
+}
+
+export function getVenueSpecialDel(data,headers){    // 删除某一个特殊场地号
+    return axios.post('/api/getVenueSpecialDel',data, {headers: {'token': headers}})
+}
+
+export function getVenueSpecialSave(data,headers){    // 特殊场地号添加修改 
+    return axios.post('/api/getVenueSpecialSave',data, {headers: {'token': headers}})
+}
+
+export function getVenueNumberTitleList(data,headers){    // 某一个场馆的场地号标题列表
+    return axios.post('/api/getVenueNumberTitleList',data, {headers: {'token': headers}})
+}
+
+export function getVenueNumberTitleSave(data,headers){    // 场地号标题的添加修改 
+    return axios.post('/api/getVenueNumberTitleSave',data, {headers: {'token': headers}})
+}
+
+
+
+
+
 
 
 

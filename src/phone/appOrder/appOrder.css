@@ -95,6 +95,7 @@
     width: 105%;
     padding-bottom: 0.5rem;
     overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
 }
 .appOrder .bookingKanban .locaList>div{
     float: left;
@@ -108,6 +109,7 @@
    white-space: nowrap;
    height: 100%;
    position: relative;
+   -webkit-overflow-scrolling: touch;
 }
 
 .appOrder .bookingKanban .lookList::-webkit-scrollbar {/*滚动条整体样式*/
@@ -117,7 +119,6 @@
     position: absolute;
     z-index: 10;
     background: #fff;
-    transition: 0.2s;
 }
 .appOrder .bookingKanban .lookList .headerSon .topFixd>span{
     width:3.13rem;
@@ -126,6 +127,7 @@
     margin-left: 0.12rem;
     display: inline-block;
     text-align: center;
+    
 }
 .appOrder .bookingKanban .lookList .sonList{
     clear: both;
@@ -142,7 +144,6 @@
 .appOrder .bookingKanban .lookList .sonList>span:first-child{
     background: #fff;
     position: absolute;
-    transition: 0.1s;
     top: -0.3rem;
     margin-top: 0;
     margin-left: 0;

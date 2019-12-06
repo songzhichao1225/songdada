@@ -1,6 +1,9 @@
 import React from 'react';
 import './resetPasswordPh.css';
-import { Input, Icon,message } from 'antd';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import { Input, Icon } from 'antd';
 import { _code,VenueChangePassword } from '../../api';
 
 
@@ -27,9 +30,9 @@ class resetPasswordPh extends React.Component {
     const res = await _code(data)
     
     if(res.data.code===2000){
-      message.info(res.data.msg)
+      Toast.success(res.data.msg, 1);
     }else{
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
     }
   }
 
@@ -46,7 +49,7 @@ class resetPasswordPh extends React.Component {
       }, 1000)
       this.nacode({ "mobile": this.state.phone, "type": 'venuesavepass' })
     } else {
-      message.error('请输入手机号')
+      Toast.fail('请输入手机号', 1);
     }
   }
   code=e=>{
@@ -67,16 +70,16 @@ class resetPasswordPh extends React.Component {
     const res = await VenueChangePassword(data,localStorage.getItem('venue_token'))
     if(res.data.code===2000){
       this.props.history.push('/login')
-      message.info('密码修改成功')
+      Toast.success('密码修改成功', 1);
     }else{
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
     }
   }
 
   submit=()=>{
     let {phone,code,pass,passTwo}=this.state
     if(pass!==passTwo){
-      message.error('两次密码输入不一致')
+      Toast.fail('两次密码输入不一致', 1);
     }else{
      this.VenueChangePassword({phone:phone,code:code,pass:pass})
     }

@@ -1,6 +1,9 @@
 import React from 'react';
 import './orderPh.css';
-import { Row, Col, message, Pagination, Modal, Radio, Input, Drawer, DatePicker, Result, Icon, Spin } from 'antd';
+
+import { DatePicker,Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import { Row, Col, Pagination, Modal, Radio, Input, Drawer, Result, Icon, Spin } from 'antd';
 import { getReservationActivitieslist, VenueSendMessage, getVenueReservationss, getVenueSport, VenueClickCancelPlace } from '../../api';
 
 import moment from 'moment';
@@ -27,7 +30,7 @@ class orderPh extends React.Component {
     statusIdVal: 0,
     flag: false,
     remList: [],
-    dataString: '',
+    dataString: '选择时间',
     informVisible: false,
     informList: [],
     liIndex: 0,
@@ -60,8 +63,12 @@ class orderPh extends React.Component {
     moveY: 0,
     spinFlag: false,
 
-    start: '',
-    end: '',
+    start: '选择开始日期',
+    end: '选择结束日期',
+    nowDate: '',
+    qiDate: '',
+    qiStart: '',
+    qiEnd: '',
   };
 
 
@@ -78,7 +85,7 @@ class orderPh extends React.Component {
     const res = await getReservationActivitieslist(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     } else if (res.data.code === 2000) {
       this.setState({ activeSon: res.data.data.data, informList: res.data.data.data, total: res.data.data.count, flag: false, spin: false })
     } else if (res.data.code === 4002) {
@@ -100,7 +107,7 @@ class orderPh extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ dataString: new Date().toLocaleDateString().replace(/\//g, "-") })
+    this.setState({ dataString: new Date().toLocaleDateString().replace(/\//g, "-"), nowDate: new Date().toLocaleDateString().replace(/\//g, "-") })
     this.getVenueReservationss({ sportid: 1, date: new Date().toLocaleDateString().replace(/\//g, "-"), types: 1 })
     this.getVenueSport()
 
@@ -191,7 +198,7 @@ class orderPh extends React.Component {
   async VenueSendMessage(data) {
     const res = await VenueSendMessage(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info(res.data.msg)
+      Toast.success(res.data.msg, 1);
       this.setState({ visible: false })
     }
   }
@@ -214,9 +221,10 @@ class orderPh extends React.Component {
     })
   }
 
-  dateChange = (date, dataString) => {
-    this.setState({ dataString: dataString })
-    this.getVenueReservationss({ date: dataString, sportid: this.state.sportid, types: 1 })
+  dateChange = (date) => {
+
+    this.setState({ dataString: date.toLocaleDateString().replace(/\//g, "-"), qiDate: date })
+    this.getVenueReservationss({ date: date.toLocaleDateString().replace(/\//g, "-"), sportid: this.state.sportid, types: 1, siteUUID: '' })
   }
   sport = e => {
     this.setState({ sportIdVal: e.currentTarget.dataset.id })
@@ -225,12 +233,13 @@ class orderPh extends React.Component {
     this.setState({ statusIdVal: e.currentTarget.dataset.id })
   }
 
-  drawerInputOrderDate = (date, dateString) => {
-    this.setState({ start: dateString })
+  drawerInputOrderDate = (date) => {
+    this.setState({ start: date.toLocaleDateString().replace(/\//g, "-"), qiStart: date })
+
   }
 
-  drawerInputOrderDateTwo = (date, dateString) => {
-    this.setState({ end: dateString })
+  drawerInputOrderDateTwo = (date) => {
+    this.setState({ end: date.toLocaleDateString().replace(/\//g, "-"), qiEnd: date })
   }
 
   submitVal = () => {
@@ -253,9 +262,9 @@ class orderPh extends React.Component {
     const res = await VenueClickCancelPlace(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.dataString, types: 1 })
-      message.info(res.data.msg)
+      Toast.success(res.data.msg, 1);
     } else {
-      message.error('操作失败')
+      Toast.fail('操作失败', 1);
     }
   }
 
@@ -299,6 +308,10 @@ class orderPh extends React.Component {
         this.setState({ clenTop: 0 })
       }
     }
+  }
+  valChange = (vals) => {
+    let monut = parseInt(vals[1]) + 1
+    this.setState({ nowDate: vals[0] + '-' + monut + '-' + vals[2] })
   }
 
   render() {
@@ -399,10 +412,31 @@ class orderPh extends React.Component {
             <div className='drawerInputOrder'>
               <span style={{ clear: 'both', display: 'block', marginTop: '1rem' }}>选择日期</span>
               <div style={{ width: '100%', height: '3rem', borderBottom: '0.06rem solid #f5f5f5' }}>
-                <DatePicker onChange={this.drawerInputOrderDate} value={this.state.start === '' ? null : moment(this.state.start)} locale={zh_CN} style={{ width: '100%' }} placeholder='开始日期' />
+
+                <DatePicker
+                  mode="date"
+                  extra="Optional"
+                  title='选择日期'
+                  onChange={this.drawerInputOrderDate}
+                  locale={zh_CN}
+                  value={this.state.qiStart}
+                >
+                  <div style={{ lineHeight: '3rem' }}>{this.state.start}</div>
+                </DatePicker>
+
               </div>
               <div style={{ width: '100%', height: '3rem', borderBottom: '0.06rem solid #f5f5f5' }}>
-                <DatePicker onChange={this.drawerInputOrderDateTwo} value={this.state.start === '' ? null : moment(this.state.end)} locale={zh_CN} style={{ width: '100%' }} placeholder='结束日期' />
+                <DatePicker
+                  mode="date"
+                  extra="Optional"
+                  title='选择日期'
+                  onChange={this.drawerInputOrderDateTwo}
+                  locale={zh_CN}
+                  value={this.state.qiEnd}
+                >
+                  <div style={{ lineHeight: '3rem' }}>{this.state.end}</div>
+                </DatePicker>
+
               </div>
             </div>
             <div className="drawerBtn">
@@ -451,7 +485,20 @@ class orderPh extends React.Component {
               }
             </div>
           </div>
-          <DatePicker className="dateT" placeholder="选择日期" locale={zh_CN} onChange={this.dateChange} />
+
+          <DatePicker
+            mode="date"
+            extra="Optional"
+            title='选择日期'
+            onChange={this.dateChange}
+            locale={zh_CN}
+            value={this.state.qiDate}
+          >
+            <div className="dateT">{this.state.dataString}</div>
+          </DatePicker>
+
+
+
           <Result style={{ fontSize: '0.75rem' }} className={this.state.lookList.length === 0 ? '' : 'hidden'} icon={<Icon type="reconciliation" style={{ fontSize: '2rem' }} theme="twoTone" twoToneColor="#F5A623" />} title="没有预约情况" />
           <Drawer
             title="该场地详细信息"

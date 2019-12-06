@@ -1,8 +1,11 @@
 import React from 'react';
 import './loginPhTeo.css';
 import 'antd/dist/antd.css';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
 import { _login } from '../../api';
-import { message,Input,Icon } from 'antd';
+import {Input,Icon } from 'antd';
 
 
 class loginPhTeo extends React.Component {
@@ -33,7 +36,7 @@ class loginPhTeo extends React.Component {
   async login(data) {
     const res = await _login(data)
     if (res.data.code !== 2000) {
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
     } else {
       console.log(res.data.data)
       localStorage.setItem('uuid', res.data.data.uuid);

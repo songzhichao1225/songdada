@@ -1,10 +1,11 @@
 import React from 'react';
 import './sitePh.css';
 
-import { message, Row, Col, Input, Pagination, Drawer, Select, DatePicker, Result, Icon, Popconfirm, Spin, InputNumber } from 'antd';
+import { Toast, Picker, DatePicker } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import { Row, Col, Input, Pagination, Drawer, Select, Result, Icon, Popconfirm, Spin, InputNumber } from 'antd';
 import { getVenueFieldList, getVenueSport, addVenueField, getFirstField, getVenueDiscountList, addVenueDiscount, delVenueField, DelVenueDiscount, getFirstDiscount, getSetUpFieldSportId } from '../../api';
 
-import moment from 'moment';
 import zh_CN from 'antd/es/date-picker/locale/zh_CN';
 
 
@@ -29,14 +30,14 @@ class sitePh extends React.Component {
     sportList: [],
     DrawerVisible: false,
     addsporId: [],
-    runName: '',
+    runName: '请选择',
     dateChange: '',
     startTime: '00:00',
     endTime: '00:00',
     price: '',
     num: '',
-    weekChange: [],
-    timeChange: [],
+    weekChange: '请选择',
+    timeChange: '请选择',
     comment: '',
     getVenueDiscountList: [],
     Youtotal: 1,
@@ -49,14 +50,16 @@ class sitePh extends React.Component {
     opendayname: '',
 
     projectTwoId: '',
-    projectTwoName: [],
-    startDateTwo: undefined,
-    endDateTwo: undefined,
+    projectTwoName: '请选择',
+    startDateTwo: '选择开始日期',
+    qiStart: '',
+    endDateTwo: '请选择结束日期',
+    qiEnd: '',
     startTimeTwo: '00:00',
     endTimeTwo: '00:00',
     priceTwo: '',
     numTwo: 0,
-    timeChangeTwo: [],
+    timeChangeTwo: '请选择',
     timeChangeTwoNa: [],
     commentTwo: '',
     perDeletId: '',//删除某一条优惠活动id
@@ -73,58 +76,81 @@ class sitePh extends React.Component {
     upSportid: [],
     numTwoMax: 0,
     time: [
-      { name: '00:00' },
-      { name: '00:30' },
-      { name: '01:00' },
-      { name: '01:30' },
-      { name: '02:00' },
-      { name: '02:30' },
-      { name: '03:00' },
-      { name: '03:30' },
-      { name: '04:00' },
-      { name: '04:30' },
-      { name: '05:00' },
-      { name: '05:30' },
-      { name: '06:00' },
-      { name: '06:30' },
-      { name: '07:00' },
-      { name: '07:30' },
-      { name: '08:00' },
-      { name: '08:30' },
-      { name: '09:00' },
-      { name: '09:30' },
-      { name: '10:00' },
-      { name: '10:30' },
-      { name: '11:00' },
-      { name: '11:30' },
-      { name: '12:00' },
-      { name: '12:30' },
-      { name: '13:00' },
-      { name: '13:30' },
-      { name: '14:00' },
-      { name: '14:30' },
-      { name: '15:00' },
-      { name: '15:30' },
-      { name: '16:00' },
-      { name: '16:30' },
-      { name: '17:00' },
-      { name: '17:30' },
-      { name: '18:00' },
-      { name: '18:30' },
-      { name: '19:00' },
-      { name: '19:30' },
-      { name: '20:00' },
-      { name: '20:30' },
-      { name: '21:00' },
-      { name: '21:30' },
-      { name: '22:00' },
-      { name: '22:30' },
-      { name: '23:00' },
-      { name: '23:30' },
-      { name: '24:00' },
-    ]
+      { label: '00:00', value: '00:00' },
+      { label: '00:30', value: '00:30' },
+      { label: '01:00', value: '01:00' },
+      { label: '01:30', value: '01:30' },
+      { label: '02:00', value: '02:00' },
+      { label: '02:30', value: '02:30' },
+      { label: '03:00', value: '03:00' },
+      { label: '03:30', value: '03:30' },
+      { label: '04:00', value: '04:00' },
+      { label: '04:30', value: '04:30' },
+      { label: '05:00', value: '05:00' },
+      { label: '05:30', value: '05:30' },
+      { label: '06:00', value: '06:00' },
+      { label: '06:30', value: '06:30' },
+      { label: '07:00', value: '07:00' },
+      { label: '07:30', value: '07:30' },
+      { label: '08:00', value: '08:00' },
+      { label: '08:30', value: '08:30' },
+      { label: '09:00', value: '09:00' },
+      { label: '09:30', value: '09:30' },
+      { label: '10:00', value: '10:00' },
+      { label: '10:30', value: '10:30' },
+      { label: '11:00', value: '11:00' },
+      { label: '11:30', value: '11:30' },
+      { label: '12:00', value: '12:00' },
+      { label: '12:30', value: '12:30' },
+      { label: '13:00', value: '13:00' },
+      { label: '13:30', value: '13:30' },
+      { label: '14:00', value: '14:00' },
+      { label: '14:30', value: '14:30' },
+      { label: '15:00', value: '15:00' },
+      { label: '15:30', value: '15:30' },
+      { label: '16:00', value: '16:00' },
+      { label: '16:30', value: '16:30' },
+      { label: '17:00', value: '17:00' },
+      { label: '17:30', value: '17:30' },
+      { label: '18:00', value: '18:00' },
+      { label: '18:30', value: '18:30' },
+      { label: '19:00', value: '19:00' },
+      { label: '19:30', value: '19:30' },
+      { label: '20:00', value: '20:00' },
+      { label: '20:30', value: '20:30' },
+      { label: '21:00', value: '21:00' },
+      { label: '21:30', value: '21:30' },
+      { label: '22:00', value: '22:00' },
+      { label: '22:30', value: '22:30' },
+      { label: '23:00', value: '23:00' },
+      { label: '23:30', value: '23:30' },
+      { label: '24:00', value: '24:00' },
+    ],
 
+    moodArr: [
+      { label: '一周', value: '0.1' },
+      { label: '两周', value: '0.2' },
+      { label: '三周', value: '0.3' },
+      { label: '一个月', value: '1' },
+      { label: '两个月', value: '2' },
+    ],
 
+    timeArrT: [
+      { label: '0分钟', value: '0' },
+      { label: '30分钟', value: '30' },
+      { label: '60分钟', value: '60' },
+      { label: '2小时', value: '120' },
+      { label: '3小时', value: '180' },
+      { label: '4小时', value: '240' },
+      { label: '6小时', value: '360' },
+      { label: '24小时', value: '1440' },
+      { label: '48小时', value: '2880' },
+      { label: '72小时', value: '4320' },
+
+    ],
+
+    screenName: '全部',
+    activityName: '全部',
 
   };
   async getVenueFieldList(data) {
@@ -132,7 +158,7 @@ class sitePh extends React.Component {
     this.setState({ spin: false })
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     } else if (res.data.code === 2000) {
       for (let i in res.data.data) {
         if (res.data.data[i].maxScheduledDate === 0.1) {
@@ -157,14 +183,78 @@ class sitePh extends React.Component {
     }, 500)
   }
 
-  screenChange = e => {
-    this.setState({ siteSportId: e, selectNum: 'l' })
-    this.getVenueFieldList({ sportid: e, page: '' })
+  screenChange = v => {
+    this.setState({ siteSportId: v[0], selectNum: 'l' })
+    this.getVenueFieldList({ sportid: v[0], page: '' })
+
+    let day = ''
+    switch (v[0]) {
+      case 1:
+        day = "羽毛球";
+        break;
+      case 2:
+        day = "乒乓球";
+        break;
+      case 3:
+        day = "台球";
+        break;
+      case 4:
+        day = "篮球";
+        break;
+      case 5:
+        day = "足球";
+        break;
+      case 6:
+        day = "排球";
+        break;
+      case 7:
+        day = "网球";
+        break;
+      case 8:
+        day = "高尔夫";
+        break;
+      default:
+        day = "";
+    }
+    this.setState({ screenName: day })
   }
 
   activityChangeTwo = e => {
-    this.setState({ activitySportId: e, selectNumTwo: 'l' })
-    this.getVenueDiscountList({ sportid: e, page: '' })
+    this.setState({ activitySportId: e[0], selectNumTwo: 'l' })
+    this.getVenueDiscountList({ sportid: e[0], page: '' })
+
+    let day = ''
+    switch (e[0]) {
+      case 1:
+        day = "羽毛球";
+        break;
+      case 2:
+        day = "乒乓球";
+        break;
+      case 3:
+        day = "台球";
+        break;
+      case 4:
+        day = "篮球";
+        break;
+      case 5:
+        day = "足球";
+        break;
+      case 6:
+        day = "排球";
+        break;
+      case 7:
+        day = "网球";
+        break;
+      case 8:
+        day = "高尔夫";
+        break;
+      default:
+        day = "";
+    }
+    this.setState({ activityName: day })
+
+
   }
 
   screenChangeTwo = e => {
@@ -183,6 +273,7 @@ class sitePh extends React.Component {
   async getSetUpFieldSportId(data) {
     const res = await getSetUpFieldSportId(data, localStorage.getItem('venue_token'))
     this.setState({ upSportid: res.data.data })
+    
   }
 
 
@@ -190,17 +281,25 @@ class sitePh extends React.Component {
   async addVenueDiscount(data) {
     const res = await addVenueDiscount(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info(res.data.msg)
+      Toast.success(res.data.msg, 1);
       this.setState({ Youvisible: false })
       this.getVenueDiscountList({ sportid: this.state.activitySportId, page: '' })
     } else if (res.data.code !== 4001 && res.data.code !== 2000) {
-      message.info(res.data.msg)
+      Toast.success(res.data.msg, 1);
+
     }
   }
   async getVenueSport(data) {
     const res = await getVenueSport(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ sportList: res.data.data })
+      let arrS = []
+      for (let i in res.data.data) {
+        let ko = {}
+        ko.label = res.data.data[i].name
+        ko.value = res.data.data[i].id
+        arrS.push(ko)
+      }
+      this.setState({ sportList: arrS })
     }
   }
 
@@ -208,7 +307,8 @@ class sitePh extends React.Component {
     const res = await getFirstField(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
+
     } else if (res.data.code === 2000) {
       this.setState({
         addsporId: res.data.data.sportid, runName: res.data.data.sportname, dateChange: res.data.data.openday,
@@ -251,11 +351,12 @@ class sitePh extends React.Component {
   async addVenueField(data) {
     const res = await addVenueField(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info('操作成功')
+      Toast.success('操作成功', 1);
       this.setState({ DrawerVisible: false })
       this.getVenueFieldList({ sportid: this.state.siteSportId, page: this.state.sitePage })
     } else {
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
+
     }
   }
 
@@ -298,18 +399,18 @@ class sitePh extends React.Component {
   addList = () => {
     this.setState({ DrawerVisible: true })
     this.setState({
-      addsporId: [], runName: '', dateChange: [],
+      addsporId: [], runName: '请选择', dateChange: [],
       startTime: '00:00', endTime: '00:00', price: '', num: '',
-      weekChange: [], timeChange: [], comment: ''
+      weekChange: '请选择', timeChange: '请选择', comment: ''
     })
   }
 
   addYouList = () => {
     this.setState({ Youvisible: true })
     this.setState({
-      projectTwoId: '', projectTwoName: [], startDateTwo: undefined, endDateTwo: undefined,
+      projectTwoId: '', projectTwoName: '请选择', startDateTwo: '选择开始日期', endDateTwo: '选择结束日期',
       startTimeTwo: '00:00', endTimeTwo: '00:00', priceTwo: '',
-      numTwo: 0, timeChangeTwo: [], commentTwo: ''
+      numTwo: 0, timeChangeTwo: '请选择', commentTwo: ''
     })
   }
 
@@ -339,9 +440,9 @@ class sitePh extends React.Component {
     });
   }
   project = e => {
-    this.setState({ addsporId: e })
+    this.setState({ addsporId: e[0] })
     let day = ''
-    switch (parseInt(e)) {
+    switch (parseInt(e[0])) {
       case 1:
         day = "羽毛球";
         break;
@@ -407,10 +508,10 @@ class sitePh extends React.Component {
     }
   }
   startTime = (e) => {
-    this.setState({ startTime: e })
+    this.setState({ startTime: e[0] })
   }
   endTime = (e) => {
-    this.setState({ endTime: e })
+    this.setState({ endTime: e[0] })
   }
   price = e => {
     this.setState({ price: e.target.value })
@@ -419,10 +520,10 @@ class sitePh extends React.Component {
     this.setState({ num: e.target.value })
   }
   weekChange = e => {
-    this.setState({ weekChange: parseFloat(e) })
+    this.setState({ weekChange: parseFloat(e[0]) })
   }
   timeChange = e => {
-    this.setState({ timeChange: parseFloat(e) })
+    this.setState({ timeChange: parseFloat(e[0]) })
   }
   comment = e => {
     this.setState({ comment: e.target.value })
@@ -430,19 +531,19 @@ class sitePh extends React.Component {
   submit = () => {
     let { addsporId, runName, dateChange, opendayname, startTime, endTime, price, num, weekChange, timeChange, comment, editorListId } = this.state
     if (runName === '') {
-      message.warning('请选择运动项目')
+      Toast.fail('请选择运动项目', 1);
     } else if (startTime === '') {
-      message.warning('请选择开始时间')
+      Toast.fail('请选择开始时间', 1);
     } else if (endTime === '') {
-      message.warning('请选择结束时间')
+      Toast.fail('请选择结束时间', 1);
     } else if (price === '') {
-      message.warning('请填写价格')
+      Toast.fail('请填写价格', 1);
     } else if (num === '') {
-      message.warning('请填写场地数量')
-    } else if (weekChange === []) {
-      message.warning('请选择最长可预订时间')
+      Toast.fail('请填写场地数量', 1);
+    } else if (weekChange === '请选择') {
+      Toast.fail('请选择最长可预订时间', 1);
     } else if (timeChange === []) {
-      message.warning('请选择提前预定时间')
+      Toast.fail('请选择提前预定时间', 1);
     } else {
       let data = {
         sportid: addsporId,
@@ -475,11 +576,12 @@ class sitePh extends React.Component {
   async delVenueField(data) {
     const res = await delVenueField(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info(res.data.msg)
+      Toast.success(res.data.msg, 1);
+
       this.setState({ selectNum: 'l' })
       this.getVenueFieldList({ sportid: this.state.siteSportId, page: this.state.sitePage })
     } else {
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
     }
   }
   mood = e => {
@@ -492,9 +594,9 @@ class sitePh extends React.Component {
 
   //////////////////////  优惠活动获取添加
   projectTwo = e => {
-    this.setState({ projectTwoId: e })
+    this.setState({ projectTwoId: e[0] })
     let day = ''
-    switch (parseInt(e)) {
+    switch (parseInt(e[0])) {
       case 1:
         day = "羽毛球";
         break;
@@ -524,25 +626,26 @@ class sitePh extends React.Component {
     }
     let { upSportid } = this.state
     for (let i in upSportid) {
-      if (upSportid[i].sportid === e) {
+      if (upSportid[i].sportid === parseInt(e[0])) {
+        console.log(parseInt(upSportid[i].maxtablecount))
         this.setState({ numTwoMax: parseInt(upSportid[i].maxtablecount), numTwo: parseInt(upSportid[i].maxtablecount) })
       }
     }
 
     this.setState({ projectTwoName: day })
   }
-  startDateTwo = (date, dateString) => {
-    this.setState({ startDateTwo: dateString })
+  startDateTwo = (date) => {
+    this.setState({ startDateTwo: date.toLocaleDateString().replace(/\//g, "-"), qiStart: date })
   }
-  endDateTwo = (date, dateString) => {
-    this.setState({ endDateTwo: dateString })
+  endDateTwo = (date) => {
+    this.setState({ endDateTwo: date.toLocaleDateString().replace(/\//g, "-"), qiEnd: date })
   }
   startTimeTwo = (e) => {
-    this.setState({ startTimeTwo: e })
+    this.setState({ startTimeTwo: e[0] })
   }
 
   endTimeTwo = (e) => {
-    this.setState({ endTimeTwo: e })
+    this.setState({ endTimeTwo: e[0] })
   }
   priceTwo = e => {
     this.setState({ priceTwo: e.target.value })
@@ -551,7 +654,7 @@ class sitePh extends React.Component {
     this.setState({ numTwo: e })
   }
   timeChangeTwo = e => {
-    this.setState({ timeChangeTwo: parseInt(e) })
+    this.setState({ timeChangeTwo: parseInt(e[0]) })
     let day = ''
     switch (parseInt(e)) {
       case 0:
@@ -581,13 +684,13 @@ class sitePh extends React.Component {
   submitTwo = () => {
     let { projectTwoId, projectTwoName, startDateTwo, endDateTwo, startTimeTwo, endTimeTwo, priceTwo, numTwo, timeChangeTwo, commentTwo, YouId } = this.state
     if (projectTwoId === '') {
-      message.warning('请选择运动项目')
+      Toast.fail('请选择运动项目', 1);
     } else if (priceTwo === '') {
-      message.warning('请填写价格')
+      Toast.fail('请填写价格', 1);
     } else if (numTwo === 0) {
-      message.warning('请填写场地数量')
+      Toast.fail('请填写场地数量', 1);
     } else if (timeChangeTwo === []) {
-      message.warning('请选择可提前预定时间')
+      Toast.fail('请选择可提前预定时间', 1);
     } else {
       let data = {
         sportid: projectTwoId,
@@ -610,10 +713,10 @@ class sitePh extends React.Component {
   async DelVenueDiscount(data) {
     const res = await DelVenueDiscount(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info(res.data.msg)
+      Toast.success(res.data.msg, 1);
       this.getVenueDiscountList({ sportid: this.state.activitySportId, page: this.state.perPage })
     } else {
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
     }
   }
 
@@ -629,6 +732,13 @@ class sitePh extends React.Component {
     this.setState({ Youvisible: true })
     this.setState({ YouId: e.currentTarget.dataset.uuid })
     this.getFirstDiscount({ uuid: e.currentTarget.dataset.uuid })
+    this.getSetUpFieldSportId()
+    let { upSportid } = this.state
+    for (let i in upSportid) {
+      if (upSportid[i].sportid === this.state.projectTwoId) {
+        this.setState({ numTwoMax: parseInt(upSportid[i].maxtablecount), numTwo: parseInt(upSportid[i].maxtablecount) })
+      }
+    }
   }
 
 
@@ -645,7 +755,7 @@ class sitePh extends React.Component {
 
 
   touClick = (e) => {
-    this.setState({ clickY: e.targetTouches[0].clientY})
+    this.setState({ clickY: e.targetTouches[0].clientY })
   }
   touMove = (e) => {
     if (this.state.clickY < e.targetTouches[0].clientY && this.state.clickY < 200) {
@@ -704,14 +814,19 @@ class sitePh extends React.Component {
         <div className={this.state.clickNum === 1 ? 'site' : 'none'} onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
           <Row style={{ color: '#9B9B9B', borderBottom: '0.06rem solid #e9e9e9' }}>
             <Col className="oneCol" xs={{ span: 7 }} lg={{ span: 6 }}>
-              <Select defaultValue="运动项目" dropdownStyle={{ textAlign: 'left', paddingLeft: '0' }} style={{ width: '100%', textAlign: 'left', background: 'transparent' }} onChange={this.screenChange}>
+              {/* <Select defaultValue="运动项目" dropdownStyle={{ textAlign: 'left', paddingLeft: '0' }} style={{ width: '100%', textAlign: 'left', background: 'transparent' }} onChange={this.screenChange}>
                 <Option value='0'>全部</Option>
                 {
                   this.state.sportList.map((item, i) => (
                     <Option key={i} value={item.id}>{item.name}</Option>
                   ))
                 }
-              </Select>
+              </Select> */}
+
+
+              <Picker data={this.state.sportList} title="选择运动项目" onChange={this.screenChange} cols={1} className="forss">
+                <div>{this.state.screenName} <Icon type='down' /></div>
+              </Picker>
 
 
             </Col>
@@ -738,17 +853,17 @@ class sitePh extends React.Component {
 
                     <Row className="detail">
                       <Col className="oneCol" xs={{ span: 9 }} lg={{ span: 6 }}>最长可预定 {item.date}</Col>
-                      <Col xs={{ span: 7, offset: 2 }} style={{ textAlign: 'left' }} lg={{ span: 6 }}>最短预定 {item.appointmenttime/60 + '小时'}</Col>
-                      <Col xs={{ span: 6 }} lg={{ span: 6 }}>  
-                      <Popconfirm
-                        title="你确定要删除吗?"
-                        onConfirm={this.siteDelet}
-                        onCancel={this.siteCancel}
-                        okText="确定"
-                        cancelText="取消"
-                      >
-                        <img className="upLoad" style={{ right: '1.5rem' }} onClick={this.mood} data-uuid={item.uid} src={require("../../assets/delet.png")} alt="删除" />
-                      </Popconfirm></Col>
+                      <Col xs={{ span: 7, offset: 2 }} style={{ textAlign: 'left' }} lg={{ span: 6 }}>最短预定 {item.appointmenttime / 60 + '小时'}</Col>
+                      <Col xs={{ span: 6 }} lg={{ span: 6 }}>
+                        <Popconfirm
+                          title="你确定要删除吗?"
+                          onConfirm={this.siteDelet}
+                          onCancel={this.siteCancel}
+                          okText="确定"
+                          cancelText="取消"
+                        >
+                          <img className="upLoad" style={{ right: '1.5rem' }} onClick={this.mood} data-uuid={item.uid} src={require("../../assets/delet.png")} alt="删除" />
+                        </Popconfirm></Col>
                     </Row>
                   </div>
                 </div>
@@ -770,19 +885,16 @@ class sitePh extends React.Component {
           >
             <div className='drawSite'>
               <div className="sitePhlistSon">
-                <span>运动项目</span>
-                <Select
-                  style={{ width: '50%', float: 'right' }}
-                  placeholder="请选择"
-                  onChange={this.project}
-                  value={this.state.addsporId}
-                >
-                  {
-                    this.state.sportList.map((item, i) => (
-                      <Option key={i} value={item.id}>{item.name}</Option>
-                    ))
-                  }
-                </Select>
+                <span style={{ float: 'left' }}>运动项目</span>
+
+                <Picker data={this.state.sportList} title="选择运动项目" onChange={this.project} cols={1} className="forss">
+                  <div style={{ float: 'right', width: '50%', textAlign: 'left', paddingLeft: '0.75rem' }}>{this.state.runName} <Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
+                </Picker>
+
+
+
+
+
               </div>
 
               <div className="sitePhlistSon">
@@ -804,43 +916,23 @@ class sitePh extends React.Component {
                 </Select>
               </div>
               <div className="sitePhlistSon">
-                <span>开始时间</span>
-                <Select value={this.state.startTime} style={{ float: 'right', width: '50%' }} defaultActiveFirstOption={false} onChange={this.startTime} placeholder="开始时间" >
-                  {
-                    this.state.time.map((item, i) => (
-                      <Option key={i} value={item.name}>{item.name}</Option>
-                    ))
-                  }
-                </Select>
-
-                {/* <TimePicker style={{ float: 'right', width: '50%' }} inputReadOnly={true} defaultValue={moment(this.state.startTime, format)} autoFocus={false} minuteStep={30} onChange={this.startTime} placeholder="开始时间" format={format} /> */}
+                <span style={{ float: 'left' }}>开始时间</span>
+                <Picker data={this.state.time} title="选择开始时间" onChange={this.startTime} cols={1} className="forss">
+                  <div style={{ float: 'right', width: '50%', textAlign: 'left', paddingLeft: '0.75rem' }}>{this.state.startTime} <Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
+                </Picker>
 
               </div>
 
 
               <div className="sitePhlistSon">
-                <span>结束时间</span>
-
-                <Select value={this.state.endTime} style={{ float: 'right', width: '50%' }} defaultActiveFirstOption={false} onChange={this.endTime} placeholder="开始时间" >
-                  { 
-                    this.state.time.map((item, i) => (
-                      <Option key={i} value={item.name}>{item.name}</Option>
-                    ))
-                  }
-                </Select>
-
-
-
-
-                {/* <TimePicker style={{ float: 'right', width: '50%' }} inputReadOnly={true} onChange={this.endTime} minuteStep={30} defaultValue={moment(this.state.endTime, format)} format={format} /> */}
+                <span style={{ float: 'left' }}>结束时间</span>
+                <Picker data={this.state.time} title="选择开始时间" onChange={this.endTime} cols={1} className="forss">
+                  <div style={{ float: 'right', width: '50%', textAlign: 'left', paddingLeft: '0.75rem' }}>{this.state.endTime} <Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
+                </Picker>
               </div>
-
-            
-
-
               <div className="sitePhlistSon">
                 <span>价格(元/时)</span>
-                <Input style={{ width: '50%', border: 'none', height: '2rem', float: 'right', boxShadow: 'none' }  } value={this.state.price} onChange={this.price} placeholder="请输入" type="number" />
+                <Input style={{ width: '50%', border: 'none', height: '2rem', float: 'right', boxShadow: 'none' }} value={this.state.price} onChange={this.price} placeholder="请输入" type="number" />
               </div>
               <div className="sitePhlistSon">
                 <span>数量</span>
@@ -848,53 +940,33 @@ class sitePh extends React.Component {
               </div>
 
               <div className="sitePhlistSon">
-                <span>最长可预定时间</span>
-                <Select
-                  style={{ width: '50%', float: 'right' }}
-                  placeholder="请选择"
-                  onChange={this.weekChange}
-                  value={this.state.weekChange === 0.1 ? '一周' : [] && this.state.weekChange === 0.2 ? '两周' : [] && this.state.weekChange === 0.3 ? '三周' : [] && this.state.weekChange === 1 ? '一个月' : [] && this.state.weekChange === 2 ? '两个月' : []}
-                >
-                  <Option value='0.1'>一周</Option>
-                  <Option value='0.2'>两周</Option>
-                  <Option value='0.3'>三周</Option>
-                  <Option value='1'>一个月</Option>
-                  <Option value='2'>两个月</Option>
-                </Select>
+                <span style={{ float: 'left' }}>最长可预定时间</span>
+                <Picker data={this.state.moodArr} title="选择开始时间" onChange={this.weekChange} cols={1} className="forss">
+                  <div style={{ float: 'right', width: '50%', textAlign: 'left', paddingLeft: '0.75rem' }}>{this.state.weekChange === 0.1 ? '一周' : '请选择' && this.state.weekChange === 0.2 ? '两周' : '请选择' && this.state.weekChange === 0.3 ? '三周' : '请选择' && this.state.weekChange === 1 ? '一个月' : '请选择' && this.state.weekChange === 2 ? '两个月' : '请选择'} <Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
+                </Picker>
+
               </div>
 
               <div className="sitePhlistSon">
-                <span>最短提前预定时间</span>
-                <Select
-                  style={{ width: '50%', float: 'right' }}
-                  placeholder="请选择"
-                  onChange={this.timeChange}
-                  value={
-                    this.state.timeChange === 0 ? '0分钟' : []
-                     && this.state.timeChange === 30 ? '30分钟' : []
-                      && this.state.timeChange === 60 ? '60分钟' : []
-                       && this.state.timeChange === 120 ? '2小时' : [] 
-                       && this.state.timeChange === 180 ? '3小时' : []
-                       && this.state.timeChange === 240 ? '4小时' : []
-                       && this.state.timeChange === 300 ? '5小时' : []
-                       && this.state.timeChange === 360 ? '6小时' : []
-                       && this.state.timeChange === 1440 ? '24小时' : []
-                       && this.state.timeChange === 2880 ? '48小时' : []
-                       && this.state.timeChange === 4320 ? '72小时' : []
-                      }
-                >
-                  <Option value='0'>0分钟</Option>
-                  <Option value='30'>30分钟</Option>
-                  <Option value='60'>60分钟</Option>
-                  <Option value='120'>2小时</Option>
-                  <Option value='180'>3小时</Option>
-                  <Option value='240'>4小时</Option>
-                  <Option value='300'>5小时</Option>
-                  <Option value='360'>6小时</Option>
-                  <Option value='1440'>24小时</Option>
-                  <Option value='2880'>48小时</Option>
-                  <Option value='4320'>72小时</Option>
-                </Select>
+                <span style={{ float: 'left' }}>最短提前预定时间</span>
+                <Picker data={this.state.timeArrT} title="选择开始时间" onChange={this.timeChange} cols={1} className="forss">
+                  <div style={{ float: 'right', width: '50%', textAlign: 'left', paddingLeft: '0.75rem' }}>
+                    {
+                      this.state.timeChange === 0 ? '0分钟' : '请选择'
+                        && this.state.timeChange === 30 ? '30分钟' : '请选择'
+                          && this.state.timeChange === 60 ? '60分钟' : '请选择'
+                            && this.state.timeChange === 120 ? '2小时' : '请选择'
+                              && this.state.timeChange === 180 ? '3小时' : '请选择'
+                                && this.state.timeChange === 240 ? '4小时' : '请选择'
+                                  && this.state.timeChange === 300 ? '5小时' : '请选择'
+                                    && this.state.timeChange === 360 ? '6小时' : '请选择'
+                                      && this.state.timeChange === 1440 ? '24小时' : '请选择'
+                                        && this.state.timeChange === 2880 ? '48小时' : '请选择'
+                                          && this.state.timeChange === 4320 ? '72小时' : '请选择'
+                    }
+                    <Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
+                </Picker>
+
               </div>
 
               <div className="sitePhlistSon">
@@ -909,14 +981,9 @@ class sitePh extends React.Component {
         <div className={this.state.clickNum === 2 ? 'preferential' : 'none'} onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
           <Row style={{ color: '#9B9B9B', borderBottom: '0.06rem solid #e9e9e9' }}>
             <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6 }}>
-              <Select defaultValue="运动项目" dropdownStyle={{ textAlign: 'left', marginTop: '0' }} style={{ width: '100%', textAlign: 'left', background: 'transparent' }} onChange={this.activityChangeTwo}>
-                <Option value='0'>全部</Option>
-                {
-                  this.state.sportList.map((item, i) => (
-                    <Option key={i} value={item.id}>{item.name}</Option>
-                  ))
-                }
-              </Select>
+              <Picker data={this.state.sportList} title="选择运动项目" onChange={this.activityChangeTwo} cols={1} className="forss">
+                <div style={{ textAlign: 'left' }}>{this.state.activityName} <Icon type='down' /></div>
+              </Picker>
             </Col>
             <Col xs={{ span: 10, offset: 1 }} lg={{ span: 6 }} style={{ textAlign: 'left' }}>时间</Col>
             <Col xs={{ span: 6 }} lg={{ span: 6 }}>价格(元/时)</Col>
@@ -970,76 +1037,88 @@ class sitePh extends React.Component {
           width='100%'
         >
           <div className="SzSon">
-            <span>运动项目</span>
-            <Select
-              style={{ width: '50%', float: 'right' }}
-              placeholder="请选择"
-              onChange={this.projectTwo}
-              value={this.state.projectTwoName}
+            <span style={{ float: 'left' }}>运动项目</span>
+            <Picker data={this.state.sportList} title="选择运动项目" onChange={this.projectTwo} cols={1} className="forss">
+              <div style={{ float: 'right', width: '50%', textAlign: 'left', }}>{this.state.projectTwoName} <Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
+            </Picker>
+
+          </div>
+
+          <div className="SzSon">
+            <span style={{ float: 'left' }}>开始日期</span>
+
+            <DatePicker
+              mode="date"
+              title="选择开始日期"
+              extra="Optional"
+              locale={zh_CN}
+              value={this.state.qiStart}
+              onChange={this.startDateTwo}
             >
-              {
-                this.state.upSportid.map((item, i) => (
-                  <Option key={i} value={item.sportid}>{item.name}</Option>
-                ))
-              }
-            </Select>
+              <div style={{ width: '50%', float: 'right' }}>{this.state.startDateTwo}<Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
+            </DatePicker>
+
           </div>
 
           <div className="SzSon">
-            <span>开始日期</span>
-            <DatePicker locale={zh_CN} style={{ width: '50%', float: 'right' }} inputReadOnly={true} placeholder="开始日期" onChange={this.startDateTwo} value={moment(this.state.startDateTwo)} />
-          </div>
+            <span style={{ float: 'left' }}>结束日期</span>
 
-          <div className="SzSon">
-            <span>结束日期</span>
-            <DatePicker locale={zh_CN} style={{ width: '50%', float: 'right' }} inputReadOnly={true} placeholder="结束日期" onChange={this.endDateTwo} value={moment(this.state.endDateTwo)} />
-          </div>
-          <div className="SzSon">
-            <span>开始时间</span>
-
-            <Select value={this.state.startTimeTwo} style={{ float: 'right', width: '50%' }} defaultActiveFirstOption={false} onChange={this.startTimeTwo} placeholder="开始时间" >
-              {
-                this.state.time.map((item, i) => (
-                  <Option key={i} value={item.name}>{item.name}</Option>
-                ))
-              }
-            </Select>
-            {/* <TimePicker style={{ float: 'right', width: '50%' }} inputReadOnly={true} onChange={this.startTimeTwo} minuteStep={30} defaultValue={moment(this.state.startTimeTwo, format)} format={format} /> */}
+            <DatePicker
+              mode="date"
+              title="选择结束日期"
+              extra="Optional"
+              locale={zh_CN}
+              value={this.state.qiStart}
+              onChange={this.endDateTwo}
+            >
+              <div style={{ width: '50%', float: 'right' }}>{this.state.endDateTwo}<Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
+            </DatePicker>
           </div>
           <div className="SzSon">
-            <span>结束时间</span>
-            <Select value={this.state.endTimeTwo} style={{ float: 'right', width: '50%' }} defaultActiveFirstOption={false} onChange={this.endTimeTwo} placeholder="开始时间" >
-              {
-                this.state.time.map((item, i) => (
-                  <Option key={i} value={item.name}>{item.name}</Option>
-                ))
-              }
-            </Select>
-
-            {/* <TimePicker style={{ float: 'right', width: '50%' }} inputReadOnly={true} onChange={this.endTimeTwo} minuteStep={30} defaultValue={moment(this.state.endTimeTwo, format)} format={format} /> */}
+            <span style={{ float: 'left' }}>开始时间</span>
+            <Picker data={this.state.time} title="选择开始时间" onChange={this.startTimeTwo} cols={1} className="forss">
+              <div style={{ float: 'right', width: '50%', textAlign: 'left' }}>{this.state.startTimeTwo} <Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
+            </Picker>
+          </div>
+          <div className="SzSon">
+            <span style={{ float: 'left' }}>结束时间</span>
+            <Picker data={this.state.time} title="选择开始时间" onChange={this.endTimeTwo} cols={1} className="forss">
+              <div style={{ float: 'right', width: '50%', textAlign: 'left' }}>{this.state.endTimeTwo} <Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
+            </Picker>
           </div>
           <div className="SzSon">
             <span>价格(元/时)</span>
-            <Input style={{ width: '50%', border: 'none', height: '2rem', float: 'right', boxShadow: 'none' }} value={this.state.priceTwo} onChange={this.priceTwo} placeholder="请输入" type="number" />
+            <Input style={{ width: '50%', border: 'none', height: '2rem', float: 'right', boxShadow: 'none', paddingLeft: '0' }} value={this.state.priceTwo} onChange={this.priceTwo} placeholder="请输入" type="number" />
           </div>
           <div className="SzSon">
             <span>数量</span>
-            <InputNumber style={{ width: '50%', border: 'none', height: '1.9rem', float: 'right', boxShadow: 'none' }} min={1} max={this.state.numTwoMax} value={this.state.numTwo} onChange={this.numTwo} placeholder="请输入" />
+            <InputNumber style={{ width: '50%', border: 'none', height: '1.9rem', float: 'right', boxShadow: 'none', paddingLeft: '0' }} min={1} max={this.state.numTwoMax} value={this.state.numTwo} onChange={this.numTwo} placeholder="请输入" />
           </div>
           <div className="SzSon">
-            <span>最短提前预定时间</span>
-            <Select style={{ width: '50%', float: 'right' }} 
-            placeholder="请选择" value={this.state.timeChangeTwo === 0 ? '0分钟' : [] && this.state.timeChangeTwo === 30 ? '30分钟' : [] && this.state.timeChangeTwo === 60 ? '60分钟' : [] && this.state.timeChangeTwo === 120 ? '120分钟' : [] && this.state.timeChangeTwo === 180 ? '180分钟' : []} onChange={this.timeChangeTwo}>
-              <Option value='0'>0分钟</Option>
-              <Option value='30'>30分钟</Option>
-              <Option value='60'>60分钟</Option>
-              <Option value='120'>120分钟</Option>
-              <Option value='180'>180分钟</Option>
-            </Select>
+            <span style={{ float: 'left' }}>最短提前预定时间</span>
+            <Picker data={this.state.timeArrT} title="提前预定时间" onChange={this.timeChangeTwo} cols={1} className="forss">
+              <div style={{ float: 'right', width: '50%', textAlign: 'left', }}>
+                {
+                  this.state.timeChangeTwo === 0 ? '0分钟' : '请选择'
+                    && this.state.timeChangeTwo === 30 ? '30分钟' : '请选择'
+                      && this.state.timeChangeTwo === 60 ? '60分钟' : '请选择'
+                        && this.state.timeChangeTwo === 120 ? '2小时' : '请选择'
+                          && this.state.timeChangeTwo === 180 ? '3小时' : '请选择'
+                            && this.state.timeChangeTwo === 240 ? '4小时' : '请选择'
+                              && this.state.timeChangeTwo === 300 ? '5小时' : '请选择'
+                                && this.state.timeChangeTwo === 360 ? '6小时' : '请选择'
+                                  && this.state.timeChangeTwo === 1440 ? '24小时' : '请选择'
+                                    && this.state.timeChangeTwo === 2880 ? '48小时' : '请选择'
+                                      && this.state.timeChangeTwo === 4320 ? '72小时' : '请选择'
+                }
+                <Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
+            </Picker>
+
+
           </div>
           <div className="SzSon">
             <span>备注</span>
-            <Input style={{ width: '50%', border: 'none', height: '2rem', float: 'right', boxShadow: 'none' }} value={this.state.commentTwo} onChange={this.commentTwo} placeholder="请输入" />
+            <Input style={{ width: '50%', border: 'none', height: '2rem', float: 'right', boxShadow: 'none', paddingLeft: '0' }} value={this.state.commentTwo} onChange={this.commentTwo} placeholder="请输入" />
           </div>
           <div className="sitePhsubmit" onClick={this.submitTwo}>提交</div>
           {/* <div className="sitePhclose" onClick={this.drawerCloseTwo}>取消</div> */}

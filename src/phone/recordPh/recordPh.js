@@ -1,6 +1,9 @@
 import React from 'react';
 import './recordPh.css';
-import { message,Pagination,Result,Icon,Spin} from 'antd';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import {Pagination,Result,Icon,Spin} from 'antd';
 import { getVenueWithdrawalList } from '../../api';
 
 
@@ -15,7 +18,7 @@ class recordPh extends React.Component {
     const res = await getVenueWithdrawalList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      message.error('登录超时请重新登录')
+      Toast.fail('登录超时请重新登录', 1);
     } else {
       this.setState({ recordPhList: res.data.data,other:res.data.other,spin:false })
     }

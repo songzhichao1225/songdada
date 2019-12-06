@@ -2,7 +2,7 @@ import React from 'react';
 import './appOrder.css';
 import { Calendar, Toast,Result,Icon } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { getAppVenueReservation, checkChooseTimes } from '../../api';
+import { getAppVenueReservation, checkChooseTimes,getVenueNumberTitleList } from '../../api';
 
 const now = new Date();
 
@@ -20,6 +20,10 @@ class appOrder extends React.Component {
     lotime: [],
     time: [],
     token: '',
+    siteid:'',
+    sportid:'',
+    obj:'',
+    topNumList:[],
   };
 
 
@@ -27,6 +31,10 @@ class appOrder extends React.Component {
   async getAppVenueReservation(data) {
     const res = await getAppVenueReservation(data)
     if (res.data.code === 2000) {
+      for(let j in this.state.topNumList){
+        res.data.data[0].c[this.state.topNumList[j].venueid-1].title=this.state.topNumList[j].title
+        res.data.data[0].c[this.state.topNumList[j].venueid-1].uuid=this.state.topNumList[j].uuid
+       }
       this.setState({ lookList: res.data.data, macNum: res.data.data[0].c })
       if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 24) {
         if (res.data.data[res.data.data.length - 1].a.slice(-2) === '00') {
@@ -50,18 +58,30 @@ class appOrder extends React.Component {
     }
   }
 
+  
+
+
+
+  
+  async getVenueNumberTitleList(data) {
+    const res = await getVenueNumberTitleList(data)
+    if (res.data.code === 2000) {
+       this.setState({topNumList:res.data.data})
+    } 
+  }
 
   componentDidMount() {
-
-
+     
     let query = this.props.location.search
     let arr = query.split('&')
     let siteuid = arr[0].slice(9, arr[0].length)
     let sportid = arr[1].slice(8, arr[1].length)
     let token = arr[2].slice(6, arr[2].length)
-    this.getAppVenueReservation({ date: new Date().toLocaleDateString().replace(/\//g, "-"), siteUUID: siteuid, sportid: sportid })
+                       
+    this.getAppVenueReservation({ date: new Date().toLocaleDateString().replace(/\//g, "-"), siteUUID:siteuid , sportid:sportid  })
+    this.getVenueNumberTitleList({sportid:sportid,type:'2',siteuuid:siteuid})
     let start = new Date().toLocaleDateString().replace(/\//g, "-")
-    this.setState({ date: start, token: token })
+    this.setState({ date: start, token: token,siteid:siteuid,sportid:sportid})
   }
 
 
@@ -100,20 +120,18 @@ class appOrder extends React.Component {
   }
 
   onConfirm = (e) => {
-    this.setState({ show: false, date: e.toLocaleDateString().replace(/\//g, "-") })
-    this.getAppVenueReservation({ date: e.toLocaleDateString().replace(/\//g, "-"), siteUUID: '94da6c9c-8ced-d0e2-d54f-ad690d247134', sportid: '1' })
+    this.setState({ show: false, date: e.toLocaleDateString().replace(/\//g, "-"),lotime:'' })
+    this.getAppVenueReservation({ date: e.toLocaleDateString().replace(/\//g, "-"), siteUUID: this.state.siteid, sportid:this.state.sportid })
   }
   onCancel = () => {
     this.setState({ show: false })
   }
-
 
   lookPlate = e => {
     let money = e.currentTarget.dataset.money
     let time = e.currentTarget.dataset.time
     let num = e.currentTarget.dataset.num
     let lotime = e.currentTarget.dataset.lo
-
     if (e.currentTarget.dataset.type === '1') {
       if (this.state.lotime.length > 0) {
         this.setState({ moneyCall: parseInt(this.state.moneyCall) + parseInt(money) })
@@ -125,13 +143,11 @@ class appOrder extends React.Component {
           this.state.lotime.splice(this.state.time.indexOf(time), 1, time + '-' + num)
           this.setState({ moneyCall: this.state.moneyCall })
         } else {
-
           this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time] })
         }
       } else {
         this.setState({ moneyCall: parseInt(this.state.moneyCall) + parseInt(money), time: [...this.state.time, time], lotime: [...this.state.lotime, lotime] })
       }
-
     }
   }
 
@@ -142,6 +158,21 @@ class appOrder extends React.Component {
     const res = await checkChooseTimes(data, this.state.token)
     if (res.data.code !== 2000) {
       Toast.fail(res.data.msg, 2, null, false);
+    }else{
+      var sUserAgent = navigator.userAgent;
+      var mobileAgents = ['Android', 'iPhone'];
+      for (let index = 0; index < mobileAgents.length; index++) {
+        if (sUserAgent.indexOf('Android') > -1) {
+          let objT = JSON.stringify(this.state.obj)
+          window.JsAndroid.goTime(objT)
+        } else if (sUserAgent.indexOf('iPhone') > -1) {
+          try {
+            window.webkit.messageHandlers.ScanAction.postMessage(this.state.obj);
+          } catch (error) {
+            console.log(error)
+          }
+        }
+      }
     }
   }
 
@@ -156,9 +187,9 @@ class appOrder extends React.Component {
       time += this.state.lotime[i].split('-')[0] + ','
     }
     if (this.state.lotime.length > 0) {
-      let s1 = new Date(this.state.date.split('/') + ' ' + time.slice(0, time.length - 1).split(',').sort()[this.state.lotime.length - 1])
-      let s2 = new Date(this.state.date.split('/') + ' ' + time.slice(0, time.length - 1).split(',').sort()[0])
-      if ((s1.getTime() - s2.getTime()) / 1000 / 60 / 30 + 1 !== this.state.lotime.length) {
+      let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[this.state.lotime.length - 1])
+      let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[0])
+      if ((Number(s1)- Number(s2)) / 1000 / 60 / 30 + 1 !== this.state.lotime.length) {
         Toast.fail('时间必须连贯', 2, null, false);
       } else {
         let obj = {
@@ -168,21 +199,8 @@ class appOrder extends React.Component {
           placeMoney: this.state.moneyCall,
           placeTimeLen: (time.split(',').length - 1) * 0.5 + '小时'
         }
-        var sUserAgent = navigator.userAgent;
-        var mobileAgents = ['Android', 'iPhone'];
-        for (let index = 0; index < mobileAgents.length; index++) {
-          if (sUserAgent.indexOf('Android') > -1) {
-            let objT = JSON.stringify(obj)
-            window.JsAndroid.goTime(objT);
-          } else if (sUserAgent.indexOf('iPhone') > -1) {
-            try {
-              window.webkit.messageHandlers.ScanAction.postMessage(obj);
-            } catch (error) {
-              console.log(error)
-            }
-          }
-        }
-
+        this.setState({obj:obj})
+        this.checkChooseTimes({startTime:time.slice(0, time.length - 1).split(',').sort()[0],playTime:(time.split(',').length - 1) * 0.5 })
       }
     } else {
       Toast.fail('请选择场地', 2, null, false);
@@ -214,15 +232,15 @@ class appOrder extends React.Component {
 
               <div className="lookList" onScrollCapture={this.scroll} ref={c => { this.scrollRef = c }} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block' }}>
                 <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 3.25 + 'rem' }}>
-                  <div className="topFixd" style={{ top: this.state.top, minWidth: '100%' }}>
-                    <span></span>
+                  <div className="topFixd" style={{ top: this.state.top, minWidth: '100%',height:'3rem' }}>
+                    <span>标题<br/>场地号</span>
                     {
                       this.state.macNum.map((item, i) => (
-                        <span key={i}>{i + 1}</span>
+                      <span key={i}>{item.title}<br/>{i + 1}</span>
                       ))
                     }
                   </div>
-                  <div style={{ height: '2.5rem', lineHeight: '2.5rem' }}></div>
+                  <div style={{ height: '3rem', lineHeight: '2.5rem' }}></div>
                   {
                     this.state.lookList.map((index, i) => (
                       <div key={i} className="sonList">

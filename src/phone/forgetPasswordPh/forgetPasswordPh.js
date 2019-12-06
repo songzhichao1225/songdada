@@ -1,7 +1,10 @@
 import React from 'react';
 import './forgetPasswordPh.css';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
 import { _code, VenueSelectSiteName, VenueForgetPass } from '../../api';
-import {  Input, message, Radio,Icon } from 'antd';
+import {  Input, Radio,Icon } from 'antd';
 
 
 class forgetPasswordPh extends React.Component {
@@ -33,7 +36,7 @@ class forgetPasswordPh extends React.Component {
       }, 1000)
       this.nacode({ "mobile": this.state.phone, "type": 'venueforgetpass' })
     }else{
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
     }
   }
 
@@ -48,9 +51,9 @@ class forgetPasswordPh extends React.Component {
   async nacode(data) {
     const res = await _code(data)
     if(res.data.code===2000){
-     message.info(res.data.msg)
+      Toast.success(res.data.msg, 1);
     }else{
-      message.warning(res.data.msg)
+      Toast.fail(res.data.msg, 1);
     }
 
   }
@@ -58,7 +61,7 @@ class forgetPasswordPh extends React.Component {
     if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
       this.VenueSelectSiteName({ phone: this.state.phone })
     } else {
-      message.error('请输入手机号')
+      Toast.fail('请输入手机号', 1);
     }
   }
   onChange = e => {
@@ -77,10 +80,10 @@ class forgetPasswordPh extends React.Component {
   async VenueForgetPass(data) {
     const res = await VenueForgetPass(data)
     if (res.data.code === 2000) {
-      message.info('密码修改成功')
+      Toast.success('密码修改成功', 1);
       this.props.history.goBack()
     } else {
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
     }
 
   }

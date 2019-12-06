@@ -1,6 +1,9 @@
 import React from 'react';
 import './registerPh.css';
-import { Button, Input, Checkbox, Popconfirm, Icon,message,Modal } from 'antd';
+
+import {Toast } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+import { Button, Input, Checkbox, Popconfirm, Icon,Modal } from 'antd';
 import { _register, _code, getPromoteName,getIsUserName } from '../../api';
 
 class registerPh extends React.Component {
@@ -35,7 +38,7 @@ class registerPh extends React.Component {
      if(res.data.code===2000){
         this.setState({ name: data.name})
      }else{
-       message.error(res.data.msg)
+       Toast.fail(res.data.msg, 1);
        this.setState({ name:''})
      }
   }
@@ -76,7 +79,7 @@ class registerPh extends React.Component {
       localStorage.setItem('venue_token', res.data.data.token);
       localStorage.setItem('name', res.data.data.name);
     } else {
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
     }
 
 
@@ -85,7 +88,7 @@ class registerPh extends React.Component {
   async nacode(data) {
     const res = await _code(data)
     if(res.data.code!==2000){
-      message.error(res.data.msg)
+      Toast.fail(res.data.msg, 1);
     }else{
       let num = 60
       const timer = setInterval(() => {
@@ -103,9 +106,10 @@ class registerPh extends React.Component {
   }
   showModal = e => {
    if (this.state.changeRadio !== true) {
-      message.error('请勾选阅读协议')
+      Toast.fail('请勾选阅读协议', 1);
     }else if(this.state.password!==this.state.passwordT){
-        message.error('两次密码输入不一致')
+        Toast.fail('两次密码输入不一致', 1);
+
     } else {
       const { Id, name, phone, code, password } = this.state
       const data = { name: name, phone: phone, pass: password, promoteid: Id, code: code, Logintype: 'mobile' }
