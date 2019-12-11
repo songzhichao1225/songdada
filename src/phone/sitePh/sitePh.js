@@ -4,7 +4,7 @@ import './sitePh.css';
 import { Toast, Picker, DatePicker } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Row, Col, Input, Pagination, Drawer, Select, Result, Icon, Popconfirm, Spin, InputNumber } from 'antd';
-import { getVenueFieldList, getVenueSport, addVenueField, getFirstField, getVenueDiscountList, addVenueDiscount, delVenueField, DelVenueDiscount, getFirstDiscount, getSetUpFieldSportId } from '../../api';
+import { getVenueFieldList, getVenueSport, addVenueField, getFirstField, getVenueDiscountList, addVenueDiscount,getVenueSpecialSave, getVenueSpecialDel, delVenueField, DelVenueDiscount, getFirstDiscount, getSetUpFieldSportId, getVenueSpecialList } from '../../api';
 
 import zh_CN from 'antd/es/date-picker/locale/zh_CN';
 
@@ -67,6 +67,7 @@ class sitePh extends React.Component {
     YouId: '',
     siteSportId: 0,
     activitySportId: 0,
+    activityThreeSportId:0,
     spin: true,
 
     clenTop: 0,  //下拉加载参数
@@ -75,6 +76,7 @@ class sitePh extends React.Component {
     spinFlag: false,
     upSportid: [],
     numTwoMax: 0,
+    dateChangeTwo: [],
     time: [
       { label: '00:00', value: '00:00' },
       { label: '00:30', value: '00:30' },
@@ -151,7 +153,21 @@ class sitePh extends React.Component {
 
     screenName: '全部',
     activityName: '全部',
-
+    getVenueSpecialList: [],
+    selectNumThree: null,
+    idDel: '',
+    addTelist: false,
+    siteEditorTwo: 0,
+    projectThreeId: [],
+    projectThreeName: '请选择',
+    numTwoMaxThree: 0,
+    minNum: 1,
+    maxNum: 1,
+    numberThree:1,
+    startTimeThree:'00:00',
+    endTimeThree:'00:00',
+    priceThree:0,
+    numberMax:0
   };
   async getVenueFieldList(data) {
     const res = await getVenueFieldList(data, localStorage.getItem('venue_token'))
@@ -254,8 +270,51 @@ class sitePh extends React.Component {
     }
     this.setState({ activityName: day })
 
+  }
+
+
+  activityChangeThree = e => {
+    this.setState({ activityThreeSportId: e[0], selectNumThree: 'l' })
+    this.getVenueSpecialList({ sportid: e[0], page: '' })
+
+    let day = ''
+    switch (e[0]) {
+      case 0:
+        day = "全部";
+        break;
+      case 1:
+        day = "羽毛球";
+        break;
+      case 2:
+        day = "乒乓球";
+        break;
+      case 3:
+        day = "台球";
+        break;
+      case 4:
+        day = "篮球";
+        break;
+      case 5:
+        day = "足球";
+        break;
+      case 6:
+        day = "排球";
+        break;
+      case 7:
+        day = "网球";
+        break;
+      case 8:
+        day = "高尔夫";
+        break;
+      default:
+        day = "";
+    }
+    this.setState({ activityName: day })
+
 
   }
+
+
 
   screenChangeTwo = e => {
     this.setState({ activitySportId: e, selectNum: 'l' })
@@ -269,13 +328,82 @@ class sitePh extends React.Component {
 
 
 
+  async getVenueSpecialList(data) {
+    const res = await getVenueSpecialList(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      if (this.state.siteEditorTwo === 0) {
+        if(res.data.data.length>0){
+          this.setState({ getVenueSpecialList: res.data.data, other: res.data.other, loading: false, hidden: true })
+        }else{
+          this.setState({ getVenueSpecialList: res.data.data, other: res.data.other, loading: false, hidden: false })
+        }
+        
+      } else {
+        let day = ''
+        switch (res.data.data[0].sportname) {
+          case '羽毛球':
+            day = 1;
+            break;
+          case '乒乓球':
+            day = 2;
+            break;
+          case "台球":
+            day = 3;
+            break;
+          case "篮球":
+            day = 4;
+            break;
+          case "足球":
+            day = 5;
+            break;
+          case "排球":
+            day = 6;
+            break;
+          case "网球":
+            day = 7;
+            break;
+          case "高尔夫":
+            day = 8;
+            break;
+          default:
+            day = "";
+        }
+      
+        let { upSportid } = this.state
+        for (let i in upSportid) {
+          if (upSportid[i].sportid === day) {
+            
+            this.setState({ maxNum: upSportid[i].maxtablecount, numberMax: upSportid[i].maxtablecount })
+          }
+        }
+        this.setState({
+          dateChangeTwo: res.data.data[0].openday, projectThreeId: res.data.data[0].sportid,projectThreeName:res.data.data[0].sportname,uuid:res.data.data[0].uuid,
+          startTimeThree: res.data.data[0].starttime.slice(0, 5), endTimeThree: res.data.data[0].endtime.slice(0, 5),
+          priceThree: res.data.data[0].money, minNum: res.data.data[0].venueid.split(',')[0], maxNum: res.data.data[0].venueid.split(',')[res.data.data[0].venueid.split(',').length - 1]
+        })
+       
+      }
+    } else {
+      if (this.state.siteEditorTwo === 0) {
+        this.setState({ getVenueSpecialList: res.data.data, loading: false, hidden: false })
+      }
+    }
+  }
 
   async getSetUpFieldSportId(data) {
     const res = await getSetUpFieldSportId(data, localStorage.getItem('venue_token'))
     this.setState({ upSportid: res.data.data })
-    
+
   }
 
+  async getVenueSpecialDel(data) {
+    const res = await getVenueSpecialDel(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      Toast.fail(res.data.msg, 1);
+      this.getVenueSpecialList({sportid:this.state.activityThreeSportId})
+    }
+
+  }
 
 
   async addVenueDiscount(data) {
@@ -365,12 +493,16 @@ class sitePh extends React.Component {
     this.getVenueDiscountList({ sportid: '', page: '' })
     this.getVenueSport()
     this.getSetUpFieldSportId()
+    this.getVenueSpecialList({ sportid: '' })
   }
   site = () => {
     this.setState({ clickNum: 1, selectNumTwo: 'l', selectNum: 'l' })
   }
   preferential = () => {
-    this.setState({ clickNum: 2 })
+    this.setState({ clickNum: 2, selectNumTwo: 'l', selectNumThree: 'l' })
+  }
+  preferentialTwo = () => {
+    this.setState({ clickNum: 3, selectNumTwo: 'l', selectNumThree: 'l' })
   }
   current = (page, pageSize) => {
     this.setState({ sitePage: page, flag: false, selectNum: 'l' })
@@ -396,6 +528,19 @@ class sitePh extends React.Component {
     }
   }
 
+
+
+  selectBottomThree = (e) => {
+    if (e.currentTarget.dataset.index === this.state.selectNumThree) {
+      this.setState({ selectNumThree: 'l' })
+    } else if (e.currentTarget.dataset.index !== this.state.selectNumThree) {
+      this.setState({ selectNumThree: e.currentTarget.dataset.index })
+    }
+  }
+
+
+
+
   addList = () => {
     this.setState({ DrawerVisible: true })
     this.setState({
@@ -420,7 +565,7 @@ class sitePh extends React.Component {
   }
 
   drawerCloseTwo = () => {
-    this.setState({ Youvisible: false })
+    this.setState({ Youvisible: false, addTelist: false })
   }
   handleChangeUser = (data) => {
     data = data || {}
@@ -644,8 +789,16 @@ class sitePh extends React.Component {
     this.setState({ startTimeTwo: e[0] })
   }
 
+  
   endTimeTwo = (e) => {
     this.setState({ endTimeTwo: e[0] })
+  }
+
+  startTimeThree=e=>{
+    this.setState({ startTimeThree: e[0] })
+  }
+  endTimeThree=e=>{
+    this.setState({ endTimeThree: e[0] })
   }
   priceTwo = e => {
     this.setState({ priceTwo: e.target.value })
@@ -776,7 +929,7 @@ class sitePh extends React.Component {
     }
   }
 
-
+   
 
   touClickTwo = (e) => {
     this.setState({ clickY: e.targetTouches[0].clientY })
@@ -800,6 +953,139 @@ class sitePh extends React.Component {
   }
 
 
+  sprciaDel = e => {
+    this.setState({ idDel: e.currentTarget.dataset.uuid })
+  }
+  speciaDelTwo = () => {
+    this.getVenueSpecialDel({ uuid: this.state.idDel })
+  }
+
+
+  addTelist = () => {
+    if(this.state.siteEditorTwo===1){
+         this.setState({projectThreeId:[],projectThreeName:'请选择',dateChangeTwo:[],minNum:1,maxNum:1,startTimeThree:'00:00',endTimeThree:'00:00',priceThree:0})
+    }
+    this.setState({ addTelist: true })
+  }
+
+
+
+  dateChangeTwo = e => {
+    if (typeof (e) === 'object') {
+      this.setState({ dateChangeTwo: e })
+    } else {
+      this.setState({ dateChangeTwo: parseInt(e) })
+
+
+    }
+  }
+
+  editorThree = (e) => {
+    this.setState({ siteEditorTwo: 1,addTelist:true })
+    this.getVenueSpecialList({uuid:e.currentTarget.dataset.uuid})
+  }
+
+
+
+
+  projectThree = e => {
+    this.setState({ projectThreeId: e[0] })
+    let day = ''
+    switch (parseInt(e[0])) {
+      case 1:
+        day = "羽毛球";
+        break;
+      case 2:
+        day = "乒乓球";
+        break;
+      case 3:
+        day = "台球";
+        break;
+      case 4:
+        day = "篮球";
+        break;
+      case 5:
+        day = "足球";
+        break;
+      case 6:
+        day = "排球";
+        break;
+      case 7:
+        day = "网球";
+        break;
+      case 8:
+        day = "高尔夫";
+        break;
+      default:
+        day = "";
+    }
+    let { upSportid } = this.state
+    for (let i in upSportid) {
+      if (upSportid[i].sportid === parseInt(e[0])) {
+        this.setState({ numTwoMaxThree: parseInt(upSportid[i].maxtablecount), numberMax: parseInt(upSportid[i].maxtablecount) })
+      }
+    }
+
+    this.setState({ projectThreeName: day })
+  }
+
+  minNum = e => {
+    if(this.state.projectThreeId.length!==0){
+      this.setState({ minNum: e })
+    }else{
+     
+    }
+  }
+  maxNum = e => {
+    if(this.state.projectThreeId.length!==0){
+      this.setState({ maxNum: e })
+    }else{
+      Toast.fail('选择运动项目', 2);
+    }
+  }
+  priceThree=e=>{
+    this.setState({priceThree:e.target.value})
+  }
+
+  async getVenueSpecialSave(data) {
+    const res = await getVenueSpecialSave(data, localStorage.getItem('venue_token'))
+    if (res.data.code !== 2000) {
+      Toast.fail(res.data.msg, 2);
+    } else if (res.data.code === 4001) {
+      this.props.history.push('/')
+      Toast.fail('登录超时请重新登录', 2);
+    } else if(res.data.code===2000) {
+      this.setState({
+        visible: false,
+      });
+      Toast.success('添加成功', 2);
+      this.setState({projectThreeId:[],dateChangeTwo:[],minNum:1,maxNum:1,startTimeThree:'00:00',endTimeThree:'00:00',priceThree:0,addTelist:false})
+      this.getVenueSpecialList({ sportid: '', page: '' })
+    }
+  }
+  submitThree=()=>{
+    let {projectThreeId,dateChangeTwo,minNum,maxNum,startTimeThree,endTimeThree,priceThree}=this.state
+    let numGo = []
+    for (var i = 0; i <= maxNum - minNum; i++) {
+      numGo.push(parseInt(minNum) + parseInt(i))
+    }
+    let data={
+      sportid:projectThreeId,
+      venueid:numGo.join(','),
+      starttime:startTimeThree,
+      endtime:endTimeThree,
+      money:priceThree,
+      uuid: this.state.uuid
+    }
+    if (typeof (dateChangeTwo) === 'number') {
+      data.openday = dateChangeTwo
+    } else {
+      data.openday = dateChangeTwo.join(',')
+    }
+    this.getVenueSpecialSave(data)
+
+
+  }
 
   render() {
     return (
@@ -807,28 +1093,16 @@ class sitePh extends React.Component {
         <div className="siteheaderTitle">
           <div onClick={this.site} style={this.state.clickNum === 1 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>场地设置</div>
           <div onClick={this.preferential} style={this.state.clickNum === 2 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>优惠活动</div>
-          {/* <div>筛选<img src={require('../../assets/shaixuan.png')} /></div> */}
+          <div onClick={this.preferentialTwo} style={this.state.clickNum === 3 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>特殊场地</div>
         </div>
         <div style={{ height: '0.6rem', background: '#f5f5f5' }}></div>
         <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' } : { display: 'none' }} ><Icon type="loading" className='loadingY' style={{ top: this.state.clenTop / 7 }} /></div>
         <div className={this.state.clickNum === 1 ? 'site' : 'none'} onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
           <Row style={{ color: '#9B9B9B', borderBottom: '0.06rem solid #e9e9e9' }}>
             <Col className="oneCol" xs={{ span: 7 }} lg={{ span: 6 }}>
-              {/* <Select defaultValue="运动项目" dropdownStyle={{ textAlign: 'left', paddingLeft: '0' }} style={{ width: '100%', textAlign: 'left', background: 'transparent' }} onChange={this.screenChange}>
-                <Option value='0'>全部</Option>
-                {
-                  this.state.sportList.map((item, i) => (
-                    <Option key={i} value={item.id}>{item.name}</Option>
-                  ))
-                }
-              </Select> */}
-
-
               <Picker data={this.state.sportList} title="选择运动项目" onChange={this.screenChange} cols={1} className="forss">
                 <div>{this.state.screenName} <Icon type='down' /></div>
               </Picker>
-
-
             </Col>
             <Col style={{ textAlign: 'left' }} xs={{ span: 7, offset: 4 }} lg={{ span: 6 }}>时间</Col>
             <Col xs={{ span: 6 }} lg={{ span: 6 }}>星期</Col>
@@ -890,11 +1164,6 @@ class sitePh extends React.Component {
                 <Picker data={this.state.sportList} title="选择运动项目" onChange={this.project} cols={1} className="forss">
                   <div style={{ float: 'right', width: '50%', textAlign: 'left', paddingLeft: '0.75rem' }}>{this.state.runName} <Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
                 </Picker>
-
-
-
-
-
               </div>
 
               <div className="sitePhlistSon">
@@ -1123,6 +1392,128 @@ class sitePh extends React.Component {
           <div className="sitePhsubmit" onClick={this.submitTwo}>提交</div>
           {/* <div className="sitePhclose" onClick={this.drawerCloseTwo}>取消</div> */}
         </Drawer>
+
+
+        <div className={this.state.clickNum === 3 ? 'preferential' : 'none'} onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
+          <Row style={{ color: '#9B9B9B', borderBottom: '0.06rem solid #e9e9e9' }}>
+            <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6 }}>
+              <Picker data={this.state.sportList} title="选择运动项目" onChange={this.activityChangeThree} cols={1} className="forss">
+                <div style={{ textAlign: 'left' }}>{this.state.activityName} <Icon type='down' /></div>
+              </Picker>
+            </Col>
+            <Col xs={{ span: 10, offset: 1 }} lg={{ span: 6 }} style={{ textAlign: 'left' }}>时间</Col>
+            <Col xs={{ span: 6 }} lg={{ span: 6 }}>价格(元/时)</Col>
+          </Row>
+          <div style={this.state.getVenueDiscountList.length < 1 ? { display: 'none' } : {}}>
+            {
+              this.state.getVenueSpecialList.map((item, i) => (
+                <div key={i} style={{ borderBottom: '0.06rem solid #e9e9e9' }}>
+                  <Row onClick={this.selectBottomThree} data-index={i}>
+                    <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6 }} style={{ textAlign: 'left' }}>{item.sportname}</Col>
+                    <Col xs={{ span: 10, offset: 1 }} lg={{ span: 6 }} style={{ textAlign: 'left' }}>{item.starttime + '-' + item.endtime}</Col>
+                    <Col xs={{ span: 6 }} lg={{ span: 6 }}>{item.money}</Col>
+                  </Row>
+                  {/* && this.state.flagTwo === true */}
+                  <div className={parseInt(this.state.selectNumThree) === i ? 'selectBottom' : 'none'}>
+
+                    <Row className='detail'>
+                      <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6 }} style={{ textAlign: 'left' }}>场地数量 {item.venueid.length >= 2 ? item.venueid.split(',')[0] + '~' + item.venueid.split(',')[item.venueid.split(',').length - 1] : item.venueid}</Col>
+                      <Col xs={{ span: 10, offset: 1 }} lg={{ span: 6 }} style={{ textAlign: 'left' }}></Col>
+                      <Col xs={{ span: 6 }} lg={{ span: 6 }}><img className="upLoad" onClick={this.editorThree} data-uuid={item.uuid} src={require("../../assets/upLoad.png")} alt="修改" /></Col>
+                    </Row>
+
+                    <Row className='detail'>
+                      <Col xs={{ span: 17, offset: 1 }} lg={{ span: 6 }} style={{ textAlign: 'left' }}>工作日/休息日 {item.openday === 0 ? ['周日'] : '' || item.openday === 1 ? ['周一'] : '' || item.openday === 2 ? ['周二'] : '' || item.openday === 3 ? ['周三'] : '' || item.openday === 4 ? ['周四'] : '' || item.openday === 5 ? ['周五'] : '' || item.openday === 6 ? ['周六'] : ''}</Col>
+                      <Col xs={{ span: 6 }} lg={{ span: 6 }}><Popconfirm
+                        title="你确定要删除吗?"
+                        onConfirm={this.speciaDelTwo}
+                        onCancel={this.siteCancel}
+                        okText="确定"
+                        cancelText="取消"
+                      >
+                        <img className="upLoad" style={{ right: '13%' }} onClick={this.sprciaDel} data-uuid={item.uuid} src={require("../../assets/delet.png")} alt="删除" />
+                      </Popconfirm></Col>
+                    </Row>
+
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+          <Pagination className="fenye" style={this.state.getVenueSpecialList.length < 1 ? { display: 'none' } : {}} defaultCurrent={1} size="small" onChange={this.currentTwo} total={this.state.getVenueSpecialList.length} />
+          <Result className={this.state.getVenueSpecialList.length === 0 ? '' : 'nono'} icon={<Icon type="gift" theme="twoTone" twoToneColor="#F5A623" style={{ fontSize: '2rem' }} />} title="没有设置特殊场地" />
+          <img className="addList" onClick={this.addTelist} src={require("../../assets/comeOn@2x.png")} alt="添加" />
+        </div>
+
+
+        <Drawer
+          title="添加/修改特殊场地"
+          placement="right"
+          closable={true}
+          onClose={this.drawerCloseTwo}
+          visible={this.state.addTelist}
+          width='100%'
+        >
+          <div className="SzSon">
+            <span style={{ float: 'left' }}>运动项目</span>
+            <Picker data={this.state.sportList} title="选择运动项目" onChange={this.projectThree} cols={1} className="forss">
+              <div style={{ float: 'right', width: '50%', textAlign: 'left', }}>{this.state.projectThreeName} <Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
+            </Picker>
+          </div>
+
+
+          <div className="SzSon">
+            <span style={{ float: 'left' }}>节假日/工作日</span>
+            <Select
+              mode={this.state.siteEditorTwo === 1 ? '' : 'multiple'}
+              style={{ width: '50%', float: 'right' }}
+              placeholder="请选择"
+              onChange={this.dateChangeTwo}
+              value={this.state.siteEditorTwo === 1 ? this.state.dateChangeTwo === 0 ? '周日' : [] && this.state.dateChangeTwo === 1 ? '周一' : [] && this.state.dateChangeTwo === 2 ? '周二' : [] && this.state.dateChangeTwo === 3 ? '周三' : [] && this.state.dateChangeTwo === 4 ? '周四' : [] && this.state.dateChangeTwo === 5 ? '周五' : [] && this.state.dateChangeTwo === 6 ? '周六' : [] : this.state.dateChangeTwo}
+            >
+              <Option value='1'>周一</Option>
+              <Option value='2'>周二</Option>
+              <Option value='3'>周三</Option>
+              <Option value='4'>周四</Option>
+              <Option value='5'>周五</Option>
+              <Option value='6'>周六</Option>
+              <Option value='0'>周日</Option>
+            </Select>
+          </div>
+
+          <div className="SzSon">
+            <span style={{ float: 'left' }}>场地号</span>
+
+            <InputNumber style={{ marginLeft: '7.7rem', width: '3rem' }} value={this.state.minNum} defaultValue={1} min={1} max={this.state.numberMax} placeholder="请输入" onChange={this.minNum} />~
+            <InputNumber style={{ width: '3rem' }} value={this.state.maxNum} defaultValue={1} min={1} max={this.state.numberMax} placeholder="请输入" onChange={this.maxNum} />
+        
+          </div>
+
+          <div className="SzSon">
+            <span style={{ float: 'left' }}>开始时间</span>
+            <Picker data={this.state.time} title="选择开始时间" onChange={this.startTimeThree} cols={1} className="forss">
+              <div style={{ float: 'right', width: '50%', textAlign: 'left' }}>{this.state.startTimeThree} <Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
+            </Picker>
+          </div>
+
+          <div className="SzSon">
+            <span style={{ float: 'left' }}>结束时间</span>
+            <Picker data={this.state.time} title="选择开始时间" onChange={this.endTimeThree} cols={1} className="forss">
+              <div style={{ float: 'right', width: '50%', textAlign: 'left' }}>{this.state.endTimeThree} <Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
+            </Picker>
+          </div>
+
+
+          <div className="SzSon">
+            <span style={{float:'left'}}>价格(元/时)</span>
+            <Input style={{ width: '50%', border: 'none', height: '2rem', float: 'right', boxShadow: 'none', paddingLeft: '0' }} value={this.state.priceThree} onChange={this.priceThree} placeholder="请输入" type="number" />
+          </div>
+
+          <div className="sitePhsubmit" onClick={this.submitThree}>提交</div>
+
+        </Drawer>
+
+
       </div>
     )
   }

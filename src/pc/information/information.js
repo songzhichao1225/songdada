@@ -2,7 +2,7 @@ import React from 'react';
 import './information.css';
 import 'antd/dist/antd.css';
 import { Input, Button, Row, Col, Select, Pagination, Spin, message, Result, Icon, DatePicker, Modal, Radio, Drawer, InputNumber } from 'antd';
-import { getReservationActivitieslist, getVenueReservationss, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord, VenueRemarksLabel,getVenueNumberTitleList,getVenueNumberTitleSave } from '../../api';
+import { getReservationActivitieslist, getVenueReservationss, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -64,8 +64,9 @@ class information extends React.Component {
     lotime: [],
     tooltip: false,
     otherObj: '',
-    menu:2,
-    topNumList:[]
+    menu: 2,
+    topNumList: [],
+
   };
 
   async getVenueSport(data) {
@@ -75,18 +76,18 @@ class information extends React.Component {
       message.error('登陆超时请重新登陆！')
     } else if (res.data.code === 2000) {
       this.setState({ activityNav: res.data.data, liNum: res.data.data[0].id })
-     
-      this.getVenueNumberTitleList({sportid:res.data.data[0].id})
+
+      this.getVenueNumberTitleList({ sportid: res.data.data[0].id })
     }
   }
 
-  
+
 
 
   async getVenueNumberTitleList(data) {
     const res = await getVenueNumberTitleList(data, sessionStorage.getItem('venue_token'))
-     if (res.data.code === 2000) {
-      this.setState({topNumList:res.data.data})
+    if (res.data.code === 2000) {
+      this.setState({ topNumList: res.data.data })
       this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.dateString, types: 1 })
     }
   }
@@ -159,12 +160,12 @@ class information extends React.Component {
   async getVenueReservationss(data) {
     const res = await getVenueReservationss(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-         for(let j in this.state.topNumList){
-          res.data.data[0].c[this.state.topNumList[j].venueid-1].title=this.state.topNumList[j].title
-          res.data.data[0].c[this.state.topNumList[j].venueid-1].uuid=this.state.topNumList[j].uuid
-         }
+      for (let j in this.state.topNumList) {
+        res.data.data[0].c[this.state.topNumList[j].venueid - 1].title = this.state.topNumList[j].title
+        res.data.data[0].c[this.state.topNumList[j].venueid - 1].uuid = this.state.topNumList[j].uuid
+      }
 
-      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c })
+      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c,value:'l' })
       if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 24) {
         if (res.data.data[res.data.data.length - 1].a.slice(-2) === '00') {
 
@@ -212,6 +213,7 @@ class information extends React.Component {
   }
   clickLi = (e) => {
     this.getVenueReservationss({ sportid: e.target.dataset.num, date: this.state.dateString, types: 1 })
+    this.getVenueNumberTitleList({ sportid: e.target.dataset.num })
     this.setState({ dianIndex: e.target.dataset.index, liNum: e.target.dataset.num })
   }
   dateChange = (data, datatring) => {
@@ -269,7 +271,11 @@ class information extends React.Component {
     const res = await VenueClickCancelPlace(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.dateString, types: 1 })
-      message.info(res.data.msg)
+       if(data.type===1){
+         message.info('该场地该时间段已标记为线下占用')
+       }else if(data.type===2){
+        message.info('该场地该时间段已向找对手线上释放')
+       }
       this.setState({ info: false, lotime: [] })
     } else {
       message.error('操作失败')
@@ -354,16 +360,16 @@ class information extends React.Component {
         <div>会员卡号：{ko.placeHui}</div>
         <div>其他：{ko.placeQi}</div>
       </div>
-      this.setState({ otherObj: arrObj,menu:1,History:true })
+      this.setState({ otherObj: arrObj, menu: 1, History: true })
     }
   }
 
 
 
   menu = (e) => {
-  
+
     if (e.currentTarget.dataset.type === '1') {
-      this.setState({ otherObj: '',menu:2 })
+      this.setState({ otherObj: '', menu: 2 })
       if (this.state.lotime.length !== 0) {
         let num = ''
         let time = ''
@@ -379,7 +385,7 @@ class information extends React.Component {
       this.VenueRemarksLabel({ uuid: e.currentTarget.dataset.uuid })
 
     } else {
-      this.setState({ otherObj: '',menu:2 })
+      this.setState({ otherObj: '', menu: 2 })
     }
 
   }
@@ -397,24 +403,30 @@ class information extends React.Component {
     this.setState({ placeQi: e.target.value })
   }
 
-  
 
 
-  
+
+
   async getVenueNumberTitleSave(data) {
     const res = await getVenueNumberTitleSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-         message.info(res.data.msg)
+      message.info(res.data.msg)
+      this.getVenueNumberTitleList({ sportid: this.state.liNum })
     }
   }
 
 
-  tilBlur=e=>{
-    
-    this.getVenueNumberTitleSave({sportid:this.state.liNum,veneuid:e.currentTarget.dataset.num,title:e.target.value,uuid:e.currentTarget.dataset.uuid})
-
-
+  tilBlur = e => {
+    this.getVenueNumberTitleSave({ sportid: this.state.liNum, veneuid: e.currentTarget.dataset.num, title: e.target.value, uuid: e.currentTarget.dataset.uuid })
+     console.log(e.currentTarget.dataset.num)
+     this.setState({value:'l'})
   }
+
+  noneBox=e=>{
+    console.log(e.currentTarget.dataset.num)
+    this.setState({value:e.currentTarget.dataset.num})
+  }
+
 
 
 
@@ -484,7 +496,7 @@ class information extends React.Component {
           <div className="xiange"></div>
           <Spin spinning={this.state.loading} style={{ minHeight: 600 }} size="large">
 
-            <Row className="rowConten"> 
+            <Row className="rowConten">
               <Col xs={{ span: 3 }}>活动编号</Col>
               <Col xs={{ span: 2 }}>
                 <Select className="selectName" defaultValue="项目名称" style={{ width: 100 }} onChange={this.nameChang}>
@@ -531,8 +543,8 @@ class information extends React.Component {
           <div className="prompt">
             <div><span></span><span>空闲</span></div>
             <div><span></span><span>不可选</span></div>
-            <div><span></span><span>场馆取消</span></div>
-            <div><span></span><span>已占用</span></div>
+            <div><span></span><span>线下占用</span></div>
+            <div><span></span><span>线上占用</span></div>
           </div>
           <ul className="activityNav">
             {
@@ -552,9 +564,14 @@ class information extends React.Component {
                 <span></span>
                 {
                   this.state.macNum.map((item, i) => (
-                  <span key={i}>{i + 1}<Input style={{height:'26px',padding:'0',textAlign:'center'}} placeholder={item.title} data-uuid={item.uuid} data-num={i+1} onChange={this.tilChange} onBlur={this.tilBlur} maxLength={5}/></span>
+                    <span key={i}>{i + 1}
+                      <div className="boxBoss" style={{position:'relative',width:'100%',height:'26px'}}>
+                        <Input style={{ height: '26px', padding: '0', textAlign: 'center',fontSize:'8px' }}  data-uuid={item.uuid}  onChange={this.tilChange} data-num={i + 1} onBlur={this.tilBlur} maxLength={5} />
+                        <div className="plokjh" onClick={this.noneBox} data-num={i+1} style={parseInt(this.state.value)===parseInt(i+1)?{display:'none'}:{fontSize:'10px'}}>{item.title}</div>
+                      </div>
+                    </span>
                   ))
-                } 
+                }
               </div>
               <div style={{ height: 80 }}></div>
               {
@@ -564,22 +581,22 @@ class information extends React.Component {
                     <span></span>
                     {
                       this.state.lookList[i].c.map((item, i) => (
-                          <span
-                            className='spanFa'
-                            key={i}
-                            data-time={index.a}
-                            data-num={i + 1}
-                            data-uuid={item.uuid}
-                            data-type={item.type}
-                            onClick={this.lookPlate}
-                            onContextMenu={this.menu}
-                            data-lo={index.a + '-' + (i + 1)}
-                            style={item.type === 1 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 2 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff', opacity: '.3' } : {} && item.type === 3 ? { background: '#F5A623', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 4 ? { background: 'red', marginTop: '0.12rem', color: '#fff' } : {}}
-                          >
-                            {this.state.lotime.indexOf(index.a + '-' + (i + 1)) !== -1 ? <Icon type="check" /> : ''}
-                            {item.type === 1?item.money:''}
-                          </span>
-                        // </Tooltip>
+                        <span
+                          className='spanFa'
+                          key={i}
+                          data-time={index.a}
+                          data-num={i + 1}
+                          data-uuid={item.uuid}
+                          data-type={item.type}
+                          onClick={this.lookPlate}
+                          onContextMenu={this.menu}
+                          data-lo={index.a + '-' + (i + 1)}
+                          style={item.type === 1 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 2 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff', opacity: '.3' } : {} && item.type === 3 ? { background: '#F5A623', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 4 ? { background: 'red', marginTop: '0.12rem', color: '#fff' } : {}}
+                        >
+                          {this.state.lotime.indexOf(index.a + '-' + (i + 1)) !== -1 ? <Icon type="check" /> : ''}
+                          {item.type === 1 ? item.money : ''}
+                        </span>
+
                       ))
                     }
                   </div>
@@ -622,7 +639,7 @@ class information extends React.Component {
           </div>
         </Modal>
         <Drawer
-          title="该场地详细信息"
+          title="该活动详细信息"
           placement="right"
           closable={false}
           width='400px'
@@ -671,35 +688,35 @@ class information extends React.Component {
           </div>
         </Drawer>
         <Drawer
-          title={this.state.meun!==1?'消息发送记录':'预约情况详情'}
+          title={this.state.meun !== 1 ? '线下预订人信息' : '预约情况详情'}
           placement="right"
           closable={false}
           width='400px'
           onClose={this.historyClose}
           visible={this.state.History}
         >
-          <div style={this.state.menu!==1?{display:'block'}:{display:'none'}}>
-          <div style={this.state.historyNews.length === 0 ? { display: 'block' } : { display: 'none' }}>没有历史记录...</div>
-          <div style={this.state.historyNews.length > 0 ? { display: 'block' } : { display: 'none' }}>
-            {
-              this.state.historyNews.map((item, i) => (
-                <div key={i} style={{ marginTop: '15px' }}>
-                  <span style={{ display: 'block' }}>{item.comment}</span>
-                  <span style={{ display: 'block' }}>{item.intime}</span>
-                </div>
-              ))
-            }
+          <div style={this.state.menu !== 1 ? { display: 'block' } : { display: 'none' }}>
+            <div style={this.state.historyNews.length === 0 ? { display: 'block' } : { display: 'none' }}>没有历史记录...</div>
+            <div style={this.state.historyNews.length > 0 ? { display: 'block' } : { display: 'none' }}>
+              {
+                this.state.historyNews.map((item, i) => (
+                  <div key={i} style={{ marginTop: '15px' }}>
+                    <span style={{ display: 'block' }}>{item.comment}</span>
+                    <span style={{ display: 'block' }}>{item.intime}</span>
+                  </div>
+                ))
+              }
+            </div>
           </div>
-          </div>
-          <div style={this.state.menu===1?{display:'block'}:{display:'none'}}>
+          <div style={this.state.menu === 1 ? { display: 'block' } : { display: 'none' }}>
             {this.state.otherObj}
           </div>
-         
+
         </Drawer>
 
 
         <Modal
-          title="输入场地信息"
+          title="请输入线下预订人的相关信息"
           visible={this.state.info}
           onOk={this.handleOk}
           onCancel={this.handleCancel}

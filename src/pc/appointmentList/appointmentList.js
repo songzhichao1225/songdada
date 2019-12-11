@@ -160,11 +160,13 @@ class appointmentList extends React.Component {
   async getVenueReservationss(data) {
     const res = await getVenueReservationss(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      for (let j in this.state.topNumList) {
-        res.data.data[0].c[this.state.topNumList[j].venueid - 1].title = this.state.topNumList[j].title
-        res.data.data[0].c[this.state.topNumList[j].venueid - 1].uuid = this.state.topNumList[j].uuid
+      if(this.state.topNumList.length>0){
+        for (let j in this.state.topNumList) {
+          res.data.data[0].c[this.state.topNumList[j].venueid - 1].title = this.state.topNumList[j].title
+          res.data.data[0].c[this.state.topNumList[j].venueid - 1].uuid = this.state.topNumList[j].uuid
+        }
+       
       }
-
       this.setState({ lookList: res.data.data, macNum: res.data.data[0].c,value:'l' })
       if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 24) {
         if (res.data.data[res.data.data.length - 1].a.slice(-2) === '00') {
@@ -204,7 +206,6 @@ class appointmentList extends React.Component {
   }
   activityChang = (e) => {
     this.setState({ status: e })
-
     if (this.state.start === '开始日期') {
       this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: e, startdate: '', enddate: '' })
     } else {
@@ -271,7 +272,11 @@ class appointmentList extends React.Component {
     const res = await VenueClickCancelPlace(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.dateString, types: 1 })
-      message.info(res.data.msg)
+       if(data.type===1){
+         message.info('该场地该时间段已标记为线下占用')
+       }else if(data.type===2){
+        message.info('该场地该时间段已向找对手线上释放')
+       }
       this.setState({ info: false, lotime: [] })
     } else {
       message.error('操作失败')
@@ -296,7 +301,6 @@ class appointmentList extends React.Component {
         } else {
           this.setState({ lotime: [...this.state.lotime, lotime] })
         }
-
       } else if (e.currentTarget.dataset.type === '4') {
         this.VenueClickCancelPlace({ date: this.state.dateString, uuid: uuid, time: time, venueid: num, sportid: this.state.liNum, other: '', type: 2 })
       }
@@ -345,7 +349,6 @@ class appointmentList extends React.Component {
 
 
 
-
   async VenueRemarksLabel(data) {
     const res = await VenueRemarksLabel(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
@@ -379,11 +382,9 @@ class appointmentList extends React.Component {
       }
     } else if (e.currentTarget.dataset.type === '4') {
       this.VenueRemarksLabel({ uuid: e.currentTarget.dataset.uuid })
-
     } else {
       this.setState({ otherObj: '', menu: 2 })
     }
-
   }
   placeName = e => {
     this.setState({ placeName: e.target.value })
@@ -414,7 +415,7 @@ class appointmentList extends React.Component {
 
   tilBlur = e => {
     this.getVenueNumberTitleSave({ sportid: this.state.liNum, veneuid: e.currentTarget.dataset.num, title: e.target.value, uuid: e.currentTarget.dataset.uuid })
-
+     this.setState({value:'l'})
   }
 
   noneBox=e=>{
@@ -525,7 +526,7 @@ class appointmentList extends React.Component {
               <Col xs={{ span: 2 }}>场地费状态</Col>
               <Col xs={{ span: 2 }}>发消息</Col>
             </Row>
-            <div className={this.state.hidden === true ? '' : 'hidden'} >
+            <div className={this.state.hidden === true ? '' : 'hidden'}>
               {userMessage}
             </div>
             <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<Icon type="bank" theme="twoTone" twoToneColor="#F5A623" />} title="您还没有预约活动！" />,
@@ -537,8 +538,8 @@ class appointmentList extends React.Component {
           <div className="prompt">
             <div><span></span><span>空闲</span></div>
             <div><span></span><span>不可选</span></div>
-            <div><span></span><span>场馆取消</span></div>
-            <div><span></span><span>已占用</span></div>
+            <div><span></span><span>线下占用</span></div>
+            <div><span></span><span>线上占用</span></div>
           </div>
           <ul className="activityNav">
             {
@@ -551,7 +552,6 @@ class appointmentList extends React.Component {
             <li className="dateSelect"><DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={zh_CN} placeholder="请选择日期" className="DatePicker" onChange={this.dateChange} /></li>
           </ul>
           <div className="xiange"></div>
-
           <div className="lookList" onScrollCapture={this.scroll} ref={c => { this.scrollRef = c }} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block', height: this.state.minHeight - 250 + 'px' }}>
             <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 52 + 'px' }}>
               <div className="topFixd" style={{ top: this.state.top, minWidth: '100%', width: '' + (this.state.macNum.length + 1) * 53 + 'px' }}>
@@ -560,8 +560,8 @@ class appointmentList extends React.Component {
                   this.state.macNum.map((item, i) => (
                     <span key={i}>{i + 1}
                       <div className="boxBoss" style={{position:'relative',width:'100%',height:'26px'}}>
-                        <Input style={{ height: '26px', padding: '0', textAlign: 'center' }}  data-uuid={item.uuid} autoFocus onChange={this.tilChange} data-num={i + 1} onBlur={this.tilBlur} maxLength={5} />
-                        <div className="plokjh" onClick={this.noneBox} data-num={i+1} style={parseInt(this.state.value)===parseInt(i+1)?{display:'none'}:{}}>{item.title}</div>
+                        <Input style={{ height: '26px', padding: '0', textAlign: 'center',fontSize:'8px' }}  data-uuid={item.uuid}  onChange={this.tilChange} data-num={i + 1} onBlur={this.tilBlur} maxLength={5} />
+                        <div className="plokjh" onClick={this.noneBox} data-num={i+1} style={parseInt(this.state.value)===parseInt(i+1)?{display:'none'}:{fontSize:'10px'}}>{item.title}</div>
                       </div>
                     </span>
                   ))
@@ -590,7 +590,6 @@ class appointmentList extends React.Component {
                           {this.state.lotime.indexOf(index.a + '-' + (i + 1)) !== -1 ? <Icon type="check" /> : ''}
                           {item.type === 1 ? item.money : ''}
                         </span>
-
                       ))
                     }
                   </div>
@@ -633,7 +632,7 @@ class appointmentList extends React.Component {
           </div>
         </Modal>
         <Drawer
-          title="该场地详细信息"
+          title="该活动详细信息"
           placement="right"
           closable={false}
           width='400px'
@@ -682,7 +681,7 @@ class appointmentList extends React.Component {
           </div>
         </Drawer>
         <Drawer
-          title={this.state.meun !== 1 ? '消息发送记录' : '预约情况详情'}
+          title={this.state.meun !== 1 ? '线下预订人信息' : '预约情况详情'}
           placement="right"
           closable={false}
           width='400px'
@@ -710,7 +709,7 @@ class appointmentList extends React.Component {
 
 
         <Modal
-          title="输入场地信息"
+          title="请输入线下预订人的相关信息"
           visible={this.state.info}
           onOk={this.handleOk}
           onCancel={this.handleCancel}

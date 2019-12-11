@@ -342,7 +342,6 @@ class special extends React.Component {
 
     let data = {
       sportid: runId,
-    
       starttime: starttime,
       endtime: endtime,
       money: costperhour,
@@ -445,7 +444,7 @@ class special extends React.Component {
             </div>
           </div>
           <Pagination className={this.state.hidden === true ? 'fenye' : 'hidden'} defaultCurrent={1} total={this.state.other === '' ? this.state.list.length : null} onChange={this.current} />
-          <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<Icon type="gift" theme="twoTone" twoToneColor="#F5A623" />} title="您没有特殊活动！" />
+          <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<Icon type="gift" theme="twoTone" twoToneColor="#F5A623" />} title="您还没有设置特殊场地" />
         </Spin>
 
 

@@ -1,14 +1,10 @@
 import React from 'react';
 import './news.css';
 import 'antd/dist/antd.css';
-import { getVenueNewsList, getVenueNewsFirst, VenueNewsSaveIsRead, delVenueNews,VenueNewsSendMessage } from '../../api';
-import { Checkbox, Pagination, Drawer, message, Popconfirm,Modal,Input } from 'antd';
+import { getVenueNewsList, getVenueNewsFirst, VenueNewsSaveIsRead, delVenueNews, VenueNewsSendMessage, gerVenueName } from '../../api';
+import { Checkbox, Pagination, Drawer, message, Popconfirm, Modal, Input } from 'antd';
 
-const {TextArea}=Input
-
-
-
-
+const { TextArea } = Input
 
 class news extends React.Component {
 
@@ -22,9 +18,9 @@ class news extends React.Component {
     newsDetail: '',
     current: '',
     uid: '',
-    delet:[],
-    visibleTwo:false,
-    textArea:'',
+    delet: [],
+    visibleTwo: false,
+    textArea: '',
   };
 
 
@@ -45,9 +41,9 @@ class news extends React.Component {
     }
   }
   allOnChange = (e) => {
-    let {newsList}=this.state
+    let { newsList } = this.state
     if (e.target.checked === true) {
-    
+
       for (let i in newsList) {
         newsList[i].cheched = true
       }
@@ -62,10 +58,10 @@ class news extends React.Component {
         foArr.push(newsList[i].uuid)
       }
     }
-    this.setState({ oneChecked: !this.state.oneChecked,delet:foArr })
+    this.setState({ oneChecked: !this.state.oneChecked, delet: foArr })
   }
   onChange = e => {
-    let {newsList}=this.state
+    let { newsList } = this.state
     if (e.target.checked === false) {
       this.setState({ oneChecked: false })
     }
@@ -75,23 +71,21 @@ class news extends React.Component {
 
 
   async delVenueNews(data) {
-    const res = await delVenueNews(data,sessionStorage.getItem('venue_token'))
-    if(res.data.code===2000){
-     message.info(res.data.msg)
-     this.setState({ oneChecked: false})
-     this.getVenueNewsList({ page: this.state.current })
+    const res = await delVenueNews(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      message.info(res.data.msg)
+      this.setState({ oneChecked: false })
+      this.getVenueNewsList({ page: this.state.current })
     }
-    
   }
 
   kood = e => {
     this.setState({ uid: e.currentTarget.dataset.uid })
-
   }
   confirm = () => {
     this.delVenueNews({ uuid: this.state.uid })
   }
-  arrConfirm=()=>{
+  arrConfirm = () => {
     let koArr = []
     for (let i in this.state.newsList) {
       if (this.state.newsList[i].cheched === true) {
@@ -99,8 +93,8 @@ class news extends React.Component {
       }
     }
 
-    this.delVenueNews({ uuid: koArr.join(',')})
-    this.setState({ oneChecked: !this.state.oneChecked})
+    this.delVenueNews({ uuid: koArr.join(',') })
+    this.setState({ oneChecked: !this.state.oneChecked })
   }
 
   // bossDelet = () => {
@@ -110,13 +104,11 @@ class news extends React.Component {
   //       koArr.push(this.state.newsList[i].uuid)
   //     }
   //   }
-
   //   console.log(koArr)
   // }
   current = e => {
-    this.setState({ current: e, oneChecked: false})
+    this.setState({ current: e, oneChecked: false })
     this.getVenueNewsList({ page: e })
-  
   }
 
 
@@ -132,14 +124,28 @@ class news extends React.Component {
     }
   }
 
+  async gerVenueName(data) {
+    const res = await gerVenueName(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 4001) {
+      this.props.history.push('/')
+      message.error('登陆超时请重新登陆！')
+    } else {
+      this.setState({ gerVenueName: res.data.data })
+      sessionStorage.setItem('siteuid', res.data.data.siteuid)
+      sessionStorage.setItem('mess', res.data.data.mess)
+      sessionStorage.setItem('rate', res.data.data.rate)
+    }
+  }
 
   async VenueNewsSaveIsRead(data) {
     const res = await VenueNewsSaveIsRead(data, sessionStorage.getItem('venue_token'))
-    if(res.data.code!==2000){
-        message.info(res.data.msg)
+    if (res.data.code !== 2000) {
+      message.info(res.data.msg)
+    } else {
+      this.gerVenueName()
     }
-
   }
+  
   consult = e => {
     this.setState({
       visible: true,
@@ -148,8 +154,6 @@ class news extends React.Component {
     this.VenueNewsSaveIsRead({ newsuuid: e.currentTarget.dataset.uuid })
   }
 
-
-
   onClose = () => {
     this.setState({
       visible: false,
@@ -157,30 +161,30 @@ class news extends React.Component {
     this.getVenueNewsList({ page: this.state.current })
   };
 
-  handleCancel=()=>{
-    this.setState({visibleTwo:false})
+  handleCancel = () => {
+    this.setState({ visibleTwo: false })
   }
-  sendingMsg=()=>{
-    this.setState({visibleTwo:true})
+  sendingMsg = () => {
+    this.setState({ visibleTwo: true })
   }
-  textArea=e=>{
-    this.setState({textArea:e.target.value})
+  textArea = e => {
+    this.setState({ textArea: e.target.value })
   }
 
   async VenueNewsSendMessage(data) {
-    const res = await VenueNewsSendMessage(data,sessionStorage.getItem('venue_token'))
-    if(res.data.code===2000){
-        message.info(res.data.msg)
-        this.setState({visibleTwo:false})
+    const res = await VenueNewsSendMessage(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      message.info(res.data.msg)
+      this.setState({ visibleTwo: false })
     }
   }
-  
-  sendingThree=()=>{
-     this.VenueNewsSendMessage({comment:this.state.textArea})
+
+  sendingThree = () => {
+    this.VenueNewsSendMessage({ comment: this.state.textArea })
   }
 
-  site=(e)=>{
-    this.props.history.push({pathname:'/home/information',query:{uuid:e.target.dataset.id}})
+  site = (e) => {
+    this.props.history.push({ pathname: '/home/information', query: { uuid: e.target.dataset.id } })
   }
 
 
@@ -194,12 +198,12 @@ class news extends React.Component {
           <div className="newsList">
             <Checkbox className="check" onChange={this.allOnChange} checked={this.state.oneChecked}>全选</Checkbox>
             <Popconfirm
-                  title="您确定删除选中消息吗?"
-                  onConfirm={this.arrConfirm}
-                  okText="删除"
-                  cancelText="取消"
-                >
-            <span className="btn" onClick={this.bossDelet}>删除</span>
+              title="您确定删除选中消息吗?"
+              onConfirm={this.arrConfirm}
+              okText="删除"
+              cancelText="取消"
+            >
+              <span className="btn" onClick={this.bossDelet}>删除</span>
             </Popconfirm>
           </div>
           {
@@ -239,17 +243,15 @@ class news extends React.Component {
           visible={this.state.visibleTwo}
           onCancel={this.handleCancel}
         >
-          <TextArea rows={3} placeholder="请输入您推送的消息" onChange={this.textArea} maxLength={200}/>
-           <span style={{paddingTop:15}}>还可以输入{200-this.state.textArea.length}字</span>
-            <div className="btnModel">
-              <div onClick={this.handleCancel}>取消</div>
-              <div onClick={this.sendingThree}>发送</div>
-            </div>
+          <TextArea rows={3} placeholder="请输入您推送的消息" onChange={this.textArea} maxLength={200} />
+          <span style={{ paddingTop: 15 }}>还可以输入{200 - this.state.textArea.length}字</span>
+          <div className="btnModel">
+            <div onClick={this.handleCancel}>取消</div>
+            <div onClick={this.sendingThree}>发送</div>
+          </div>
         </Modal>
-
-
       </div>
-    );
+    )
   }
 }
 

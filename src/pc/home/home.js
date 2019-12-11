@@ -20,6 +20,24 @@ import special from '../special/special';
 
 const { Header, Sider, Content, Footer } = Layout;
 
+
+function jo(){
+
+  var ws = new WebSocket("wss://venue.tiaozhanmeiyitian.com/socket");
+  ws.onopen = function () {
+    ws.send(sessionStorage.getItem('siteuid'))
+  }
+  ws.onmessage = function (e) {
+    let message_info = JSON.parse(e.data)
+    let msg = new SpeechSynthesisUtterance(message_info.percent)
+    window.speechSynthesis.speak(msg)
+    notification.open({ description: message_info.percent })
+  }
+  ws.onclose=function(){
+    jo()
+   }
+}
+
 class home extends React.Component {
 
 
@@ -70,18 +88,13 @@ class home extends React.Component {
     } else if (this.props.history.location.pathname === '/home/special') {
       sessionStorage.setItem('path', '8');
     }
-
-    //这里的ip地址改为自己服务器的ip地址
-    var ws = new WebSocket("wss://venue.tiaozhanmeiyitian.com/socket");
-    ws.onopen = function () {
-      ws.send(sessionStorage.getItem('siteuid'))
-    }
-    ws.onmessage = function (e) {
-      let message_info = JSON.parse(e.data)
-      let msg = new SpeechSynthesisUtterance(message_info.percent)
-      window.speechSynthesis.speak(msg)
-      notification.open({ description: message_info.percent })
-    }
+    jo()
+    
+      //这里的ip地址改为自己服务器的ip地址
+     
+    
+     
+   
   }
   componentWillReceiveProps() {
     this.setState({ path: this.props.history.location.pathname })
@@ -205,6 +218,8 @@ class home extends React.Component {
     } else {
       this.setState({ gerVenueName: res.data.data })
       sessionStorage.setItem('siteuid', res.data.data.siteuid)
+      sessionStorage.setItem('mess',res.data.data.mess)
+      sessionStorage.setItem('rate',res.data.data.rate)
     }
   }
 
@@ -256,12 +271,6 @@ class home extends React.Component {
                 <span>场地设置</span>
               </Link>
             </Menu.Item>
-            <Menu.Item key="4">
-              <Link to="/home/preferential">
-                <Icon type="gift" />
-                <span>优惠活动</span>
-              </Link>
-            </Menu.Item>
             <Menu.Item key="8">
               <Link to="/home/special">
                 <i className="anticon anticon-gift">
@@ -270,6 +279,13 @@ class home extends React.Component {
                 <span>特殊场地</span>
               </Link>
             </Menu.Item>
+            <Menu.Item key="4">
+              <Link to="/home/preferential">
+                <Icon type="gift" />
+                <span>优惠活动</span>
+              </Link>
+            </Menu.Item>
+          
             <Menu.Item key="5">
               <Link to={{ pathname: '/home/stadiums', query: { name: 'sunny' } }}>
                 <i className="anticon anticon-gift" >
@@ -307,7 +323,7 @@ class home extends React.Component {
               <div className="new">
                 <div onClick={this.news}>
                   <img src={require("../../assets/icon_pc_new.png")} alt="message" />
-                  <div className="number"><span>{this.state.gerVenueName.mess}</span></div>
+                  <div className="number"><span>{sessionStorage.getItem('mess')}</span></div>
                 </div>
               </div>
               <div className="lvyue">场地履约率：{this.state.gerVenueName.rate}%</div>

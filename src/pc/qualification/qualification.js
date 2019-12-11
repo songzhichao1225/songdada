@@ -15,9 +15,9 @@ function beforeUpload(file) {
   if (!isJpgOrPng) {
     message.error('您好图片格式只能是JPG/PNG');
   }
-  const isLt2M = file.size / 1024 / 1024 < 2;
+  const isLt2M = file.size / 1024 / 1024 < 3;
   if (!isLt2M) {
-    message.error('请上传小于2MB的图片');
+    message.error('请上传小于3MB的图片');
   }
   return isJpgOrPng && isLt2M;
 }
@@ -28,9 +28,9 @@ function beforeUploadT(file) {
   if (!isJpgOrPng) {
     message.error('您好图片格式只能是JPG/PNG');
   }
-  const isLt2M = file.size / 1024 / 1024 < 2;
+  const isLt2M = file.size / 1024 / 1024 < 3;
   if (!isLt2M) {
-    message.error('请上传小于2MB的图片');
+    message.error('请上传小于3MB的图片');
   }
   return isJpgOrPng && isLt2M;
 }
@@ -40,13 +40,16 @@ function beforeUploadTS(file) {
   if (!isJpgOrPng) {
     message.error('您好图片格式只能是JPG/PNG');
   }
-  const isLt2M = file.size / 1024 / 1024 < 2;
+  const isLt2M = file.size / 1024 / 1024 < 3;
   if (!isLt2M) {
-    message.error('请上传小于2MB的图片');
+    message.error('请上传小于3MB的图片');
   }
   return isJpgOrPng && isLt2M;
 }
 
+message.config({
+  top:300
+})
 
 class qualification extends React.Component {
 
@@ -420,8 +423,8 @@ class qualification extends React.Component {
               </div>
               
               <div className="name">
-                <span className="symbol">*</span><span className="boTitle">开户行所在地</span>
-                <Select placeholder="银行类型" style={{ width: 120, height: '35px', marginLeft: '27px' }} loading={this.state.flag} onChange={this.typeChange}>
+                <span className="symbol">*</span><span className="boTitle">开户行及所在地</span>
+                <Select placeholder="银行类型" style={{ width: 120, height: '35px', marginLeft: '12px' }} loading={this.state.flag} onChange={this.typeChange}>
                   {
                     this.state.type.map((item, i) => (
                       <Option key={i} value={item.bank_id}>{item.bank_name}</Option>
@@ -445,10 +448,10 @@ class qualification extends React.Component {
               </div>
               
               <div className="name">
-                <span className="symbol">*</span><span className="boTitle">开户行</span>
+                <span className="symbol">*</span><span className="boTitle">支行名称</span>
                 <Select
                   showSearch
-                  style={{ width: 273, height: '36px', marginLeft: '75px' }}
+                  style={{ width: 273, height: '36px', marginLeft: '60px' }}
                   onSearch={this.handleSearch}
                   onChange={this.openingLine}
                   defaultActiveFirstOption={false}

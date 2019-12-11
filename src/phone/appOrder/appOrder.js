@@ -15,7 +15,7 @@ class appOrder extends React.Component {
     date: '',
     show: false,
     lastTime: '',
-    moneyCall: '00',
+    moneyCall:0,
     ko: '',
     lotime: [],
     time: [],
@@ -77,8 +77,8 @@ class appOrder extends React.Component {
     let siteuid = arr[0].slice(9, arr[0].length)
     let sportid = arr[1].slice(8, arr[1].length)
     let token = arr[2].slice(6, arr[2].length)
-                       
-    this.getAppVenueReservation({ date: new Date().toLocaleDateString().replace(/\//g, "-"), siteUUID:siteuid , sportid:sportid  })
+         
+    this.getAppVenueReservation({ date: new Date().toLocaleDateString().replace(/\//g, "-"), siteUUID: siteuid, sportid: sportid })
     this.getVenueNumberTitleList({sportid:sportid,type:'2',siteuuid:siteuid})
     let start = new Date().toLocaleDateString().replace(/\//g, "-")
     this.setState({ date: start, token: token,siteid:siteuid,sportid:sportid})
@@ -132,13 +132,14 @@ class appOrder extends React.Component {
     let time = e.currentTarget.dataset.time
     let num = e.currentTarget.dataset.num
     let lotime = e.currentTarget.dataset.lo
+   
     if (e.currentTarget.dataset.type === '1') {
       if (this.state.lotime.length > 0) {
-        this.setState({ moneyCall: parseInt(this.state.moneyCall) + parseInt(money) })
+        this.setState({ moneyCall: parseFloat(this.state.moneyCall) + parseFloat(money) })
         if (this.state.lotime.indexOf(lotime) !== -1) {
           this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
-          this.state.time.splice(this.state.lotime.indexOf(lotime) - 1, 1)
-          this.setState({ moneyCall: this.state.moneyCall - money })
+          this.state.time.splice(this.state.lotime.indexOf(lotime), 1)
+          this.setState({ moneyCall: this.state.moneyCall - money})
         } else if (this.state.time.indexOf(time) !== -1) {
           this.state.lotime.splice(this.state.time.indexOf(time), 1, time + '-' + num)
           this.setState({ moneyCall: this.state.moneyCall })
@@ -146,7 +147,7 @@ class appOrder extends React.Component {
           this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time] })
         }
       } else {
-        this.setState({ moneyCall: parseInt(this.state.moneyCall) + parseInt(money), time: [...this.state.time, time], lotime: [...this.state.lotime, lotime] })
+        this.setState({ moneyCall: Number(this.state.moneyCall) + Number(money), time: [...this.state.time, time], lotime: [...this.state.lotime, lotime] })
       }
     }
   }
@@ -186,6 +187,7 @@ class appOrder extends React.Component {
       num += this.state.lotime[i].split('-')[1] + ','
       time += this.state.lotime[i].split('-')[0] + ','
     }
+ 
     if (this.state.lotime.length > 0) {
       let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[this.state.lotime.length - 1])
       let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[0])
@@ -205,7 +207,6 @@ class appOrder extends React.Component {
     } else {
       Toast.fail('请选择场地', 2, null, false);
     }
-
   }
 
   render() {
@@ -244,7 +245,7 @@ class appOrder extends React.Component {
                   {
                     this.state.lookList.map((index, i) => (
                       <div key={i} className="sonList">
-                        <span style={{ left: this.state.left }}>{index.a}<br />{i === this.state.lookList.length - 1 ? this.state.lastTime : ''}</span>
+                        <span style={{ left: this.state.left }}>{index.a}<br /><span style={{paddingTop:'0.5rem',display:'block'}}>{i === this.state.lookList.length - 1 ? this.state.lastTime : ''}</span></span>
                         <span></span>
                         {
                           this.state.lookList[i].c.map((item, i) => (
@@ -259,7 +260,6 @@ class appOrder extends React.Component {
                               data-lo={index.a + '-' + (i + 1)}
                               style={item.type === 1 && this.state.lotime.indexOf(index.a + '-' + (i + 1)) === -1 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff' } : { background: 'red', marginTop: '0.12rem', color: '#fff' } && item.type === 2 ? { background: '#6FB2FF', marginTop: '0.12rem', opacity: '0.3' } : {} && item.type === 3 ? { background: '#F5A623', marginTop: '0.12rem' } : {} && item.type === 4 ? { background: 'red', marginTop: '0.12rem' } : { background: 'red', marginTop: '0.12rem', color: '#fff' }}>
                               {item.type === 1 ? item.money : ''}
-
                             </span>
                           ))
                         }
@@ -273,7 +273,6 @@ class appOrder extends React.Component {
                 img={<Icon type="cross-circle-o"  style={{ fill: 'rgba(245,166,35,1)',width:'4rem',height:'4rem' }} />}
                 title="无场地可预约"
               />
-
               <Calendar
                 visible={this.state.show}
                 onCancel={this.onCancel}
@@ -284,9 +283,7 @@ class appOrder extends React.Component {
                 minDate={new Date()}
                 maxDate={new Date(+now + 31536000000)}
               />
-
-              <div style={{ float: 'right', marginRight: '1rem' }}>场地费合计：{this.state.moneyCall + '.00'}</div>
-
+              <div style={{ float: 'right', marginRight: '1rem' }}>场地费合计：{this.state.moneyCall.toString().indexOf('.')===-1?this.state.moneyCall+'.0':this.state.moneyCall+'0'}</div>
             </div>
             <div
               onClick={this.onSubmit}

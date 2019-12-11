@@ -276,10 +276,11 @@
     position: absolute;
     z-index: 9;
     background: #fff;
+    padding-bottom: 0.5rem;
 }
 .orderList .lookList .headerSon .topFixd>span{
     width:3.13rem;
-    height:2.88rem; 
+    height:3.88rem; 
     display: block;
     margin-left: 0.12rem;
     display: inline-block;
@@ -310,6 +311,7 @@
     margin-left: 0;
     height: 2rem;
     padding-bottom: 3rem;
+    z-index: 99;
 }
  .informDrawer{
      margin-top: 15px;

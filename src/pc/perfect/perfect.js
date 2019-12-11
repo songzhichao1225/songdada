@@ -40,15 +40,17 @@ function getBase64T(file) {
 function beforeUpload(file) {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
   if (!isJpgOrPng) {
-    message.error('You can only upload JPG/PNG file!');
+    message.error('只能上传PNG/JPG格式图片');
   }
-  const isLt2M = file.size / 1024 / 1024 < 2;
+  const isLt2M = file.size / 1024 / 1024 < 3;
   if (!isLt2M) {
-    message.error('Image must smaller than 2MB!');
+    message.error('上传图片必须小于3MB');
   }
   return isJpgOrPng && isLt2M;
 }
-
+message.config({
+  top:300
+})
 
 class perfect extends React.Component {
 
