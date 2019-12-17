@@ -1,6 +1,4 @@
-.stadiums{
-    
-}
+
 .stadiums .navTap{
     height: 46px;
     margin-top: 8px;
@@ -44,7 +42,7 @@
 	float: left
 }
 .stadiums .boTitle{
-    width: 81px;
+    width: 85px;
 	font-size: 16px;
 	color: #4A4A4A;
 	margin-left: 5px;
@@ -190,6 +188,7 @@ float: left;
 }
 .stadiums .qualification .listing .accountNum{
 	margin-left: 18px;
+	margin-top: 10px;
 }
 .stadiums .qualification  .submitListing{
 	width: 89px;

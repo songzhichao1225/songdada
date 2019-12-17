@@ -38,7 +38,6 @@ class loginPhTeo extends React.Component {
     if (res.data.code !== 2000) {
       Toast.fail(res.data.msg, 1);
     } else {
-      console.log(res.data.data)
       localStorage.setItem('uuid', res.data.data.uuid);
       localStorage.setItem('name', res.data.data.name);
       localStorage.setItem('islegal', res.data.data.islegal);

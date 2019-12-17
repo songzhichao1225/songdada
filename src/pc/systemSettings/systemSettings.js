@@ -2,7 +2,7 @@ import React from 'react';
 import './systemSettings.css';
 import 'antd/dist/antd.css';
 import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport, VenueTemporarilyClosed, VenueIsClose, getVenueIsClose, VenueNewsSendMessage, getVenueHelpCenter } from '../../api';
-import { Input, Icon, message, Checkbox, Drawer,Pagination } from 'antd';
+import { Input, Icon, message, Checkbox, Drawer, Pagination,Popconfirm } from 'antd';
 import 'moment/locale/zh-cn';
 
 const { TextArea } = Input
@@ -44,7 +44,7 @@ class systemSettings extends React.Component {
     textAreaT: '',
     help: false,
     helpList: [],
-    other:0,
+    other: 0,
   }
 
   showDrawer = () => {
@@ -55,7 +55,7 @@ class systemSettings extends React.Component {
   onClose = () => {
     this.setState({
       Drawervisible: false,
-      help:false
+      help: false
     });
   }
 
@@ -89,10 +89,14 @@ class systemSettings extends React.Component {
       message.info(res.data.msg)
     }
   }
-  order = e => {
-
-    this.setState({ isClose: e.target.checked ? 1 : 0 })
-    this.VenueIsClose({ close: e.target.checked ? 1 : 0 })
+  confirm = () => {
+     if(this.state.isClose===0){
+      this.setState({ isClose:  1 })
+      this.VenueIsClose({ close: 1  })
+     }else{
+      this.setState({ isClose:  0 })
+      this.VenueIsClose({ close: 0  })
+     }
   }
 
 
@@ -355,15 +359,15 @@ class systemSettings extends React.Component {
 
   async getVenueHelpCenter(data) {
     const res = await getVenueHelpCenter(data, sessionStorage.getItem('venue_token'))
-    this.setState({ helpList: res.data.data,other:res.data.other })
+    this.setState({ helpList: res.data.data, other: res.data.other })
   }
 
   help = () => {
     this.getVenueHelpCenter()
     this.setState({ help: true })
   }
-  current=(page,pageSize)=>{
-    this.getVenueHelpCenter({page:page})
+  current = (page, pageSize) => {
+    this.getVenueHelpCenter({ page: page })
   }
 
 
@@ -374,7 +378,15 @@ class systemSettings extends React.Component {
         <div className="title"><span style={{ cursor: 'pointer' }} onClick={this.resetNot}>系统设置</span> <span className={this.state.flagListOne === false ? 'titleSpan' : 'listNone'}>{this.state.text}</span></div>
         <div className={this.state.flagListOne === true ? 'list' : 'listNone'}>
           <ul className="ul">
-            <li><Checkbox onChange={this.order} checked={this.state.isClose === 1 ? true : false}>关闭预约</Checkbox></li>
+            <Popconfirm
+              title={this.state.isClose===0?'您确定关闭预约吗？':'您确定取消关闭预约吗？'}
+              onConfirm={this.confirm}
+              onCancel={this.cancel}
+              okText="是"
+              cancelText="否"
+            >
+              <li><Checkbox style={{ fontSize: '16px', color: '#4A4A4A' }} checked={this.state.isClose === 1 ? true : false}>关闭预约</Checkbox></li>
+            </Popconfirm>
             <li onClick={this.closeYu}>设置临时关闭预约时间</li>
           </ul>
 
@@ -480,13 +492,13 @@ class systemSettings extends React.Component {
           {
             this.state.helpList.map((item, i) => (
               <div key={i} style={{ marginTop: '30px' }}>
-                <div style={{fontSize:'16px',color:'#F5A623'}}>{item.title}</div>
-                <div style={{fontSize:'14px',marginTop:'10px'}}>{item.content}</div>
+                <div style={{ fontSize: '16px', color: '#F5A623' }}>{item.title}</div>
+                <div style={{ fontSize: '14px', marginTop: '10px' }}>{item.content}</div>
               </div>
             ))
           }
           <Pagination className='fenye' defaultCurrent={1} onChange={this.current} total={this.state.other} />
-          
+
         </Drawer>
 
 

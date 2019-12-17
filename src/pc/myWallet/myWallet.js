@@ -107,6 +107,7 @@ class myWallet extends React.Component {
   }
 
 
+
   async getVenueWithdrawalOneList(data) {
     const res = await getVenueWithdrawalOneList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
@@ -207,7 +208,7 @@ class myWallet extends React.Component {
               ))
             }
           </div>
-          <Pagination className="fenye" defaultCurrent={1} onChange={this.recordListOther} total={this.state.recordListOther} />
+          <Pagination className="fenye" defaultCurrent={1} onChange={this.recordListOther} total={this.state.recordListOther===''?0:this.state.recordListOther} />
           <Result className={this.state.hiddenTwo === true ? 'hidden' : ''} icon={<Icon type="reconciliation" theme="twoTone" twoToneColor="#F5A623" />} title="您还没有提现记录！" />
         </div>
         <div className={this.state.flag === 3 ? 'withdrawal myWallet' : 'myWalletNone'}>

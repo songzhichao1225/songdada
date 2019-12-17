@@ -163,11 +163,11 @@ class register extends React.Component {
      if(res.data.code===2000){
       this.setState({idName:res.data.data.promotname})
      }else{
-      this.setState({idName:'推广员不存在'})
+      this.setState({idName:'没有推广员？'})
      }
   }
   onCancel=e=>{
-    this.setState({Id:''})
+    this.setState({Id:'',idName:''})
   }
 
   render() {
@@ -209,14 +209,14 @@ class register extends React.Component {
                   content={this.state.textTwo}
                   visible={this.state.visiblePhone}
                 >
-                  <Input maxLength={11} onBlur={this.changePhone} className="phone" />
+                  <Input maxLength={11} onBlur={this.changePhone} placeholder="操作员手机号" className="phone" />
                 </Popover>
               </div>
 
               <div className="son">
                 <span className="xing">*</span> <span>验证码:</span>
                 <Button className="huoBtn" onClick={this.naCode}>{this.state.textT}</Button>
-                <Input maxLength={6} type="text" onChange={this.changeCode} className="phone code" />
+                <Input maxLength={6} type="text"  onChange={this.changeCode} className="phone code" />
               </div>
       
               <div className="son">
@@ -232,15 +232,15 @@ class register extends React.Component {
               <div className="agreement"><Radio onChange={this.changeRadio}><span>我已阅读并同意</span><span className="color">《用户协议》</span></Radio></div>
 
               <Popconfirm 
-                title={this.state.idName===""?'您没有推广员？':"推广员姓名："+this.state.idName&&this.state.idName==='推广员不存在'?'推广员不存在':"推广员姓名："+this.state.idName}
+                title={this.state.idName===""?'没有推广员？':"推广员姓名："+this.state.idName&&this.state.idName==='推广员不存在'?'推广员不存在':"推广员姓名："+this.state.idName}
                 onConfirm={this.showModal}
                 onCancel={this.onCancel}
                 okText="是"
                 cancelText="否"
                 disabled={false}
               >
-                <div  className="submint"  >注册</div>
-              </Popconfirm>,
+                <div  className="submint">注册</div>
+              </Popconfirm>
 
                 <div className="Existing"> 已有账号 <a href='#/'><span>请登录</span></a></div>
               <Modal
@@ -248,6 +248,7 @@ class register extends React.Component {
                 cancelText=''
                 closable={false}
                 footer={null}
+                style={{width:'200px',height:'50px'}}
                 visible={this.state.visible}
                 onOk={this.handleOk}
                 width={800}

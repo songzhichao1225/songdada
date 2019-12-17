@@ -69,7 +69,7 @@ class sitePh extends React.Component {
     activitySportId: 0,
     activityThreeSportId:0,
     spin: true,
-
+    sportListTwo:[{label:'全部',value:0}],
     clenTop: 0,  //下拉加载参数
     clickY: 0,
     moveY: 0,
@@ -205,6 +205,9 @@ class sitePh extends React.Component {
 
     let day = ''
     switch (v[0]) {
+      case 0:
+        day = "全部";
+        break;
       case 1:
         day = "羽毛球";
         break;
@@ -426,7 +429,9 @@ class sitePh extends React.Component {
         ko.label = res.data.data[i].name
         ko.value = res.data.data[i].id
         arrS.push(ko)
+        this.state.sportListTwo.push(ko)
       }
+
       this.setState({ sportList: arrS })
     }
   }
@@ -975,8 +980,6 @@ class sitePh extends React.Component {
       this.setState({ dateChangeTwo: e })
     } else {
       this.setState({ dateChangeTwo: parseInt(e) })
-
-
     }
   }
 
@@ -1083,7 +1086,7 @@ class sitePh extends React.Component {
       data.openday = dateChangeTwo.join(',')
     }
     this.getVenueSpecialSave(data)
-
+    
 
   }
 
@@ -1092,30 +1095,32 @@ class sitePh extends React.Component {
       <div className="sitePh">
         <div className="siteheaderTitle">
           <div onClick={this.site} style={this.state.clickNum === 1 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>场地设置</div>
-          <div onClick={this.preferential} style={this.state.clickNum === 2 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>优惠活动</div>
           <div onClick={this.preferentialTwo} style={this.state.clickNum === 3 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>特殊场地</div>
+          <div onClick={this.preferential} style={this.state.clickNum === 2 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>优惠活动</div>
+          
         </div>
         <div style={{ height: '0.6rem', background: '#f5f5f5' }}></div>
         <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' } : { display: 'none' }} ><Icon type="loading" className='loadingY' style={{ top: this.state.clenTop / 7 }} /></div>
         <div className={this.state.clickNum === 1 ? 'site' : 'none'} onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
           <Row style={{ color: '#9B9B9B', borderBottom: '0.06rem solid #e9e9e9' }}>
             <Col className="oneCol" xs={{ span: 7 }} lg={{ span: 6 }}>
-              <Picker data={this.state.sportList} title="选择运动项目" onChange={this.screenChange} cols={1} className="forss">
+              <Picker data={this.state.sportListTwo} title="选择运动项目" onChange={this.screenChange} cols={1} className="forss">
                 <div>{this.state.screenName} <Icon type='down' /></div>
               </Picker>
             </Col>
-            <Col style={{ textAlign: 'left' }} xs={{ span: 7, offset: 4 }} lg={{ span: 6 }}>时间</Col>
-            <Col xs={{ span: 6 }} lg={{ span: 6 }}>星期</Col>
+            <Col style={{ textAlign: 'left' }} xs={{ span: 6, offset: 4 }} lg={{ span: 6 }}>时间</Col>
+            <Col xs={{ span: 7 }} lg={{ span: 6 }}>工作日/休息日</Col>
           </Row>
-
+          <div style={{width:'100%',height:'0.6rem',background:'rgb(245, 245, 245)'}}></div>
+          
           <div className="contentScorll">
             {
               this.state.getVenueFieldList.map((item, i) => (
                 <div key={i} style={{ borderBottom: '0.06rem solid #e9e9e9', transition: '0.2s' }}>
                   <Row onClick={this.selectBottom} data-index={i}>
                     <Col className="oneCol" xs={{ span: 9 }} lg={{ span: 6 }}>{item.sportname}</Col>
-                    <Col style={{ textAlign: 'left' }} xs={{ span: 7, offset: 2 }} lg={{ span: 6 }}>{item.starttime + '-' + item.endtime}</Col>
-                    <Col xs={{ span: 6 }} lg={{ span: 6 }}>{item.opendayname}</Col>
+                    <Col style={{ textAlign: 'left' }} xs={{ span: 6, offset: 2 }} lg={{ span: 6 }}>{item.starttime + '-' + item.endtime}</Col>
+                    <Col xs={{ span: 7 }} lg={{ span: 6 }}>{item.openday===1?'周一':''||item.openday===2?'周二':''||item.openday===3?'周三':''||item.openday===4?'周四':''||item.openday===5?'周五':''||item.openday===6?'周六':''||item.openday===0?'周日':''}</Col>
                   </Row>
 
                   <div className={parseInt(this.state.selectNum) === i ? 'selectBottom' : 'none'}>
@@ -1183,14 +1188,14 @@ class sitePh extends React.Component {
                   <Option value='6'>周六</Option>
                   <Option value='0'>周日</Option>
                 </Select>
-              </div>
+              </div>                                                                     
               <div className="sitePhlistSon">
                 <span style={{ float: 'left' }}>开始时间</span>
                 <Picker data={this.state.time} title="选择开始时间" onChange={this.startTime} cols={1} className="forss">
                   <div style={{ float: 'right', width: '50%', textAlign: 'left', paddingLeft: '0.75rem' }}>{this.state.startTime} <Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
                 </Picker>
-
               </div>
+
 
 
               <div className="sitePhlistSon">
@@ -1213,7 +1218,6 @@ class sitePh extends React.Component {
                 <Picker data={this.state.moodArr} title="选择开始时间" onChange={this.weekChange} cols={1} className="forss">
                   <div style={{ float: 'right', width: '50%', textAlign: 'left', paddingLeft: '0.75rem' }}>{this.state.weekChange === 0.1 ? '一周' : '请选择' && this.state.weekChange === 0.2 ? '两周' : '请选择' && this.state.weekChange === 0.3 ? '三周' : '请选择' && this.state.weekChange === 1 ? '一个月' : '请选择' && this.state.weekChange === 2 ? '两个月' : '请选择'} <Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
                 </Picker>
-
               </div>
 
               <div className="sitePhlistSon">
@@ -1268,7 +1272,6 @@ class sitePh extends React.Component {
                   </Row>
                   {/* && this.state.flagTwo === true */}
                   <div className={parseInt(this.state.selectNumTwo) === i ? 'selectBottom' : 'none'}>
-
                     <Row className='detail'>
                       <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6 }} style={{ textAlign: 'left' }}>场地数量 {item.maxtablecount}</Col>
                       <Col xs={{ span: 10, offset: 1 }} lg={{ span: 6 }} style={{ textAlign: 'left' }}>最短提前预定 {item.appointmenttime + '分钟'}</Col>
@@ -1287,7 +1290,6 @@ class sitePh extends React.Component {
                         <img className="upLoad" style={{ right: '13%' }} onClick={this.per} data-uuid={item.uid} src={require("../../assets/delet.png")} alt="删除" />
                       </Popconfirm></Col>
                     </Row>
-
                   </div>
                 </div>
               ))
@@ -1310,12 +1312,10 @@ class sitePh extends React.Component {
             <Picker data={this.state.sportList} title="选择运动项目" onChange={this.projectTwo} cols={1} className="forss">
               <div style={{ float: 'right', width: '50%', textAlign: 'left', }}>{this.state.projectTwoName} <Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
             </Picker>
-
           </div>
 
           <div className="SzSon">
             <span style={{ float: 'left' }}>开始日期</span>
-
             <DatePicker
               mode="date"
               title="选择开始日期"
@@ -1326,12 +1326,10 @@ class sitePh extends React.Component {
             >
               <div style={{ width: '50%', float: 'right' }}>{this.state.startDateTwo}<Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
             </DatePicker>
-
           </div>
 
           <div className="SzSon">
             <span style={{ float: 'left' }}>结束日期</span>
-
             <DatePicker
               mode="date"
               title="选择结束日期"
@@ -1382,8 +1380,6 @@ class sitePh extends React.Component {
                 }
                 <Icon type='down' style={{ float: 'right', marginRight: '0.75rem' }} /></div>
             </Picker>
-
-
           </div>
           <div className="SzSon">
             <span>备注</span>
@@ -1410,14 +1406,14 @@ class sitePh extends React.Component {
                 <div key={i} style={{ borderBottom: '0.06rem solid #e9e9e9' }}>
                   <Row onClick={this.selectBottomThree} data-index={i}>
                     <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6 }} style={{ textAlign: 'left' }}>{item.sportname}</Col>
-                    <Col xs={{ span: 10, offset: 1 }} lg={{ span: 6 }} style={{ textAlign: 'left' }}>{item.starttime + '-' + item.endtime}</Col>
+                    <Col xs={{ span: 10, offset: 1 }} lg={{ span: 6 }} style={{ textAlign: 'left' }}>{item.starttime.slice(0,5) + '-' + item.endtime.slice(0,5)}</Col>
                     <Col xs={{ span: 6 }} lg={{ span: 6 }}>{item.money}</Col>
                   </Row>
                   {/* && this.state.flagTwo === true */}
                   <div className={parseInt(this.state.selectNumThree) === i ? 'selectBottom' : 'none'}>
 
                     <Row className='detail'>
-                      <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6 }} style={{ textAlign: 'left' }}>场地数量 {item.venueid.length >= 2 ? item.venueid.split(',')[0] + '~' + item.venueid.split(',')[item.venueid.split(',').length - 1] : item.venueid}</Col>
+                      <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6 }} style={{ textAlign: 'left' }}>场地号 {item.venueid.length >= 2 ? item.venueid.split(',')[0] + '~' + item.venueid.split(',')[item.venueid.split(',').length - 1] : item.venueid}</Col>
                       <Col xs={{ span: 10, offset: 1 }} lg={{ span: 6 }} style={{ textAlign: 'left' }}></Col>
                       <Col xs={{ span: 6 }} lg={{ span: 6 }}><img className="upLoad" onClick={this.editorThree} data-uuid={item.uuid} src={require("../../assets/upLoad.png")} alt="修改" /></Col>
                     </Row>

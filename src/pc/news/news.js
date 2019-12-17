@@ -1,7 +1,7 @@
 import React from 'react';
 import './news.css';
 import 'antd/dist/antd.css';
-import { getVenueNewsList, getVenueNewsFirst, VenueNewsSaveIsRead, delVenueNews, VenueNewsSendMessage, gerVenueName } from '../../api';
+import { getVenueNewsList, getVenueNewsFirst, VenueNewsSaveIsRead, delVenueNews, VenueNewsSendMessage, gerVenueName,VenueNewsOneKeyRead } from '../../api';
 import { Checkbox, Pagination, Drawer, message, Popconfirm, Modal, Input } from 'antd';
 
 const { TextArea } = Input
@@ -140,7 +140,7 @@ class news extends React.Component {
   async VenueNewsSaveIsRead(data) {
     const res = await VenueNewsSaveIsRead(data, sessionStorage.getItem('venue_token'))
     if (res.data.code !== 2000) {
-      message.info(res.data.msg)
+      message.error(res.data.msg)
     } else {
       this.gerVenueName()
     }
@@ -187,6 +187,24 @@ class news extends React.Component {
     this.props.history.push({ pathname: '/home/information', query: { uuid: e.target.dataset.id } })
   }
 
+  async VenueNewsOneKeyRead(data) {
+    const res = await VenueNewsOneKeyRead(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      message.info(res.data.msg)
+      this.gerVenueName()
+    }else{
+      message.error(res.data.msg)
+    }
+  }
+
+  
+
+
+  Read=()=>{
+    this.VenueNewsOneKeyRead()
+    this.getVenueNewsList({ page: this.state.current })
+  }
+
 
   render() {
     return (
@@ -205,6 +223,7 @@ class news extends React.Component {
             >
               <span className="btn" onClick={this.bossDelet}>删除</span>
             </Popconfirm>
+             <span className="btn" style={{marginLeft:'10px'}} onClick={this.Read}>一键已读</span>
           </div>
           {
             this.state.newsList.map((item, i) => (

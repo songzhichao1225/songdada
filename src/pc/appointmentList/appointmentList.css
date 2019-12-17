@@ -279,7 +279,7 @@
     padding-bottom: 0.5rem;
 }
 .orderList .lookList .headerSon .topFixd>span{
-    width:3.13rem;
+    width:4.13rem;
     height:3.88rem; 
     display: block;
     margin-left: 0.12rem;
@@ -292,7 +292,7 @@
     position: relative;
 }
 .orderList .lookList .sonList>span{
-    width:3.13rem;
+    width:4.13rem;
     height:1.88rem; 
     display: block;
     margin-left: 0.12rem;
@@ -300,6 +300,7 @@
     text-align: center;
     line-height: 1.88rem;
     cursor: pointer;
+    position: relative;
 }
 .orderList .lookList .sonList>span:first-child{
     background: #fff;
@@ -316,6 +317,10 @@
  .informDrawer{
      margin-top: 15px;
      font-size: 20px;
+ }
+ .shifang:hover{
+  background: #ccc;
+  cursor: pointer;
  }
  .dateSelect{
      height:46px;
@@ -338,3 +343,6 @@
     line-height: 23px;
     cursor: pointer;
  }
+.antd-popover-open{
+    width: 120px;
+}

@@ -90,14 +90,12 @@ class home extends React.Component {
     }
     jo()
     
-      //这里的ip地址改为自己服务器的ip地址
      
-    
-     
-   
   }
   componentWillReceiveProps() {
     this.setState({ path: this.props.history.location.pathname })
+    this.getVenueIndex()
+    this.gerVenueName()
     if (this.props.history.location.pathname === '/home') {
       sessionStorage.setItem('path', '1');
     } else if (this.props.history.location.pathname === '/homenews') {
@@ -238,6 +236,7 @@ class home extends React.Component {
     this.props.history.push({ pathname: '/home/information', query: { time: 2 } })
   }
   news = () => {
+    this.gerVenueName()
     this.props.history.push("/home/news")
   }
   render() {
@@ -323,7 +322,7 @@ class home extends React.Component {
               <div className="new">
                 <div onClick={this.news}>
                   <img src={require("../../assets/icon_pc_new.png")} alt="message" />
-                  <div className="number"><span>{sessionStorage.getItem('mess')}</span></div>
+                  <div className="number"><span>{Number(sessionStorage.getItem('mess'))>=999?'...':sessionStorage.getItem('mess')}</span></div>
                 </div>
               </div>
               <div className="lvyue">场地履约率：{this.state.gerVenueName.rate}%</div>

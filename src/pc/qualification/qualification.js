@@ -48,7 +48,7 @@ function beforeUploadTS(file) {
 }
 
 message.config({
-  top:300
+  top: 300
 })
 
 class qualification extends React.Component {
@@ -75,6 +75,7 @@ class qualification extends React.Component {
     province_id: '',//省Id
     city_id: '',//市id
     backList: [],//获取的银行
+    CorporateName: '',
   };
 
   async getIsStatus(data) {
@@ -129,22 +130,22 @@ class qualification extends React.Component {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
     } else if (res.data.code === 2000) {
-      if(res.data.data.legalFilesURL!==''){
+      if (res.data.data.legalFilesURL !== '') {
         this.setState({
           imageUrl: res.data.data.lisenceURL, handleName: res.data.data.legalname, handleCardId: res.data.data.legalcard, imageRes: res.data.data.lisenceURL,
           handlePhone: res.data.data.legalphone, Radiovalue: res.data.data.Settlement, handleBankNum: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, legalBaseURL: res.data.data.legalBaseURL,
           imageReT: res.data.data.legalFilesURL.split('|')[0], imageReST: res.data.data.legalFilesURL.split('|')[1], imageUrlT: res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0],
-          imageUrlS: res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1]
+          imageUrlS: res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1], CorporateName: res.data.data.CorporateName
         })
-      }else{
+      } else {
         this.setState({
           imageUrl: res.data.data.lisenceURL, handleName: res.data.data.legalname, handleCardId: res.data.data.legalcard, imageRes: res.data.data.lisenceURL,
           handlePhone: res.data.data.legalphone, Radiovalue: res.data.data.Settlement, handleBankNum: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, legalBaseURL: res.data.data.legalBaseURL,
           imageReT: res.data.data.legalFilesURL.split('|')[0], imageReST: res.data.data.legalFilesURL.split('|')[1], imageUrlT: res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0],
-          imageUrlS: ''
+          imageUrlS: '', CorporateName: res.data.data.CorporateName
         })
       }
-      
+
     }
   }
 
@@ -192,6 +193,10 @@ class qualification extends React.Component {
   }
   openingLine = e => {
     this.setState({ openingLine: e })
+  }
+
+  CorporateName = e => {
+    this.setState({ CorporateName: e.target.value })
   }
 
 
@@ -279,7 +284,7 @@ class qualification extends React.Component {
 
 
   submit = () => {
-    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageReT, imageReST, } = this.state
+    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageReT, imageReST, CorporateName } = this.state
     if (sessionStorage.getItem('notType') === '1') {
 
       let data = {
@@ -292,6 +297,7 @@ class qualification extends React.Component {
         Settlement: Radiovalue,
         Bankaccount: handleBankNum,
         OpeningBank: openingLine,
+        CorporateName: CorporateName
       }
       this.VenueQualificationInformationSave(data)
     } else {
@@ -306,6 +312,7 @@ class qualification extends React.Component {
         Settlement: Radiovalue,
         Bankaccount: handleBankNum,
         OpeningBank: openingLine,
+        CorporateName: CorporateName
       }
       this.VenueQualifications(data)
     }
@@ -375,13 +382,13 @@ class qualification extends React.Component {
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">法人身份证号</span>
                 <Input className="nameINput cardId" maxLength={18} value={this.state.handleCardId} onChange={this.handleCardId} placeholder="请输入法人身份证号" />
-              </div> 
-               
+              </div>
+
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">法人手机号</span>
                 <Input className="nameINput phone" maxLength={11} value={this.state.handlePhone} onChange={this.handlePhone} placeholder="请输入11位手机号" />
               </div>
-              
+
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">法人身份证</span>
                 <Upload
@@ -395,7 +402,7 @@ class qualification extends React.Component {
                 >
                   {imageUrlT ? <img src={imageUrlT} alt="avatar" style={{ width: '100%' }} /> : uploadButtonT}
                 </Upload>
-                
+
                 <Upload
                   name="files"
                   listType="picture-card"
@@ -416,12 +423,19 @@ class qualification extends React.Component {
                   <Radio value={1}>法人账号</Radio>
                 </Radio.Group>
               </div>
-              
+
+              <div className="name" style={this.state.Radiovalue === 0 ? { display: 'block' } : { display: 'none' }}>
+              <span className="symbol">*</span><span className="boTitle">公司名称</span>
+                <Input className="nameINput" value={this.state.CorporateName} onChange={this.CorporateName} placeholder="请输入公司名称" />
+              </div>
+
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">银行账号</span>
                 <Input className="nameINput" maxLength={19} onChange={this.handleBankNum} value={this.state.handleBankNum} placeholder="请输入银行卡号" />
               </div>
+
               
+
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">开户行及所在地</span>
                 <Select placeholder="银行类型" style={{ width: 120, height: '35px', marginLeft: '12px' }} loading={this.state.flag} onChange={this.typeChange}>
@@ -446,7 +460,7 @@ class qualification extends React.Component {
                   }
                 </Select>
               </div>
-              
+
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">支行名称</span>
                 <Select

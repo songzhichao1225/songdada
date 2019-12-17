@@ -3,6 +3,7 @@
     height: 100%;
     overflow: hidden;
     background: #fff;
+    -webkit-overflow-scrolling: touch;
 }
 .homepage .kog{
     position: relative;
@@ -149,6 +150,7 @@
     margin-left: 0;
     height: 2rem;
     z-index: 9;
+    padding-bottom: 3rem;
 }
 .appOrder .dateT{
    position: absolute;

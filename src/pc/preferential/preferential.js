@@ -380,7 +380,7 @@ class preferential extends React.Component {
                     <Col xs={{ span: 2 }}>{item.starttime}</Col>
                     <Col xs={{ span: 2 }}>{item.endtime}</Col>
                     <Col xs={{ span: 2 }}>{item.costperhour}</Col>
-                    <Col xs={{ span: 5 }}>{item.fromdate}—{item.enddate}</Col>
+                    <Col xs={{ span: 5 }}>{item.fromdate}~{item.enddate}</Col>
                     <Col xs={{ span: 3 }}>{item.maxtablecount}</Col>
                     <Col xs={{ span: 3 }}>{item.appointmenttime}分</Col>
                     <Col className="updata" xs={{ span: 2 }}><img onClick={this.updata} data-uid={item.uid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;&nbsp;<img data-uid={item.uid} onClick={this.delet} src={require("../../assets/icon_pc_delet.png")} alt="删除" /></Col>

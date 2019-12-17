@@ -106,7 +106,6 @@
 }
 .perfect .addImg{
 width: 132px;
-height: 132px;
 margin-left: 26.8px;
 float: left;
 }
@@ -115,7 +114,6 @@ float: left;
 	font-size: 12px;
 	color: #9B9B9B;
 	float: left;
-	margin-top: 20px;
 	text-align: left;
 	width: 100%;
 	margin-bottom: 20px;

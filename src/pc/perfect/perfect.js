@@ -1,7 +1,7 @@
 import React from 'react';
 import './perfect.css';
 import 'antd/dist/antd.css';
-import { getProvince, getCrty, getArea, PerfectingVenueInformation, getVenueInformation,VenueInformationSave } from '../../api';
+import { getProvince, getCrty, getArea, PerfectingVenueInformation, getVenueInformation, VenueInformationSave } from '../../api';
 import { Select, Input, Checkbox, Button, Upload, Icon, message, Modal } from 'antd';
 
 
@@ -18,6 +18,26 @@ const plainOptions = [
   { label: '乒乓球', value: '2' },
   { label: '高尔夫球', value: '8' }
 ];
+
+const plainOptionsTwo = [
+  { label: '中式黑八', value: '1' },
+  { label: '美式九球', value: '2' },
+  { label: '斯诺克', value: '3' }
+]
+
+const plainOptionsThree = [
+  { label: '11人制', value: '13' },
+  { label: '8人制', value: '14' },
+  { label: '7人制', value: '15' },
+  { label: '5人制', value: '16' },
+]
+
+const plainOptionsFour = [
+  { label: '小洞', value: '25' },
+  { label: '中洞', value: '26' },
+  { label: '大洞', value: '27' }
+]
+
 
 const options = [{ label: 'WiFi', value: '1' }, { label: '停车场', value: '2' }, { label: '淋浴', value: '3' }]
 
@@ -49,7 +69,7 @@ function beforeUpload(file) {
   return isJpgOrPng && isLt2M;
 }
 message.config({
-  top:300
+  top: 300
 })
 
 class perfect extends React.Component {
@@ -61,6 +81,9 @@ class perfect extends React.Component {
     handleName: '',//场馆名称
     handleAddress: this.props.location.query === undefined ? '' : this.props.location.query.adddress,//场馆详细地址
     onChangeCheck: '',//运动项目
+    onChangeCheckTwo: '',//台球项目
+    onChangeCheckThree: '',//足球项目
+    onChangeCheckFour: '',//高尔夫项目
     onChangeSite: '',//场地设施
     province: '',//获取的省数组
     city: '',//获取市数组
@@ -72,10 +95,10 @@ class perfect extends React.Component {
     onChangeText: '',//输入框
     fileList: [],
     position: '',
-    lat:'',
-    lng:'',
-    handelPerson:'',
-    handleTelephone:'',
+    lat: '',
+    lng: '',
+    handelPerson: '',
+    handleTelephone: '',
   };
 
 
@@ -94,14 +117,16 @@ class perfect extends React.Component {
       localStorage.setItem('handleName', res.data.data.name)
       this.setState({
         position: res.data.data.position, handleAddress: res.data.data.address, handleName: res.data.data.name, imageUrl: res.data.data.firstURL, fileList: arrImg,
-        onChangeCheck: res.data.data.sport, onChangeSite: res.data.data.facilities, onChangeText: res.data.data.siteInfo,lat:res.data.data.lat,lng:res.data.data.lng,
-        imageRes:res.data.data.firstURL,handelPerson:res.data.data.linkMan,handleTelephone:res.data.data.telephone
+        onChangeCheck: res.data.data.sport, onChangeSite: res.data.data.facilities, onChangeText: res.data.data.siteInfo, lat: res.data.data.lat, lng: res.data.data.lng,
+        onChangeCheckTwo: res.data.data.sporttype.split('|')[0], onChangeCheckThree: res.data.data.sporttype.split('|')[1], onChangeCheckTFour: res.data.data.sporttype.split('|')[2],
+        imageRes: res.data.data.firstURL, handelPerson: res.data.data.linkMan, handleTelephone: res.data.data.telephone
       })
     }
   }
 
 
   componentDidMount() {
+
     this.getProvince()
     if (localStorage.getItem('handleAreaId') !== null) {
       this.getCrty({ parent: localStorage.getItem('handleAreaId') })
@@ -149,8 +174,8 @@ class perfect extends React.Component {
   }
   routerMap = () => {
     if (localStorage.getItem('handleDistrict') !== null) {
-      this.props.history.push({ pathname: '/map', query: { type: localStorage.getItem('handleDistrict'),city:localStorage.getItem('handleCity') } })
-      sessionStorage.setItem('hanclick',1)
+      this.props.history.push({ pathname: '/map', query: { type: localStorage.getItem('handleDistrict'), city: localStorage.getItem('handleCity') } })
+      sessionStorage.setItem('hanclick', 1)
     } else {
       message.warning('请先选择地区')
     }
@@ -164,7 +189,26 @@ class perfect extends React.Component {
   }
   onChangeCheck = e => {
     this.setState({ onChangeCheck: e })
+    if (e.indexOf('3') === -1) {
+      this.setState({ onChangeCheckTwo: '' })
+    } else if (e.indexOf('5') === -1) {
+      this.setState({ onChangeCheckThree: '' })
+    } else if (e.indexOf('8') === -1) {
+      this.setState({ onChangeCheckFour: '' })
+    }
     sessionStorage.setItem('onChangeCheck', e)
+  }
+  onChangeCheckTwo = e => {
+    this.setState({ onChangeCheckTwo: e })
+    sessionStorage.setItem('onChangeCheckTwo', e)
+  }
+  onChangeCheckThree = e => {
+    this.setState({ onChangeCheckThree: e })
+    sessionStorage.setItem('onChangeCheckThree', e)
+  }
+  onChangeCheckFour = e => {
+    this.setState({ onChangeCheckFour: e })
+    sessionStorage.setItem('onChangeCheckFour', e)
   }
   onChangeSite = e => {
     this.setState({ onChangeSite: e })
@@ -225,26 +269,24 @@ class perfect extends React.Component {
 
 
 
-  
+
 
 
   async VenueInformationSave(data) {
-    const res = await VenueInformationSave(data,sessionStorage.getItem('venue_token'))
+    const res = await VenueInformationSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.props.history.push('/qualification')
       message.info(res.data.msg)
-    }else if(res.data.code===4001){
+    } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登录超时请重新登录')
-    }else{
+    } else {
       message.error(res.data.msg)
     }
   }
 
   onClickNex = () => {
-    let { imageRes, fileList, handleAddress,handelPerson,handleTelephone } = this.state
-
-
+    let { imageRes, fileList, handleAddress, handelPerson, handleTelephone } = this.state
     if (sessionStorage.getItem('notType') === '1') {
       let filesURLarr = []
       for (let i in fileList) {
@@ -253,12 +295,20 @@ class perfect extends React.Component {
         } else {
           filesURLarr.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
         }
-       
       }
       if (filesURLarr.length < 2) {
         message.warning("至少上传两张场地照片")
+      } else if (this.state.onChangeCheck.indexOf('3') !== -1 && this.state.onChangeCheckTwo === '') {
+        message.warning('请选择台球分类')
+      } else if (this.state.onChangeCheck.indexOf('5') !== -1 && this.state.onChangeCheckThree === '') {
+        message.warning('请选择足球分类')
+      } else if (this.state.onChangeCheck.indexOf('8') !== -1 && this.state.onChangeCheckFour === '') {
+        message.warning('请选择高尔夫分类')
       } else {
         let sportId = sessionStorage.getItem('onChangeCheck') === null ? this.state.onChangeCheck.split(',') : sessionStorage.getItem('onChangeCheck').split(',')
+        let onChangeCheckTwo = sessionStorage.getItem('onChangeCheckTwo') === null ? this.state.onChangeCheckTwo.split(',') : sessionStorage.getItem('onChangeCheckTwo').split(',')
+        let onChangeCheckThree = sessionStorage.getItem('onChangeCheckThree') === null ? this.state.onChangeCheckThree.split(',') : sessionStorage.getItem('onChangeCheckThree').split(',')
+        let onChangeCheckFour = sessionStorage.getItem('onChangeCheckFour') === null ? this.state.onChangeCheckFour.split(',') : sessionStorage.getItem('onChangeCheckFour').split(',')
         let facilitiesId = sessionStorage.getItem('onChangeSite') === null ? this.state.onChangeSite.split(',') : sessionStorage.getItem('onChangeSite').split(',')
         let data = {
           venuename: localStorage.getItem('handleName'),
@@ -267,14 +317,15 @@ class perfect extends React.Component {
           address: handleAddress,
           filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
           firstURL: imageRes,
-          sport: sportId === '' ? [] : sportId.join(','), 
+          sport: sportId === '' ? [] : sportId.join(','),
           facilities: facilitiesId === '' ? [] : facilitiesId.join(','),
           siteInfo: this.state.onChangeText,
-          position: this.props.location.query===undefined?this.state.position:this.props.location.query.title,
-          comment:'',
-          type:1,
-          linkMan:handelPerson,
-          telephone:handleTelephone,
+          position: this.props.location.query === undefined ? this.state.position : this.props.location.query.title,
+          comment: '',
+          type: 1,
+          linkMan: handelPerson,
+          telephone: handleTelephone,
+          sporttype: onChangeCheckTwo + '|' + onChangeCheckThree + '|' + onChangeCheckFour
         }
         this.VenueInformationSave(data)
       }
@@ -286,11 +337,22 @@ class perfect extends React.Component {
       }
       if (filesURLarr.length < 2) {
         message.warning("至少上传两张场地照片")
+      } else if (this.state.onChangeCheck.indexOf('3') !== -1 && this.state.onChangeCheckTwo === '') {
+        message.warning('请选择台球分类')
+      } else if (this.state.onChangeCheck.indexOf('5') !== -1 && this.state.onChangeCheckThree === '') {
+        message.warning('请选择足球分类')
+      } else if (this.state.onChangeCheck.indexOf('8') !== -1 && this.state.onChangeCheckFour === '') {
+        message.warning('请选择高尔夫分类')
+      } else if (this.props.location.query === undefined) {
+        message.warning('请选择场馆位置')
       } else {
         let sportId = sessionStorage.getItem('onChangeCheck') === null ? '' : sessionStorage.getItem('onChangeCheck').split(',')
+        let onChangeCheckTwo = sessionStorage.getItem('onChangeCheckTwo') === null ? this.state.onChangeCheckTwo.split(',') : sessionStorage.getItem('onChangeCheckTwo').split(',')
+        let onChangeCheckThree = sessionStorage.getItem('onChangeCheckThree') === null ? this.state.onChangeCheckThree.split(',') : sessionStorage.getItem('onChangeCheckThree').split(',')
+        let onChangeCheckFour = sessionStorage.getItem('onChangeCheckFour') === null ? this.state.onChangeCheckFour.split(',') : sessionStorage.getItem('onChangeCheckFour').split(',')
         let facilitiesId = sessionStorage.getItem('onChangeSite') === null ? '' : sessionStorage.getItem('onChangeSite').split(',')
         let data = {
-          venueloginuuid: sessionStorage.getItem('uuid'),
+          venueloginuuid: sessionStorage.getItem('uuid'),//看不懂  就别干了
           province: localStorage.getItem('handleArea'),
           city: localStorage.getItem('handleCity'),
           area: localStorage.getItem('handleDistrict'),
@@ -304,8 +366,9 @@ class perfect extends React.Component {
           facilities: facilitiesId === '' ? '' : facilitiesId.join(','),
           siteInfo: this.state.onChangeText,
           position: this.props.location.query.title,
-          linkMan:handelPerson,
-          telephone:handleTelephone,
+          linkMan: handelPerson,
+          telephone: handleTelephone,
+          sporttype: onChangeCheckTwo + '|' + onChangeCheckThree + '|' + onChangeCheckFour
         }
         this.PerfectingVenueInformation(data)
       }
@@ -316,18 +379,17 @@ class perfect extends React.Component {
     const res = await PerfectingVenueInformation(data)
     if (res.data.code === 2000) {
       this.props.history.push('/qualification')
-    }else{
+    } else {
       message.error(res.data.msg)
     }
   }
 
-  handelPerson=(e)=>{
-    this.setState({handelPerson:e.target.value})
+  handelPerson = (e) => {
+    this.setState({ handelPerson: e.target.value })
   }
-  handleTelephone=(e)=>{
-   this.setState({handleTelephone:e.target.value})
-  } 
-
+  handleTelephone = (e) => {
+    this.setState({ handleTelephone: e.target.value })
+  }
 
   render() {
     const { province, city, getArea } = this.state
@@ -414,7 +476,7 @@ class perfect extends React.Component {
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">&nbsp;&nbsp;&nbsp;&nbsp;联系人</span>
-                <Input className="nameINput" onChange={this.handelPerson} value={this.state.handelPerson}  placeholder="请输入联系人姓名" />
+                <Input className="nameINput" onChange={this.handelPerson} value={this.state.handelPerson} placeholder="请输入联系人姓名" />
               </div>
 
               <div className="name">
@@ -436,7 +498,6 @@ class perfect extends React.Component {
                 >
                   {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
                 </Upload>
-
                 <span className="rightText">上传图片小于3M<br />上传图片尺寸在1200px*860px 之内</span>
               </div>
 
@@ -466,6 +527,21 @@ class perfect extends React.Component {
                 <Checkbox.Group options={plainOptions} onChange={this.onChangeCheck} value={this.state.onChangeCheck} /><br /><span className="kong"></span>
               </div>
 
+              <div className="name" style={this.state.onChangeCheck.indexOf('3') !== -1 ? { display: 'block' } : { display: 'none' }}>
+                <span className="symbol">*</span><span className="boTitle">台球分类</span><span className="kong"></span>
+                <Checkbox.Group options={plainOptionsTwo} onChange={this.onChangeCheckTwo} value={this.state.onChangeCheckTwo} /><br /><span className="kong"></span>
+              </div>
+
+              <div className="name" style={this.state.onChangeCheck.indexOf('5') !== -1 ? { display: 'block' } : { display: 'none' }}>
+                <span className="symbol">*</span><span className="boTitle">足球分类</span><span className="kong"></span>
+                <Checkbox.Group options={plainOptionsThree} onChange={this.onChangeCheckThree} value={this.state.onChangeCheckThree} /><br /><span className="kong"></span>
+              </div>
+
+              <div className="name" style={this.state.onChangeCheck.indexOf('8') !== -1 ? { display: 'block' } : { display: 'none' }}>
+                <span className="symbol" style={{ marginLeft: '-15px' }}>*</span><span className="boTitle" style={{ marginLeft: '-5px' }}>高尔夫分类</span><span className="kong"></span>
+                <Checkbox.Group options={plainOptionsFour} onChange={this.onChangeCheckFour} value={this.state.onChangeCheckFour} /><br /><span className="kong"></span>
+              </div>
+
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">场地设施</span><span className="kong"></span>
                 <Checkbox.Group options={options} onChange={this.onChangeSite} value={this.state.onChangeSite} />
@@ -483,7 +559,7 @@ class perfect extends React.Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 

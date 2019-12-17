@@ -36,7 +36,6 @@ class monthlyIncomePh extends React.Component {
 
 
   componentDidMount() {
-    console.log(this.props.location)
     if(sessionStorage.getItem('income')===undefined){
        this.props.history.goBack()
     }else{
@@ -59,10 +58,16 @@ class monthlyIncomePh extends React.Component {
         let endDate=endTwo[0]+'-'+endTwo[1]+'-'+endTwo[2]
         this.setState({start:startDate,end:endDate})
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
+      }else{
+        let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
+        let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
+        let startTwo=start.split('-')
+        let startDate=startTwo[0]+'-'+startTwo[1]+'-'+startTwo[2]
+        let endTwo=end.split('-')
+        let endDate=endTwo[0]+'-'+endTwo[1]+'-'+endTwo[2]
+        this.setState({start:startDate,end:endDate})
       }
     }
-
-    
   }
   startDate=(data,datastring)=>{
     this.setState({start:datastring})

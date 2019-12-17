@@ -14,23 +14,22 @@ class mapPh extends React.Component {
   };
 
   componentDidMount(data) {
-
-    var map = new BMap.Map("allmap"); // 创建Map实例
+    console.log(data)
+    var map = new BMap.Map("allmap");
     map.enableScrollWheelZoom(true);
-    var myGeo = new BMap.Geocoder();      
-    // 将地址解析结果显示在地图上，并调整地图视野    
-    myGeo.getPoint(sessionStorage.getItem('county'), function(point){      
+    var myGeo = new BMap.Geocoder();        
+    myGeo.getPoint(sessionStorage.getItem('province'), function(point){      
         if (point) {      
             map.centerAndZoom(point, 15);      
             map.addOverlay(new BMap.Marker(point));      
         }      
      }, 
-     sessionStorage.getItem('county'));
+     sessionStorage.getItem('province'));
     var that = this
     var option = {
       renderOptions: { map: map, panel: "results" }, onSearchComplete: function (results) {
         if (results !== undefined){
-          that.setState({ mapList: results.Qq })
+          that.setState({ mapList: results.Sq })
         }
       }
     } 
@@ -47,7 +46,7 @@ class mapPh extends React.Component {
 
   handleClick = e => {
     let dateset = e.target.dataset
-    console.log(dateset)
+
     if(sessionStorage.getItem('inforMap')!==null){
       this.props.history.push({ pathname:'/homePh/inforSitePh', query: {title:dateset.til, lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })
     }else{

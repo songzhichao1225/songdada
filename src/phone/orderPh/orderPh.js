@@ -56,6 +56,7 @@ class orderPh extends React.Component {
       { name: '待确认结束/待填写结果', id: 4 },
       { name: '待评价', id: 6 },
       { name: '已完成', id: 5 },
+      {name:'已取消',id:7}
     ],
     page: 0,
     clenTop: 0,
@@ -71,7 +72,6 @@ class orderPh extends React.Component {
     qiEnd: '',
 
 
-
     placeName: '',
     placePhone: '',
     placeHui: '',
@@ -83,6 +83,7 @@ class orderPh extends React.Component {
     otherObj: '',
     menu: 2,
     topNumList: [],
+    venueid:'',
   };
 
 
@@ -161,7 +162,6 @@ class orderPh extends React.Component {
     this.setState({ dataString: new Date().toLocaleDateString().replace(/\//g, "-"), nowDate: new Date().toLocaleDateString().replace(/\//g, "-") })
     this.getVenueReservationss({ sportid: 1, date: new Date().toLocaleDateString().replace(/\//g, "-"), types: 1 })
     this.getVenueSport()
-
     if (this.props.location.query !== undefined) {
       if (this.props.location.query.time === 1) {
         let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
@@ -218,13 +218,15 @@ class orderPh extends React.Component {
   }
   current = (page, pageSize) => {
     this.setState({ page: page })
-    this.getReservationActivitieslist({ page: page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start, enddate: this.state.end })
+    this.getReservationActivitieslist({ page: page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', 
+    startdate: this.state.start==='选择开始日期'?'':this.state.start, enddate: this.state.end==='选择结束日期'?'':this.state.end })
   }
 
   showModal = (e) => {
     this.setState({
       visible: true,
-      publicUUID: e.currentTarget.dataset.uid
+      publicUUID: e.currentTarget.dataset.uid,
+      venueid:e.currentTarget.dataset.venueid
     });
   };
 
@@ -251,12 +253,13 @@ class orderPh extends React.Component {
     if (res.data.code === 2000) {
       Toast.success(res.data.msg, 1);
       this.setState({ visible: false })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start, enddate: this.state.end })
     }
   }
 
   sendingMessage = e => {
-    let { publicUUID, sendCheck, textArea } = this.state
-    this.VenueSendMessage({ type: sendCheck, publicUUID: publicUUID, content: textArea })
+    let { publicUUID, sendCheck, textArea,venueid } = this.state
+    this.VenueSendMessage({ type: sendCheck, publicUUID: publicUUID, content: textArea,venuenumber:'',venueid:venueid })
   }
 
 
@@ -294,7 +297,8 @@ class orderPh extends React.Component {
   }
 
   submitVal = () => {
-    this.getReservationActivitieslist({ page: 1, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start, enddate: this.state.end })
+    this.getReservationActivitieslist({ page: 1, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start==='选择开始日期'?'':this.state.start, 
+    enddate: this.state.end==='选择结束日期'?'':this.state.end })
     this.setState({
       Drawervisible: false
     })
@@ -403,7 +407,6 @@ class orderPh extends React.Component {
       }
     } else if (e.currentTarget.dataset.type === '4') {
       this.VenueRemarksLabel({ uuid: e.currentTarget.dataset.uuid })
-
     } else {
       this.setState({ otherObj: '', menu: 2 })
     }
@@ -424,7 +427,6 @@ class orderPh extends React.Component {
   }
 
   noneBox = e => {
-
     this.setState({ value: e.currentTarget.dataset.num })
   }
 
@@ -447,6 +449,7 @@ class orderPh extends React.Component {
             <Col xs={{ span: 8, offset: 2 }} lg={{ span: 6, offset: 1 }}>时间</Col>
             <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 1 }}>状态</Col>
           </Row>
+          <div style={{width:'100%',height:'0.6rem',background:'rgb(245, 245, 245)'}}></div>
           <div className='contentT'>
             <div style={this.state.activeSon.length === 0 ? { display: 'none' } : { display: 'block' }}>
               {
@@ -467,7 +470,7 @@ class orderPh extends React.Component {
                       <Row>
                         <Col xs={{ span: 6, offset: 1 }} style={{ textAlign: 'left', height: '2rem', lineHeight: '2rem' }} lg={{ span: 6, offset: 2 }}><span style={{ height: '2rem', lineHeight: '2rem' }}>  时长</span>  {item.PlayTime}小时</Col>
                         <Col xs={{ span: 9, offset: 1 }} lg={{ span: 6, offset: 3 }}></Col>
-                        <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 2 }}><img onClick={this.showModal} data-uid={item.uuid} src={require('../../assets/sendingBtn.png')} alt="发消息" className={item.PublicStatus === '匹配中' ? 'sending' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'sending' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'sending' : 'circumstanceT'} /></Col>
+                        <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 2 }}><img onClick={this.showModal} data-venueid={item.venueid} data-uid={item.uuid} src={require('../../assets/sendingBtn.png')} alt="发消息" className={item.PublicStatus === '匹配中' ? 'sending' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'sending' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'sending' : 'circumstanceT'} /></Col>
                       </Row>
                     </div>
                   </Row>
@@ -488,7 +491,6 @@ class orderPh extends React.Component {
             onCancel={this.handleCancel}
           >
             <Radio.Group onChange={this.sendCheck} value={this.state.sendCheck}>
-              <Radio value={1}>预留场地</Radio>
               <Radio value={2}>未预留场地</Radio>
             </Radio.Group>
             <TextArea style={{ marginTop: '30px' }} className="sending" maxLength={200} onChange={this.textArea} rows={4} />
@@ -530,7 +532,6 @@ class orderPh extends React.Component {
             <div className='drawerInputOrder'>
               <span style={{ clear: 'both', display: 'block', marginTop: '1rem' }}>选择日期</span>
               <div style={{ width: '100%', height: '3rem', borderBottom: '0.06rem solid #f5f5f5' }}>
-
                 <DatePicker
                   mode="date"
                   extra="Optional"

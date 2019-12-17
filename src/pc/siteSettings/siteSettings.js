@@ -448,9 +448,7 @@ class siteSettings extends React.Component {
     this.getVenueFieldList({ sportid: sessionStorage.getItem('siteSettings'), page: page })
   }
 
-  loodScroll = (e) => {
-    console.log(66)
-  }
+
 
   render() {
     return (
@@ -486,13 +484,13 @@ class siteSettings extends React.Component {
                 this.state.list.map((item, i) => (
                   <Row key={i} className="rowList">
                     <Col xs={{ span: 2 }}>{item.sportname}</Col>
-                    <Col xs={{ span: 2 }}>{item.opendayname}</Col>
+                    <Col xs={{ span: 2 }}>{item.openday ===1? '周一' : '' || item.openday === 2 ? '周二' : '' || item.openday === 3 ? '周三' : '' || item.openday === 4 ? '周四' : '' || item.openday === 5 ? '周五' : '' || item.openday === 6 ? '周六' : '' || item.openday === 0 ? '周日' : ''}</Col>
                     <Col xs={{ span: 2 }}>{item.starttime}</Col>
                     <Col xs={{ span: 2 }}>{item.endtime}</Col>
                     <Col xs={{ span: 2 }}>{item.costperhour}</Col>
                     <Col xs={{ span: 2 }}>{item.maxtablecount}</Col>
                     <Col xs={{ span: 3 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
-                    <Col xs={{ span: 3 }}>{item.appointmenttime === null ? '' : item.appointmenttime/60 + '小时'}</Col>
+                    <Col xs={{ span: 3 }}>{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</Col>
                     <Col xs={{ span: 2, offset: 3 }}>
                       <img onClick={this.update} data-uid={item.uid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;
                       <Popconfirm
@@ -603,11 +601,11 @@ class siteSettings extends React.Component {
                         && this.state.appointmenttime === 180 ? '3小时' : []
                           && this.state.appointmenttime === 240 ? '4小时' : []
                             && this.state.appointmenttime === 300 ? '5小时' : []
-                            && this.state.appointmenttime === 360 ? '6小时' : []
-                            && this.state.appointmenttime === 1140 ? '24小时' : []
-                            && this.state.appointmenttime === 2880 ? '48小时' : []
-                            && this.state.appointmenttime === 4320 ? '72小时' : []
-                          }
+                              && this.state.appointmenttime === 360 ? '6小时' : []
+                                && this.state.appointmenttime === 1140 ? '24小时' : []
+                                  && this.state.appointmenttime === 2880 ? '48小时' : []
+                                    && this.state.appointmenttime === 4320 ? '72小时' : []
+              }
               style={{ width: 249 }}
               onChange={this.handleChangeFive}
             >

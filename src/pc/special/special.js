@@ -110,12 +110,12 @@ class special extends React.Component {
     const res = await getVenueSpecialList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       if (this.state.siteEditor === 0) {
-        if(res.data.data.length>0){
+        if (res.data.data.length > 0) {
           this.setState({ list: res.data.data, other: res.data.other, loading: false, hidden: true })
-        }else{
+        } else {
           this.setState({ list: res.data.data, other: res.data.other, loading: false, hidden: false })
         }
-        
+
       } else {
         let day = ''
         switch (res.data.data[0].sportname) {
@@ -157,7 +157,7 @@ class special extends React.Component {
           starttime: res.data.data[0].starttime.slice(0, 5), endtime: res.data.data[0].endtime.slice(0, 5),
           costperhour: res.data.data[0].money, minNum: res.data.data[0].venueid.split(',')[0], maxNum: res.data.data[0].venueid.split(',')[res.data.data[0].venueid.split(',').length - 1]
         })
-       
+
       }
     } else {
       if (this.state.siteEditor === 0) {
@@ -224,13 +224,13 @@ class special extends React.Component {
   handleOk = e => {
     this.setState({
       visible: false,
-    });
-  };
+    })
+  }
 
   handleCancel = e => {
     if (this.state.siteEditor === 1) {
       this.setState({
-        uuid:'',
+        uuid: '',
         openday: [], starttime: [], endtime: [], costperhour: '', minNum: 1, maxNum: 1, runId: []
       })
     }
@@ -356,7 +356,7 @@ class special extends React.Component {
     this.getVenueSpecialSave(data)
   }
 
-  updata = (e) => { 
+  updata = (e) => {
     this.setState({ visible: true, siteEditor: 1, })
     this.getVenueSpecialList({ uuid: e.target.dataset.uid })
   }
@@ -378,23 +378,23 @@ class special extends React.Component {
     this.getVenueSpecialList({ sportid: sessionStorage.getItem('preferential'), page: this.state.page })
   }
   minNum = e => {
-    if(this.state.runId.length!==0){
+    if (this.state.runId.length !== 0) {
       this.setState({ minNum: e })
-    }else{
+    } else {
       message.warning('选择运动项目')
     }
   }
   maxNum = e => {
-    if(this.state.runId.length!==0){
+    if (this.state.runId.length !== 0) {
       this.setState({ maxNum: e })
-    }else{
+    } else {
       message.warning('选择运动项目')
     }
   }
 
   current = (page, pageSize) => {
     this.setState({ page: page })
-    this.getVenueSpecialList({ sportid: sessionStorage.getItem('siteSettings'), page: page })
+    this.getVenueSpecialList({ sportid: sessionStorage.getItem('preferential'), page: page })
   }
   render() {
     return (
@@ -419,9 +419,9 @@ class special extends React.Component {
           <div className={this.state.hidden === true ? 'siteList' : 'hidden'} >
             <Row className="rowConten">
               <Col xs={{ span: 2 }}>运动项目</Col>
+              <Col xs={{ span: 4 }}>节假日/工作日</Col>
               <Col xs={{ span: 2 }}>开始时间</Col>
               <Col xs={{ span: 2 }}>结束时间</Col>
-              <Col xs={{ span: 4 }}>节假日/工作日</Col>
               <Col xs={{ span: 3 }}>价格(元/时)</Col>
               <Col xs={{ span: 7 }}>场地号</Col>
               <Col xs={{ span: 2 }}>操作</Col>
@@ -432,18 +432,18 @@ class special extends React.Component {
                 this.state.list.map((item, i) => (
                   <Row key={i} className="rowList">
                     <Col xs={{ span: 2 }}>{item.sportname}</Col>
-                    <Col xs={{ span: 2 }}>{item.starttime.slice(0,5)}</Col>
-                    <Col xs={{ span: 2 }}>{item.endtime.slice(0,5)}</Col>
                     <Col xs={{ span: 4 }}>{item.openday === 0 ? ['周日'] : '' || item.openday === 1 ? ['周一'] : '' || item.openday === 2 ? ['周二'] : '' || item.openday === 3 ? ['周三'] : '' || item.openday === 4 ? ['周四'] : '' || item.openday === 5 ? ['周五'] : '' || item.openday === 6 ? ['周六'] : ''}</Col>
+                    <Col xs={{ span: 2 }}>{item.starttime.slice(0, 5)}</Col>
+                    <Col xs={{ span: 2 }}>{item.endtime.slice(0, 5)}</Col>
                     <Col xs={{ span: 3 }}>{item.money + '元'}</Col>
-                    <Col xs={{ span: 7 }}>{item.venueid.length>=2?item.venueid.split(',')[0]+'~'+item.venueid.split(',')[item.venueid.split(',').length-1]:item.venueid}</Col>
+                    <Col xs={{ span: 7 }}>{item.venueid.length >= 2 ? item.venueid.split(',')[0] + '~' + item.venueid.split(',')[item.venueid.split(',').length - 1] : item.venueid}</Col>
                     <Col className="updata" xs={{ span: 2 }}><img onClick={this.updata} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;&nbsp;<img data-uid={item.uuid} onClick={this.delet} src={require("../../assets/icon_pc_delet.png")} alt="删除" /></Col>
                   </Row>
                 ))
               }
             </div>
           </div>
-          <Pagination className={this.state.hidden === true ? 'fenye' : 'hidden'} defaultCurrent={1} total={this.state.other === '' ? this.state.list.length : null} onChange={this.current} />
+          <Pagination className={this.state.hidden === true ? 'fenye' : 'hidden'} defaultCurrent={1} total={this.state.other === '' ? this.state.list.length : this.state.other} onChange={this.current} />
           <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<Icon type="gift" theme="twoTone" twoToneColor="#F5A623" />} title="您还没有设置特殊场地" />
         </Spin>
 

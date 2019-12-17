@@ -169,3 +169,8 @@
 .register .ant-input{
 	height: 2.5rem;
 }
+
+.ant-btn-sm{
+	height: 30px;
+	padding: 0 18px;
+}

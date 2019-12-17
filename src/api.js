@@ -301,6 +301,13 @@ export function getVenueNumberTitleSave(data,headers){    // 场地号标题的�
     return axios.post('/api/getVenueNumberTitleSave',data, {headers: {'token': headers}})
 }
 
+export function VenueNewsOneKeyRead(data,headers){    // 消息中心一键已读功能 
+    return axios.post('/api/VenueNewsOneKeyRead',data, {headers: {'token': headers}})
+}
+
+
+
+
 
 
 

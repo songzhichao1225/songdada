@@ -46,17 +46,13 @@ class withdrawalPh extends React.Component {
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       Toast.fail('登录超时请重新登录', 1);
-
-
-    } else if (res.data.code !== 4001 && res.data.data !== 2000) {
+    } else if (res.data.code !== 4001 && res.data.code !== 2000) {
       Toast.fail(res.data.msg, 1);
-
     } else {
       Toast.success('提现成功', 1);
-
       setTimeout(() => {
         this.props.history.goBack()
-      }, 1000)
+      }, 2000)
     }
   }
   comfirm = () => {
@@ -88,7 +84,6 @@ class withdrawalPh extends React.Component {
             <span>提现时间 每月1号、15号</span>
             <div className="all" onClick={this.all}>全部提现</div>
           </div>
-
         </div>
         <div className="btnMoney" onClick={this.comfirm}>确认提现</div>
 

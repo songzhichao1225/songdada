@@ -17,6 +17,25 @@ const plainOptions = [
   { label: '高尔夫球', value: '8' }
 ];
 
+const plainOptionsTwo = [
+  { label: '中式黑八', value: '1' },
+  { label: '美式九球', value: '2' },
+  { label: '斯诺克', value: '3' }
+]
+
+const plainOptionsThree = [
+  { label: '11人制', value: '13' },
+  { label: '8人制', value: '14' },
+  { label: '7人制', value: '15' },
+  { label: '5人制', value: '16' },
+]
+
+const plainOptionsFour = [
+  { label: '小洞', value: '25' },
+  { label: '中洞', value: '26' },
+  { label: '大洞', value: '27' }
+]
+
 const options = [{ label: 'WiFi', value: '1' }, { label: '停车场', value: '2' }, { label: '淋浴', value: '3' }]
 
 
@@ -94,7 +113,8 @@ class stadiums extends React.Component {
     province_id: '',//省Id
     city_id: '',//市id
     backList: [],//获取的银行
-    upData: true
+    upData: true,
+    CorporateName: '',
   };
 
   async getVenueInformation(data) {
@@ -177,7 +197,7 @@ class stadiums extends React.Component {
         imageUrlTwo: corporate.legalBaseURL + '/' + cardImg[0], imageUrlThree: corporate.legalBaseURL + '/' + cardImg[1],
         baseImg: corporate.legalBaseURL,
         imgFile: cardImg[0], imgFileTwo: cardImg[1],
-        corporateName: corporate.legalname, corporateId: corporate.legalcard, corporatePhone: corporate.legalphone,
+        corporateName: corporate.legalname, corporateId: corporate.legalcard, corporatePhone: corporate.legalphone, CorporateName: corporate.CorporateName,
         numRadio: corporate.Settlement, corporateCardId: corporate.Bankaccount, corporateOpen: corporate.OpeningBank, lisenceURL: corporate.lisenceURL
       })
     }
@@ -187,13 +207,13 @@ class stadiums extends React.Component {
 
   handleChange = info => {
     if (info.file.status === 'uploading') {
-      this.setState({ loading: true });
-      return;
+      this.setState({ loading: true })
+      return
     }
     if (info.file.status === 'done') {
       this.setState({ imageUrl: info.file.response.data.baseURL + info.file.response.data.filesURL, loading: false })
     }
-  };
+  }
 
 
 
@@ -238,6 +258,19 @@ class stadiums extends React.Component {
   onChangeCheck = e => {
     this.setState({ sport: e })
   }
+
+  onChangeCheckTwo = e => {
+    this.setState({ onChangeCheckTwo: e })
+    sessionStorage.setItem('onChangeCheckTwo', e)
+  }
+  onChangeCheckThree = e => {
+    this.setState({ onChangeCheckThree: e })
+    sessionStorage.setItem('onChangeCheckThree', e)
+  }
+  onChangeCheckFour = e => {
+    this.setState({ onChangeCheckFour: e })
+    sessionStorage.setItem('onChangeCheckFour', e)
+  }
   onChangeSite = e => {
     this.setState({ facilities: e })
   }
@@ -267,7 +300,7 @@ class stadiums extends React.Component {
   }
 
   confirm = () => {
-    let { informationList, name, handleAddress, contacts, contactNumber, fileList, adddress, imageUrl, sport, facilities, siteInfo, comment } = this.state
+    let { informationList, name, handleAddress, contacts, contactNumber, fileList, adddress, imageUrl, sport, facilities, siteInfo, comment, CorporateName } = this.state
     let filesURLarr = []
     for (let i in fileList) {
       if (fileList[i].response !== undefined) {
@@ -291,6 +324,7 @@ class stadiums extends React.Component {
         siteInfo: siteInfo,
         position: adddress,
         comment: comment,
+        CorporateName: CorporateName,
         type: 2
       }
       this.VenueInformationSave(data)
@@ -311,8 +345,8 @@ class stadiums extends React.Component {
 
   handleChangeTwo = info => {
     if (info.file.status === 'uploading') {
-      this.setState({ loading: true });
-      return;
+      this.setState({ loading: true })
+      return
     }
     if (info.file.status === 'done') {
       this.setState({ zuo: 1, imageUrlTwo: info.file.response.data.baseURL + info.file.response.data.filesURL, imgHood: info.file.response.data.baseURL, loading: false, imgFile: info.file.response.data.filesURL })
@@ -327,7 +361,8 @@ class stadiums extends React.Component {
     if (info.file.status === 'done') {
       this.setState({ zuo: 1, imageUrlThree: info.file.response.data.baseURL + info.file.response.data.filesURL, imgHoodTwo: info.file.response.data.baseURL, loading: false, imgFileTwo: info.file.response.data.filesURL })
     }
-  };
+  }
+
 
 
   corporateName = e => {
@@ -347,6 +382,7 @@ class stadiums extends React.Component {
   }
 
 
+  
   async VenueQualificationInformationSave(data) {
     const res = await VenueQualificationInformationSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
@@ -357,8 +393,8 @@ class stadiums extends React.Component {
     } else {
       message.error(res.data.msg)
     }
-
   }
+
   ziSubmit = () => {
     let { zuo, imgHoodTwo, imgHood, baseImg, lisenceURL, corporateName, corporateId, corporatePhone, numRadio, corporateCardId, corporateOpen, imgFile, imgFileTwo } = this.state
     let data = {
@@ -371,7 +407,7 @@ class stadiums extends React.Component {
       lisenceURL: lisenceURL,
       legalBaseURL: baseImg,
       legalFilesURL: imgFile + '|' + imgFileTwo,
-      type:2
+      type: 2
     }
     if (zuo === 1) {
       if (imgHood === '') {
@@ -404,6 +440,10 @@ class stadiums extends React.Component {
 
   handleSearch = e => {
     this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
+  }
+
+  CorporateName = e => {
+    this.setState({ CorporateName: e.target.value })
   }
 
 
@@ -512,6 +552,22 @@ class stadiums extends React.Component {
             <Checkbox.Group options={plainOptions} value={this.state.sport} onChange={this.onChangeCheck} /><br /><span className="kong"></span>
           </div>
 
+          <div className="name" style={this.state.sport.indexOf('3') !== -1 ? { display: 'block' } : { display: 'none' }}>
+          <span className="boTitle">台球分类:</span><span className="kong"></span>
+            <Checkbox.Group options={plainOptionsTwo} onChange={this.onChangeCheckTwo} value={this.state.onChangeCheckTwo} /><br /><span className="kong"></span>
+          </div>
+
+          <div className="name" style={this.state.sport.indexOf('5') !== -1 ? { display: 'block' } : { display: 'none' }}>
+          <span className="boTitle">足球分类:</span><span className="kong"></span>
+            <Checkbox.Group options={plainOptionsThree} onChange={this.onChangeCheckThree} value={this.state.onChangeCheckThree} /><br /><span className="kong"></span>
+          </div>
+
+          <div className="name" style={this.state.sport.indexOf('8') !== -1 ? { display: 'block' } : { display: 'none' }}>
+          <span className="boTitle">高尔夫分类:</span><span className="kong"></span>
+            <Checkbox.Group options={plainOptionsFour} onChange={this.onChangeCheckFour} value={this.state.onChangeCheckFour} /><br /><span className="kong"></span>
+          </div>
+
+
           <div className="name">
             <span className="boTitle">场地设施:</span><span className="kong"></span>
             <Checkbox.Group options={options} value={this.state.facilities} onChange={this.onChangeSite} />
@@ -525,7 +581,8 @@ class stadiums extends React.Component {
             <span className="boTitle">其他:</span><span className="kong"></span>
             <TextArea className="textarea" maxLength={200} value={this.state.comment} placeholder="请输入场地其他介绍，如比赛、特色等。" onChange={this.onChangeTextTwo} rows={2} />
           </div>
-          
+
+
 
           <Popconfirm
             title="您确定本次修改吗?"
@@ -574,7 +631,6 @@ class stadiums extends React.Component {
             >
               {imageUrlThree ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrlThree} alt="avatar" style={{ width: '100%' }} /> : uploadButtonThree}
             </Upload>
-
           </div>
 
           <div className="listing">
@@ -585,7 +641,7 @@ class stadiums extends React.Component {
             <span>法人身份证号:</span>
             <Input className="listingInput" value={this.state.corporateId} onChange={this.corporateId} />
           </div>
-          
+
           <div className="listing">
             <span>法人手机号:</span>
             <Input className="listingInput" value={this.state.corporatePhone} onChange={this.corporatePhone} />
@@ -597,6 +653,11 @@ class stadiums extends React.Component {
               <Radio value={0}>公司银行账号</Radio>
               <Radio value={1}>法人账号</Radio>
             </Radio.Group>
+          </div>
+
+          <div className="listing" style={this.state.numRadio === 0 ? { display: 'block' } : { display: 'none' }}>
+            <span>公司名称:</span>
+            <Input className="listingInput" value={this.state.CorporateName} onChange={this.CorporateName} />
           </div>
 
           <div className="listing">

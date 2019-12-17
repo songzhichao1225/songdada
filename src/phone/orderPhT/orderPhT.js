@@ -1,10 +1,10 @@
 import React from 'react';
 import './orderPhT.css';
 
-import { DatePicker,Toast } from 'antd-mobile';
+import { DatePicker, Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Row, Col, Pagination, Modal, Radio, Input, Drawer, Result, Icon, Spin } from 'antd';
-import { getReservationActivitieslist, VenueSendMessage, getVenueReservationss, getVenueSport, VenueClickCancelPlace } from '../../api';
+import { getReservationActivitieslist, VenueSendMessage, getVenueReservationss, getVenueSport, VenueClickCancelPlace, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
 
 import moment from 'moment';
 import zh_CN from 'antd/es/date-picker/locale/zh_CN'
@@ -56,6 +56,7 @@ class orderPhT extends React.Component {
       { name: '待确认结束/待填写结果', id: 4 },
       { name: '待评价', id: 6 },
       { name: '已完成', id: 5 },
+      {name:'已取消',id:7}
     ],
     page: 0,
     clenTop: 0,
@@ -69,18 +70,66 @@ class orderPhT extends React.Component {
     qiDate: '',
     qiStart: '',
     qiEnd: '',
+
+
+    placeName: '',
+    placePhone: '',
+    placeHui: '',
+    placeQi: '',
+    nownum: '',
+    nowtime: '',
+    lotime: [],
+    tooltip: false,
+    otherObj: '',
+    menu: 2,
+    topNumList: [],
+    venueid:'',
   };
+
+
+  async getVenueNumberTitleList(data) {
+    const res = await getVenueNumberTitleList(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ topNumList: res.data.data })
+      this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.dateString, types: 1 })
+    }
+  }
 
 
 
   async getVenueReservationss(data) {
     const res = await getVenueReservationss(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c })
-    } else {
+      for (let j in this.state.topNumList) {
+        res.data.data[0].c[this.state.topNumList[j].venueid - 1].title = this.state.topNumList[j].title
+        res.data.data[0].c[this.state.topNumList[j].venueid - 1].uuid = this.state.topNumList[j].uuid
+      }
+
+      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c, value: 'l' })
+      if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 24) {
+        if (res.data.data[res.data.data.length - 1].a.slice(-2) === '00') {
+
+          if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 10) {
+            this.setState({ lastTime: '0' + (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2))) + ':30' })
+          } else {
+            this.setState({ lastTime: parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + ':30' })
+          }
+        } else if (res.data.data[res.data.data.length - 1].a.slice(-2) === '30') {
+          if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1 < 10) {
+            this.setState({ lastTime: '0' + (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1) + ':00' })
+          } else {
+            this.setState({ lastTime: parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1 + ':00' })
+          }
+        }
+      }
+    } else if (res.data.code === 4005) {
+      this.setState({ lookList: res.data.data })
+    } else if (res.data.code === 4003) {
       this.setState({ lookList: [] })
     }
   }
+
+
   async getReservationActivitieslist(data) {
     const res = await getReservationActivitieslist(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
@@ -101,6 +150,7 @@ class orderPhT extends React.Component {
     if (res.data.code === 2000) {
       if (res.data.data.length > 0) {
         this.setState({ remList: res.data.data, liNum: res.data.data[0].id })
+        this.getVenueNumberTitleList({ sportid: res.data.data[0].id })
       }
 
     }
@@ -110,7 +160,6 @@ class orderPhT extends React.Component {
     this.setState({ dataString: new Date().toLocaleDateString().replace(/\//g, "-"), nowDate: new Date().toLocaleDateString().replace(/\//g, "-") })
     this.getVenueReservationss({ sportid: 1, date: new Date().toLocaleDateString().replace(/\//g, "-"), types: 1 })
     this.getVenueSport()
-
     if (this.props.location.query !== undefined) {
       if (this.props.location.query.time === 1) {
         let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
@@ -167,13 +216,15 @@ class orderPhT extends React.Component {
   }
   current = (page, pageSize) => {
     this.setState({ page: page })
-    this.getReservationActivitieslist({ page: page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start, enddate: this.state.end })
+    this.getReservationActivitieslist({ page: page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', 
+    startdate: this.state.start==='选择开始日期'?'':this.state.start, enddate: this.state.end==='选择结束日期'?'':this.state.end })
   }
 
   showModal = (e) => {
     this.setState({
       visible: true,
-      publicUUID: e.currentTarget.dataset.uid
+      publicUUID: e.currentTarget.dataset.uid,
+      venueid:e.currentTarget.dataset.venueid
     });
   };
 
@@ -200,12 +251,13 @@ class orderPhT extends React.Component {
     if (res.data.code === 2000) {
       Toast.success(res.data.msg, 1);
       this.setState({ visible: false })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start, enddate: this.state.end })
     }
   }
 
   sendingMessage = e => {
-    let { publicUUID, sendCheck, textArea } = this.state
-    this.VenueSendMessage({ type: sendCheck, publicUUID: publicUUID, content: textArea })
+    let { publicUUID, sendCheck, textArea,venueid } = this.state
+    this.VenueSendMessage({ type: sendCheck, publicUUID: publicUUID, content: textArea,venuenumber:'',venueid:venueid })
   }
 
 
@@ -243,7 +295,8 @@ class orderPhT extends React.Component {
   }
 
   submitVal = () => {
-    this.getReservationActivitieslist({ page: 1, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start, enddate: this.state.end })
+    this.getReservationActivitieslist({ page: 1, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start==='选择开始日期'?'':this.state.start, 
+    enddate: this.state.end==='选择结束日期'?'':this.state.end })
     this.setState({
       Drawervisible: false
     })
@@ -259,10 +312,15 @@ class orderPhT extends React.Component {
   }
 
   async VenueClickCancelPlace(data) {
-    const res = await VenueClickCancelPlace(data, localStorage.getItem('venue_token'))
+    const res = await VenueClickCancelPlace(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.dataString, types: 1 })
-      Toast.success(res.data.msg, 1);
+      this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.dateString, types: 1 })
+      if (data.type === 1) {
+        Toast.fail('该场地该时间段已标记为线下占用', 1);
+      } else if (data.type === 2) {
+        Toast.fail('该场地该时间段已向找对手线上释放', 1);
+      }
+      this.setState({ info: false, lotime: [] })
     } else {
       Toast.fail('操作失败', 1);
     }
@@ -270,17 +328,31 @@ class orderPhT extends React.Component {
 
   lookPlate = e => {
     let time = e.currentTarget.dataset.time
+    let uuid = e.currentTarget.dataset.uuid
+    let lotime = e.currentTarget.dataset.lo
+    let num = e.currentTarget.dataset.num
     if (e.currentTarget.dataset.type !== '3' && e.currentTarget.dataset.type !== '2') {
       if (e.currentTarget.dataset.type === '1') {
-        this.VenueClickCancelPlace({ date: this.state.dataString, time: time, sportid: this.state.liNum, type: e.currentTarget.dataset.type })
+        if (this.state.lotime.length > 0) {
+          if (this.state.lotime.indexOf(lotime) !== -1) {
+            this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
+          } else {
+            this.setState({ lotime: [...this.state.lotime, lotime] })
+          }
+        } else {
+          this.setState({ lotime: [...this.state.lotime, lotime] })
+        }
+
       } else if (e.currentTarget.dataset.type === '4') {
-        this.VenueClickCancelPlace({ date: this.state.dataString, time: time, sportid: this.state.liNum, type: 2 })
+        this.VenueClickCancelPlace({ date: this.state.dateString, uuid: uuid, time: time, venueid: num, sportid: this.state.liNum, other: '', type: 2 })
       }
-    } else if (e.currentTarget.dataset.type === '3') {
+    } else if (e.currentTarget.dataset.type === "3") {
       this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: '' })
       this.setState({ informVisible: true })
     }
   }
+
+
 
   scroll = () => {
     let scrollTop = this.scrollRef.scrollTop;
@@ -291,6 +363,7 @@ class orderPhT extends React.Component {
   touClick = (e) => {
     this.setState({ clickY: e.targetTouches[0].clientY })
   }
+
   touMove = (e) => {
     if (this.state.clickY < e.targetTouches[0].clientY && this.state.clickY < 130) {
       this.setState({ moveY: e.targetTouches[0].clientY })
@@ -313,6 +386,50 @@ class orderPhT extends React.Component {
     let monut = parseInt(vals[1]) + 1
     this.setState({ nowDate: vals[0] + '-' + monut + '-' + vals[2] })
   }
+
+
+
+  menu = (e) => {
+    if (e.currentTarget.dataset.type === '1') {
+      this.setState({ otherObj: '', menu: 2 })
+      if (this.state.lotime.length !== 0) {
+        let num = ''
+        let time = ''
+        for (let i in this.state.lotime) {
+          num += this.state.lotime[i].split('-')[1] + ','
+          time += this.state.lotime[i].split('-')[0] + ','
+        }
+        this.setState({ info: true, num: num, time: time })
+      } else {
+        Toast.fail('请选择场地', 1);
+      }
+    } else if (e.currentTarget.dataset.type === '4') {
+      this.VenueRemarksLabel({ uuid: e.currentTarget.dataset.uuid })
+
+    } else {
+      this.setState({ otherObj: '', menu: 2 })
+    }
+
+  }
+
+  async getVenueNumberTitleSave(data) {
+    const res = await getVenueNumberTitleSave(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      Toast.fail(res.data.msg, 1);
+      this.getVenueNumberTitleList({ sportid: this.state.liNum })
+    }
+  }
+
+  tilBlur = e => {
+    this.getVenueNumberTitleSave({ sportid: this.state.liNum, veneuid: e.currentTarget.dataset.num, title: e.target.value, uuid: e.currentTarget.dataset.uuid })
+    this.setState({ value: 'l' })
+  }
+
+  noneBox = e => {
+
+    this.setState({ value: e.currentTarget.dataset.num })
+  }
+
 
   render() {
     return (
@@ -352,7 +469,7 @@ class orderPhT extends React.Component {
                       <Row>
                         <Col xs={{ span: 6, offset: 1 }} style={{ textAlign: 'left', height: '2rem', lineHeight: '2rem' }} lg={{ span: 6, offset: 2 }}><span style={{ height: '2rem', lineHeight: '2rem' }}>  时长</span>  {item.PlayTime}小时</Col>
                         <Col xs={{ span: 9, offset: 1 }} lg={{ span: 6, offset: 3 }}></Col>
-                        <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 2 }}><img onClick={this.showModal} data-uid={item.uuid} src={require('../../assets/sendingBtn.png')} alt="发消息" className={item.PublicStatus === '匹配中' ? 'sending' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'sending' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'sending' : 'circumstanceT'} /></Col>
+                        <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 2 }}><img onClick={this.showModal} data-venueid={item.venueid} data-uid={item.uuid} src={require('../../assets/sendingBtn.png')} alt="发消息" className={item.PublicStatus === '匹配中' ? 'sending' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'sending' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'sending' : 'circumstanceT'} /></Col>
                       </Row>
                     </div>
                   </Row>
@@ -365,6 +482,7 @@ class orderPhT extends React.Component {
           </div>
 
 
+
           <Modal
             title="发消息"
             visible={this.state.visible}
@@ -372,7 +490,6 @@ class orderPhT extends React.Component {
             onCancel={this.handleCancel}
           >
             <Radio.Group onChange={this.sendCheck} value={this.state.sendCheck}>
-              <Radio value={1}>预留场地</Radio>
               <Radio value={2}>未预留场地</Radio>
             </Radio.Group>
             <TextArea style={{ marginTop: '30px' }} className="sending" maxLength={200} onChange={this.textArea} rows={4} />
@@ -382,6 +499,8 @@ class orderPhT extends React.Component {
               <div onClick={this.sendingMessage}>发送</div>
             </div>
           </Modal>
+
+
 
           <Drawer
             title="筛选活动列表"
@@ -446,6 +565,8 @@ class orderPhT extends React.Component {
           </Drawer>
         </div>
 
+
+
         <div className={this.state.activityList === false ? 'bookingKanban' : 'hidden'}>
           <div className="modTitle">
             <span className="blue"></span><span>空闲</span><span className="white"></span><span>不可选</span><span className="yellow"></span><span>已占用</span><span className="red"></span><span>场地取消</span>
@@ -456,28 +577,45 @@ class orderPhT extends React.Component {
                 <div key={i} data-id={item.id} data-index={i} onClick={this.sportName} style={parseInt(this.state.liIndex) === i ? { borderBottom: '0.06rem solid #D85D27', color: '#D85D27' } : {}}>{item.name}</div>
               ))
             }
-
-
           </div>
           <div className="lookList" onScrollCapture={this.scroll} ref={c => { this.scrollRef = c }} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block' }}>
-            <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 3.25 + 'rem' }}>
+            <div className="headerSon" style={{ width:'' + (this.state.macNum.length + 1) * 3.25 + 'rem' }}>
               <div className="topFixd" style={{ top: this.state.top, minWidth: '100%' }}>
                 <span></span>
                 {
                   this.state.macNum.map((item, i) => (
-                    <span key={i}>{i + 1}</span>
+                    <span key={i}>{i + 1}
+                      <div className="boxBoss" style={{ position: 'relative', width: '100%', height: '26px' }}>
+                        <Input style={{ height: '26px', padding: '0', width: '100%', textAlign: 'center', fontSize: '8px', border: '0.06rem solid #ccc' }} data-uuid={item.uuid} onChange={this.tilChange} data-num={i + 1} onBlur={this.tilBlur} maxLength={5} placeholder="点击输入" />
+                        <div className="plokjh" onClick={this.noneBox} data-num={i + 1} style={parseInt(this.state.value) === parseInt(i + 1) ? { display: 'none' } : { fontSize: '10px' }}>{item.title}</div>
+                      </div>
+                    </span>
                   ))
                 }
               </div>
-              <div style={{ height: 50 }}></div>
+              <div style={{ height: 80 }}></div>
               {
                 this.state.lookList.map((index, i) => (
                   <div key={i} className="sonList">
-                    <span style={{ left: this.state.left }}>{index.a}</span>
+                    <span style={{ left: this.state.left }}>{index.a}<br />{i === this.state.lookList.length - 1 ? this.state.lastTime : ''}</span>
                     <span></span>
                     {
                       this.state.lookList[i].c.map((item, i) => (
-                        <span key={i} data-time={index.a} data-num={i + 1} data-uuid={item.uuid} data-type={item.type} onClick={this.lookPlate} style={item.type === 1 ? { background: '#6FB2FF', marginTop: '0.12rem' } : {} && item.type === 2 ? { background: '#E9E9E9', marginTop: '0.12rem' } : {} && item.type === 3 ? { background: '#F5A623', marginTop: '0.12rem' } : {} && item.type === 4 ? { background: 'red', marginTop: '0.12rem' } : {}}></span>
+                        <span
+                          className='spanFa'
+                          key={i}
+                          data-time={index.a}
+                          data-num={i + 1}
+                          data-uuid={item.uuid}
+                          data-type={item.type}
+                          onClick={this.lookPlate}
+                          onContextMenu={this.menu}
+                          data-lo={index.a + '-' + (i + 1)}
+                          style={item.type === 1 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 2 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff', opacity: '.3' } : {} && item.type === 3 ? { background: '#F5A623', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 4 ? { background: 'red', marginTop: '0.12rem', color: '#fff' } : {}}
+                        >
+                          {this.state.lotime.indexOf(index.a + '-' + (i + 1)) !== -1 ? <Icon type="check" /> : ''}
+                          {item.type === 1 ? item.money : ''}
+                        </span>
                       ))
                     }
                   </div>
@@ -494,10 +632,8 @@ class orderPhT extends React.Component {
             locale={zh_CN}
             value={this.state.qiDate}
           >
-            <div className="dateT">{this.state.dataString}</div>
+          <div className="dateT">{this.state.dataString}</div>
           </DatePicker>
-
-
 
           <Result style={{ fontSize: '0.75rem' }} className={this.state.lookList.length === 0 ? '' : 'hidden'} icon={<Icon type="reconciliation" style={{ fontSize: '2rem' }} theme="twoTone" twoToneColor="#F5A623" />} title="没有预约情况" />
           <Drawer

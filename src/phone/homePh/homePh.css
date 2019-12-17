@@ -70,7 +70,7 @@
   margin: 0.5rem auto 0;
   background-image: url('../../assets/one.png');
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: cover;
 }
 .homePagePh .homeScroll>div:nth-child(2){
   width: 90%;
@@ -78,7 +78,7 @@
   margin: 0.5rem auto 0;
   background-image: url('../../assets/two.png');
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: cover;
 }
 .homePagePh .homeScroll>div:nth-child(3){
   width: 90%;
@@ -86,7 +86,7 @@
   margin: 0.5rem auto 0;
   background-image: url('../../assets/three.png');
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: cover;
 }
 .homePagePh .homeScroll>div:nth-child(4){
   width: 90%;
@@ -94,7 +94,7 @@
   margin: 0.5rem auto 0;
   background-image: url('../../assets/four.png');
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: cover;
 }
 .homePagePh .homeScroll>div:nth-child(5){
   width: 90%;
@@ -102,7 +102,7 @@
   margin: 0.5rem auto 0;
   background-image: url('../../assets/five.png');
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: cover;
 }
 .homePagePh .homeScroll>div>.title{
   font-size:1rem;
