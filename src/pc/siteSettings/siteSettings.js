@@ -571,7 +571,7 @@ class siteSettings extends React.Component {
 
           <div className="modelList">
             <span>价格</span><span>（元/小时）</span>
-            <InputNumber className="startTime" value={this.state.costperhour} defaultValue={0} min={0} placeholder="请输入" onChange={this.money} />
+            <InputNumber className="startTime" value={this.state.costperhour} defaultValue={0} min={0} style={{paddingLeft:'10px'}} placeholder="请输入" onChange={this.money} />
           </div>
 
           <div className="modelList">

@@ -96,7 +96,7 @@ class loginPhTeo extends React.Component {
             <Input className="phone" autoFocus prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />}  onChange={this.phone} placeholder="用户名" />
           </div>
           <div className="name">
-            <Input.Password className="phone" prefix={<Icon type="unlock" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />}  onChange={this.pssword}  placeholder="请输入密码" />
+            <Input.Password maxLength={8} className="phone" prefix={<Icon type="unlock" className="inputIcon"  style={{ color: 'rgba(0,0,0,.25)' }} />}  onChange={this.pssword}  placeholder="请输入密码" />
             <span style={{color:'#D85D27'}} onClick={this.forgetPassword}>忘记密码</span>
           </div>
           <div className="loginBtn" onClick={this.submit}>登录</div>

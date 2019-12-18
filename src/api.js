@@ -305,6 +305,16 @@ export function VenueNewsOneKeyRead(data,headers){    // 消息中心一键已�
     return axios.post('/api/VenueNewsOneKeyRead',data, {headers: {'token': headers}})
 }
 
+export function getVenueSporttypelist(data,headers){    // ~场馆端（台球，足球，高尔夫）下的二级分类列表
+    return axios.post('/api/getVenueSporttypelist',data, {headers: {'token': headers}})
+}
+
+export function VenueNumberSporttypeSave(data,headers){    // 场馆端修改台球，足球，高尔夫下的分类
+    return axios.post('/api/VenueNumberSporttypeSave',data, {headers: {'token': headers}})
+}
+
+
+
 
 
 

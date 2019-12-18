@@ -346,3 +346,24 @@
 .antd-popover-open{
     width: 120px;
 }
+.inputAppList{
+    height: 26px;
+    padding: 0; 
+    text-align:center;
+    font-size: 8px;
+}
+.ant-select-selection__rendered{
+    margin:0;
+}
+.ant-select-no-arrow .ant-select-selection__rendered{
+    margin-right: 0;
+}
+.ant-select-selection--single .ant-select-selection__rendered{
+    margin-right: 0;
+}
+.ant-select-dropdown-menu-item{
+    padding: 0;
+}
+.ant-select-selection__placeholder, .ant-select-search__field__placeholder{
+    left: 9px;
+}

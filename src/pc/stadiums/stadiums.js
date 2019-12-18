@@ -134,11 +134,13 @@ class stadiums extends React.Component {
           lng: this.props.location.query.lng,
           informationList: res.data.data, name: res.data.data.name,
           contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, imageUrl: res.data.data.firstURL,
+          onChangeCheckTwo:res.data.data.sporttype.split('|')[0],onChangeCheckThree:res.data.data.sporttype.split('|')[1],onChangeCheckFour:res.data.data.sporttype.split('|')[2],
           fileList: arrImg, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
         })
       } else if (this.props.location.query === undefined || this.props.location.query.name === 'sunny') {
         this.setState({
           informationList: res.data.data, name: res.data.data.name, handleAddress: res.data.data.address,
+          onChangeCheckTwo:res.data.data.sporttype.split('|')[0],onChangeCheckThree:res.data.data.sporttype.split('|')[1],onChangeCheckFour:res.data.data.sporttype.split('|')[2],
           contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, adddress: res.data.data.position, imageUrl: res.data.data.firstURL,
           fileList: arrImg, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
         })
@@ -300,7 +302,7 @@ class stadiums extends React.Component {
   }
 
   confirm = () => {
-    let { informationList, name, handleAddress, contacts, contactNumber, fileList, adddress, imageUrl, sport, facilities, siteInfo, comment, CorporateName } = this.state
+    let { informationList, name, handleAddress, contacts, contactNumber,onChangeCheckTwo,onChangeCheckThree,onChangeCheckFour, fileList, adddress, imageUrl, sport, facilities, siteInfo, comment, CorporateName } = this.state
     let filesURLarr = []
     for (let i in fileList) {
       if (fileList[i].response !== undefined) {
@@ -325,6 +327,7 @@ class stadiums extends React.Component {
         position: adddress,
         comment: comment,
         CorporateName: CorporateName,
+        sporttype:onChangeCheckTwo+'|'+onChangeCheckThree+'|'+onChangeCheckFour,
         type: 2
       }
       this.VenueInformationSave(data)
@@ -568,6 +571,7 @@ class stadiums extends React.Component {
           </div>
 
 
+
           <div className="name">
             <span className="boTitle">场地设施:</span><span className="kong"></span>
             <Checkbox.Group options={options} value={this.state.facilities} onChange={this.onChangeSite} />
@@ -699,7 +703,7 @@ class stadiums extends React.Component {
               onSearch={this.handleSearch}
               onChange={this.corporateOpen}
               defaultActiveFirstOption={false}
-              showArrow={false}
+              showArrow={false} 
               notFoundContent={null}
               disabled={this.state.upData}
               value={this.state.corporateOpen}
@@ -727,7 +731,7 @@ class stadiums extends React.Component {
           </Popconfirm>
           <Button className="submit" style={this.state.issecondaudit === 0 ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
         </div>
-      </div >
+      </div>
     );
   }
 }

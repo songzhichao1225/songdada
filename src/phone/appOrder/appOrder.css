@@ -121,8 +121,8 @@
     z-index: 10;
     background: #fff;
 }
-.appOrder .bookingKanban .lookList .headerSon .topFixd>span{
-    width:3.13rem;
+.appOrder .bookingKanban .lookList .headerSon .topFixd>div>span{
+    width:4.13rem;
     height:1rem; 
     display: block;
     margin-left: 0.12rem;
@@ -135,7 +135,7 @@
     position: relative;
 }
 .appOrder .bookingKanban .lookList .sonList>span{
-    width:3.13rem;
+    width:4.13rem;
     height:1.88rem; 
     display: block;
     margin-left: 0.12rem;

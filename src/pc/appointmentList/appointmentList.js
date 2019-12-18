@@ -2,7 +2,7 @@ import React from 'react';
 import './appointmentList.css';
 import 'antd/dist/antd.css';
 import { Input, Button, Row, Col, Select, Pagination, Spin, message, Result, Icon, DatePicker, Modal, Radio, Drawer, InputNumber, Popover } from 'antd';
-import { getReservationActivitieslist, getVenueReservationss, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
+import { getReservationActivitieslist, getVenueReservationss, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord,VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -70,6 +70,9 @@ class appointmentList extends React.Component {
     uuidClick: '',
     spinningTwo: true,
     visibleTwo: false,
+    tilValue: '',
+    activityNavTwo: [],
+    otherType:[],
   };
 
   async getVenueSport(data) {
@@ -79,12 +82,25 @@ class appointmentList extends React.Component {
       message.error('登陆超时请重新登陆！')
     } else if (res.data.code === 2000) {
       this.setState({ activityNav: res.data.data, liNum: res.data.data[0].id })
-
       this.getVenueNumberTitleList({ sportid: res.data.data[0].id })
     }
   }
 
 
+
+  async getVenueSporttypelist(data) {
+    const res = await getVenueSporttypelist(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ activityNavTwo: res.data.data })
+
+    }
+  }
+
+
+  async VenueNumberSporttypeSave(data) {
+     await VenueNumberSporttypeSave(data, sessionStorage.getItem('venue_token'))
+  }
+  
 
 
   async getVenueNumberTitleList(data) {
@@ -162,12 +178,13 @@ class appointmentList extends React.Component {
     const res = await getVenueReservationss(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       if (this.state.topNumList.length > 0) {
-        for (let j = 0; j < this.state.topNumList; j++) {
+        for (let j = 0; j < this.state.topNumList.length; j++) {
           res.data.data[0].c[this.state.topNumList[j].venueid - 1].title = this.state.topNumList[j].title
           res.data.data[0].c[this.state.topNumList[j].venueid - 1].uuid = this.state.topNumList[j].uuid
         }
       }
-      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c, value: 'l', spinningTwo: false })
+      console.log(Object.keys(res.data.other.sporttype).indexOf('5'))
+      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c,otherType:res.data.other.sporttype, value: 'l', spinningTwo: false })
       if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 24) {
         if (res.data.data[res.data.data.length - 1].a.slice(-2) === '00') {
           if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 10) {
@@ -181,7 +198,6 @@ class appointmentList extends React.Component {
           } else {
             this.setState({ lastTime: parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1 + ':00' })
           }
-
         }
       }
     } else if (res.data.code === 4005) {
@@ -211,7 +227,8 @@ class appointmentList extends React.Component {
   }
   clickLi = (e) => {
     this.getVenueNumberTitleList({ sportid: e.target.dataset.num })
-    this.setState({ dianIndex: e.target.dataset.index, liNum: e.target.dataset.num })
+    this.setState({ dianIndex: e.target.dataset.index, liNum: e.target.dataset.num, spinningTwo: true })
+    this.getVenueSporttypelist({ sportid: e.target.dataset.num })
   }
   dateChange = (data, datatring) => {
     this.setState({ dateString: datatring })
@@ -414,14 +431,19 @@ class appointmentList extends React.Component {
     }
   }
 
+  tilFocus = e => {
+    console.log(e.currentTarget.dataset, this.state.liNum)
+  }
 
-  
   tilBlur = e => {
     this.getVenueNumberTitleSave({ sportid: this.state.liNum, veneuid: e.currentTarget.dataset.num, title: e.target.value, uuid: e.currentTarget.dataset.uuid })
     this.setState({ value: 'l' })
-  }                   
+  }
 
-  
+  tilChange = e => {
+    this.setState({ tilValue: e.target.value })
+  }
+
 
   noneBox = e => {
     this.setState({ value: e.currentTarget.dataset.num })
@@ -444,6 +466,12 @@ class appointmentList extends React.Component {
   handleVisibleChange = visible => {
     this.setState({ visibleTwo: visible })
   }
+
+  classList=e=>{
+    this.VenueNumberSporttypeSave({sportid:this.state.liNum,sporttype:e.split('-')[0],venueid:e.split('-')[1]})
+  }
+
+  
 
 
   render() {
@@ -572,8 +600,33 @@ class appointmentList extends React.Component {
                     this.state.macNum.map((item, i) => (
                       <span key={i}>{i + 1}
                         <div className="boxBoss" style={{ position: 'relative', width: '100%', height: '26px' }}>
-                          <Input style={{ height: '26px', padding: '0', textAlign: 'center', fontSize: '8px' }} data-uuid={item.uuid} onChange={this.tilChange} data-num={i + 1} onBlur={this.tilBlur} maxLength={5} />
-                          <div className="plokjh" onClick={this.noneBox} data-num={i + 1} style={parseInt(this.state.value) === parseInt(i + 1) ? { display: 'none' } : { fontSize: '10px' }}>{item.title}</div>
+                          <Select 
+                            placeholder='请选择'
+                            value={Object.keys(this.state.otherType).indexOf(""+parseInt(i+1)+"")!==-1?Object.values(this.state.otherType)[Object.keys(this.state.otherType).indexOf(""+parseInt(i+1)+"")].sporttypename:undefined}
+                            showArrow={false}
+                            dropdownMenuStyle={{width:'100%',padding:'0'}}
+                            style={this.state.liNum === '3' ? { display: 'block', border: '1px solid #ccc', borderRadius: '4px', margin: '0' } : { display: 'none' } && this.state.liNum === '5' ? { display: 'block' } : { display: 'none' } && this.state.liNum === '8' ? { display: 'block' } : { display: 'none' }}
+                            dropdownStyle={{ right: '0', marginRight: '0' }}
+                            onChange={this.classList}
+                          >
+                            {
+                              this.state.activityNavTwo.map((itemS, j) => (
+                                <Option key={j} value={itemS.sporttype+'-'+parseInt(i+1)}>{itemS.sporttypename}</Option>
+                              ))
+                            }
+
+                          </Select>
+
+                          <Input className='inputAppList'
+                            key={i + this.state.liNum}
+                            placeholder={item.title}
+                            style={this.state.liNum === '3' ? { display: 'none' } : { display: 'block', height: '26px' } && this.state.liNum === '5' ? { display: 'none' } : { display: 'block', height: '26px' } && this.state.liNum === '8' ? { display: 'none' } : { display: 'block', height: '26px' }}
+                            data-uuid={item.uuid}
+                            onChange={this.tilChange}
+                            data-num={i + 1}
+                            onBlur={this.tilBlur}
+                            onFocus={this.tilFocus}
+                            maxLength={5} />
                         </div>
                       </span>
                     ))
