@@ -95,7 +95,7 @@
     overflow: hidden;
     width: 105%;
     padding-bottom: 0.5rem;
-    overflow-y: scroll;
+    overflow: scroll;
     -webkit-overflow-scrolling: touch;
 }
 .appOrder .bookingKanban .locaList>div{
@@ -106,7 +106,7 @@
     color:rgba(155,155,155,1);
 }
 .appOrder .bookingKanban .lookList{
-   overflow-y: scroll;
+   overflow: scroll;
    white-space: nowrap;
    height: 100%;
    position: relative;

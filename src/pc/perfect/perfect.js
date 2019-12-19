@@ -528,17 +528,17 @@ class perfect extends React.Component {
               </div>
 
               <div className="name" style={this.state.onChangeCheck.indexOf('3') !== -1 ? { display: 'block' } : { display: 'none' }}>
-                <span className="symbol">*</span><span className="boTitle">台球分类</span><span className="kong"></span>
+                <span className="symbol" style={{ marginLeft: '-30px' }}>*</span><span className="boTitle" style={{ marginLeft: '-20px' }}>台球场地类型</span><span className="kong"></span>
                 <Checkbox.Group options={plainOptionsTwo} onChange={this.onChangeCheckTwo} value={this.state.onChangeCheckTwo} /><br /><span className="kong"></span>
               </div>
 
               <div className="name" style={this.state.onChangeCheck.indexOf('5') !== -1 ? { display: 'block' } : { display: 'none' }}>
-                <span className="symbol">*</span><span className="boTitle">足球分类</span><span className="kong"></span>
+                <span className="symbol" style={{ marginLeft: '-30px' }}>*</span><span className="boTitle" style={{ marginLeft: '-20px' }}>足球场地类型</span><span className="kong"></span>
                 <Checkbox.Group options={plainOptionsThree} onChange={this.onChangeCheckThree} value={this.state.onChangeCheckThree} /><br /><span className="kong"></span>
               </div>
 
               <div className="name" style={this.state.onChangeCheck.indexOf('8') !== -1 ? { display: 'block' } : { display: 'none' }}>
-                <span className="symbol" style={{ marginLeft: '-15px' }}>*</span><span className="boTitle" style={{ marginLeft: '-5px' }}>高尔夫分类</span><span className="kong"></span>
+                <span className="symbol" style={{ marginLeft: '-48px' }}>*</span><span className="boTitle" style={{ marginLeft: '-38px' }}>高尔夫场地类型</span><span className="kong"></span>
                 <Checkbox.Group options={plainOptionsFour} onChange={this.onChangeCheckFour} value={this.state.onChangeCheckFour} /><br /><span className="kong"></span>
               </div>
 

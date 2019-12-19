@@ -27,20 +27,32 @@ class appOrder extends React.Component {
     animating: true,
     lp: 0,
     venueNum: [],
-    sporttype:[],
+    sporttype: [],
+    sportidQuery:'',
   };
 
 
 
   async getAppVenueReservation(data) {
     const res = await getAppVenueReservation(data)
-
     if (res.data.code === 2000) {
-      for (let j in this.state.topNumList) {
-        res.data.data[0].c[this.state.topNumList[j].venueid - 1].title = this.state.topNumList[j].title
-        res.data.data[0].c[this.state.topNumList[j].venueid - 1].uuid = this.state.topNumList[j].uuid
+      if(this.state.sportidQuery!=='3'&&this.state.sportidQuery!=='5'&&this.state.sportidQuery!=='8'){
+        if (this.state.topNumList.length > 0) {
+          for (let j = 0; j < this.state.topNumList.length; j++) {
+            res.data.data[0].c[this.state.topNumList[j].venueid - 1].title = this.state.topNumList[j].title
+            res.data.data[0].c[this.state.topNumList[j].venueid - 1].uuid = this.state.topNumList[j].uuid
+          }
+        }
+        this.setState({ lookList: res.data.data, venueNum: res.data.other.venueid, sporttype: Object.values(res.data.other.sporttype), macNum: res.data.data[0].c, animating: false })
+      }else{
+        for(let i in Object.keys(res.data.other.sporttype)){
+           if(Object.keys(res.data.other.sporttype).indexOf(''+this.state.topNumList[i].venueid+'')!==-1){
+            Object.values(res.data.other.sporttype)[Object.keys(res.data.other.sporttype).indexOf(''+this.state.topNumList[i].venueid+'')].title=this.state.topNumList[i].title
+           }
+        }
+        this.setState({ lookList: res.data.data, venueNum: res.data.other.venueid, sporttype: Object.values(res.data.other.sporttype), macNum: res.data.data[0].c, animating: false })
+        
       }
-      this.setState({ lookList: res.data.data, venueNum: res.data.other.venueid,sporttype:Object.values(res.data.other.sporttype), macNum: res.data.data[0].c, animating: false })
       if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 24) {
         if (res.data.data[res.data.data.length - 1].a.slice(-2) === '00') {
           if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 10) {
@@ -70,20 +82,25 @@ class appOrder extends React.Component {
   async getVenueNumberTitleList(data) {
     const res = await getVenueNumberTitleList(data)
     if (res.data.code === 2000) {
+     
       this.setState({ topNumList: res.data.data })
     }
   }
 
   componentDidMount() {
-  
+
+    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=3&token=iw2UUQ3FV9MljQthr9xHUmk6JMGNUieJ2WYXuuacgZ2KsqNbwSEguEhiKRockrzq&sporttype=1'
+   
     let query = this.props.location.search
+   
     let arr = query.split('&')
     let siteuid = arr[0].slice(9, arr[0].length)
     let sportid = arr[1].slice(8, arr[1].length)
     let token = arr[2].slice(6, arr[2].length)
-    let sporttype = arr[3].slice(6, arr[3].length)
+    let sporttype = arr[3].slice(10,arr[3].length)
+    this.setState({sportidQuery:sportid})
+    this.getVenueNumberTitleList({ sportid: sportid, type: '2', siteuuid: siteuid, sporttype: sporttype })
     this.getAppVenueReservation({ date: new Date().toLocaleDateString().replace(/\//g, "-"), siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
-    this.getVenueNumberTitleList({ sportid: sportid, type: '2', siteuuid: siteuid })
     let start = new Date().toLocaleDateString().replace(/\//g, "-")
     this.setState({ date: start, token: token,siteid:siteuid,sportid:sportid})
   }
@@ -244,9 +261,9 @@ class appOrder extends React.Component {
 
               <div className="lookList" onScrollCapture={this.scroll} ref={c => { this.scrollRef = c }} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block' }}>
                 <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 4.25 + 'rem' }}>
-                  <div className="topFixd" style={{ top: this.state.top, minWidth: '100%', height: '3rem' }}>
+                  <div className="topFixd" style={{ top: this.state.top, minWidth: '100%', minHeight: '3rem' }}>
                     <div style={this.state.venueNum.length > 0 ? { display: 'none' } : { display: 'block' }}>
-                      <span>标题<br />场地号</span>
+                      <span><span style={this.state.topNumList.length>0?{}:{display:'none'}}>标题</span><br />场地号</span>
                       {
                         this.state.macNum.map((item, i) => (
                           <span key={i}>{item.title}<br />{i + 1}</span>
@@ -254,9 +271,9 @@ class appOrder extends React.Component {
                       }
                     </div>
 
-  
-                    <div style={this.state.venueNum.length > 0 ? { display: 'block' } : { display: 'none' }}>
-                      <span>标题<br />场地号</span>
+
+                    <div style={this.state.venueNum.length > 0 && this.state.topNumList.length === 0 ? {  } : { display: 'none' }}>
+                      <span>分类<br />场地号</span>
                       {
                         this.state.sporttype.map((item, i) => (
                           <span key={i}>{item.sporttypename}<br />{item.venueid}</span>
@@ -264,9 +281,18 @@ class appOrder extends React.Component {
                       }
                     </div>
 
+                    <div style={this.state.venueNum.length > 0 && this.state.topNumList.length > 0 ? { } : { display: 'none' }}>
+                      <span>分类<br /><span style={this.state.topNumList.length>0?{}:{display:'none'}}>标题</span><br />场地号</span>
+                      {
+                        this.state.sporttype.map((item, i) => (
+                          <span key={i}>{item.sporttypename}<br />{item.title}<br />{item.venueid}</span>
+                        ))
+                      }
+                    </div>
+
 
                   </div>
-                  <div style={{ height: '3rem', lineHeight: '2.5rem' }}></div>
+                  <div style={{ height: '4rem', lineHeight: '2.5rem' }}></div>
                   {
                     this.state.lookList.map((index, i) => (
                       <div key={i} className="sonList">
@@ -277,13 +303,13 @@ class appOrder extends React.Component {
                             <span
                               key={i}
                               data-time={index.a}
-                              data-num={i + 1}
+                              data-num={item.venueid}
                               data-uuid={item.uuid}
                               data-type={item.type}
                               onClick={this.lookPlate}
                               data-money={item.money}
-                              data-lo={index.a + '-' + (i + 1) + '-' + item.money}
-                              style={item.type === 1 && this.state.lotime.indexOf(index.a + '-' + (i + 1) + '-' + item.money) === -1 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff' } : { background: 'red', marginTop: '0.12rem', color: '#fff' } && item.type === 2 ? { background: '#6FB2FF', marginTop: '0.12rem', opacity: '0.3' } : {} && item.type === 3 ? { background: '#F5A623', marginTop: '0.12rem' } : {} && item.type === 4 ? { background: 'red', marginTop: '0.12rem' } : { background: 'red', marginTop: '0.12rem', color: '#fff' }}>
+                              data-lo={index.a + '-' + item.venueid + '-' + item.money}
+                              style={item.type === 1 && this.state.lotime.indexOf(index.a + '-' + item.venueid  + '-' + item.money) === -1 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff' } : { background: 'red', marginTop: '0.12rem', color: '#fff' } && item.type === 2 ? { background: '#6FB2FF', marginTop: '0.12rem', opacity: '0.3' } : {} && item.type === 3 ? { background: '#F5A623', marginTop: '0.12rem' } : {} && item.type === 4 ? { background: 'red', marginTop: '0.12rem' } : { background: 'red', marginTop: '0.12rem', color: '#fff' }}>
                               {item.type === 1 ? item.money : ''}
                             </span>
                           ))

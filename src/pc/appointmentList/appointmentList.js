@@ -73,6 +73,7 @@ class appointmentList extends React.Component {
     tilValue: '',
     activityNavTwo: [],
     otherType:[],
+    sportName:''
   };
 
   async getVenueSport(data) {
@@ -183,7 +184,6 @@ class appointmentList extends React.Component {
           res.data.data[0].c[this.state.topNumList[j].venueid - 1].uuid = this.state.topNumList[j].uuid
         }
       }
-      console.log(Object.keys(res.data.other.sporttype).indexOf('5'))
       this.setState({ lookList: res.data.data, macNum: res.data.data[0].c,otherType:res.data.other.sporttype, value: 'l', spinningTwo: false })
       if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 24) {
         if (res.data.data[res.data.data.length - 1].a.slice(-2) === '00') {
@@ -468,6 +468,7 @@ class appointmentList extends React.Component {
   }
 
   classList=e=>{
+    this.setState({sportName:e})
     this.VenueNumberSporttypeSave({sportid:this.state.liNum,sporttype:e.split('-')[0],venueid:e.split('-')[1]})
   }
 
@@ -601,26 +602,26 @@ class appointmentList extends React.Component {
                       <span key={i}>{i + 1}
                         <div className="boxBoss" style={{ position: 'relative', width: '100%', height: '26px' }}>
                           <Select 
-                            placeholder='请选择'
-                            value={Object.keys(this.state.otherType).indexOf(""+parseInt(i+1)+"")!==-1?Object.values(this.state.otherType)[Object.keys(this.state.otherType).indexOf(""+parseInt(i+1)+"")].sporttypename:undefined}
+                            placeholder={Object.keys(this.state.otherType).indexOf(""+parseInt(i+1)+"")!==-1?Object.values(this.state.otherType)[Object.keys(this.state.otherType).indexOf(""+parseInt(i+1)+"")].sporttypename:undefined}
+                            className="lookFir"
+                            key={'-'+i+this.state.liNum}
                             showArrow={false}
-                            dropdownMenuStyle={{width:'100%',padding:'0'}}
-                            style={this.state.liNum === '3' ? { display: 'block', border: '1px solid #ccc', borderRadius: '4px', margin: '0' } : { display: 'none' } && this.state.liNum === '5' ? { display: 'block' } : { display: 'none' } && this.state.liNum === '8' ? { display: 'block' } : { display: 'none' }}
-                            dropdownStyle={{ right: '0', marginRight: '0' }}
+                            dropdownMenuStyle={{width:'100%',padding:'0',margin:'0'}}
+                            style={this.state.liNum === '3' ? { display: 'block', border: '1px solid #ccc', borderRadius: '4px', margin: '0' } : { display: 'none' } && this.state.liNum === '5' ? { display: 'block', border: '1px solid #ccc', borderRadius: '4px', margin: '0' } : { display: 'none' } && this.state.liNum === '8' ? { display: 'block', border: '1px solid #ccc', borderRadius: '4px', margin: '0' } : { display: 'none' }}
+                            dropdownStyle={{ right: '0', marginRight: '0',padding:'0' }}
                             onChange={this.classList}
                           >
                             {
                               this.state.activityNavTwo.map((itemS, j) => (
-                                <Option key={j} value={itemS.sporttype+'-'+parseInt(i+1)}>{itemS.sporttypename}</Option>
+                                <Option key={j} style={{padding:'0'}} value={itemS.sporttype+'-'+parseInt(i+1)}>{itemS.sporttypename}</Option>
                               ))
                             }
 
                           </Select>
-
                           <Input className='inputAppList'
-                            key={i + this.state.liNum}
+                            key={parseInt(i + this.state.liNum+'l')}
                             placeholder={item.title}
-                            style={this.state.liNum === '3' ? { display: 'none' } : { display: 'block', height: '26px' } && this.state.liNum === '5' ? { display: 'none' } : { display: 'block', height: '26px' } && this.state.liNum === '8' ? { display: 'none' } : { display: 'block', height: '26px' }}
+                            style={{height:'26px'}}
                             data-uuid={item.uuid}
                             onChange={this.tilChange}
                             data-num={i + 1}

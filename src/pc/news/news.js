@@ -192,6 +192,7 @@ class news extends React.Component {
     if (res.data.code === 2000) {
       message.info(res.data.msg)
       this.gerVenueName()
+      this.getVenueNewsList({ page: this.state.current })
     }else{
       message.error(res.data.msg)
     }
@@ -202,7 +203,6 @@ class news extends React.Component {
 
   Read=()=>{
     this.VenueNewsOneKeyRead()
-    this.getVenueNewsList({ page: this.state.current })
   }
 
 

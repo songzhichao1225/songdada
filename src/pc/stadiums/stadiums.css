@@ -42,7 +42,7 @@
 	float: left
 }
 .stadiums .boTitle{
-    width: 85px;
+    width: 120px;
 	font-size: 16px;
 	color: #4A4A4A;
 	margin-left: 5px;
@@ -144,7 +144,7 @@ float: left;
 	background: #F5A623;
 	border-radius: 2px;
 	float: left;
-	margin-left: 110px;
+	margin-left: 150px;
 	line-height: 28px;
 	margin-bottom: 40px;
 }
