@@ -633,7 +633,7 @@ class appointmentList extends React.Component {
                     ))
                   }
                 </div>
-                <div style={{ height: 80 }}></div>
+                <div style={{ height: 91 }}></div>
                 {
                   this.state.lookList.map((index, i) => (
                     <div key={i} className="sonList">

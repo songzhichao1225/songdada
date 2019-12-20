@@ -35,6 +35,7 @@ const plainOptionsFour = [
   { label: '18洞', value: '26' },
   { label: '27洞', value: '27' },
   { label: '36洞', value: '28' },
+  { label: '练习场', value: '19' },
 ]
 
 const options = [{ label: 'WiFi', value: '1' }, { label: '停车场', value: '2' }, { label: '淋浴', value: '3' }]

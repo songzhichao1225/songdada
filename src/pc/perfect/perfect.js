@@ -33,13 +33,16 @@ const plainOptionsThree = [
 ]
 
 const plainOptionsFour = [
-  { label: '小洞', value: '25' },
-  { label: '中洞', value: '26' },
-  { label: '大洞', value: '27' }
+  { label: '9洞', value: '25' },
+  { label: '18洞', value: '26' },
+  { label: '27洞', value: '27' },
+  { label: '36洞', value: '28' },
+  { label: '练习场', value: '19' },
 ]
 
 
 const options = [{ label: 'WiFi', value: '1' }, { label: '停车场', value: '2' }, { label: '淋浴', value: '3' }]
+
 
 
 function getBase64(img, callback) {

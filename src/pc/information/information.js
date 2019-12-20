@@ -631,7 +631,7 @@ class information extends React.Component {
                     ))
                   }
                 </div>
-                <div style={{ height: 80 }}></div>
+                <div style={{ height: 91 }}></div>
                 {
                   this.state.lookList.map((index, i) => (
                     <div key={i} className="sonList">
@@ -779,8 +779,8 @@ class information extends React.Component {
           <div style={this.state.menu === 1 ? { display: 'block' } : { display: 'none' }}>
             {this.state.otherObj}
           </div>
-
         </Drawer>
+
 
 
         <Modal

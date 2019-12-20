@@ -29,6 +29,7 @@ class appOrder extends React.Component {
     venueNum: [],
     sporttype: [],
     sportidQuery:'',
+    sporttypeTwo:''
   };
 
 
@@ -45,13 +46,14 @@ class appOrder extends React.Component {
         }
         this.setState({ lookList: res.data.data, venueNum: res.data.other.venueid, sporttype: Object.values(res.data.other.sporttype), macNum: res.data.data[0].c, animating: false })
       }else{
-        for(let i in Object.keys(res.data.other.sporttype)){
+        if (this.state.topNumList.length > 0) {
+        for(let i in this.state.topNumList){
            if(Object.keys(res.data.other.sporttype).indexOf(''+this.state.topNumList[i].venueid+'')!==-1){
             Object.values(res.data.other.sporttype)[Object.keys(res.data.other.sporttype).indexOf(''+this.state.topNumList[i].venueid+'')].title=this.state.topNumList[i].title
            }
         }
+      }
         this.setState({ lookList: res.data.data, venueNum: res.data.other.venueid, sporttype: Object.values(res.data.other.sporttype), macNum: res.data.data[0].c, animating: false })
-        
       }
       if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 24) {
         if (res.data.data[res.data.data.length - 1].a.slice(-2) === '00') {
@@ -61,7 +63,6 @@ class appOrder extends React.Component {
             this.setState({ lastTime: parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + ':30' })
           }
         } else if (res.data.data[res.data.data.length - 1].a.slice(-2) === '30') {
-
           if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1 < 10) {
             this.setState({ lastTime: '0' + (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1) + ':00' })
           } else {
@@ -78,18 +79,16 @@ class appOrder extends React.Component {
 
 
 
-
   async getVenueNumberTitleList(data) {
     const res = await getVenueNumberTitleList(data)
     if (res.data.code === 2000) {
-     
       this.setState({ topNumList: res.data.data })
     }
   }
 
   componentDidMount() {
 
-    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=3&token=iw2UUQ3FV9MljQthr9xHUmk6JMGNUieJ2WYXuuacgZ2KsqNbwSEguEhiKRockrzq&sporttype=1'
+    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=3&token=iw2UUQ3FV9MljQthr9xHUmk6JMGNUieJ2WYXuuacgZ2KsqNbwSEguEhiKRockrzq&sporttype=2'
    
     let query = this.props.location.search
    
@@ -102,10 +101,8 @@ class appOrder extends React.Component {
     this.getVenueNumberTitleList({ sportid: sportid, type: '2', siteuuid: siteuid, sporttype: sporttype })
     this.getAppVenueReservation({ date: new Date().toLocaleDateString().replace(/\//g, "-"), siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
     let start = new Date().toLocaleDateString().replace(/\//g, "-")
-    this.setState({ date: start, token: token,siteid:siteuid,sportid:sportid})
+    this.setState({ date: start, token: token,siteid:siteuid,sportid:sportid,sporttypeTwo:sporttype})
   }
-
-
 
   scroll = () => {
     let scrollTop = this.scrollRef.scrollTop;
@@ -143,7 +140,7 @@ class appOrder extends React.Component {
 
   onConfirm = (e) => {
     this.setState({ show: false, date: e.toLocaleDateString().replace(/\//g, "-"), lotime: '' })
-    this.getAppVenueReservation({ date: e.toLocaleDateString().replace(/\//g, "-"), siteUUID: this.state.siteid, sportid: this.state.sportid })
+    this.getAppVenueReservation({ date: e.toLocaleDateString().replace(/\//g, "-"), siteUUID: this.state.siteid, sportid: this.state.sportid,sporttype:this.state.sporttypeTwo })
   }
   onCancel = () => {
     this.setState({ show: false })
@@ -183,7 +180,6 @@ class appOrder extends React.Component {
 
 
 
-
   async checkChooseTimes(data) {
     const res = await checkChooseTimes(data, this.state.token)
     if (res.data.code !== 2000) {
@@ -197,7 +193,7 @@ class appOrder extends React.Component {
           window.JsAndroid.goTime(objT)
         } else if (sUserAgent.indexOf('iPhone') > -1) {
           try {
-            window.webkit.messageHandlers.ScanAction.postMessage(this.state.obj);
+            window.webkit.messageHandlers.ScanAction.postMessage(this.state.obj)
           } catch (error) {
             console.log(error)
           }
@@ -205,6 +201,7 @@ class appOrder extends React.Component {
       }
     }
   }
+
 
 
   onSubmit = () => {
@@ -244,7 +241,7 @@ class appOrder extends React.Component {
           <div className="appOrder" onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
             <div className='bookingKanban'>
               <div onClick={this.date} className="titleDiv"><div className="titleDivTwo">{this.state.date}</div></div>
-              <div className="modTitle">
+              <div className="modTitle"> 
 
                 <span className="blue"></span><span>可选</span>
 
@@ -256,9 +253,7 @@ class appOrder extends React.Component {
 
 
                 <span className="red"></span><span>已选中</span>
-
               </div>
-
               <div className="lookList" onScrollCapture={this.scroll} ref={c => { this.scrollRef = c }} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block' }}>
                 <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 4.25 + 'rem' }}>
                   <div className="topFixd" style={{ top: this.state.top, minWidth: '100%', minHeight: '3rem' }}>
