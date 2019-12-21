@@ -274,9 +274,10 @@
 
 .orderList .lookList .topFixd{
     position: absolute;
-    z-index: 9;
+    z-index: 999;
     background: #fff;
     padding-bottom: 0.5rem;
+    border-bottom: 1px solid #ccc;
 }
 .orderList .lookList .headerSon .topFixd>span{
     width:4.13rem;
@@ -369,3 +370,15 @@
     right: 0;
     text-align: center;
 }
+.inputAppList .ant-input{
+  height: 26px;
+  padding: 0;
+}
+.orderList .ant-input-affix-wrapper .ant-input:not(:last-child){
+    padding-right: 0;
+}
+.orderList .ant-input-affix-wrapper .ant-input-suffix{
+    top: 8px;
+    right: 1px;
+}
+

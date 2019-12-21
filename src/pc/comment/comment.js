@@ -160,18 +160,8 @@ class comment extends React.Component {
                         {item.content}
                       </span>
                       <div className={this.state.imgArr.length > 0 ? 'imgA' : 'hidden'}>
-                        {/* {
-                    this.state.imgArr.map((index,i)=>(
-                       <img key={i} src={require('https://app.tiaozhanmeiyitian.com'+item.imgbaseurl+'/'+index)} alt="评论图片" />
-                    ))
-                  } */}
-
                       </div>
                       <span className="timer">{item.commentDate}</span>
-
-
-
-
                     </div>
                     <div className={item.comment_reply === null ? 'publishNone' : 'kefu'}>
                       <img src={require("../../assets/kefu.png")} alt="客服" />
@@ -194,7 +184,7 @@ class comment extends React.Component {
               ))
             }
              
-             <Pagination className="fenye" defaultCurrent={1} onChange={this.current} total={this.state.other} />
+             <Pagination className={this.state.commentList.length === 0 ? 'hidden' : 'fenye'} defaultCurrent={1} onChange={this.current} total={this.state.other} />
 
             <Result className={this.state.commentList.length === 0 ? 'block' : 'hidden'} icon={<Icon type="calendar" theme="twoTone" twoToneColor="#F5A623" />} title="还没有人评价！" />
           </Spin>

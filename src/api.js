@@ -314,6 +314,9 @@ export function VenueNumberSporttypeSave(data,headers){    // 场馆端修改台
 }
 
 
+export function DelVenueNumberTitle(data,headers){    // 删除某一个场馆的场地号标题
+    return axios.post('/api/DelVenueNumberTitle',data, {headers: {'token': headers}})
+}
 
 
 

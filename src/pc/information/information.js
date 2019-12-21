@@ -2,7 +2,7 @@ import React from 'react';
 import './information.css';
 import 'antd/dist/antd.css';
 import { Input, Button, Row, Col, Select, Pagination, Spin, message, Result, Icon, DatePicker, Modal, Radio, Drawer, InputNumber, Popover } from 'antd';
-import { getReservationActivitieslist, getVenueReservationss, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord,VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
+import { getReservationActivitieslist, getVenueReservationss, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -72,8 +72,9 @@ class information extends React.Component {
     visibleTwo: false,
     tilValue: '',
     activityNavTwo: [],
-    otherType:[],
-  };
+    otherType: [],
+    sportName: ''
+  }
 
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -92,15 +93,22 @@ class information extends React.Component {
     const res = await getVenueSporttypelist(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ activityNavTwo: res.data.data })
+    }
+  }
 
+
+  async DelVenueNumberTitle(data) {
+    const res = await DelVenueNumberTitle(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      message.info('删除成功')
+      this.getVenueNumberTitleList({ sportid: this.state.liNum })
     }
   }
 
 
   async VenueNumberSporttypeSave(data) {
-     await VenueNumberSporttypeSave(data, sessionStorage.getItem('venue_token'))
+    await VenueNumberSporttypeSave(data, sessionStorage.getItem('venue_token'))
   }
-  
 
 
   async getVenueNumberTitleList(data) {
@@ -110,6 +118,7 @@ class information extends React.Component {
       this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.dateString, types: 1 })
     }
   }
+ 
 
   componentDidMount() {
     this.getVenueSport()
@@ -138,8 +147,11 @@ class information extends React.Component {
       }
     } else {
       this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
-
     }
+    
+    setInterval(()=>{
+      window.addEventListener('storage',sessionStorage.getItem('kood')==='2'? this.getVenueNumberTitleList({ sportid: this.state.liNum }):this);
+    },2000)
   }
 
   dateonChangeS = (date, dateString) => {
@@ -179,11 +191,14 @@ class information extends React.Component {
     if (res.data.code === 2000) {
       if (this.state.topNumList.length > 0) {
         for (let j = 0; j < this.state.topNumList.length; j++) {
-          res.data.data[0].c[this.state.topNumList[j].venueid - 1].title = this.state.topNumList[j].title
-          res.data.data[0].c[this.state.topNumList[j].venueid - 1].uuid = this.state.topNumList[j].uuid
+          if(res.data.data[0].c[this.state.topNumList[j].venueid - 1]!==undefined){
+            res.data.data[0].c[this.state.topNumList[j].venueid - 1].title = this.state.topNumList[j].title
+            res.data.data[0].c[this.state.topNumList[j].venueid - 1].uuid = this.state.topNumList[j].uuid
+          }
         }
       }
-      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c,otherType:res.data.other.sporttype, value: 'l', spinningTwo: false })
+      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c, otherType: res.data.other.sporttype, value: 'l', spinningTwo: false})
+      sessionStorage.setItem('kood',1)
       if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 24) {
         if (res.data.data[res.data.data.length - 1].a.slice(-2) === '00') {
           if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 10) {
@@ -195,14 +210,16 @@ class information extends React.Component {
           if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1 < 10) {
             this.setState({ lastTime: '0' + (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1) + ':00' })
           } else {
-            this.setState({ lastTime: parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1 + ':00' })
+            this.setState({ lastTime: parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1 +  ':00' })
           }
         }
       }
     } else if (res.data.code === 4005) {
       this.setState({ lookList: res.data.data, spinningTwo: false })
+      sessionStorage.setItem('kood',1)
     } else if (res.data.code === 4003) {
       this.setState({ lookList: [], spinningTwo: false })
+      sessionStorage.setItem('kood',1)
     }
   }
 
@@ -466,11 +483,16 @@ class information extends React.Component {
     this.setState({ visibleTwo: visible })
   }
 
-  classList=e=>{
-    this.VenueNumberSporttypeSave({sportid:this.state.liNum,sporttype:e.split('-')[0],venueid:e.split('-')[1]})
+  classList = e => {
+    this.setState({ sportName: e })
+    this.VenueNumberSporttypeSave({ sportid: this.state.liNum, sporttype: e.split('-')[0], venueid: e.split('-')[1] })
   }
 
-  
+
+  delTitle = e => {
+    this.DelVenueNumberTitle({ uuid: e.currentTarget.dataset.uuid })
+
+  }
 
 
   render() {
@@ -594,36 +616,37 @@ class information extends React.Component {
             <div className="lookList" onScrollCapture={this.scroll} ref={c => { this.scrollRef = c }} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block', height: this.state.minHeight - 250 + 'px' }}>
               <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 68 + 'px' }}>
                 <div className="topFixd" style={{ top: this.state.top, minWidth: '100%', width: '' + (this.state.macNum.length + 1) * 68 + 'px' }}>
-                  <span></span>
+                  <span>场地号<span style={this.state.liNum!=='3'&&this.state.liNum!=='5'&&this.state.liNum!=='8'?{display:'none'}:{}}><br/>类型</span><br/><span>标题</span></span>
                   {
                     this.state.macNum.map((item, i) => (
                       <span key={i}>{i + 1}
                         <div className="boxBoss" style={{ position: 'relative', width: '100%', height: '26px' }}>
-                          <Select 
-                            placeholder='请选择'
-                            value={Object.keys(this.state.otherType).indexOf(""+parseInt(i+1)+"")!==-1?Object.values(this.state.otherType)[Object.keys(this.state.otherType).indexOf(""+parseInt(i+1)+"")].sporttypename:undefined}
-                            showArrow={false}
+                          <Select
+                            placeholder={Object.keys(this.state.otherType).indexOf("" + parseInt(i + 1) + "") !== -1 ? Object.values(this.state.otherType)[Object.keys(this.state.otherType).indexOf("" + parseInt(i + 1) + "")].sporttypename : undefined}
                             className="lookFir"
-                            dropdownMenuStyle={{width:'100%',padding:'0',margin:'0'}}
-                            style={this.state.liNum === '3' ? { display: 'block', border: '1px solid #ccc', borderRadius: '4px', margin: '0' } : { display: 'none' } && this.state.liNum === '5' ? { display: 'block' } : { display: 'none' } && this.state.liNum === '8' ? { display: 'block' } : { display: 'none' }}
-                            dropdownStyle={{ right: '0', marginRight: '0' }}
+                            key={'-' + i + this.state.liNum}
+                            showArrow={false}
+                            dropdownMenuStyle={{ width: '100%', padding: '0', margin: '0' }}
+                            style={this.state.liNum === '3' ? { display: 'block', border: '1px solid #ccc', borderRadius: '4px', margin: '0' } : { display: 'none' } && this.state.liNum === '5' ? { display: 'block', border: '1px solid #ccc', borderRadius: '4px', margin: '0' } : { display: 'none' } && this.state.liNum === '8' ? { display: 'block', border: '1px solid #ccc', borderRadius: '4px', margin: '0' } : { display: 'none' }}
+                            dropdownStyle={{ right: '0', marginRight: '0', padding: '0' }}
                             onChange={this.classList}
                           >
                             {
                               this.state.activityNavTwo.map((itemS, j) => (
-                                <Option key={j} style={{padding:'0'}} value={itemS.sporttype+'-'+parseInt(i+1)}>{itemS.sporttypename}</Option>
+                                <Option key={j} style={{ padding: '0' }} value={itemS.sporttype + '-' + parseInt(i + 1)}>{itemS.sporttypename}</Option>
                               ))
                             }
 
                           </Select>
                           <Input className='inputAppList'
-                            key={i + this.state.liNum}
+                            key={parseInt(i + this.state.liNum + 'l')}
                             placeholder={item.title}
-                            style={{height:'26px'}}
+                            style={{ height: '26px' }}
                             data-uuid={item.uuid}
                             onChange={this.tilChange}
                             data-num={i + 1}
                             onBlur={this.tilBlur}
+                            suffix={item.title === '' ? '' : <Icon type="close" data-uuid={item.uuid} onClick={this.delTitle} style={{ color: 'rgba(0,0,0,.25)' }} />}
                             onFocus={this.tilFocus}
                             maxLength={5} />
                         </div>
@@ -631,7 +654,7 @@ class information extends React.Component {
                     ))
                   }
                 </div>
-                <div style={{ height: 91 }}></div>
+                <div style={{ height: 98 }}></div>
                 {
                   this.state.lookList.map((index, i) => (
                     <div key={i} className="sonList">
@@ -734,18 +757,7 @@ class information extends React.Component {
             <span>时长：</span>
             <span>{this.state.informList.length > 0 ? this.state.informList[0].PlayTime : ''}</span>
           </div>
-          <div className="informDrawer">
-            <span>应到人数：</span>
-            <span>{this.state.informList.length > 0 ? this.state.informList[0].Shouldarrive : ''}</span>
-          </div>
-          <div className="informDrawer">
-            <span>已报名人数：</span>
-            <span>{this.state.informList.length > 0 ? this.state.informList[0].TrueTo : ''}</span>
-          </div>
-          <div className="informDrawer">
-            <span>活动状态：</span>
-            <span>{this.state.informList.length > 0 ? this.state.informList[0].PublicStatus : ''}</span>
-          </div>
+        
           <div className="informDrawer">
             <span>场地费金额：</span>
             <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoney : ''}</span>
@@ -779,8 +791,8 @@ class information extends React.Component {
           <div style={this.state.menu === 1 ? { display: 'block' } : { display: 'none' }}>
             {this.state.otherObj}
           </div>
-        </Drawer>
 
+        </Drawer>
 
 
         <Modal

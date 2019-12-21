@@ -2,7 +2,7 @@ import React from 'react';
 import './stadiums.css';
 import 'antd/dist/antd.css';
 import { getVenueInformation, VenueInformationSave, getVenueIssecondaudit, getVenueQualificationInformation, getVenueOpenBank, VenueQualificationInformationSave, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
-import { Modal, Upload, Input, Icon, message, Checkbox, Button, Popconfirm, Radio, Select, Tooltip } from 'antd';
+import { Modal, Upload, Input, Icon, message, Checkbox, Button, Popconfirm, Radio, Select, Tooltip,Spin } from 'antd';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -120,6 +120,7 @@ class stadiums extends React.Component {
     onChangeCheckTwo:[],
     onChangeCheckThree:[],
     onChangeCheckFour:[],
+    spinning:true
   };
 
   async getVenueInformation(data) {
@@ -133,19 +134,21 @@ class stadiums extends React.Component {
 
       if (this.props.location.query !== undefined && this.props.location.query.name !== 'sunny') {
         this.setState({
+          spinning:false,
           adddress: this.props.location.query.title,
           handleAddress: this.props.location.query.adddress,
           lat: this.props.location.query.lat,
           lng: this.props.location.query.lng,
           informationList: res.data.data, name: res.data.data.name,
           contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, imageUrl: res.data.data.firstURL,
-          onChangeCheckTwo:res.data.data.sporttype.split('|')[0],onChangeCheckThree:res.data.data.sporttype.split('|')[1],onChangeCheckFour:res.data.data.sporttype.split('|')[2],
+          onChangeCheckTwo:res.data.data.sporttype.split('|')[0].split(','),onChangeCheckThree:res.data.data.sporttype.split('|')[1].split(','),onChangeCheckFour:res.data.data.sporttype.split('|')[2].split(','),
           fileList: arrImg, sport: res.data.data.sport.split(','), facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
         })
       } else if (this.props.location.query === undefined || this.props.location.query.name === 'sunny') {
         this.setState({
+          spinning:false,
           informationList: res.data.data, name: res.data.data.name, handleAddress: res.data.data.address,
-          onChangeCheckTwo:res.data.data.sporttype.split('|')[0],onChangeCheckThree:res.data.data.sporttype.split('|')[1],onChangeCheckFour:res.data.data.sporttype.split('|')[2],
+          onChangeCheckTwo:res.data.data.sporttype.split('|')[0].split(','),onChangeCheckThree:res.data.data.sporttype.split('|')[1].split(','),onChangeCheckFour:res.data.data.sporttype.split('|')[2].split(','),
           contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, adddress: res.data.data.position, imageUrl: res.data.data.firstURL,
           fileList: arrImg, sport: res.data.data.sport.split(','), facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
         })
@@ -298,6 +301,7 @@ class stadiums extends React.Component {
       }else if(this.state.sport.indexOf('8')===-1){
         this.setState({sport:['1','2','3','4','6','7']})
       }else{
+       
         this.setState({sport:['1','2','4','3','6','7','8']})
       }
     }
@@ -358,11 +362,11 @@ class stadiums extends React.Component {
       }
     }
     if(sport.indexOf('3')!==-1&&onChangeCheckTwo===''){
-     message.warning('至少选择一项运动分类')
+     message.warning('至少选择一项台球类型')
     }else if(sport.indexOf('5')!==-1&&onChangeCheckThree===''){
-      message.warning('至少选择一项运动分类')
+      message.warning('至少选择一项足球类型')
     }else if(sport.indexOf('8')!==-1&&onChangeCheckFour===''){
-      message.warning('至少选择一项运动分类')
+      message.warning('至少选择一项高尔夫类型')
     }else if (filesURLarr.length < 2) {
       message.error('至少上传两张室内照')
     } else {
@@ -537,7 +541,7 @@ class stadiums extends React.Component {
         </div>
         <div className="xiange"></div>
 
-
+        <Spin size='large' spinning={this.state.spinning} style={{minHeight:600}}>
         <div className={this.state.flag === true ? 'information' : 'none'}>
           <div className="name">
             <span className="boTitle">推广员:</span>
@@ -786,6 +790,7 @@ class stadiums extends React.Component {
           </Popconfirm>
           <Button className="submit" style={this.state.issecondaudit === 0 ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
         </div>
+        </Spin>
       </div>
     );
   }

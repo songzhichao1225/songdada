@@ -20,9 +20,7 @@ import special from '../special/special';
 
 const { Header, Sider, Content, Footer } = Layout;
 
-
 function jo(){
-
   var ws = new WebSocket("wss://venue.tiaozhanmeiyitian.com/socket");
   ws.onopen = function () {
     ws.send(sessionStorage.getItem('siteuid'))
@@ -31,7 +29,9 @@ function jo(){
     let message_info = JSON.parse(e.data)
     let msg = new SpeechSynthesisUtterance(message_info.percent)
     window.speechSynthesis.speak(msg)
-    notification.open({ description: message_info.percent })
+    notification.open({ description: message_info.percent,duration:5 })
+    sessionStorage.setItem('kood',2)
+   
   }
   ws.onclose=function(){
     jo()
@@ -59,7 +59,7 @@ class home extends React.Component {
 
 
   componentDidMount() {
-    sessionStorage.setItem('path', '1');
+    sessionStorage.setItem('kood',1)
     this.setState({ minheight: document.body.scrollHeight, path: this.props.history.location.pathname })
     this.getVenueIndex()
     this.gerVenueName()
@@ -89,8 +89,12 @@ class home extends React.Component {
       sessionStorage.setItem('path', '8');
     }
     jo()
+   
     
-     
+    setInterval(()=>{
+      window.addEventListener('storage',sessionStorage.getItem('kood')==='2'? this.gerVenueName():this);
+    },2000)
+    
   }
   componentWillReceiveProps() {
     this.setState({ path: this.props.history.location.pathname })
@@ -218,6 +222,7 @@ class home extends React.Component {
       sessionStorage.setItem('siteuid', res.data.data.siteuid)
       sessionStorage.setItem('mess',res.data.data.mess)
       sessionStorage.setItem('rate',res.data.data.rate)
+      sessionStorage.setItem('kood',1)
     }
   }
 

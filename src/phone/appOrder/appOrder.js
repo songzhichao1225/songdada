@@ -40,20 +40,31 @@ class appOrder extends React.Component {
       if(this.state.sportidQuery!=='3'&&this.state.sportidQuery!=='5'&&this.state.sportidQuery!=='8'){
         if (this.state.topNumList.length > 0) {
           for (let j = 0; j < this.state.topNumList.length; j++) {
-            res.data.data[0].c[this.state.topNumList[j].venueid - 1].title = this.state.topNumList[j].title
-            res.data.data[0].c[this.state.topNumList[j].venueid - 1].uuid = this.state.topNumList[j].uuid
+            if(res.data.data[0].c[this.state.topNumList[j].venueid - 1]!==undefined){
+              res.data.data[0].c[this.state.topNumList[j].venueid - 1].title = this.state.topNumList[j].title
+              res.data.data[0].c[this.state.topNumList[j].venueid - 1].uuid = this.state.topNumList[j].uuid
+            }
           }
         }
         this.setState({ lookList: res.data.data, venueNum: res.data.other.venueid, sporttype: Object.values(res.data.other.sporttype), macNum: res.data.data[0].c, animating: false })
       }else{
         if (this.state.topNumList.length > 0) {
-        for(let i in this.state.topNumList){
-           if(Object.keys(res.data.other.sporttype).indexOf(''+this.state.topNumList[i].venueid+'')!==-1){
-            Object.values(res.data.other.sporttype)[Object.keys(res.data.other.sporttype).indexOf(''+this.state.topNumList[i].venueid+'')].title=this.state.topNumList[i].title
-           }
+          var arrFood=[]
+          let arrFoodId=[]
+          for(let i in res.data.data[0].c){
+            arrFood.push( Object.values(res.data.other.sporttype)[i])
+            arrFoodId.push(Object.values(res.data.other.sporttype)[i].venueid)
+          }
+        for(let i in  this.state.topNumList){
+              if(this.state.topNumList[i]!==undefined){
+                if(arrFoodId.indexOf(this.state.topNumList[i].venueid)!==-1){
+                  arrFood[arrFoodId.indexOf(this.state.topNumList[i].venueid)].title=this.state.topNumList[i].title
+                 }
+              }
         }
+        console.log(arrFood)
       }
-        this.setState({ lookList: res.data.data, venueNum: res.data.other.venueid, sporttype: Object.values(res.data.other.sporttype), macNum: res.data.data[0].c, animating: false })
+        this.setState({ lookList: res.data.data, venueNum: res.data.other.venueid, sporttype: arrFood, macNum: res.data.data[0].c, animating: false })
       }
       if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 24) {
         if (res.data.data[res.data.data.length - 1].a.slice(-2) === '00') {

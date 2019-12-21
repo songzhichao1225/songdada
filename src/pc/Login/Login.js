@@ -176,8 +176,9 @@ class Login extends React.Component {
                     <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'codeBtn'} >
                       {this.state.textT}
                     </div>
-                  </Form.Item>
-                  <Form.Item className={this.state.selectVeun.length > 0 ? 'input' : 'selectVeunNone'}>
+                  </Form.Item>   
+                 
+                  <Form.Item style={{marginTop:'10px'}}  className={this.state.selectVeun.length > 0 ? 'input' : 'selectVeunNone'}>
                     <Radio.Group className="radio" onChange={this.onChange} value={this.state.value}>
 
                       {
@@ -185,6 +186,9 @@ class Login extends React.Component {
                           <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
                         ))
                       }
+                
+                      
+                      
 
                     </Radio.Group>
                   </Form.Item>

@@ -97,6 +97,7 @@ class orderPhT extends React.Component {
 
 
 
+
   async getVenueReservationss(data) {
     const res = await getVenueReservationss(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
@@ -115,6 +116,7 @@ class orderPhT extends React.Component {
             this.setState({ lastTime: parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + ':30' })
           }
         } else if (res.data.data[res.data.data.length - 1].a.slice(-2) === '30') {
+
           if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1 < 10) {
             this.setState({ lastTime: '0' + (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1) + ':00' })
           } else {
@@ -251,7 +253,7 @@ class orderPhT extends React.Component {
     if (res.data.code === 2000) {
       Toast.success(res.data.msg, 1);
       this.setState({ visible: false })
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start, enddate: this.state.end })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start==='选择开始日期'?'':this.state.start, enddate: this.state.end==='选择结束日期'?'':this.state.end  })
     }
   }
 
@@ -405,7 +407,6 @@ class orderPhT extends React.Component {
       }
     } else if (e.currentTarget.dataset.type === '4') {
       this.VenueRemarksLabel({ uuid: e.currentTarget.dataset.uuid })
-
     } else {
       this.setState({ otherObj: '', menu: 2 })
     }
@@ -426,7 +427,6 @@ class orderPhT extends React.Component {
   }
 
   noneBox = e => {
-
     this.setState({ value: e.currentTarget.dataset.num })
   }
 
@@ -435,8 +435,8 @@ class orderPhT extends React.Component {
     return (
       <div className="orderPh" onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
         <div className="headerNav">
-          <div onClick={this.activityList} style={this.state.activityList === true ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>活动列表</div>
-          <div onClick={this.bookingKanban} style={this.state.activityList === false ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>预约面板</div>
+          <div onClick={this.activityList} style={this.state.activityList === true ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>预约活动列表</div>
+          <div onClick={this.bookingKanban} style={this.state.activityList === false ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>场地预约情况</div>
         </div>
         <div className='headSelect' style={this.state.spinFlag === false ? { display: 'none' } : { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' }} ><Icon type="loading" className='loadingY' style={{ top: this.state.clenTop / 4 }} /></div>
 
@@ -449,6 +449,7 @@ class orderPhT extends React.Component {
             <Col xs={{ span: 8, offset: 2 }} lg={{ span: 6, offset: 1 }}>时间</Col>
             <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 1 }}>状态</Col>
           </Row>
+          <div style={{width:'100%',height:'0.6rem',background:'rgb(245, 245, 245)'}}></div>
           <div className='contentT'>
             <div style={this.state.activeSon.length === 0 ? { display: 'none' } : { display: 'block' }}>
               {
@@ -531,7 +532,6 @@ class orderPhT extends React.Component {
             <div className='drawerInputOrder'>
               <span style={{ clear: 'both', display: 'block', marginTop: '1rem' }}>选择日期</span>
               <div style={{ width: '100%', height: '3rem', borderBottom: '0.06rem solid #f5f5f5' }}>
-
                 <DatePicker
                   mode="date"
                   extra="Optional"

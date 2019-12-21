@@ -1094,9 +1094,9 @@ class sitePh extends React.Component {
     return (
       <div className="sitePh">
         <div className="siteheaderTitle">
-          <div onClick={this.site} style={this.state.clickNum === 1 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>场地设置</div>
-          <div onClick={this.preferentialTwo} style={this.state.clickNum === 3 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>特殊场地</div>
-          <div onClick={this.preferential} style={this.state.clickNum === 2 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>优惠活动</div>
+          <div onClick={this.site} style={this.state.clickNum === 1 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>一般场地设置</div>
+          <div onClick={this.preferentialTwo} style={this.state.clickNum === 3 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>特殊场地设置</div>
+          <div onClick={this.preferential} style={this.state.clickNum === 2 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>优惠活动设置</div>
           
         </div>
         <div style={{ height: '0.6rem', background: '#f5f5f5' }}></div>

@@ -68,7 +68,6 @@ class closeYu extends React.Component {
 
   async getSetUpFieldSportId(data) {
     const res = await getSetUpFieldSportId(data, sessionStorage.getItem('venue_token'))
-    console.log(res.data.data)
      this.setState({ListSport:res.data.data})
   }
 

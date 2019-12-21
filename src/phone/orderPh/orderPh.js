@@ -253,7 +253,7 @@ class orderPh extends React.Component {
     if (res.data.code === 2000) {
       Toast.success(res.data.msg, 1);
       this.setState({ visible: false })
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start, enddate: this.state.end })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start==='选择开始日期'?'':this.state.start, enddate: this.state.end==='选择结束日期'?'':this.state.end  })
     }
   }
 
@@ -435,8 +435,8 @@ class orderPh extends React.Component {
     return (
       <div className="orderPh" onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
         <div className="headerNav">
-          <div onClick={this.activityList} style={this.state.activityList === true ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>活动列表</div>
-          <div onClick={this.bookingKanban} style={this.state.activityList === false ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>预约面板</div>
+          <div onClick={this.activityList} style={this.state.activityList === true ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>预约活动列表</div>
+          <div onClick={this.bookingKanban} style={this.state.activityList === false ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>场地预约情况</div>
         </div>
         <div className='headSelect' style={this.state.spinFlag === false ? { display: 'none' } : { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' }} ><Icon type="loading" className='loadingY' style={{ top: this.state.clenTop / 4 }} /></div>
 

@@ -143,10 +143,6 @@ class siteSettings extends React.Component {
     this.setState({
       visible: true,
     });
-    // this.setState({
-    //   runId: [], openday: [], opendayname: '请选择', starttime: '', endtime: '', costperhour: '',maxScheduledDateName:[],
-    //   number: 1, maxScheduledDate: '请选择', appointmenttime: [], comment: '', DisList: ''
-    // })
   };
 
   handleOk = e => {
@@ -268,7 +264,6 @@ class siteSettings extends React.Component {
         break;
       default:
         dayTwo = "请选择";
-
     }
     this.setState({ maxScheduledDateName: dayTwo })
   }
@@ -284,6 +279,7 @@ class siteSettings extends React.Component {
       this.setState({ number: this.state.number - 1 })
     }
   }
+  
   jia = () => {
     if (this.state.number < 100) {
       this.setState({ number: this.state.number + 1 })
@@ -473,7 +469,7 @@ class siteSettings extends React.Component {
               <Col xs={{ span: 2 }}>节假日/工作日</Col>
               <Col xs={{ span: 2 }}>开始时间</Col>
               <Col xs={{ span: 2 }}>结束时间</Col>
-              <Col xs={{ span: 2 }}>价格<span className="fontColor">元/时</span></Col>
+              <Col xs={{ span: 2 }}>价格<span className="fontColor">(元/时)</span></Col>
               <Col xs={{ span: 2 }}>场地数量</Col>
               <Col xs={{ span: 3 }}>最长可预定日期</Col>
               <Col xs={{ span: 3 }}>最短提前预定时间</Col>
@@ -484,7 +480,7 @@ class siteSettings extends React.Component {
                 this.state.list.map((item, i) => (
                   <Row key={i} className="rowList">
                     <Col xs={{ span: 2 }}>{item.sportname}</Col>
-                    <Col xs={{ span: 2 }}>{item.openday ===1? '周一' : '' || item.openday === 2 ? '周二' : '' || item.openday === 3 ? '周三' : '' || item.openday === 4 ? '周四' : '' || item.openday === 5 ? '周五' : '' || item.openday === 6 ? '周六' : '' || item.openday === 0 ? '周日' : ''}</Col>
+                    <Col xs={{ span: 2 }}>{item.openday === 1 ? '周一' : '' || item.openday === 2 ? '周二' : '' || item.openday === 3 ? '周三' : '' || item.openday === 4 ? '周四' : '' || item.openday === 5 ? '周五' : '' || item.openday === 6 ? '周六' : '' || item.openday === 0 ? '周日' : ''}</Col>
                     <Col xs={{ span: 2 }}>{item.starttime}</Col>
                     <Col xs={{ span: 2 }}>{item.endtime}</Col>
                     <Col xs={{ span: 2 }}>{item.costperhour}</Col>
@@ -571,11 +567,11 @@ class siteSettings extends React.Component {
 
           <div className="modelList">
             <span>价格</span><span>（元/小时）</span>
-            <InputNumber className="startTime" value={this.state.costperhour} defaultValue={0} min={0} style={{paddingLeft:'10px'}} placeholder="请输入" onChange={this.money} />
+            <InputNumber className="startTime" value={this.state.costperhour} defaultValue={0} min={0} style={{ paddingLeft: '10px' }} placeholder="请输入" onChange={this.money} />
           </div>
 
           <div className="modelList">
-            <span>数量</span>
+            <span>场地总数量</span>
             <div className="startTime"> <span className="jian" onClick={this.jian}>-</span > &nbsp; {this.state.number} &nbsp;  <span className="jia" onClick={this.jia}>+</span></div>
           </div>
 

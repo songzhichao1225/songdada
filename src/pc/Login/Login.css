@@ -95,6 +95,7 @@
 
 .login .ant-col{
    width: 100%;
+   text-align: left;
 }
 .login .ant-input{
 	height: 45px;

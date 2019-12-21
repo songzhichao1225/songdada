@@ -207,3 +207,7 @@ clear: left;
 .homePage .xing>img:first-child{
    margin-left: 15px;
 }
+
+.ant-spin-dot-item{
+    background: #FCBB4F;
+}

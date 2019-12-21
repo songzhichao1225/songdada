@@ -26,6 +26,9 @@ class news extends React.Component {
 
   componentDidMount() {
     this.getVenueNewsList({ page: 1 })
+    setInterval(()=>{
+      window.addEventListener('storage',sessionStorage.getItem('kood')==='2'? this.getVenueNewsList({ page: 1 }):this);
+    },2000)
   }
 
 
