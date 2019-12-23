@@ -104,7 +104,7 @@ class commentPh extends React.Component {
             <img src={this.state.scoreSon >= 3 ? require("../../assets/50xing (3).png") : require("../../assets/50xing (2).png") && this.state.scoreSon < 3 && this.state.scoreSon > 2 ? require("../../assets/50xing (1).png") : require("../../assets/50xing (2).png")} alt="星" />
             <img src={this.state.scoreSon >= 4 ? require("../../assets/50xing (3).png") : require("../../assets/50xing (2).png") && this.state.scoreSon < 4 && this.state.scoreSon > 3 ? require("../../assets/50xing (1).png") : require("../../assets/50xing (2).png")} alt="星" />
             <img src={this.state.scoreSon >= 5 ? require("../../assets/50xing (3).png") : require("../../assets/50xing (2).png") && this.state.scoreSon < 5 && this.state.scoreSon > 4 ? require("../../assets/50xing (1).png") : require("../../assets/50xing (2).png")} alt="星" />
-            <span className="right">{this.state.score.score}</span>
+            <span className="right">{this.state.score.score}</span> 
           </div>
           <div className="serve"><span>设施 {this.state.score.equscore}</span> <span>服务 {this.state.score.envscore}</span> <span>价格 {this.state.score.xjbScore}</span></div>
 
@@ -136,6 +136,7 @@ class commentPh extends React.Component {
                 <div style={{ display: 'block', clear: 'both' }} className="commentImg">
                 </div>
                 <span style={{ display: 'block', clear: 'both' }}>{item.commentDate}</span>
+                 
                 <div className={item.comment_reply !== null ? 'Stadium' : 'stadiumNone'}>
                   <div className="logoImg"><img src={require("../../assets/kefu.png")} alt="场馆端" /></div>
                   <span className="stadiumText">{item.comment_reply}</span>
@@ -144,10 +145,10 @@ class commentPh extends React.Component {
                 <div className="reply" data-uid={item.uid} onClick={this.showModal}><img src={require("../../assets/icon_pc_comment.png")} alt="回复" /></div>
               </div>
             ))
-
+ 
           }
 
-          <Modal
+          <Modal 
             title="回复该客户"
             footer={null}
             visible={this.state.visible}

@@ -38,19 +38,19 @@
 }
 .stadiumInformationPh .boss .input{
     width: 95%;
-    min-height: 3rem;
+    min-height: 46px;
     margin: 1rem 0 0 2.5%;
     border-bottom: 0.06rem solid #f3f3f3;
     float: left;
 }
 .stadiumInformationPh .boss .input>span{
     font-size:0.88rem;
-    line-height: 3rem;
+    line-height: 44px;
     float: left;
 }
 .stadiumInformationPh .boss .input .select{
     width: 70%;
-    height: 2.9rem;
+    height: 44px;
     margin-left: 1rem;
     float: left;
 }
@@ -120,4 +120,22 @@
 
 .stadiumInformationPh .ant-checkbox-wrapper{
     font-size: 0.75rem;
+}
+
+.stadiumInformationPh .am-list-item .am-list-line .am-list-content{
+    font-size: 0.6rem;
+}
+.stadiumInformationPh .am-list-item .am-list-line .am-list-extra{
+    font-size: 0.6rem;
+    flex-basis:60%
+}
+.stadiumInformationPh .am-list-item .am-list-line{
+    padding-right: 0;
+}
+.stadiumInformationPh .am-list-item{
+    padding-left: 0;
+   
+}
+html:not([data-scale]) .am-list-item:not(:last-child) .am-list-line::after{
+    background-color: #fff;
 }

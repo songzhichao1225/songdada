@@ -1,9 +1,9 @@
 import React from 'react';
 import './stadiumInformationPh.css';
 
-import {Toast } from 'antd-mobile';
+import { Toast, Picker, List,InputItem } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Input, Cascader, Upload, Checkbox, Icon, Modal, Button } from 'antd';
+import { Input, Upload, Checkbox, Icon, Modal, Button } from 'antd';
 import { PerfectingVenueInformation, getVenueInformation, VenueInformationSave } from '../../api';
 let arr = require('./address.json');
 const { TextArea } = Input;
@@ -58,10 +58,17 @@ class stadiumInformationPh extends React.Component {
     fileList: [],
     imageRes: '',
     stadiumName: '',//场馆名称
-    onChangeRun: '',//运动项目
-    onChangeCheck: '',//设施
+    onChangeRun: null,//运动项目
+    onChangeCheck: null,//设施
     textKo: '',//介绍场馆
     beforeList: [],
+    pickerValue: '',
+    arrCity: [],
+    arrCityNum: [],
+    arrCouty: [],
+    arrCoutyNum: [],
+    arrPro: [],
+    arrProNum: [],
   };
 
 
@@ -89,33 +96,53 @@ class stadiumInformationPh extends React.Component {
 
 
 
-  componentDidMount() { 
-    console.log(this.props.location.query)
- 
-      if (sessionStorage.getItem('notType')=== '1') {
-        this.getVenueInformation()
-      } else if(this.props.location.query!==undefined) {
-        this.setState({
-          addressXian: this.props.location.query.adddress,
-          address: this.props.location.query.adddress,
-          lat: this.props.location.query.lat,
-          lng: this.props.location.query.lng
-        })
-      }
-    
-  }
+  componentDidMount() {
 
-
-  selectChange = (value, selectedOptions) => {
-    let addressArr = []
-    for (let i in selectedOptions) {
-      addressArr.push(selectedOptions[i].label)
+    if (sessionStorage.getItem('notType') === '1') {
+      this.getVenueInformation()
+    } else if (this.props.location.query !== undefined) {
+      this.setState({
+        addressXian: this.props.location.query.adddress,
+        address: this.props.location.query.adddress,
+        lat: this.props.location.query.lat,
+        lng: this.props.location.query.lng
+      })
     }
-    sessionStorage.setItem('province', addressArr[0])
-    sessionStorage.setItem('city', addressArr[1])
-    sessionStorage.setItem('county', addressArr[2])
-    sessionStorage.setItem('addressId', value)
-    this.setState({ addressId: value, addressArr: addressArr })
+    let arrCity = []
+    let arrCityNum = []
+    for (let i in arr) {
+      for (let j in arr[i].children) {
+        arrCity.push(arr[i].children[j].label)
+        arrCityNum.push(arr[i].children[j].value)
+      }
+    }  //市
+
+    let arrCouty = []
+    let arrCoutyNum = []
+    for (let i in arr) {
+      arrCouty.push(arr[i].label)
+      arrCoutyNum.push(arr[i].value)
+    }  //省
+
+
+    let arrPro = []
+    let arrProNum = []
+    for (let i in arr) {
+      for (let j in arr[i].children) {
+        for (let k in arr[i].children[j].children) {
+          arrPro.push(arr[i].children[j].children[k].label)
+          arrProNum.push(arr[i].children[j].children[k].value)
+        }
+      }
+    }  //区县
+
+    let se = sessionStorage.getItem('addressId').split(',')
+    let arrBack = []
+    for (let i in se) {
+      arrBack.push(Number(se[i]))
+    }
+    this.setState({ arrCity: arrCity, arrCityNum: arrCityNum, arrCouty: arrCouty, arrCoutyNum: arrCoutyNum, arrProNum: arrProNum, arrPro: arrPro, addressId: arrBack })
+
   }
 
 
@@ -127,7 +154,7 @@ class stadiumInformationPh extends React.Component {
     }
   }
   xaingxi = e => {
-    this.setState({ addressXian: e.target.value })
+    this.setState({ addressXian: e })
   }
 
   handleChange = info => {
@@ -173,7 +200,7 @@ class stadiumInformationPh extends React.Component {
     }
   }
   stadiumName = e => {
-    this.setState({ stadiumName: e.target.value })
+    this.setState({ stadiumName: e })
   }
   onChangeRun = e => {
     this.setState({ onChangeRun: e })
@@ -207,7 +234,7 @@ class stadiumInformationPh extends React.Component {
     let { stadiumName, lat, lng, imageUrl, addressXian, address, fileList, imageRes, onChangeRun, onChangeCheck, textKo } = this.state
 
 
-    if (sessionStorage.getItem('notType')=== '1') {
+    if (sessionStorage.getItem('notType') === '1') {
       let arrimg = []
       for (let i in fileList) {
         if (fileList[i].response === undefined) {
@@ -263,8 +290,8 @@ class stadiumInformationPh extends React.Component {
           address: address,
           filesURL: arrimg.join('|'),
           firstURL: imageRes,
-          sport:onChangeRun===''?'':onChangeRun.join(','),
-          facilities:onChangeCheck===''?'':onChangeCheck.join(','),
+          sport: onChangeRun === '' ? '' : onChangeRun.join(','),
+          facilities: onChangeCheck === '' ? '' : onChangeCheck.join(','),
           siteInfo: textKo,
           position: addressXian,
         }
@@ -289,6 +316,15 @@ class stadiumInformationPh extends React.Component {
     }
   }
 
+  onOk = (e) => {
+    sessionStorage.setItem('province', this.state.arrCouty[this.state.arrCoutyNum.indexOf(e[0])])
+    sessionStorage.setItem('city', this.state.arrCity[this.state.arrCityNum.indexOf(e[1])])
+    sessionStorage.setItem('county', this.state.arrPro[this.state.arrProNum.indexOf(e[2])])
+    sessionStorage.setItem('addressId', e)
+    this.setState({ addressId: e, addressArr: [this.state.arrCouty[this.state.arrCoutyNum.indexOf(e[0])],this.state.arrCity[this.state.arrCityNum.indexOf(e[1])],this.state.arrPro[this.state.arrProNum.indexOf(e[2])]] })
+
+
+  }
 
 
   render() {
@@ -314,37 +350,57 @@ class stadiumInformationPh extends React.Component {
     return (
       <div className="stadiumInformationPh">
         <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span style={{ color: '#D85D27' }}>完善信息 ></span> <span>审核  ></span> <span>成功</span><Icon type="close" onClick={this.close} style={{ position: 'absolute', right: '5%', top: '35%' }} /> </div>
-
-        <div className="headTtitle">完善场馆基本信息</div>
-        <div style={{ height: '0.63rem', background: 'rgba(243,243,243,1)' }}></div>
         <div className="boss">
           <div className="input">
-            <span>选择地区</span>
-            <Cascader
-              className="select"
-              options={arr}
-              onChange={this.selectChange}
-              placeholder="选择省市区"
-              value={sessionStorage.getItem('addressId') === null ? '' : [parseInt(sessionStorage.getItem('addressId').split(',')[0]), parseInt(sessionStorage.getItem('addressId').split(',')[1]), parseInt(sessionStorage.getItem('addressId').split(',')[2])]}
-            />
+
+            <Picker
+              data={arr}
+              title="选择地区"
+              value={this.state.addressId}
+              onOk={this.onOk}
+            >
+              <List.Item arrow="horizontal">选择地区</List.Item>
+            </Picker>
           </div>
 
 
 
           <div className="input">
             <span>场馆位置</span>
-            <Input className="select" value={this.props.location.query!==undefined?this.props.location.query.title:this.state.address} placeholder="请选择" />
+            <InputItem
+              placeholder="点击图标选择地址"
+              value={this.props.location.query !== undefined ? this.props.location.query.title : this.state.address}
+              style={{ fontSize: '0.6rem' }}
+              className="select"
+              disabled={true}
+              onClick={this.mapPh} 
+            >
+            </InputItem>
             <img className="imgAddress" onClick={this.mapPh} src={require("../../assets/icon_pc_dingwei.png")} alt="地址" />
           </div>
 
           <div className="input">
             <span>详细地址</span>
-            <Input className="select" value={this.props.location.query!==undefined?this.props.location.query.adddress:this.state.addressXian} onChange={this.xaingxi} placeholder="请输入" />
+            <InputItem
+              placeholder="请输入详细地址"
+              value={this.props.location.query !== undefined ? this.props.location.query.adddress : this.state.addressXian}
+              style={{ fontSize: '0.6rem' }}
+              className="select"
+              onChange={this.xaingxi}
+            >
+            </InputItem>
           </div>
 
           <div className="input">
             <span>场馆名称</span>
-            <Input className="select" value={this.state.stadiumName} placeholder="请输入" onChange={this.stadiumName} />
+            <InputItem
+              placeholder="请输入场馆名称"
+              value={this.state.stadiumName}
+              style={{ fontSize: '0.6rem' }}
+              className="select"
+              onChange={this.stadiumName}
+            >
+            </InputItem>
           </div>
           <div className="input">
             <span>门脸照</span>

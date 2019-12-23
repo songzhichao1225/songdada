@@ -192,10 +192,6 @@ class comment extends React.Component {
         </div>
 
 
-
-
-
-
       </div>
     );
   }

@@ -8,6 +8,8 @@
     font-size: 1rem;
     border-bottom: 0.06rem solid #f5f5f5;
     position: relative;
+    background: #374D66;
+    color:#fff
 }
 .untiePhonePh .listSon{
     width: 90%;

@@ -1,10 +1,10 @@
 import React from 'react';
 import './corporatePh.css';
 import 'antd/dist/antd.css';
-import {Toast } from 'antd-mobile';
+import { Toast, InputItem } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { _login, VenueSelectSiteName, _code } from '../../api';
-import { Input,Radio,Icon } from 'antd';
+import { Radio, Icon } from 'antd';
 
 class corporatePh extends React.Component {
 
@@ -47,18 +47,18 @@ class corporatePh extends React.Component {
     }
   }
   code = e => {
-    this.setState({ code: e.target.value })
+    this.setState({ code: e })
   }
   onPassword = e => {
-    this.setState({ pass: e.target.value })
+    this.setState({ pass: e})
   }
 
   async nacode(data) {
     const res = await _code(data)
-    if(res.data.code===2000){
-     Toast.success(res.data.msg, 1);
-    }else{
-      
+    if (res.data.code === 2000) {
+      Toast.success(res.data.msg, 1);
+    } else {
+
       Toast.fail(res.data.msg, 1);
     }
   }
@@ -91,11 +91,11 @@ class corporatePh extends React.Component {
       }, 1000)
     }
   }
-  code=e=>{
-    this.setState({code:e.target.value})
+  code = e => {
+    this.setState({ code: e})
   }
-  password=e=>{
-    this.setState({pass:e.target.value})
+  password = e => {
+    this.setState({ pass: e })
   }
   async VenueSelectSiteName(data) {
     const res = await VenueSelectSiteName(data)
@@ -111,7 +111,7 @@ class corporatePh extends React.Component {
         }
       }, 1000)
       this.nacode({ "mobile": this.state.phone, "type": 'venuelogin' })
-    }else{
+    } else {
       Toast.fail(res.data.msg, 1);
     }
   }
@@ -122,7 +122,7 @@ class corporatePh extends React.Component {
   registerPh = () => {
     this.props.history.push('/registerPh')
   }
-  forgetPassword=()=>{
+  forgetPassword = () => {
     this.props.history.push('/forgetPasswordPh')
   }
 
@@ -136,7 +136,7 @@ class corporatePh extends React.Component {
   }
 
   onChange = e => {
-    this.setState({ value: e.target.value })
+    this.setState({ value:e })
   }
 
   onSubmit = () => {
@@ -164,10 +164,32 @@ class corporatePh extends React.Component {
         <div className="headerTitle">法人手机号登录<Icon type="close" onClick={this.close} style={{ position: 'absolute', right: '5%', top: '35%' }} /></div>
         <div className="loginInput">
           <div className="name">
-            <Input className="phone" autoFocus prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={11} onChange={this.phone} placeholder="法人手机号" />
+
+            <InputItem
+              type='phone'
+              placeholder="法人手机号"
+              clear={true}
+              style={{ fontSize: '0.6rem' }}
+              onChange={this.phone}
+              autoFocus
+              className="phone"
+            ><Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />
+            </InputItem>
+
+
           </div>
           <div className="name">
-            <Input className="phone"  prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />}  maxLength={8}  onChange={this.code} placeholder="手机验证码" />
+
+            <InputItem
+              type='number'
+              placeholder="手机验证码"
+              clear={true}
+              style={{ fontSize: '0.6rem' }}
+              onChange={this.code}
+              className="phone"
+              maxLength={6}
+            ><Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />
+            </InputItem>
             <div className={this.state.textT === '获取验证码' ? 'obtain' : 'koohidden'} onClick={this.naCode} >
               {this.state.textT}
             </div>
@@ -175,19 +197,29 @@ class corporatePh extends React.Component {
               {this.state.textT}
             </div>
           </div>
-          <div className={this.state.selectVeun.length>0?'name':'koohidden'}> 
-          <Radio.Group className="radio" onChange={this.onChange} value={this.state.value}>
-            {
-              this.state.selectVeun.map((item, i) => (
-                <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
-              ))
-            }
+          <div className={this.state.selectVeun.length > 0 ? 'name' : 'koohidden'}>
+            <Radio.Group className="radio" onChange={this.onChange} value={this.state.value}>
+              {
+                this.state.selectVeun.map((item, i) => (
+                  <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
+                ))
+              }
 
-          </Radio.Group>
+            </Radio.Group>
           </div>
           <div className="name">
-            <Input.Password className="phone"  prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />}  onChange={this.password} type='password' maxLength={8} placeholder="请输入密码" />
-            <span  style={{color:'#D85D27'}} onClick={this.forgetPassword}>忘记密码</span>
+
+            <InputItem
+              type='password'
+              placeholder="请输入密码"
+              clear={true}
+              style={{ fontSize: '0.6rem' }}
+              onChange={this.password}
+              className="phone"
+              maxLength={8}
+            ><Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />
+            </InputItem>
+            <span style={{ color: '#D85D27' }} onClick={this.forgetPassword}>忘记密码</span>
           </div>
 
           <div className="loginBtn" onClick={this.onSubmit}>登录</div>

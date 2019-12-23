@@ -8,6 +8,8 @@
     text-align: center;
     line-height: 3rem;
     position: relative;
+    background: #374D66;
+    color:#fff
 }
 .recordPh .recordSon{
    width: 95%;

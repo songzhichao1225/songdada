@@ -434,8 +434,8 @@ class inforSitePh extends React.Component {
       <div className="inforSitePh">
         <div className="nav">
           <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left: '5%', top: '35%', fontSize: '1rem' }} />
-          <div className={localStorage.getItem('ismethod') === '1' ? 'left' : 'width'} style={this.state.flag === 1 ? { color: '#000' } : {}} onClick={this.left}>基本信息</div>
-          <div className={localStorage.getItem('ismethod') === '1' ? 'right' : 'none'} style={this.state.flag === 1 ? {} : { color: '#000' }} onClick={this.right}>资质信息</div>
+          <div className={localStorage.getItem('ismethod') === '1' ? 'left' : 'width'} style={this.state.flag === 1 ? { color: '#fff' } : {}} onClick={this.left}>基本信息</div>
+          <div className={localStorage.getItem('ismethod') === '1' ? 'right' : 'none'} style={this.state.flag === 1 ? {} : { color: '#fff' }} onClick={this.right}>资质信息</div>
         </div>
         <div className="basic" style={this.state.spin === false && this.state.flag === 1 ? { display: 'block',overflowY:'scroll',height:'100%' } : { display: 'none' }}>
           <div className="listSon">

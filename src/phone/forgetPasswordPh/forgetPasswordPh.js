@@ -1,10 +1,10 @@
 import React from 'react';
 import './forgetPasswordPh.css';
 
-import {Toast } from 'antd-mobile';
+import { Toast, InputItem } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { _code, VenueSelectSiteName, VenueForgetPass } from '../../api';
-import {  Input, Radio,Icon } from 'antd';
+import { Radio, Icon } from 'antd';
 
 
 class forgetPasswordPh extends React.Component {
@@ -35,7 +35,7 @@ class forgetPasswordPh extends React.Component {
         }
       }, 1000)
       this.nacode({ "mobile": this.state.phone, "type": 'venueforgetpass' })
-    }else{
+    } else {
       Toast.fail(res.data.msg, 1);
     }
   }
@@ -50,9 +50,9 @@ class forgetPasswordPh extends React.Component {
   }
   async nacode(data) {
     const res = await _code(data)
-    if(res.data.code===2000){
+    if (res.data.code === 2000) {
       Toast.success(res.data.msg, 1);
-    }else{
+    } else {
       Toast.fail(res.data.msg, 1);
     }
 
@@ -65,16 +65,16 @@ class forgetPasswordPh extends React.Component {
     }
   }
   onChange = e => {
-    this.setState({ value: e.target.value })
+    this.setState({ value: e })
   }
   code = e => {
-    this.setState({ code: e.target.value })
+    this.setState({ code: e })
   }
   pass = e => {
-    this.setState({ pass: e.target.value })
+    this.setState({ pass: e })
   }
   passTwo = e => {
-    this.setState({ passTwo: e.target.value })
+    this.setState({ passTwo: e })
   }
 
   async VenueForgetPass(data) {
@@ -104,19 +104,37 @@ class forgetPasswordPh extends React.Component {
 
 
 
-
-
   render() {
     return (
       <div className="forgetPasswordPh">
         <div className="title"> <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left: '5%', top: '35%' }} />忘记密码</div>
         <div className="boss">
           <div className="name">
-            <Input className="phone" prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />}  maxLength={11}  onChange={this.phoneChange} placeholder="法人手机号" />
+
+            <InputItem
+              type='phone'
+              placeholder="法人手机号"
+              clear={true}
+              style={{ fontSize: '0.6rem' }}
+              onChange={this.phoneChange}
+              autoFocus
+              className="phone"
+            ><Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />
+            </InputItem>
           </div>
 
           <div className="name">
-            <Input className="phone" prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={8} onChange={this.code} placeholder="手机验证码" />
+
+            <InputItem
+              type='number'
+              placeholder="手机验证码"
+              clear={true}
+              style={{ fontSize: '0.6rem' }}
+              onChange={this.code}
+              className="phone"
+              maxLength={6}
+            ><Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />
+            </InputItem>
             <div className={this.state.textT === '获取验证码' ? 'obtain' : 'koohidden'} onClick={this.naCode} >
               {this.state.textT}
             </div>
@@ -125,27 +143,46 @@ class forgetPasswordPh extends React.Component {
             </div>
           </div>
 
-          <div className={this.state.selectVeun.length>0?'name':'koohidden'}> 
-          <Radio.Group className="radio" onChange={this.onChange} value={this.state.value}>
+          <div className={this.state.selectVeun.length > 0 ? 'name' : 'koohidden'}>
+            <Radio.Group className="radio" onChange={this.onChange} value={this.state.value}>
 
-            {
-              this.state.selectVeun.map((item, i) => (
-                <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
-              ))
-            }
+              {
+                this.state.selectVeun.map((item, i) => (
+                  <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
+                ))
+              }
 
-          </Radio.Group>
+            </Radio.Group>
           </div>
 
 
           <div className="name">
-            <Input.Password className="phone" style={{width:'90%'}} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />}  maxLength={8}onChange={this.pass} placeholder="请输入密码" />
+            <InputItem
+              type='password'
+              placeholder="请输入密码"
+              clear={true}
+              style={{ fontSize: '0.6rem' }}
+              onChange={this.pass}
+              className="phone"
+              maxLength={8}
+            ><Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />
+            </InputItem>
           </div>
 
           <div className="name">
-            <Input.Password className="phone" style={{width:'90%'}} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={8} onChange={this.passTwo} placeholder="请再次输入密码" />
+
+            <InputItem
+              type='password'
+              placeholder="请输入密码"
+              clear={true}
+              style={{ fontSize: '0.6rem' }}
+              onChange={this.passTwo}
+              className="phone"
+              maxLength={8}
+            ><Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />
+            </InputItem>
           </div>
-           <div className="btn" onClick={this.comfir}>确定</div>
+          <div className="btn" onClick={this.comfir}>确定</div>
 
 
         </div>

@@ -10,15 +10,15 @@
 }
 .corporatePh .loginInput .name{
     width: 100%;
-    min-height: 3.06rem;
-    border-bottom: 0.06rem solid #999;
+    min-height: 46px;
+    border-bottom: 0.06rem solid #f0f0f0;
 }
 .corporatePh .loginInput .name .phone{
     outline: none;
     width: 70%;
-    height: 2.9rem;
+    height:44px;
     border: none;
-    line-height: 3.06rem;
+    line-height: 44px;
     display: block;
     float: left;
 }

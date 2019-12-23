@@ -134,3 +134,16 @@
 .qualificationPh .ant-select-selection__rendered{
     margin-left: 0;
 }
+.qualificationPh .am-list-item{
+    min-height: 39px;
+    padding-left: 0;
+}
+.qualificationPh .am-list-item .am-list-line .am-list-content{
+    font-size: 0.88rem;
+}
+.qualificationPh .am-list-item .am-list-line .am-list-extra{
+    font-size: 0.88rem;
+}
+.qualificationPh .am-list-item .am-list-line{
+    padding-right: 0;
+}

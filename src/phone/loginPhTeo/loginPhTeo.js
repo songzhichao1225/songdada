@@ -2,35 +2,35 @@ import React from 'react';
 import './loginPhTeo.css';
 import 'antd/dist/antd.css';
 
-import {Toast } from 'antd-mobile';
+import { Toast, InputItem } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { _login } from '../../api';
-import {Input,Icon } from 'antd';
+import { Icon } from 'antd';
 
 
 class loginPhTeo extends React.Component {
 
   state = {
-    phone:'',
-    password:'',
+    phone: '',
+    password: '',
   };
 
   componentDidMount() {
-    
+
 
   }
-  corporatePh=()=>{
+  corporatePh = () => {
     this.props.history.push('/corporateLogin')
   }
 
-  registerPh=()=>{
-    this.props.history.push('/registerPh')    
+  registerPh = () => {
+    this.props.history.push('/registerPh')
   }
-  phone=e=>{
-    this.setState({phone:e.target.value}) 
+  phone = e => {
+    this.setState({ phone: e })
   }
-  pssword=e=>{
-    this.setState({password:e.target.value})    
+  pssword = e => {
+    this.setState({ password: e })
   }
 
   async login(data) {
@@ -60,14 +60,14 @@ class loginPhTeo extends React.Component {
       }, 1000)
     }
   }
-  
-  submit=()=>{
-    let {phone,password}=this.state
-      this.login({username:phone,userpass:password,usercode:'',type:'1',Logintype:'mobile',venueloginuuid:'',})
-  }
-  
 
-  forgetPassword=()=>{
+  submit = () => {
+    let { phone, password } = this.state
+    this.login({ username: phone, userpass: password, usercode: '', type: '1', Logintype: 'mobile', venueloginuuid: '', })
+  }
+
+
+  forgetPassword = () => {
     this.props.history.push('/forgetPasswordPh')
   }
 
@@ -93,14 +93,34 @@ class loginPhTeo extends React.Component {
         <div className="headerTitle">用户名登录 <Icon type="close" onClick={this.close} style={{ position: 'absolute', right: '5%', top: '35%' }} /></div>
         <div className="loginInput">
           <div className="name">
-            <Input className="phone" autoFocus prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />}  onChange={this.phone} placeholder="用户名" />
+            <InputItem
+              type='text'
+              placeholder="用户名"
+              clear={true}
+              style={{ fontSize: '0.6rem' }}
+              onChange={this.phone}
+              autoFocus
+              className="phone"
+            ><Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />
+            </InputItem>
           </div>
           <div className="name">
-            <Input.Password maxLength={8} className="phone" prefix={<Icon type="unlock" className="inputIcon"  style={{ color: 'rgba(0,0,0,.25)' }} />}  onChange={this.pssword}  placeholder="请输入密码" />
-            <span style={{color:'#D85D27'}} onClick={this.forgetPassword}>忘记密码</span>
+
+            <InputItem
+              type='password'
+              placeholder="密码"
+              clear={true}
+              style={{ fontSize: '0.6rem' }}
+              onChange={this.pssword}
+              maxLength={8}
+              className="phone"
+            ><Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />
+            </InputItem>
+
+            <span style={{ color: '#D85D27' }} onClick={this.forgetPassword}>忘记密码</span>
           </div>
           <div className="loginBtn" onClick={this.submit}>登录</div>
-          <div className="footer" style={{marginTop:'1rem'}}>
+          <div className="footer" style={{ marginTop: '1rem' }}>
             <span onClick={this.corporatePh}>法人手机号登录</span>
             <span onClick={this.registerPh}>新用户注册</span>
           </div>

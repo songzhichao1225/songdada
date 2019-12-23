@@ -444,12 +444,12 @@ class orderPh extends React.Component {
         <div className={this.state.activityList === true ? 'activityList' : 'hidden'}>
           <div className="screen" onClick={this.showDrawer}><span style={{ paddingRight: '0.2rem' }}>筛选</span><img style={{ marginTop: '-0.2rem' }} src={require('../../assets/shaixuan.png')} alt="筛选" /></div>
 
-          <Row style={{ borderBottom: '0.06rem solid #f5f5f5' }}>
+          {/* <Row style={{ borderBottom: '0.06rem solid #f5f5f5' }}>
             <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 1 }}>ID/项目</Col>
             <Col xs={{ span: 8, offset: 2 }} lg={{ span: 6, offset: 1 }}>时间</Col>
             <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 1 }}>状态</Col>
-          </Row>
-          <div style={{width:'100%',height:'0.6rem',background:'rgb(245, 245, 245)'}}></div>
+          </Row> */}
+          {/* <div style={{width:'100%',height:'0.6rem',background:'rgb(245, 245, 245)'}}></div> */}
           <div className='contentT'>
             <div style={this.state.activeSon.length === 0 ? { display: 'none' } : { display: 'block' }}>
               {

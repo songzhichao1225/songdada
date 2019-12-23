@@ -24,7 +24,7 @@
 .registerPh .input{
     width: 20rem;
     height: 3.1rem;
-    border-bottom:0.06rem solid #999999;
+    border-bottom:0.06rem solid #f0f0f0;
     margin:1rem auto 0;
     overflow: hidden;
 }
@@ -60,7 +60,7 @@
     line-height: 1.5rem;
     margin-top: 0.8rem;
     text-align: center;
-    font-size: 0.75rem;
+    font-size: 0.6rem;
 }
 .registerPh .line{
     border:none;
@@ -108,4 +108,7 @@
 }
 .registerPh .ant-input{
     height: 2rem;
+}
+.am-list-item .am-input-label.am-input-label-5{
+    width: 20px;
 }

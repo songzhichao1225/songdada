@@ -10,22 +10,22 @@
 }
 .loginPhTeo .loginInput .name{
     width: 100%;
-    height: 3.06rem;
-    border-bottom: 0.06rem solid #999;
+    height: 46px;
+    border-bottom: 0.06rem solid #f0f0f0;
 }
 .loginPhTeo .loginInput .name .phone{
     outline: none;
     width: 70%;
-    height: 2.9rem;
+    height:41px;
     border: none;
-    line-height: 3rem;
+    line-height:41px;
     display: block;
     float: left;
 }
 .loginPhTeo .loginInput .name>span{
   display: block;
   float: left;
-  line-height: 3.06rem;
+  line-height: 46px;
   font-size: 0.75rem;
 }
 .loginPhTeo .loginBtn{
@@ -69,3 +69,4 @@
     text-align: center;
     position: relative;
 }
+

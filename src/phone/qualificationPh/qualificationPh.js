@@ -1,7 +1,7 @@
 import React from 'react';
 import './qualificationPh.css';
 
-import {Toast } from 'antd-mobile';
+import { Toast, Picker, List } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Upload, Input, Button, Radio, Select, Tooltip, Icon } from 'antd';
 import { getIsStatus, getVenueOpenBankList, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity, VenueQualifications, getVenueQualificationInformation, VenueQualificationInformationSave } from '../../api';
@@ -54,14 +54,29 @@ class qualificationPh extends React.Component {
   async getVenueOpenBank(data) {
     const res = await getVenueOpenBank(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ type: res.data.data, flag: false })
+      let arrType = []
+      for (let i in res.data.data) {
+        let k = {}
+        k.label = res.data.data[i].bank_name
+        k.value = res.data.data[i].bank_id
+        arrType.push(k)
+      }
+
+      this.setState({ type: arrType, flag: false })
     }
   }
 
   async getVenueOpenBankProvince(data) {
     const res = await getVenueOpenBankProvince(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ backProvince: res.data.data, flagTwo: false })
+      let arrType = []
+      for (let i in res.data.data) {
+        let k = {}
+        k.label = res.data.data[i].province
+        k.value = res.data.data[i].province_id
+        arrType.push(k)
+      }
+      this.setState({ backProvince: arrType, flagTwo: false })
     }
   }
 
@@ -70,7 +85,14 @@ class qualificationPh extends React.Component {
   async getVenueOpenBankCity(data) {
     const res = await getVenueOpenBankCity(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ backCity: res.data.data, flagThree: false })
+      let arrType = []
+      for (let i in res.data.data) {
+        let k = {}
+        k.label = res.data.data[i].city
+        k.value = res.data.data[i].city_id
+        arrType.push(k)
+      }
+      this.setState({ backCity: arrType, flagThree: false })
     }
   }
 
@@ -80,18 +102,18 @@ class qualificationPh extends React.Component {
     const res = await getVenueQualificationInformation(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({
-         faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
+        faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
         value: res.data.data.Settlement, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, imageUrlBaseT: res.data.data.legalBaseURL,
-        imageResOneTwo: res.data.data.legalFilesURL, 
+        imageResOneTwo: res.data.data.legalFilesURL,
       })
-      if(res.data.data.legalBaseURL!==''){
-      this.setState({place:'上传成功'})
+      if (res.data.data.legalBaseURL !== '') {
+        this.setState({ place: '上传成功' })
       }
       console.log(sessionStorage.getItem('yinImg'))
-      if(sessionStorage.getItem('yinImg')!==null){
-          this.setState({imageUrl:'https://app.tiaozhanmeiyitian.com/'+sessionStorage.getItem('yinImg')})
-      }else{
-        this.setState({imageUrl: res.data.data.lisenceURL})
+      if (sessionStorage.getItem('yinImg') !== null) {
+        this.setState({ imageUrl: 'https://app.tiaozhanmeiyitian.com/' + sessionStorage.getItem('yinImg') })
+      } else {
+        this.setState({ imageUrl: res.data.data.lisenceURL })
       }
     }
     if (this.props.location.query !== undefined) {
@@ -160,33 +182,33 @@ class qualificationPh extends React.Component {
     }
   }
   provinceChange = e => {
-    if(this.state.bank_id!==''){
+    if (this.state.bank_id !== '') {
       this.setState({ province_id: e })
       this.getVenueOpenBankCity({ province_id: e })
-    }else{
+    } else {
       Toast.fail('请选择银行类型', 1);
-      
+
       this.getVenueOpenBankCity({ province_id: e })
     }
 
   }
 
   typeChange = e => {
-  
-    if(this.state.city_id!==''){
-       this.setState({kai:false,bank_id: e })
-    }else{
+
+    if (this.state.city_id !== '') {
+      this.setState({ kai: false, bank_id: e })
+    } else {
       this.setState({ bank_id: e })
     }
   }
 
   cityChange = e => {
-    if(this.state.bank_id!==''){
+    if (this.state.bank_id !== '') {
       this.setState({ city_id: e, kai: false, kaiText: '请输入银行关键字' })
-    }else{
-      this.setState({ city_id: e,kaiText: '请输入银行关键字' })
+    } else {
+      this.setState({ city_id: e, kaiText: '请输入银行关键字' })
     }
-     
+
   }
   handleSearch = e => {
     this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
@@ -214,7 +236,7 @@ class qualificationPh extends React.Component {
     if (res.data.code === 2000) {
       this.props.history.push('/resultsAuditsPh')
       Toast.success(res.data.msg, 1);
-      
+
     } else {
       Toast.fail(res.data.msg, 1);
     }
@@ -222,7 +244,7 @@ class qualificationPh extends React.Component {
 
 
   submit = () => {
-    let { siteUUID, imageResOneTwo,imageUrlBaseT, faName, faIdcard, faPhone, value, cardId, openingLine } = this.state
+    let { siteUUID, imageResOneTwo, imageUrlBaseT, faName, faIdcard, faPhone, value, cardId, openingLine } = this.state
 
     if (sessionStorage.getItem('notType') === '1') {
       let data = {
@@ -278,7 +300,7 @@ class qualificationPh extends React.Component {
 
     const uploadButton = (
       <div>
-          <Icon type="plus" />
+        <Icon type="plus" />
         <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}>营业执照</div>
       </div>
     );
@@ -343,34 +365,37 @@ class qualificationPh extends React.Component {
           </div>
 
           <div className="input">
-            <span>银行类型</span>
-            <Select placeholder="银行类型" style={{ width: '67%', height: '2.9rem', float: 'right' }} loading={this.state.flag} onChange={this.typeChange}>
+
+            {/* <Select placeholder="银行类型" style={{ width: '67%', height: '2.9rem', float: 'right' }} loading={this.state.flag} onChange={this.typeChange}>
               {
                 this.state.type.map((item, i) => (
                   <Option key={i} value={item.bank_id}>{item.bank_name}</Option>
                 ))
               }
-            </Select>
+            </Select> */}
+
+            <Picker data={this.state.type} cols={1} onChange={this.typeChange} value={this.state.bank_id} className="forss">
+              <List.Item arrow="horizontal">银行类型</List.Item>
+            </Picker>
+
+
           </div>
 
           <div className="input">
-            <span>开户所在地</span>
-            <Select placeholder="所在市" style={{ width: '33.5%', height: '2.9rem', float: 'right' }} loading={this.state.flagThree} onChange={this.cityChange}>
-              {
-                this.state.backCity.map((item, i) => (
-                  <Option key={i} value={item.city_id}>{item.city}</Option>
-                ))
-              }
-            </Select>
-            <Select placeholder="所在省" style={{ width: '33.5%', height: '2.9rem', float: 'right' }} loading={this.state.flagTwo} onChange={this.provinceChange}>
-              {
-                this.state.backProvince.map((item, i) => (
-                  <Option key={i} value={item.province_id}>{item.province}</Option>
-                ))
-              }
-            </Select>
+            <Picker data={this.state.backProvince} cols={1} onChange={this.provinceChange} value={this.state.province_id} className="forss">
+              <List.Item arrow="horizontal">开户所在省</List.Item>
+            </Picker>
 
           </div>
+
+          <div className="input">
+            <Picker data={this.state.type} cols={1} onChange={this.cityChange} value={this.state.city_id} className="forss">
+              <List.Item arrow="horizontal">开户所在市</List.Item>
+            </Picker>
+
+          </div>
+        
+
 
 
           <div className="input">

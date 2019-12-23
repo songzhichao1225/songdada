@@ -1,11 +1,12 @@
 import React from 'react';
 import './registerPh.css';
 
-import {Toast } from 'antd-mobile';
+import { Toast, InputItem, Modal, Button } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Button, Input, Checkbox, Popconfirm, Icon,Modal } from 'antd';
-import { _register, _code, getPromoteName,getIsUserName } from '../../api';
+import { Checkbox, Icon } from 'antd';
+import { _register, _code, getPromoteName, getIsUserName } from '../../api';
 
+const alert = Modal.alert;
 class registerPh extends React.Component {
 
   state = {
@@ -24,44 +25,40 @@ class registerPh extends React.Component {
   };
 
   componentDidMount() {
-
   }
 
   changID = (e) => {
-    this.setState({ Id: e.target.value })
+    this.setState({ Id: e })
   }
 
-  
+
 
   async getIsUserName(data) {
     const res = await getIsUserName(data)
-     if(res.data.code===2000){
-        this.setState({ name: data.name})
-     }else{
-       Toast.fail(res.data.msg, 1);
-       this.setState({ name:''})
-     }
+    if (res.data.code === 2000) {
+      this.setState({ name: data.name })
+    } else {
+      Toast.fail(res.data.msg, 1);
+      this.setState({ name: '' })
+    }
   }
 
 
   changeName = (e) => {
-
-      this.getIsUserName({name:e.target.value})
-    
-    
-
+    this.setState({ qipao: false })
+    this.getIsUserName({ name: e })
   }
   changePhone = (e) => {
-      this.setState({ phone: e.target.value })
+    this.setState({ phone: e })
   }
   changeCode = (e) => {
-    this.setState({ code: e.target.value })
+    this.setState({ code: e })
   }
   changePassword = (e) => {
-    this.setState({ password: e.target.value })
+    this.setState({ password: e })
   }
   changePasswordT = (e) => {
-    this.setState({ passwordT: e.target.value })
+    this.setState({ passwordT: e })
   }
   changeRadio = e => {
     this.setState({ changeRadio: e.target.checked })
@@ -87,9 +84,9 @@ class registerPh extends React.Component {
 
   async nacode(data) {
     const res = await _code(data)
-    if(res.data.code!==2000){
+    if (res.data.code !== 2000) {
       Toast.fail(res.data.msg, 1);
-    }else{
+    } else {
       let num = 60
       const timer = setInterval(() => {
         this.setState({ textT: num-- })
@@ -102,14 +99,13 @@ class registerPh extends React.Component {
   }
 
   naCode = () => {
-      this.nacode({ "mobile": this.state.phone, "type": 'venueregister' })
+    this.nacode({ "mobile": this.state.phone, "type": 'venueregister' })
   }
   showModal = e => {
-   if (this.state.changeRadio !== true) {
+    if (this.state.changeRadio !== true) {
       Toast.fail('请勾选阅读协议', 1);
-    }else if(this.state.password!==this.state.passwordT){
-        Toast.fail('两次密码输入不一致', 1);
-
+    } else if (this.state.password !== this.state.passwordT) {
+      Toast.fail('两次密码输入不一致', 1);
     } else {
       const { Id, name, phone, code, password } = this.state
       const data = { name: name, phone: phone, pass: password, promoteid: Id, code: code, Logintype: 'mobile' }
@@ -117,16 +113,24 @@ class registerPh extends React.Component {
     }
   }
   blurId = e => {
-    this.getPromoteName({ promotid: e.target.value})
+    this.getPromoteName({ promotid: e })
   }
   async getPromoteName(data) {
     const res = await getPromoteName(data)
     if (res.data.code === 2000) {
-      this.setState({ idName:'推广员姓名：'+ res.data.data.promotname+'?', qipao: false })
-    } else {     
-      this.setState({ idName:'您没有推广员？', qipao: false })
+      this.setState({ idName: '推广员姓名：' + res.data.data.promotname + '?', qipao: false })
+    } else {
+      this.setState({ idName: '您没有推广员？', })
     }
   }
+
+  alert = () => {
+    alert('注册', this.state.idName, [
+      { text: '否', onPress: () => console.log('cancel'), style: 'default' },
+      { text: '是', onPress: () => this.showModal() },
+    ]);
+  }
+
 
 
   close = () => {
@@ -149,62 +153,111 @@ class registerPh extends React.Component {
   render() {
     return (
       <div className="registerPh">
-        <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span>完善信息 ></span> <span>审核  ></span> <span>成功</span> <Icon type="close" onClick={this.close} style={{ position: 'absolute', right: '5%', top: '35%' }} /></div>
+        <div className="title">
+          <span style={{ color: '#D85D27' }}>注册 ></span> <span>完善信息 ></span> <span>审核  ></span> <span>成功</span>
+          <Icon type="close" onClick={this.close} style={{ position: 'absolute', right: '5%', top: '35%' }} />
+        </div>
         <div className="bossInput">
-
           <div className="input">
-            <Input  onChange={this.changID} onBlur={this.blurId} autoFocus prefix={<Icon type="credit-card" style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={6} placeholder="请填写推广员ID号，没有可不填" />
+            <InputItem
+              type='number'
+              placeholder="请填写推广员ID号，没有可不填"
+              clear={true}
+              style={{ fontSize: '0.6rem' }}
+              maxLength={6}
+              onChange={this.changID}
+              onBlur={this.blurId}
+              autoFocus
+            ><Icon type="credit-card" style={{ color: 'rgba(0,0,0,.25)' }} />
+            </InputItem>
           </div>
 
           <div className="input">
-            <Input  onBlur={this.changeName}  prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="请输入用户名" />
+            <InputItem
+              type='text'
+              placeholder="请输入用户名"
+              clear={true}
+              style={{ fontSize: '0.6rem' }}
+              onBlur={this.changeName}
+            ><Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />
+            </InputItem>
           </div>
 
           <div className="input">
-            <Input  onChange={this.changePhone} prefix={<Icon type="phone"  style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={11} placeholder="请输入手机号" />
+            <InputItem
+              type='phone'
+              placeholder="请输入手机号"
+              clear={true}
+              style={{ fontSize: '0.6rem' }}
+              onChange={this.changePhone}
+            ><Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />
+            </InputItem>
           </div>
 
           <div className="input">
-            <Input  onChange={this.changeCode} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} className="codeInput" maxLength={6} placeholder="手机验证码" />
-            <div className="codeBtn" onClick={this.state.textT==='获取验证码'?this.naCode:''} >{this.state.textT}</div>
+            <InputItem
+              type='number'
+              placeholder="手机验证码"
+              clear={true}
+              style={{ fontSize: '0.6rem' }}
+              className="codeInput"
+              maxLength={6}
+              onChange={this.changeCode}
+            ><Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />
+            </InputItem>
+            <div className="codeBtn" onClick={this.state.textT === '获取验证码' ? this.naCode : ''} >{this.state.textT}</div>
           </div>
 
 
           <div className="input">
-            <Input.Password  onChange={this.changePassword} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={8} placeholder="密码" />
+            <InputItem
+              type='password'
+              placeholder="密码"
+              clear={true}
+              style={{ fontSize: '0.6rem' }}
+              onChange={this.changePassword}
+              maxLength={8}
+            ><Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />
+            </InputItem>
           </div>
           <div className="input">
-            <Input.Password  onChange={this.changePasswordT} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} maxLength={8} placeholder="确认密码" />
+            <InputItem
+              type='password'
+              placeholder="确认密码"
+              clear={true}
+              style={{ fontSize: '0.6rem' }}
+              onChange={this.changePasswordT}
+              maxLength={8}
+            ><Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />
+            </InputItem>
           </div>
           <div className="input line">
-            <Checkbox onChange={this.changeRadio}><span style={{fontSize:'0.75rem'}}>已阅读并同意</span><span style={{ color: '#D85D27', paddingLeft: '0.5rem',fontSize:'0.75rem' }}>《用户协议》</span></Checkbox>
+            <Checkbox onChange={this.changeRadio}><span style={{ fontSize: '0.75rem' }}>已阅读并同意</span><span style={{ color: '#D85D27', paddingLeft: '0.5rem', fontSize: '0.75rem' }}>《用户协议》</span></Checkbox>
           </div>
           <div className="input line">
-            <Popconfirm
-              title={this.state.idName}
-              onConfirm={this.showModal}
-              okText="是"
-              cancelText="否"
+            <Button
+              className="btn"
+              onClick={this.alert}
               disabled={this.state.qipao}
             >
-              <div className="btn">注册</div>
-            </Popconfirm>
+              注册
+             </Button>
 
           </div>
           <Modal
-                title="注册结果"
-                cancelText=''
-                closable={false}
-                footer={null}
-                visible={this.state.visible}
-                onOk={this.handleOk}
-                width='100%'
-              >
-                <img className="logoRegister" src={require("../../assets/icon_pc.png")} alt="ico" />
-                <span className="modelTitlePh">恭喜您，注册成功</span>
-                <span className="modelPhonePh">用户名:{this.state.name}</span>
-                <Button className="modelBtnPh"><a href="#/stadiumInformationPh">下一步</a></Button>
-              </Modal>
+            title="注册结果"
+            cancelText=''
+            closable={false}
+            visible={this.state.visible}
+            transparent
+            maskClosable={false}
+            footer={[{ text: '下一步', onPress: () => { this.props.history.push('/stadiumInformationPh') } }]}
+            width='100%'
+          >
+            <img className="logoRegister" src={require("../../assets/icon_pc.png")} alt="ico" />
+            <span className="modelTitlePh">恭喜您，注册成功</span>
+            <span className="modelPhonePh">用户名:{this.state.name}</span>
+          </Modal>
         </div>
       </div>
     );

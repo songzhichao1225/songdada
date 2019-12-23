@@ -7,7 +7,9 @@
   border-bottom:0.06rem solid #f5f5f5;
   text-align: center;
   line-height: 3rem;
+  color: #fff;
   position: relative;
+  background: #374D66;
 }
 .monthlyIncomePh .timer{
   height: 3rem;

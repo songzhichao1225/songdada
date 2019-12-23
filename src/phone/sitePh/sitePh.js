@@ -1102,7 +1102,7 @@ class sitePh extends React.Component {
         <div style={{ height: '0.6rem', background: '#f5f5f5' }}></div>
         <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' } : { display: 'none' }} ><Icon type="loading" className='loadingY' style={{ top: this.state.clenTop / 7 }} /></div>
         <div className={this.state.clickNum === 1 ? 'site' : 'none'} onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
-          <Row style={{ color: '#9B9B9B', borderBottom: '0.06rem solid #e9e9e9' }}>
+          {/* <Row style={{ color: '#9B9B9B', borderBottom: '0.06rem solid #e9e9e9' }}>
             <Col className="oneCol" xs={{ span: 7 }} lg={{ span: 6 }}>
               <Picker data={this.state.sportListTwo} title="选择运动项目" onChange={this.screenChange} cols={1} className="forss">
                 <div>{this.state.screenName} <Icon type='down' /></div>
@@ -1110,8 +1110,8 @@ class sitePh extends React.Component {
             </Col>
             <Col style={{ textAlign: 'left' }} xs={{ span: 6, offset: 4 }} lg={{ span: 6 }}>时间</Col>
             <Col xs={{ span: 7 }} lg={{ span: 6 }}>工作日/休息日</Col>
-          </Row>
-          <div style={{width:'100%',height:'0.6rem',background:'rgb(245, 245, 245)'}}></div>
+          </Row> */}
+          {/* <div style={{width:'100%',height:'0.6rem',background:'rgb(245, 245, 245)'}}></div> */}
           
           <div className="contentScorll">
             {
