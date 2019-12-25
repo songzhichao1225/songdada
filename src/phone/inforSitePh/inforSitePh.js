@@ -249,7 +249,6 @@ class inforSitePh extends React.Component {
       this.VenueInformationSave(data)
     } else {
       Toast.fail('至少上传两张室内照', 1);
-
     }
   }
 
@@ -257,7 +256,7 @@ class inforSitePh extends React.Component {
   handleChangeTwo = info => {
     if (info.file.status === 'uploading') {
       this.setState({ loading: true });
-      return;
+      return
     }
     if (info.file.status === 'done') {
       this.setState({ zuo: 1, imageUrlTwo: info.file.response.data.baseURL + info.file.response.data.filesURL, imgHood: info.file.response.data.baseURL, loading: false, imgFile: info.file.response.data.filesURL })
@@ -287,9 +286,11 @@ class inforSitePh extends React.Component {
   numRadio = e => {
     this.setState({ numRadio: e.target.value })
   }
+
   corporateCardId = e => {
     this.setState({ corporateCardId: e.target.value })
   }
+
   async getVenueOpenBank(data) {
     const res = await getVenueOpenBank(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
@@ -310,12 +311,14 @@ class inforSitePh extends React.Component {
       this.setState({ backList: res.data.data, flagThree: false })
     }
   }
+
   async getVenueOpenBankCity(data) {
     const res = await getVenueOpenBankCity(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ backCity: res.data.data, flagThree: false })
     }
   }
+
   upData = () => {
     this.setState({ upData: false })
   }
@@ -331,7 +334,7 @@ class inforSitePh extends React.Component {
   }
 
   handleSearch = e => {
-    this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
+    this.getVenueOpenBankList({ bank_id: this.state.bank_id,province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
   }
 
   corporateOpen = e => {
@@ -342,16 +345,12 @@ class inforSitePh extends React.Component {
     const res = await VenueQualificationInformationSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-
-      Toast.fail('登录超时请重新登录', 1);
-
+      Toast.fail('登录超时请重新登录', 1)
     } else if (res.data.code === 2000) {
-      Toast.success('提交成功', 1);
-
+      Toast.success('提交成功', 1)
       this.setState({ issecondaudit: 0 })
     } else {
-      Toast.fail(res.data.msg, 1);
-
+      Toast.fail(res.data.msg, 1)
     }
   }
 
@@ -374,7 +373,6 @@ class inforSitePh extends React.Component {
 
       } else if (imgHoodTwo === '') {
         Toast.fail('请更换身份证反面照', 1);
-
       } else {
         data.legalBaseURL = imgHood
         this.VenueQualificationInformationSave(data)
@@ -410,8 +408,8 @@ class inforSitePh extends React.Component {
         <Icon type={this.state.loading ? 'loading' : 'upload'} />
         <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}></div>
       </div>
-    );
-    const { imageUrlS, fileList, imageUrlTwo, imageUrlThree } = this.state;
+    )
+    const { imageUrlS, fileList, imageUrlTwo, imageUrlThree } = this.state
     const uploadButtonT = (
       <div>
         <Icon type="upload" />
@@ -423,13 +421,13 @@ class inforSitePh extends React.Component {
         <Icon type={this.state.loading ? 'loading' : 'upload'} />
         <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}>正面照</div>
       </div>
-    );
+    )
     const uploadButtonThree = (
       <div>
         <Icon type={this.state.loading ? 'loading' : 'upload'} />
         <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}>反面照</div>
       </div>
-    );
+    )
     return (
       <div className="inforSitePh">
         <div className="nav">
@@ -442,9 +440,6 @@ class inforSitePh extends React.Component {
             <span>推广员</span>
             <span className="right" style={{ paddingLeft: '11px' }}>{listSon.promote}</span>
           </div>
-
-
-
           <div className="listSon">
             <span>场馆名称</span>
             <Input className="right" value={this.state.cgName} onChange={this.cgName} />
@@ -457,7 +452,7 @@ class inforSitePh extends React.Component {
             <span>详细地址</span>
             <Input className="right" value={this.state.address} onChange={this.address} />
           </div>
-
+          
           <div className="listSon">
             <span>联系人</span>
             <Input className="right" value={this.state.linkMan} placeholder='联系人姓名' onChange={this.linkMan} />
@@ -534,13 +529,14 @@ class inforSitePh extends React.Component {
         </div>
 
 
+
         <Spin spinning={this.state.spin} style={{ width: '100%', marginTop: '45%' }} />
         <div className="qualification" style={this.state.flag === 2 ? { display: 'block' } : { display: 'none' }}>
           <div className="listSon">
             <span>营业执照</span>
             <span className="right">通过|长期</span>
           </div>
-          
+        
           <div className="listSon">
             <span>身份证</span>
             <Upload
@@ -558,7 +554,7 @@ class inforSitePh extends React.Component {
             <Upload
               name="files"
               listType="picture-card"
-              className="avatar-uploader  ko"
+              className="avatar-uploader ko"
               showUploadList={false}
               action="/api/UploadVenueImgs?type=Venue"
               beforeUpload={beforeUpload}
@@ -620,6 +616,7 @@ class inforSitePh extends React.Component {
           </div>
 
 
+
           <div className="listSon">
             <span>开户行</span>
             <Select
@@ -657,7 +654,6 @@ class inforSitePh extends React.Component {
           </Popconfirm>
           <Button className="submit" style={this.state.issecondaudit === 0 ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
         </div>
-
 
 
 

@@ -1,11 +1,15 @@
 .orderPh .headerNav>div{
     display: inline-block;
-    padding:0.5rem 1rem;
+    padding:0.7rem 1rem;
 }
 .orderPh{
     font-size: 0.75rem;
     height: 100%;
     position: relative;
+    background: #F5F5F5;
+}
+.orderPh .headerNav{
+    background: #fff;
 }
 
 .hidden{
@@ -41,15 +45,14 @@
 .orderPh .activityList .select>Row>Col>span{
     color: #9B9B9B
 }
-.orderPh .activityList .select .sending{
+.orderPh .activityList  .sending{
     width: 3.5rem;
     height: 1.7rem;
     display: block;
-    margin-right: 1rem;
 }
 .orderPh  .screen{
    position: absolute;
-   top:0.5rem;
+   top:0.7rem;
    right: 1rem;
 }
 .orderPh .hidden{
@@ -242,12 +245,7 @@
 .orderPh .contentT{
     height: 100%;
     padding-bottom: 15rem;
-    -webkit-overflow-scrolling: touch;
-    overflow-y: scroll;
     white-space: nowrap;
-}
-.orderPh .contentT::-webkit-scrollbar {/*滚动条整体样式*/
-   display: none;
 }
 
 .orderPh .ant-input{
@@ -293,3 +291,24 @@
  .kodrAwer .ant-drawer-header{
      padding:16px 4px;
  } 
+ .orderPh .am-card{
+     width: 96%;
+     margin: 0.5rem auto 0;
+     border-top: 1px solid #f5f5f5;
+ }
+ .orderPh .am-card-header{
+     padding: 0;
+     font-size: 14px;
+ }
+ .activityList .am-card-header-extra{
+     flex: 0;
+ }
+ .activityList .am-card-footer{
+     padding:0 7px;
+ }
+ .activityList .sendingTwo{
+     float: right;
+ }
+ .activityList .am-card:first-child .am-card-header{
+    border-bottom: 1px solid #ddd;
+}

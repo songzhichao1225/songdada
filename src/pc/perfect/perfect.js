@@ -37,7 +37,7 @@ const plainOptionsFour = [
   { label: '18洞', value: '26' },
   { label: '27洞', value: '27' },
   { label: '36洞', value: '28' },
-  { label: '练习场', value: '19' },
+  { label: '练习', value: '19' },
 ]
 
 
@@ -140,7 +140,6 @@ class perfect extends React.Component {
     if (sessionStorage.getItem('notType') === '1') {
       this.getVenueInformation()
     }
-
   }
 
 
@@ -239,7 +238,6 @@ class perfect extends React.Component {
       return
     }
     if (info.file.status === 'done') {
-      // Get this url from response in real world.
       this.setState({ imageRes: info.file.response.data.baseURL + info.file.response.data.filesURL })
       getBase64(info.file.originFileObj, imageUrl =>
         this.setState({

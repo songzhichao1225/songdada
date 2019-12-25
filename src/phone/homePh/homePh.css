@@ -4,7 +4,9 @@
   height: 100%;
   overflow: hidden;
   background: #fff;
+  color: #000;
 }
+
 .homePh .kog{
   position: relative;
   height: 100%;
@@ -21,7 +23,6 @@
   line-height: 3rem;
   position: relative;
   background: rgba(216, 93, 39,1);
-  
   color: #fff;
 }
 .homePh .headSelect{
@@ -30,16 +31,15 @@
 .homePh .footer{
   width: 100%;
   height: 4rem;
-  border-top: 0.06rem solid #f5f5f5;
+  border-top: 0.06rem solid #ccc;
   position: fixed;
   bottom: 0;
   z-index: 999;
   background: #fff;
- 
 }
 .homePh .footer .footerSon{
   width: 100%;
-  margin: 0 auto;
+  margin: 0.5rem auto 0;
   display: flex;
 }
 .homePh .footer .footerSon> div{
@@ -53,7 +53,7 @@
 .homePh .footer .footerSon>div>a>span{
   display: block;
   text-align: center;
-  font-size:0.6rem;
+  font-size:12px;
   color: #000;
 }
 .homePagePh{
@@ -72,7 +72,7 @@
 .homePagePh .homeScroll>div:first-child{
   width: 90%;
   height: 5.5rem;
-  margin: 0.5rem auto 0;
+  margin: 1rem auto 0;
   background-image: url('../../assets/one.png');
   background-repeat: no-repeat;
   background-size: 100%;
@@ -152,4 +152,9 @@
    display: block;
    font-size: 1.5rem;
    margin-left: -0.75rem;
+}
+.homePh .footer i>.icon{
+  margin: 0 auto;
+  display: block;
+  
 }
