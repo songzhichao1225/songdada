@@ -2,7 +2,9 @@ import React from 'react';
 import './resultsAuditsPh.css';
 import { Icon } from 'antd';
 import { getIsStatus } from '../../api';
-
+import {NavBar, Popover } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
+const Item = Popover.Item;
 class resultsAuditsPh extends React.Component {
 
   state = {
@@ -51,13 +53,52 @@ class resultsAuditsPh extends React.Component {
     }
   }
  
+  closeWeb=()=>{
+   
+  if(window.location.href.indexOf('flag=1')===-1){
+    this.props.history.push('/phone')
+     this.setState({visible:false})
+  }else{
+    this.close()
+  }
+}
 
 
   render() {
     return (
       <div className="resultsAuditsPh">
-        <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span style={{ color: '#D85D27' }}>完善信息 ></span> <span style={{ color: '#D85D27' }}>审核  ></span> <span  style={this.state.islegal===1?{color: '#D85D27' }:{color:'#9B9B9B'}}>成功</span> <Icon type="close" onClick={this.close} style={{ position: 'absolute', right: '5%', top: '35%' }} /> </div>
-         <div className="boss" style={this.state.islegal===0?{display:'block'}:{display:'none'}}>
+         <NavBar
+            mode="dark"
+            icon={<img style={{ width: '2rem', height: '2rem', display: 'block', marginTop: '-0.3rem' }} src={require('../../assets/logo.png')} alt="logo" />}
+            rightContent={<Popover mask
+              overlayClassName="fortest"
+              overlayStyle={{ color: 'currentColor' }}
+              visible={this.state.visible}
+              onSelect={this.closeWeb}
+              overlay={[
+              (<Item key="1" value="scan" style={{ fontSize: '0.7rem' }} data-seed="logId">{window.location.href.indexOf('flag=1')===-1?'返回官网':'关闭'}</Item>),
+              ]}
+              align={{
+                overflow: { adjustY: 0, adjustX: 0 },
+                offset: [-10, 0],
+              }}
+              onVisibleChange={this.handleVisibleChange}
+            
+            >
+              <div style={{
+                height: '100%',
+                padding: '0 15px',
+                marginRight: '-15px',
+                fontSize: '2rem',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+              >
+                <Icon type="ellipsis" />
+              </div>
+            </Popover>}
+          ><span style={{ fontSize: '1rem' }}>审核信息</span></NavBar>
+           <div className="boss" style={this.state.islegal===0?{display:'block'}:{display:'none'}}>
               <img className="icon" src={require("../../assets/icon_pc.png")} alt="图标"/>
               <span className="text">信息完善成功！等待审核</span>
                <span className="content">我们会在3个工作日完成审核。<br/> 审核成功后会发送短信到您绑定的手机，请注意查收。<br/>联系电话：010-88777777 </span>

@@ -124,12 +124,16 @@ class newsPh extends React.Component {
 
   refResh=()=>{
     this.setState({refreshing:true})
+    setTimeout(() => {
     this.getVenueNewsList({page:this.state.newsPage})
+  }, 1000);
   }
 
   refReshTwo=()=>{
     this.setState({refreshingTwo:true})
+    setTimeout(() => {
     this.getVenueNewsReceivedList({page:this.state.newsPageTwo})
+  }, 1000);
   }
 
 

@@ -16,7 +16,6 @@
   background: #374D66;
 }
 .homePh .headerTitle{
-  height: 3rem;
   border-bottom: 0.06rem solid #e9e9e9;
   font-size: 1rem;
   text-align: center;
@@ -59,14 +58,11 @@
 .homePagePh{
   height: 100%;
   padding-bottom: 4rem;
-  -webkit-overflow-scrolling: touch;
-  overflow-y: scroll;
+
   white-space: nowrap;
 }
 
-.homePagePh::-webkit-scrollbar {/*滚动条整体样式*/
-  display: none;
-}
+
 
 
 .homePagePh .homeScroll>div:first-child{

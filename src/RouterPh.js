@@ -25,7 +25,7 @@ import resetPasswordPh from './phone/resetPasswordPh/resetPasswordPh';
 import inforSitePh from './phone/inforSitePh/inforSitePh';
 import appOrder from './phone/appOrder/appOrder';
 
-
+import phone from './phone/phone/phone';
 const BasicRoute = () => (
     <HashRouter>
         <Switch>
@@ -53,6 +53,7 @@ const BasicRoute = () => (
             <Route exact path="/homePh/inforSitePh" component={inforSitePh}/>
             <Route  path="/homePh" component={homePh}/>
             <Route exact path="/appOrder" component={appOrder}/>
+            <Route exact path="/phone" component={phone}/>
         </Switch>
     </HashRouter>
 );

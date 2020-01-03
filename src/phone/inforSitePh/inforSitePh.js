@@ -1,7 +1,7 @@
 import React from 'react';
 import './inforSitePh.css';
 
-import {Toast } from 'antd-mobile';
+import { Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Input, Checkbox, Upload, Icon, Popconfirm, Button, Radio, Select, Tooltip, Spin } from 'antd';
 import { getVenueInformation, getVenueQualificationInformation, VenueInformationSave, VenueQualificationInformationSave, getVenueIssecondaudit, getVenueOpenBank, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
@@ -76,7 +76,10 @@ class inforSitePh extends React.Component {
     zuo: 0,
     imgHoodTwo: '',
     imgHood: '',
-    spin: true
+    spin: true,
+    onChangeCheckTwo:[],
+    onChangeCheckThree:[],
+    onChangeCheckFour:[],
   };
 
   async getVenueInformation(data) {
@@ -94,12 +97,14 @@ class inforSitePh extends React.Component {
       if (this.props.history.location.query !== undefined) {
         this.setState({
           listSon: res.data.data, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), imageUrlS: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.firstURL,
+          onChangeCheckTwo: res.data.data.sporttype.split('|')[0].split(','), onChangeCheckThree: res.data.data.sporttype.split('|')[1].split(','), onChangeCheckFour: res.data.data.sporttype.split('|')[2].split(','),
           cgName: res.data.data.name, address: this.props.history.location.query.adddress, linkMan: res.data.data.linkMan, telephone: res.data.data.telephone, siteInfo: res.data.data.siteInfo,
           fileList: arrImg, comment: res.data.data.comment, lat: this.props.history.location.query.lat, lng: this.props.history.location.query.lng, position: this.props.history.location.query.adddress, spin: false
         })
       } else {
         this.setState({
           listSon: res.data.data, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), imageUrlS: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.firstURL,
+          onChangeCheckTwo: res.data.data.sporttype.split('|')[0].split(','), onChangeCheckThree: res.data.data.sporttype.split('|')[1].split(','), onChangeCheckFour: res.data.data.sporttype.split('|')[2].split(','),
           cgName: res.data.data.name, address: res.data.data.address, linkMan: res.data.data.linkMan, telephone: res.data.data.telephone, siteInfo: res.data.data.siteInfo,
           fileList: arrImg, comment: res.data.data.comment, lat: res.data.data.lat, lng: res.data.data.lng, position: res.data.data.position, spin: false
         })
@@ -198,7 +203,65 @@ class inforSitePh extends React.Component {
 
   onChangeCheck = e => {
     this.setState({ sport: e })
+    if (e.indexOf('3') === -1) {
+      this.setState({ onChangeCheckTwo: '' })
+    } else if (e.indexOf('5') === -1) {
+      this.setState({ onChangeCheckThree: '' })
+    } else if (e.indexOf('8') === -1) {
+      this.setState({ onChangeCheckFour: '' })
+    }
   }
+
+  
+  onChangeCheckTwo = e => {
+    this.setState({ onChangeCheckTwo: e })
+    if(e.length===0){
+      if(this.state.sport.indexOf('5')===-1&&this.state.sport.indexOf('8')===-1){
+        this.setState({sport:['1','2','4','6','7']})
+      }else if(this.state.sport.indexOf('5')===-1){
+        this.setState({sport:['1','2','8','4','6','7']})
+      }else if(this.state.sport.indexOf('8')===-1){
+        this.setState({sport:['1','2','5','4','6','7']})
+      }else{
+        this.setState({sport:['1','2','4','5','6','7','8']})
+      }
+    }
+    sessionStorage.setItem('onChangeCheckTwo', e)
+  }
+  onChangeCheckThree = e => {
+    this.setState({ onChangeCheckThree: e })
+    if(e.length===0){
+      if(this.state.sport.indexOf('3')===-1&&this.state.sport.indexOf('8')===-1){
+        this.setState({sport:['1','2','4','6','7']})
+      }else if(this.state.sport.indexOf('3')===-1){
+        this.setState({sport:['1','2','4','6','7','8']})
+      }else if(this.state.sport.indexOf('8')===-1){
+        this.setState({sport:['1','2','3','4','6','7']})
+      }else{
+       
+        this.setState({sport:['1','2','4','3','6','7','8']})
+      }
+    }
+    sessionStorage.setItem('onChangeCheckThree', e)
+  }
+  onChangeCheckFour = e => {
+    this.setState({ onChangeCheckFour: e })
+    if(e.length===0){
+      if(this.state.sport.indexOf('3')===-1&&this.state.sport.indexOf('5')===-1){
+        this.setState({sport:['1','2','4','6','7']})
+      }else if(this.state.sport.indexOf('5')===-1){
+        this.setState({sport:['1','2','3','4','6','7']})
+      }else if(this.state.sport.indexOf('3')===-1){
+        this.setState({sport:['1','2','4','5','6','7']})
+      }else {
+        this.setState({sport:['1','2','4','3','6','7','5']})
+      }
+     
+    }
+    sessionStorage.setItem('onChangeCheckFour', e)
+  }
+
+
   siteInfo = e => {
     this.setState({ siteInfo: e.target.value })
   }
@@ -220,7 +283,7 @@ class inforSitePh extends React.Component {
   }
 
   confirm = () => {
-    let { cgName, address, linkMan, telephone, fileList, imageUrlS, sport, facilities, siteInfo, comment, lat, lng, position } = this.state
+    let { cgName, address, linkMan, telephone, fileList, imageUrlS, sport, facilities, siteInfo, comment, lat, lng, position,onChangeCheckTwo,onChangeCheckThree,onChangeCheckFour } = this.state
     let filesURLarr = []
     for (let i in fileList) {
       if (fileList[i].response !== undefined) {
@@ -229,7 +292,14 @@ class inforSitePh extends React.Component {
         filesURLarr.push(fileList[i].url)
       }
     }
-    if (filesURLarr.length >= 2) {
+
+    if(sport.indexOf('3')!==-1&&onChangeCheckTwo===''){
+      Toast.fail('至少选择一项台球类型', 1);
+     }else if(sport.indexOf('5')!==-1&&onChangeCheckThree===''){
+       Toast.fail('至少选择一项足球类型', 1);
+     }else if(sport.indexOf('8')!==-1&&onChangeCheckFour===''){
+       Toast.fail('至少选择一项高尔夫类型', 1);
+     }else  if (filesURLarr.length >= 2) {
       let data = {
         venuename: cgName,
         lat: lat,
@@ -244,6 +314,7 @@ class inforSitePh extends React.Component {
         siteInfo: siteInfo,
         position: position,
         comment: comment,
+        sporttype:onChangeCheckTwo+'|'+onChangeCheckThree+'|'+onChangeCheckFour,
         type: 2
       }
       this.VenueInformationSave(data)
@@ -334,7 +405,7 @@ class inforSitePh extends React.Component {
   }
 
   handleSearch = e => {
-    this.getVenueOpenBankList({ bank_id: this.state.bank_id,province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
+    this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
   }
 
   corporateOpen = e => {
@@ -369,7 +440,7 @@ class inforSitePh extends React.Component {
     }
     if (zuo === 1) {
       if (imgHood === '') {
-      Toast.fail('请更换身份证正面照', 1);
+        Toast.fail('请更换身份证正面照', 1);
 
       } else if (imgHoodTwo === '') {
         Toast.fail('请更换身份证反面照', 1);
@@ -402,6 +473,28 @@ class inforSitePh extends React.Component {
       { label: '网球', value: '7' },
       { label: '高尔夫', value: '8' }
     ]
+
+    const plainOptionsTwo = [
+      { label: '中式黑八', value: '1' },
+      { label: '美式九球', value: '2' },
+      { label: '斯诺克', value: '3' }
+    ]
+    const plainOptionsThree = [
+      { label: '11人制', value: '13' },
+      { label: '8人制', value: '14' },
+      { label: '7人制', value: '15' },
+      { label: '5人制', value: '16' }
+    ]
+
+    const plainOptionsFour = [
+      { label: '9洞', value: '25' },
+      { label: '18洞', value: '26' },
+      { label: '27洞', value: '27' },
+      { label: '36洞', value: '28' },
+      { label: '练习', value: '19' },
+    ]
+
+
     const optionsTwo = [{ label: 'WiFi', value: '1' }, { label: '停车场', value: '2' }, { label: '淋浴', value: '3' }]
     const uploadButton = (
       <div>
@@ -435,7 +528,7 @@ class inforSitePh extends React.Component {
           <div className={localStorage.getItem('ismethod') === '1' ? 'left' : 'width'} style={this.state.flag === 1 ? { color: '#fff' } : {}} onClick={this.left}>基本信息</div>
           <div className={localStorage.getItem('ismethod') === '1' ? 'right' : 'none'} style={this.state.flag === 1 ? {} : { color: '#fff' }} onClick={this.right}>资质信息</div>
         </div>
-        <div className="basic" style={this.state.spin === false && this.state.flag === 1 ? { display: 'block',overflowY:'scroll',height:'100%' } : { display: 'none' }}>
+        <div className="basic" style={this.state.spin === false && this.state.flag === 1 ? { display: 'block', overflowY: 'scroll', height: '100%' } : { display: 'none' }}>
           <div className="listSon">
             <span>推广员</span>
             <span className="right" style={{ paddingLeft: '11px' }}>{listSon.promote}</span>
@@ -452,7 +545,7 @@ class inforSitePh extends React.Component {
             <span>详细地址</span>
             <Input className="right" value={this.state.address} onChange={this.address} />
           </div>
-          
+
           <div className="listSon">
             <span>联系人</span>
             <Input className="right" value={this.state.linkMan} placeholder='联系人姓名' onChange={this.linkMan} />
@@ -500,12 +593,42 @@ class inforSitePh extends React.Component {
             </div>
           </div>
 
+
+
           <div className="listSon">
             <span>运动项目</span>
             <div className="rightLi">
               <Checkbox.Group options={options} value={this.state.sport} onChange={this.onChangeCheck} />
             </div>
           </div>
+
+          <div className="listSon"  style={this.state.sport.indexOf('3') !== -1 ? { display: 'block' } : { display: 'none' }}>
+            <span>台球类型</span>
+            <div className="rightLi">
+              <Checkbox.Group options={plainOptionsTwo} value={this.state.onChangeCheckTwo} onChange={this.onChangeCheckTwo} />
+            </div>
+          </div>
+
+          <div className="listSon"  style={this.state.sport.indexOf('5') !== -1 ? { display: 'block' } : { display: 'none' }}>
+            <span>足球类型</span>
+            <div className="rightLi">
+              <Checkbox.Group options={plainOptionsThree} value={this.state.onChangeCheckThree} onChange={this.onChangeCheckThree} />
+            </div>
+          </div>
+
+          <div className="listSon"  style={this.state.sport.indexOf('8') !== -1 ? { display: 'block' } : { display: 'none' }}>
+            <span>高尔夫类型</span>
+            <div className="rightLi">
+              <Checkbox.Group options={plainOptionsFour} value={this.state.onChangeCheckFour} onChange={this.onChangeCheckFour} />
+            </div>
+          </div>
+
+
+
+
+
+
+
 
           <div className="listSon">
             <span>场馆介绍</span>
@@ -536,7 +659,7 @@ class inforSitePh extends React.Component {
             <span>营业执照</span>
             <span className="right">通过|长期</span>
           </div>
-        
+
           <div className="listSon">
             <span>身份证</span>
             <Upload
@@ -593,7 +716,7 @@ class inforSitePh extends React.Component {
           <div className="listSon" style={this.state.upData === true ? { display: 'none' } : { display: 'block' }}>
             <span>开户所在地</span>
             <Select placeholder="银行类型" style={{ width: '5rem', height: '35px', marginLeft: '2.2rem', display: 'inline-block', }} loading={this.state.flagOne} onChange={this.typeChange}>
-              { 
+              {
                 this.state.type.map((item, i) => (
                   <Option key={i} value={item.bank_id}>{item.bank_name}</Option>
                 ))
@@ -601,7 +724,7 @@ class inforSitePh extends React.Component {
             </Select>
             <Select placeholder="所在省" style={{ width: '5rem', height: '35px', marginLeft: '0.2rem', display: 'inline-block' }} loading={this.state.flagTwo} onChange={this.provinceChange}>
               {
-                this.state.backProvince.map((item,i) => (
+                this.state.backProvince.map((item, i) => (
                   <Option key={i} value={item.province_id}>{item.province}</Option>
                 ))
               }
@@ -642,7 +765,7 @@ class inforSitePh extends React.Component {
             </Select>
             <span onClick={this.upData} style={{ marginLeft: '0.5rem', color: '#D85D27' }}>修改</span>
           </div>
-          
+
           <Popconfirm
             title="您确定本次修改吗?"
             onConfirm={this.ziSubmit}
@@ -658,7 +781,7 @@ class inforSitePh extends React.Component {
 
 
       </div>
-    );
+    )
   }
 }
 

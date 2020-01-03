@@ -1,10 +1,11 @@
 import React from 'react';
 import './homePh.css';
 import 'antd/dist/antd.css';
+import ReactDOM from 'react-dom';
 import { Route, Link } from 'react-router-dom';
 import { gerVenueName, getVenueIndex } from '../../api';
 
-import { Toast, NavBar, Popover } from 'antd-mobile';
+import { Toast, NavBar, Popover,PullToRefresh } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Icon, notification } from 'antd';
 
@@ -14,6 +15,34 @@ import newsPh from '../newsPh/newsPh';
 import minePh from '../minePh/minePh';
 import orderPhT from '../orderPhT/orderPhT';
 const Item = Popover.Item;
+
+
+function genData() {
+  const dataArr = [];
+  for (let i = 0; i < 20; i++) {
+    dataArr.push(i);
+  }
+  return dataArr;
+}
+
+
+function jo(){
+  var ws = new WebSocket("wss://venue.tiaozhanmeiyitian.com/socket");
+  ws.onopen = function () {
+    ws.send(localStorage.getItem('siteUid'))
+  }
+  ws.onmessage = function (e) {
+    let message_info = JSON.parse(e.data)
+    let msg = new SpeechSynthesisUtterance(message_info.percent)
+    window.speechSynthesis.speak(msg)
+    notification.open({ description: message_info.percent,duration:5 })
+    sessionStorage.setItem('kood',2)
+  }
+  ws.onclose=function(){
+    jo()
+   }
+}
+
 
 class homePh extends React.Component {
 
@@ -26,6 +55,11 @@ class homePh extends React.Component {
     clickY: 0,
     moveY: 0,
     spinFlag: false,
+    refreshing: false,
+    down: true,
+    height: document.documentElement.clientHeight,
+    data: [],
+    visible:false,
   };
   async getVenueIndex(data) {
     const res = await getVenueIndex(data, localStorage.getItem('venue_token'))
@@ -44,7 +78,7 @@ class homePh extends React.Component {
     localStorage.setItem('avatar', "https://app.tiaozhanmeiyitian.com/" + res.data.data.siteimg)
     localStorage.setItem('lyv', res.data.data.rate)
     localStorage.setItem('siteUid', res.data.data.siteuid)
-    this.setState({ gerVenueName: res.data.data })
+    this.setState({ gerVenueName: res.data.data,refreshing:false })
 
   }
 
@@ -72,6 +106,7 @@ class homePh extends React.Component {
 
 
   componentDidMount() {
+    sessionStorage.setItem('kood',1)
     this.getVenueIndex()
     this.gerVenueName()
     if (localStorage.getItem('venue_token')) {
@@ -99,17 +134,11 @@ class homePh extends React.Component {
     }
 
 
-    //这里的ip地址改为自己服务器的ip地址
-    var ws = new WebSocket("wss://venue.tiaozhanmeiyitian.com/socket");
-    ws.onopen = function () {
-      ws.send(sessionStorage.getItem('siteuid'))
-    }
-    ws.onmessage = function (e) {
-      let message_info = JSON.parse(e.data)
-      let msg = new SpeechSynthesisUtterance(message_info.percent)
-      window.speechSynthesis.speak(msg)
-      notification.open({ description: message_info.percent })
-    }
+    jo()
+
+    setInterval(()=>{
+      window.addEventListener('storage',sessionStorage.getItem('kood')==='2'? this.gerVenueName():this);
+    },2000)
   }
 
   componentWillReceiveProps() {
@@ -124,6 +153,13 @@ class homePh extends React.Component {
     } else if (this.props.history.location.pathname === '/homePh/minePh') {
       this.setState({ title: '我的' })
     }
+
+    const hei = this.state.height - ReactDOM.findDOMNode(this.ptr).offsetTop;
+    setTimeout(() => this.setState({
+      height: hei,
+      data: genData(),
+    }), 0);
+     
   }
   reture = () => {
     this.props.history.goBack()
@@ -145,6 +181,16 @@ class homePh extends React.Component {
   }
 
 
+  closeWeb=()=>{
+    if(window.location.href.indexOf('flag=1')===-1){
+       this.props.history.push('/phone')
+       this.setState({visible:false})
+    }else{
+      this.close()
+    }
+  }
+
+
 
   close = () => {
     var sUserAgent = navigator.userAgent;
@@ -162,26 +208,14 @@ class homePh extends React.Component {
     }
   }
 
-  touClick = (e) => {
-    this.setState({ clickY: e.targetTouches[0].clientY })
-  }
-  touMove = (e) => {
-    if (this.state.clickY < e.targetTouches[0].clientY && this.state.clickY < 200) {
-      this.setState({ moveY: e.targetTouches[0].clientY })
-      if (e.targetTouches[0].clientY - this.state.clickY < 80) {
-        this.setState({ spinFlag: true })
-        this.setState({ clenTop: e.targetTouches[0].clientY - this.state.clickY })
-      }
-    }
-  }
-  touEnd = () => {
-    if (this.state.moveY > this.state.clickY + 10) {
+  refResh=() => {
+    this.setState({ refreshing: true })
+    setTimeout(() => {
+      this.gerVenueName()
       this.getVenueIndex()
-      if (this.state.spinFlag === false) {
-        this.setState({ clenTop: 0 })
-      }
-    }
+    }, 1000)
   }
+ 
 
   render() {
     return (
@@ -190,20 +224,21 @@ class homePh extends React.Component {
           {/* <span style={{ display: 'block', textAlign: 'center' }}>{this.state.title}</span> */}
           <NavBar
             mode="dark"
-            icon={<img style={{ width: '2rem', height: '2rem', display: 'block',marginTop:'-0.3rem' }} src={require('../../assets/logo.png')} alt="logo" />}
+            icon={<img style={{ width: '2rem', height: '2rem', display: 'block', marginTop: '-0.3rem' }} src={require('../../assets/logo.png')} alt="logo" />}
             rightContent={<Popover mask
               overlayClassName="fortest"
               overlayStyle={{ color: 'currentColor' }}
               visible={this.state.visible}
+              onSelect={this.closeWeb}
               overlay={[
-                (<Item key="1" value="scan" style={{ fontSize: '0.7rem' }} icon={<Icon type="close" />} data-seed="logId">关闭</Item>),
+              (<Item key="1" value="scan" style={{ fontSize: '0.7rem' }} data-seed="logId">{window.location.href.indexOf('flag=1')===-1?'返回官网':'关闭'}</Item>),
               ]}
               align={{
                 overflow: { adjustY: 0, adjustX: 0 },
                 offset: [-10, 0],
               }}
               onVisibleChange={this.handleVisibleChange}
-              onSelect={this.onSelect}
+            
             >
               <div style={{
                 height: '100%',
@@ -223,9 +258,22 @@ class homePh extends React.Component {
         </div>
         <div className='kog'>
           <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' } : { display: 'none' }} ><Icon type="loading" className='loadingY' style={{ top: this.state.clenTop / 4 }} /></div>
-         
+
           <div className={this.props.location.pathname === '/homePh' && this.state.spin === false ? 'homePagePh' : 'none'} onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}  >
-            <div className="homeScroll">
+
+            <PullToRefresh
+              damping={60}
+              ref={el => this.ptr = el}
+              style={{
+                height: this.state.height,
+                overflow: 'auto',
+              }}
+              indicator={this.state.down ? {} : { deactivate: '上拉可以刷新' }}
+              direction={this.state.down ? 'down' : 'up'}
+              refreshing={this.state.refreshing}
+              onRefresh={this.refResh}
+            >
+             <div className="homeScroll" style={{paddingBottom:'8rem'}}>
               <div><span className="title" onClick={this.yuYue}>今日预约</span><div className="content"><span>{this.state.getVenue.today_count}</span><span>单</span></div></div>
               <div><span className="title" onClick={this.yuYueTwo}>本月预约</span><div className="content"><span>{this.state.getVenue.month_count}</span><span>单</span></div></div>
               <div><span className="title" onClick={this.dayIncomePh}>今日收入</span><div className="content"><span>￥{this.state.getVenue.today_money}</span></div></div>
@@ -250,6 +298,12 @@ class homePh extends React.Component {
                 </div>
               </div>
             </div>
+            </PullToRefresh>
+
+
+
+
+
           </div>
           <Route path="/homePh/orderPh" component={orderPh} />
           <Route path="/homePh/sitePh" component={sitePh} />

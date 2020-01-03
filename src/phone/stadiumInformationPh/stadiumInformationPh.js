@@ -1,13 +1,13 @@
 import React from 'react';
 import './stadiumInformationPh.css';
 
-import { Toast, Picker, List,InputItem } from 'antd-mobile';
+import { Toast, Picker, List, InputItem, NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Input, Upload, Checkbox, Icon, Modal, Button } from 'antd';
 import { PerfectingVenueInformation, getVenueInformation, VenueInformationSave } from '../../api';
 let arr = require('./address.json');
 const { TextArea } = Input;
-
+const Item = Popover.Item;
 const plainOptions = [
   { label: '篮球', value: '4' },
   { label: '足球', value: '5' },
@@ -30,17 +30,18 @@ function getBase64T(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = error => reject(error)
+  })
 }
+
 
 
 function beforeUpload(file) {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-
+  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
   return isJpgOrPng
 }
+
 
 
 class stadiumInformationPh extends React.Component {
@@ -58,8 +59,11 @@ class stadiumInformationPh extends React.Component {
     fileList: [],
     imageRes: '',
     stadiumName: '',//场馆名称
-    onChangeRun: null,//运动项目
-    onChangeCheck: null,//设施
+    onChangeRun: [],//运动项目
+    onChangeRunTai: [],//台球类型
+    onChangeRunZu: [],//足球类型
+    onChangeRunGao: [],//高尔夫类型
+    onChangeCheck: [],//设施
     textKo: '',//介绍场馆
     beforeList: [],
     pickerValue: '',
@@ -69,6 +73,8 @@ class stadiumInformationPh extends React.Component {
     arrCoutyNum: [],
     arrPro: [],
     arrProNum: [],
+    linkMan: '',
+    telephone: ''
   };
 
 
@@ -86,7 +92,10 @@ class stadiumInformationPh extends React.Component {
       }
       this.setState({
         address: res.data.data.position, addressXian: res.data.data.address, stadiumName: res.data.data.name,
-        imageUrl: res.data.data.firstURL, fileList: arrImg, onChangeRun: res.data.data.sport, onChangeCheck: res.data.data.facilities, textKo: res.data.data.siteInfo,
+        telephone: res.data.data.telephone, linkMan: res.data.data.linkMan,
+        imageUrl: res.data.data.firstURL, fileList: arrImg, onChangeRun: res.data.data.sport, onChangeRunTai: res.data.data.sporttype.split('|')[0].split(','),
+        onChangeRunZu: res.data.data.sporttype.split('|')[1].split(','), onChangeRunGao: res.data.data.sporttype.split('|')[2].split(','),
+        onChangeCheck: res.data.data.facilities, textKo: res.data.data.siteInfo,
         lat: res.data.data.lat, lng: res.data.data.lng
       })
     }
@@ -135,14 +144,17 @@ class stadiumInformationPh extends React.Component {
         }
       }
     }  //区县
-
-    let se = sessionStorage.getItem('addressId').split(',')
     let arrBack = []
-    for (let i in se) {
-      arrBack.push(Number(se[i]))
+    if (sessionStorage.getItem('addressId') !== null) {
+      let se = sessionStorage.getItem('addressId').split(',')
+
+      for (let i in se) {
+        arrBack.push(Number(se[i]))
+      }
+    } else {
+      arrBack = []
     }
     this.setState({ arrCity: arrCity, arrCityNum: arrCityNum, arrCouty: arrCouty, arrCoutyNum: arrCoutyNum, arrProNum: arrProNum, arrPro: arrPro, addressId: arrBack })
-
   }
 
 
@@ -159,8 +171,8 @@ class stadiumInformationPh extends React.Component {
 
   handleChange = info => {
     if (info.file.status === 'uploading') {
-      this.setState({ loading: true });
-      return;
+      this.setState({ loading: true })
+      return
     }
     if (info.file.status === 'done') {
       this.setState({ imageRes: info.file.response.data.baseURL + info.file.response.data.filesURL })
@@ -168,7 +180,7 @@ class stadiumInformationPh extends React.Component {
         this.setState({
           imageUrl,
           loading: false,
-        }),
+        })
       )
     }
   }
@@ -203,7 +215,25 @@ class stadiumInformationPh extends React.Component {
     this.setState({ stadiumName: e })
   }
   onChangeRun = e => {
+
     this.setState({ onChangeRun: e })
+    if (e.indexOf('3') === -1) {
+      this.setState({ onChangeRunTai: '' })
+    } else if (e.indexOf('5') === -1) {
+      this.setState({ onChangeRunZu: '' })
+    } else if (e.indexOf('8') === -1) {
+      this.setState({ onChangeRunGao: '' })
+    }
+  }
+
+  onChangeRunTai = e => {
+    this.setState({ onChangeRunTai: e })
+  }
+  onChangeRunZu = e => {
+    this.setState({ onChangeRunZu: e })
+  }
+  onChangeRunGao = e => {
+    this.setState({ onChangeRunGao: e })
   }
   onChangeCheck = e => {
     this.setState({ onChangeCheck: e })
@@ -212,7 +242,13 @@ class stadiumInformationPh extends React.Component {
     this.setState({ textKo: e.target.value })
   }
 
+  linkMan = e => {
+    this.setState({ linkMan: e })
+  }
 
+  telephone = e => {
+    this.setState({ telephone: e })
+  }
 
 
 
@@ -222,18 +258,15 @@ class stadiumInformationPh extends React.Component {
       this.props.history.push('/login')
       Toast.fail('登录超时请重新登录', 1);
     } else if (res.data.code === 2000) {
-      Toast.success(res.data.msg, 1);
+      Toast.success(res.data.msg, 1)
       sessionStorage.setItem('siteId', res.data.data.siteUUID)
       this.props.history.push('/qualificationPh')
     }
-
   }
 
 
   next = () => {
-    let { stadiumName, lat, lng, imageUrl, addressXian, address, fileList, imageRes, onChangeRun, onChangeCheck, textKo } = this.state
-
-
+    let { stadiumName, lat, lng, linkMan, telephone, imageUrl, addressXian, address, fileList, imageRes, onChangeRun, onChangeRunTai, onChangeRunZu, onChangeRunGao, onChangeCheck, textKo } = this.state
     if (sessionStorage.getItem('notType') === '1') {
       let arrimg = []
       for (let i in fileList) {
@@ -253,8 +286,8 @@ class stadiumInformationPh extends React.Component {
         firstURL: imageUrl,
         siteInfo: textKo,
         comment: '',
-        linkMan: '',
-        telephone: '',
+        linkMan: linkMan,
+        telephone: telephone,
         position: addressXian,
         type: 1
       }
@@ -276,7 +309,13 @@ class stadiumInformationPh extends React.Component {
       for (let i in fileList) {
         arrimg.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
       }
-      if (arrimg.length < 3) {
+      if (onChangeRun.indexOf('3') !== -1 && onChangeRunTai === '') {
+        Toast.fail('至少选择一项台球类型', 1);
+      } else if (onChangeRun.indexOf('5') !== -1 && onChangeRunZu === '') {
+        Toast.fail('至少选择一项足球类型', 1);
+      } else if (onChangeRun.indexOf('8') !== -1 && onChangeRunGao === '') {
+        Toast.fail('至少选择一项高尔夫类型', 1);
+      } else if (arrimg.length < 3) {
         Toast.fail('最少上传三张场地照', 1);
       } else {
         let data = {
@@ -291,8 +330,11 @@ class stadiumInformationPh extends React.Component {
           filesURL: arrimg.join('|'),
           firstURL: imageRes,
           sport: onChangeRun === '' ? '' : onChangeRun.join(','),
+          sporttype: onChangeRunTai + '|' + onChangeRunZu + '|' + onChangeRunGao,
           facilities: onChangeCheck === '' ? '' : onChangeCheck.join(','),
           siteInfo: textKo,
+          linkMan: linkMan,
+          telephone: telephone,
           position: addressXian,
         }
         this.PerfectingVenueInformation(data)
@@ -316,14 +358,25 @@ class stadiumInformationPh extends React.Component {
     }
   }
 
+
+  reture = () => {
+    this.props.history.goBack()
+  }
+
+  closeWeb = () => {
+    if (window.location.href.indexOf('flag=1')===-1) {
+      this.props.history.push('/phone')
+    } else {
+      this.close()
+    }
+  }
+
   onOk = (e) => {
     sessionStorage.setItem('province', this.state.arrCouty[this.state.arrCoutyNum.indexOf(e[0])])
     sessionStorage.setItem('city', this.state.arrCity[this.state.arrCityNum.indexOf(e[1])])
     sessionStorage.setItem('county', this.state.arrPro[this.state.arrProNum.indexOf(e[2])])
     sessionStorage.setItem('addressId', e)
-    this.setState({ addressId: e, addressArr: [this.state.arrCouty[this.state.arrCoutyNum.indexOf(e[0])],this.state.arrCity[this.state.arrCityNum.indexOf(e[1])],this.state.arrPro[this.state.arrProNum.indexOf(e[2])]] })
-
-
+    this.setState({ addressId: e, addressArr: [this.state.arrCouty[this.state.arrCoutyNum.indexOf(e[0])], this.state.arrCity[this.state.arrCityNum.indexOf(e[1])], this.state.arrPro[this.state.arrProNum.indexOf(e[2])]] })
   }
 
 
@@ -345,11 +398,61 @@ class stadiumInformationPh extends React.Component {
       </div>
     )
 
+    const plainOptionsTwo = [
+      { label: '中式黑八', value: '1' },
+      { label: '美式九球', value: '2' },
+      { label: '斯诺克', value: '3' }
+    ]
 
+
+    const plainOptionsThree = [
+      { label: '11人制', value: '13' },
+      { label: '8人制', value: '14' },
+      { label: '7人制', value: '15' },
+      { label: '5人制', value: '16' }
+    ]
+
+    const plainOptionsFour = [
+      { label: '9洞', value: '25' },
+      { label: '18洞', value: '26' },
+      { label: '27洞', value: '27' },
+      { label: '36洞', value: '28' },
+      { label: '练习', value: '19' },
+    ]
 
     return (
       <div className="stadiumInformationPh">
-        <div className="title"> <span style={{ color: '#D85D27' }}>注册 ></span> <span style={{ color: '#D85D27' }}>完善信息 ></span> <span>审核  ></span> <span>成功</span><Icon type="close" onClick={this.close} style={{ position: 'absolute', right: '5%', top: '35%' }} /> </div>
+        <NavBar
+          mode="dark"
+          icon={<Icon type="arrow-left" onClick={this.reture} />}
+          rightContent={<Popover mask
+            overlayClassName="fortest"
+            overlayStyle={{ color: 'currentColor' }}
+            visible={this.state.visible}
+            onSelect={this.closeWeb}
+            overlay={[
+              (<Item key="1" value="scan" style={{ fontSize: '0.7rem' }} data-seed="logId">{window.location.href.indexOf('flag=1')===-1? '返回官网' : '关闭'}</Item>),
+            ]}
+            align={{
+              overflow: { adjustY: 0, adjustX: 0 },
+              offset: [-10, 0],
+            }}
+            onVisibleChange={this.handleVisibleChange}
+
+          >
+            <div style={{
+              height: '100%',
+              padding: '0 15px',
+              marginRight: '-15px',
+              fontSize: '2rem',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+            >
+              <Icon type="ellipsis" />
+            </div>
+          </Popover>}
+        ><span style={{ fontSize: '1rem' }}>完善基本信息</span></NavBar>
         <div className="boss">
           <div className="input">
 
@@ -373,7 +476,7 @@ class stadiumInformationPh extends React.Component {
               style={{ fontSize: '0.6rem' }}
               className="select"
               disabled={true}
-              onClick={this.mapPh} 
+              onClick={this.mapPh}
             >
             </InputItem>
             <img className="imgAddress" onClick={this.mapPh} src={require("../../assets/icon_pc_dingwei.png")} alt="地址" />
@@ -402,6 +505,38 @@ class stadiumInformationPh extends React.Component {
             >
             </InputItem>
           </div>
+
+
+          <div className="input">
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;联系人</span>
+            <InputItem
+              placeholder="请输入场馆联系人"
+              value={this.state.linkMan}
+              style={{ fontSize: '0.6rem' }}
+              className="select"
+              onChange={this.linkMan}
+            >
+            </InputItem>
+          </div>
+
+          <div className="input">
+            <span>联系电话</span>
+            <InputItem
+              type='phone'
+              placeholder="请输入场馆联系人电话"
+              value={this.state.telephone}
+              style={{ fontSize: '0.6rem' }}
+              className="select"
+              onChange={this.telephone}
+            >
+            </InputItem>
+          </div>
+
+
+
+
+
+
           <div className="input">
             <span>门脸照</span>
             <Upload
@@ -442,6 +577,31 @@ class stadiumInformationPh extends React.Component {
             <span>运动项目</span>
             <Checkbox.Group options={plainOptions} value={this.state.onChangeRun} onChange={this.onChangeRun} /><br /><span className="kong"></span>
           </div>
+
+
+          <div className="input" style={this.state.onChangeRun.indexOf('3') !== -1 ? { display: 'block' } : { display: 'none' }}>
+            <span>台球类型</span>
+            <Checkbox.Group options={plainOptionsTwo} value={this.state.onChangeRunTai} onChange={this.onChangeRunTai} /><br /><span className="kong"></span>
+          </div>
+
+
+          <div className="input" style={this.state.onChangeRun.indexOf('5') !== -1 ? { display: 'block' } : { display: 'none' }}>
+            <span>足球类型</span>
+            <Checkbox.Group options={plainOptionsThree} value={this.state.onChangeRunZu} onChange={this.onChangeRunZu} /><br /><span className="kong"></span>
+          </div>
+
+          <div className="input" style={this.state.onChangeRun.indexOf('8') !== -1 ? { display: 'block' } : { display: 'none' }}>
+            <span>高尔夫类型</span>
+            <Checkbox.Group options={plainOptionsFour} value={this.state.onChangeRunGao} onChange={this.onChangeRunGao} /><br /><span className="kong"></span>
+          </div>
+
+
+
+
+
+
+
+
 
           <div className="input">
             <span>场地设施</span>

@@ -4,6 +4,9 @@
     background: #fff;
     overflow: hidden;
 }
+.corporatePh .am-navbar{
+    background: #374D66;
+  }
 .corporatePh .loginInput {
     width: 20rem;
     margin: 2rem auto 0;

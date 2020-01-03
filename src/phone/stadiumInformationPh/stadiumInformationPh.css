@@ -1,6 +1,9 @@
 .stadiumInformationPh{
     padding-bottom: 1rem;
 }
+.stadiumInformationPh .am-navbar{
+    background: #374D66;
+  }
 .stadiumInformationPh .headTitle{
     height: 3rem;
     border-bottom: 0.06rem solid #f5f5f5;

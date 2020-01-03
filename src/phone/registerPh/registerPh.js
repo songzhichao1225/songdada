@@ -1,11 +1,11 @@
 import React from 'react';
 import './registerPh.css';
 
-import { Toast, InputItem, Modal, Button } from 'antd-mobile';
+import { Toast, InputItem, Modal, Button, NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Checkbox, Icon } from 'antd';
 import { _register, _code, getPromoteName, getIsUserName } from '../../api';
-
+const Item = Popover.Item;
 const alert = Modal.alert;
 class registerPh extends React.Component {
 
@@ -149,14 +149,56 @@ class registerPh extends React.Component {
     }
   }
 
+  reture = () => {
+    this.props.history.goBack()
+  }
+
+  closeWeb=()=>{
+    console.log(111)
+  if(window.location.href.indexOf('flag=1')===-1){
+    this.props.history.push('/phone')
+     this.setState({visible:false})
+  }else{
+    this.close()
+  }
+}
+
+
 
   render() {
     return (
       <div className="registerPh">
-        <div className="title">
-          <span style={{ color: '#D85D27' }}>注册 ></span> <span>完善信息 ></span> <span>审核  ></span> <span>成功</span>
-          <Icon type="close" onClick={this.close} style={{ position: 'absolute', right: '5%', top: '35%' }} />
-        </div>
+          <NavBar
+            mode="dark"
+            icon={<Icon type="arrow-left" onClick={this.reture} />}
+            rightContent={<Popover mask
+              overlayClassName="fortest"
+              overlayStyle={{ color: 'currentColor' }}
+              visible={this.state.visible}
+              onSelect={this.closeWeb}
+              overlay={[
+              (<Item key="1" value="scan" style={{ fontSize: '0.7rem' }} data-seed="logId">{window.location.href.indexOf('flag=1')===-1?'返回官网':'关闭'}</Item>),
+              ]}
+              align={{
+                overflow: { adjustY: 0, adjustX: 0 },
+                offset: [-10, 0],
+              }}
+              onVisibleChange={this.handleVisibleChange}
+            
+            >
+              <div style={{
+                height: '100%',
+                padding: '0 15px',
+                marginRight: '-15px',
+                fontSize: '2rem',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+              >
+                <Icon type="ellipsis" />
+              </div>
+            </Popover>}
+          ><span style={{ fontSize: '1rem' }}>注册</span></NavBar>
         <div className="bossInput">
           <div className="input">
             <InputItem

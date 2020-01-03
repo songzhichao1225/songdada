@@ -120,6 +120,7 @@
     position: absolute;
     z-index: 10;
     background: #fff;
+    transition: 0.1s;
 }
 .appOrder .bookingKanban .lookList .headerSon .topFixd>div>span{
     width:4.13rem;
@@ -145,7 +146,7 @@
 .appOrder .bookingKanban .lookList .sonList>span:first-child{
     background: #fff;
     position: absolute;
-    top: -0.3rem;
+    top: -0.5rem;
     margin-top: 0;
     margin-left: 0;
     height: 2rem;
@@ -216,9 +217,7 @@
  .appOrder .ant-calendar-picker-icon{
      right: 20px;
  }
- .kodrAwer .ant-drawer-header{
-     padding:16px 4px;
- } 
+
 
  .appOrder .am-result{
      height: 100%;

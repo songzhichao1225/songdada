@@ -1,5 +1,8 @@
 .minePh{
     font-size: 0.75rem;
+    overflow-y: scroll;
+    height: 100%;
+    padding-bottom: 8rem;
 }
 .minePh .headerbanner{
     width: 100%;
@@ -75,5 +78,5 @@
     height: 0.69rem;
     display: block;
     float: right;
-    margin-top: 1.3rem;
+    margin-top: 0.8rem;
 }

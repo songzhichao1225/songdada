@@ -2,7 +2,6 @@
 .newsPh{
     height: 90%;
     font-size: 0.75rem;
-    background-color: #f5f5f5;
 }
 .newsPh .newsheaderTitle{
    overflow: hidden;
@@ -120,7 +119,7 @@
     
 }
 
- html:not([data-scale]) .am-card:not(.am-card-full)::before{
+ html:not([data-scale]) .newsPh .am-card:not(.am-card-full)::before{
     border-radius: 0;
     border-top: none;
 }

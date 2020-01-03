@@ -1,0 +1,224 @@
+.phone{
+  font-size: 0.75rem;
+  font-family: "SF Pro SC","SF Pro Display","SF Pro Icons","PingFang SC","Helvetica Neue","Helvetica","Arial",sans-serif;
+  height: 100%;
+  position: relative;
+  background: #fff;
+}
+.phone .header{
+  width: 100%;
+  height: 3.06rem;
+  background:rgba(27,19,14,1);
+}
+.phone .header>img{
+  display: block;
+  width: 2.25rem;
+  height: 2.25rem;
+  float: left;
+  margin-left: 0.94rem;
+  margin-top: 0.41rem;
+}
+.phone .am-navbar-light{
+  background: transparent;
+  color: #fff;
+}
+.phone .banner{
+  width: 100%;
+
+}
+.phone .banner>img{
+  width: 100%;
+  display: block;
+}
+.phone .products>h3{
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 0;
+}
+.phone .products> .span{
+   text-align: center;
+   display: block;
+}
+.phone .products> .xian{
+  width: 1.5rem;
+  height: 0.12rem;
+  background: #333;
+  margin: 0.2rem auto 0;
+}
+.phone .products .sportsman{
+  width: 100%;
+  background: #331209;
+  overflow: hidden;
+  color: #fff;
+  margin-top: 0.81rem;
+}
+.phone .products .sportsman .title{
+    display: block;
+    margin:1.38rem 0 0 01.81rem;
+}
+.phone .products .sportsman .topTil{
+  font-size: 1.88rem;
+  text-align: center;
+  margin: 0;
+  color: #fff;
+}
+.phone .products .sportsman .top{
+  
+  top: 0;
+  width: 70%;
+  height: 70%;
+  background: rgba(0, 0, 0, 0.2);
+  margin-left: 5%;
+  margin-top: 1.5rem;
+  clear: both;
+  padding-bottom: 2rem;
+  position: relative;
+}
+.phone .products .sportsman .top .text{
+  padding-top: 15%;
+  padding-left: 0.69rem;
+  width: 7.14rem;
+  float: left;
+}
+.phone .products .sportsman .top .text .textOne{
+   display: block;
+   font-size: 1rem;
+   font-weight: bold;
+}
+
+.phone .products .sportsman .top .text .textTwo{
+  display: block;
+  margin-top: 1rem;
+  line-height: 1.25rem;
+}
+.phone .products .sportsman .top img{
+  display: block;
+  width: 70%;
+  position: absolute;
+  top: 1rem;
+  right: -36%;
+}
+.phone .products .sportsman .footer{
+  margin-top: 2.38rem;
+  margin-left: 5%;
+  margin-bottom: 6.56rem;
+  float: left;
+}
+.phone .questions{
+  width: 100%;
+  height: 28.13rem;
+  position: relative;
+  color: #fff;
+}
+.phone .questions .banBack{
+  width: 100%;
+  height: 100%;
+  display: block;
+  margin-top: 0.81rem;
+}
+.phone .questions .content{
+  width: 95%;
+  position: absolute;
+  top: 0;
+  left: 2.5%;
+}
+.phone .questions .content>h3{
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 0;
+  color: #fff;
+}
+.phone .questions .content>span{
+  display: block;
+  text-align: center;
+}
+.phone .questions .content>.xian{
+   width: 1.5rem;
+   height: 0.12rem;
+   background: #fff;
+   margin: 0.12rem auto 0.7rem;
+}
+.phone .questions .content .contentImg{
+  float: left;
+}
+.phone .questions .content .contentImg>img{
+  width: 100%;
+}
+.phone .mine{
+  width: 95%;
+  margin:0.88rem auto 0;
+}
+
+.phone .mine>h3{
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 0;
+}
+.phone .mine>span{
+  display: block;
+  text-align: center;
+}
+.phone .mine>.xian{
+   width: 1.5rem;
+   height: 0.12rem;
+   background: #000;
+   margin: 0.12rem auto 0.7rem;
+}
+
+.phone .mine>img{
+ display: block;
+ width: 100%;
+ height: 100%;
+}
+.phone .mine .span{
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  margin-top: 0.5rem;
+  line-height: 1rem;
+  font-family:MicrosoftYaHei;
+ }
+ .phone .footerBot{
+   width: 100%;
+
+   background: #1B130E;
+   margin-top: 2.06rem;
+   overflow: hidden;
+ }
+ .phone .footerBot>ul{
+   margin-top:1.88rem;
+   margin-left: 1.69rem;
+   color: #fff;
+   list-style: none;
+   padding: 0px;
+   margin: 0px;
+   margin-left: 5%;
+ }
+ .phone .footerBot>ul>li{
+   overflow: hidden;
+   margin-top: 0.75rem;
+   
+ }
+ .phone .footerBot>ul>li>span:first-child{
+   display: block;
+   width: 4.5rem;
+   float: left;
+   text-align: left;
+ }
+
+ .phone .footerBot>ul>li>span:last-child{
+  display: block;
+  float: left;
+  margin-left: 1.5rem;
+}
+.phone .footerBot .atCop{
+  border-top: 0.06rem solid #333;
+  color: #fff;
+  padding-top: 0.75rem;
+}
+.phone .footerBot .atCop>span{
+  display: block;
+  text-align: center;
+  line-height: 1rem;
+}

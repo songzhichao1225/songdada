@@ -1,6 +1,9 @@
 .registerPh{
     height: 100%;
 }
+.registerPh .am-navbar{
+    background: #374D66;
+  }
 .registerPh .title{
     overflow: hidden;
     display: flex;

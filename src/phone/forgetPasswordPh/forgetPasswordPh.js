@@ -1,11 +1,11 @@
 import React from 'react';
 import './forgetPasswordPh.css';
 
-import { Toast, InputItem } from 'antd-mobile';
+import { Toast, InputItem, NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { _code, VenueSelectSiteName, VenueForgetPass } from '../../api';
 import { Radio, Icon } from 'antd';
-
+const Item = Popover.Item;
 
 class forgetPasswordPh extends React.Component {
 
@@ -17,7 +17,7 @@ class forgetPasswordPh extends React.Component {
     code: '',
     pass: '',
     passTwo: '',
-  };
+  }
 
   componentDidMount() {
 
@@ -55,13 +55,12 @@ class forgetPasswordPh extends React.Component {
     } else {
       Toast.fail(res.data.msg, 1);
     }
-
   }
   naCode = () => {
     if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
       this.VenueSelectSiteName({ phone: this.state.phone })
     } else {
-      Toast.fail('请输入手机号', 1);
+      Toast.fail('请输入手机号', 1)
     }
   }
   onChange = e => {
@@ -80,21 +79,18 @@ class forgetPasswordPh extends React.Component {
   async VenueForgetPass(data) {
     const res = await VenueForgetPass(data)
     if (res.data.code === 2000) {
-      Toast.success('密码修改成功', 1);
+      Toast.success('密码修改成功', 1)
       this.props.history.goBack()
     } else {
-      Toast.fail(res.data.msg, 1);
+      Toast.fail(res.data.msg, 1)
     }
-
   }
   comfir = () => {
     let { phone, value, code, pass, passTwo } = this.state
-    console.log(phone, value, code, pass, passTwo)
     if (pass === passTwo) {
       this.VenueForgetPass({ phone: phone, pass: passTwo, code: code, venueloginuuid: value })
     }
   }
-
 
 
 
@@ -103,11 +99,49 @@ class forgetPasswordPh extends React.Component {
   }
 
 
+  closeWeb = () => {
+    if (window.location.href.indexOf('flag=1') === -1) {
+      this.props.history.push('/phone')                        
+      this.setState({ visible: false })
+    } else {
+      this.close()
+    }
+  }
+
 
   render() {
     return (
       <div className="forgetPasswordPh">
-        <div className="title"> <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left: '5%', top: '35%' }} />忘记密码</div>
+        <NavBar
+          mode="dark"
+          icon={<Icon type="arrow-left" onClick={this.reture} />}
+          rightContent={<Popover mask
+            overlayClassName="fortest"
+            overlayStyle={{ color: 'currentColor' }}
+            visible={this.state.visible}
+            onSelect={this.closeWeb}
+            overlay={[
+              (<Item key="1" value="scan" style={{ fontSize: '0.7rem' }} data-seed="logId">{window.location.href.indexOf('flag=1') === -1 ? '返回官网' : '关闭'}</Item>),
+            ]}
+            align={{
+              overflow: { adjustY: 0, adjustX: 0 },
+              offset: [-10, 0],
+            }}
+            onVisibleChange={this.handleVisibleChange}
+          >
+            <div style={{
+              height: '100%',
+              padding: '0 15px',
+              marginRight: '-15px',
+              fontSize: '2rem',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+            >
+              <Icon type="ellipsis" />
+            </div>
+          </Popover>}
+        ><span style={{ fontSize: '1rem' }}>忘记密码</span></NavBar>
         <div className="boss">
           <div className="name">
 
@@ -186,7 +220,6 @@ class forgetPasswordPh extends React.Component {
 
 
         </div>
-
       </div>
     );
   }

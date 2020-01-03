@@ -11,6 +11,9 @@
     color:#9B9B9B;
     position: relative;
 }
+.resultsAuditsPh .am-navbar{
+    background: #374D66;
+  }
 
 .resultsAuditsPh .title>span{
     display: block;

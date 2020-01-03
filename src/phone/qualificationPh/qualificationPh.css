@@ -9,6 +9,9 @@
     position: relative;
     line-height: 3rem;
 }
+.qualificationPh .am-navbar{
+    background: #374D66;
+  }
 .qualificationPh .headTtitle{
     width: 100%;
     height: 3rem;

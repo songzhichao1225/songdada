@@ -1,12 +1,11 @@
 import React from 'react';
 import './temporaryPh.css';
 
-import {Toast } from 'antd-mobile';
+import { Toast, DatePicker, List } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Select, Icon, Row, Col, Drawer, DatePicker, Pagination, Popconfirm,Result } from 'antd';
-import { getVenueSport, VenueTemporarilyClosedList, VenueTemporarilyClosedSave, VenueTemporarilyClosedDel,VenueTemporarilyClosed } from '../../api';
+import { Select, Icon, Row, Col, Drawer, Pagination, Popconfirm, Result } from 'antd';
+import { getVenueSport, VenueTemporarilyClosedList, VenueTemporarilyClosedSave, VenueTemporarilyClosedDel, VenueTemporarilyClosed } from '../../api';
 import moment from 'moment';
-import zh_CN from 'antd/es/date-picker/locale/zh_CN';
 const { Option } = Select;
 
 
@@ -19,15 +18,15 @@ class temporaryPh extends React.Component {
     sportList: [],
     VenueTemporarilyClosedList: [],
     visible: false,
-    startValue: undefined,
+    startValue: '',
     sportId: null,
-    EndValue: undefined,
+    EndValue: '',
     textarea: null,
     sportName: [],
     total: 0,
     listUUid: null,
-    upUUid:'',
-    temPage:0,
+    upUUid: '',
+    temPage: 0,
     clenTop: 0,  //下拉加载参数
     clickY: 0,
     moveY: 0,
@@ -50,11 +49,11 @@ class temporaryPh extends React.Component {
       this.props.history.push('/login')
       Toast.fail('登录超时请重新登录', 1);
     } else {
-       this.setState({spinFlag:false })
-      if(this.state.upUUid!==''){
-        this.setState({ sportName:res.data.data[0].sportname,startValue:res.data.data[0].starttime,EndValue:res.data.data[0].endtime,textarea:res.data.data[0].comment})
-      }else{
-        this.setState({ VenueTemporarilyClosedList: res.data.data, total: res.data.other,upUUid:'' })
+      this.setState({ spinFlag: false })
+      if (this.state.upUUid !== '') {
+        this.setState({ sportName: res.data.data[0].sportname, startValue: new Date(res.data.data[0].starttime), EndValue: new Date(res.data.data[0].endtime), textarea: res.data.data[0].comment })
+      } else {
+        this.setState({ VenueTemporarilyClosedList: res.data.data, total: res.data.other, upUUid: '' })
       }
     }
   }
@@ -65,11 +64,11 @@ class temporaryPh extends React.Component {
     this.VenueTemporarilyClosedList({ page: 1 })
     let start = moment().startOf('day').add(1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
     let end = moment().endOf('day').add(1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
-    this.setState({ startValue: start, EndValue: end })
+    this.setState({ startValue: new Date(start), EndValue: new Date(end) })
   }
 
   current = (page, pageSize) => {
-    this.setState({temPage:page})
+    this.setState({ temPage: page })
     this.VenueTemporarilyClosedList({ page: page })
   }
 
@@ -85,15 +84,15 @@ class temporaryPh extends React.Component {
   }
 
 
- 
 
-  onStartChange = (date,dateString) => {
-    this.setState({startValue:dateString})
+
+  onStartChange = (date, dateString) => {
+    this.setState({ startValue: dateString })
   };
 
 
-  onEndChange = (date,dateString) => {
-    this.setState({EndValue:dateString})
+  onEndChange = (date, dateString) => {
+    this.setState({ EndValue: dateString })
   };
 
 
@@ -140,7 +139,7 @@ class temporaryPh extends React.Component {
     if (res.data.code === 4001) {
       this.props.history.push('/')
       Toast.fail('登录超时请重新登录', 1);
-    }else if(res.data.code===2000){
+    } else if (res.data.code === 2000) {
       this.setState({ visible: false })
       this.VenueTemporarilyClosedList()
     } else {
@@ -161,8 +160,8 @@ class temporaryPh extends React.Component {
     }
   }
   subCilck = () => {
-    let { sportId, sportName, startValue, EndValue, textarea,upUUid } = this.state
-    if(upUUid===''){
+    let { sportId, sportName, startValue, EndValue, textarea, upUUid } = this.state
+    if (upUUid === '') {
       let data = {
         sportid: sportId,
         sportname: sportName,
@@ -172,9 +171,9 @@ class temporaryPh extends React.Component {
       }
       console.log(666)
       this.VenueTemporarilyClosed(data)
-    }else{
+    } else {
       let data = {
-        colseuuid:upUUid,
+        colseuuid: upUUid,
         sportid: sportId,
         sportname: sportName,
         starttime: startValue,
@@ -183,11 +182,11 @@ class temporaryPh extends React.Component {
       }
       this.VenueTemporarilyClosedSave(data)
     }
-    
+
   }
 
   mood = (e) => {
-    this.setState({ listUUid: e.target.dataset.uuid})
+    this.setState({ listUUid: e.target.dataset.uuid })
   }
 
 
@@ -203,19 +202,19 @@ class temporaryPh extends React.Component {
     }
   }
   temDelet = () => {
-    this.VenueTemporarilyClosedDel({colseuuid:this.state.listUUid})
+    this.VenueTemporarilyClosedDel({ colseuuid: this.state.listUUid })
   }
 
-  upload=(e)=>{
-    this.VenueTemporarilyClosedList({colseuuid:e.target.dataset.uuid})
-    this.setState({ visible: true,upUUid:e.target.dataset.uuid })
+  upload = (e) => {
+    this.VenueTemporarilyClosedList({ colseuuid: e.target.dataset.uuid })
+    this.setState({ visible: true, upUUid: e.target.dataset.uuid })
   }
 
   touClick = (e) => {
     this.setState({ clickY: e.targetTouches[0].clientY })
   }
   touMove = (e) => {
-    if (this.state.clickY < e.targetTouches[0].clientY&&this.state.clickY<200) {
+    if (this.state.clickY < e.targetTouches[0].clientY && this.state.clickY < 200) {
       this.setState({ moveY: e.targetTouches[0].clientY })
       if (e.targetTouches[0].clientY - this.state.clickY < 80) {
         this.setState({ spinFlag: true })
@@ -224,10 +223,10 @@ class temporaryPh extends React.Component {
     }
   }
   touEnd = () => {
-    if (this.state.moveY > this.state.clickY+10) {
-      this.VenueTemporarilyClosedList({page:this.state.temPage})
+    if (this.state.moveY > this.state.clickY + 10) {
+      this.VenueTemporarilyClosedList({ page: this.state.temPage })
       if (this.state.spinFlag === false) {
-          this.setState({ clenTop: 0 })
+        this.setState({ clenTop: 0 })
       }
     }
   }
@@ -242,35 +241,40 @@ class temporaryPh extends React.Component {
           <Col xs={{ span: 12 }} lg={{ span: 12 }}>时间</Col>
           <Col xs={{ span: 6 }} lg={{ span: 6 }}>操作</Col>
         </Row>
-        <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block',height:this.state.clenTop,transition: '0.3s',background:'#f5f5f5',position:'relative' } : { display: 'none' }} ><Icon type="loading" className='loadingY' style={{top:this.state.clenTop/7}} /></div>
-        
-        <div className="temScroll" onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd} >
-        {
-          this.state.VenueTemporarilyClosedList.map((item, i) => (
-            <Row className='Row' key={i}>
-              <Col xs={{ span: 6 }} lg={{ span: 6 }}>{item.sportname}</Col>
-              <Col style={{ lineHeight: '2rem' }} xs={{ span: 12 }} lg={{ span: 12 }}>{item.starttime}<br />{item.endtime}</Col>
-              <Col xs={{ span: 6 }} lg={{ span: 6 }}>
-                <img style={{ paddingRight: '0.5rem' }} data-uuid={item.uuid} onClick={this.upload} src={require("../../assets/upLoad.png")} alt='修改' />
+        <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block', height: this.state.clenTop, transition: '0.3s', background: '#f5f5f5', position: 'relative' } : { display: 'none' }} ><Icon type="loading" className='loadingY' style={{ top: this.state.clenTop / 7 }} /></div>
 
-                <Popconfirm
-                  title="你确定要删除吗?"
-                  onConfirm={this.temDelet}
-                  onCancel={this.siteCancel}
-                  okText="确定"
-                  cancelText="取消"
-                >
-                  <img className="upLoad" style={{ right: '1.5rem' }} onClick={this.mood} data-uuid={item.uuid} src={require("../../assets/delet.png")} alt="删除" />
-                </Popconfirm>
-              </Col>
-            </Row>
-          )
-          )
-        }
+        <div className="temScroll" >
+          {
+            this.state.VenueTemporarilyClosedList.map((item, i) => (
+              <Row className='Row' key={i}>
+                <Col xs={{ span: 6 }} lg={{ span: 6 }}>{item.sportname}</Col>
+                <Col style={{ lineHeight: '1.3rem' }} xs={{ span: 12 }} lg={{ span: 12 }}>{item.starttime}<br />{item.endtime}</Col>
+                <Col xs={{ span: 6 }} lg={{ span: 6 }}>
+                  <img style={{ paddingRight: '0.5rem' }} data-uuid={item.uuid} onClick={this.upload} src={require("../../assets/upLoad.png")} alt='修改' />
+
+                  <Popconfirm
+                    title="你确定要删除吗?"
+                    onConfirm={this.temDelet}
+                    onCancel={this.siteCancel}
+                    okText="确定"
+                    cancelText="取消"
+                  >
+                    <img className="upLoad" style={{ right: '1.5rem' }} onClick={this.mood} data-uuid={item.uuid} src={require("../../assets/delet.png")} alt="删除" />
+                  </Popconfirm>
+                </Col>
+              </Row>
+
+
+            )
+            )
+          }
         </div>
         <img className="addList" onClick={this.addYouList} src={require("../../assets/comeOn@2x.png")} alt="添加" />
         <Pagination className="fenye" defaultCurrent={1} style={this.state.VenueTemporarilyClosedList.length < 1 ? { display: 'none' } : {}} size="small" onChange={this.current} total={this.state.total} />
         <Result className={this.state.VenueTemporarilyClosedList.length === 0 ? '' : 'nono'} icon={<Icon type="gift" theme="twoTone" twoToneColor="#F5A623" style={{ fontSize: '2rem' }} />} title="没有场地设置" />
+
+
+
         <Drawer
           title="添加关闭预约信息"
           placement="right"
@@ -278,11 +282,11 @@ class temporaryPh extends React.Component {
           width={'100%'}
           onClose={this.onClose}
           visible={this.state.visible}
-          bodyStyle={{padding:'5%'}}
+          bodyStyle={{ padding: '5%' }}
         >
           <div className='drawerInput'>
             <span>运动项目</span>
-            <Select placeholder='请选择' style={{width:'77%',  border: 'none', boxShadow: 'none' }} value={this.state.sportName} onChange={this.sportChange}>
+            <Select placeholder='请选择' style={{ width: '27%', border: 'none', boxShadow: 'none', float: 'right' }} value={this.state.sportName} onChange={this.sportChange}>
               {
                 this.state.sportList.map((item, i) => (
                   <Option key={i} value={item.id}>{item.name}</Option>
@@ -292,29 +296,38 @@ class temporaryPh extends React.Component {
           </div>
 
           <div className='drawerInput'>
-            <span>开始时间</span>
-            <DatePicker
+            {/* <DatePicker
               locale={zh_CN}
               disabledDate={this.disabledStartDate}
-              showTime={{minuteStep:30,secondStep:60}}
+              showTime={{ minuteStep: 30, secondStep: 60 }}
               format="YYYY-MM-DD HH:mm"
               value={moment(this.state.startValue)}
               placeholder="开始时间"
               onChange={this.onStartChange}
-            />
+            /> */}
+
+            <DatePicker
+              value={this.state.startValue}
+              minDate={this.state.startValue}
+              onChange={startValue => this.setState({ startValue })}
+            >
+              <List.Item className="startTime">开始时间</List.Item>
+            </DatePicker>
+
+
+
           </div>
 
           <div className='drawerInput'>
-            <span>结束时间</span>
+
+
             <DatePicker
-              locale={zh_CN}
-              disabledDate={this.disabledStartDate}
-              showTime={{minuteStep:30,secondStep:60}}
-              format="YYYY-MM-DD HH:mm"
-              value={moment(this.state.EndValue)}
-              placeholder="结束时间"
-              onChange={this.onEndChange}
-            />
+              value={this.state.EndValue}
+              minDate={this.state.EndValue}
+              onChange={EndValue => this.setState({ EndValue })}
+            >
+              <List.Item className="startTime">结束时间</List.Item>
+            </DatePicker>
           </div>
 
           <div className='drawerInput'>

@@ -2,14 +2,16 @@
     font-size: 0.75rem;
     height: 100%;
     overflow: hidden;
+    background: #F5F5F5;
 }
 .sitePh .siteheaderTitle{
     overflow: hidden;
     border-bottom: 0.06rem solid #f5f5f5;
+    background-color: #fff;
 }
 .sitePh .siteheaderTitle>div{
     float: left;
-    padding: 0.5rem 0.5rem;
+    padding: 0.7rem 0.8rem;
 }
 
 .sitePh .selectBottom{
@@ -52,9 +54,7 @@
 
  .sitePh .contentScorll{
     height: 100%;
-    padding-bottom: 4rem;
-    -webkit-overflow-scrolling: touch;
-    overflow-y: scroll;
+    padding-bottom: 15rem;
     white-space: nowrap;
  }
 
@@ -63,9 +63,6 @@
      line-height: 2rem;
  }
  
- .sitePh .contentScorll::-webkit-scrollbar {/*滚动条整体样式*/
-    display: none;
-}
 
 .sitePh .ant-select-selection{
     border:none;
@@ -214,16 +211,12 @@
     line-height: 2rem;
 }
 .preferential{
-    overflow-y: scroll;
     white-space: nowrap;
     height: 100%;
     position: relative;
-    padding-bottom: 10rem;
+    padding-bottom: 15rem;
 }
 
-.preferential::-webkit-scrollbar {/*滚动条整体样式*/
-    display: none;
-}
 
 
 .SzSon .ant-select-selection--multiple .ant-select-selection__rendered{
@@ -234,4 +227,44 @@
 }
 .SzSon .ant-select-selection__rendered{
     margin-left: 0;
+}
+
+.sitePh .am-card{
+    width: 96%;
+    margin: 0.5rem auto 0;
+    border-top: 1px solid #f5f5f5;
+}
+.sitePh .am-card-header{
+    padding: 3px  3px 0 6px;
+    font-size: 14px;
+}
+html:not([data-scale]) .am-card-body::before{
+    height: 0;
+}
+.sitePh  .am-card-body{
+    padding: 15px 5px 6px;
+}
+.sitePh .am-card-header-content{
+    flex: 3 3;
+}
+
+.am-picker-popup-item{
+    font-size: 14px;
+}
+
+.SzSon .am-list-item .am-list-line .am-list-content{
+    font-size: 14px;
+    color:rgba(0, 0, 0, 0.65);
+}
+.SzSon .am-list-item{
+    padding-left: 0;
+    border-bottom: 0.06rem solid #f5f5f5;
+}
+.SzSon  .am-list-item .am-list-line .am-list-extra{
+    font-size: 14px;
+    text-align: left;
+    flex-basis:50%
+}
+.SzSon .am-list-item .am-list-line .am-list-arrow{
+    display: none;
 }

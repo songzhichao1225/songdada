@@ -62,9 +62,9 @@ class appOrder extends React.Component {
                  }
               }
         }
-        console.log(arrFood)
-      }
         this.setState({ lookList: res.data.data, venueNum: res.data.other.venueid, sporttype: arrFood, macNum: res.data.data[0].c, animating: false })
+      }
+        this.setState({ lookList: res.data.data, venueNum: res.data.other.venueid, sporttype:  Object.values(res.data.other.sporttype), macNum: res.data.data[0].c, animating: false })
       }
       if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 24) {
         if (res.data.data[res.data.data.length - 1].a.slice(-2) === '00') {
@@ -99,8 +99,7 @@ class appOrder extends React.Component {
 
   componentDidMount() {
 
-    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=3&token=iw2UUQ3FV9MljQthr9xHUmk6JMGNUieJ2WYXuuacgZ2KsqNbwSEguEhiKRockrzq&sporttype=2'
-   
+    // let query = '?siteuid=dc26db5d-b740-cdf1-91aa-d58125c92974&sportid=3&token=uOx3s4RIajko2fvNvIHjc7vgUIS8iANUsFZPeKRo4AsUBocv4HUzj6NqOXx4OqsH&sporttype=2'
     let query = this.props.location.search
    
     let arr = query.split('&')
@@ -150,8 +149,8 @@ class appOrder extends React.Component {
   }
 
   onConfirm = (e) => {
-    this.setState({ show: false, date: e.toLocaleDateString().replace(/\//g, "-"), lotime: '' })
-    this.getAppVenueReservation({ date: e.toLocaleDateString().replace(/\//g, "-"), siteUUID: this.state.siteid, sportid: this.state.sportid,sporttype:this.state.sporttypeTwo })
+    this.setState({ show: false, date: e.toLocaleDateString().replace(/\//g, "/"), lotime: '' })
+    this.getAppVenueReservation({ date: e.toLocaleDateString().replace(/\//g, "/"), siteUUID: this.state.siteid, sportid: this.state.sportid,sporttype:this.state.sporttypeTwo })
   }
   onCancel = () => {
     this.setState({ show: false })
@@ -231,13 +230,13 @@ class appOrder extends React.Component {
       } else {
         let obj = {
           placeNun: num,
-          placeTime: time.slice(0, time.length - 1).split(',').sort()[0] + '-' + time.slice(0, time.length - 1).split(',').sort()[this.state.lotime.length - 1],
+          placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
           placeDate: this.state.date,
           placeMoney: this.state.moneyCall,
           placeTimeLen: (time.split(',').length - 1) * 0.5 + '小时'
         }
         this.setState({ obj: obj })
-        this.checkChooseTimes({ startTime: time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5 })
+        this.checkChooseTimes({ startTime:this.state.date+ time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5 })
       }
     } else {
       Toast.fail('请选择场地', 2, null, false);
@@ -267,7 +266,7 @@ class appOrder extends React.Component {
               </div>
               <div className="lookList" onScrollCapture={this.scroll} ref={c => { this.scrollRef = c }} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block' }}>
                 <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 4.25 + 'rem' }}>
-                  <div className="topFixd" style={{ top: this.state.top, minWidth: '100%', minHeight: '3rem' }}>
+                  <div className="topFixd" style={{ paddingTop: this.state.top, minWidth: '100%', minHeight: '3rem' }}>
                     <div style={this.state.venueNum.length > 0 ? { display: 'none' } : { display: 'block' }}>
                       <span><span style={this.state.topNumList.length>0?{}:{display:'none'}}>标题</span><br />场地号</span>
                       {
@@ -277,7 +276,7 @@ class appOrder extends React.Component {
                       }
                     </div>
 
-
+                     
                     <div style={this.state.venueNum.length > 0 && this.state.topNumList.length === 0 ? {  } : { display: 'none' }}>
                       <span>分类<br />场地号</span>
                       {
@@ -302,7 +301,7 @@ class appOrder extends React.Component {
                   {
                     this.state.lookList.map((index, i) => (
                       <div key={i} className="sonList">
-                        <span style={{ left: this.state.left }}>{index.a}<br /><span style={{ paddingTop: '0.5rem', display: 'block' }}>{i === this.state.lookList.length - 1 ? this.state.lastTime : ''}</span></span>
+                        <span style={{ width: 45+this.state.left,textAlign:'right',paddingRight:'8px'  }}>{index.a}<br /><span style={{ paddingTop: '0.5rem', display: 'block' }}>{i === this.state.lookList.length - 1 ? this.state.lastTime : ''}</span></span>
                         <span></span>
                         {
                           this.state.lookList[i].c.map((item, i) => (
