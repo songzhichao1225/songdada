@@ -706,7 +706,6 @@ class appointmentList extends React.Component {
           onCancel={this.handleCancel}
         >
           <Radio.Group onChange={this.sendCheck} value={this.state.sendCheck}>
-            {/* <Radio value={1}>预留场地</Radio> */}
             <Radio value={2}>未预留场地</Radio>
           </Radio.Group>
           <div style={this.state.sendCheck === 1 ? {} : { display: 'none' }}>

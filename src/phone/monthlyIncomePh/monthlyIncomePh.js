@@ -53,11 +53,13 @@ class monthlyIncomePh extends React.Component {
       } else {
         let start = moment().startOf('day')._d
         let end = moment().endOf('day')._d
-      
+        this.getVenueMoneyList({ start: start, end: end, page: 1 })
         this.setState({ qiStart: new Date(start), qiEnd: new Date(end) })
       }
     }
   }
+
+  
   startDate = (date) => {
     this.setState({ start: date,qiStart: date  })
     this.getVenueMoneyList({ start: date.toLocaleDateString().replace(/\//g, "-"), end: this.state.end, page: this.state.current })
