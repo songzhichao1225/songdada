@@ -65,11 +65,11 @@ class withdrawalPh extends React.Component {
   render() {
     return (
       <div className="withdrawalPh">
-        <div className="headTitle"><Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left: '5%', top: '35%' }} />提现</div>
+        <div className="headTitle"><Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', width:'48px',height:'48px',left:'0',lineHeight:'48px'}} />提现</div>
         <div className="white"></div>
         <div className="bankCards">
-          <span>{this.state.withdrawalPh.Settlement === 2 ? '法人账户' : '公司银行账户'}</span>
-          <span>{this.state.withdrawalPh.Settlement === 2 ? "**" + this.state.withdrawalPh.legalname.slice(-1) : this.state.withdrawalPh.legalname}</span>
+          <span>{this.state.withdrawalPh.Settlement === 1 ? '法人账户' : '公司银行账户'}</span>
+          <span>{this.state.withdrawalPh.Settlement === 1 ? "**" + this.state.withdrawalPh.legalname.slice(-1) : this.state.withdrawalPh.legalname}</span>
           <span>{this.state.withdrawalPh.OpeningBank} {this.state.withdrawalPh.Bankaccount}</span>
         </div>
         <div className="white"></div>

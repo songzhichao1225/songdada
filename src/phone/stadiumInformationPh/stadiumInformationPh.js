@@ -54,7 +54,7 @@ class stadiumInformationPh extends React.Component {
     lng: '',
     addressId: '', //选择省市区id
     addressArr: '',//选择省市区名称
-    addressXian: '',
+    addressXian: this.props.location.query !== undefined ? this.props.location.query.adddress:'',
     previewVisible: false,
     fileList: [],
     imageRes: '',
@@ -92,7 +92,7 @@ class stadiumInformationPh extends React.Component {
       }
       this.setState({
         address: res.data.data.position, addressXian: res.data.data.address, stadiumName: res.data.data.name,
-        telephone: res.data.data.telephone, linkMan: res.data.data.linkMan,
+        telephone: res.data.data.telephone.replace(/\s*/g,""), linkMan: res.data.data.linkMan,
         imageUrl: res.data.data.firstURL, fileList: arrImg, onChangeRun: res.data.data.sport, onChangeRunTai: res.data.data.sporttype.split('|')[0].split(','),
         onChangeRunZu: res.data.data.sporttype.split('|')[1].split(','), onChangeRunGao: res.data.data.sporttype.split('|')[2].split(','),
         onChangeCheck: res.data.data.facilities, textKo: res.data.data.siteInfo,
@@ -166,6 +166,7 @@ class stadiumInformationPh extends React.Component {
     }
   }
   xaingxi = e => {
+    console.log(e)
     this.setState({ addressXian: e })
   }
 
@@ -206,9 +207,11 @@ class stadiumInformationPh extends React.Component {
       Toast.success(res.data.msg, 1);
       sessionStorage.setItem('siteId', res.data.data.siteUUID)
       this.props.history.push('/qualificationPh')
-    } else {
+    } else if(res.data.code===4000) {
       Toast.fail(res.data.msg, 1);
       this.props.history.push('/login')
+    }else{
+      Toast.fail(res.data.msg, 1);
     }
   }
   stadiumName = e => {
@@ -287,8 +290,9 @@ class stadiumInformationPh extends React.Component {
         siteInfo: textKo,
         comment: '',
         linkMan: linkMan,
-        telephone: telephone,
+        telephone: telephone.replace(/\s*/g,""),
         position: addressXian,
+        sporttype: onChangeRunTai + '|' + onChangeRunZu + '|' + onChangeRunGao,
         type: 1
       }
       if (typeof (onChangeRun) === 'string') {
@@ -334,7 +338,7 @@ class stadiumInformationPh extends React.Component {
           facilities: onChangeCheck === '' ? '' : onChangeCheck.join(','),
           siteInfo: textKo,
           linkMan: linkMan,
-          telephone: telephone,
+          telephone: telephone.replace(/\s*/g,""),
           position: addressXian,
         }
         this.PerfectingVenueInformation(data)
@@ -360,7 +364,7 @@ class stadiumInformationPh extends React.Component {
 
 
   reture = () => {
-    this.props.history.goBack()
+    this.props.history.push('/login')
   }
 
   closeWeb = () => {
@@ -424,7 +428,7 @@ class stadiumInformationPh extends React.Component {
       <div className="stadiumInformationPh">
         <NavBar
           mode="dark"
-          icon={<Icon type="arrow-left" onClick={this.reture} />}
+          icon={<Icon type="arrow-left" onClick={this.reture} style={{position:'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px'}}  />}
           rightContent={<Popover mask
             overlayClassName="fortest"
             overlayStyle={{ color: 'currentColor' }}
@@ -462,7 +466,7 @@ class stadiumInformationPh extends React.Component {
               value={this.state.addressId}
               onOk={this.onOk}
             >
-              <List.Item arrow="horizontal">选择地区</List.Item>
+              <List.Item arrow="horizontal" style={{fontSize:'16px'}}>选择地区</List.Item>
             </Picker>
           </div>
 
@@ -473,7 +477,7 @@ class stadiumInformationPh extends React.Component {
             <InputItem
               placeholder="点击图标选择地址"
               value={this.props.location.query !== undefined ? this.props.location.query.title : this.state.address}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem',textAlign:'right' }}
               className="select"
               disabled={true}
               onClick={this.mapPh}
@@ -486,8 +490,8 @@ class stadiumInformationPh extends React.Component {
             <span>详细地址</span>
             <InputItem
               placeholder="请输入详细地址"
-              value={this.props.location.query !== undefined ? this.props.location.query.adddress : this.state.addressXian}
-              style={{ fontSize: '0.6rem' }}
+              value={this.state.addressXian}
+              style={{ fontSize: '0.8rem',textAlign:'right' }}
               className="select"
               onChange={this.xaingxi}
             >
@@ -499,7 +503,7 @@ class stadiumInformationPh extends React.Component {
             <InputItem
               placeholder="请输入场馆名称"
               value={this.state.stadiumName}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem',textAlign:'right' }}
               className="select"
               onChange={this.stadiumName}
             >
@@ -512,7 +516,7 @@ class stadiumInformationPh extends React.Component {
             <InputItem
               placeholder="请输入场馆联系人"
               value={this.state.linkMan}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem',textAlign:'right' }}
               className="select"
               onChange={this.linkMan}
             >
@@ -525,7 +529,7 @@ class stadiumInformationPh extends React.Component {
               type='phone'
               placeholder="请输入场馆联系人电话"
               value={this.state.telephone}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem',textAlign:'right' }}
               className="select"
               onChange={this.telephone}
             >
@@ -564,7 +568,7 @@ class stadiumInformationPh extends React.Component {
               onPreview={this.handlePreview}
               onChange={this.handleChangeT}
               accept="image/*"
-              multiple={false}
+              multiple={true}
             >
               {fileList.length >= 8 ? null : uploadButtonT}
             </Upload>
@@ -580,7 +584,7 @@ class stadiumInformationPh extends React.Component {
 
 
           <div className="input" style={this.state.onChangeRun.indexOf('3') !== -1 ? { display: 'block' } : { display: 'none' }}>
-            <span>台球类型</span>
+            <span>台球卓类型</span>
             <Checkbox.Group options={plainOptionsTwo} value={this.state.onChangeRunTai} onChange={this.onChangeRunTai} /><br /><span className="kong"></span>
           </div>
 
@@ -591,7 +595,7 @@ class stadiumInformationPh extends React.Component {
           </div>
 
           <div className="input" style={this.state.onChangeRun.indexOf('8') !== -1 ? { display: 'block' } : { display: 'none' }}>
-            <span>高尔夫类型</span>
+            <span>高尔夫场地类型</span>
             <Checkbox.Group options={plainOptionsFour} value={this.state.onChangeRunGao} onChange={this.onChangeRunGao} /><br /><span className="kong"></span>
           </div>
 

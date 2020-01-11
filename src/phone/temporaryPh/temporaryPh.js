@@ -235,7 +235,7 @@ class temporaryPh extends React.Component {
   render() {
     return (
       <div className="temporaryPh">
-        <div className="headTitle"><Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left: '5%', top: '35%' }} />设置临时关闭预约</div>
+        <div className="headTitle"><Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute',left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />设置临时关闭预约</div>
         <Row className='Row'>
           <Col xs={{ span: 6 }} lg={{ span: 6 }}>运动名称</Col>
           <Col xs={{ span: 12 }} lg={{ span: 12 }}>时间</Col>
@@ -248,7 +248,7 @@ class temporaryPh extends React.Component {
             this.state.VenueTemporarilyClosedList.map((item, i) => (
               <Row className='Row' key={i}>
                 <Col xs={{ span: 6 }} lg={{ span: 6 }}>{item.sportname}</Col>
-                <Col style={{ lineHeight: '1.3rem' }} xs={{ span: 12 }} lg={{ span: 12 }}>{item.starttime}<br />{item.endtime}</Col>
+                <Col style={{ lineHeight: '1.5rem' }} xs={{ span: 12 }} lg={{ span: 12 }}>{item.starttime}<br />{item.endtime}</Col>
                 <Col xs={{ span: 6 }} lg={{ span: 6 }}>
                   <img style={{ paddingRight: '0.5rem' }} data-uuid={item.uuid} onClick={this.upload} src={require("../../assets/upLoad.png")} alt='修改' />
 

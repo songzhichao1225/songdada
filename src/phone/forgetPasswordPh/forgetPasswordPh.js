@@ -46,7 +46,7 @@ class forgetPasswordPh extends React.Component {
 
 
   phoneChange = e => {
-    this.setState({ phone: e.target.value })
+    this.setState({ phone: e.replace(/\s*/g,"") })
   }
   async nacode(data) {
     const res = await _code(data)
@@ -149,7 +149,7 @@ class forgetPasswordPh extends React.Component {
               type='phone'
               placeholder="法人手机号"
               clear={true}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem' }}
               onChange={this.phoneChange}
               autoFocus
               className="phone"
@@ -163,7 +163,7 @@ class forgetPasswordPh extends React.Component {
               type='number'
               placeholder="手机验证码"
               clear={true}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem' }}
               onChange={this.code}
               className="phone"
               maxLength={6}
@@ -195,7 +195,7 @@ class forgetPasswordPh extends React.Component {
               type='password'
               placeholder="请输入密码"
               clear={true}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem' }}
               onChange={this.pass}
               className="phone"
               maxLength={8}
@@ -209,7 +209,7 @@ class forgetPasswordPh extends React.Component {
               type='password'
               placeholder="请输入密码"
               clear={true}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem' }}
               onChange={this.passTwo}
               className="phone"
               maxLength={8}

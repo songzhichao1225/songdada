@@ -64,7 +64,7 @@
 }
 .idCardPh .addImg{
     width: 5rem;
-    height: 5rem;
+    min-height: 5rem;
     margin-bottom: 1rem;
     clear: both;
 }
@@ -78,7 +78,7 @@
     margin:0;
 }
 .idCardPh .addImg .ant-upload.ant-upload-select-picture-card > .ant-upload{
-    padding:0;
+    padding:15px;
 }
 .idCardPh .ant-upload.ant-upload-select-picture-card{
     border:none;

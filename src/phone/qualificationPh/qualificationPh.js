@@ -138,7 +138,7 @@ class qualificationPh extends React.Component {
     }
     if (info.file.status === 'done') {
       sessionStorage.setItem('yinImg', info.file.response.data.baseURL + info.file.response.data.filesURL)
-      this.setState({ imageResOne: info.file.response.data.baseURL + info.file.response.data.filesURL })
+      this.setState({ imageUrl: info.file.response.data.baseURL + info.file.response.data.filesURL })
       getBase64(info.file.originFileObj, imageUrl =>
         this.setState({
           imageUrl,
@@ -159,6 +159,9 @@ class qualificationPh extends React.Component {
     const res = await getIsStatus(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
+      localStorage.setItem('isqult',undefined)
+      localStorage.setItem('issite',undefined)
+      localStorage.setItem('islegal',undefined)
       Toast.fail('登陆超时请重新登陆！', 1);
     }
     this.setState({ siteUUID: res.data.data.siteUid })
@@ -245,11 +248,11 @@ class qualificationPh extends React.Component {
 
 
   submit = () => {
-    let { siteUUID, imageResOneTwo, imageUrlBaseT, faName, faIdcard, faPhone, value, cardId, openingLine } = this.state
+    let { siteUUID, imageResOneTwo,imageUrl, imageUrlBaseT, faName, faIdcard, faPhone, value, cardId, openingLine } = this.state
 
     if (sessionStorage.getItem('notType') === '1') {
       let data = {
-        lisenceURL: sessionStorage.getItem('yinImg'),
+        lisenceURL: imageUrl,
         legalname: faName,
         legalcard: faIdcard,
         legalphone: faPhone,
@@ -263,7 +266,7 @@ class qualificationPh extends React.Component {
     } else {
       let data = {
         siteUUID: siteUUID,
-        lisenceURL: sessionStorage.getItem('yinImg'),
+        lisenceURL:imageUrl,
         legalname: faName,
         legalcard: faIdcard,
         legalphone: faPhone,
@@ -295,7 +298,7 @@ class qualificationPh extends React.Component {
   }
  
   reture = () => {
-    this.props.history.goBack()
+    this.props.history.push('/stadiumInformationPh')
   }
 
   closeWeb=()=>{
@@ -370,7 +373,7 @@ class qualificationPh extends React.Component {
             </Upload>
           </div>
 
-          <div className="input" onClick={this.idCard}>
+          <div className="input" style={{marginTop:'0.2rem'}} onClick={this.idCard}>
             <span>法人身份证</span>
             <img className="arow" src={require("../../assets/right.png")} alt="arrow" />
             <Input className="select" style={{ width: '65%' }} disabled={true} placeholder={this.state.place} />
@@ -422,15 +425,15 @@ class qualificationPh extends React.Component {
 
           </div>
 
-          <div className="input">
+          <div className="input" style={{marginTop:'0.2rem'}}>
             <Picker data={this.state.backProvince} cols={1} onChange={this.provinceChange} value={this.state.province_id} className="forss">
-              <List.Item arrow="horizontal">开户所在省</List.Item>
+              <List.Item arrow="horizontal" >开户所在省</List.Item>
             </Picker>
 
           </div>
 
-          <div className="input">
-            <Picker data={this.state.type} cols={1} onChange={this.cityChange} value={this.state.city_id} className="forss">
+          <div className="input" style={{marginTop:'0.2rem'}}>
+            <Picker data={this.state.backCity} cols={1} onChange={this.cityChange} value={this.state.city_id} className="forss">
               <List.Item arrow="horizontal">开户所在市</List.Item>
             </Picker>
           </div>

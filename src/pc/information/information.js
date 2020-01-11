@@ -572,7 +572,7 @@ class information extends React.Component {
               <Col xs={{ span: 2 }}>
                 <Select className="selectName" defaultValue="活动状态" style={{ width: 100 }} onChange={this.activityChang} >
                   <Option value="0">全部</Option>
-                  <Option value="1">匹配中</Option>
+                  {/* <Option value="1">匹配中</Option> */}
                   <Option value="2">待出发</Option>
                   <Option value="3">活动中</Option>
                   <Option value="4" title="待填写结果/待确认结束">待填写结果/待确认结束</Option>

@@ -575,7 +575,7 @@ class appointmentList extends React.Component {
               <Col xs={{ span: 2 }}>
                 <Select className="selectName" defaultValue="活动状态" style={{ width: 100 }} onChange={this.activityChang} >
                   <Option value="0">全部</Option>
-                  <Option value="1">匹配中</Option>
+                  {/* <Option value="1">匹配中</Option> */}
                   <Option value="2">待出发</Option>
                   <Option value="3">活动中</Option>
                   <Option value="4" title="待填写结果/待确认结束">待填写结果/待确认结束</Option>
@@ -760,7 +760,16 @@ class appointmentList extends React.Component {
             <span>时长：</span>
             <span>{this.state.informList.length > 0 ? this.state.informList[0].PlayTime : ''}</span>
           </div>
-        
+          <div className="informDrawer" style={this.state.informList.length > 0&&this.state.informList[0].reserve===0?{}:{display:'none'}}>
+            <span>应到人数：</span>
+            <span>{this.state.informList.length > 0 ? this.state.informList[0].Shouldarrive : ''}</span>
+          </div>
+
+          <div className="informDrawer" style={this.state.informList.length > 0&&this.state.informList[0].reserve===0?{}:{display:'none'}}>
+            <span>已报名人数：</span>
+            <span>{this.state.informList.length > 0 ? this.state.informList[0].TrueTo : ''}</span>
+          </div>
+          
           <div className="informDrawer">
             <span>场地费金额：</span>
             <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoney : ''}</span>

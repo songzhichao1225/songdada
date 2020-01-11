@@ -95,7 +95,7 @@ class resetPasswordPh extends React.Component {
   render() {
     return (
       <div className="resetPasswordPh">
-        <div className="headTitile"><Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left: '5%', top: '35%' }} />重置密码</div>
+        <div className="headTitile"><Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />重置密码</div>
 
         <div className="listSon">
           <Input maxLength={11} placeholder="请输入法人/操作员手机号"  onChange={this.phone} />

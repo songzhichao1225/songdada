@@ -106,6 +106,7 @@ class homePh extends React.Component {
 
 
   componentDidMount() {
+
     sessionStorage.setItem('kood',1)
     this.getVenueIndex()
     this.gerVenueName()
@@ -200,7 +201,7 @@ class homePh extends React.Component {
         window.JsAndroid.goBack();
       } else if (sUserAgent.indexOf('iPhone') > -1) {
         try {
-          window.webkit.messageHandlers.getCall.postMessage('1');
+          window.webkit.messageHandlers.getCall.postMessage('1')
         } catch (error) {
           console.log(error)
         }

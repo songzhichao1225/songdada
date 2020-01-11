@@ -118,7 +118,7 @@ class commentPh extends React.Component {
     return (
       <div className="commentPh">
         <div className="headerTitle">
-          <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left: '5%', top: '35%' }} />
+          <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />
           场馆评分
           </div>
         <div className="essence">

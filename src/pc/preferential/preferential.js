@@ -277,6 +277,12 @@ class preferential extends React.Component {
       this.props.history.push('/')
     } else {
       this.setState({ DisList: res.data.data })
+      let { upSportid } = this.state
+      for (let i in upSportid) {
+        if (upSportid[i].sportid === datefor.sportid) {
+          this.setState({ number: upSportid[i].maxtablecount, numberMax: upSportid[i].maxtablecount })
+        }
+      }
       this.setState({
         runId: datefor.sportid, starttime: datefor.starttime, endtime: datefor.endtime, costperhour: datefor.costperhour, startDate: datefor.fromdate,
         endDate: datefor.enddate, number: datefor.maxtablecount, appointmenttime: datefor.appointmenttime, comment: datefor.comment
@@ -371,7 +377,7 @@ class preferential extends React.Component {
               <Col xs={{ span: 3 }}>最短提前预定时间</Col>
               <Col xs={{ span: 2 }}>操作</Col>
             </Row>
-            
+
             <div className="dataList" >
               {
                 this.state.list.map((item, i) => (
@@ -426,17 +432,17 @@ class preferential extends React.Component {
               </Select>
               {/* <TimePicker className="startTime" value={this.state.starttime === undefined || this.state.starttime === '' ? null : moment(this.state.starttime, format)} placeholder="请选择时间" minuteStep={30} defaultValue={moment('00:00', format)} format={format} onChange={this.handleChangThree} /> */}
             </div>
- 
+
             <div className="modelList">
               <span>结束时间</span>
 
-              <Select value={this.state.endtime} className="startTime" defaultActiveFirstOption={false}  onChange={this.endtime} placeholder="开始时间" >
-                  {
-                    this.state.time.map((item, i) => (
-                      <Option key={i} value={item.name}>{item.name}</Option>
-                    ))
-                  }
-                </Select>
+              <Select value={this.state.endtime} className="startTime" defaultActiveFirstOption={false} onChange={this.endtime} placeholder="开始时间" >
+                {
+                  this.state.time.map((item, i) => (
+                    <Option key={i} value={item.name}>{item.name}</Option>
+                  ))
+                }
+              </Select>
               {/* <TimePicker className="startTime" value={this.state.endtime === undefined || this.state.endtime === '' ? null : moment(this.state.endtime, format)} placeholder="请选择时间" minuteStep={30} defaultValue={moment('00:00', format)} format={format} onChange={this.endtime} /> */}
             </div>
 

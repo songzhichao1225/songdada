@@ -137,9 +137,8 @@ class loginPhTeo extends React.Component {
               type='text'
               placeholder="用户名"
               clear={true}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem' }}
               onChange={this.phone}
-              autoFocus
               className="phone"
             ><Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />
             </InputItem>
@@ -150,7 +149,7 @@ class loginPhTeo extends React.Component {
               type='password'
               placeholder="密码"
               clear={true}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem' }}
               onChange={this.pssword}
               maxLength={8}
               className="phone"

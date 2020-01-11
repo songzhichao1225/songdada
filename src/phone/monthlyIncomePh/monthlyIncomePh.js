@@ -41,30 +41,30 @@ class monthlyIncomePh extends React.Component {
     } else {
       if (sessionStorage.getItem('income') === 'month') {
         let myDate = new Date()
-        let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
-        let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
+        let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d
+        let end = moment().endOf('day')._d
         this.setState({ qiStart: new Date(start), qiEnd: new Date(end) })
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
       } else if (sessionStorage.getItem('income') === 'day') {
-        let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-        let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
+        let start = moment().startOf('day')._d
+        let end = moment().endOf('day')._d
         this.setState({ qiStart: new Date(start), qiEnd: new Date(end) })
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
       } else {
-        let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-        let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
+        let start = moment().startOf('day')._d
+        let end = moment().endOf('day')._d
       
         this.setState({ qiStart: new Date(start), qiEnd: new Date(end) })
       }
     }
   }
   startDate = (date) => {
-    this.setState({ start: date.toLocaleDateString().replace(/\//g, "-"),qiStart: date  })
+    this.setState({ start: date,qiStart: date  })
     this.getVenueMoneyList({ start: date.toLocaleDateString().replace(/\//g, "-"), end: this.state.end, page: this.state.current })
   }
 
   endDate = (date) => {
-    this.setState({ end: date.toLocaleDateString().replace(/\//g, "-"),qiEnd: date  })
+    this.setState({ end: date,qiEnd: date  })
     this.getVenueMoneyList({ start: this.state.start, end: date.toLocaleDateString().replace(/\//g, "-"), page: this.state.current })
   }
 
@@ -94,7 +94,7 @@ class monthlyIncomePh extends React.Component {
     return (
       <div className="monthlyIncomePh">
         <div className="headerTitle">
-          <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left: '5%', top: '35%' }} />
+          <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />
           {this.props.location.query !== undefined && this.props.location.query.income === 'month' ? '钱包明细' : '钱包明细'}
         </div>
         <div className="timer">
@@ -128,7 +128,7 @@ class monthlyIncomePh extends React.Component {
           >
             <div className="start" style={{ lineHeight: '2rem', fontSize: '12px' }}>{this.state.end}</div>
           </DatePicker> */}
-
+             <span style={{float:'left',lineHeight:'3rem',marginLeft:'0.5rem',display:'block'}}>至</span>
 
           <DatePicker
           mode="date"
@@ -154,7 +154,7 @@ class monthlyIncomePh extends React.Component {
           overflow: 'auto',
         }}
         indicator={this.state.down ? {} : { deactivate: '上拉可以刷新' }}
-        direction={this.state.down ? 'down' : 'up'}
+        direction={this.state.down ? 'up' : 'down'}
         refreshing={this.state.refreshing}
         onRefresh={this.refResh}
       >

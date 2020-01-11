@@ -77,7 +77,7 @@ class map extends React.Component {
      let option = {
       renderOptions: { map: map, panel:"r-results" }, onSearchComplete:function (results) {
         if (results !== undefined) {
-          that.setState({ mapList: results.Sq })
+          that.setState({ mapList: results.Tq })
         }
       }
     }

@@ -54,8 +54,8 @@
 
  .sitePh .contentScorll{
     height: 100%;
-    padding-bottom: 15rem;
-    white-space: nowrap;
+    padding-bottom: 3rem;
+    overflow: scroll;
  }
 
  .sitePh .contentScorll .detail>.ant-col{
@@ -211,10 +211,9 @@
     line-height: 2rem;
 }
 .preferential{
-    white-space: nowrap;
-    height: 100%;
-    position: relative;
-    padding-bottom: 15rem;
+    height: 80%;
+   overflow: scroll;
+    padding-bottom: 3rem;
 }
 
 

@@ -65,7 +65,7 @@ class untiePhonePh extends React.Component {
   nacodeOne=()=>{
     this.nacode({ "mobile": this.state.phone, "type": 'venuebinding' })
   }
-  nacodeTwo=()=>{
+  nacodeTwoT=()=>{
     this.nacodeTwo({ "mobile": this.state.phoneTwo, "type": 'venuebinding' })
   }
   codeOne=e=>{
@@ -79,21 +79,19 @@ class untiePhonePh extends React.Component {
     const res = await VenueBindingPhone(data,localStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
+      Toast.fail('登录超时请重新登录', 1)
     } else {
-      Toast.success(res.data.msg, 1);
+      Toast.success(res.data.msg, 1)
       this.props.history.goBack()
     }
   }
-
+ 
 
   submit=()=>{
-  
     let {phone,phoneTwo,codeOne,codeTwo}=this.state
     this.VenueBindingPhone({legalphone:phone,legalcode:codeOne,operatorphone:phoneTwo,operatorcode:codeTwo})
-
   }
-        
+  
   reture=()=>{
     this.props.history.goBack()
   }
@@ -101,7 +99,7 @@ class untiePhonePh extends React.Component {
   render() {
     return (
       <div className="untiePhonePh">
-        <div className="headTitle"><Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'5%',top:'35%'}}/>解除绑定手机号</div>
+        <div className="headTitle"><Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'0',width:'48px',height:'48px',lineHeight:'48px'}}/>解除绑定手机号</div>
          <div className="listSon">
            <Input maxLength={11} onChange={this.phone} placeholder="请输入法人手机号" />
          </div>
@@ -114,7 +112,7 @@ class untiePhonePh extends React.Component {
          </div>
 
          <div className="listSon">
-           <Input maxLength={11} placeholder="请输入验证码" onChange={this.codeTwo} /><span onClick={this.state.textTwo==='获取验证码'?this.nacodeTwo:this.ko}>{this.state.textTwo}</span>
+           <Input maxLength={11} placeholder="请输入验证码" onChange={this.codeTwo} /><span onClick={this.state.textTwo==='获取验证码'?this.nacodeTwoT:this.ko}>{this.state.textTwo}</span>
          </div>
          <div className="btn" onClick={this.submit}>提交</div>
       </div>

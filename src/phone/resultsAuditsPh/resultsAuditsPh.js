@@ -29,6 +29,7 @@ class resultsAuditsPh extends React.Component {
   }
   homePh=()=>{
     this.props.history.push('./homePh')
+    localStorage.setItem('isqult',undefined)
     localStorage.setItem('islegal',1)
   }
   login=()=>{

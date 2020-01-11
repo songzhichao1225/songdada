@@ -99,7 +99,7 @@ class registerPh extends React.Component {
   }
 
   naCode = () => {
-    this.nacode({ "mobile": this.state.phone, "type": 'venueregister' })
+    this.nacode({ "mobile": this.state.phone.replace(/\s*/g,""), "type": 'venueregister' })
   }
   showModal = e => {
     if (this.state.changeRadio !== true) {
@@ -108,7 +108,7 @@ class registerPh extends React.Component {
       Toast.fail('两次密码输入不一致', 1);
     } else {
       const { Id, name, phone, code, password } = this.state
-      const data = { name: name, phone: phone, pass: password, promoteid: Id, code: code, Logintype: 'mobile' }
+      const data = { name: name, phone: phone.replace(/\s*/g,""), pass: password, promoteid: Id, code: code, Logintype: 'mobile' }
       this.Ko(data)
     }
   }
@@ -205,8 +205,8 @@ class registerPh extends React.Component {
               type='number'
               placeholder="请填写推广员ID号，没有可不填"
               clear={true}
-              style={{ fontSize: '0.6rem' }}
-              maxLength={6}
+              style={{ fontSize: '0.8rem' }}
+              maxLength={6} 
               onChange={this.changID}
               onBlur={this.blurId}
               autoFocus
@@ -219,7 +219,7 @@ class registerPh extends React.Component {
               type='text'
               placeholder="请输入用户名"
               clear={true}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem' }}
               onBlur={this.changeName}
             ><Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />
             </InputItem>
@@ -230,7 +230,7 @@ class registerPh extends React.Component {
               type='phone'
               placeholder="请输入手机号"
               clear={true}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem' }}
               onChange={this.changePhone}
             ><Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />
             </InputItem>
@@ -241,7 +241,7 @@ class registerPh extends React.Component {
               type='number'
               placeholder="手机验证码"
               clear={true}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem' }}
               className="codeInput"
               maxLength={6}
               onChange={this.changeCode}
@@ -256,7 +256,7 @@ class registerPh extends React.Component {
               type='password'
               placeholder="密码"
               clear={true}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem' }}
               onChange={this.changePassword}
               maxLength={8}
             ><Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />
@@ -267,7 +267,7 @@ class registerPh extends React.Component {
               type='password'
               placeholder="确认密码"
               clear={true}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem' }}
               onChange={this.changePasswordT}
               maxLength={8}
             ><Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />

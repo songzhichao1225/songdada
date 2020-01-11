@@ -70,7 +70,7 @@ class sittingPh extends React.Component {
   render() {
     return (
       <div className="sittingPh">
-        <div className="headTitle"><Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'5%',top:'35%'}}/>设置</div>
+        <div className="headTitle"><Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'0',width:'48px',height:'48px',lineHeight:'48px'}}/>设置</div>
         <div className="siteSon"><img src={require("../../assets/closeYuyue.png")} alt="icon"/><span>关闭场地预约</span><Switch className="switch" checked={this.state.flag} onChange={this.onChange} /></div>
         
         <div className="siteSon" onClick={this.temporaryPh}>

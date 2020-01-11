@@ -96,14 +96,14 @@ class inforSitePh extends React.Component {
       }
       if (this.props.history.location.query !== undefined) {
         this.setState({
-          listSon: res.data.data, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), imageUrlS: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.firstURL,
+          listSon: res.data.data, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), imageUrlS: res.data.data.firstURL,
           onChangeCheckTwo: res.data.data.sporttype.split('|')[0].split(','), onChangeCheckThree: res.data.data.sporttype.split('|')[1].split(','), onChangeCheckFour: res.data.data.sporttype.split('|')[2].split(','),
           cgName: res.data.data.name, address: this.props.history.location.query.adddress, linkMan: res.data.data.linkMan, telephone: res.data.data.telephone, siteInfo: res.data.data.siteInfo,
           fileList: arrImg, comment: res.data.data.comment, lat: this.props.history.location.query.lat, lng: this.props.history.location.query.lng, position: this.props.history.location.query.adddress, spin: false
         })
       } else {
         this.setState({
-          listSon: res.data.data, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), imageUrlS: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.firstURL,
+          listSon: res.data.data, sport: res.data.data.sport.split(''), facilities: res.data.data.facilities.split(''), imageUrlS: res.data.data.firstURL,
           onChangeCheckTwo: res.data.data.sporttype.split('|')[0].split(','), onChangeCheckThree: res.data.data.sporttype.split('|')[1].split(','), onChangeCheckFour: res.data.data.sporttype.split('|')[2].split(','),
           cgName: res.data.data.name, address: res.data.data.address, linkMan: res.data.data.linkMan, telephone: res.data.data.telephone, siteInfo: res.data.data.siteInfo,
           fileList: arrImg, comment: res.data.data.comment, lat: res.data.data.lat, lng: res.data.data.lng, position: res.data.data.position, spin: false
@@ -524,11 +524,11 @@ class inforSitePh extends React.Component {
     return (
       <div className="inforSitePh">
         <div className="nav">
-          <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left: '5%', top: '35%', fontSize: '1rem' }} />
+          <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px', fontSize: '1rem' }} />
           <div className={localStorage.getItem('ismethod') === '1' ? 'left' : 'width'} style={this.state.flag === 1 ? { color: '#fff' } : {}} onClick={this.left}>基本信息</div>
           <div className={localStorage.getItem('ismethod') === '1' ? 'right' : 'none'} style={this.state.flag === 1 ? {} : { color: '#fff' }} onClick={this.right}>资质信息</div>
         </div>
-        <div className="basic" style={this.state.spin === false && this.state.flag === 1 ? { display: 'block', overflowY: 'scroll', height: '100%' } : { display: 'none' }}>
+        <div className="basic" style={this.state.spin === false && this.state.flag === 1 ? { display: 'block', overflow: 'scroll', height: '100%' } : { display: 'none' }}>
           <div className="listSon">
             <span>推广员</span>
             <span className="right" style={{ paddingLeft: '11px' }}>{listSon.promote}</span>
@@ -567,7 +567,7 @@ class inforSitePh extends React.Component {
               accept="image/*"
               multiple={false}
             >
-              {imageUrlS ? <img src={imageUrlS} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+              {imageUrlS ? <img src={ 'https://app.tiaozhanmeiyitian.com/' +imageUrlS} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
             </Upload>
           </div>
           <div className="listSon">

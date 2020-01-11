@@ -46,6 +46,7 @@ class appOrder extends React.Component {
             }
           }
         }
+        
         this.setState({ lookList: res.data.data, venueNum: res.data.other.venueid, sporttype: Object.values(res.data.other.sporttype), macNum: res.data.data[0].c, animating: false })
       }else{
         if (this.state.topNumList.length > 0) {
@@ -99,7 +100,7 @@ class appOrder extends React.Component {
 
   componentDidMount() {
 
-    // let query = '?siteuid=dc26db5d-b740-cdf1-91aa-d58125c92974&sportid=3&token=uOx3s4RIajko2fvNvIHjc7vgUIS8iANUsFZPeKRo4AsUBocv4HUzj6NqOXx4OqsH&sporttype=2'
+    // let query = '?siteuid=dc26db5d-b740-cdf1-91aa-d58125c92974&sportid=3&token=uOx3s4RIajko2fvNvIHjc7vgUIS8iANUsFZPeKRo4AsUBocv4HUzj6NqOXx4OqsH&sporttype=1'
     let query = this.props.location.search
    
     let arr = query.split('&')
@@ -109,8 +110,8 @@ class appOrder extends React.Component {
     let sporttype = arr[3].slice(10,arr[3].length)
     this.setState({sportidQuery:sportid})
     this.getVenueNumberTitleList({ sportid: sportid, type: '2', siteuuid: siteuid, sporttype: sporttype })
-    this.getAppVenueReservation({ date: new Date().toLocaleDateString().replace(/\//g, "-"), siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
-    let start = new Date().toLocaleDateString().replace(/\//g, "-")
+    this.getAppVenueReservation({ date: '', siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
+    let start = new Date().toLocaleDateString()
     this.setState({ date: start, token: token,siteid:siteuid,sportid:sportid,sporttypeTwo:sporttype})
   }
 
@@ -162,13 +163,14 @@ class appOrder extends React.Component {
     let num = e.currentTarget.dataset.num
     let lotime = e.currentTarget.dataset.lo
     if (e.currentTarget.dataset.type === '1') {
+     
       if (this.state.lotime.length > 0) {
         if (this.state.lotime.indexOf(lotime) !== -1) {
           this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
           this.state.time.splice(this.state.time.indexOf(time), 1)
           let moneyCall = 0
           for (let i in this.state.lotime) {
-            moneyCall = moneyCall + Number(this.state.lotime[i].slice(8, this.state.lotime[i].length))
+            moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
           }
           this.setState({ moneyCall: moneyCall })
         } else if (this.state.time.indexOf(time) !== -1) {
@@ -176,14 +178,17 @@ class appOrder extends React.Component {
           this.setState({ lotime: this.state.lotime })
           let moneyCall = 0
           for (let i in this.state.lotime) {
-            moneyCall = moneyCall + Number(this.state.lotime[i].slice(8, this.state.lotime[i].length))
+            moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
           }
+          
           this.setState({ moneyCall: moneyCall })
         } else {
+         
           this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: Number(this.state.moneyCall) + Number(money) })
         }
       } else {
         this.setState({ time: [...this.state.time, time], lotime: [...this.state.lotime, lotime], moneyCall: Number(this.state.moneyCall) + Number(money) })
+       
       }
     }
   }
@@ -231,10 +236,11 @@ class appOrder extends React.Component {
         let obj = {
           placeNun: num,
           placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
-          placeDate: this.state.date,
+          placeDate: Number(this.state.date.split('/')[0])>500?this.state.date.split('/')[0]+'-'+this.state.date.split('/')[1]+'-'+this.state.date.split('/')[2]:this.state.date.split('/')[2]+'-'+this.state.date.split('/')[0]+'-'+this.state.date.split('/')[1],
           placeMoney: this.state.moneyCall,
           placeTimeLen: (time.split(',').length - 1) * 0.5 + '小时'
         }
+
         this.setState({ obj: obj })
         this.checkChooseTimes({ startTime:this.state.date+ time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5 })
       }

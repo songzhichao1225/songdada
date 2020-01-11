@@ -66,7 +66,7 @@ class recordPh extends React.Component {
       <div className="recordPh">
 
 
-        <div className="headTitle"> <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left: '5%', top: '35%' }} />提现记录</div>
+        <div className="headTitle"> <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />提现记录</div>
         <div style={this.state.recordPhList.length>0?{}:{display:'none'}}>
 
         

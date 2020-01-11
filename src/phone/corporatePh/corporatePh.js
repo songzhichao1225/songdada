@@ -37,13 +37,13 @@ class corporatePh extends React.Component {
 
 
   phone = (e) => {
-    this.setState({ phone: e.target.value })
-    if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(e.target.value))) {
+    this.setState({ phone: e.replace(/\s*/g,"") })
+    if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(e))) {
       this.setState({ visiblePhone: true })
-    } else if (e.target.value === '') {
+    } else if (e === '') {
       this.setState({ visiblePhone: true })
     } else {
-      this.setState({ phone: e.target.value, visiblePhone: false })
+      this.setState({ phone: e.replace(/\s*/g,""), visiblePhone: false })
     }
   }
   code = e => {
@@ -209,7 +209,7 @@ class corporatePh extends React.Component {
               type='phone'
               placeholder="法人手机号"
               clear={true}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem' }}
               onChange={this.phone}
               autoFocus
               className="phone"
@@ -224,7 +224,7 @@ class corporatePh extends React.Component {
               type='number'
               placeholder="手机验证码"
               clear={true}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem' }}
               onChange={this.code}
               className="phone"
               maxLength={6}
@@ -253,7 +253,7 @@ class corporatePh extends React.Component {
               type='password'
               placeholder="请输入密码"
               clear={true}
-              style={{ fontSize: '0.6rem' }}
+              style={{ fontSize: '0.8rem' }}
               onChange={this.password}
               className="phone"
               maxLength={8}

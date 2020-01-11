@@ -35,7 +35,7 @@ class moneyDetailPh extends React.Component {
     
     return (
       <div className="moneyDetailPh">
-         <div className="headerTitle"> <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left: '5%', top: '35%' }} />查看详情</div>
+         <div className="headerTitle"> <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px'}} />查看详情</div>
          <div className="title">
            <span>入账金额</span>
            <span>{this.state.datatring.money}</span>

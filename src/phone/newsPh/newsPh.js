@@ -1,7 +1,7 @@
 import React from 'react';
 import './newsPh.css';
 import ReactDOM from 'react-dom';
-import { Toast, Card,PullToRefresh } from 'antd-mobile';
+import { Toast, Card, PullToRefresh } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Result, Icon, Pagination, Drawer, Spin } from 'antd';
 import { getVenueNewsList, getVenueNewsReceivedList, getVenueNewsFirst, VenueNewsSaveIsRead } from '../../api';
@@ -36,7 +36,7 @@ class newsPh extends React.Component {
 
 
     refreshing: false,
-    refreshingTwo:false,
+    refreshingTwo: false,
     down: true,
     height: document.documentElement.clientHeight,
     data: [],
@@ -51,7 +51,7 @@ class newsPh extends React.Component {
       this.props.history.push('/login')
       Toast.fail('登录超时请重新登录', 1);
     } else if (res.data.code === 2000) {
-      this.setState({ getVenueNewsList: res.data.data, other: res.data.other.sum,refreshing:false })
+      this.setState({ getVenueNewsList: res.data.data, other: res.data.other.sum, refreshing: false })
     }
     this.setState({ spin: false, spinFlag: false })
   }
@@ -59,7 +59,7 @@ class newsPh extends React.Component {
   async getVenueNewsReceivedList(data) {
     const res = await getVenueNewsReceivedList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ getVenueNewsReceivedList: res.data.data, otherPush: res.data.other,refreshingTwo:false })
+      this.setState({ getVenueNewsReceivedList: res.data.data, otherPush: res.data.other, refreshingTwo: false })
     }
     this.setState({ spinFlag: false })
   }
@@ -84,7 +84,7 @@ class newsPh extends React.Component {
     this.getVenueNewsList({ page: 1 })
     this.getVenueNewsReceivedList({ page: 1 })
 
-    const hei = this.state.height- ReactDOM.findDOMNode(this.ptr).offsetTop;;
+    const hei = this.state.height - ReactDOM.findDOMNode(this.ptr).offsetTop;;
     setTimeout(() => this.setState({
       height: hei,
       data: genData(),
@@ -122,18 +122,18 @@ class newsPh extends React.Component {
 
 
 
-  refResh=()=>{
-    this.setState({refreshing:true})
+  refResh = () => {
+    this.setState({ refreshing: true })
     setTimeout(() => {
-    this.getVenueNewsList({page:this.state.newsPage})
-  }, 1000);
+      this.getVenueNewsList({ page: this.state.newsPage })
+    }, 1000);
   }
 
-  refReshTwo=()=>{
-    this.setState({refreshingTwo:true})
+  refReshTwo = () => {
+    this.setState({ refreshingTwo: true })
     setTimeout(() => {
-    this.getVenueNewsReceivedList({page:this.state.newsPageTwo})
-  }, 1000);
+      this.getVenueNewsReceivedList({ page: this.state.newsPageTwo })
+    }, 1000);
   }
 
 
@@ -148,23 +148,23 @@ class newsPh extends React.Component {
         <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' } : { display: 'none' }} ><Icon type="loading" className='loadingY' style={{ top: this.state.clenTop / 7 }} /></div>
         <div className="receive" style={this.state.flag === 1 ? { display: 'block' } : { display: 'none' }} >
           {/* onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd} */}
-        
-            <PullToRefresh
-              damping={60}
-              ref={el => this.ptr = el}
-              style={{
-                height: this.state.height,
-                overflow: 'auto',
-              }}
-              indicator={this.state.down ? {} : { deactivate: '上拉可以刷新' }}
-              direction={this.state.down ? 'down' : 'up'}
-              refreshing={this.state.refreshing}
-              onRefresh={this.refResh}
-            >
-                <div className="contentScroll">
+
+          <PullToRefresh
+            damping={60}
+            ref={el => this.ptr = el}
+            style={{
+              height: this.state.height,
+              overflow: 'auto',
+            }}
+            indicator={this.state.down ? {} : { deactivate: '上拉可以刷新' }}
+            direction={this.state.down ? 'down' : 'up'}
+            refreshing={this.state.refreshing}
+            onRefresh={this.refResh}
+          >
+            <div className="contentScroll">
               {
                 this.state.getVenueNewsList.map((item, i) => (
-                  <div className="recriveSon" key={i} onClick={this.details} data-uid={item.uuid}>
+                  <div className="recriveSon" key={i}  onClick={this.details} data-uid={item.uuid}>
                     <Card>
                       <Card.Header
                         title={<span style={{ fontSize: '12px' }}>{item.comment.slice(0, 15) + '...'}</span>}
@@ -181,12 +181,12 @@ class newsPh extends React.Component {
                 ))
               }
               <Spin spinning={this.state.spin} style={{ width: '100%', marginTop: '45%' }} />
-            <Pagination className={this.state.getVenueNewsList.length === 0 ? 'hidden' : 'fenye'} size="small" onChange={this.current} defaultCurrent={1} total={this.state.other} />
-            <Result className={this.state.spin === false && this.state.getVenueNewsList.length === 0 ? '' : 'hidden'} icon={<Icon style={{ fontSize: '2rem' }} type="message" theme="twoTone" twoToneColor="#F5A623" />} title="没有系统消息" />
-          </div>
-            </PullToRefresh>
+              <Pagination className={this.state.getVenueNewsList.length === 0 ? 'hidden' : 'fenye'} size="small" onChange={this.current} defaultCurrent={1} total={this.state.other} />
+              <Result className={this.state.spin === false && this.state.getVenueNewsList.length === 0 ? '' : 'hidden'} icon={<Icon style={{ fontSize: '2rem' }} type="message" theme="twoTone" twoToneColor="#F5A623" />} title="没有系统消息" />
+            </div>
+          </PullToRefresh>
 
-            
+
         </div>
 
         <Drawer
@@ -207,43 +207,43 @@ class newsPh extends React.Component {
 
 
         <div className="publish" style={this.state.flag === 2 ? { display: 'block' } : { display: 'none' }} onTouchMove={this.touMoveTwo} onTouchStart={this.touClickTwo} onTouchEnd={this.touEndTwo}>
-          
-          
-          
-        <PullToRefresh
-        damping={60}
-        ref={el => this.ptr = el}
-        style={{
-          height: this.state.height,
-          overflow: 'auto',
-        }}
-        indicator={this.state.down ? {} : { deactivate: '上拉可以刷新' }}
-        direction={this.state.down ? 'down' : 'up'}
-        refreshing={this.state.refreshingTwo}
-        onRefresh={this.refReshTwo}
-      >
-         <div className="pubScroll">
-            {
-              this.state.getVenueNewsReceivedList.map((item, i) => (
-                <div className="recriveSon" onClick={this.details} data-uid={item.uuid} key={i}>
-                  <Card>
-                    <Card.Header
-                      title={<span style={{ fontSize: '12px' }}>{item.comment.slice(0, 15) + '...'}</span>}
-                      thumb='https://app.tiaozhanmeiyitian.com/uploads/Venue/2019-12-18/20191218135551348.jpg'
-                      thumbStyle={{ width: '2rem', height: '2rem', marginTop: '-0.3rem' }}
-                      extra={<span style={{ fontSize: '12px' }}>{item.intime.slice(0, 10) === moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-") ? item.intime.slice(10, item.intime.length) : item.intime.slice(0, 10)}</span>}
-                    />
-                  </Card>
-                </div>
-              ))
-            }
-            <Pagination className={this.state.getVenueNewsReceivedList.length === 0 ? 'hidden' : 'fenye'} size="small" onChange={this.currentPush} defaultCurrent={1} total={this.state.otherPush} />
-            <Result className={this.state.getVenueNewsReceivedList.length === 0 ? '' : 'hidden'} icon={<Icon style={{ fontSize: '2rem' }} type="message" theme="twoTone" twoToneColor="#F5A623" />} title="没有发布消息" />
-          </div>
-      </PullToRefresh>
-          
-          
-         
+
+
+
+          <PullToRefresh
+            damping={60}
+            ref={el => this.ptr = el}
+            style={{
+              height: this.state.height,
+              overflow: 'auto',
+            }}
+            indicator={this.state.down ? {} : { deactivate: '上拉可以刷新' }}
+            direction={this.state.down ? 'down' : 'up'}
+            refreshing={this.state.refreshingTwo}
+            onRefresh={this.refReshTwo}
+          >
+            <div className="pubScroll">
+              {
+                this.state.getVenueNewsReceivedList.map((item, i) => (
+                  <div className="recriveSon" onClick={this.details} data-uid={item.uuid} key={i}>
+                    <Card>
+                      <Card.Header
+                        title={<span style={{ fontSize: '12px' }}>{item.comment.slice(0, 15) + '...'}</span>}
+                        thumb='https://app.tiaozhanmeiyitian.com/uploads/Venue/2019-12-18/20191218135551348.jpg'
+                        thumbStyle={{ width: '2rem', height: '2rem', marginTop: '-0.3rem' }}
+                        extra={<span style={{ fontSize: '12px' }}>{item.intime.slice(0, 10) === moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-") ? item.intime.slice(10, item.intime.length) : item.intime.slice(0, 10)}</span>}
+                      />
+                    </Card>
+                  </div>
+                ))
+              }
+              <Pagination className={this.state.getVenueNewsReceivedList.length === 0 ? 'hidden' : 'fenye'} size="small" onChange={this.currentPush} defaultCurrent={1} total={this.state.otherPush} />
+              <Result className={this.state.getVenueNewsReceivedList.length === 0 ? '' : 'hidden'} icon={<Icon style={{ fontSize: '2rem' }} type="message" theme="twoTone" twoToneColor="#F5A623" />} title="没有发布消息" />
+            </div>
+          </PullToRefresh>
+
+
+
         </div>
       </div>
     )

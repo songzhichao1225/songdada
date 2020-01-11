@@ -2,11 +2,15 @@
     display: inline-block;
     padding:0.7rem 1rem;
 }
+
+
+
 .orderPh{
     font-size: 0.75rem;
     height: 100%;
     position: relative;
     background: #F5F5F5;
+   
 }
 .orderPh .headerNav{
     background: #fff;
@@ -17,8 +21,10 @@
 }
 
 .orderPh .activityList {
-    height: 100%;
+    height: 80%;
     overflow: hidden;
+
+    
 }
 .orderPh .activityList .select{
     width: 100%;
@@ -68,7 +74,7 @@
     background:rgba(243,243,243,1);
     border-radius:0.19rem;
     color: #333;
-    font-size: 0.88rem;
+    font-size: 0.7rem;
     line-height: 2rem;
     text-align: center;
     margin-left: 0.5rem;
@@ -93,7 +99,7 @@
     margin-left: 0.5rem;
     margin-top: 0.5rem;
 }
-.drawerBossTwo>div:nth-child(4n+1){
+.drawerBossTwo>div:nth-child(5n+1){
     margin-left: 0;
 }
 
@@ -149,12 +155,14 @@
     margin-top: 0.1rem;
 }
 
-.orderPh .bookingKanban .modTitle>.white{
-    width:1rem;
-    height:1rem;
-    background:rgba(233,233,233,1);
-    border-radius:0.13rem;
-    margin-top: 0.1rem;
+
+    .orderPh .bookingKanban .modTitle>.white{
+        width:1rem;
+        height:1rem;
+        background:rgba(111, 178, 255,0.3);
+        border-radius:0.13rem;
+        margin-top: 0.1rem;
+    
 }
 
 .orderPh .bookingKanban .modTitle>.yellow{
@@ -176,6 +184,7 @@
     width: 105%;
     padding-bottom: 0.5rem;
     overflow-y: scroll;
+    -webkit-overflow-scrolling : touch
 }
 .orderPh .bookingKanban .locaList>div{
     float: left;
@@ -192,6 +201,7 @@
    position: relative;
    background: #fff;
    padding-bottom: 10rem;
+   -webkit-overflow-scrolling : touch
 }
 
 .orderPh .bookingKanban .lookList::-webkit-scrollbar {/*滚动条整体样式*/
@@ -252,9 +262,8 @@
 }
 
 .orderPh .contentT{
-    height: 100%;
-    padding-bottom: 15rem;
-    white-space: nowrap;
+ 
+                                                                                                           
 }
 
 .orderPh .ant-input{
@@ -270,9 +279,9 @@
 
  .orderPh .dateTime{
      line-height: 1.5rem;
-     text-align: left;
+     text-align: left;                                                                                                                                                                                       
  }
-
+ 
 
 .orderPh .ant-input:focus{
    border:none;
@@ -302,21 +311,32 @@
      font-size: 14px;
  }
  .kodrAwer .ant-drawer-close{
-     width: 36px;
-     height: 36px;
-     line-height: 36px;
+     width: 50px;
+     height: 50px;
+     margin-right: 20px;
  }
  .orderPh .am-card{
      width: 96%;
-     margin: 0.5rem auto 0;
+     margin: 5px auto 0;
      border-top: 1px solid #f5f5f5;
  }
  .orderPh .am-card-header{
      padding: 0;
+     height: 40px;
      font-size: 14px;
  }
+ .orderPh .am-card-body{
+     padding: 3px 0 0px 3px;
+    
+ }
+ .orderPh .am-card-header .am-card-header-content{
+     height: 40px;
+ }
+ .orderPh .am-card-header .am-card-header-content img{
+     height: 100%;
+ }
  .activityList .am-card-header-extra{
-     flex: 0;
+     flex: 1;
  }
  .activityList .am-card-footer{
      padding:0 7px;
@@ -324,6 +344,7 @@
  .activityList .sendingTwo{
      float: right;
      margin-top: -5px;
+     margin-right: 20px;
  }
  html:not([data-scale]) .am-card-body{
      border-top: 1px solid #ddd;
@@ -395,8 +416,11 @@ html:not([data-scale]) .am-card-body::before{
 }
 
 .drawerInputOrder .am-list-item .am-list-line .am-list-content{
-    font-size: 14px;
+    font-size: 0.7rem;
     
+}
+.drawerInputOrder .am-list-item .am-list-line .am-list-extra{
+  font-size: 0.7rem;
 }
 .drawerInputOrder .am-list-item{
     padding-left: 0;
