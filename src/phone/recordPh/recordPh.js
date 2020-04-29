@@ -3,7 +3,8 @@ import './recordPh.css';
 import ReactDOM from 'react-dom';
 import { Toast, PullToRefresh } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Pagination, Result, Icon, Spin } from 'antd';
+import { Pagination, Result, Spin } from 'antd';
+import {AccountBookOutlined,ArrowLeftOutlined} from '@ant-design/icons';
 import { getVenueWithdrawalList } from '../../api';
 
 function genData() {
@@ -66,7 +67,7 @@ class recordPh extends React.Component {
       <div className="recordPh">
 
 
-        <div className="headTitle"> <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />提现记录</div>
+        <div className="headTitle"><ArrowLeftOutlined onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} /> 提现记录</div>
         <div style={this.state.recordPhList.length>0?{}:{display:'none'}}>
 
         
@@ -101,7 +102,7 @@ class recordPh extends React.Component {
 
         <Spin spinning={this.state.spin} style={{ width: '100%', marginTop: '45%' }} />
         <Pagination className={this.state.recordPhList.length === 0 ? 'hidden' : 'fenye'} onChange={this.current} size='small' defaultCurrent={1} total={this.state.other} />
-        <Result className={this.state.spin === false && this.state.recordPhList.length === 0 ? '' : 'hidden'} icon={<Icon type="account-book" theme="twoTone" style={{ fontSize: '2rem' }} twoToneColor="#F5A623" />} title="没有提现记录" />
+        <Result className={this.state.spin === false && this.state.recordPhList.length === 0 ? '' : 'hidden'} icon={<AccountBookOutlined style={{ fontSize: '2rem',coloe:'#F5A623' }}/>} title="没有提现记录" />
 
       </div>
     )

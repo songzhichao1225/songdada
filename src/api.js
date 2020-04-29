@@ -67,10 +67,13 @@ export function getVenueReservationss(data,headers){    //场地预约情况
     return axios.post('/api/getVenueReservationss',data, {headers: {'token': headers}})
 }
 
-export function getVenueFieldList(data,headers){    //场地设置列表
-    return axios.post('/api/getVenueFieldList',data, {headers: {'token': headers}})
+export function getSiteSettingList(data,headers){    //场地设置列表
+    return axios.post('/api/getSiteSettingList',data, {headers: {'token': headers}})
 }
 
+export function getVenueFieldList(data,headers){    //场地设置列表22222222222
+    return axios.post('/api/getVenueFieldList',data, {headers: {'token': headers}})
+}
 export function addVenueField(data,headers){    //添加场地设置
     return axios.post('/api/addVenueField',data, {headers: {'token': headers}})
 }
@@ -276,7 +279,6 @@ export function getAppVenueReservation(data){    //用户app端进行选择活�
 
 
 
-
 export function checkChooseTimes(data,headers){    // 检测发布者发布活动时间 
     return axios.post('/api/checkChooseTimes',data, {headers: {'token': headers}})
 }
@@ -297,10 +299,6 @@ export function getVenueNumberTitleList(data,headers){    // 某一个场馆的�
     return axios.post('/api/getVenueNumberTitleList',data, {headers: {'token': headers}})
 }
 
-export function getVenueNumberTitleSave(data,headers){    // 场地号标题的添加修改 
-    return axios.post('/api/getVenueNumberTitleSave',data, {headers: {'token': headers}})
-}
-
 export function VenueNewsOneKeyRead(data,headers){    // 消息中心一键已读功能 
     return axios.post('/api/VenueNewsOneKeyRead',data, {headers: {'token': headers}})
 }
@@ -319,6 +317,26 @@ export function DelVenueNumberTitle(data,headers){    // 删除某一个场馆�
 }
 
 
+export function getVenueSportList(data){    // 获取所有的运动项目
+    return axios.post('/api/getVenueSportList',data, {headers: {}})
+}
+
+
+export function getVenueSportidTitle(data,headers){    // 场地细分~查询场馆中某一运动项目下的标签
+    return axios.post('/api/getVenueSportidTitle',data, {headers: {'token': headers}})
+}
+
+export function getVenueTitleSave(data,headers){    // 场地细分~添加修改标签
+    return axios.post('/api/getVenueTitleSave',data, {headers: {'token': headers}})
+}
+
+export function getVenueNumberTitleSave(data,headers){    // 场地细分~场地细分的添加修改
+    return axios.post('/api/getVenueNumberTitleSave',data, {headers: {'token': headers}})
+}
+
+export function getSiteSelectedTitle(data,headers){    // 场地细分~查询场馆中某一运动项目下的场地细分
+    return axios.post('/api/getSiteSelectedTitle',data, {headers: {'token': headers}})
+}
 
 
 

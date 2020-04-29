@@ -4,7 +4,7 @@ import 'antd/dist/antd.css';
 
 import {Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Icon} from 'antd';
+import Icon from '@ant-design/icons';
 
 
 

@@ -2,7 +2,8 @@ import React from 'react';
 import './qualification.css';
 import 'antd/dist/antd.css';
 import { getIsStatus, VenueQualifications, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity, getVenueOpenBankList, getVenueQualificationInformation, VenueQualificationInformationSave } from '../../api';
-import { Input, Radio, Button, Upload, message, Icon, Select, Tooltip } from 'antd';
+import { Input, Radio, Button, Upload, message, Select, Tooltip } from 'antd';
+import Icon from '@ant-design/icons';
 const { Option } = Select;
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -348,15 +349,15 @@ class qualification extends React.Component {
       <div className="qualification">
         <div className="header">
           <div className="heCenter">
-            <img className="logo" src={require("../../assets/tiaozhanicon.png")} style={{ width: 173, height: 58, marginLeft: 45, marginTop: 40 }} alt="6666" />
+            <img className="logo" src={require("../../assets/tiaozhanicon.png")} style={{ width: 53, height: 53, marginLeft: 45, marginTop: 13.5 }} alt="6666" />
             <span className="title">北京甲乙电子商务有限公司</span>
           </div>
           <div className="content">
             <div className="nav">
-              <div>1.填写注册信息</div>
-              <div>2.完善场馆信息</div>
-              <div>3.等待审核</div>
-              <div>4.审核成功</div>
+              <div><span>1.填写注册信息</span><img src={require("../../assets/oneline.png")} alt="5"/></div>
+              <div><span>2.完善场馆信息</span><img src={require("../../assets/lineThree.png")} alt="5"/></div>
+              <div><span>3.等待审核</span><img src={require("../../assets/twoline.png")} alt="5"/></div>
+              <div><span>4.审核成功</span><img src={require("../../assets/twoline.png")} alt="5"/></div>
             </div>
             <div className="contentSon">
               <span className="titile">场馆资质信息</span>
@@ -372,7 +373,7 @@ class qualification extends React.Component {
                   beforeUpload={beforeUpload}
                   onChange={this.handleChange}
                 >
-                  {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                  {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '104px',maxHeight:'104px' }} /> : uploadButton}
                 </Upload>
               </div>
               <div className="name">
@@ -386,7 +387,7 @@ class qualification extends React.Component {
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">法人手机号</span>
-                <Input className="nameINput phone" maxLength={11} value={this.state.handlePhone} onChange={this.handlePhone} placeholder="请输入11位手机号" />
+                <Input className="nameINput phone" maxLength={11} value={this.state.handlePhone} onChange={this.handlePhone} style={{fontSize:'14px'}} placeholder="请输入11位手机号" />
               </div>
 
               <div className="name">
@@ -400,7 +401,7 @@ class qualification extends React.Component {
                   beforeUpload={beforeUploadT}
                   onChange={this.handleChangeT}
                 >
-                  {imageUrlT ? <img src={imageUrlT} alt="avatar" style={{ width: '100%' }} /> : uploadButtonT}
+                  {imageUrlT ? <img src={imageUrlT} alt="avatar" style={{ width: '104px',height:'104px' }} /> : uploadButtonT}
                 </Upload>
 
                 <Upload
@@ -412,7 +413,7 @@ class qualification extends React.Component {
                   beforeUpload={beforeUploadTS}
                   onChange={this.handleChangeTS}
                 >
-                  {imageUrlS ? <img src={imageUrlS} alt="avatar" style={{ width: '100%' }} /> : uploadButtonS}
+                  {imageUrlS ? <img src={imageUrlS} alt="avatar" style={{ width: '104px',height:'104px' }} /> : uploadButtonS}
                 </Upload>
               </div>
 

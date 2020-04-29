@@ -1,7 +1,8 @@
 import React from 'react';
 import './information.css';
 import 'antd/dist/antd.css';
-import { Input, Button, Row, Col, Select, Pagination, Spin, message, Result, Icon, DatePicker, Modal, Radio, Drawer, InputNumber, Popover } from 'antd';
+import { Input, Button, Row, Col, Select, Pagination, Spin, message, Result,DatePicker, Modal, Radio, Drawer, InputNumber, Popover,Tooltip } from 'antd';
+import {BankOutlined,SyncOutlined,CloseOutlined,CheckOutlined,FundOutlined} from '@ant-design/icons';
 import { getReservationActivitieslist, getVenueReservationss, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
@@ -11,7 +12,7 @@ const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
 
-const antIcon = <Icon type="sync" style={{ fontSize: 24, color: 'black' }} spin />;
+const antIcon =<SyncOutlined  style={{ fontSize: 24, color: 'black' }} spin/>;
 
 class information extends React.Component {
 
@@ -447,9 +448,7 @@ class information extends React.Component {
     }
   }
 
-  tilFocus = e => {
-    console.log(e.currentTarget.dataset, this.state.liNum)
-  }
+ 
 
   tilBlur = e => {
     this.getVenueNumberTitleSave({ sportid: this.state.liNum, veneuid: e.currentTarget.dataset.num, title: e.target.value, uuid: e.currentTarget.dataset.uuid })
@@ -459,6 +458,7 @@ class information extends React.Component {
   tilChange = e => {
     this.setState({ tilValue: e.target.value })
   }
+
 
 
   noneBox = e => {
@@ -478,6 +478,7 @@ class information extends React.Component {
     this.VenueClickCancelPlace({ uuid: '', date: this.state.dateString, venueid: num.slice(0, num.length - 1), other: JSON.stringify(obj), time: time.slice(0, time.length - 1), sportid: this.state.liNum, type: 1 })
   }
 
+  
 
   handleVisibleChange = visible => {
     this.setState({ visibleTwo: visible })
@@ -533,7 +534,7 @@ class information extends React.Component {
         <div className="navTab">
           <Button onClick={this.handelClick} className={this.state.number === '1' ? 'colorGo' : 'colorNot'} data-num='1'>预约活动列表</Button>
           <Button onClick={this.handelClick} data-num='2' className={this.state.number === '2' ? 'colorGo' : 'colorNot'}>场地预约情况</Button>
-          <div className="sping"> <Icon type="sync" className={this.state.Oneloading === true || this.state.number === '2' ? 'hidden' : 'block'} onClick={this.Oneloading} style={{ fontSize: 24, marginTop: 15 }} /><Spin indicator={antIcon} spinning={this.state.Oneloading} /></div>
+          <div className="sping"><SyncOutlined  className={this.state.Oneloading === true || this.state.number === '2' ? 'hidden' : 'block'} onClick={this.Oneloading} style={{ fontSize: 24, marginTop: 15 }}/><Spin indicator={antIcon} spinning={this.state.Oneloading} /></div>
         </div>
         <div className="xiange"></div>
         <div className={this.state.number === '1' ? 'listName' : 'listNameT'}>
@@ -588,7 +589,7 @@ class information extends React.Component {
             <div className={this.state.hidden === true ? '' : 'hidden'}>
               {userMessage}
             </div>
-            <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<Icon type="bank" theme="twoTone" twoToneColor="#F5A623" />} title="您还没有预约活动！" />,
+            <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<BankOutlined style={{color:'#F5A623'}}/>} title="您还没有预约活动！" />,
           </Spin>
 
 
@@ -616,17 +617,17 @@ class information extends React.Component {
             <div className="lookList" onScrollCapture={this.scroll} ref={c => { this.scrollRef = c }} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block', height: this.state.minHeight - 250 + 'px' }}>
               <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 68 + 'px' }}>
                 <div className="topFixd" style={{ top: this.state.top, minWidth: '100%', width: '' + (this.state.macNum.length + 1) * 68 + 'px' }}>
-                  <span>场地号<span style={this.state.liNum!=='3'&&this.state.liNum!=='5'&&this.state.liNum!=='8'?{display:'none'}:{}}><br/>类型</span><br/><span>标题</span></span>
+                  <span>场地号<span style={this.state.liNum!=='3'&&this.state.liNum!=='5'&&this.state.liNum!=='8'?{display:'none'}:{cursor: 'pointer'}}><br/> <Tooltip placement="topLeft" title="请为各场地选择对应的场地类型，如1号场地为11人制足球场地；2号场地为5人制足球场地等">场地类型</Tooltip></span><br/><span style={{cursor: 'pointer'}}><Tooltip placement="topLeft" title="请为各场地填写标签，如普通、VIP、赛台、独立包间、楼上、楼下、人造草皮、真草皮等标签，也可不填写">标签</Tooltip></span></span>
                   {
                     this.state.macNum.map((item, i) => (
                       <span key={i}>{i + 1}
                         <div className="boxBoss" style={{ position: 'relative', width: '100%', height: '26px' }}>
                           <Select
-                            placeholder={Object.keys(this.state.otherType).indexOf("" + parseInt(i + 1) + "") !== -1 ? Object.values(this.state.otherType)[Object.keys(this.state.otherType).indexOf("" + parseInt(i + 1) + "")].sporttypename : undefined}
+                            placeholder={Object.keys(this.state.otherType).indexOf("" + parseInt(i + 1) + "") !== -1 ? Object.values(this.state.otherType)[Object.keys(this.state.otherType).indexOf("" + parseInt(i + 1) + "")].sporttypename : '请选择'}
                             className="lookFir"
                             key={'-' + i + this.state.liNum}
                             showArrow={false}
-                            dropdownMenuStyle={{ width: '100%', padding: '0', margin: '0' }}
+                            dropdownMenustyle={{ width: '100%', padding: '0', margin: '0' }}
                             style={this.state.liNum === '3' ? { display: 'block', border: '1px solid #ccc', borderRadius: '4px', margin: '0' } : { display: 'none' } && this.state.liNum === '5' ? { display: 'block', border: '1px solid #ccc', borderRadius: '4px', margin: '0' } : { display: 'none' } && this.state.liNum === '8' ? { display: 'block', border: '1px solid #ccc', borderRadius: '4px', margin: '0' } : { display: 'none' }}
                             dropdownStyle={{ right: '0', marginRight: '0', padding: '0' }}
                             onChange={this.classList}
@@ -640,13 +641,13 @@ class information extends React.Component {
                           </Select>
                           <Input className='inputAppList'
                             key={parseInt(i + this.state.liNum + 'l')}
-                            placeholder={item.title}
+                            placeholder={item.title===''?'普通/VIP':item.title}
                             style={{ height: '26px' }}
                             data-uuid={item.uuid}
                             onChange={this.tilChange}
                             data-num={i + 1}
                             onBlur={this.tilBlur}
-                            suffix={item.title === '' ? '' : <Icon type="close" data-uuid={item.uuid} onClick={this.delTitle} style={{ color: 'rgba(0,0,0,.25)' }} />}
+                            suffix={item.title === '' ? '' : <CloseOutlined data-uuid={item.uuid} onClick={this.delTitle} style={{ color: 'rgba(0,0,0,.25)' }}/>}
                             onFocus={this.tilFocus}
                             maxLength={5} />
                         </div>
@@ -682,7 +683,7 @@ class information extends React.Component {
                               data-lo={index.a + '-' + (i + 1)}
                               style={item.type === 1 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 2 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff', opacity: '.3' } : {} && item.type === 3 ? { background: '#F5A623', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 4 ? { background: 'red', marginTop: '0.12rem', color: '#fff' } : {}}
                             >
-                              {this.state.lotime.indexOf(index.a + '-' + (i + 1)) !== -1 ? <Icon type="check" /> : ''}
+                              {this.state.lotime.indexOf(index.a + '-' + (i + 1)) !== -1 ? <CheckOutlined />: ''}
                               {item.type === 1 ? item.money : ''}
                             </span>
                           </Popover>
@@ -693,7 +694,7 @@ class information extends React.Component {
                 }
               </div>
             </div>
-            <Result className={this.state.lookList.length === 0 ? '' : 'hidden'} icon={<Icon type="fund" theme="twoTone" twoToneColor="#F5A623" />} title="您没有预约情况！" />
+            <Result className={this.state.lookList.length === 0 ? '' : 'hidden'} icon={<FundOutlined style={{color:'#F5A623'}}/>} title="您没有预约情况！" />
 
           </Spin>
         </div>

@@ -3,7 +3,8 @@ import './untiePhonePh.css';
 
 import {Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import {Input,Icon } from 'antd';
+import {Input } from 'antd';
+import Icon from '@ant-design/icons';
 import { _code,VenueBindingPhone} from '../../api';
 
 

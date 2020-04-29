@@ -1,11 +1,11 @@
 
 .qualification .header{
 	width: 100%;
-	height: 120px;
-	background: #374D66;
+	height: 80px;
+	background:rgba(67,101,230,1);
 }
 .qualification .heCenter{
-  width: 1200px;
+  width: 80%;
   margin: 0 auto;
   overflow: hidden;
 }
@@ -22,11 +22,11 @@
     display: block;
     float: left;
     margin-left: 14px;
-    margin-top: 50px;
+    line-height: 80px;
     font-family: PingFang-SC-Bold;
 }
 .qualification .content{
-	width: 1200px;
+	width: 80%;
 	margin: 20px auto;
 	-moz-box-shadow:0 2px 2px  2px #DDDDDD; 
 	-webkit-box-shadow:0 2px 2px  2px #DDDDDD;
@@ -34,21 +34,33 @@
 	overflow: hidden;
 }
 .qualification .nav{
-	width: 1000px;
+	width: 95%;
 	margin: 20px auto;
 	display: flex;
 }
+.qualification .nav div{
+	position: relative;
+}
+.qualification .nav div>span{
+	position: absolute;
+	z-index: 99;
+	display: block;
+	width: 100%;
+	text-align: center;
+	line-height: 43px;
+}
+.qualification .nav div>img{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
 .qualification .nav div:first-child{
-  background-image: url(../../assets/oneline.png);
-  background-size:100%;
   color: #fff;
-  background-repeat: no-repeat; 
 }
 .qualification .nav div:nth-child(2){
-	background-image: url(../../assets/lineThree.png);
-	background-size:100%;
 	color: #fff;
-	background-repeat: no-repeat; 
   }
 .qualification .nav div{
    flex: 1;
@@ -57,12 +69,9 @@
    line-height: 43px;
    text-align:center;
    margin-left:10px ;
-   background-image: url(../../assets/twoline.png);
-  background-size:100%;
-  background-repeat: no-repeat; 
 }
 .qualification .contentSon{
-	width: 800px;
+	width: 600px;
 	margin: 60px auto 0;
 	padding-bottom: 80px;
 }

@@ -3,7 +3,8 @@ import './inforSitePh.css';
 
 import { Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Input, Checkbox, Upload, Icon, Popconfirm, Button, Radio, Select, Tooltip, Spin } from 'antd';
+import { Input, Checkbox, Upload,Popconfirm, Button, Radio, Select, Tooltip, Spin } from 'antd';
+import Icon from '@ant-design/icons';
 import { getVenueInformation, getVenueQualificationInformation, VenueInformationSave, VenueQualificationInformationSave, getVenueIssecondaudit, getVenueOpenBank, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
 const { Option } = Select
 
@@ -603,14 +604,14 @@ class inforSitePh extends React.Component {
           </div>
 
           <div className="listSon"  style={this.state.sport.indexOf('3') !== -1 ? { display: 'block' } : { display: 'none' }}>
-            <span>台球类型</span>
+            <span>台球桌类型</span>
             <div className="rightLi">
               <Checkbox.Group options={plainOptionsTwo} value={this.state.onChangeCheckTwo} onChange={this.onChangeCheckTwo} />
             </div>
           </div>
 
           <div className="listSon"  style={this.state.sport.indexOf('5') !== -1 ? { display: 'block' } : { display: 'none' }}>
-            <span>足球类型</span>
+            <span>足球场地类型</span>
             <div className="rightLi">
               <Checkbox.Group options={plainOptionsThree} value={this.state.onChangeCheckThree} onChange={this.onChangeCheckThree} />
             </div>

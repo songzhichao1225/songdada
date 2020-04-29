@@ -5,9 +5,10 @@ import ReactDOM from 'react-dom';
 import { Route, Link } from 'react-router-dom';
 import { gerVenueName, getVenueIndex } from '../../api';
 
-import { Toast, NavBar, Popover,PullToRefresh } from 'antd-mobile';
+import { Toast, NavBar, Popover, PullToRefresh, Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Icon, notification } from 'antd';
+import {  notification } from 'antd';
+import Icon from '@ant-design/icons';
 
 import orderPh from '../orderPh/orderPh';
 import sitePh from '../sitePh/sitePh';
@@ -26,8 +27,8 @@ function genData() {
 }
 
 
-function jo(){
-  var ws = new WebSocket("wss://venue.tiaozhanmeiyitian.com/socket");
+function jo() {
+  var ws = new WebSocket("wss://www.venue.zhaoduishou.com/socket");
   ws.onopen = function () {
     ws.send(localStorage.getItem('siteUid'))
   }
@@ -35,12 +36,12 @@ function jo(){
     let message_info = JSON.parse(e.data)
     let msg = new SpeechSynthesisUtterance(message_info.percent)
     window.speechSynthesis.speak(msg)
-    notification.open({ description: message_info.percent,duration:5 })
-    sessionStorage.setItem('kood',2)
+    notification.open({ description: message_info.percent, duration: 5 })
+    sessionStorage.setItem('kood', 2)
   }
-  ws.onclose=function(){
+  ws.onclose = function () {
     jo()
-   }
+  }
 }
 
 
@@ -59,7 +60,9 @@ class homePh extends React.Component {
     down: true,
     height: document.documentElement.clientHeight,
     data: [],
-    visible:false,
+    visible: false,
+    mode: false,
+    issporttype: [],
   };
   async getVenueIndex(data) {
     const res = await getVenueIndex(data, localStorage.getItem('venue_token'))
@@ -74,11 +77,20 @@ class homePh extends React.Component {
   async gerVenueName(data) {
     const res = await gerVenueName(data, localStorage.getItem('venue_token'))
 
+    this.setState({
+      issporttype: res.data.data.issporttype,
+     
+    })
+    if(this.props.history.location.pathname !== '/homePh/orderPh'&&res.data.data.issporttype.length!==0){
+      this.setState({ mode:true})
+    }
+
+
     localStorage.setItem('name', res.data.data.name)
     localStorage.setItem('avatar', "https://app.tiaozhanmeiyitian.com/" + res.data.data.siteimg)
     localStorage.setItem('lyv', res.data.data.rate)
     localStorage.setItem('siteUid', res.data.data.siteuid)
-    this.setState({ gerVenueName: res.data.data,refreshing:false })
+    this.setState({ gerVenueName: res.data.data, refreshing: false })
 
   }
 
@@ -107,7 +119,9 @@ class homePh extends React.Component {
 
   componentDidMount() {
 
-    sessionStorage.setItem('kood',1)
+
+
+    sessionStorage.setItem('kood', 1)
     this.getVenueIndex()
     this.gerVenueName()
     if (localStorage.getItem('venue_token')) {
@@ -125,7 +139,7 @@ class homePh extends React.Component {
     if (this.props.history.location.pathname === '/homePh') {
       this.setState({ title: '首页' })
     } else if (this.props.history.location.pathname === '/homePh/orderPh') {
-      this.setState({ title: '预约信息' })
+      this.setState({ title: '预约信息',mode:false })
     } else if (this.props.history.location.pathname === '/homePh/sitePh') {
       this.setState({ title: '场地设置' })
     } else if (this.props.history.location.pathname === '/homePh/newsPh') {
@@ -135,11 +149,17 @@ class homePh extends React.Component {
     }
 
 
+
     jo()
 
-    setInterval(()=>{
-      window.addEventListener('storage',sessionStorage.getItem('kood')==='2'? this.gerVenueName():this);
-    },2000)
+    setInterval(() => {
+      window.addEventListener('storage', sessionStorage.getItem('kood') === '2' ? this.gerVenueName() : this);
+    }, 2000)
+
+    setInterval(() => {
+      localStorage.clear()
+    }, 86400000)
+
   }
 
   componentWillReceiveProps() {
@@ -160,33 +180,38 @@ class homePh extends React.Component {
       height: hei,
       data: genData(),
     }), 0);
-     
+
   }
   reture = () => {
     this.props.history.goBack()
   }
   homePh = () => {
     this.setState({ title: '首页' })
+    this.gerVenueName()
   }
   orderPh = () => {
     this.setState({ title: '预约信息', refs: 1 })
+    this.gerVenueName()
   }
   sitePh = () => {
     this.setState({ title: '场地设置' })
+    this.gerVenueName()
   }
   newsPh = () => {
     this.setState({ title: '消息' })
+    this.gerVenueName()
   }
   mine = () => {
     this.setState({ title: '我的' })
+    this.gerVenueName()
   }
 
 
-  closeWeb=()=>{
-    if(window.location.href.indexOf('flag=1')===-1){
-       this.props.history.push('/phone')
-       this.setState({visible:false})
-    }else{
+  closeWeb = () => {
+    if (window.location.href.indexOf('flag=1') === -1) {
+      this.props.history.push('/phone')
+      this.setState({ visible: false })
+    } else {
       this.close()
     }
   }
@@ -209,14 +234,26 @@ class homePh extends React.Component {
     }
   }
 
-  refResh=() => {
+  refResh = () => {
     this.setState({ refreshing: true })
     setTimeout(() => {
       this.gerVenueName()
       this.getVenueIndex()
     }, 1000)
   }
- 
+  setUp=e=>{
+    if(e.target.dataset.type==='台球'){
+      this.props.history.push({ pathname: '/homePh/orderPh', query: { activityList: false,liIndex:'2',id:'3' } })
+    }
+    if(e.target.dataset.type==='足球'){
+      this.props.history.push({ pathname: '/homePh/orderPh', query: { activityList: false,liIndex:'4',id:'5' } })
+    }
+    if(e.target.dataset.type==='高尔夫'){
+      this.props.history.push({ pathname: '/homePh/orderPh', query: { activityList: false,liIndex:'7',id:'8' } })
+    }
+    this.setState({mode:false})
+  }
+
 
   render() {
     return (
@@ -232,14 +269,14 @@ class homePh extends React.Component {
               visible={this.state.visible}
               onSelect={this.closeWeb}
               overlay={[
-              (<Item key="1" value="scan" style={{ fontSize: '0.7rem' }} data-seed="logId">{window.location.href.indexOf('flag=1')===-1?'返回官网':'关闭'}</Item>),
+                (<Item key="1" value="scan" style={{ fontSize: '0.7rem' }} data-seed="logId">{window.location.href.indexOf('flag=1') === -1 ? '返回官网' : '关闭'}</Item>),
               ]}
               align={{
                 overflow: { adjustY: 0, adjustX: 0 },
                 offset: [-10, 0],
               }}
               onVisibleChange={this.handleVisibleChange}
-            
+
             >
               <div style={{
                 height: '100%',
@@ -274,31 +311,31 @@ class homePh extends React.Component {
               refreshing={this.state.refreshing}
               onRefresh={this.refResh}
             >
-             <div className="homeScroll" style={{paddingBottom:'8rem'}}>
-              <div><span className="title" onClick={this.yuYue}>今日预约</span><div className="content"><span>{this.state.getVenue.today_count}</span><span>单</span></div></div>
-              <div><span className="title" onClick={this.yuYueTwo}>本月预约</span><div className="content"><span>{this.state.getVenue.month_count}</span><span>单</span></div></div>
-              <div><span className="title" onClick={this.dayIncomePh}>今日收入</span><div className="content"><span>￥{this.state.getVenue.today_money}</span></div></div>
-              <div><span className="title" onClick={this.monthlyIncomePh}>本月收入</span><div className="content"><span>￥{this.state.getVenue.month_money}</span></div></div>
-              <div><span className="title" onClick={this.commentPh}>场馆评分  {this.state.getVenue.score}分</span>
-                <div className="content">
-                  <div className="img">
-                    <img src={this.state.getVenue.score >= 1 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 1 && this.state.getVenue.score > 0 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
-                  </div>
-                  <div className="img">
-                    <img src={this.state.getVenue.score >= 2 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 2 && this.state.getVenue.score > 1 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
-                  </div>
-                  <div className="img">
-                    <img src={this.state.getVenue.score >= 3 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 3 && this.state.getVenue.score > 2 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
-                  </div>
-                  <div className="img">
-                    <img src={this.state.getVenue.score >= 4 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 4 && this.state.getVenue.score > 3 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
-                  </div>
-                  <div className="img">
-                    <img src={this.state.getVenue.score >= 5 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 5 && this.state.getVenue.score > 4 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
+              <div className="homeScroll" style={{ paddingBottom: '8rem' }}>
+                <div><span className="title" onClick={this.yuYue}>今日预约</span><div className="content"><span>{this.state.getVenue.today_count}</span><span>单</span></div></div>
+                <div><span className="title" onClick={this.yuYueTwo}>本月预约</span><div className="content"><span>{this.state.getVenue.month_count}</span><span>单</span></div></div>
+                <div><span className="title" onClick={this.dayIncomePh}>今日收入</span><div className="content"><span>￥{this.state.getVenue.today_money}</span></div></div>
+                <div><span className="title" onClick={this.monthlyIncomePh}>本月收入</span><div className="content"><span>￥{this.state.getVenue.month_money}</span></div></div>
+                <div><span className="title" onClick={this.commentPh}>场馆评分  {this.state.getVenue.score}分</span>
+                  <div className="content">
+                    <div className="img">
+                      <img src={this.state.getVenue.score >= 1 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 1 && this.state.getVenue.score > 0 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
+                    </div>
+                    <div className="img">
+                      <img src={this.state.getVenue.score >= 2 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 2 && this.state.getVenue.score > 1 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
+                    </div>
+                    <div className="img">
+                      <img src={this.state.getVenue.score >= 3 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 3 && this.state.getVenue.score > 2 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
+                    </div>
+                    <div className="img">
+                      <img src={this.state.getVenue.score >= 4 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 4 && this.state.getVenue.score > 3 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
+                    </div>
+                    <div className="img">
+                      <img src={this.state.getVenue.score >= 5 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 5 && this.state.getVenue.score > 4 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
             </PullToRefresh>
 
 
@@ -311,6 +348,29 @@ class homePh extends React.Component {
           <Route path="/homePh/newsPh" component={newsPh} />
           <Route path="/homePh/minePh" component={minePh} />
           <Route path="/homePh/orderPhT" component={orderPhT} />
+
+
+          <Modal
+            visible={this.state.mode}
+            transparent
+            maskClosable={false}
+            onClose={this.onClose}
+            title="提示"
+            footer={[{ text: '取消', onPress: () => { this.setState({ mode: false }) } }]}
+            wrapProps={{ onTouchStart: this.onWrapTouchStart }}
+
+          >
+            {
+              this.state.issporttype.map((item, i) => (
+                <div className="lpodf" key={i}>
+                  <span>您还未选择{item}场地的场地类型，请到预约信息—场地预约情况—{item}页面选择每一块场地的场地类型，谢谢</span>
+                  <div onClick={this.setUp} data-type={item}>去设置</div>
+                </div>
+              ))
+            }
+
+          </Modal>
+
         </div>
         <div className="footer">
           <div className="footerSon">

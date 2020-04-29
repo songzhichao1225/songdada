@@ -3,8 +3,10 @@ import './qualificationPh.css';
 
 import { Toast, Picker, List,NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Upload, Input, Button, Radio, Select, Tooltip, Icon } from 'antd';
+import { Upload, Input, Button, Radio, Select, Tooltip } from 'antd';
+import Icon from '@ant-design/icons';
 import { getIsStatus, getVenueOpenBankList, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity, VenueQualifications, getVenueQualificationInformation, VenueQualificationInformationSave } from '../../api';
+
 const { Option } = Select;
 const Item = Popover.Item;
 function getBase64(img, callback) {

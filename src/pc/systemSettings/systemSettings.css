@@ -1,7 +1,7 @@
 .systemSettings{
     background: #F5F5F5;
-    padding-bottom: 40px;
     overflow: hidden;
+    height: 100%;
 }
 .systemSettings .title{
     width: 100%;

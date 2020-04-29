@@ -2,8 +2,8 @@ import React from 'react';
 import './closeYu.css';
 import 'antd/dist/antd.css';
 import { VenueTemporarilyClosedList,VenueTemporarilyClosed, VenueTemporarilyClosedDel,VenueTemporarilyClosedSave,getSetUpFieldSportId } from '../../api';
-import { message, Modal, Select, DatePicker, Input, LocaleProvider, Row, Col, Popconfirm, Result, Icon,Pagination } from 'antd';
-
+import { message, Modal, Select, DatePicker, Input, LocaleProvider, Row, Col, Popconfirm, Result,Pagination } from 'antd';
+import {BankOutlined} from '@ant-design/icons';
 import moment from 'moment';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import 'moment/locale/zh-cn';
@@ -269,7 +269,7 @@ class closeYu extends React.Component {
         </div>
 
         <Pagination className={this.state.closeList.length > 1 ? 'fenye' : 'hidden'} defaultCurrent={1} total={parseInt(this.state.other)} onChange={this.current} />
-        <Result style={this.state.closeList.length < 1 ? { display: 'block' } : { display: 'none' }} icon={<Icon type="bank" theme="twoTone" twoToneColor="#F5A623" />} title="您还没有关闭预约" />,
+        <Result style={this.state.closeList.length < 1 ? { display: 'block' } : { display: 'none' }} icon={<BankOutlined style={{color:'#F5A623'}}/>} title="您还没有关闭预约" />,
   
   
   
@@ -291,7 +291,7 @@ class closeYu extends React.Component {
           </div>
           <div className="one" style={{ marginTop: 20 }}>
             <span>选择时间</span>
-            <LocaleProvider locale={zh_CN}>
+            {/* <LocaleProvider locale={zh_CN}>
               <RangePicker
                 style={{ width: 350, marginLeft: 15 }}
                 disabledDate={disabledDate}
@@ -304,7 +304,7 @@ class closeYu extends React.Component {
                 }}
                 format="YYYY-MM-DD HH:mm"
               />
-            </LocaleProvider>
+            </LocaleProvider> */}
           </div>
 
           <div className="one" style={{ marginTop: 20 }}>

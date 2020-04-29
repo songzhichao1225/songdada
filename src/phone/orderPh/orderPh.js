@@ -3,9 +3,9 @@ import './orderPh.css';
 
 import { DatePicker, Toast, Card, Modal, InputItem, List } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Pagination, Input, Drawer, Result, Icon, Spin, Select } from 'antd';
+import { Pagination, Input, Drawer, Result, Spin, Select } from 'antd';
 import { getReservationActivitieslist, VenueSendMessage, getVenueReservationss, getVenueSport, VenueClickCancelPlace, getVenueNumberTitleList, VenueRemarksLabel, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave, getVenueSporttypelist } from '../../api';
-
+import {BankOutlined,LoadingOutlined,CloseOutlined,CheckOutlined,ReconciliationOutlined} from '@ant-design/icons';
 import moment from 'moment';
 const { Option } = Select;
 const prompt = Modal.prompt;
@@ -102,6 +102,7 @@ class orderPh extends React.Component {
 
     modalTwo: false,
     timeOutEvent: 0,
+    liNum:'1'
   };
 
 
@@ -176,8 +177,8 @@ class orderPh extends React.Component {
     const res = await getVenueSport(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       if (res.data.data.length > 0) {
-        this.setState({ remList: res.data.data, liNum: res.data.data[0].id })
-        this.getVenueNumberTitleList({ sportid: res.data.data[0].id })
+        this.setState({ remList: res.data.data })
+        this.getVenueNumberTitleList({ sportid: this.state.liNum })
       }
     }
   }
@@ -238,6 +239,18 @@ class orderPh extends React.Component {
       }
     } else {
       this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
+    }
+
+
+    if (this.props.location.query !== undefined) {
+      console.log(this.props.location.query)
+      this.setState({
+        activityList: false,
+        liIndex: this.props.location.query.liIndex,
+      })
+      this.setState({ liNum: this.props.location.query.id, liIndex: this.props.location.query.liIndex })
+      this.getVenueNumberTitleList({ sportid:this.props.location.query.id })
+      this.getVenueSporttypelist({ sportid: this.props.location.query.id })
     }
 
 
@@ -358,7 +371,7 @@ class orderPh extends React.Component {
   }
 
   submitVal = () => {
-    
+
 
     this.getReservationActivitieslist({
       page: 1, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '' ? '' : this.state.start,
@@ -571,6 +584,15 @@ class orderPh extends React.Component {
     // this.getVenueReservationss({ date: date.toLocaleDateString().replace(/\//g, "-"), sportid: , types: 1, siteUUID: '' })
   }
 
+  totitle = e => {
+    console.log(e.currentTarget.dataset.type)
+    if (e.currentTarget.dataset.type === '1') {
+      Toast.info('请为各场地选择对应的场地类型，如1号场地为11人制足球场地；2号场地为5人制足球场地等', 5);
+    } else {
+      Toast.info('请为各场地填写标签，如普通、VIP、赛台、独立包间、楼上、楼下、人造草皮、真草皮等标签，也可不填写', 5);
+    }
+  }
+
 
 
 
@@ -581,14 +603,14 @@ class orderPh extends React.Component {
           <div onClick={this.activityList} style={this.state.activityList === true ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>预约活动列表</div>
           <div onClick={this.bookingKanban} style={this.state.activityList === false ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>场地预约情况</div>
         </div>
-        <div className='headSelect' style={this.state.spinFlag === false ? { display: 'none' } : { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' }} ><Icon type="loading" className='loadingY' style={{ top: this.state.clenTop / 4 }} /></div>
+        <div className='headSelect' style={this.state.spinFlag === false ? { display: 'none' } : { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' }} ><LoadingOutlined className='loadingY' style={{ top: this.state.clenTop / 4 }} /></div>
         <div style={{ height: '0.5rem', background: '#f5f5f5' }}></div>
         <div className={this.state.activityList === true ? 'activityList' : 'hidden'}>
           <div className="screen" onClick={this.showDrawer}><span style={{ paddingRight: '0.2rem' }}>筛选</span><img style={{ marginTop: '-0.2rem' }} src={require('../../assets/shaixuan.png')} alt="筛选" /></div>
 
 
 
-          <div style={this.state.activeSon.length === 0 ? { display: 'none' } : { height: '100%', overflow: 'scroll',paddingBottom:'4rem' }}>
+          <div style={this.state.activeSon.length === 0 ? { display: 'none' } : { height: '100%', overflow: 'scroll', paddingBottom: '4rem' }}>
             {
               this.state.activeSon.map((item, i) => (
                 <div key={i} >
@@ -624,7 +646,7 @@ class orderPh extends React.Component {
           </div>
 
           <Spin style={{ width: '100%', marginTop: '45%' }} spinning={this.state.spin} />
-          <Result className={this.state.spin === false && this.state.activeSon.length === 0 ? '' : 'hidden'} icon={<Icon style={{ fontSize: '2rem' }} type="bank" theme="twoTone" twoToneColor="#F5A623" />} title="没有活动列表" />
+          <Result className={this.state.spin === false && this.state.activeSon.length === 0 ? '' : 'hidden'} icon={<BankOutlined style={{ fontSize: '2rem',color:'#F5A623' }} />} title="没有活动列表" />
 
 
 
@@ -632,7 +654,7 @@ class orderPh extends React.Component {
 
 
 
-      
+
 
 
 
@@ -718,15 +740,17 @@ class orderPh extends React.Component {
           <div className="lookList" onScrollCapture={this.scroll} ref={c => { this.scrollRef = c }} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block' }}>
             <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 4.25 + 'rem' }}>
               <div className="topFixd" style={{ paddingTop: 5 + this.state.top, paddingBottom: '10px', minWidth: '100%', zIndex: '999' }}>
-                <span></span>
+                <span>
+                  <span >场地号</span>
+                  <div onClick={this.totitle} data-type='1' style={this.state.liNum === '3' || this.state.liNum === '5' || this.state.liNum === '8' ? { display: 'block' } : { display: 'none' }}>场地类型</div>
+                  <div onClick={this.totitle} data-type='2'>标签</div>
+                </span>
                 {
                   this.state.macNum.map((item, i) => (
-
-
                     <span key={i}>{i + 1}
                       <div className="boxBoss" style={{ position: 'relative', width: '100%', height: '26px' }}>
                         <Select
-                          placeholder={Object.keys(this.state.otherType).indexOf("" + parseInt(i + 1) + "") !== -1 ? Object.values(this.state.otherType)[Object.keys(this.state.otherType).indexOf("" + parseInt(i + 1) + "")].sporttypename : undefined}
+                          placeholder={Object.keys(this.state.otherType).indexOf("" + parseInt(i + 1) + "") !== -1 ? Object.values(this.state.otherType)[Object.keys(this.state.otherType).indexOf("" + parseInt(i + 1) + "")].sporttypename : '请选择'}
                           className="lookFir"
                           key={'-' + i + this.state.liNum}
                           showArrow={false}
@@ -744,13 +768,13 @@ class orderPh extends React.Component {
                         </Select>
                         <Input className='inputAppList'
                           key={parseInt(i + this.state.liNum + 'l')}
-                          placeholder={item.title}
+                          placeholder={item.title === '' ? '普通/VIP' : item.title}
                           style={{ height: '26px', width: '4.15rem', border: '1px solid #ddd', borderRadius: '4px' }}
                           data-uuid={item.uuid}
                           onChange={this.tilChange}
                           data-num={i + 1}
-                          onPressEnter={this.tilBlur}
-                          suffix={item.title === '' ? '' : <Icon type="close" data-uuid={item.uuid} onClick={this.delTitle} style={{ color: 'rgba(0,0,0,.25)' }} />}
+                          onBlur={this.tilBlur}
+                          suffix={item.title === '' ? '' :<CloseOutlined data-uuid={item.uuid} onClick={this.delTitle} style={{ color: 'rgba(0,0,0,.25)' }}/> }
                           onFocus={this.tilFocus}
                           maxLength={5} />
                       </div>
@@ -781,7 +805,7 @@ class orderPh extends React.Component {
                           data-lo={index.a + '-' + (i + 1)}
                           style={item.type === 1 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 2 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff', opacity: '.3' } : {} && item.type === 3 ? { background: '#F5A623', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 4 ? { background: 'red', marginTop: '0.12rem', color: '#fff' } : {}}
                         >
-                          {this.state.lotime.indexOf(index.a + '-' + (i + 1)) !== -1 ? <Icon type="check" /> : ''}
+                          {this.state.lotime.indexOf(index.a + '-' + (i + 1)) !== -1 ? <CheckOutlined /> : ''}
                           {item.type === 1 ? item.money : ''}
                         </span>
                       ))
@@ -833,7 +857,7 @@ class orderPh extends React.Component {
             <List.Item className="dateT" style={{ fontSize: '14px' }}></List.Item>
           </DatePicker>
 
-          <Result style={{ fontSize: '0.75rem' }} className={this.state.lookList.length === 0 ? '' : 'hidden'} icon={<Icon type="reconciliation" style={{ fontSize: '2rem' }} theme="twoTone" twoToneColor="#F5A623" />} title="没有预约情况" />
+          <Result style={{ fontSize: '0.75rem' }} className={this.state.lookList.length === 0 ? '' : 'hidden'} icon={<ReconciliationOutlined  style={{ fontSize: '2rem',color:'#F5A623' }}/>} title="没有预约情况" />
           <Drawer
             title="该场地详细信息"
             placement="right"

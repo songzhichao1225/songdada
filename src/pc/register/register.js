@@ -175,15 +175,15 @@ class register extends React.Component {
       <div className="register">
         <div className="header">
           <div className="heCenter">
-            <img className="logo" src={require("../../assets/tiaozhanicon.png")} style={{ width: 173, height: 58, marginLeft: 45, marginTop: 40 }} alt="6666" />
+            <img className="logo" src={require("../../assets/tiaozhanicon.png")} style={{ width: 53, height: 53, marginLeft: 45, marginTop: 13.5 }} alt="6666" />
             <span className="title">北京甲乙电子商务有限公司</span>
           </div>
           <div className="content">
             <div className="nav">
-              <div>1.填写注册信息</div>
-              <div>2.完善场馆信息</div>
-              <div>3.等待审核</div>
-              <div>4.审核成功</div>
+              <div><span>1.填写注册信息</span><img src={require("../../assets/oneline.png")} alt='5'/></div>
+              <div><span>2.完善场馆信息</span><img src={require("../../assets/twoline.png")} alt='5'/></div>
+              <div><span>3.等待审核</span><img src={require("../../assets/twoline.png")} alt='5'/></div>
+              <div><span>4.审核成功</span><img src={require("../../assets/twoline.png")} alt='5'/></div>
             </div>
 
             <div className="authentication">

@@ -4,14 +4,25 @@
    margin-top: 8px;
 }
 
-.siteStting .header>span{
-    font-size: 16px;
-    color: #4A4A4A;
-    padding-left: 25px;
-    line-height: 46px;
-    display: block;
+.siteStting .header .left{
+    width: 121px;
+    height: 31px;
+    text-align: center;
+    line-height: 31px;
+    background:rgba(245,245,245,1);
+    border:1px solid rgba(225,224,225,1);
+    color: #9B9B9B;
+    margin-left: 20px;
     float: left;
 }
+.siteStting .header .right{
+    float: right;
+    margin-right: 30px;
+}
+.siteStting .header .right>span{
+    padding-right: 5px;
+}
+
 .siteStting .header .selectN{
     margin-left: 12px;
     float: left;
@@ -38,6 +49,12 @@
 }
 .siteStting .siteList .rowConten{
     border-bottom: 1px solid #E1E0E1;
+}
+.siteStting .siteList .rowConten>div{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap
+
 }
 .siteStting .siteList .dataList .rowList{
     border-bottom:1px  solid #E1E0E1;
@@ -76,6 +93,9 @@
     overflow: hidden;
     padding-bottom: 30px;
 }
+.lppd{
+    height: 32px;
+}
 .modelList{
     overflow: hidden;
     position: relative;
@@ -99,7 +119,7 @@
 .modelList .selectModel{
    float: right;
    margin-right: 150px;
-   height: 26px;
+   height: 32px;
 
 }
 .modelList .startTime{
@@ -107,6 +127,8 @@
     height: 26px;
     float: right;
     margin-right: 150px;
+    z-index: 999;
+    
 }
 .ant-time-picker-input{
     height: 26px;
@@ -187,4 +209,54 @@ img{
 }
 .hidden{
     display: none;
+}
+.siteStting .join{
+   width: 100%;
+   height: 50px;
+   line-height: 50px;
+   text-align: center;
+   color:#F5A623 ;
+   font-size: 18px;
+   cursor: pointer;
+   border-bottom: 1px solid #E1E0E1;
+}
+.serialNumberTop>span{
+    float: left;
+    padding-left: 13px;
+}
+.serialNumberTop{
+    overflow: hidden;
+}
+.serialNumberTop>div{
+    width: 55px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    background: #F5F5F5;
+    float: right;
+    border-radius: 2px;
+
+}
+.serialSon{
+    width: 30px;
+    height: 30px;
+    background: #F5F5F5;
+    text-align: center;
+    line-height: 30px;
+    margin-left: 13px;
+    margin-top: 13px;
+    float: left;
+}
+.footerSerial{
+    clear: both;
+    
+}
+.footerSerial .seriaComfir{
+   width:60px;
+   height: 25px;
+   text-align: center;
+   line-height: 25px;
+   color: #fff;
+   background: #F5A623;
+   float: right;
 }

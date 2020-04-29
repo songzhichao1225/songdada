@@ -4,7 +4,8 @@ import './forgetPasswordPh.css';
 import { Toast, InputItem, NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { _code, VenueSelectSiteName, VenueForgetPass } from '../../api';
-import { Radio, Icon } from 'antd';
+import { Radio } from 'antd';
+import Icon from '@ant-design/icons';
 const Item = Popover.Item;
 
 class forgetPasswordPh extends React.Component {
@@ -36,7 +37,7 @@ class forgetPasswordPh extends React.Component {
       }, 1000)
       this.nacode({ "mobile": this.state.phone, "type": 'venueforgetpass' })
     } else {
-      Toast.fail(res.data.msg, 1);
+      Toast.fail(res.data.msg, 1)
     }
   }
 
@@ -92,9 +93,9 @@ class forgetPasswordPh extends React.Component {
     }
   }
 
-
-
-  reture = () => {
+ 
+ 
+  reture = () => { 
     this.props.history.goBack()
   }
 
@@ -130,11 +131,11 @@ class forgetPasswordPh extends React.Component {
             onVisibleChange={this.handleVisibleChange}
           >
             <div style={{
-              height: '100%',
-              padding: '0 15px',
+              height: '100%',  
+              padding: '0 15px', 
               marginRight: '-15px',
               fontSize: '2rem',
-              display: 'flex',
+              display: 'flex',  
               alignItems: 'center',
             }}
             >

@@ -2,8 +2,10 @@ import React from 'react';
 import './myWallet.css';
 import 'antd/dist/antd.css';
 import { getVenueMoneyList, getVenueWithdrawalList, getVenueWithdrawalOneList, VenueWithdrawal } from '../../api';
-import { DatePicker, Row, Col, Pagination, message, Spin, Result, Icon, Input } from 'antd';
+import { DatePicker, Row, Col, Pagination, message, Spin, Result,  Input } from 'antd';
+import {ReconciliationOutlined,MoneyCollectOutlined} from '@ant-design/icons';
 import moment from 'moment';
+import locale from 'antd/es/date-picker/locale/zh_CN';
 
 const { RangePicker } = DatePicker;
 
@@ -143,13 +145,15 @@ class myWallet extends React.Component {
   }
   render() {
     return (
-      <div>
+      <div style={{height:'100%'}}>
         <div className={this.state.flag === 1 ? 'myWallet' : 'myWalletNone'}>
           <div className="xiange"></div>
           <div className="header">
             <span className="select">选择时间</span>
             <RangePicker
               placeholder={[this.state.start, this.state.end]}
+              style={{marginTop:'8px'}}
+              locale={locale}
               onChange={this.dateChange}
             />
             <span className="query" onClick={this.search}>查询</span>
@@ -179,7 +183,7 @@ class myWallet extends React.Component {
               <span style={{ float: 'right', marginRight: '110px', marginTop: '30px' }}>查询期间收入(元)：￥{this.state.whereMoney}</span>
               <Pagination defaultCurrent={1} className={this.state.moneyList.length < 1 ? 'myWalletNone' : 'fenye'} onChange={this.moneyFen} total={this.state.other} />
             </div>
-            <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<Icon type="money-collect" theme="twoTone" twoToneColor="#F5A623" />} title="还没有人预约您的场馆！" />
+            <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<MoneyCollectOutlined style={{color:'#F5A623'}}/>} title="还没有人预约您的场馆！" />
           </Spin>
         </div>
         <div className={this.state.flag === 2 ? 'record myWallet' : 'myWalletNone'}>
@@ -190,7 +194,7 @@ class myWallet extends React.Component {
           <div className="xiange"></div>
           <div className={this.state.hiddenTwo === true ? '' : 'hidden'}>
             <Row>
-              <Col className="oneText" xs={{ span: 4 }}>申请时间</Col>
+              <Col className="oneText" xs={{ span: 5 }}>申请时间</Col>
               <Col xs={{ span: 7, offset: 0 }}>账户名称</Col>
               <Col xs={{ span: 4, offset: 0 }}>处理时间</Col>
               <Col xs={{ span: 4, offset: 0 }}>金额</Col>
@@ -199,7 +203,7 @@ class myWallet extends React.Component {
             {
               this.state.recordList.map((item, i) => (
                 <Row key={i} >
-                  <Col className="oneText" xs={{ span: 4 }}>{item.SubmitDate}</Col>
+                  <Col className="oneText" xs={{ span: 5 }}>{item.SubmitDate}</Col>
                   <Col xs={{ span: 7, offset: 0 }}>{item.OpeningBank}|{'*' + item.BankCard.slice(-4)}|{'*' + item.BankName.slice(-1)}</Col>
                   <Col xs={{ span: 4, offset: 0 }}>{item.FinishedDate === null ? '---' : item.FinishedDate}</Col>
                   <Col xs={{ span: 4, offset: 0 }}>￥{item.RequestMoney}</Col>
@@ -208,8 +212,8 @@ class myWallet extends React.Component {
               ))
             }
           </div>
-          <Pagination className="fenye" defaultCurrent={1} onChange={this.recordListOther} total={this.state.recordListOther===''?0:this.state.recordListOther} />
-          <Result className={this.state.hiddenTwo === true ? 'hidden' : ''} icon={<Icon type="reconciliation" theme="twoTone" twoToneColor="#F5A623" />} title="您还没有提现记录！" />
+          <Pagination className={this.state.hiddenTwo === true ? 'fenye' : 'hidden'} defaultCurrent={1} onChange={this.recordListOther} total={this.state.recordListOther===''?0:this.state.recordListOther} />
+          <Result className={this.state.hiddenTwo === true ? 'hidden' : ''} icon={<ReconciliationOutlined style={{color:'#F5A623'}}/>} title="您还没有提现记录！" />
         </div>
         <div className={this.state.flag === 3 ? 'withdrawal myWallet' : 'myWalletNone'}>
 

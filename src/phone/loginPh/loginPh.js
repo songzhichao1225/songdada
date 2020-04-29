@@ -1,8 +1,7 @@
 import React from 'react';
 import './loginPh.css';
 import 'antd/dist/antd.css';
-import { Icon } from 'antd';
-
+import Icon from '@ant-design/icons';
 class loginPh extends React.Component {
 
   state = {
@@ -10,6 +9,16 @@ class loginPh extends React.Component {
   };
 
   componentDidMount() {
+    let query = window.location.href
+    let arr = query.split('&')
+    if (arr[1]!== undefined) {
+      if (localStorage.getItem('phone') === arr[1].slice(6, 17)) {
+
+      } else {
+        localStorage.clear()
+        this.props.history.push('/login')
+      }
+    }
    if(localStorage.getItem('venue_token')){
     this.props.history.push('/homePh')
    }

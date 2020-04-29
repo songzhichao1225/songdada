@@ -2,8 +2,8 @@ import React from 'react';
 import './Login.css';
 import 'antd/dist/antd.css';
 import { _code, _login, VenueSelectSiteName } from '../../api';
-import { Form, Icon, Input, Button, message, Popover, Radio } from 'antd';
-
+import { Form, Input, Button, message, Popover, Radio } from 'antd';
+import Icon from '@ant-design/icons';
 class Login extends React.Component {
 
   state = {
@@ -121,8 +121,9 @@ class Login extends React.Component {
     let data = {
       username: this.state.phone, usercode: this.state.code, userpass: this.state.pass, type: 2, Logintype: 'pc', venueloginuuid: this.state.value
     }
-    this.login(data)
+    this.login(data)                                                  
   }
+
 
 
   onSubmitT = () => {
@@ -137,21 +138,25 @@ class Login extends React.Component {
   nameLogin = () => {
     this.setState({ navNum: false })
   }
+  guan=()=>{
+   
+  }
 
   render() {
     return (
       <div className="login">
+         {/* <img className="img" src={require("../../assets/loginBack.png")} alt="找对手"/> */}
         <div className="header">
           <div className="heCenter">
-            <img className="logo" src={require("../../assets/tiaozhanicon.png")} style={{ width: 173, height: 58, marginLeft: 45, marginTop: 40 }} alt="logo" />
-            <span className="title">北京甲乙电子商务有限公司</span>
-          </div>
+            <img className="logo" src={require("../../assets/tiaozhanicon.png")} style={{ width: 53, height: 53, marginTop: 40 }} alt="logo" />
+            <span className="title">北京甲乙电子商务有限公司</span>              
+          </div>                                                               
           <div className="content">
             <div className="left">
-              <span>Welcome!</span>
-              <span>找对手场地管理端</span>
+            
             </div>
             <div className="right">
+              <span className="uigt">找对手场馆端</span>
               <div className="navTap">
                 <div style={this.state.navNum === false ? { color: '#F5A623' } : { color: '#000' }} onClick={this.nameLogin}>普通登录</div>
                 <div onClick={this.phoneLogin} style={this.state.navNum === true ? { color: '#F5A623' } : { color: '#000' }}>法人登录</div>
@@ -187,9 +192,6 @@ class Login extends React.Component {
                         ))
                       }
                 
-                      
-                      
-
                     </Radio.Group>
                   </Form.Item>
                   <Form.Item className="input" >
@@ -204,12 +206,13 @@ class Login extends React.Component {
               </div>
 
 
+
               <div className={this.state.navNum ? 'nameLogin' : 'nameLoginT'}  >
                 <Form layout="inline" onSubmit={this.handleSubmit} className="form">
                   <Form.Item className="input">
                     <Input onChange={this.phone} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名/操作员手机号" />
                   </Form.Item>
-                  <Form.Item className="input" >
+                  <Form.Item className="input" style={{marginTop:20}}>
                     <Input.Password maxLength={8} onChange={this.onPassword} onPressEnter={this.onSubmitT} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" />
                   </Form.Item>
                   <Form.Item className="bind">
@@ -224,13 +227,12 @@ class Login extends React.Component {
                 <a href='#/forgetPassword'><span>忘记密码?</span></a>
                 <a href='#/register'><span>注册</span></a>
               </div>
-
             </div>
           </div>
 
 
         </div>
-
+       <div className="retrun" onClick={this.guan}><a href="http://www.zhaoduishou.com/" target="_blank" rel="noopener noreferrer">公司官网:www.zhaoduishou.com</a></div>
       </div>
     );
   }

@@ -1,8 +1,8 @@
 import React from 'react';
 import './mapPh.css';
 import 'antd/dist/antd.css';
-import { Input,Icon } from 'antd';
-
+import { Input } from 'antd';
+import Icon from '@ant-design/icons';
 const { Search } = Input;
 
 
@@ -29,7 +29,7 @@ class mapPh extends React.Component {
     var option = {
       renderOptions: { map: map, panel: "results" }, onSearchComplete: function (results) {
         if (results !== undefined){
-          that.setState({ mapList: results.Tq })
+          that.setState({ mapList: results.Uq })
         }
       }
     } 

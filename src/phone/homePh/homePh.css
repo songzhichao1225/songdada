@@ -154,3 +154,20 @@
   display: block;
   
 }
+.lpodf>span{
+  display: block;
+  font-size: 0.75rem;
+  text-align: left;
+}
+.lpodf>div{
+  width: 4rem;
+  height: 1.5rem;
+  font-size: 0.8rem;
+  text-align: center;
+  line-height: 1.5rem;
+  background: #108ee9;
+  color: #fff;
+  border-radius: 0.3rem;
+  margin: 0.5rem auto 0.5rem;
+  
+}

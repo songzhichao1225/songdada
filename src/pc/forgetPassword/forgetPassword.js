@@ -96,7 +96,7 @@ class forgetPassword extends React.Component {
       <div className="forgetPassWord">
         <div className="header">
           <div className="heCenter">
-            <img className="logo" style={{ width: 173, height: 58, marginLeft: 45, marginTop: 40 }} src={require("../../assets/tiaozhanicon.png")} alt="6666" />
+            <img className="logo" style={{ width: 53, height: 53, marginLeft: 45, marginTop:13.5 }} src={require("../../assets/tiaozhanicon.png")} alt="6666" />
             <span className="title">北京甲乙电子商务有限公司</span>
           </div>
 

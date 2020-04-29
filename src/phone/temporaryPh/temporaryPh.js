@@ -3,7 +3,8 @@ import './temporaryPh.css';
 
 import { Toast, DatePicker, List } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Select, Icon, Row, Col, Drawer, Pagination, Popconfirm, Result } from 'antd';
+import { Select, Row, Col, Drawer, Pagination, Popconfirm, Result } from 'antd';
+import {GiftOutlined,ArrowLeftOutlined,LoadingOutlined} from '@ant-design/icons';
 import { getVenueSport, VenueTemporarilyClosedList, VenueTemporarilyClosedSave, VenueTemporarilyClosedDel, VenueTemporarilyClosed } from '../../api';
 import moment from 'moment';
 const { Option } = Select;
@@ -235,13 +236,13 @@ class temporaryPh extends React.Component {
   render() {
     return (
       <div className="temporaryPh">
-        <div className="headTitle"><Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute',left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />设置临时关闭预约</div>
+        <div className="headTitle"><ArrowLeftOutlined  onClick={this.reture} style={{ position: 'absolute',left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />设置临时关闭预约</div>
         <Row className='Row'>
           <Col xs={{ span: 6 }} lg={{ span: 6 }}>运动名称</Col>
           <Col xs={{ span: 12 }} lg={{ span: 12 }}>时间</Col>
           <Col xs={{ span: 6 }} lg={{ span: 6 }}>操作</Col>
         </Row>
-        <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block', height: this.state.clenTop, transition: '0.3s', background: '#f5f5f5', position: 'relative' } : { display: 'none' }} ><Icon type="loading" className='loadingY' style={{ top: this.state.clenTop / 7 }} /></div>
+        <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block', height: this.state.clenTop, transition: '0.3s', background: '#f5f5f5', position: 'relative' } : { display: 'none' }} ><LoadingOutlined className='loadingY' style={{ top: this.state.clenTop / 7 }}/></div>
 
         <div className="temScroll" >
           {
@@ -271,7 +272,7 @@ class temporaryPh extends React.Component {
         </div>
         <img className="addList" onClick={this.addYouList} src={require("../../assets/comeOn@2x.png")} alt="添加" />
         <Pagination className="fenye" defaultCurrent={1} style={this.state.VenueTemporarilyClosedList.length < 1 ? { display: 'none' } : {}} size="small" onChange={this.current} total={this.state.total} />
-        <Result className={this.state.VenueTemporarilyClosedList.length === 0 ? '' : 'nono'} icon={<Icon type="gift" theme="twoTone" twoToneColor="#F5A623" style={{ fontSize: '2rem' }} />} title="没有场地设置" />
+        <Result className={this.state.VenueTemporarilyClosedList.length === 0 ? '' : 'nono'} icon={<GiftOutlined style={{ fontSize: '2rem',color:'F5A623' }}/>} title="没有场地设置" />
 
 
 

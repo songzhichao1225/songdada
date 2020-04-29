@@ -1,6 +1,6 @@
 import React from 'react';
 import './resultsAuditsPh.css';
-import { Icon } from 'antd';
+import Icon from '@ant-design/icons';
 import { getIsStatus } from '../../api';
 import {NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';

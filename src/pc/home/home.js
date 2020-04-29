@@ -3,7 +3,8 @@ import { Route, Link } from 'react-router-dom';
 import './home.css';
 import 'antd/dist/antd.css';
 import { getVenueIndex, gerVenueName } from '../../api';
-import { Layout, Menu, Icon, message, notification } from 'antd';
+import { Layout, Menu, message, notification } from 'antd';
+import {HomeOutlined,SettingOutlined} from '@ant-design/icons';
 import homePage from '../homePage/homePage';
 import information from '../information/information';
 import siteSettings from '../siteSettings/siteSettings';
@@ -21,7 +22,7 @@ import special from '../special/special';
 const { Header, Sider, Content, Footer } = Layout;
 
 function jo(){
-  var ws = new WebSocket("wss://venue.tiaozhanmeiyitian.com/socket");
+  var ws = new WebSocket("wss://www.venue.zhaoduishou.com/socket");
   ws.onopen = function () {
     ws.send(sessionStorage.getItem('siteuid'))
   }
@@ -60,6 +61,7 @@ class home extends React.Component {
 
   componentDidMount() {
     sessionStorage.setItem('kood',1)
+    sessionStorage.setItem('loodSo','0')
     this.setState({ minheight: document.body.scrollHeight, path: this.props.history.location.pathname })
     this.getVenueIndex()
     this.gerVenueName()
@@ -94,8 +96,12 @@ class home extends React.Component {
     setInterval(()=>{
       window.addEventListener('storage',sessionStorage.getItem('kood')==='2'? this.gerVenueName():this);
     },2000)
-    
+   
+   
   }
+
+
+
   componentWillReceiveProps() {
     this.setState({ path: this.props.history.location.pathname })
     this.getVenueIndex()
@@ -219,12 +225,9 @@ class home extends React.Component {
       message.error('登陆超时请重新登陆！')
     } else {
       this.setState({ gerVenueName: res.data.data })
-      sessionStorage.setItem('siteuid', res.data.data.siteuid)
-      sessionStorage.setItem('mess',res.data.data.mess)
-      sessionStorage.setItem('rate',res.data.data.rate)
-      sessionStorage.setItem('kood',1)
     }
   }
+
 
   income = () => {
     this.props.history.push({ pathname: '/home/myWallet', query: { time: 1 } })
@@ -247,24 +250,35 @@ class home extends React.Component {
   render() {
     return (
       <Layout style={{ height: '100%' }}>
-        <Sider trigger={null} collapsible collapsed={this.state.collapsed} width={190} className="sider">
+        <Sider trigger={null} collapsible collapsed={this.state.collapsed} width={150} className="sider">
           <div className="logo">
-            <img style={{ height: 40, marginLeft: 45, marginTop: 22 }}
+            <img style={{ height: 40, margin: '0 auto', marginTop: 10,display:'block' }}
               src={require("../../assets/tiaozhanicon.png")} alt="logo" />
           </div>
-          <Menu theme="dark" mode="inline" selectedKeys={[sessionStorage.getItem('path')]} onSelect={this.kood}>
+          <Menu theme="dark"  selectedKeys={[sessionStorage.getItem('path')]} onSelect={this.kood}>
             <Menu.Item key="1">
               <Link to="/home">
-                <Icon type="home" />
-                <span>首页</span>
+                <HomeOutlined />
+                <span>首</span>
+                <span style={{paddingLeft:35}}>页</span>
               </Link>
             </Menu.Item>
+
+              <Menu.Item key="4">
+              <Link to="/home/preferential">
+              <i className="anticon anticon-gift">
+                  <svg t="1571136349374" className="icon" viewBox="64 64 896 896" version="1.1" fill="currentColor" p-i='true' d="1831" width="1em" height="1em"><path d="M424.9 142.4c0.1 0.1 0.3 0.2 0.3 0.3V878c-0.1 0.1-0.2 0.3-0.3 0.3H145.6c-0.1-0.1-0.3-0.2-0.3-0.3V142.7c0.1-0.1 0.2-0.3 0.3-0.3h279.3m0-80H145.5c-44.2 0-80.3 36.1-80.3 80.3v735.4c0 44.2 36.1 80.3 80.3 80.3h279.4c44.2 0 80.3-36.1 80.3-80.3V142.7c0-44.1-36.1-80.3-80.3-80.3z" p-id="2437"></path><path d="M879.8 142.9c0.1 0.1 0.3 0.2 0.3 0.3v341c-0.1 0.1-0.2 0.3-0.3 0.3H631.4c-0.1-0.1-0.3-0.2-0.3-0.3v-341c0.1-0.1 0.2-0.3 0.3-0.3h248.4m0-80H631.3c-44.2 0-80.3 36.1-80.3 80.3v341c0 44.2 36.1 80.3 80.3 80.3h248.5c44.2 0 80.3-36.1 80.3-80.3v-341c0-44.1-36.1-80.3-80.3-80.3z" p-id="2438"></path><path d="M880.2 688.1c0.1 0.1 0.3 0.2 0.3 0.3v189.7c-0.1 0.1-0.2 0.3-0.3 0.3H631.8c-0.1-0.1-0.3-0.2-0.3-0.3V688.4c0.1-0.1 0.2-0.3 0.3-0.3h248.4m0-80H631.7c-44.2 0-80.3 36.1-80.3 80.3v189.8c0 44.2 36.1 80.3 80.3 80.3h248.5c44.2 0 80.3-36.1 80.3-80.3V688.4c0-44.2-36.1-80.3-80.3-80.3z" p-id="2439"></path></svg>
+                </i>
+                <span>场地占用</span>
+              </Link>
+            </Menu.Item>
+
             <Menu.Item key="2">
               <Link to="/home/appointmentList">
                 <i className="anticon anticon-gift">
                   <svg t="1571136412563" className="icon" viewBox="64 64 896 896" version="1.1" fill="currentColor" p-id="1831" width="1em" height="1em"><path d="M827 869.6H196.7c-44-0.1-79.6-35.7-79.6-79.6V438.6h789.5V790c0 43.9-35.7 79.6-79.6 79.6zM196.7 223.4h87.7v53.5c0 11 8.9 19.9 19.9 19.9 11 0 19.9-8.9 19.9-19.9v-53.5h367.5v53.5c0 11 8.9 19.9 19.9 19.9 11 0 19.9-8.9 19.9-19.9v-53.5H827c44 0.1 79.6 35.7 79.6 79.6v95.8H117.1V303c0-44 35.6-79.6 79.6-79.6zM827 170.3h-95.5v-50.6c0-11-8.9-19.9-19.9-19.9-11 0-19.9 8.9-19.9 19.9v50.6H324.2v-50.6c0-11-8.9-19.9-19.9-19.9-11 0-19.9 8.9-19.9 19.9v50.6h-87.7C123.4 170.4 64.1 229.7 64 303v487c0.1 73.3 59.4 132.6 132.7 132.7H827c73.3-0.1 132.6-59.4 132.7-132.7V303c-0.1-73.3-59.5-132.6-132.7-132.7z" p-id="2590"></path><path d="M657.6 529.4l-183.1 183-99.1-99.1c-9.2-9.2-24.2-9.2-33.4 0s-9.2 24.2 0 33.4l115.9 115.9c9.2 9.2 24.2 9.2 33.4 0L691 562.9c9.2-9.2 9.2-24.2 0-33.4-9.2-9.3-24.2-9.3-33.4-0.1z" p-id="2591"></path></svg>
                 </i>
-                <span>预约信息</span>
+                <span>活动列表</span>
               </Link>
             </Menu.Item>
             <Menu.Item key="3">
@@ -275,20 +289,15 @@ class home extends React.Component {
                 <span>场地设置</span>
               </Link>
             </Menu.Item>
-            <Menu.Item key="8">
+            {/* <Menu.Item key="8">
               <Link to="/home/special">
                 <i className="anticon anticon-gift">
                   <svg t="1575597370225" className="icon" viewBox="64 64 896 896" version="1.1" fill="currentColor" width="1rem" height="1rem"><path d="M351.962 128.277l128.1-0.154 0.077 64-128.1 0.154zM255.804 64.339l64-0.077 0.192 159.9-64 0.077zM512.004 64.038l64-0.076 0.192 159.9-64 0.076z" p-id="1703"></path><path d="M160.9 896c-17.7 0-32-14.3-32-31.9l-0.8-639.6c0-17.7 14.3-32 32-32l64.1-0.1-0.1-64-64.1 0.1c-53.1 0.1-96 43.1-96 96.1l0.8 639.6c0.1 53 43.1 95.9 96.2 95.8l511.7-0.6-0.1-64-511.7 0.6z" p-id="1704"></path><path d="M513.1 702.7l-287.8 0.3c-17.7 0-32 14.3-32 32s14.3 32 32 31.9l287.8-0.3c17.7 0 32-14.3 32-32 0-17.6-14.3-31.9-32-31.9zM225.1 511.2c-17.7 0-32 14.3-32 32s14.3 32 32 31.9l383.8-0.5c17.7 0 32-14.3 32-32s-14.3-32-32-31.9l-383.8 0.5zM224.9 319.3c-17.7 0-32 14.3-32 32s14.3 32 32 31.9l383.8-0.5c17.7 0 32-14.3 32-32s-14.3-32-32-31.9l-383.8 0.5zM768.1 223.7c-0.1-53-43.1-95.9-96.1-95.8l-64 0.1 0.1 64 64-0.1c17.7 0 32 14.3 32 31.9l0.4 352.2h64l-0.4-352.3zM950.6 790.6L816.1 925c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.7 0-45.2l79.8-79.7L608 800c-12.9 0-24.6-7.8-29.6-19.8s-2.2-25.7 6.9-34.9L700 630.7c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-60 60H928c12.9 0 24.6 7.8 29.6 19.8 4.9 11.9 2.2 25.7-7 34.8z" p-id="1705"></path></svg>
                 </i>
                 <span>特殊场地</span>
               </Link>
-            </Menu.Item>
-            <Menu.Item key="4">
-              <Link to="/home/preferential">
-                <Icon type="gift" />
-                <span>优惠活动</span>
-              </Link>
-            </Menu.Item>
+            </Menu.Item> */}
+          
           
             <Menu.Item key="5">
               <Link to={{ pathname: '/home/stadiums', query: { name: 'sunny' } }}>
@@ -302,7 +311,7 @@ class home extends React.Component {
 
             <Menu.Item key="6">
               <Link to="/home/systemSettings">
-                <Icon type="setting" />
+              <SettingOutlined />
                 <span>系统设置</span>
               </Link>
             </Menu.Item>
@@ -323,7 +332,7 @@ class home extends React.Component {
               <span>{this.state.gerVenueName.name}</span>
             </div>
             <div className="time">
-              <span> {this.state.year}  {this.state.mount}  {this.state.date} {this.state.getDay}  {this.state.hours}{this.state.minutes}</span>
+            
               <div className="new">
                 <div onClick={this.news}>
                   <img src={require("../../assets/icon_pc_new.png")} alt="message" />
@@ -333,9 +342,10 @@ class home extends React.Component {
               <div className="lvyue">场地履约率：{this.state.gerVenueName.rate}%</div>
             </div>
           </Header>
+          <div style={{ height: 8, background: '#F5F5F5', width: '100%' }}></div>
           <Content style={{
             background: '#fff',
-            overflowY: 'auto'
+           
           }}>
             <div className={this.state.path !== '/home' ? 'homePageT' : 'homePage'} >
               <span className="title" style={this.state.nookod !== '' ? { opacity: '1' } : { opacity: '0' }}>{this.state.nookod}! 欢迎使用找对手场馆端</span>

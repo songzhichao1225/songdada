@@ -1,21 +1,23 @@
 .headerTor{
-    height: 80px;
-    background: #374D66;
+    background: #fff;
+    color: #333;
 }
 .sider{
-    width: 240px;
-    background: #374D66;
+    
+    background: #4164E1;
 }
 .logo{
-    width: 200px;
-    height: 75px;
+    width: 100%;
+    height: 50px;
+    overflow: hidden;
 }
 .ant-menu-dark{
-    background: #374D66;
+    background: #4164E1;
 }
 .ant-menu-vertical > .ant-menu-item, .ant-menu-vertical-left > .ant-menu-item, .ant-menu-vertical-right > .ant-menu-item, .ant-menu-inline > .ant-menu-item, .ant-menu-vertical > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-vertical-left > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-vertical-right > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title{
-    height: 55px;
-    line-height: 55px;
+    height: 20%;
+    margin-bottom:0;
+    
 }
 .ant-menu-item{
     margin-top: 0;
@@ -24,33 +26,43 @@
 .ant-menu-item span{
     font-size: 18px;
 }
+.ant-menu-item > a{
+    text-align: center;
+}
 .ant-menu.ant-menu-dark .ant-menu-item-selected{
-    border-left: 8px solid #F5A623;
-    background: #2B3643;
+    border-left: 8px solid #F6400C;
+    
+}
+.ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected{
+    background: #3554BB;
+}
+.ant-menu.ant-menu-dark{
+    background: #4164E1;
 }
 .Gname{
-  height: 124px;
+ 
   float: left
 }
 .Gname>img{
-    margin-top: 22px;
+    width: 33px;
+    height: 29px;
+    margin-top: 10px;
     float: left;
 }
 .Gname>span{
     display: block;
     font-size: 24px;
-    color: #FFFFFF;
-    line-height: 80px;
+    color: #000;
+    line-height: 50px;
     margin-left: 20px;
     float: left;
 }
 .time{
     float: right;
-    margin-right: 25px;
 }
 .time>span{
     font-size: 16px;
-    color: #FFFFFF;
+    color: #000;
     display: block;
     margin-top: 10px;
 
@@ -88,16 +100,18 @@
 }
 .time .lvyue{
     font-size: 16px;
-    color: #FFFFFF;
+    color: #000;
     margin-left: 25px;
     display: inline-block;
-    line-height: 64px;
+    line-height: 50px;
 }
 .ant-layout-header{
     line-height: 16px;
+    height: 50px;
+    padding: 0 2.5%;
 }
 .homePage{
-    height:700px;
+    height:100%;
     display: block;
 }
 .homePageT{
@@ -126,8 +140,8 @@ clear: left;
 }
 .homePage .divContent>div{
     width: 18%;
-    height: 140px;
-    margin-left: 2%;
+    height: 120px;
+    margin-left:2%;
     float: left;
     background: red;
     margin-top: 30px; 
@@ -135,39 +149,39 @@ clear: left;
 }
 .homePage .divContent>div:first-child{
     margin-left: 0;
-    background: #FCBB4F;
+    background: #3E66DF;
     border-radius: 6px;
 }
 
 .homePage .divContent>div:nth-child(2){
-    background: #D85D27;
+    background: #71CBFC;
     border-radius: 6px;
 }
 .homePage .divContent>div:nth-child(2) .right{
-    background: #C84E18;
+    background: #71CBFC;
 }
 .homePage .divContent>div:nth-child(3){
-    background: #5A9CE9;
+    background: #16E0E3;
     border-radius: 6px;
 }
 .homePage .divContent>div:nth-child(3) .right{
-    background: #428EE6;
+    background: #16E0E3;
 }
 .homePage .divContent>div:nth-child(4){
-    background: #5A9CE9;
+    background: #1FD4B5;
     border-radius: 6px;
 }
 .homePage .divContent>div:nth-child(4) .right{
-    background: #428EE6;
+    background: #1FD4B5;
 }
 
 .homePage .divContent>div:nth-child(5){
-    background: #D85D27;
+    background: #F6410C;
     border-radius: 6px;
    
 }
 .homePage .divContent>div:nth-child(5) .right{
-    background: #C84E18;
+    background: #F6410C;
 }
 .homePage .divContent .left{
     float: left;
@@ -188,9 +202,10 @@ clear: left;
 .homePage .divContent  .right{
     width: 60px;
     height: 100%;
-    background: #F4B243;
+    background: #3E66DF;
     border-radius: 0 6px 6px 0;
     float: right;
+    border-left: 1px dashed#e4e4e4;
 }
 .homePage .divContent  .right img{
     display: block;
@@ -210,4 +225,13 @@ clear: left;
 
 .ant-spin-dot-item{
     background: #FCBB4F;
+}
+.ant-notification-notice{
+    padding: 4px 2px;
+}
+.ant-notification-notice-btn{
+    margin-top: 0;
+}
+.ant-notification-notice-close{
+    top: 5px;
 }

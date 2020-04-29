@@ -4,7 +4,8 @@ import 'antd/dist/antd.css';
 import { Toast, InputItem, NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { _login, VenueSelectSiteName, _code } from '../../api';
-import { Radio, Icon } from 'antd';
+import { Radio } from 'antd';
+import Icon from '@ant-design/icons';
 const Item = Popover.Item;
 class corporatePh extends React.Component {
 

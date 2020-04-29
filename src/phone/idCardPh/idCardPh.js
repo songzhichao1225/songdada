@@ -3,7 +3,8 @@ import './idCardPh.css';
 
 import {Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Upload, Icon, Modal,Button} from 'antd';
+import { Upload, Modal,Button} from 'antd';
+import Icon from '@ant-design/icons';
 import { } from '../../api';
 
 function getBase64(img, callback) {

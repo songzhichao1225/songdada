@@ -1,11 +1,11 @@
 
 .register .header{
 	width: 100%;
-	height: 120px;
-	background: #374D66;
+	height: 80px;
+	background:rgba(67,101,230,1);
 }
 .register .heCenter{
-  width: 1200px;
+  width: 80%;
   margin: 0 auto;
   overflow: hidden;
 }
@@ -22,11 +22,11 @@
     display: block;
     float: left;
     margin-left: 14px;
-    margin-top: 50px;
+    line-height: 80px;
     font-family: PingFang-SC-Bold;
 }
 .register .content{
-	width: 1200px;
+	width: 80%;
 	margin: 20px auto;
 	-moz-box-shadow:0 2px 2px  2px #DDDDDD; 
 	-webkit-box-shadow:0 2px 2px  2px #DDDDDD;
@@ -34,15 +34,27 @@
 	overflow: hidden;
 }
 .register .nav{
-	width: 1000px;
+	width: 95%;
 	margin: 20px auto;
 	display: flex;
 }
 .register .nav div:first-child{
-  background-image: url(../../assets/oneline.png);
-  background-size:100%;
   color: #fff;
-  background-repeat: no-repeat; 
+}
+.register .nav div>span{
+	position: absolute;
+	display: block;
+	line-height: 43px;
+	text-align: center;
+	z-index: 99;
+	width: 100%;
+}
+.register .nav div>img{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
 }
 .register .nav div{
    flex: 1;
@@ -50,10 +62,7 @@
    color: #333;
    line-height: 43px;
    text-align:center;
-   margin-left:10px ;
-   background-image: url(../../assets/twoline.png);
-  background-size:100%;
-  background-repeat: no-repeat; 
+  position: relative;
 }
 .register .authentication{
 	width: 500px;
@@ -76,6 +85,7 @@
 	width: 425px;
 	height: 40px;
 	float: right;
+	font-size: 14px;
 }
 .register .son{
 	margin-top: 30px;
@@ -166,9 +176,7 @@
 }
 
 
-.register .ant-input{
-	height: 2.5rem;
-}
+
 
 .ant-btn-sm{
 	height: 30px;

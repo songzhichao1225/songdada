@@ -3,7 +3,8 @@ import './walletDetailsPh.css';
 
 import {Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { DatePicker, Pagination,Result,Icon } from 'antd';
+import { DatePicker, Pagination,Result } from 'antd';
+import {MoneyCollectOutlined} from '@ant-design/icons';
 import { getVenueMoneyList } from '../../api';
 import moment from 'moment';
 let start = moment().startOf('day').subtract(1, 'months')._d.toLocaleDateString().replace(/\//g, "-")
@@ -75,7 +76,7 @@ class walletDetailsPh extends React.Component {
           ))
         }
         <Pagination className={this.state.details.length===0?'hidden':'fenye'} size="small" defaultCurrent={1} onChange={this.current} total={this.state.other.count} />
-        <Result className={this.state.details.length===0?'':'hidden'} icon={<Icon type="money-collect" theme="twoTone"  twoToneColor="#F5A623" />} title="没有发布消息" />
+        <Result className={this.state.details.length===0?'':'hidden'} icon={<MoneyCollectOutlined />} title="没有发布消息" />
       </div>
     );
   }

@@ -5,7 +5,8 @@ import { getVenueMoneyList } from '../../api';
 
 import { Toast, DatePicker,List,PullToRefresh } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Pagination, Result, Icon, Spin } from 'antd';
+import { Pagination, Result, Spin } from 'antd';
+import {MoneyCollectOutlined,ArrowLeftOutlined} from '@ant-design/icons';
 import moment from 'moment';
 class monthlyIncomePh extends React.Component {
 
@@ -28,7 +29,7 @@ class monthlyIncomePh extends React.Component {
     } else if (res.data.data.data !== undefined) {
       this.setState({ moneyList: res.data.data.data, flag: false,refreshing:false })
     } else {
-      Toast.fail(res.data.msg, 1);
+      Toast.fail(res.data.msg, 1)
       this.setState({ flag: true,refreshing:false })
     }
   }
@@ -54,7 +55,7 @@ class monthlyIncomePh extends React.Component {
         let start = moment().startOf('day')._d
         let end = moment().endOf('day')._d
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
-        this.setState({ qiStart: new Date(start), qiEnd: new Date(end) })
+        this.setState({ qiStart: new Date(start), qiEnd: new Date(end)})
       }
     }
   }
@@ -70,6 +71,7 @@ class monthlyIncomePh extends React.Component {
     this.getVenueMoneyList({ start: this.state.start, end: date.toLocaleDateString().replace(/\//g, "-"), page: this.state.current })
   }
 
+  
 
   pageChang = (page, pageSize) => {
     this.setState({ current: page })
@@ -79,24 +81,24 @@ class monthlyIncomePh extends React.Component {
   detail = e => {
 
     this.props.history.push({ pathname: '/homePh/monthlyIncomePh/moneyDetailPh', query: e.currentTarget.dataset })
-  }
+  }          
 
   reture = () => {
-    this.props.history.goBack()
+    this.props.history.goBack() 
   }
 
   refResh=() => {
-    this.setState({ refreshing: true });
+    this.setState({ refreshing: true })
     setTimeout(() => {
       this.getVenueMoneyList({ start: this.state.qiStart, end: this.state.qiEnd, page: this.state.current })
-    }, 1000);
+    }, 1000)
   }
 
   render() {
     return (
       <div className="monthlyIncomePh">
         <div className="headerTitle">
-          <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />
+          <ArrowLeftOutlined onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }}/>
           {this.props.location.query !== undefined && this.props.location.query.income === 'month' ? '钱包明细' : '钱包明细'}
         </div>
         <div className="timer">
@@ -147,7 +149,7 @@ class monthlyIncomePh extends React.Component {
 
         <div className={this.state.flag === false ? 'content' : 'contentNone'}>
 
-
+ 
         <PullToRefresh
         damping={60}
         ref={el => this.ptr = el}
@@ -168,7 +170,7 @@ class monthlyIncomePh extends React.Component {
                   <img className="image" src={require("../../assets/right.png")} alt="下一步" />
                   <span className="right">+{item.money}</span>
                 </div>
-              ))
+              )) 
             }
 
             <Pagination className="fenye" current={parseInt(this.state.current)} size="small" pageSize={10} total={this.state.getVenueMoneyList.count} onChange={this.pageChang} />
@@ -177,12 +179,12 @@ class monthlyIncomePh extends React.Component {
       </PullToRefresh>
 
         </div>
-        <Result className={this.state.spin === false && this.state.flag === true ? '' : 'contentNone'} icon={<Icon type="money-collect" style={{ fontSize: '2rem' }} theme="twoTone" twoToneColor="#F5A623" />} title="您还没有收入" />
+        <Result className={this.state.spin === false && this.state.flag === true ? '' : 'contentNone'} icon={ <MoneyCollectOutlined style={{ fontSize: '2rem',color:'#F5A623' }}/>} title="您还没有收入" />
         <Spin spinning={this.state.spin} style={{ width: '100%', marginTop: '45%' }} />
 
       </div>
-    );
+    )
   }
 }
 
-export default monthlyIncomePh;
+export default monthlyIncomePh

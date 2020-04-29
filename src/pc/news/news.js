@@ -3,7 +3,6 @@ import './news.css';
 import 'antd/dist/antd.css';
 import { getVenueNewsList, getVenueNewsFirst, VenueNewsSaveIsRead, delVenueNews, VenueNewsSendMessage, gerVenueName,VenueNewsOneKeyRead } from '../../api';
 import { Checkbox, Pagination, Drawer, message, Popconfirm, Modal, Input } from 'antd';
-
 const { TextArea } = Input
 
 class news extends React.Component {

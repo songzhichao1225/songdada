@@ -3,7 +3,8 @@ import './stadiumInformationPh.css';
 
 import { Toast, Picker, List, InputItem, NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Input, Upload, Checkbox, Icon, Modal, Button } from 'antd';
+import { Input, Upload, Checkbox, Modal, Button } from 'antd';
+import Icon from '@ant-design/icons';
 import { PerfectingVenueInformation, getVenueInformation, VenueInformationSave } from '../../api';
 let arr = require('./address.json');
 const { TextArea } = Input;
@@ -428,7 +429,7 @@ class stadiumInformationPh extends React.Component {
       <div className="stadiumInformationPh">
         <NavBar
           mode="dark"
-          icon={<Icon type="arrow-left" onClick={this.reture} style={{position:'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px'}}  />}
+          icon={<Icon type="arrow-left" onClick={this.reture} style={{position:'absolute', left:'0',top:'0',width:'48px',height:'48px',lineHeight:'48px'}}  />}
           rightContent={<Popover mask
             overlayClassName="fortest"
             overlayStyle={{ color: 'currentColor' }}
@@ -584,13 +585,13 @@ class stadiumInformationPh extends React.Component {
 
 
           <div className="input" style={this.state.onChangeRun.indexOf('3') !== -1 ? { display: 'block' } : { display: 'none' }}>
-            <span>台球卓类型</span>
+            <span>台球桌类型</span>
             <Checkbox.Group options={plainOptionsTwo} value={this.state.onChangeRunTai} onChange={this.onChangeRunTai} /><br /><span className="kong"></span>
           </div>
 
 
           <div className="input" style={this.state.onChangeRun.indexOf('5') !== -1 ? { display: 'block' } : { display: 'none' }}>
-            <span>足球类型</span>
+            <span>足球场地类型</span>
             <Checkbox.Group options={plainOptionsThree} value={this.state.onChangeRunZu} onChange={this.onChangeRunZu} /><br /><span className="kong"></span>
           </div>
 

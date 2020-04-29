@@ -5,7 +5,8 @@ import ReactDOM from 'react-dom';
 import { Toast, PullToRefresh } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { getCommentList, getOverallScore, VenueCommentReply } from '../../api';
-import { Pagination, Result, Icon, Modal, Input } from 'antd';
+import { Pagination, Result, Modal, Input } from 'antd';
+import {DatabaseOutlined,ArrowLeftOutlined} from '@ant-design/icons';
 
 const { TextArea } = Input
 
@@ -118,7 +119,7 @@ class commentPh extends React.Component {
     return (
       <div className="commentPh">
         <div className="headerTitle">
-          <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />
+          <ArrowLeftOutlined onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />
           场馆评分
           </div>
         <div className="essence">
@@ -198,7 +199,7 @@ class commentPh extends React.Component {
 
 
             <Pagination className="fenye" size='small' style={this.state.getCommentList.length > 0 ? {} : { display: 'none' }} current={parseInt(this.state.current)} pageSize={10} total={this.state.getCommentList.length} onChange={this.pageChang} />
-            <Result className={this.state.getCommentList.length === 0 ? '' : 'hidden'} icon={<Icon type="database" style={{ fontSize: '2rem' }} theme="twoTone" twoToneColor="#F5A623" />} title="没有场馆评论" />
+            <Result className={this.state.getCommentList.length === 0 ? '' : 'hidden'} icon={<DatabaseOutlined style={{ fontSize: '2rem',color:'#F5A623' }}/>} title="没有场馆评论" />
           </div>
 
         </PullToRefresh>

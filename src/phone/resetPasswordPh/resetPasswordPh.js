@@ -3,7 +3,8 @@ import './resetPasswordPh.css';
 
 import {Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Input, Icon } from 'antd';
+import { Input } from 'antd';
+import Icon from '@ant-design/icons';
 import { _code,VenueChangePassword } from '../../api';
 
 
@@ -112,10 +113,10 @@ class resetPasswordPh extends React.Component {
         </div>
 
         <div className="listSon">
-          <Input placeholder="请输入新密码" onChange={this.pass} />
+          <Input.Password placeholder="请输入新密码" onChange={this.pass} />
         </div>
         <div className="listSon">
-          <Input placeholder="请确认密码" onChange={this.passTwo} />
+          <Input.Password placeholder="请确认密码" onChange={this.passTwo} />
         </div>
         <div className='restSubmit' onClick={this.submit}>确认</div>
 

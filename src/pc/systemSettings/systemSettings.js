@@ -2,7 +2,8 @@ import React from 'react';
 import './systemSettings.css';
 import 'antd/dist/antd.css';
 import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport, VenueTemporarilyClosed, VenueIsClose, getVenueIsClose, VenueNewsSendMessage, getVenueHelpCenter } from '../../api';
-import { Input, Icon, message, Checkbox, Drawer, Pagination,Popconfirm } from 'antd';
+import { Input, message, Checkbox, Drawer, Pagination,Popconfirm } from 'antd';
+import Icon from '@ant-design/icons';
 import 'moment/locale/zh-cn';
 
 const { TextArea } = Input
@@ -374,7 +375,7 @@ class systemSettings extends React.Component {
 
   render() {
     return (
-      <div className="systemSettings" style={{ height: parseInt(sessionStorage.getItem('min-height')) }}>
+      <div className="systemSettings">
         <div className="title"><span style={{ cursor: 'pointer' }} onClick={this.resetNot}>系统设置</span> <span className={this.state.flagListOne === false ? 'titleSpan' : 'listNone'}>{this.state.text}</span></div>
         <div className={this.state.flagListOne === true ? 'list' : 'listNone'}>
           <ul className="ul">

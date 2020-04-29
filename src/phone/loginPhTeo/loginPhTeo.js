@@ -5,7 +5,7 @@ import 'antd/dist/antd.css';
 import { Toast, InputItem,NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { _login } from '../../api';
-import { Icon } from 'antd';
+import Icon from '@ant-design/icons';
 
 const Item = Popover.Item;
 class loginPhTeo extends React.Component {
@@ -16,7 +16,7 @@ class loginPhTeo extends React.Component {
   };
 
   componentDidMount() {
- 
+   
     
                 
   }
@@ -46,6 +46,8 @@ class loginPhTeo extends React.Component {
       localStorage.setItem('issite', res.data.data.issite);
       localStorage.setItem('isqult', res.data.data.isqult);
       localStorage.setItem('ismethod', res.data.data.ismethod);
+      localStorage.setItem('phone', res.data.data.phone);
+      
       setTimeout(() => {
         if (res.data.data.venue_token) {
           if (res.data.data.issite === 0) {

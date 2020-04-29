@@ -3,7 +3,8 @@ import './sittingPh.css';
 
 import {Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import {Switch,Icon } from 'antd';
+import {Switch } from 'antd';
+import Icon from '@ant-design/icons';
 import {VenueIsClose,getVenueIsClose } from '../../api';
 
 

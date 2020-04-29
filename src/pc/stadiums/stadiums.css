@@ -1,4 +1,9 @@
 
+
+.stadiums{
+	height: 100%;
+	overflow-y: auto;
+}
 .stadiums .navTap{
     height: 46px;
     margin-top: 8px;

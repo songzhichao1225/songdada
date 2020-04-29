@@ -2,14 +2,15 @@ import React from 'react';
 import './comment.css';
 import 'antd/dist/antd.css';
 import { getCommentList, VenueCommentReply, getOverallScore } from '../../api';
-import { Spin, Icon, Input, message, Result,Pagination } from 'antd';
+import { Spin, Input, message, Result,Pagination } from 'antd';
+import {CalendarOutlined,SyncOutlined} from '@ant-design/icons';
 const { TextArea } = Input;
 
 
 
 
 
-const antIcon = <Icon type="sync" style={{ fontSize: 24, color: 'black' }} spin />;
+const antIcon = <SyncOutlined style={{ fontSize: 24, color: 'black' }} spin />;
 class comment extends React.Component {
   state = {
     loading: false,
@@ -134,7 +135,7 @@ class comment extends React.Component {
         <div className="content">
           <div className="contentTitle">
             <span className="new">最新评论</span>
-            <div className="sping"> <Icon type="sync" className={this.state.hidden === true ? 'hidden' : 'block'} onClick={this.sping} style={{ fontSize: 24, marginTop: 15 }} /><Spin indicator={antIcon} spinning={this.state.loading} /></div>
+            <div className="sping"><SyncOutlined  className={this.state.hidden === true ? 'hidden' : 'block'} onClick={this.sping} style={{ fontSize: 24, marginTop: 15 }}/><Spin indicator={antIcon} spinning={this.state.loading} /></div>
           </div>
           <Spin spinning={this.state.Oneloading} style={{ minHeight: 600 }} size="large">
             {
@@ -186,7 +187,7 @@ class comment extends React.Component {
              
              <Pagination className={this.state.commentList.length === 0 ? 'hidden' : 'fenye'} defaultCurrent={1} onChange={this.current} total={this.state.other} />
 
-            <Result className={this.state.commentList.length === 0 ? 'block' : 'hidden'} icon={<Icon type="calendar" theme="twoTone" twoToneColor="#F5A623" />} title="还没有人评价！" />
+            <Result className={this.state.commentList.length === 0 ? 'block' : 'hidden'} icon={<CalendarOutlined style={{color:'#F5A623'}}/>} title="还没有人评价！" />
           </Spin>
 
         </div>

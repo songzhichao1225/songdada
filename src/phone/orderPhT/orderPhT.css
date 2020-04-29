@@ -142,7 +142,7 @@
 }
 .orderPh .bookingKanban .modTitle>span{
     display: block;
-    float: left;
+    float: right;
     margin-left: 0.3rem;
     font-size:12px;
 }
@@ -189,7 +189,7 @@
 .orderPh .bookingKanban .locaList>div{
     float: left;
     margin-top: 0.3rem;
-    margin-left: 0.3rem;
+    margin-left: 0.8rem;
     overflow: hidden;
     color:#333;
     

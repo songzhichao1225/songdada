@@ -1,42 +1,15 @@
 import React from 'react';
 import './stadiums.css';
 import 'antd/dist/antd.css';
-import { getVenueInformation, VenueInformationSave, getVenueIssecondaudit, getVenueQualificationInformation, getVenueOpenBank, VenueQualificationInformationSave, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
-import { Modal, Upload, Input, Icon, message, Checkbox, Button, Popconfirm, Radio, Select, Tooltip,Spin } from 'antd';
+import { getVenueInformation, VenueInformationSave, getVenueIssecondaudit, getVenueQualificationInformation, getVenueOpenBank,getVenueSportList, VenueQualificationInformationSave, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
+import { Modal, Upload, Input, message, Checkbox, Button, Popconfirm, Radio, Select, Tooltip,Spin } from 'antd';
+import Icon from '@ant-design/icons';
 
 const { Option } = Select;
 const { TextArea } = Input;
-const plainOptions = [
-  { label: '羽毛球', value: '1' },
-  { label: '乒乓球', value: '2' },
-  { label: '台球', value: '3' },
-  { label: '篮球', value: '4' },
-  { label: '足球', value: '5' },
-  { label: '排球', value: '6' },
-  { label: '网球', value: '7' },
-  { label: '高尔夫球', value: '8' }
-];
 
-const plainOptionsTwo = [
-  { label: '中式黑八', value: '1' },
-  { label: '美式九球', value: '2' },
-  { label: '斯诺克', value: '3' }
-]
 
-const plainOptionsThree = [
-  { label: '11人制', value: '13' },
-  { label: '8人制', value: '14' },
-  { label: '7人制', value: '15' },
-  { label: '5人制', value: '16' }
-]
 
-const plainOptionsFour = [
-  { label: '9洞', value: '25' },
-  { label: '18洞', value: '26' },
-  { label: '27洞', value: '27' },
-  { label: '36洞', value: '28' },
-  { label: '练习', value: '19' },
-]
 
 const options = [{ label: 'WiFi', value: '1' }, { label: '停车场', value: '2' }, { label: '淋浴', value: '3' }]
 
@@ -117,10 +90,11 @@ class stadiums extends React.Component {
     backList: [],//获取的银行
     upData: true,
     CorporateName: '',
-    onChangeCheckTwo:[],
-    onChangeCheckThree:[],
-    onChangeCheckFour:[],
-    spinning:true
+    spinning:true,
+    province:'',
+    city:'',
+    area:'',
+    plainOptions:[],
   };
 
   async getVenueInformation(data) {
@@ -133,24 +107,35 @@ class stadiums extends React.Component {
       }
 
       if (this.props.location.query !== undefined && this.props.location.query.name !== 'sunny') {
+        let sportId=res.data.data.sport.split(',')
+        let lo=[]
+        for(let i in sportId){
+           lo.push(parseInt(sportId[i]))
+        }
         this.setState({
           spinning:false,
           adddress: this.props.location.query.title,
           handleAddress: this.props.location.query.adddress,
           lat: this.props.location.query.lat,
           lng: this.props.location.query.lng,
+          province:this.props.location.query.province,
+          city:this.props.location.query.city,
+          area:this.props.location.query.district,
           informationList: res.data.data, name: res.data.data.name,
           contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, imageUrl: res.data.data.firstURL,
-          onChangeCheckTwo:res.data.data.sporttype.split('|')[0].split(','),onChangeCheckThree:res.data.data.sporttype.split('|')[1].split(','),onChangeCheckFour:res.data.data.sporttype.split('|')[2].split(','),
-          fileList: arrImg, sport: res.data.data.sport.split(','), facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
+          fileList: arrImg, sport: lo, facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
         })
       } else if (this.props.location.query === undefined || this.props.location.query.name === 'sunny') {
+        let sportId=res.data.data.sport.split(',')
+        let lo=[]
+        for(let i in sportId){
+           lo.push(parseInt(sportId[i]))
+        }
         this.setState({
           spinning:false,
           informationList: res.data.data, name: res.data.data.name, handleAddress: res.data.data.address,
-          onChangeCheckTwo:res.data.data.sporttype.split('|')[0].split(','),onChangeCheckThree:res.data.data.sporttype.split('|')[1].split(','),onChangeCheckFour:res.data.data.sporttype.split('|')[2].split(','),
           contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, adddress: res.data.data.position, imageUrl: res.data.data.firstURL,
-          fileList: arrImg, sport: res.data.data.sport.split(','), facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
+          fileList: arrImg, sport:lo, facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
         })
       }
     } else if (res.data.code === 4001) {
@@ -185,12 +170,19 @@ class stadiums extends React.Component {
       this.setState({ backCity: res.data.data, flagThree: false })
     }
   }
+  async getVenueSportList(data) {
+    const res = await getVenueSportList(data)
+    this.setState({
+      plainOptions:res.data.data
+    })
+  }
   componentDidMount() {
     this.getVenueInformation()
     this.getVenueIssecondaudit()
     this.getVenueQualificationInformation()
     this.getVenueOpenBankProvince()
     this.getVenueOpenBank()
+    this.getVenueSportList()
   }
 
   async getVenueIssecondaudit(data) {
@@ -267,62 +259,9 @@ class stadiums extends React.Component {
 
   onChangeCheck = e => {
     this.setState({ sport: e })
-    if(e.indexOf('3')===-1){
-         this.setState({onChangeCheckTwo:''})
-    }else if(e.indexOf('5')===-1){
-      this.setState({onChangeCheckThree:''})
-    }else if(e.indexOf('8')===-1){
-      this.setState({onChangeCheckFour:''})
-    }
   }
 
-  onChangeCheckTwo = e => {
-    this.setState({ onChangeCheckTwo: e })
-    if(e.length===0){
-      if(this.state.sport.indexOf('5')===-1&&this.state.sport.indexOf('8')===-1){
-        this.setState({sport:['1','2','4','6','7']})
-      }else if(this.state.sport.indexOf('5')===-1){
-        this.setState({sport:['1','2','8','4','6','7']})
-      }else if(this.state.sport.indexOf('8')===-1){
-        this.setState({sport:['1','2','5','4','6','7']})
-      }else{
-        this.setState({sport:['1','2','4','5','6','7','8']})
-      }
-    }
-    sessionStorage.setItem('onChangeCheckTwo', e)
-  }
-  onChangeCheckThree = e => {
-    this.setState({ onChangeCheckThree: e })
-    if(e.length===0){
-      if(this.state.sport.indexOf('3')===-1&&this.state.sport.indexOf('8')===-1){
-        this.setState({sport:['1','2','4','6','7']})
-      }else if(this.state.sport.indexOf('3')===-1){
-        this.setState({sport:['1','2','4','6','7','8']})
-      }else if(this.state.sport.indexOf('8')===-1){
-        this.setState({sport:['1','2','3','4','6','7']})
-      }else{
-       
-        this.setState({sport:['1','2','4','3','6','7','8']})
-      }
-    }
-    sessionStorage.setItem('onChangeCheckThree', e)
-  }
-  onChangeCheckFour = e => {
-    this.setState({ onChangeCheckFour: e })
-    if(e.length===0){
-      if(this.state.sport.indexOf('3')===-1&&this.state.sport.indexOf('5')===-1){
-        this.setState({sport:['1','2','4','6','7']})
-      }else if(this.state.sport.indexOf('5')===-1){
-        this.setState({sport:['1','2','3','4','6','7']})
-      }else if(this.state.sport.indexOf('3')===-1){
-        this.setState({sport:['1','2','4','5','6','7']})
-      }else {
-        this.setState({sport:['1','2','4','3','6','7','5']})
-      }
-     
-    }
-    sessionStorage.setItem('onChangeCheckFour', e)
-  }
+
   onChangeSite = e => {
     this.setState({ facilities: e })
   }
@@ -352,7 +291,7 @@ class stadiums extends React.Component {
   }
 
   confirm = () => {
-    let { informationList, name, handleAddress, contacts, contactNumber,onChangeCheckTwo,onChangeCheckThree,onChangeCheckFour, fileList, adddress, imageUrl, sport, facilities, siteInfo, comment } = this.state
+    let { informationList, name, handleAddress, contacts, contactNumber, fileList, adddress, imageUrl, sport, facilities, siteInfo, comment } = this.state
     let filesURLarr = []
     for (let i in fileList) {
       if (fileList[i].response !== undefined) {
@@ -361,19 +300,16 @@ class stadiums extends React.Component {
         filesURLarr.push(fileList[i].url)
       }
     }
-    if(sport.indexOf('3')!==-1&&onChangeCheckTwo===''){
-     message.warning('至少选择一项台球类型')
-    }else if(sport.indexOf('5')!==-1&&onChangeCheckThree===''){
-      message.warning('至少选择一项足球类型')
-    }else if(sport.indexOf('8')!==-1&&onChangeCheckFour===''){
-      message.warning('至少选择一项高尔夫类型')
-    }else if (filesURLarr.length < 2) {
+     if (filesURLarr.length < 2) {
       message.error('至少上传两张室内照')
     } else {
       let data = {
         venuename: name,
-        lat: informationList.lat,
-        lng: informationList.lng,
+        lat: this.state.lat!==undefined?this.state.lat:informationList.lat,
+        lng: this.state.lng!==undefined?this.state.lng:informationList.lng,
+        province:this.state.province!==undefined?this.state.province:informationList.province,
+        city:this.state.city!==undefined?this.state.city:informationList.city,
+        area:this.state.area!==undefined?this.state.area:informationList.area,
         address: handleAddress,
         linkMan: contacts,
         telephone: contactNumber,
@@ -384,7 +320,6 @@ class stadiums extends React.Component {
         siteInfo: siteInfo,
         position: adddress,
         comment: comment,
-        sporttype:onChangeCheckTwo+'|'+onChangeCheckThree+'|'+onChangeCheckFour,
         type: 2
       }
       this.VenueInformationSave(data)
@@ -475,9 +410,11 @@ class stadiums extends React.Component {
         message.error('请更换身份证反面照')
       } else {
         data.legalBaseURL = imgHood
+        
         this.VenueQualificationInformationSave(data)
       }
     } else {
+     
       this.VenueQualificationInformationSave(data)
     }
   }
@@ -606,30 +543,10 @@ class stadiums extends React.Component {
             </div>
           </div>
 
-          <div className="name">
+          <div className="name" style={{overflow:'hidden'}}>
             <span className="boTitle">运动项目:</span><span className="kong"></span>
-            <Checkbox.Group options={plainOptions} value={this.state.sport}  onChange={this.onChangeCheck} /><br /><span className="kong"></span>
+            <Checkbox.Group style={{float:'left',width:'80%',marginLeft:'26.8px'}} options={this.state.plainOptions} value={this.state.sport}  onChange={this.onChangeCheck} /><br /><span className="kong"></span>
           </div>
-
-          <div className="name" style={this.state.sport.indexOf('3') !== -1 ? { display: 'block' } : { display: 'none' }}>
-          <span className="boTitle">台球场地类型:</span><span className="kong"></span>
-            <Checkbox.Group options={plainOptionsTwo} onChange={this.onChangeCheckTwo} value={this.state.onChangeCheckTwo} /><br /><span className="kong"></span>
-          </div>
-
-         
-
-          <div className="name" style={this.state.sport.indexOf('5') !== -1 ? { display: 'block' } : { display: 'none' }}>
-          <span className="boTitle">足球场地类型:</span><span className="kong"></span>
-            <Checkbox.Group options={plainOptionsThree} onChange={this.onChangeCheckThree} value={this.state.onChangeCheckThree} /><br /><span className="kong"></span>
-          </div>
-
-          <div className="name" style={this.state.sport.indexOf('8') !== -1 ? { display: 'block' } : { display: 'none' }}>
-          <span className="boTitle">高尔夫场地类型:</span><span className="kong"></span>
-          
-            <Checkbox.Group options={plainOptionsFour} onChange={this.onChangeCheckFour} value={this.state.onChangeCheckFour} /><br /><span className="kong"></span>
-          </div>
-
-
 
           <div className="name">
             <span className="boTitle">场地设施:</span><span className="kong"></span>
@@ -640,10 +557,10 @@ class stadiums extends React.Component {
             <span className="boTitle">场地介绍:</span><span className="kong"></span>
             <TextArea className="textarea" maxLength={200} value={this.state.siteInfo} placeholder="请输入场地介绍，如场地规模、特色等。" onChange={this.onChangeText} rows={3} />
           </div>
-          <div className="name">
+          {/* <div className="name">
             <span className="boTitle">其他:</span><span className="kong"></span>
             <TextArea className="textarea" maxLength={200} value={this.state.comment} placeholder="请输入场地其他介绍，如比赛、特色等。" onChange={this.onChangeTextTwo} rows={2} />
-          </div>
+          </div> */}
 
 
 

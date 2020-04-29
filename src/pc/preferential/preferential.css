@@ -1,199 +1,387 @@
-.siteStting .header{
-   height: 46px;
-   background: #fff;
-   margin-top: 8px;
+
+.orderList{
+    height: 100%;
+}
+.orderList .navTab{
+    height: 46px;
+    background: #fff;
+    padding-left: 25px;
+    overflow: hidden;
+
+}
+.orderList .navTab .colorNot{
+    background: #f5f5f5;
+    color: #000;
+    font-size: 14px;
+    border-color: transparent;
+    margin-top: 7px;
+    
 }
 
-.siteStting .header>span{
-    font-size: 16px;
-    color: #4A4A4A;
-    padding-left: 25px;
-    line-height: 46px;
-    display: block;
-    float: left;
-}
-.siteStting .header .selectN{
-    margin-left: 12px;
-    float: left;
-    margin-top: 10px;
-}
-.siteStting .header .addList{
-    width: 50px;
-    height: 22px;
+.ant-btn:hover, .ant-btn:focus{
+    color: #fff;
     background: #F5A623;
-    border-radius: 2px; 
-    font-size: 12px;
-    color: #FFFFFF;
-    line-height: 22px;
-    float: right;
-    text-align: center;
-    margin-right: 40px;
-    margin-top: 12px;
-    cursor: pointer;
+    border-color: transparent;
 }
-.siteStting .siteList{
-    background: #fff;
-    padding-bottom: 30px;
-    display: block;
+.orderList .navTab Button:last-child{
+    margin-left: 27px;
 }
-.siteStting .siteList .rowConten{
+.colorGo{
+    color: #fff;
+    background: #F5A623;
+}
+.ant-col{
+    height: 50px;
+    line-height: 50px;
+  text-align: center;
+}
+.orderList .rowConten{
+    height: 50px;
+    margin-top: 10px;
     border-bottom: 1px solid #E1E0E1;
 }
-.siteStting .siteList .dataList .rowList{
-    border-bottom:1px  solid #E1E0E1;
+.orderList .ant-select-selection{
+    background: transparent;
+    border:none;
+    text-align: center;
+    
 }
-.siteStting .siteList .dataList .fenye{
+.orderList .ant-select-open{
+    text-align: center;
+}
+.orderList .ant-select-selection-selected-value{
+    text-align: center;
+    width: 100%;
+}
+.orderList .ant-pagination{
+    padding: 40px 0;
     overflow: hidden;
     display: flex;
     justify-content: center;
-    margin-top: 60px;
+    background: #fff;
 }
-
-.ant-modal-header{
-    padding:8px 16px;
-    background: #F5A623;
-   
+.orderList .ant-row{
+    background: #fff;
+    border-bottom:1px solid #f5f5f5;
 }
-.ant-modal-title{
-    font-size: 15px;
-    color: #fff;
-}
-
-.ant-modal-close{
-    top:-10px;
-    right:10px;
-}
-.ant-modal-close-x{
-    width: 18px;
-    height: 18px;
-    top:-20px;
-}
-.ant-modal-footer{
-   display: none;
-}
-
-.ant-modal-content{
-    overflow: hidden;
-    padding-bottom: 30px;
-}
-.modelList{
-    overflow: hidden;
-    position: relative;
-    height: 26px;
-    margin-top: 15px;
-}
-.modelList>span{
-  display: block;
-  float: left;
-  margin-left: 19px;
-  line-height: 26px;
-}
-.modelList>span:nth-child(2){
-    color: #9B9B9B;
-}
-.ant-select-selection--single{
-    height: 26px;
-}
-.ant-select-selection__rendered{
-    line-height: 26px;
-}
-.modelList .selectModel{
-   float: right;
-   margin-right: 150px;
-   height: 26px;
-
-}
-.modelList .startTime{
-    width: 249px;
-    height: 26px;
-    float: right;
-    margin-right: 150px;
-}
-.ant-time-picker-input{
-    height: 26px;
-}
-.ant-input-number-input-wrap{
-    height: 26px;
-}
-.ant-input-number{
-    line-height: 26px;
-}
-.ant-input-number-input{
-    height: 26px;
-}
-.modelList .jian{
-    width: 26px;
-    height: 26px;
-    background: #F5F5F5;
-    display: inline-block;
+.orderList .mast{
     text-align: center;
-    line-height: 26px;
+    margin-top: 50px;
+}
+.orderList .listName{
+    display: block;
+}
+.orderList .listNameT{
+    display: none;
+}
+.orderList .circumstance{
+    display: block;
+    position: relative;
+    clear: both;
+}
+.orderList .circumstanceT{
+    display: none;
+}
+.orderList .circumstance .prompt{
+    position: absolute;
+    right: 20px;
+    top: -40px;
+    z-index: 20;
+}
+.orderList .circumstance .prompt>div{
+   float: left;
+   margin-left: 20px;
+   height: 32px;
+}
+.orderList .circumstance .prompt>div>span:first-child{
+   display: block;
+   width: 16px;
+   height: 16px;
+   float: left;
+   background: #56A5FF;
+   border-radius: 2px;
+ }
+ .orderList .circumstance .prompt>div>span:last-child{
+    display: block;
+    float: left;
+    margin-left: 15px;
+    line-height: 16px;
+    font-size: 16px;
+  }
+  .orderList .circumstance .prompt>div:nth-child(2)>span:first-child{
+    display: block;
+    width: 16px;
+    height: 16px;
+    float: left;
+    background: #E9E9E9;
+    border-radius: 2px;
+  }
+
+  .orderList .circumstance .prompt>div:nth-child(3)>span:first-child{
+    display: block;
+    width: 16px;
+    height: 16px;
+    float: left;
+    background: red;
+    border-radius: 2px;
+  }
+
+  .orderList .circumstance .prompt>div:nth-child(4)>span:first-child{
+    display: block;
+    width: 16px;
+    height: 16px;
+    float: left;
+    background: #FFC567;
+    border-radius: 2px;
+  }
+  .orderList .circumstance .activityNav{
+      list-style: none;
+      width: 100%;
+      height: 45px;
+      background: #fff;
+      margin-left: 0;
+      padding-left: 25px;
+      margin-bottom: 0;
+  }
+  .orderList .circumstance .activityNav>li{
+    float: left;
+    font-size: 14px;
+    color: #4A4A4A;
+    margin-left: 35px;
+    line-height: 45px;
     cursor: pointer;
 }
-.modelList .jia{
-    width: 26px;
-    height: 26px;
-    background: #F5F5F5;
-    display: inline-block;
-    text-align: center;
-    line-height: 26px;
-    cursor: pointer;
+.orderList .circumstance .activityNav>li:first-child{
+    margin-left: 0;
 }
-
-.modelListT{
-    overflow: hidden;
-    position: relative;
-    height: 55px;
-    margin-top: 15px;
+.orderList .circumstance .rightNav{
+    position: absolute;
+    list-style: none;
+    right: 30px;
+    top: 12px;
 }
-.modelListT>span{
-  display: block;
-  float: left;
-  margin-left: 19px;
-  line-height: 26px;
-}
-.modelListT .textArea{
-    width: 350px;
-    height: 55px;
-    float: right;
-    margin-right: 50px;
-}
- .submit{
-    width: 50px;
+.orderList .circumstance .rightNav>li{
+    float: left;
+    width: 49px;
     height: 22px;
+    border: 1px solid #E1E0E1;
     text-align: center;
     line-height: 22px;
-    background: #F5A623;
-    border-radius: 2px;
-    color: #fff;
-    float: right;
-    margin-top: 40px;
-    margin-right: 50px;
+    font-size: 12px;
+    color: #9B9B9B;
     cursor: pointer;
 }
-.fontColor{
-    font-size: 12px;
-color: #9B9B9B;
+.orderList .circumstance .rightNav .dateSelect{
+    width: 150px;
+    height: 22px;
+    border:none;
 }
-
-
-.mookodg{
-    display: block;
-    font-size: 30px;
-    padding: 20px 0;
-    text-align: center;
+.orderList .circumstance .rightNav .dateSelect .ant-calendar-picker-input{
+  height: 22px;
 }
-.ant-calendar-picker>span{
-    height: 26px;
-    line-height: 26px;
-}
-.mookodgGod{
-    display: none
+.orderList .borderLi{
+    border-bottom: 2px solid #000;
 }
 .xiange{
     height: 8px;
     background: #F5F5F5
 }
-.hidden{
-    display: none
+.fenye{
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
 }
+.listDiv{
+    line-height: 44px;
+}
+ .ant-table-tbody > tr > td{
+     width: 26px;
+     height: 26px;
+     padding: 13px 29px;
+ }
+ .orderList .blue{
+     width: 26px;
+     height: 26px;
+     display: block;
+     background: #56A5FF;
+     cursor: pointer;
+ }
+ 
+ .orderList .white{
+    width: 26px;
+    height: 26px;
+    display: block;
+    background: #E9E9E9;
+    cursor: pointer;
+}
+.orderList .yellow{
+    width: 26px;
+    height: 26px;
+    display: block;
+    background: #FFC567;
+    cursor: pointer;
+}
+.orderList .red{
+    width: 26px;
+    height: 26px;
+    display: block;
+    background: red;
+    cursor: pointer;
+}
+.orderList .hidden{
+    display: none;
+}
+.orderList .sping{
+    float: right;
+    margin-right: 40px;
+    cursor: pointer;
+}
+.orderList  .ant-spin{
+    margin-top: 15px;
+}
+.orderList .block{
+    display: block;
+}
+.orderList  .img{
+    display: block;
+    width: 30px;
+    height: 20px;
+    margin:15px auto 0;
+}
+.sending{
+    float: right;
+    margin-top: 8px;
+}
+.sending>div{
+    width: 82px;
+    height: 36px;
+    background: #D8D8D8;
+    border-radius: 2px;
+    text-align: center;
+    line-height: 36px;
+    float: left;
+    color: #fff;
+    cursor: pointer;
+}
+.sending>div:last-child{
+    margin-left: 16px;
+    background: #F5A623; 
+}
+
+.orderList .lookList{
+    overflow-y: scroll;
+    position: relative;
+ }
+
+
+.orderList .lookList .topFixd{
+    position: absolute;
+    z-index: 999;
+    background: #fff;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #ccc;
+}
+.orderList .lookList .headerSon .topFixd>span{
+    width:4.13rem;
+    height:3.88rem; 
+    display: block;
+    margin-left: 0.12rem;
+    display: inline-block;
+    text-align: center;
+    line-height: 1.88rem;
+}
+.orderList .lookList .sonList{
+    clear: both;
+    position: relative;
+}
+.orderList .lookList .sonList>span{
+    width:4.13rem;
+    height:1.88rem; 
+    display: block;
+    margin-left: 0.12rem;
+    float:left;
+    text-align: center;
+    line-height: 1.88rem;
+    cursor: pointer;
+    position: relative;
+}
+.orderList .lookList .sonList>span:first-child{
+    background: #fff;
+    position: absolute;
+    transition: 0.1s;
+    line-height: 1.5rem;
+    top: -0.6rem;
+    margin-top: 0;
+    margin-left: 0;
+    height: 2rem;
+    padding-bottom: 3rem;
+    z-index: 99;
+}
+ .informDrawer{
+     margin-top: 15px;
+     font-size: 20px;
+ }
+ .shifang:hover{
+  background: #ccc;
+  cursor: pointer;
+ }
+ .dateSelect{
+     height:46px;
+ }
+ .changNum{
+     width: 100px;
+     height: 20px;
+     margin-top: 20px;
+ }
+ .changName>.ant-select-selection--single{
+     height: 30px;
+ }
+ .plokjh{
+    position: absolute;
+    width: 90%;
+    height: 23px;
+    left: 5%;
+    top: 4px;
+    background: #fff;
+    line-height: 23px;
+    cursor: pointer;
+ }
+.antd-popover-open{
+    width: 120px;
+}
+.inputAppList{
+    height: 26px;
+    padding: 0; 
+    text-align:center;
+    font-size: 12px;
+}
+.lookFir .ant-select-selection__rendered{
+    margin:0;
+}
+.lookFir .ant-select-no-arrow .ant-select-selection__rendered{
+    margin-right: 0;
+}
+.lookFir .ant-select-selection--single .ant-select-selection__rendered{
+    margin-right: 0;
+} 
+
+
+
+
+.lookFir .ant-select-selection__placeholder, .ant-select-search__field__placeholder{
+    right: 0;
+    text-align: center;
+}
+.inputAppList .ant-input{
+  height: 26px;
+  padding: 0;
+}
+.orderList .ant-input-affix-wrapper .ant-input:not(:last-child){
+    padding-right: 0;
+}
+.orderList .ant-input-affix-wrapper .ant-input-suffix{
+    top: 8px;
+    right: 1px;
+}
+

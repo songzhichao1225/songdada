@@ -3,7 +3,8 @@ import './registerPh.css';
 
 import { Toast, InputItem, Modal, Button, NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Checkbox, Icon } from 'antd';
+import { Checkbox } from 'antd';
+import Icon from '@ant-design/icons';
 import { _register, _code, getPromoteName, getIsUserName } from '../../api';
 const Item = Popover.Item;
 const alert = Modal.alert;

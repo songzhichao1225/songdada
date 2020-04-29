@@ -1,11 +1,10 @@
 import React from 'react';
 import './withdrawalPh.css';
-import { Icon } from 'antd';
 
 import { Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { getVenueWithdrawalOneList, getVenueMoney, VenueWithdrawal } from '../../api';
-
+import Icon from '@ant-design/icons';
 
 class withdrawalPh extends React.Component {
 

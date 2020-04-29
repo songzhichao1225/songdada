@@ -3,9 +3,9 @@ import './newsPh.css';
 import ReactDOM from 'react-dom';
 import { Toast, Card, PullToRefresh } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Result, Icon, Pagination, Drawer, Spin } from 'antd';
+import { Result, Pagination, Drawer, Spin } from 'antd';
 import { getVenueNewsList, getVenueNewsReceivedList, getVenueNewsFirst, VenueNewsSaveIsRead } from '../../api';
-
+import {MessageOutlined,LoadingOutlined} from '@ant-design/icons';
 import moment from 'moment';
 
 function genData() {
@@ -145,7 +145,7 @@ class newsPh extends React.Component {
           <div onClick={this.receive} style={this.state.flag === 1 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>我收到的</div>
           <div onClick={this.publish} style={this.state.flag === 2 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>我发送的</div>
         </div>
-        <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' } : { display: 'none' }} ><Icon type="loading" className='loadingY' style={{ top: this.state.clenTop / 7 }} /></div>
+        <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' } : { display: 'none' }} > <LoadingOutlined  className='loadingY' style={{ top: this.state.clenTop / 7 }} /></div>
         <div className="receive" style={this.state.flag === 1 ? { display: 'block' } : { display: 'none' }} >
           {/* onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd} */}
 
@@ -182,7 +182,7 @@ class newsPh extends React.Component {
               }
               <Spin spinning={this.state.spin} style={{ width: '100%', marginTop: '45%' }} />
               <Pagination className={this.state.getVenueNewsList.length === 0 ? 'hidden' : 'fenye'} size="small" onChange={this.current} defaultCurrent={1} total={this.state.other} />
-              <Result className={this.state.spin === false && this.state.getVenueNewsList.length === 0 ? '' : 'hidden'} icon={<Icon style={{ fontSize: '2rem' }} type="message" theme="twoTone" twoToneColor="#F5A623" />} title="没有系统消息" />
+              <Result className={this.state.spin === false && this.state.getVenueNewsList.length === 0 ? '' : 'hidden'} icon={<MessageOutlined style={{ fontSize: '2rem',color:'#F5A623' }} />} title="没有系统消息" />
             </div>
           </PullToRefresh>
 
@@ -238,7 +238,7 @@ class newsPh extends React.Component {
                 ))
               }
               <Pagination className={this.state.getVenueNewsReceivedList.length === 0 ? 'hidden' : 'fenye'} size="small" onChange={this.currentPush} defaultCurrent={1} total={this.state.otherPush} />
-              <Result className={this.state.getVenueNewsReceivedList.length === 0 ? '' : 'hidden'} icon={<Icon style={{ fontSize: '2rem' }} type="message" theme="twoTone" twoToneColor="#F5A623" />} title="没有发布消息" />
+              <Result className={this.state.getVenueNewsReceivedList.length === 0 ? '' : 'hidden'} icon={<MessageOutlined style={{ fontSize: '2rem',color:'#F5A623' }} />} title="没有发布消息" />
             </div>
           </PullToRefresh>
 

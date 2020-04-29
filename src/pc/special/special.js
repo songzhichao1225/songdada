@@ -2,8 +2,8 @@ import React from 'react';
 import './special.css';
 import 'antd/dist/antd.css';
 import { getVenueSpecialList, getVenueSport, getVenueSpecialDel, getSetUpFieldSportId, getVenueSpecialSave } from '../../api';
-import { Select, Row, Col, Modal, InputNumber, message, Spin, Form, Result, Icon, Pagination } from 'antd';
-
+import { Select, Row, Col, Modal, InputNumber, message, Spin, Form, Result, Pagination,Popconfirm } from 'antd';
+import {GiftOutlined} from '@ant-design/icons';
 import 'moment/locale/zh-cn';
 const { Option } = Select;
 
@@ -282,10 +282,10 @@ class special extends React.Component {
 
   handleChangThree = (e) => {
 
-    this.setState({ starttime: e })
+    this.setState({ starttime: this.state.time[parseInt(e)].name })
   }
   endtime = (e) => {
-    this.setState({ endtime: e })
+    this.setState({ endtime: this.state.time[parseInt(e)].name })
   }
   money = e => {
     this.setState({ costperhour: e })
@@ -364,18 +364,18 @@ class special extends React.Component {
 
   async getVenueSpecialDel(data) {
     const res = await getVenueSpecialDel(data, sessionStorage.getItem('venue_token'))
-    if (res.data.code !== 200) {
+    if (res.data.code !== 2000) {
       message.error(res.data.msg)
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
     } else {
       message.info('删除成功')
+      this.getVenueSpecialList({ sportid: sessionStorage.getItem('preferential'), page: this.state.page })
     }
   }
   delet = (e) => {
-    this.getVenueSpecialDel({ uuid: e.target.dataset.uid })
-    this.getVenueSpecialList({ sportid: sessionStorage.getItem('preferential'), page: this.state.page })
+    this.setState({deletUid:e.target.dataset.uid})
   }
   minNum = e => {
     if (this.state.runId.length !== 0) {
@@ -390,6 +390,11 @@ class special extends React.Component {
     } else {
       message.warning('选择运动项目')
     }
+  }
+
+  confirm = () => {
+    this.getVenueSpecialDel({ uuid: this.state.deletUid })
+   
   }
 
   current = (page, pageSize) => {
@@ -437,14 +442,24 @@ class special extends React.Component {
                     <Col xs={{ span: 2 }}>{item.endtime.slice(0, 5)}</Col>
                     <Col xs={{ span: 3 }}>{item.money + '元'}</Col>
                     <Col xs={{ span: 7 }}>{item.venueid.length >= 2 ? item.venueid.split(',')[0] + '~' + item.venueid.split(',')[item.venueid.split(',').length - 1] : item.venueid}</Col>
-                    <Col className="updata" xs={{ span: 2 }}><img onClick={this.updata} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;&nbsp;<img data-uid={item.uuid} onClick={this.delet} src={require("../../assets/icon_pc_delet.png")} alt="删除" /></Col>
+                    <Col className="updata" xs={{ span: 2 }}><img onClick={this.updata} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />
+                    <Popconfirm
+                        title="你确定要删除本条信息吗?"
+                        onConfirm={this.confirm}
+                        onCancel={this.cancel}
+                        okText="确定"
+                        cancelText="取消"
+                      >
+                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img data-uid={item.uuid} onClick={this.delet} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
+                      </Popconfirm>
+                      </Col>
                   </Row>
                 ))
               }
             </div>
           </div>
           <Pagination className={this.state.hidden === true ? 'fenye' : 'hidden'} defaultCurrent={1} total={this.state.other === '' ? this.state.list.length : this.state.other} onChange={this.current} />
-          <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<Icon type="gift" theme="twoTone" twoToneColor="#F5A623" />} title="您还没有设置特殊场地" />
+          <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<GiftOutlined style={{color:'#F5A623'}}/>} title="您还没有设置特殊场地" />
         </Spin>
 
 
@@ -497,7 +512,7 @@ class special extends React.Component {
               <Select value={this.state.starttime} className="startTime" defaultActiveFirstOption={false} onChange={this.handleChangThree} placeholder="开始时间" >
                 {
                   this.state.time.map((item, i) => (
-                    <Option key={i} value={item.name}>{item.name}</Option>
+                    <Option key={i}>{item.name}</Option>
                   ))
                 }
               </Select>
@@ -506,10 +521,10 @@ class special extends React.Component {
             <div className="modelList">
               <span>结束时间</span>
 
-              <Select value={this.state.endtime} className="startTime" defaultActiveFirstOption={false} onChange={this.endtime} placeholder="开始时间" >
+              <Select value={this.state.endtime} className="startTime" defaultActiveFirstOption={false} onChange={this.endtime} placeholder="结束时间" >
                 {
                   this.state.time.map((item, i) => (
-                    <Option key={i} value={item.name}>{item.name}</Option>
+                    <Option key={i} >{item.name}</Option>
                   ))
                 }
               </Select>
