@@ -295,9 +295,6 @@ export function getVenueSpecialSave(data,headers){    // 特殊场地号添加�
     return axios.post('/api/getVenueSpecialSave',data, {headers: {'token': headers}})
 }
 
-export function getVenueNumberTitleList(data,headers){    // 某一个场馆的场地号标题列表
-    return axios.post('/api/getVenueNumberTitleList',data, {headers: {'token': headers}})
-}
 
 export function VenueNewsOneKeyRead(data,headers){    // 消息中心一键已读功能 
     return axios.post('/api/VenueNewsOneKeyRead',data, {headers: {'token': headers}})
@@ -309,11 +306,6 @@ export function getVenueSporttypelist(data,headers){    // ~场馆端（台球�
 
 export function VenueNumberSporttypeSave(data,headers){    // 场馆端修改台球，足球，高尔夫下的分类
     return axios.post('/api/VenueNumberSporttypeSave',data, {headers: {'token': headers}})
-}
-
-
-export function DelVenueNumberTitle(data,headers){    // 删除某一个场馆的场地号标题
-    return axios.post('/api/DelVenueNumberTitle',data, {headers: {'token': headers}})
 }
 
 
@@ -334,9 +326,24 @@ export function getVenueNumberTitleSave(data,headers){    // 场地细分~场地
     return axios.post('/api/getVenueNumberTitleSave',data, {headers: {'token': headers}})
 }
 
-export function getSiteSelectedTitle(data,headers){    // 场地细分~查询场馆中某一运动项目下的场地细分
-    return axios.post('/api/getSiteSelectedTitle',data, {headers: {'token': headers}})
+export function getVenueNumberTitleList(data,headers){    // 场地细分~场地细分~场地细分列表
+    return axios.post('/api/getVenueNumberTitleList',data, {headers: {'token': headers}})
 }
+
+
+export function getVenueNumberTitleFirst(data,headers){    // 场地细分~获取某一个场地细分
+    return axios.post('/api/getVenueNumberTitleFirst',data, {headers: {'token': headers}})
+}
+
+export function getSiteSelectedVenueid(data,headers){    // 场地细分~获取场馆中某一个运动项目已经选择了的场地编号
+    return axios.post('/api/getSiteSelectedVenueid',data, {headers: {'token': headers}})
+}
+
+export function DelVenueNumberTitle(data,headers){    // 场地细分~删除某一个场地细分
+    return axios.post('/api/DelVenueNumberTitle',data, {headers: {'token': headers}})
+}
+
+
 
 
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import './siteSettings.css';
 import 'antd/dist/antd.css';
-import { getSiteSettingList, addVenueField, getVenueSport, getFirstField, delVenueField, getVenueSportidTitle, getVenueTitleSave, getVenueNumberTitleSave,getSiteSelectedTitle } from '../../api';
+import { getSiteSettingList, addVenueField, getVenueSport, getFirstField, delVenueField, getVenueSportidTitle, getVenueNumberTitleFirst, DelVenueNumberTitle, getSiteSelectedVenueid, getVenueTitleSave, getVenueNumberTitleSave, getVenueNumberTitleList } from '../../api';
 import { Select, Row, Col, Modal, InputNumber, Input, message, Pagination, Popconfirm, TimePicker, Divider } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -54,8 +54,11 @@ class siteSettings extends React.Component {
     arrCheked: [],//选择完的场地
     arrChekedLen: 0,//选择场地的数量
     interpretation: false,
-    nameChang:3,
-    joinXiList:[],
+    nameChang: 0,
+    joinXiList: [],
+    otherseris: 0,
+    venNumid: '',
+    confirmserisa: '',
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -65,10 +68,6 @@ class siteSettings extends React.Component {
     }
     this.setState({ ListSport: res.data.data })
   }
-
-
-
-
 
 
 
@@ -120,7 +119,7 @@ class siteSettings extends React.Component {
       arrNum: arrNum
     })
 
-    this.getSiteSelectedTitle({sportid:this.state.nameChang})
+    this.getVenueNumberTitleList({ sportid: this.state.nameChang })
 
   }
 
@@ -130,11 +129,6 @@ class siteSettings extends React.Component {
   }
 
 
-  showModal = () => {
-    this.setState({
-      joinXi: true,
-    });
-  };
 
   handleOk = e => {
     this.setState({
@@ -510,6 +504,7 @@ class siteSettings extends React.Component {
     } else if (this.state.tags === '') {
       message.error('请选择细分标签')
     } else {
+      this.getSiteSelectedVenueid({ sportid: this.state.runId })
       this.setState({
         serialNumber: true
       })
@@ -532,7 +527,7 @@ class siteSettings extends React.Component {
     let { arrNum } = this.state
     if (arrNum[e.currentTarget.dataset.id - 1].cheked === true) {
       arrNum[e.currentTarget.dataset.id - 1].cheked = false
-    } else {
+    } else if (arrNum[e.currentTarget.dataset.id - 1].cheked === false) {
       arrNum[e.currentTarget.dataset.id - 1].cheked = true
     }
     this.setState({
@@ -582,16 +577,20 @@ class siteSettings extends React.Component {
     console.log(res)
     if (res.data.code === 2000) {
       this.setState({ joinXi: false })
+      this.getVenueNumberTitleList({ sportid: this.state.nameChang })
+    } else {
+      message.warning(res.data.msg)
     }
   }
 
-  subSiteSubdivision = () => {
+  subSiteSubdivision = (e) => {
     let { runId, tags, arrCheked, arrChekedLen } = this.state
     let obj = {
       sportid: runId,
       title: tags,
-      veneuid: arrCheked.join(),
-      number: arrChekedLen
+      venueid: typeof (arrCheked) === 'string' ? arrCheked : arrCheked.join(),
+      number: arrChekedLen,
+      uuid: e.currentTarget.dataset.id
     }
     this.getVenueNumberTitleSave(obj)
   }
@@ -602,15 +601,98 @@ class siteSettings extends React.Component {
     })
   }
 
-  
-   async getSiteSelectedTitle(data) {
-    const res = await getSiteSelectedTitle(data, sessionStorage.getItem('venue_token'))
+
+  async getVenueNumberTitleList(data) {
+    const res = await getVenueNumberTitleList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ joinXiList: res.data.data })
+
+      for (let i in res.data.data) {
+        if (res.data.data[i].sportid === 1) {
+          res.data.data[i].sportid = '羽毛球'
+        } else if (res.data.data[i].sportid === 2) {
+          res.data.data[i].sportid = '兵乓球'
+        } else if (res.data.data[i].sportid === 3) {
+          res.data.data[i].sportid = '台球中式黑八'
+        } else if (res.data.data[i].sportid === 4) {
+          res.data.data[i].sportid = '台球美式九球'
+        } else if (res.data.data[i].sportid === 5) {
+          res.data.data[i].sportid = '台球斯诺克'
+        } else if (res.data.data[i].sportid === 6) {
+          res.data.data[i].sportid = '篮球'
+        } else if (res.data.data[i].sportid === 7) {
+          res.data.data[i].sportid = '足球11人制'
+        } else if (res.data.data[i].sportid === 8) {
+          res.data.data[i].sportid = '足球8人制'
+        } else if (res.data.data[i].sportid === 9) {
+          res.data.data[i].sportid = '足球7人制'
+        } else if (res.data.data[i].sportid === 10) {
+          res.data.data[i].sportid = '足球5人制'
+        } else if (res.data.data[i].sportid === 11) {
+          res.data.data[i].sportid = '排球'
+        } else if (res.data.data[i].sportid === 12) {
+          res.data.data[i].sportid = '网球'
+        }
+      }
+      this.setState({ joinXiList: res.data.data, otherseris: res.data.other })
     }
   }
 
 
+  showModal = () => {
+    this.setState({
+      joinXi: true,
+      runId: '', joinB: false, tags: '', arrCheked: [], venNumid: ''
+    });
+  };
+
+  async getVenueNumberTitleFirst(data) {
+    const res = await getVenueNumberTitleFirst(data, sessionStorage.getItem('venue_token'))
+    this.getVenueSportidTitle({ sportid: res.data.data[0].sportid })
+    this.setState({
+      runId: res.data.data[0].sportid, joinB: false, tags: res.data.data[0].title, arrCheked: res.data.data[0].venueid, venNumid: res.data.data[0].uuid
+    })
+
+  }
+
+  async getSiteSelectedVenueid(data) {
+    let { arrNum } = this.state
+    const res = await getSiteSelectedVenueid(data, sessionStorage.getItem('venue_token'))
+    console.log(res)
+    for (let i in res.data.data) {
+      arrNum[parseInt(res.data.data[i]) - 1].cheked = true
+    }
+
+  }
+
+  modification = e => {
+    let obj = {
+      uuid: e.currentTarget.dataset.uuid
+    }
+    this.getVenueNumberTitleFirst(obj)
+    this.setState({
+      joinXi: true
+    })
+  }
+
+  deletserisa = e => {
+    this.setState({
+      confirmserisa: e.currentTarget.dataset.id
+    })
+  }
+
+  async DelVenueNumberTitle(data) {
+    const res = await DelVenueNumberTitle(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      message.info('删除成功')
+      this.getVenueNumberTitleList({ sportid: this.state.nameChang })
+    } else {
+      message.error(res.data.msg)
+    }
+  }
+
+  confirmserisa = e => {
+    this.DelVenueNumberTitle({uuid:this.state.confirmserisa})
+  }
   render() {
     const { name } = this.state;
     return (
@@ -619,7 +701,7 @@ class siteSettings extends React.Component {
           <div className="left" style={this.state.headerData === '1' ? { color: '#fff', background: '#F5A623', border: '1px solid #F5A623' } : {}} onClick={this.headerCli} data-id='1'>场地细分</div>
           <div className="left" style={this.state.headerData === '2' ? { color: '#fff', background: '#F5A623', border: '1px solid #F5A623' } : {}} onClick={this.headerCli} data-id='2'>价格设置</div>
           <div className="right"><span>场地类型</span>
-            <Select className="selectName" defaultValue="类型名称" value="0" style={{ width: 120, padding: 0,textAlign:'center' }} onChange={this.nameChang}>
+            <Select className="selectName" defaultValue="类型名称" value="0" style={{ width: 120, padding: 0, textAlign: 'center' }} onChange={this.nameChang}>
               <Option value="0">全部</Option>
               <Option value="1">羽毛球</Option>
               <Option value="2">兵乓球</Option>
@@ -696,7 +778,29 @@ class siteSettings extends React.Component {
             <Col xs={{ span: 5 }}>场地数量</Col>
             <Col xs={{ span: 3 }}>操作</Col>
           </Row>
-
+          {
+            this.state.joinXiList.map((item, i) => (
+              <Row key={i} style={{ borderBottom: '1px solid #E1E0E1' }}>
+                <Col xs={{ span: 5 }}>{item.sportid}</Col>
+                <Col xs={{ span: 5 }}>{item.title}</Col>
+                <Col xs={{ span: 5 }}>{item.venueid}</Col>
+                <Col xs={{ span: 5 }}>{item.number}</Col>
+                <Col xs={{ span: 3 }}>
+                  <img onClick={this.modification} data-uuid={item.uuid} style={{marginRight:'5px'}} src={require("../../assets/icon_pc_updata.png")} alt="修改" />
+                  <Popconfirm
+                    title={'您确定要删除该条场地细分么?删除后用户将无法预定' + item.sportid + '的' + item.title + '场地'}
+                    onConfirm={this.confirmserisa}
+                    onCancel={this.cancel}
+                    okText="确定"
+                    cancelText="取消"
+                  >
+                    <img  style={{marginLeft:'5px'}} onClick={this.deletserisa} data-id={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
+                  </Popconfirm>
+                </Col>
+              </Row>
+            ))
+          }
+          <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} showSizeChanger={false} className='fenye' defaultCurrent={1} onChange={this.recordListOther} total={this.state.otherseris === '' ? 0 : this.state.otherseris} />
 
           <div className="join" onClick={this.showModal}>+添加场地细分</div>
         </div>
@@ -838,7 +942,7 @@ class siteSettings extends React.Component {
         >
           <div className="modelList" style={{ height: '32px' }}>
             <span>场地类型</span><span style={{ position: 'absolute', top: 0, right: 0, color: '#F5A623' }} onClick={this.interpretation}>什么是细分标签?</span>
-            <Select placeholder="请选择" className="selectModel" style={{ width: 249, height: 32 }} onChange={this.handleChangeOne}>
+            <Select placeholder="请选择" className="selectModel" value={this.state.runId === '' ? [] : this.state.runId} style={{ width: 249, height: 32 }} onChange={this.handleChangeOne}>
               {
                 this.state.ListSport.map((item, i) => (
                   <Option key={i} value={item.id}>{item.name}</Option>
@@ -854,6 +958,7 @@ class siteSettings extends React.Component {
               placeholder="请选择/添加后选择"
               className="selectModel"
               onChange={this.title}
+              value={this.state.tags === '' ? [] : this.state.tags}
               disabled={this.state.joinB}
               dropdownRender={menu => (
                 <div>
@@ -881,9 +986,9 @@ class siteSettings extends React.Component {
 
           <div className="modelList" style={{ height: '32px' }} >
             <span>场地数量</span>
-            <div className="startTime">{this.state.arrChekedLen}</div>
+            <div className="startTime">{this.state.arrCheked.length}</div>
           </div>
-          <div className="submit" onClick={this.subSiteSubdivision}>提交</div>
+          <div className="submit" data-id={this.state.venNumid} onClick={this.subSiteSubdivision}>提交</div>
         </Modal>
 
 
