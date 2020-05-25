@@ -4,8 +4,13 @@ import './index.css';
 import Router from './Router';
 import RouterPh from './RouterPh';
 import * as serviceWorker from './serviceWorker';
-
-
+import { message } from 'antd';
+message.config({
+  top: 400,
+  duration:1,
+  maxCount:1,
+  rtl:true
+})
 var sUserAgent = navigator.userAgent;
 var mobileAgents = ['Android', 'iPhone'];
 var goUrl = 0;

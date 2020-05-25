@@ -4,7 +4,7 @@ import { Toast, Picker, DatePicker, Card, List } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Input, Pagination, Drawer, Select, Result, Popconfirm, Spin, InputNumber } from 'antd';
 import {GiftOutlined,DownOutlined,LoadingOutlined} from '@ant-design/icons';
-import { getVenueFieldList, getVenueSport, addVenueField, getFirstField, getVenueDiscountList, addVenueDiscount, getVenueSpecialSave, getVenueSpecialDel, delVenueField, DelVenueDiscount, getFirstDiscount, getSetUpFieldSportId, getVenueSpecialList } from '../../api';
+import { getVenueFieldList, getVenueSport, addVenueField, getVenueDiscountList, addVenueDiscount, getVenueSpecialSave, getVenueSpecialDel, DelVenueDiscount, getFirstDiscount, getSetUpFieldSportId, getVenueSpecialList } from '../../api';
 
 
 
@@ -455,50 +455,7 @@ class sitePh extends React.Component {
     }
   }
 
-  async getFirstField(data) {
-    const res = await getFirstField(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1)
-
-    } else if (res.data.code === 2000) {
-      this.setState({
-        addsporId: res.data.data.sportid, runName: res.data.data.sportname, dateChange: res.data.data.openday,
-        startTime: res.data.data.starttime, endTime: res.data.data.endtime, price: res.data.data.costperhour, num: res.data.data.maxtablecount,
-        weekChange: res.data.data.maxScheduledDate, timeChange: res.data.data.appointmenttime, comment: res.data.data.comment
-      })
-      this.setState({ DrawerVisible: true, siteEditor: 1 })
-    }
-
-    let day = ''
-    switch (parseInt(res.data.data.openday)) {
-      case 1:
-        day = "周一";
-        break;
-      case 2:
-        day = "周二";
-        break;
-      case 3:
-        day = "周三";
-        break;
-      case 4:
-        day = "周四";
-        break;
-      case 5:
-        day = "周五";
-        break;
-      case 6:
-        day = "周六";
-        break;
-      case 0:
-        day = "周日";
-        break;
-      default:
-        day = "";
-    }
-    this.setState({ opendayname: day })
-  }
-
+ 
 
   async addVenueField(data) {
     const res = await addVenueField(data, localStorage.getItem('venue_token'))
@@ -741,27 +698,13 @@ class sitePh extends React.Component {
   }
   editor = e => {
     this.setState({ editorListId: e.currentTarget.dataset.uuid })
-    this.getFirstField({ uuid: e.currentTarget.dataset.uuid })
+  
 
   }
 
-  //删除某一条场地设置
-  async delVenueField(data) {
-    const res = await delVenueField(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 2000) {
-      Toast.success(res.data.msg, 1);
 
-      this.setState({ selectNum: 'l' })
-      this.getVenueFieldList({ sportid: this.state.siteSportId, page: this.state.sitePage })
-    } else {
-      Toast.fail(res.data.msg, 1);
-    }
-  }
   mood = e => {
     this.setState({ siteDeletId: e.currentTarget.dataset.uuid })
-  }
-  siteDelet = () => {
-    this.delVenueField({ uuid: this.state.siteDeletId })
   }
 
 

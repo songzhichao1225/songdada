@@ -1,9 +1,9 @@
 import React from 'react';
 import './appointmentList.css';
 import 'antd/dist/antd.css';
-import { Input, Row, Col, Select, Pagination, Spin, message, Result, DatePicker, Modal, Radio, Drawer, InputNumber } from 'antd';
+import { Input, Row, Col, Select, Pagination, Spin, message, Result, DatePicker, Modal, Radio, Drawer, InputNumber,Popover } from 'antd';
 import { BankOutlined, SyncOutlined } from '@ant-design/icons';
-import { getReservationActivitieslist, getVenueReservationss, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
+import { getReservationActivitieslist, getVenueReservation, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -119,7 +119,7 @@ class appointmentList extends React.Component {
     if (res.data.code === 2000) {
       this.setState({ topNumList: res.data.data })
       console.log(this.state.liNum)
-      this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.dateString, types: 1 })
+      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.dateString, types: 1 })
     }
   }
 
@@ -195,8 +195,8 @@ class appointmentList extends React.Component {
   }
 
 
-  async getVenueReservationss(data) {
-    const res = await getVenueReservationss(data, sessionStorage.getItem('venue_token'))
+  async getVenueReservation(data) {
+    const res = await getVenueReservation(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       if (this.state.topNumList.length > 0) {
         for (let j = 0; j < this.state.topNumList.length; j++) {
@@ -237,9 +237,9 @@ class appointmentList extends React.Component {
   nameChang = (e) => {
     this.setState({ sport: e })
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page: this.state.page, sport: e, status: this.state.status, startdate: '', enddate: '' })
+      this.getReservationActivitieslist({ page: 1, sport: e, status: this.state.status, startdate: '', enddate: '' })
     } else {
-      this.getReservationActivitieslist({ page: this.state.page, sport: e, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
+      this.getReservationActivitieslist({ page: 1, sport: e, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
     }
   }
   activityChang = (e) => {
@@ -257,7 +257,7 @@ class appointmentList extends React.Component {
   }
   dateChange = (data, datatring) => {
     this.setState({ dateString: datatring })
-    this.getVenueReservationss({ sportid: this.state.liNum, date: datatring, types: 1 })
+    this.getVenueReservation({ sportid: this.state.liNum, date: datatring, types: 1 })
   }
   Oneloading = () => {
     this.setState({ Oneloading: true })
@@ -309,7 +309,7 @@ class appointmentList extends React.Component {
   async VenueClickCancelPlace(data) {
     const res = await VenueClickCancelPlace(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.dateString, types: 1 })
+      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.dateString, types: 1 })
       if (data.type === 1) {
         message.info('该场地该时间段已标记为线下占用')
       } else if (data.type === 2) {
@@ -512,14 +512,16 @@ class appointmentList extends React.Component {
           {
             this.state.list.map((item, i) => (
               <Row key={i}>
-                <Col xs={{ span: 2 }} style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{item.orderId}</Col>
+                 <Popover content={(<span>{item.orderId}</span>)} title='详情' trigger="click">
+                 <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.orderId}</Col>
+                </Popover>
                 <Col xs={{ span: 2 }}>{item.SportName}</Col>
-                <Col xs={{ span: 3 }}><div style={{lineHeight:'25px'}}>{item.StartTime.slice(11,16)}</div><div style={{lineHeight:'25px'}}>{item.StartTime.slice(0,10)}</div></Col>
-                <Col xs={{ span: 3 }}><div style={{lineHeight:'25px'}}>{item.FinishedTime.slice(11,16)}</div><div style={{lineHeight:'25px'}}>{item.FinishedTime.slice(0,10)}</div></Col>
+                <Col xs={{ span: 3 }}><div style={{ lineHeight: '25px' }}>{item.StartTime.slice(11, 16)}</div><div style={{ lineHeight: '25px' }}>{item.StartTime.slice(0, 10)}</div></Col>
+                <Col xs={{ span: 3 }}><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(11, 16)}</div><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(0, 10)}</div></Col>
                 <Col xs={{ span: 2 }}>{item.PlayTime}小时</Col>
                 <Col xs={{ span: 2 }}>{item.Shouldarrive}</Col>
                 <Col xs={{ span: 2 }}>{item.TrueTo}</Col>
-                <Col xs={{ span: 2 }} style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{item.PublicStatus}</Col>
+                <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.PublicStatus}</Col>
                 <Col xs={{ span: 2 }}>{item.SiteMoney}</Col>
                 <Col xs={{ span: 2 }}>{item.SiteMoneyStatus}</Col>
                 <Col xs={{ span: 2 }}>
@@ -548,57 +550,56 @@ class appointmentList extends React.Component {
           />
           <div className="sping"> <SyncOutlined className={this.state.Oneloading === true || this.state.number === '2' ? 'hidden' : 'block'} onClick={this.Oneloading} style={{ fontSize: 24, marginTop: 15 }} /><Spin indicator={antIcon} spinning={this.state.Oneloading} /></div>
         </div>
-        <div className="xiange"></div>
-        <div className={this.state.number === '1' ? 'listName' : 'listNameT'}  style={{height:'90%'}}>
+
+        <div className={this.state.number === '1' ? 'listName' : 'listNameT'} style={{ height: '90%' }}>
 
 
           <div className="xiange"></div>
 
-            <Row className="rowConten" style={{background:'#FCF7EE'}}>
-              <Col xs={{ span: 2 }}>活动编号</Col>
-              <Col xs={{ span: 2 }}>
-                <Select className="selectName" defaultValue="项目名称" style={{ width:'100%',padding:0 }} onChange={this.nameChang}>
-                  <Option value="0">全部</Option>
-                  <Option value="1">羽毛球</Option>
-                  <Option value="2">乒乓球</Option>
-                  <Option value="3">台球</Option>
-                  <Option value="4">篮球</Option>
-                  <Option value="5">足球</Option>
-                  <Option value="6">排球</Option>
-                  <Option value="7">网球</Option>
-                  <Option value="8">高尔夫</Option>
-                </Select>
-              </Col>
-              <Col xs={{ span: 3 }}>开始时间</Col>
-              <Col xs={{ span: 3 }}>结束时间</Col>
-              <Col xs={{ span: 2 }}>时长</Col>
-              <Col xs={{ span: 2 }}>应到人数</Col>
-              <Col xs={{ span: 2 }}>已报名人数</Col>
-              <Col xs={{ span: 2 }}>
-                <Select className="selectName" defaultValue="活动状态" style={{ width: '100%' }} onChange={this.activityChang} >
-                  <Option value="0">全部</Option>
-                  {/* <Option value="1">匹配中</Option> */}
-                  <Option value="2">待出发</Option>
-                  <Option value="3">活动中</Option>
-                  <Option value="4" title="待填写结果/待确认结束">待填写结果/待确认结束</Option>
-                  <Option value="6">待评价</Option>
-                  <Option value="5">已完成</Option>
-                  <Option value="7">已取消</Option>
-                </Select>
-              </Col>
-              <Col xs={{ span: 2 }}>场地费用</Col>
-              <Col xs={{ span: 2 }}>支付状态</Col>
-              <Col xs={{ span: 2 }}>发消息</Col>
-            </Row>
-            <div className={this.state.hidden === true ? '' : 'hidden'} style={{height:'90%',overflowY:'auto'}}>
-              {userMessage}
-            </div>
-            <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<BankOutlined style={{ color: '#F5A623' }} />} title="您还没有预约活动！" />,
+          <Row className="rowConten" style={{ background: '#FCF7EE',marginTop:0 }}>
+            <Col xs={{ span: 2 }}>活动编号</Col>
+            <Col xs={{ span: 2 }}>
+              <Select className="selectName" defaultValue="项目名称" style={{ width: '100%', padding: 0 }} onChange={this.nameChang}>
+                <Option value="0">全部</Option>
+                <Option value="1">羽毛球</Option>
+                <Option value="2">兵乓球</Option>
+                <Option value="3">台球</Option>
+                <Option value="4">篮球</Option>
+                <Option value="5">足球</Option>
+                <Option value="6">排球</Option>
+                <Option value="7">网球</Option>
+              </Select>
+            </Col>
+            <Col xs={{ span: 3 }}>开始时间</Col>
+            <Col xs={{ span: 3 }}>结束时间</Col>
+            <Col xs={{ span: 2 }}>时长</Col>
+            <Col xs={{ span: 2 }}>应到人数</Col>
+            <Col xs={{ span: 2 }}>已报名人数</Col>
+            <Col xs={{ span: 2 }}>
+              <Select className="selectName" defaultValue="活动状态" style={{ width: '100%' }} onChange={this.activityChang} >
+                <Option value="0">全部</Option>
+                {/* <Option value="1">匹配中</Option> */}
+                <Option value="2">待出发</Option>
+                <Option value="3">活动中</Option>
+                <Option value="4" title="待填写结果">待填写结果</Option>
+                <Option value="6">待评价</Option>
+                <Option value="5">已完成</Option>
+                <Option value="7">已取消</Option>
+              </Select>
+            </Col>
+            <Col xs={{ span: 2 }}>场地费用</Col>
+            <Col xs={{ span: 2 }}>支付状态</Col>
+            <Col xs={{ span: 2 }}>发消息</Col>
+          </Row>
+          <div className={this.state.hidden === true ? '' : 'hidden'} style={{ height: '90%', overflowY: 'auto' }}>
+            {userMessage}
+          </div>
+          <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<BankOutlined style={{ color: '#F5A623' }} />} title="您还没有预约活动！" />,
 
 
 
         </div>
-       
+
         <Modal
           title="给参与人员发送消息"
           visible={this.state.visible}

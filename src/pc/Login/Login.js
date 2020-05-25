@@ -79,6 +79,7 @@ class Login extends React.Component {
       sessionStorage.setItem('ismethod', res.data.data.ismethod);
       sessionStorage.setItem('issecondaudit', res.data.data.issecondaudit);
       sessionStorage.setItem('issportid', res.data.data.issportid);
+      sessionStorage.setItem('legalphone', res.data.data.legalphone);
 
       setTimeout(() => {
         if (res.data.data.venue_token) {
@@ -107,7 +108,7 @@ class Login extends React.Component {
   }
 
   naCode = () => {
-    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
+    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))&&this.state.phone.length===11) {
       this.VenueSelectSiteName({ phone: this.state.phone })
     } else {
       message.error('请输入手机号')
@@ -121,7 +122,7 @@ class Login extends React.Component {
     let data = {
       username: this.state.phone, usercode: this.state.code, userpass: this.state.pass, type: 2, Logintype: 'pc', venueloginuuid: this.state.value
     }
-    this.login(data)                                                  
+    this.login(data)
   }
 
 
@@ -138,22 +139,22 @@ class Login extends React.Component {
   nameLogin = () => {
     this.setState({ navNum: false })
   }
-  guan=()=>{
-   
+  guan = () => {
+
   }
 
   render() {
     return (
       <div className="login">
-         {/* <img className="img" src={require("../../assets/loginBack.png")} alt="找对手"/> */}
+        {/* <img className="img" src={require("../../assets/loginBack.png")} alt="找对手"/> */}
         <div className="header">
           <div className="heCenter">
             <img className="logo" src={require("../../assets/tiaozhanicon.png")} style={{ width: 53, height: 53, marginTop: 40 }} alt="logo" />
-            <span className="title">北京甲乙电子商务有限公司</span>              
-          </div>                                                               
+            <span className="title">北京甲乙电子商务有限公司</span>
+          </div>
           <div className="content">
             <div className="left">
-            
+
             </div>
             <div className="right">
               <span className="uigt">找对手场馆端</span>
@@ -181,20 +182,15 @@ class Login extends React.Component {
                     <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'codeBtn'} >
                       {this.state.textT}
                     </div>
-                  </Form.Item>   
-                 
-                  <Form.Item style={{marginTop:'10px'}}  className={this.state.selectVeun.length > 0 ? 'input' : 'selectVeunNone'}>
-                    <Radio.Group className="radio" onChange={this.onChange} value={this.state.value}>
-
-                      {
-                        this.state.selectVeun.map((item, i) => (
-                          <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
-                        ))
-                      }
-                
-                    </Radio.Group>
                   </Form.Item>
-                  <Form.Item className="input" >
+                  <Radio.Group className="radio" className={this.state.selectVeun.length >0 ? 'input' : 'selectVeunNone'} onChange={this.onChange} value={this.state.value}>
+                    {
+                      this.state.selectVeun.map((item, i) => (
+                        <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
+                      ))
+                    }
+                  </Radio.Group>
+                  <Form.Item className="input" style={{ marginTop: '20px' }}>
                     <Input.Password maxLength={8} onChange={this.onPassword} onPressEnter={this.onSubmit} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" />
                   </Form.Item>
                   <Form.Item className="bind">
@@ -212,7 +208,7 @@ class Login extends React.Component {
                   <Form.Item className="input">
                     <Input onChange={this.phone} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名/操作员手机号" />
                   </Form.Item>
-                  <Form.Item className="input" style={{marginTop:20}}>
+                  <Form.Item className="input" style={{ marginTop: 20 }}>
                     <Input.Password maxLength={8} onChange={this.onPassword} onPressEnter={this.onSubmitT} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" />
                   </Form.Item>
                   <Form.Item className="bind">
@@ -232,9 +228,9 @@ class Login extends React.Component {
 
 
         </div>
-       <div className="retrun" onClick={this.guan}><a href="http://www.zhaoduishou.com/" target="_blank" rel="noopener noreferrer">公司官网:www.zhaoduishou.com</a></div>
+        <div className="retrun" onClick={this.guan}><a href="http://www.zhaoduishou.com/" target="_blank" rel="noopener noreferrer">公司官网:www.zhaoduishou.com</a></div>
       </div>
-    );
+    )
   }
 }
 

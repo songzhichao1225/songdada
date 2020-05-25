@@ -8,7 +8,7 @@ import {HomeOutlined,SettingOutlined} from '@ant-design/icons';
 import homePage from '../homePage/homePage';
 import information from '../information/information';
 import siteSettings from '../siteSettings/siteSettings';
-import preferential from '../preferential/preferential';
+import preferentialTwo from '../preferentialTwo/preferentialTwo';
 import stadiums from '../stadiums/stadiums';
 import systemSettings from '../systemSettings/systemSettings';
 import myWallet from '../myWallet/myWallet';
@@ -93,9 +93,7 @@ class home extends React.Component {
     jo()
    
     
-    setInterval(()=>{
-      window.addEventListener('storage',sessionStorage.getItem('kood')==='2'? this.gerVenueName():this);
-    },2000)
+    
    
    
   }
@@ -225,6 +223,7 @@ class home extends React.Component {
       message.error('登陆超时请重新登陆！')
     } else {
       this.setState({ gerVenueName: res.data.data })
+      sessionStorage.setItem('mess',res.data.data.mess)
     }
   }
 
@@ -384,7 +383,7 @@ class home extends React.Component {
             <Route path="/home/homePage" component={homePage} />
             <Route path="/home/information" component={information} />
             <Route path="/home/siteSettings" component={siteSettings} />
-            <Route path="/home/preferential" component={preferential} />
+            <Route path="/home/preferential" component={preferentialTwo} />
             <Route path="/home/stadiums" component={stadiums} />
             <Route path="/home/systemSettings" component={systemSettings} />
             <Route path="/home/myWallet" component={myWallet} />
@@ -395,7 +394,7 @@ class home extends React.Component {
             <Route path="/home/special" component={special} />
 
           </Content>
-          <Footer style={{ textAlign: 'center', height: '3%', lineHeight: '3%' }}>Copyright ©2019 北京甲乙电子商务有限公司</Footer>
+          <Footer>Copyright ©2019 北京甲乙电子商务有限公司</Footer>
         </Layout>
       </Layout>
     )

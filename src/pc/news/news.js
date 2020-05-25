@@ -94,9 +94,13 @@ class news extends React.Component {
         koArr.push(this.state.newsList[i].uuid)
       }
     }
+    if(koArr.length===0){
+     message.error('请选择要删除的消息')
+    }else{
+      this.delVenueNews({ uuid: koArr.join(',') })
+      this.setState({ oneChecked: !this.state.oneChecked })
+    }
 
-    this.delVenueNews({ uuid: koArr.join(',') })
-    this.setState({ oneChecked: !this.state.oneChecked })
   }
 
   // bossDelet = () => {
@@ -177,7 +181,7 @@ class news extends React.Component {
     const res = await VenueNewsSendMessage(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.info(res.data.msg)
-      this.setState({ visibleTwo: false })
+      this.setState({ visibleTwo: false,textArea:'' })
     }
   }
 
@@ -245,7 +249,7 @@ class news extends React.Component {
               </div>
             ))
           }
-          <Pagination className="fenye" defaultCurrent={1} pageSize={10} total={parseInt(this.state.sum)} onChange={this.current} />
+          <Pagination className="fenye" defaultCurrent={1} hideOnSinglePage={true} showSizeChanger={false} pageSize={10} total={parseInt(this.state.sum)} onChange={this.current} />
           <Drawer
             title="消息详情"
             placement="top"
@@ -258,13 +262,13 @@ class news extends React.Component {
             <div>{this.state.newsDetail.comment}</div>
             <div>{this.state.newsDetail.intime}</div>
           </Drawer>
-        </div>
+        </div> 
         <Modal
           title="给找对手平台发消息"
           visible={this.state.visibleTwo}
           onCancel={this.handleCancel}
         >
-          <TextArea rows={3} placeholder="请输入您推送的消息" onChange={this.textArea} maxLength={200} />
+          <TextArea rows={3} placeholder="请输入您推送的消息" value={this.state.textArea} onChange={this.textArea} maxLength={200} />
           <span style={{ paddingTop: 15 }}>还可以输入{200 - this.state.textArea.length}字</span>
           <div className="btnModel">
             <div onClick={this.handleCancel}>取消</div>

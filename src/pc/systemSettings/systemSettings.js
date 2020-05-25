@@ -76,6 +76,7 @@ class systemSettings extends React.Component {
 
   componentDidMount() {
     this.getVenueIsClose()
+    this.setState({corporatePhone:sessionStorage.getItem('legalphone')})
   }
 
 
@@ -136,7 +137,7 @@ class systemSettings extends React.Component {
   }
 
   naCode = () => {
-    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
+    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))&&this.state.phone.length===11) {
       let num = 60
       const timer = setInterval(() => {
         this.setState({ textT: num-- })
@@ -147,7 +148,7 @@ class systemSettings extends React.Component {
       }, 1000)
       this.nacode({ "mobile": this.state.phone, "type": 'venuesavepass' })
     } else {
-      message.error('请输入手机号')
+      message.error('请输入正确手机号')
     }
   }
 
@@ -172,7 +173,7 @@ class systemSettings extends React.Component {
 
 
   naCodeOutie = () => {
-    if (this.state.corporatePhone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.corporatePhone))) {
+    if (this.state.corporatePhone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.corporatePhone))&&this.state.corporatePhone.length===11) {
       let num = 60
       const timer = setInterval(() => {
         this.setState({ textOne: num-- })
@@ -181,14 +182,14 @@ class systemSettings extends React.Component {
           this.setState({ textOne: '获取验证码' })
         }
       }, 1000)
-      this.nacode({ "mobile": this.state.corporatePhone, "type": 'venuebinding' })
+      this.nacode({ "mobile": this.state.corporatePhone, "type": 'venuebindingfr',"uuid":sessionStorage.getItem('uuid') })
     } else {
-      message.error('请输入手机号')
+      message.error('请输入正确手机号')
     }
   }
 
   naCodeOutieTwo = () => {
-    if (this.state.operationPhone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.operationPhone))) {
+    if (this.state.operationPhone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.operationPhone))&&this.state.operationPhone.length===11) {
       let num = 60
       const timer = setInterval(() => {
         this.setState({ textTwo: num-- })
@@ -197,9 +198,9 @@ class systemSettings extends React.Component {
           this.setState({ textTwo: '获取验证码' })
         }
       }, 1000)
-      this.nacode({ "mobile": this.state.operationPhone, "type": 'venuebinding' })
+      this.nacode({ "mobile": this.state.operationPhone, "type": 'venuebindingczy',"uuid":sessionStorage.getItem('uuid') })
     } else {
-      message.error('请输入手机号')
+      message.error('请输入正确手机号')
     }
   }
 
@@ -420,24 +421,24 @@ class systemSettings extends React.Component {
           <div className="resetSon">
             <div className="inputSon">
               <span>手机号码</span>
-              <Input maxLength={11} prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.phone} placeholder="请输入手机号" />
+              <Input maxLength={11} style={{marginLeft:13,padding:'0 5px',height:'43px'}} onChange={this.phone} placeholder="请输入手机号" />
             </div>
 
             <div className="inputSonT inputSon">
               <span>验证码</span>
-              <Input maxLength={6} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.code} placeholder="请输入验证码" />
+              <Input maxLength={6} style={{width:150,marginLeft:28,padding:'0 5px',height:'43px'}} onChange={this.code} placeholder="请输入验证码" />
               <div className={this.state.textT === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCode}>{this.state.textT}</div>
               <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textT}</div>
             </div>
 
             <div className="inputSon">
               <span>重置密码</span>
-              <Input.Password maxLength={8} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.passWord} placeholder="请输入重置密码" />
+              <Input.Password maxLength={8} onChange={this.passWord}  placeholder="请输入重置密码" />
             </div>
 
             <div className="inputSon">
               <span>确认密码</span>
-              <Input.Password maxLength={8} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.passWordT} placeholder="请输入确认密码" />
+              <Input.Password maxLength={8} onChange={this.passWordT} placeholder="请输入确认密码" />
             </div>
             <div className="submit" onClick={this.submit}>确定</div>
           </div>
@@ -446,25 +447,25 @@ class systemSettings extends React.Component {
         <div className={this.state.flagUntie === false ? 'Untie' : 'listNone'}>
           <div className="resetSon">
             <div className="inputSon">
-              <span style={{ width: 145, marginLeft: -80, textAlign: 'right' }}>法人手机号</span>
-              <Input maxLength={11} prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.corporatePhone} placeholder="请输入手机号" />
+              <span style={{ width: 145, marginLeft: -28, textAlign: 'right' }}>法人手机号</span>
+              <Input maxLength={11} value={this.state.corporatePhone} disabled={true} prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.corporatePhone} placeholder="请输入手机号" />
             </div>
-
+ 
             <div className="inputSonT inputSon">
               <span style={{ textAlign: 'right' }}>验证码</span>
               <Input maxLength={6} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.corporateCode} placeholder="请输入验证码" />
-              <div className={this.state.textOne === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCodeOutie}>{this.state.textOne}</div>
-              <div className={this.state.textOne === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textOne}</div>
+              <div style={{height:43,lineHeight:'43px'}} className={this.state.textOne === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCodeOutie}>{this.state.textOne}</div>
+              <div style={{height:43,lineHeight:'43px'}} className={this.state.textOne === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textOne}</div>
             </div>
             <div className="inputSon">
-              <span style={{ width: 145, marginLeft: -80, textAlign: 'right' }}>绑定操作员新手机号</span>
+              <span style={{ width: 145, marginLeft: -84, textAlign: 'right' }}>绑定操作员新手机号</span>
               <Input maxLength={11} prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.operationPhone} placeholder="请输入手机号" />
             </div>
             <div className="inputSonT inputSon">
               <span style={{ textAlign: 'right' }}>验证码</span>
               <Input maxLength={6} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.operationCode} placeholder="请输入验证码" />
-              <div className={this.state.textTwo === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCodeOutieTwo}>{this.state.textTwo}</div>
-              <div className={this.state.textTwo === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textTwo}</div>
+              <div style={{height:43,lineHeight:'43px'}} className={this.state.textTwo === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCodeOutieTwo}>{this.state.textTwo}</div>
+              <div style={{height:43,lineHeight:'43px'}} className={this.state.textTwo === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textTwo}</div>
             </div>
             <div className="submit" onClick={this.UoiteSubimt}>确定</div>
           </div>

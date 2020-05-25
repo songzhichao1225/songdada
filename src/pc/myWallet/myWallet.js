@@ -2,7 +2,7 @@ import React from 'react';
 import './myWallet.css';
 import 'antd/dist/antd.css';
 import { getVenueMoneyList, getVenueWithdrawalList, getVenueWithdrawalOneList, VenueWithdrawal } from '../../api';
-import { DatePicker, Row, Col, Pagination, message, Spin, Result,  Input } from 'antd';
+import { DatePicker, Row, Col, Pagination, message, Result,  Input } from 'antd';
 import {ReconciliationOutlined,MoneyCollectOutlined} from '@ant-design/icons';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/zh_CN';
@@ -147,12 +147,11 @@ class myWallet extends React.Component {
     return (
       <div style={{height:'100%'}}>
         <div className={this.state.flag === 1 ? 'myWallet' : 'myWalletNone'}>
-          <div className="xiange"></div>
           <div className="header">
             <span className="select">选择时间</span>
             <RangePicker
               placeholder={[this.state.start, this.state.end]}
-              style={{marginTop:'8px'}}
+              style={{marginTop:'8px',float:'left',marginLeft:'10px'}}
               locale={locale}
               onChange={this.dateChange}
             />
@@ -164,13 +163,13 @@ class myWallet extends React.Component {
             </div>
           </div>
           <div className="xiange"></div>
-          <Spin spinning={this.state.loading} style={{ minHeight: 600 }} size="large">
-            <div className={this.state.hidden === true ? '' : 'hidden'}>
+            <div className={this.state.hidden === true ? 'listMoney' : 'hidden'} >
               <Row>
                 <Col className="oneText" xs={{ span: 4 }}>到账时间</Col>
                 <Col xs={{ span: 16 }}>明细</Col>
                 <Col xs={{ span: 4, }}>金额(元)</Col>
               </Row>
+             
               {
                 this.state.moneyList.map((item, i) => (
                   <Row key={i} >
@@ -184,7 +183,7 @@ class myWallet extends React.Component {
               <Pagination defaultCurrent={1} className={this.state.moneyList.length < 1 ? 'myWalletNone' : 'fenye'} onChange={this.moneyFen} total={this.state.other} />
             </div>
             <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<MoneyCollectOutlined style={{color:'#F5A623'}}/>} title="还没有人预约您的场馆！" />
-          </Spin>
+          
         </div>
         <div className={this.state.flag === 2 ? 'record myWallet' : 'myWalletNone'}>
           <div className="xiange"></div>
@@ -192,7 +191,7 @@ class myWallet extends React.Component {
             <span className="previousStep" onClick={this.returnN}>我的钱包 ></span><span>提现记录</span>
           </div>
           <div className="xiange"></div>
-          <div className={this.state.hiddenTwo === true ? '' : 'hidden'}>
+          <div className={this.state.hiddenTwo === true ? '' : 'hidden'} >
             <Row>
               <Col className="oneText" xs={{ span: 5 }}>申请时间</Col>
               <Col xs={{ span: 7, offset: 0 }}>账户名称</Col>

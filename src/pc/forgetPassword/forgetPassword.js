@@ -29,6 +29,8 @@ class forgetPassword extends React.Component {
         }
       }, 1000)
       this.nacode({ "mobile": this.state.phone, "type": 'venueforgetpass' })
+    }else{
+      message.error(res.data.msg)
     }
   }
 
@@ -85,6 +87,8 @@ class forgetPassword extends React.Component {
     let {phone,value,code,pass,passTwo}=this.state
     if(pass===passTwo){
       this.VenueForgetPass({phone:phone,pass:passTwo,code:code,venueloginuuid:value})
+    }else{
+      message.error('两次密码输入不一致')
     }
   }
 
@@ -119,14 +123,13 @@ class forgetPassword extends React.Component {
                 <Form.Item className={this.state.selectVeun.length>0?'selectVeun':'selectVeunNone'}>
                 <div > 
 
-                  <Radio.Group className="radio" onChange={this.onChange} value={this.state.value}>
+                  <Radio.Group className="radio" onChange={this.onChange} value={this.state.value} style={{width:'400px',marginLeft:'10px'}}>
                    
                     {
                       this.state.selectVeun.map((item,i)=>(
-                        <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
+                        <Radio key={i}  style={{float:'left'}} value={item.venueloginuuid}>{item.name}</Radio>
                       ))
                     }
-                  
                   </Radio.Group>
 
 

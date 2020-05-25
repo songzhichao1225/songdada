@@ -1,5 +1,6 @@
 .myWallet{
  display: block;
+ height: 100%;
 }
 .myWallet .header{
    height: 46px;
@@ -194,4 +195,8 @@
 }
 .ant-calendar-range-picker-input{
     line-height: 100%;
+}
+.listMoney{
+    height: 80%;
+    overflow-y: auto;
 }

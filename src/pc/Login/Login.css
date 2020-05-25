@@ -109,9 +109,8 @@
 	display: block;
 	position: absolute;
 	cursor: pointer;
-	line-height: 45px;
 	margin-left: -16px;
-	
+	margin-top: -7px;
 }
 
 .login .ant-col{
@@ -130,7 +129,8 @@
 	display: none;
 	position: absolute;
 	cursor: pointer;
-	line-height: 45px;
+	line-height: 55px;
+	margin-top: -7px;
 }
 .login .content  .right .btnSubmit{
 	 width: 300px;
@@ -214,4 +214,11 @@
 }
 .login .retrun>a{
 	color: #fff;
+}
+.login .ant-radio-wrapper{
+	float: left;
+}
+.login .ant-radio-group{
+	padding-top: 40px;
+	
 }

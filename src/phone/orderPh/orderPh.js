@@ -4,7 +4,7 @@ import './orderPh.css';
 import { DatePicker, Toast, Card, Modal, InputItem, List } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Pagination, Input, Drawer, Result, Spin, Select } from 'antd';
-import { getReservationActivitieslist, VenueSendMessage, getVenueReservationss, getVenueSport, VenueClickCancelPlace, getVenueNumberTitleList, VenueRemarksLabel, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave, getVenueSporttypelist } from '../../api';
+import { getReservationActivitieslist, VenueSendMessage, getVenueReservation, getVenueSport, VenueClickCancelPlace, getVenueNumberTitleList, VenueRemarksLabel, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave, getVenueSporttypelist } from '../../api';
 import {BankOutlined,LoadingOutlined,CloseOutlined,CheckOutlined,ReconciliationOutlined} from '@ant-design/icons';
 import moment from 'moment';
 const { Option } = Select;
@@ -110,15 +110,15 @@ class orderPh extends React.Component {
     const res = await getVenueNumberTitleList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ topNumList: res.data.data })
-      this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.qiDate, types: 1 })
+      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.qiDate, types: 1 })
     }
   }
 
 
 
 
-  async getVenueReservationss(data) {
-    const res = await getVenueReservationss(data, localStorage.getItem('venue_token'))
+  async getVenueReservation(data) {
+    const res = await getVenueReservation(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       if (this.state.topNumList.length > 0) {
         for (let j = 0; j < this.state.topNumList.length; j++) {
@@ -206,7 +206,7 @@ class orderPh extends React.Component {
   componentDidMount() {
 
     this.setState({ qiDate: new Date(), nowDate: new Date().toLocaleDateString().replace(/\//g, "-") })
-    this.getVenueReservationss({ sportid: 1, date: new Date().toLocaleDateString().replace(/\//g, "-"), types: 1 })
+    this.getVenueReservation({ sportid: 1, date: new Date().toLocaleDateString().replace(/\//g, "-"), types: 1 })
     this.getVenueSport()
     if (this.props.location.query !== undefined) {
       if (this.props.location.query.time === 1) {
@@ -395,7 +395,7 @@ class orderPh extends React.Component {
   async VenueClickCancelPlace(data) {
     const res = await VenueClickCancelPlace(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.qiDate, types: 1 })
+      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.qiDate, types: 1 })
       if (data.type === 1) {
         Toast.success('该场地该时间段已标记为线下占用', 1)
       } else if (data.type === 2) {

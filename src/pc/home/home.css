@@ -235,3 +235,8 @@ clear: left;
 .ant-notification-notice-close{
     top: 5px;
 }
+.ant-layout-footer{
+    padding: 0px;
+    text-align: center;
+
+}

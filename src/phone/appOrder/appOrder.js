@@ -2,7 +2,8 @@ import React from 'react';
 import './appOrder.css';
 import { Calendar, Toast, Result, Icon, ActivityIndicator } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { getAppVenueReservation, checkChooseTimes, getVenueNumberTitleList } from '../../api';
+import { Table } from 'antd';
+import { getAppVenueReservations, checkChooseTimes, getVenueNumberTitleList } from '../../api';
 const now = new Date();
 
 
@@ -31,14 +32,21 @@ class appOrder extends React.Component {
     sportidQuery: '',
     sporttypeTwo: '',
     start: '',
+    otherType: [],
+    sportName: '',
+    lookBan: [],
+    resData:''
   };
 
 
 
-  async getAppVenueReservation(data) {
-    const res = await getAppVenueReservation(data)
+  async getAppVenueReservations(data) {
+    const res = await getAppVenueReservations(data)
+    
+    
     if (res.data.code === 2000) {
-      if (this.state.sportidQuery !== '3' && this.state.sportidQuery !== '5' && this.state.sportidQuery !== '8') {
+       
+     
         if (this.state.topNumList.length > 0) {
           for (let j = 0; j < this.state.topNumList.length; j++) {
             if (res.data.data[0].c[this.state.topNumList[j].venueid - 1] !== undefined) {
@@ -47,66 +55,66 @@ class appOrder extends React.Component {
             }
           }
         }
-        let pop = res.data.data
-        let arrPopTwo = []
-        let arrPopOne = []
-        for (let i in pop) {
-          if (pop[i].c[0].type === 1) {
-            arrPopOne.push(pop[i])
-          }
-          if (pop[i].c[0].type === 2) {
-            arrPopTwo.push(pop[i])
-          }
+        let arrVen = []
+        for (let i in res.data.other) {
+          arrVen.push(parseInt(res.data.other[i].venueid))
         }
-        if (pop.length<=12) {
-          arrPopOne=pop
-        }else if(pop.length>12){
-          if(arrPopOne.length<12&&arrPopTwo.length>12-arrPopOne.length){
-          
-            arrPopOne=[...arrPopTwo.slice(-(12-arrPopOne.length)),...arrPopOne]
-          }
-        }
-        
-        
+      
+        this.setState({
+          resData:res.data
+        })
 
-        this.setState({ lookList: arrPopOne, venueNum: res.data.other.venueid, sporttype: Object.values(res.data.other.sporttype), macNum: res.data.data[0].c, animating: false })
-      } else {
-        if (this.state.topNumList.length > 0) {
-          var arrFood = []
-          let arrFoodId = []
-          for (let i in res.data.data[0].c) {
-            arrFood.push(Object.values(res.data.other.sporttype)[i])
-            arrFoodId.push(Object.values(res.data.other.sporttype)[i].venueid)
-          }
-          for (let i in this.state.topNumList) {
-            if (this.state.topNumList[i] !== undefined) {
-              if (arrFoodId.indexOf(this.state.topNumList[i].venueid) !== -1) {
-                arrFood[arrFoodId.indexOf(this.state.topNumList[i].venueid)].title = this.state.topNumList[i].title
-              }
-            }
-          }
-          this.setState({ lookList: res.data.data, venueNum: res.data.other.venueid, sporttype: arrFood, macNum: res.data.data[0].c, animating: false })
+        this.loodp(this.state.resData)
+
+        for (let i in res.data.other) {
+          res.data.other[i].dataIndex = res.data.other[i].venueid
+          res.data.other[i].title = <div style={{ textAlign: 'center' }}>{res.data.other[i].venueid}<br />{res.data.other[i].title}</div>
+          res.data.other[i].width = 80
         }
-        this.setState({ lookList: res.data.data, venueNum: res.data.other.venueid, sporttype: Object.values(res.data.other.sporttype), macNum: res.data.data[0].c, animating: false })
-      }
-      if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 24) {
-        if (res.data.data[res.data.data.length - 1].a.slice(-2) === '00') {
-          if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 10) {
-            this.setState({ lastTime: '0' + (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2))) + ':30' })
-          } else {
-            this.setState({ lastTime: parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + ':30' })
-          }
-        } else if (res.data.data[res.data.data.length - 1].a.slice(-2) === '30') {
-          if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1 < 10) {
-            this.setState({ lastTime: '0' + (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1) + ':00' })
-          } else {
-            this.setState({ lastTime: parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1 + ':00' })
-          }
+        let ploboj = {
+          title: <div>场地号<br />标签</div>,
+          fixed: 'left',
+          width: 80,
+          dataIndex: 'lppd',
         }
-      }
+        res.data.other.unshift(ploboj)
+        this.setState({ lookList: res.data.data, macNum: res.data.data[0].c, otherType: res.data.other, value: 'l', spinningTwo: false, loadingTwo: false, animating: false })
+
+      
     } else {
-      this.setState({ lookList: [], animating: false })
+      this.setState({ resData: [], animating: false,otherType:[] })
     }
+  }
+
+
+  loodp=(resData)=>{
+    let jood = []
+    for (let i in resData.data) {
+      let obj = {}
+      for (let j in resData.data[i].c) {
+        obj.key = j + 1
+        let key = resData.data[i].c[j].venueid
+        let value = <div
+          data-type={resData.data[i].c[j].type}
+          data-time={resData.data[i].a}
+          data-num={resData.data[i].c[j].venueid}
+          data-uuid={resData.data[i].c[j].uuid}
+          onClick={this.lookPlate}
+          data-money={resData.data[i].c[j].money}
+          data-lo={resData.data[i].a+ '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money}
+          style={resData.data[i].c[j].type === 1&&this.state.lotime.indexOf(resData.data[i].a + '-' + resData.data[i].c[j].venueid  + '-' + resData.data[i].c[j].money) === -1 ? { background: '#6FB2FF', height: 40, lineHeight: 3, color: '#fff' } : {} && resData.data[i].c[j].type === 2 ? { background: '#ADD2FF', color: 'transparent', height: 40, lineHeight: 3 } : {} && resData.data[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 40, lineHeight: 3 } : {} && resData.data[i].c[j].type === 4 ? { background: 'red', height: 40, lineHeight: 3 } : {background: 'red', height: 40, lineHeight: 3, color: '#fff'}}
+        > {resData.data[i].c[j].money}</div>
+        obj[key] = value
+        let koTwo = parseInt(resData.data[i].a.slice(1, 2)) + 1 + ':00'
+        
+        obj.lppd = <div style={{ color: '#F5A623', textAlign: 'center' }}>{resData.data[i].a}<br />{resData.data[i].a.slice(3, resData.data[i].a.length) === '00' ? resData.data[i].a.slice(0, 2) + ':30' : koTwo === '10:00' ? parseInt(koTwo.slice(0,1))+1+'0:00':resData.data[i].a.slice(0, 1) + koTwo}</div>
+      }
+      jood.push(obj)
+    }
+    console.log(666)
+    this.setState({
+      lookBan: jood
+    })
   }
 
 
@@ -121,8 +129,9 @@ class appOrder extends React.Component {
   }
 
   componentDidMount() {
+    
 
-    // let query = '?siteuid=f798e37b-644a-9846-fed9-72547a8ea90b&sportid=1&token=NpufGAnsOJ0kjK0JrKDW2TyLsBqmfZaiS4TZkG1Lgkq0Kit5UjiyYKKlof7ZCy4V&sporttype=5'
+    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=NpufGAnsOJ0kjK0JrKDW2TyLsBqmfZaiS4TZkG1Lgkq0Kit5UjiyYKKlof7ZCy4V&sporttype=5'
     let query = this.props.location.search
 
     let arr = query.split('&')
@@ -131,8 +140,7 @@ class appOrder extends React.Component {
     let token = arr[2].slice(6, arr[2].length)
     let sporttype = arr[3].slice(10, arr[3].length)
     this.setState({ sportidQuery: sportid })
-    this.getVenueNumberTitleList({ sportid: sportid, type: '2', siteuuid: siteuid, sporttype: sporttype })
-    this.getAppVenueReservation({ date: '', siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
+    this.getAppVenueReservations({ date: '', siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
     let start = new Date().toLocaleDateString()
     this.setState({ date: start, token: token, siteid: siteuid, sportid: sportid, sporttypeTwo: sporttype, start: start })
   }
@@ -172,7 +180,7 @@ class appOrder extends React.Component {
 
   onConfirm = (e) => {
     this.setState({ show: false, date: e.toLocaleDateString().replace(/\//g, "/"), lotime: '', moneyCall: 0 })
-    this.getAppVenueReservation({ date: e.toLocaleDateString().replace(/\//g, "/"), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo })
+    this.getAppVenueReservations({ date: e.toLocaleDateString().replace(/\//g, "/"), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo })
   }
   onCancel = () => {
     this.setState({ show: false })
@@ -184,7 +192,6 @@ class appOrder extends React.Component {
     let num = e.currentTarget.dataset.num
     let lotime = e.currentTarget.dataset.lo
     if (e.currentTarget.dataset.type === '1') {
-
       if (this.state.lotime.length > 0) {
         if (this.state.lotime.indexOf(lotime) !== -1) {
           this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
@@ -193,10 +200,11 @@ class appOrder extends React.Component {
           for (let i in this.state.lotime) {
             moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
           }
-          this.setState({ moneyCall: moneyCall })
+          this.setState({ moneyCall: moneyCall,lotime:this.state.lotime })
         } else if (this.state.time.indexOf(time) !== -1) {
           this.state.lotime.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money)
           this.setState({ lotime: this.state.lotime })
+          
           let moneyCall = 0
           for (let i in this.state.lotime) {
             moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
@@ -204,14 +212,16 @@ class appOrder extends React.Component {
 
           this.setState({ moneyCall: moneyCall })
         } else {
-
           this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: Number(this.state.moneyCall) + Number(money) })
+         
         }
       } else {
         this.setState({ time: [...this.state.time, time], lotime: [...this.state.lotime, lotime], moneyCall: Number(this.state.moneyCall) + Number(money) })
-
       }
     }
+    setTimeout(()=>{
+      this.loodp(this.state.resData)
+    },50)
   }
 
 
@@ -222,7 +232,6 @@ class appOrder extends React.Component {
       Toast.fail(res.data.msg, 2, null, false);
     } else {
       var sUserAgent = navigator.userAgent;
-      console.log(sUserAgent)
       var mobileAgents = ['Android', 'iPhone', 'miniProgram'];
       for (let index = 0; index < mobileAgents.length; index++) {
         if (sUserAgent.indexOf('Android') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
@@ -284,18 +293,18 @@ class appOrder extends React.Component {
     myDate.setDate(myDate.getDate() - 1)
     this.setState({
       date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(),
-      lotime:[]
+      lotime: []
     })
-    this.getAppVenueReservation({ date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo })
+    this.getAppVenueReservations({ date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo })
   }
   nextDay = e => {
     let myDate = new Date(this.state.date)
     myDate.setDate(myDate.getDate() + 1)
     this.setState({
       date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(),
-      lotime:[]
+      lotime: []
     })
-    this.getAppVenueReservation({ date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo })
+    this.getAppVenueReservations({ date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo })
   }
 
 
@@ -308,15 +317,13 @@ class appOrder extends React.Component {
           <div className="appOrder" onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
             <div className='bookingKanban'>
               <div className="titleDiv">
-                <div className="dayBefore" style={this.state.date === this.state.start ? { display: 'none' } : { display: 'block' }} onClick={this.dayBefore}>前一天</div>
-                <div className="nextDay" onClick={this.nextDay}>后一天</div>
+                <div className="dayBefore" style={this.state.date === this.state.start ? { display: 'none' } : { display: 'block' }} onClick={this.dayBefore}><span>前一天</span></div>
+                <div className="nextDay" onClick={this.nextDay}><span>后一天</span></div>
                 <div className="titleDivTwo" onClick={this.date}>{this.state.date}</div>
-
               </div>
               <div className="modTitle">
 
                 <span className="blue"></span><span>可选</span>
-
 
                 <span className="white"></span><span>不可选</span>
 
@@ -326,68 +333,9 @@ class appOrder extends React.Component {
 
                 <span className="red"></span><span>已选中</span>
               </div>
-              <div className="lookList" onScrollCapture={this.scroll} ref={c => { this.scrollRef = c }} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block' }}>
-                <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 4.25 + 'rem' }}>
-                  <div className="topFixd" style={{ paddingTop: this.state.top, minWidth: '100%', minHeight: '3rem' }}>
-                    <div style={this.state.venueNum.length > 0 ? { display: 'none' } : { display: 'block' }}>
-                      <span><span style={this.state.topNumList.length > 0 ? {} : { display: 'none' }}>标题</span><br />场地号</span>
-                      {
-                        this.state.macNum.map((item, i) => (
-                          <span key={i}>{item.title}<br />{i + 1}</span>
-                        ))
-                      }
-                    </div>
-
-
-                    <div style={this.state.venueNum.length > 0 && this.state.topNumList.length === 0 ? {} : { display: 'none' }}>
-                      <span>分类<br />场地号</span>
-                      {
-                        this.state.sporttype.map((item, i) => (
-                          <span key={i}>{item.sporttypename}<br />{item.venueid}</span>
-                        ))
-                      }
-                    </div>
-
-                    <div style={this.state.venueNum.length > 0 && this.state.topNumList.length > 0 ? {} : { display: 'none' }}>
-                      <span>分类<br /><span style={this.state.topNumList.length > 0 ? {} : { display: 'none' }}>标题</span><br />场地号</span>
-                      {
-                        this.state.sporttype.map((item, i) => (
-                          <span key={i}>{item.sporttypename}<br />{item.title}<br />{item.venueid}</span>
-                        ))
-                      }
-                    </div>
-
-
-                  </div>
-                  <div style={{ height: '4rem', lineHeight: '2.5rem' }}></div>
-                  {
-                    this.state.lookList.map((index, i) => (
-                      <div key={i} className="sonList">
-                        <span style={{ width: 45 + this.state.left, textAlign: 'right', paddingRight: '8px' }}>{index.a}<br /><span style={{ paddingTop: '0.5rem', display: 'block' }}>{i === this.state.lookList.length - 1 ? this.state.lastTime : ''}</span></span>
-                        <span></span>
-                        {
-                          this.state.lookList[i].c.map((item, i) => (
-                            <span
-                              key={i}
-                              data-time={index.a}
-                              data-num={item.venueid}
-                              data-uuid={item.uuid}
-                              data-type={item.type}
-                              onClick={this.lookPlate}
-                              data-money={item.money}
-                              data-lo={index.a + '-' + item.venueid + '-' + item.money}
-                              style={item.type === 1 && this.state.lotime.indexOf(index.a + '-' + item.venueid + '-' + item.money) === -1 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff' } : { background: 'red', marginTop: '0.12rem', color: '#fff' } && item.type === 2 ? { background: '#6FB2FF', marginTop: '0.12rem', opacity: '0.3' } : {} && item.type === 3 ? { background: '#F5A623', marginTop: '0.12rem' } : {} && item.type === 4 ? { background: 'red', marginTop: '0.12rem' } : { background: 'red', marginTop: '0.12rem', color: '#fff' }}>
-                              {item.type === 1 ? item.money : ''}
-                            </span>
-                          ))
-                        }
-                      </div>
-                    ))
-                  }
-                </div>
-              </div>
+              <Table loading={false} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '95%' }} />,
               <Result
-                style={this.state.lookList.length > 1 ? { display: 'none' } : { display: 'block' }}
+                style={this.state.otherType.length === 0 ? { display: 'block' } : { display: 'none' }}
                 img={<Icon type="cross-circle-o" style={{ fill: 'rgba(245,166,35,1)', width: '4rem', height: '4rem' }} />}
                 title="无场地可预约"
               />

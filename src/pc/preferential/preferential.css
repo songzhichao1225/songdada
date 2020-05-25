@@ -76,7 +76,6 @@
 }
 .orderList .circumstance{
     display: block;
-    position: relative;
     clear: both;
 }
 .orderList .circumstanceT{
@@ -157,8 +156,8 @@
 .orderList .circumstance .rightNav{
     position: absolute;
     list-style: none;
-    right: 30px;
-    top: 12px;
+    left: 10px;
+   
 }
 .orderList .circumstance .rightNav>li{
     float: left;

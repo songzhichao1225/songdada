@@ -1,11 +1,11 @@
 import React from 'react';
 import './closeYu.css';
 import 'antd/dist/antd.css';
-import { VenueTemporarilyClosedList,VenueTemporarilyClosed, VenueTemporarilyClosedDel,VenueTemporarilyClosedSave,getSetUpFieldSportId } from '../../api';
-import { message, Modal, Select, DatePicker, Input, LocaleProvider, Row, Col, Popconfirm, Result,Pagination } from 'antd';
-import {BankOutlined} from '@ant-design/icons';
+import { VenueTemporarilyClosedList, VenueTemporarilyClosed, VenueTemporarilyClosedDel, VenueTemporarilyClosedSave, getVenueSportList } from '../../api';
+import { message, Modal, Select, DatePicker, Input, Row, Col, Popconfirm, Result, Pagination } from 'antd';
+import { BankOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import zh_CN from 'antd/lib/locale-provider/zh_CN';
+import locale from 'antd/es/date-picker/locale/zh_CN';
 import 'moment/locale/zh-cn';
 const { Option } = Select;
 
@@ -18,7 +18,6 @@ const { TextArea } = Input;
 
 
 function disabledDate(current) {
-  // Can not select days before today and today
   return current && current < moment().endOf('day');
 }
 
@@ -37,9 +36,9 @@ class closeYu extends React.Component {
     closeList: [],
     Uid: '',
     other: 0,
-    page:0,
-    update:0,
-    colseuuid:'',
+    page: 0,
+    update: 0,
+    colseuuid: '',
   };
 
 
@@ -55,25 +54,25 @@ class closeYu extends React.Component {
     } else if (res.data.code !== 2000 && res.data.code !== 4001) {
       this.setState({ closeList: res.data.data, other: res.data.other })
     } else {
-      if(this.state.update===1){
-        this.setState({runName:res.data.data[0].sportname,start:res.data.data[0].starttime,end:res.data.data[0].endtime,runId:res.data.data[0].sportid,textArea:res.data.data[0].comment})
-      }else if(this.state.update===0){
+      if (this.state.update === 1) {
+        this.setState({ runName: res.data.data[0].sportname, start: res.data.data[0].starttime, end: res.data.data[0].endtime, runId: res.data.data[0].sportid, textArea: res.data.data[0].comment })
+      } else if (this.state.update === 0) {
         this.setState({ closeList: res.data.data, other: res.data.other })
       }
     }
   }
 
 
-  
 
-  async getSetUpFieldSportId(data) {
-    const res = await getSetUpFieldSportId(data, sessionStorage.getItem('venue_token'))
-     this.setState({ListSport:res.data.data})
+
+  async getVenueSportList(data) {
+    const res = await getVenueSportList(data, sessionStorage.getItem('venue_token'))
+    this.setState({ ListSport: res.data.data })
   }
 
 
   model = () => {
-    this.getSetUpFieldSportId()
+    this.getVenueSportList()
     this.setState({ visible: true })
   }
   componentDidMount() {
@@ -81,7 +80,7 @@ class closeYu extends React.Component {
     let start = moment().startOf('day').add(1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
     let end = moment().endOf('day').add(1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
     this.setState({ start: start, end: end })
-    this.getSetUpFieldSportId()
+    this.getVenueSportList()
   }
 
   next = () => {
@@ -98,8 +97,8 @@ class closeYu extends React.Component {
     this.setState({ start: start, end: end })
   }
 
-  dateChange=(dates,eStrings)=>{
-   this.setState({start:eStrings[0],end:eStrings[1]})
+  dateChange = (dates, eStrings) => {
+    this.setState({ start: eStrings[0], end: eStrings[1] })
   }
 
   timer = (date) => {
@@ -124,22 +123,34 @@ class closeYu extends React.Component {
         day = "乒乓球";
         break;
       case 3:
-        day = "台球";
+        day = "台球中式黑八";
         break;
       case 4:
-        day = "篮球";
+        day = "台球美式九球";
         break;
       case 5:
-        day = "足球";
+        day = "台球斯诺克";
         break;
       case 6:
-        day = "排球";
+        day = "篮球";
         break;
       case 7:
-        day = "网球";
+        day = "足球11人制";
         break;
       case 8:
-        day = "高尔夫";
+        day = "足球8人制";
+        break;
+      case 9:
+        day = "足球7人制";
+        break;
+      case 10:
+        day = "足球5人制";
+        break;
+      case 11:
+        day = "排球";
+        break;
+      case 12:
+        day = "网球";
         break;
       default:
         day = "";
@@ -156,35 +167,35 @@ class closeYu extends React.Component {
     if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
-    } else if(res.data.data.code===2000) {
+    } else if (res.data.data.code === 2000) {
       this.setState({ visible: false })
       message.info(res.data.msg)
       this.VenueTemporarilyClosedList()
-    }else{
+    } else {
       message.warning(res.data.msg)
     }
   }
 
 
-  
+
   async VenueTemporarilyClosedSave(data) {
     const res = await VenueTemporarilyClosedSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
     } else {
-      this.setState({ visible: false,update:0 })
+      this.setState({ visible: false, update: 0 })
       message.info(res.data.msg)
       this.VenueTemporarilyClosedList()
     }
   }
 
   modelSubmit = () => {
-    let { runName, runId, start, end, textArea,colseuuid } = this.state
-    if(this.state.update===0){
-    this.VenueTemporarilyClosed({ sportid: runId, sportname: runName, starttime: start, endtime: end, comment: textArea })
-    }else if(this.state.update===1){
-       this.VenueTemporarilyClosedSave({colseuuid:colseuuid,sportid:runId,sportname:runName,starttime:start,endtime:end,comment:textArea})
+    let { runName, runId, start, end, textArea, colseuuid } = this.state
+    if (this.state.update === 0) {
+      this.VenueTemporarilyClosed({ sportid: runId, sportname: runName, starttime: start, endtime: end, comment: textArea })
+    } else if (this.state.update === 1) {
+      this.VenueTemporarilyClosedSave({ colseuuid: colseuuid, sportid: runId, sportname: runName, starttime: start, endtime: end, comment: textArea })
     }
 
 
@@ -202,11 +213,11 @@ class closeYu extends React.Component {
       message.error('登陆超时请重新登陆！')
     } else {
       message.info(res.data.msg)
-      this.VenueTemporarilyClosedList({page:this.state.page})
+      this.VenueTemporarilyClosedList({ page: this.state.page })
     }
   }
-  handleCancel=()=>{
-    this.setState({update:0,visible:false})
+  handleCancel = () => {
+    this.setState({ update: 0, visible: false })
   }
 
 
@@ -217,8 +228,8 @@ class closeYu extends React.Component {
 
   update = e => {
     this.getVenueSport()
-    this.setState({ visible: true,update:1,colseuuid:e.target.dataset.uid })
-    this.VenueTemporarilyClosedList({colseuuid:e.target.dataset.uid})
+    this.setState({ visible: true, update: 1, colseuuid: e.target.dataset.uid })
+    this.VenueTemporarilyClosedList({ colseuuid: e.target.dataset.uid })
 
   }
 
@@ -252,7 +263,7 @@ class closeYu extends React.Component {
                 <Col xs={{ span: 4, offset: 0 }}>{item.endtime}</Col>
                 <Col xs={{ span: 4, offset: 0 }}>
                   {/* <img onClick={this.update} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp; */}
-                 <Popconfirm
+                  <Popconfirm
                     title="你确定要删除本条信息吗?"
                     onConfirm={this.confirm}
                     onCancel={this.cancel}
@@ -269,10 +280,10 @@ class closeYu extends React.Component {
         </div>
 
         <Pagination className={this.state.closeList.length > 1 ? 'fenye' : 'hidden'} defaultCurrent={1} total={parseInt(this.state.other)} onChange={this.current} />
-        <Result style={this.state.closeList.length < 1 ? { display: 'block' } : { display: 'none' }} icon={<BankOutlined style={{color:'#F5A623'}}/>} title="您还没有关闭预约" />,
-  
-  
-  
+        <Result style={this.state.closeList.length < 1 ? { display: 'block' } : { display: 'none' }} icon={<BankOutlined style={{ color: '#F5A623' }} />} title="您还没有关闭预约" />,
+
+
+
         <Modal
           title="添加/修改临时关闭预约时间"
           visible={this.state.visible}
@@ -284,27 +295,26 @@ class closeYu extends React.Component {
             <Select placeholder="请选择" className="selectN" style={{ width: 350, marginLeft: 15 }} value={this.state.runName} onChange={this.handleChangeSelect}>
               {
                 this.state.ListSport.map((item, i) => (
-                  <Option key={i} value={item.sportid}>{item.name}</Option>
+                  <Option key={i} value={item.value}>{item.label}</Option>
                 ))
               }
-            </Select>  
+            </Select>
           </div>
           <div className="one" style={{ marginTop: 20 }}>
             <span>选择时间</span>
-            {/* <LocaleProvider locale={zh_CN}>
-              <RangePicker
-                style={{ width: 350, marginLeft: 15 }}
-                disabledDate={disabledDate}
-                onChange={this.dateChange}
-                onOk={this.dateSelect}
-                value={[moment(this.state.start), moment(this.state.end)]}
-                showTime={{
-                  hideDisabledOptions: true,
-                  defaultValue: [moment('00:00', 'HH:mm'), moment('00:00', 'HH:mm')],
-                }}
-                format="YYYY-MM-DD HH:mm"
-              />
-            </LocaleProvider> */}
+            <RangePicker
+              style={{ width: 350, marginLeft: 15 }}
+              disabledDate={disabledDate}
+              onChange={this.dateChange}
+              onOk={this.dateSelect}
+              locale={locale}
+              value={[moment(this.state.start),moment(this.state.end)]}
+              showTime={{
+                hideDisabledOptions: true,
+                defaultValue: [moment('00:00', 'HH:mm'), moment('00:00', 'HH:mm')],
+              }}
+              format="YYYY-MM-DD HH:mm"
+            />
           </div>
 
           <div className="one" style={{ marginTop: 20 }}>

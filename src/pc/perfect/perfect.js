@@ -1,7 +1,7 @@
 import React from 'react';
 import './perfect.css';
 import 'antd/dist/antd.css';
-import { getProvince, getCrty, getArea, PerfectingVenueInformation, getVenueInformation,getVenueSportList, VenueInformationSave } from '../../api';
+import { getProvince, getCrty, getArea, PerfectingVenueInformation, getVenueInformation, getVenueSportList, VenueInformationSave } from '../../api';
 import { Select, Input, Checkbox, Button, Upload, message, Modal } from 'antd';
 import Icon from '@ant-design/icons';
 
@@ -41,9 +41,7 @@ function beforeUpload(file) {
   }
   return isJpgOrPng && isLt2M;
 }
-message.config({
-  top: 300
-})
+
 
 class perfect extends React.Component {
 
@@ -69,7 +67,7 @@ class perfect extends React.Component {
     lng: '',
     handelPerson: '',
     handleTelephone: '',
-    plainOptions:[]
+    plainOptions: []
   };
 
 
@@ -89,18 +87,18 @@ class perfect extends React.Component {
       this.setState({
         position: res.data.data.position, handleAddress: res.data.data.address, handleName: res.data.data.name, imageUrl: res.data.data.firstURL, fileList: arrImg,
         onChangeCheck: res.data.data.sport, onChangeSite: res.data.data.facilities, onChangeText: res.data.data.siteInfo, lat: res.data.data.lat, lng: res.data.data.lng,
-        province:res.data.data.province,city:res.data.data.city,area:res.data.data.area,
-       imageRes: res.data.data.firstURL, handelPerson: res.data.data.linkMan, handleTelephone: res.data.data.telephone
+        province: res.data.data.province, city: res.data.data.city, area: res.data.data.area,
+        imageRes: res.data.data.firstURL, handelPerson: res.data.data.linkMan, handleTelephone: res.data.data.telephone
       })
     }
   }
 
-  
+
 
   async getVenueSportList(data) {
     const res = await getVenueSportList(data)
     this.setState({
-      plainOptions:res.data.data
+      plainOptions: res.data.data
     })
   }
 
@@ -258,7 +256,7 @@ class perfect extends React.Component {
       }
       if (filesURLarr.length < 2) {
         message.warning("至少上传两张场地照片")
-       
+
       } else {
         let sportId = sessionStorage.getItem('onChangeCheck') === null ? this.state.onChangeCheck.split(',') : sessionStorage.getItem('onChangeCheck').split(',')
         let facilitiesId = sessionStorage.getItem('onChangeSite') === null ? this.state.onChangeSite.split(',') : sessionStorage.getItem('onChangeSite').split(',')
@@ -266,9 +264,9 @@ class perfect extends React.Component {
           venuename: localStorage.getItem('handleName'),
           lat: this.props.location.query === undefined ? this.state.lat : this.props.location.query.lat,
           lng: this.props.location.query === undefined ? this.state.lng : this.props.location.query.lng,
-          province:this.props.location.query===undefined?this.state.province:this.props.location.query.province,
-          city:this.props.location.query===undefined?this.state.city:this.props.location.query.city,
-          area:this.props.location.district===undefined?this.state.area:this.props.location.query.district,
+          province: this.props.location.query === undefined ? this.state.province : this.props.location.query.province,
+          city: this.props.location.query === undefined ? this.state.city : this.props.location.query.city,
+          area: this.props.location.district === undefined ? this.state.area : this.props.location.query.district,
           address: handleAddress,
           filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
           firstURL: imageRes,
@@ -281,7 +279,19 @@ class perfect extends React.Component {
           linkMan: handelPerson,
           telephone: handleTelephone,
         }
-        this.VenueInformationSave(data)
+        if (data.facilities === '') {
+          message.error('请选择至少一项运动设施')
+        } else if (data.venuename === '') {
+          message.error('请填写场馆名称')
+        } else if (data.linkMan === '') {
+          message.error('请填写联系人')
+        } else if (data.telephone === '') {
+          message.error('请输入联系人电话')
+        } else if (data.sport === '') {
+          message.error('请选择运动项目')
+        }else{
+          this.VenueInformationSave(data)
+        }
       }
 
     } else {
@@ -291,14 +301,14 @@ class perfect extends React.Component {
       }
       if (filesURLarr.length < 2) {
         message.warning("至少上传两张场地照片")
-      
+
       } else if (this.props.location.query === undefined) {
         message.warning('请选择场馆位置')
       } else {
         let sportId = sessionStorage.getItem('onChangeCheck') === null ? '' : sessionStorage.getItem('onChangeCheck').split(',')
         let facilitiesId = sessionStorage.getItem('onChangeSite') === null ? '' : sessionStorage.getItem('onChangeSite').split(',')
         let data = {
-          venueloginuuid: sessionStorage.getItem('uuid'),//看不懂  就别干了
+          venueloginuuid: sessionStorage.getItem('uuid'),
           province: localStorage.getItem('handleArea'),
           city: localStorage.getItem('handleCity'),
           area: localStorage.getItem('handleDistrict'),
@@ -315,7 +325,19 @@ class perfect extends React.Component {
           linkMan: handelPerson,
           telephone: handleTelephone,
         }
+        if (data.facilities === '') {
+          message.error('请选择至少一项运动设施')
+        } else if (data.venuename === '') {
+          message.error('请填写场馆名称')
+        } else if (data.linkMan === '') {
+          message.error('请填写联系人')
+        } else if (data.telephone === '') {
+          message.error('请输入联系人电话')
+        } else if (data.sport === '') {
+          message.error('请选择运动项目')
+        }else{
         this.PerfectingVenueInformation(data)
+        }
       }
     }
   }
@@ -368,10 +390,10 @@ class perfect extends React.Component {
           </div>
           <div className="content">
             <div className="nav">
-              <div><span>1.填写注册信息</span><img src={require("../../assets/oneline.png")} alt="5"/></div>
-              <div><span>2.完善场馆信息</span><img src={require("../../assets/lineThree.png")} alt="5"/></div>
-              <div><span>3.等待审核</span><img src={require("../../assets/twoline.png")} alt="5"/></div>
-              <div><span>4.审核成功</span><img src={require("../../assets/twoline.png")} alt="5"/></div>
+              <div><span>1.填写注册信息</span><img src={require("../../assets/oneline.png")} alt="5" /></div>
+              <div><span>2.完善场馆信息</span><img src={require("../../assets/lineThree.png")} alt="5" /></div>
+              <div><span>3.等待审核</span><img src={require("../../assets/twoline.png")} alt="5" /></div>
+              <div><span>4.审核成功</span><img src={require("../../assets/twoline.png")} alt="5" /></div>
             </div>
             <div className="contentSon">
               <span className="titile">场馆基本信息</span>
@@ -457,6 +479,7 @@ class perfect extends React.Component {
                     onPreview={this.handlePreview}
                     onChange={this.handleChangeT}
                     accept=".jpg, .jpeg, .png"
+                    
                   >
                     {fileList.length >= 8 ? null : uploadButtonT}
                   </Upload>
@@ -467,9 +490,9 @@ class perfect extends React.Component {
                 <span className="rightText">上传图片小于3M<br />上传图片尺寸在1200px*860px 之内</span>
               </div>
 
-              <div className="name" style={{overflow:'hidden'}}>
+              <div className="name" style={{ overflow: 'hidden' }}>
                 <span className="symbol">*</span><span className="boTitle">运动项目</span><span className="kong"></span>
-                <Checkbox.Group style={{float:'left',width:'80%',marginLeft:'26.8px'}} options={this.state.plainOptions} onChange={this.onChangeCheck} value={this.state.onChangeCheck} /><br /><span className="kong"></span>
+                <Checkbox.Group style={{ float: 'left', width: '80%', marginLeft: '26.8px' }} options={this.state.plainOptions} onChange={this.onChangeCheck} value={this.state.onChangeCheck} /><br /><span className="kong"></span>
               </div>
 
 

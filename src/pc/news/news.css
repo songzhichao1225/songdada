@@ -1,3 +1,6 @@
+.news{
+    height: 100%;
+}
 .news .xiange{
    height: 8px;
    background: #F5F5F5
@@ -67,6 +70,11 @@
     margin-left: 20px;
     cursor: pointer;
     
+}
+.news .content{
+    overflow-y: auto;
+    height: 90%;
+    padding-bottom: 60px;
 }
 
 .news .fenye{

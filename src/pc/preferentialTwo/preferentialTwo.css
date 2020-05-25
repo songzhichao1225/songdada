@@ -1,6 +1,7 @@
 
 .orderList{
     height: 100%;
+    cursor: pointer;
 }
 .orderList .navTab{
     height: 46px;
@@ -44,8 +45,37 @@
     background: transparent;
     border:none;
     text-align: center;
+}
+.orderList .ant-table-thead > tr > th{
+    text-align: center;
+}
+.orderList .ant-table-tbody > tr > td{
+    padding:0 2px; 
+    text-align: center;
+    color: #fff; 
+    width: 76px;
+    background: #E9E9E9;
     
 }
+
+.ant-table-tbody > tr:hover:not(.ant-table-expanded-row) > td {
+	background-color: #E9E9E9;
+}
+.ant-table-body .ant-table-row-hover{
+	background: transparent;
+}
+.ant-table-body .ant-table-row-hover>td{
+	background: transparent;
+}
+
+ 
+.orderList .ant-table-tbody > tr{
+    background-color: #fff;
+}
+.orderList .ant-table-tbody > tr > td:first-chil{
+    background-color: #E9E9E9;
+}
+
 .orderList .ant-select-open{
     text-align: center;
 }
@@ -76,7 +106,6 @@
 }
 .orderList .circumstance{
     display: block;
-    position: relative;
     clear: both;
 }
 .orderList .circumstanceT{
@@ -92,6 +121,24 @@
    float: left;
    margin-left: 20px;
    height: 32px;
+}
+.orderList .ant-table-ping-right:not(.ant-table-has-fix-right) .ant-table-container{
+    height: 100%;
+}
+.orderList .ant-table{
+    height: 100%;
+}
+.orderList .ant-spin-container{
+    height: 100%;
+}
+.orderList .ant-table-container{
+    height: 100%;
+}
+.orderList .ant-spin-nested-loading{
+    height: 100%;
+}
+.orderList .ant-table-wrapper{
+    height: 92%;
 }
 .orderList .circumstance .prompt>div>span:first-child{
    display: block;
@@ -113,8 +160,8 @@
     width: 16px;
     height: 16px;
     float: left;
-    background: #E9E9E9;
     border-radius: 2px;
+  
   }
 
   .orderList .circumstance .prompt>div:nth-child(3)>span:first-child{
@@ -124,6 +171,29 @@
     float: left;
     background: red;
     border-radius: 2px;
+  }
+  .orderList .cofirmZ{
+      width: 90px;
+      height: 20px;
+      background: #F5A623;
+      border-radius: 2px;
+      color: #fff;
+      text-align: center;
+      line-height: 20px;
+      margin-top: 12px;
+      float: left;
+  }
+
+  .orderList .cofirmZText{
+      width: 35px;
+      height: 20px;
+      color: #fff;
+      text-align: center;
+      line-height: 20px;
+      float:left;
+      margin-top: 12px;
+      background: #F5A623;
+      border-radius: 2px;
   }
 
   .orderList .circumstance .prompt>div:nth-child(4)>span:first-child{
@@ -143,14 +213,6 @@
       padding-left: 25px;
       margin-bottom: 0;
   }
- .orderList .ant-select-single:not(.ant-select-customize-input) .ant-select-selector{
-     padding:0;
-     border:none;
-     background-color: #FCF7EE;
- }
- .orderList .ant-select-single.ant-select-show-arrow .ant-select-selection-item, .ant-select-single.ant-select-show-arrow .ant-select-selection-placeholder{
-     padding-right: 5px;
- }
   .orderList .circumstance .activityNav>li{
     float: left;
     font-size: 14px;
@@ -165,8 +227,8 @@
 .orderList .circumstance .rightNav{
     position: absolute;
     list-style: none;
-    right: 30px;
-    top: 12px;
+    left: 10px;
+   
 }
 .orderList .circumstance .rightNav>li{
     float: left;

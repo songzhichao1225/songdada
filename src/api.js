@@ -18,7 +18,7 @@ export function getPromoteName(data){   //输入推广专员id号显示其姓名
 }
 
 export function _code(data){    //获取验证码
-    return axios.post('/api/toSendCode',data)
+    return axios.post('/api/toVenueSendCode',data)
 }
 
 
@@ -63,8 +63,8 @@ export function VenueSendMessage(data,headers){    //预约活动列表发送消
     return axios.post('/api/VenueSendMessage',data, {headers: {'token': headers}})
 }
 
-export function getVenueReservationss(data,headers){    //场地预约情况
-    return axios.post('/api/getVenueReservationss',data, {headers: {'token': headers}})
+export function getVenueReservation(data,headers){    //场地预约情况
+    return axios.post('/api/getVenueReservation',data, {headers: {'token': headers}})
 }
 
 export function getSiteSettingList(data,headers){    //场地设置列表
@@ -78,13 +78,6 @@ export function addVenueField(data,headers){    //添加场地设置
     return axios.post('/api/addVenueField',data, {headers: {'token': headers}})
 }
 
-export function delVenueField(data,headers){    //删除场地设置
-    return axios.post('/api/delVenueField',data, {headers: {'token': headers}})
-}
-
-export function getFirstField(data,headers){    //查看某一条场地设置信息置
-    return axios.post('/api/getFirstField',data, {headers: {'token': headers}})
-}
 
 export function getVenueSport(data,headers){    //查看当前场馆的运动项目
     return axios.post('/api/getVenueSport',data, {headers: {'token': headers}})
@@ -342,6 +335,35 @@ export function getSiteSelectedVenueid(data,headers){    // 场地细分~获取�
 export function DelVenueNumberTitle(data,headers){    // 场地细分~删除某一个场地细分
     return axios.post('/api/DelVenueNumberTitle',data, {headers: {'token': headers}})
 }
+
+export function getSiteSelectedTitle(data,headers){    // 场地细分~查询场馆中某一运动项目下的场地细分
+    return axios.post('/api/getSiteSelectedTitle',data, {headers: {'token': headers}})
+}
+
+export function AddSiteSetting(data,headers){    // 添加与修改场地设置
+    return axios.post('/api/AddSiteSetting',data,{headers: {'token': headers}})
+}
+
+export function getSiteSettingFirst(data,headers){    // 查询某一条场地设置
+    return axios.post('/api/getSiteSettingFirst',data,{headers: {'token': headers}})
+}
+
+export function DelSiteSetting(data,headers){    // 删除场地设置
+    return axios.post('/api/DelSiteSetting',data,{headers: {'token': headers}})
+}
+
+export function SiteSettingDiscountSave(data,headers){    //编辑优惠活动
+    return axios.post('/api/SiteSettingDiscountSave',data,{headers: {'token': headers}})
+}
+
+export function getAppVenueReservations(data,headers){    //App选择场地
+    return axios.post('/api/getAppVenueReservations',data,{headers: {'token': headers}})
+}
+
+export function DelSiteSettingDiscount(data,headers){    //删除优惠活动设置
+    return axios.post('/api/DelSiteSettingDiscount',data,{headers: {'token': headers}})
+}
+
 
 
 
