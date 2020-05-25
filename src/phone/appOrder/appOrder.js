@@ -104,14 +104,13 @@ class appOrder extends React.Component {
           data-lo={resData.data[i].a+ '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money}
           style={resData.data[i].c[j].type === 1&&this.state.lotime.indexOf(resData.data[i].a + '-' + resData.data[i].c[j].venueid  + '-' + resData.data[i].c[j].money) === -1 ? { background: '#6FB2FF', height: 40, lineHeight: 3, color: '#fff' } : {} && resData.data[i].c[j].type === 2 ? { background: '#ADD2FF', color: 'transparent', height: 40, lineHeight: 3 } : {} && resData.data[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 40, lineHeight: 3 } : {} && resData.data[i].c[j].type === 4 ? { background: 'red', height: 40, lineHeight: 3 } : {background: 'red', height: 40, lineHeight: 3, color: '#fff'}}
         > {resData.data[i].c[j].money}</div>
-        obj[key] = value
-        let koTwo = parseInt(resData.data[i].a.slice(1, 2)) + 1 + ':00'
-        
-        obj.lppd = <div style={{ color: '#F5A623', textAlign: 'center' }}>{resData.data[i].a}<br />{resData.data[i].a.slice(3, resData.data[i].a.length) === '00' ? resData.data[i].a.slice(0, 2) + ':30' : koTwo === '10:00' ? parseInt(koTwo.slice(0,1))+1+'0:00':resData.data[i].a.slice(0, 1) + koTwo}</div>
-      }
+          obj[key] = value
+          let koTwo = parseInt(resData.data[i].a.slice(1, 2)) + 1 + ':00'
+          console.log(koTwo)
+          obj.lppd = <div style={{ color: '#F5A623',textAlign:'center' }}>{resData.data[i].a}<br />{resData.data[i].a.slice(3, resData.data[i].a.length) === '00' ? resData.data[i].a.slice(0, 2) + ':30' : koTwo === '10:00' ? parseInt(koTwo.slice(0, 1)) + '0:00' : resData.data[i].a.slice(0, 1) + koTwo}</div>
+         }
       jood.push(obj)
     }
-    console.log(666)
     this.setState({
       lookBan: jood
     })
@@ -327,13 +326,11 @@ class appOrder extends React.Component {
 
                 <span className="white"></span><span>不可选</span>
 
-
                 <span className="yellow"></span><span>已占用</span>
-
 
                 <span className="red"></span><span>已选中</span>
               </div>
-              <Table loading={false} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '95%' }} />,
+              <Table loading={false} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '88%' }} />,
               <Result
                 style={this.state.otherType.length === 0 ? { display: 'block' } : { display: 'none' }}
                 img={<Icon type="cross-circle-o" style={{ fill: 'rgba(245,166,35,1)', width: '4rem', height: '4rem' }} />}
@@ -360,7 +357,6 @@ class appOrder extends React.Component {
           </div>
         </div>
       </div>
-
     )
   }
 }

@@ -308,6 +308,7 @@ class closeYu extends React.Component {
               onChange={this.dateChange}
               onOk={this.dateSelect}
               locale={locale}
+              allowClear={false}
               value={[moment(this.state.start),moment(this.state.end)]}
               showTime={{
                 hideDisabledOptions: true,
@@ -320,15 +321,13 @@ class closeYu extends React.Component {
           <div className="one" style={{ marginTop: 20 }}>
             <span style={{ display: 'block', float: 'left' }}>备注</span>
             <TextArea style={{ width: 350, marginLeft: 43 }} onChange={this.textArea} value={this.state.textArea} rows={3} />
-
           </div>
           <div className="submit" onClick={this.modelSubmit}>确认</div>
         </Modal>
-
       </div>
 
 
-    );
+    )
   }
 }
 

@@ -146,7 +146,7 @@ class systemSettings extends React.Component {
           this.setState({ textT: '获取验证码' })
         }
       }, 1000)
-      this.nacode({ "mobile": this.state.phone, "type": 'venuesavepass' })
+      this.nacode({ "mobile": this.state.phone, "type": 'venuesavepass',"uuid":sessionStorage.getItem('uuid') })
     } else {
       message.error('请输入正确手机号')
     }
@@ -188,8 +188,10 @@ class systemSettings extends React.Component {
     }
   }
 
-  naCodeOutieTwo = () => {
-    if (this.state.operationPhone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.operationPhone))&&this.state.operationPhone.length===11) {
+
+  async nacodeTwo(data) {
+    const res = await _code(data)
+    if (res.data.code === 2000) {
       let num = 60
       const timer = setInterval(() => {
         this.setState({ textTwo: num-- })
@@ -198,7 +200,16 @@ class systemSettings extends React.Component {
           this.setState({ textTwo: '获取验证码' })
         }
       }, 1000)
-      this.nacode({ "mobile": this.state.operationPhone, "type": 'venuebindingczy',"uuid":sessionStorage.getItem('uuid') })
+      message.info(res.data.msg)
+    } else {
+      message.error(res.data.msg)
+    }
+  }
+
+  naCodeOutieTwo = () => {
+    if (this.state.operationPhone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.operationPhone))&&this.state.operationPhone.length===11) {
+      
+      this.nacodeTwo({ "mobile": this.state.operationPhone, "type":'venuebindingczy'})
     } else {
       message.error('请输入正确手机号')
     }
@@ -213,6 +224,7 @@ class systemSettings extends React.Component {
       message.error('两次密码输入不一致')
     }
   }
+
 
 
   corporatePhone = e => {
@@ -266,6 +278,7 @@ class systemSettings extends React.Component {
     this.getVenueSport()
     this.setState({ visible: true })
   }
+  
   handleChangeSelect = e => {
     this.setState({ runId: e })
     let day = ''

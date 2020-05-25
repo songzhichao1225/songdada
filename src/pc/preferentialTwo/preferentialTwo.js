@@ -19,7 +19,7 @@ for (let i = 0; i < 100; i++) {
     [i]: `Edward King ${i}`,
     age: 32,
     address: `London, Park Lane no. ${i}`,
-  });
+  })
 }
 
 
@@ -520,7 +520,7 @@ class appointmentList extends React.Component {
           onCancel={this.handleCancelInFo}
         >
           <div style={{ overflow: 'hidden' }}>
-            <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>姓名：  </span>
+            <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>姓名：</span>
             <Input style={{ width: 250, float: 'left' }} onChange={this.placeName} placeholder='(选填)' />
           </div>
           <div style={{ overflow: 'hidden', marginTop: '10px' }}>

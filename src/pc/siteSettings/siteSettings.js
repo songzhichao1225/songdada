@@ -851,6 +851,7 @@ class siteSettings extends React.Component {
       joinXi: true,
       update: 0, starttime: '',
       endtime: '',
+      typeDetel:1
     })
   }
   async getSiteSelectedTitle(data) {
@@ -1087,7 +1088,7 @@ class siteSettings extends React.Component {
 
         </div>
         <div className="xiange"></div>
-        <div style={this.state.headerData === '2' ? { overflowY: 'auto', height: '92%' } : { display: 'none' }}>
+        <div style={this.state.headerData === '2' ? { overflowY: 'auto', height: '89%' } : { display: 'none' }}>
           <div className={this.state.hidden === true ? 'siteList' : 'hidden'} style={{ paddingBottom: 0 }}>
             <Row className="rowConten" style={{ background: '#FCF7EE' }}>
               <Col xs={{ span: 2 }}>场地类型</Col>
@@ -1151,7 +1152,7 @@ class siteSettings extends React.Component {
 
         <div className="join" style={this.state.headerData === '2' ? {} : { display: 'none' }} onClick={this.showModalTwo}><div style={{ textAlign: 'center', width: '150px', margin: '0 auto' }}>+添加价格设置</div></div>
 
-        <div style={this.state.headerData === '1' ? { overflowY: 'auto', height: '92%' } : { display: 'none' }}>
+        <div style={this.state.headerData === '1' ? { overflowY: 'auto', height: '89%' } : { display: 'none' }}>
           <Row className="rowConten" style={{ background: '#FCF7EE', borderBottom: '1px solid #E1E0E1' }}>
             <Col xs={{ span: 5 }}>场地类型</Col>
             <Col xs={{ span: 5 }}>细分标签</Col>
@@ -1227,7 +1228,7 @@ class siteSettings extends React.Component {
           </div>
           <div className="modelList" style={{ height: '32px' }}>
             <span>场地编号</span>
-            <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 269, background: '#fff' }} value={this.state.chekedTwo === '' ? [] : this.state.chekedTwo} disabled={true} placeholder="点击进行添加" onChange={this.money} />
+            <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 269, background: '#fff',cursor:'pointer' }} value={this.state.chekedTwo === '' ? [] : this.state.chekedTwo} disabled={true} placeholder="点击进行添加" onChange={this.money} />
           </div>
           <div className="modelList">
             <span>场地总数量</span>
@@ -1372,7 +1373,7 @@ class siteSettings extends React.Component {
 
           <div className="modelList" style={{ height: '32px' }} onClick={this.serial}>
             <span>场地编号</span>
-            <Input className="startTime" value={this.state.arrCheked.length !== 0 ? this.state.arrCheked : []} style={{ paddingLeft: '10px', height: 32, background: '#fff' }} disabled={true} placeholder="点击进行添加" />
+            <Input className="startTime" value={this.state.arrCheked.length !== 0 ? this.state.arrCheked : []} style={{ paddingLeft: '10px', height: 32, background: '#fff',cursor:'pointer' }} disabled={true} placeholder="点击进行添加" />
           </div>
 
           <div className="modelList" style={{ height: '32px' }} >
@@ -1430,7 +1431,7 @@ class siteSettings extends React.Component {
           className='model'
         >
           <div>您还没对<span style={{ color: '#F5A623' }}>{this.state.runNameTwo}场地</span>进行场地细分，无法选择细分标签，请先去进行场地细分，谢谢！ </div>
-          <div onClick={this.toSetUp} style={{ width: '100px', height: '26px', background: '#F5A623', fontSize: '14px', color: '#fff', textAlign: 'center', lineHeight: '26px', margin: '30px auto 0' }}>确定,去设置</div>
+          <div onClick={this.toSetUp} style={{ width: '100px', height: '26px', background: '#F5A623', fontSize: '14px', color: '#fff', textAlign: 'center', lineHeight: '26px', margin: '30px auto 0',cursor:'pointer' }}>确定,去设置</div>
         </Modal>
 
 
@@ -1445,7 +1446,7 @@ class siteSettings extends React.Component {
         >
           <div className="modelList" style={{ height: '32px' }}>
             <span>场地类型</span>
-            <Select placeholder="请选择" disabled={true} value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 269, height: 32 }} onChange={this.handleChangeOneTwo}>
+            <Select placeholder="请选择" disabled={true} value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 269, height: 32,cursor:'pointer' }} onChange={this.handleChangeOneTwo}>
               {
                 this.state.ListSport.map((item, i) => (
                   <Option key={i} value={item.id}>{item.name}</Option>
@@ -1467,7 +1468,7 @@ class siteSettings extends React.Component {
 
           <div className="modelList" style={{ height: 'auto' }}>
             <span>休息日/工作日</span>
-            <Select placeholder="请选择" disabled={true} mode='multiple' className="selectModel"
+            <Select placeholder="请选择" disabled={true}  mode='multiple' className="selectModel"
               value={this.state.openday === '' ? [] : this.state.openday}
               style={{ width: 269, height: 'auto' }} onChange={this.handleChangeTwo}>
               <Option value="1">周一</Option>
@@ -1486,7 +1487,7 @@ class siteSettings extends React.Component {
           </div>
           <div className="modelList" style={{ height: '32px' }} onClick={this.serialTwo}>
             <span>参加优惠的场地号</span>
-            <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 269, background: '#fff' }} disabled={true} value={this.state.chekedThree === '' ? [] : this.state.chekedThree} placeholder="点击进行添加" onChange={this.money} />
+            <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 269, background: '#fff',cursor:'pointer' }} disabled={true} value={this.state.chekedThree === '' ? [] : this.state.chekedThree} placeholder="点击进行添加" onChange={this.money} />
           </div>
           <div className="modelList" style={{ height: '32px' }}>
             <span>优惠期限</span>
@@ -1536,7 +1537,6 @@ class siteSettings extends React.Component {
 
 
           <div className="footerSerial">
-          
             <div className="seriaComfir" onClick={this.PreferentialComfir} data-type="1">{this.state.typeList === undefined ? '提交' : '提交修改'}</div>
             <div className="seriaComfir" data-type="2" style={this.state.typeList === undefined ? { display: 'none' } : { display: 'block', marginRight: '15px' }} onClick={this.DelSiteSettingcount}>删除</div>
           </div>

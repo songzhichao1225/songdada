@@ -837,7 +837,7 @@ class appointmentList extends React.Component {
             <Input style={{ width: 250, float: 'left' }} onChange={this.placeHui} placeholder="(选填)" />
           </div>
           <div style={{ overflow: 'hidden', marginTop: '10px' }}>
-            <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>其他：</span>
+            <span style={{ width: '100px', lineHeight: '30px', textAlign:'right', display: 'block', float: 'left' }}>其他：</span>
             <Input style={{ width: 250, float: 'left' }} onChange={this.placeQi} placeholder="(选填)" />
           </div>
           <span onClick={this.placeSubmit} style={{ cursor: 'pointer', padding: '4px 8px', background: '#F5A623', color: '#fff', float: 'right', marginRight: '125px', marginTop: '20px' }}>提交</span>
