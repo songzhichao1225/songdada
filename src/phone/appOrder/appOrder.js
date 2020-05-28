@@ -106,9 +106,8 @@ class appOrder extends React.Component {
         > {resData.data[i].c[j].money}</div>
           obj[key] = value
           let koTwo = parseInt(resData.data[i].a.slice(1, 2)) + 1 + ':00'
-          console.log(koTwo)
-          obj.lppd = <div style={{ color: '#F5A623',textAlign:'center' }}>{resData.data[i].a}<br />{resData.data[i].a.slice(3, resData.data[i].a.length) === '00' ? resData.data[i].a.slice(0, 2) + ':30' : koTwo === '10:00' ? parseInt(koTwo.slice(0, 1)) + '0:00' : resData.data[i].a.slice(0, 1) + koTwo}</div>
-         }
+          obj.lppd = <div style={{ color: '#F5A623' }}>{resData.data[i].a}<br />{resData.data[i].a.slice(3, resData.data[i].a.length) === '00' ? resData.data[i].a.slice(0, 2) + ':30' : koTwo === '10:00'&&resData.data[i].a!=='19:30' ? '10:00' :resData.data[i].a==='19:30'?'20:00':resData.data[i].a.slice(0, 1) + koTwo}</div>
+        }
       jood.push(obj)
     }
     this.setState({
@@ -128,8 +127,6 @@ class appOrder extends React.Component {
   }
 
   componentDidMount() {
-    
-
     // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=NpufGAnsOJ0kjK0JrKDW2TyLsBqmfZaiS4TZkG1Lgkq0Kit5UjiyYKKlof7ZCy4V&sporttype=5'
     let query = this.props.location.search
 
@@ -316,8 +313,8 @@ class appOrder extends React.Component {
           <div className="appOrder" onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
             <div className='bookingKanban'>
               <div className="titleDiv">
-                <div className="dayBefore" style={this.state.date === this.state.start ? { display: 'none' } : { display: 'block' }} onClick={this.dayBefore}><span>前一天</span></div>
-                <div className="nextDay" onClick={this.nextDay}><span>后一天</span></div>
+                <div className="dayBefore" style={this.state.date === this.state.start ? { display: 'none' } : { display: 'block' }} onClick={this.dayBefore}>前一天</div>
+                <div className="nextDay" onClick={this.nextDay}>后一天</div>
                 <div className="titleDivTwo" onClick={this.date}>{this.state.date}</div>
               </div>
               <div className="modTitle">

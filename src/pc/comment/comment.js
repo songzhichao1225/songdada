@@ -23,7 +23,7 @@ class comment extends React.Component {
     score: '',
     scoreSon: '',
     other:1,
-    page:0,
+    page:1,
   };
 
 
@@ -118,7 +118,6 @@ class comment extends React.Component {
   render() {
     return (
       <div className="comment" >
-        <div className="xian"></div>
         <div className="has">
           <span className="title">整体得分</span>
           <div className="xing">
@@ -185,11 +184,10 @@ class comment extends React.Component {
               ))
             }
              
-             <Pagination className={this.state.commentList.length === 0 ? 'hidden' : 'fenye'} defaultCurrent={1} onChange={this.current} total={this.state.other} />
+             <Pagination  hideOnSinglePage={true} showSizeChanger={false}  className={this.state.commentList.length === 0 ? 'hidden' : 'fenye'} defaultCurrent={1} onChange={this.current} total={this.state.other} />
 
             <Result className={this.state.commentList.length === 0 ? 'block' : 'hidden'} icon={<CalendarOutlined style={{color:'#F5A623'}}/>} title="还没有人评价！" />
           </Spin>
-
         </div>
 
 

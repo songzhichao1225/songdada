@@ -34,6 +34,7 @@ class myWallet extends React.Component {
     other: 0,
     page: 1,
     recordListOther: '',
+    pageOne:1,
   };
 
   dateChange = (data, dateString) => {
@@ -141,6 +142,7 @@ class myWallet extends React.Component {
     this.VenueWithdrawal({ money: this.state.moneyYuan })
   }
   recordListOther = (page, pageSize) => {
+    this.setState({pageOne:page})
     this.getVenueWithdrawalList({ page: page })
   }
   render() {
@@ -179,14 +181,14 @@ class myWallet extends React.Component {
                   </Row>
                 ))
               }
-              <span style={{ float: 'right', marginRight: '110px', marginTop: '30px' }}>查询期间收入(元)：￥{this.state.whereMoney}</span>
-              <Pagination defaultCurrent={1} className={this.state.moneyList.length < 1 ? 'myWalletNone' : 'fenye'} onChange={this.moneyFen} total={this.state.other} />
+              <div className="moneyFoucs">查询期间收入(元)：￥{this.state.whereMoney}</div>
+              <Pagination current={this.state.page} className={this.state.moneyList.length < 1 ? 'myWalletNone' : 'fenye'} showSizeChanger={false} hideOnSinglePage={true} onChange={this.moneyFen} total={this.state.other} />
             </div>
             <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<MoneyCollectOutlined style={{color:'#F5A623'}}/>} title="还没有人预约您的场馆！" />
           
         </div>
         <div className={this.state.flag === 2 ? 'record myWallet' : 'myWalletNone'}>
-          <div className="xiange"></div>
+          
           <div className="header">
             <span className="previousStep" onClick={this.returnN}>我的钱包 ></span><span>提现记录</span>
           </div>
@@ -211,12 +213,11 @@ class myWallet extends React.Component {
               ))
             }
           </div>
-          <Pagination className={this.state.hiddenTwo === true ? 'fenye' : 'hidden'} defaultCurrent={1} onChange={this.recordListOther} total={this.state.recordListOther===''?0:this.state.recordListOther} />
+          <Pagination className={this.state.hiddenTwo === true ? 'fenye' : 'hidden'} current={this.state.pageOne} showSizeChanger={false} hideOnSinglePage={true} onChange={this.recordListOther} total={this.state.recordListOther===''?0:this.state.recordListOther} />
           <Result className={this.state.hiddenTwo === true ? 'hidden' : ''} icon={<ReconciliationOutlined style={{color:'#F5A623'}}/>} title="您还没有提现记录！" />
         </div>
         <div className={this.state.flag === 3 ? 'withdrawal myWallet' : 'myWalletNone'}>
-
-          <div className="xiange"></div>
+          
           <div className="header">
             <span className="previousStep" onClick={this.returnN}>我的钱包 ></span><span>提现</span>
           </div>
@@ -233,7 +234,7 @@ class myWallet extends React.Component {
               <span className="all" onClick={this.all}>全部提现</span>
             </div>
             <div className="listSon">
-              <span>到账时间:</span>
+              <span>到账时间:</span> 
               <span className="textNext">预计 2-3 个工作日到账</span>
             </div>
             <div className="listSon">

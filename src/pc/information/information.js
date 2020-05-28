@@ -548,7 +548,7 @@ class information extends React.Component {
 
           <div className="xiange"></div>
 
-            <Row className="rowConten" style={{background:'#FCF7EE'}}>
+            <Row className="rowConten" style={{background:'#FCF7EE',marginTop:0}}>
               <Col xs={{ span: 2 }}>活动编号</Col>
               <Col xs={{ span: 2 }}>
                 <Select className="selectName" defaultValue="项目名称" style={{ width:'100%',padding:0 }} onChange={this.nameChang}>

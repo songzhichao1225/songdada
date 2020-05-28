@@ -15,7 +15,7 @@ class news extends React.Component {
     oneChecked: null,
     visible: false,
     newsDetail: '',
-    current: '',
+    current: 1,
     uid: '',
     delet: [],
     visibleTwo: false,
@@ -112,9 +112,9 @@ class news extends React.Component {
   //   }
   //   console.log(koArr)
   // }
-  current = e => {
-    this.setState({ current: e, oneChecked: false })
-    this.getVenueNewsList({ page: e })
+  current = (page,pageSize) => {
+    this.setState({ current: page, oneChecked: false })
+    this.getVenueNewsList({ page: page })
   }
 
 
@@ -215,7 +215,6 @@ class news extends React.Component {
   render() {
     return (
       <div className="news">
-        <div className="xiange"></div>
         <div className="heade"><span>所有消息   </span><span>(共{this.state.sum}条，未读{this.state.isredcount}条)</span><div className="button" onClick={this.sendingMsg}>发消息</div></div>
         <div className="xiange"></div>
         <div className="content">
@@ -249,7 +248,7 @@ class news extends React.Component {
               </div>
             ))
           }
-          <Pagination className="fenye" defaultCurrent={1} hideOnSinglePage={true} showSizeChanger={false} pageSize={10} total={parseInt(this.state.sum)} onChange={this.current} />
+          <Pagination hideOnSinglePage={true} showSizeChanger={false} className="fenye" current={this.state.current} onChange={this.current}  total={this.state.sum}  />
           <Drawer
             title="消息详情"
             placement="top"

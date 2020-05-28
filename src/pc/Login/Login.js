@@ -111,7 +111,7 @@ class Login extends React.Component {
     if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))&&this.state.phone.length===11) {
       this.VenueSelectSiteName({ phone: this.state.phone })
     } else {
-      message.error('请输入手机号')
+      message.error('请输入正确手机号')
     }
   }
   onChange = e => {

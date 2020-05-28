@@ -118,6 +118,14 @@ class systemSettings extends React.Component {
   async nacode(data) {
     const res = await _code(data)
     if (res.data.code === 2000) {
+      let num = 60
+      const timer = setInterval(() => {
+        this.setState({ textT: num-- })
+        if (num === -1) {
+          clearInterval(timer)
+          this.setState({ textT: '获取验证码' })
+        }
+      }, 1000)
       message.info(res.data.msg)
     } else {
       message.error(res.data.msg)
@@ -138,14 +146,6 @@ class systemSettings extends React.Component {
 
   naCode = () => {
     if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))&&this.state.phone.length===11) {
-      let num = 60
-      const timer = setInterval(() => {
-        this.setState({ textT: num-- })
-        if (num === -1) {
-          clearInterval(timer)
-          this.setState({ textT: '获取验证码' })
-        }
-      }, 1000)
       this.nacode({ "mobile": this.state.phone, "type": 'venuesavepass',"uuid":sessionStorage.getItem('uuid') })
     } else {
       message.error('请输入正确手机号')
@@ -440,7 +440,7 @@ class systemSettings extends React.Component {
             <div className="inputSonT inputSon">
               <span>验证码</span>
               <Input maxLength={6} style={{width:150,marginLeft:28,padding:'0 5px',height:'43px'}} onChange={this.code} placeholder="请输入验证码" />
-              <div className={this.state.textT === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCode}>{this.state.textT}</div>
+              <div className={this.state.textT === '获取验证码' ? 'obtainCode' : 'koohidden'} style={{marginRight:32}} onClick={this.naCode}>{this.state.textT}</div>
               <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textT}</div>
             </div>
 
@@ -488,11 +488,15 @@ class systemSettings extends React.Component {
           placement="right"
           closable={false}
           onClose={this.onClose}
+          width={'350px'}
           visible={this.state.Drawervisible}
         >
-          <span style={{ display: 'block' }}>挑战约球，2019年在北京成立，是由北京甲乙电子商务技术有限公司开发，是国内领先的运动O2O平台，全国规模最大的24小时连锁健身品牌</span>
-          <span style={{ display: 'block', marginTop: '30px' }}>挑战约球的创始团队来自阿里巴巴、GOOGLE、舒适堡、格力，及全球连锁酒店顶级管理人士。一群狂热的健身&互联网信徒，乐刻运动是一个充满极客精神以追求极致的态度为都市年轻人提供健身服务的创业公司。致力于成为混乱的国内健身行业的颠覆者。</span>
-          <span style={{ display: 'block', marginTop: '30px' }}>在健身房行业，中美差距正在拉大。乐刻的创始人韩伟想参考的正是小型健身房模式，他为此准备了接近一年时间，对比模式、做市场调研、考察门店，将24小时不打烊的小型健身房正式带入中国市场。</span>
+          <span style={{ display: 'block' }}>北京甲乙电子商务有限公司，成立于2015年，位于北京市城市副中心。</span>
+          <span style={{ display: 'block', marginTop: '30px' }}>随着社会经济的发展，科学技术的进步，生产力水平的提高，人们逐渐从繁重的体力劳动中解放出来。随之而来的“运动量不足”、“富贵病”却又影响着人们的健康，尤其是坐办公室的上班一族。健康是1，其它都是0，只有这个1，更多的0才有意义。</span>
+          <span style={{ display: 'block', marginTop: '30px' }}>跑步、练器械等一个人可开展的体育运动略显枯燥，有很大一部分人无法长期坚持。羽毛球、乒乓球、台球等两个人以上才能完成的对抗性运动，有趣、易坚持但又不好找到运动对手、伙伴。初步统计，有2/3左右的人有运动需求，但因为找不到运动伙伴，运动需求得不到满足。</span>
+          <span style={{ display: 'block', marginTop: '30px' }}> “找对手”是北京甲乙电子商务有限公司推出的用户找运动对手、伙伴平台，通过平台的服务：1）让用户更方便地找到运动对手、伙伴；2）建立技术等级，让用户更有征服欲、成就感，运动更有趣；3）让场馆提高场馆预订率、降低场馆人员支出成本。</span>
+          <span style={{ display: 'block', marginTop: '30px' }}>公司的愿景：让运动更简单、更有趣！</span>
+          <span style={{ display: 'block', marginTop: '30px' }}>期待志同道合的优秀人士加入到我公司，一起为这个愿景努力！</span>
         </Drawer>
 
 

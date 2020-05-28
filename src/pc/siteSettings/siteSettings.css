@@ -235,6 +235,7 @@ img{
 .serialNumberTop>span{
     float: left;
     padding-left: 13px;
+    cursor: pointer;
 }
 .serialNumberTop{
     overflow: hidden;
@@ -247,6 +248,7 @@ img{
     background: #F5F5F5;
     float: right;
     border-radius: 2px;
+    cursor: pointer;
 
 }
 .serialSon{
@@ -262,7 +264,7 @@ img{
 }
 .footerSerial{
     clear: both;
-    
+    margin-top: 20px;
 }
 .footerSerial .seriaComfir{
    width:60px;
@@ -277,4 +279,14 @@ img{
 
 .timeRange .ant-picker-date-panel{
     display: none;
+}
+ .ant-popover-placement-top {
+    max-width: 85%;
+    overflow: hidden;
+}
+.titleVenid{
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  
 }

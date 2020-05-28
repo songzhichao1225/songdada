@@ -81,6 +81,7 @@
 
 .systemSettings .inputSon>span{
     width: 65px;
+    line-height: 43px;
     
 }
 
@@ -99,7 +100,7 @@
     margin-left: 15px;
 }
 .systemSettings .obtainCode{
-  width: 94px;
+  width: 85px;
   height: 43px;
   background: #F5A623;
   border-radius: 2px;
@@ -108,11 +109,11 @@
   line-height: 43px;
   color: #fff;
   display: block;
-  margin-right: 16px;
+  margin-right: 43px;
   cursor: pointer;
 }
 .systemSettings  .koohidden{
-    width: 94px;
+    width: 85px;
     height: 43px;
     background: #F5A623;
     border-radius: 2px;
@@ -121,7 +122,7 @@
     line-height: 43px;
     color: #fff;
     display: none;
-    margin-right: 16px;
+    margin-right: 43px;
 }
 .systemSettings .ant-input-suffix{
     line-height: 43px;

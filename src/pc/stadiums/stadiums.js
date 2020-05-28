@@ -482,7 +482,7 @@ class stadiums extends React.Component {
         <div className={this.state.flag === true ? 'information' : 'none'}>
           <div className="name">
             <span className="boTitle">推广员:</span>
-            <span className="nameINput">{this.state.informationList.promote}</span>
+            <span className="nameINput">{this.state.informationList.promote===''?'无':this.state.informationList.promote}</span>
           </div>
           <div className="name">
             <span className="boTitle">场馆名称:</span>

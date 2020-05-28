@@ -17,9 +17,9 @@ const { TextArea } = Input;
 
 
 
-function disabledDate(current) {
-  return current && current < moment().endOf('day');
-}
+// function disabledDate(current) {
+//   return current && current < moment().endOf('day');
+// }
 
 
 
@@ -167,10 +167,10 @@ class closeYu extends React.Component {
     if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
-    } else if (res.data.data.code === 2000) {
-      this.setState({ visible: false })
+    } else if (res.data.code === 2000) {
+      this.setState({ visible: false,update: 0 })
       message.info(res.data.msg)
-      this.VenueTemporarilyClosedList()
+      this.VenueTemporarilyClosedList({ page: this.state.page })
     } else {
       message.warning(res.data.msg)
     }
@@ -212,6 +212,7 @@ class closeYu extends React.Component {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
     } else {
+      this.setState({ visible: false, update: 0 })
       message.info(res.data.msg)
       this.VenueTemporarilyClosedList({ page: this.state.page })
     }
@@ -250,18 +251,18 @@ class closeYu extends React.Component {
         <div style={{ width: '100%', height: '8px', background: '#F5F5F5' }}></div>
         <div style={this.state.closeList.length < 1 ? { display: 'none' } : { display: 'block' }}>
           <Row style={{ borderBottom: '1px solid #E1E0E1' }}>
-            <Col xs={{ span: 4 }}>运动名称</Col>
-            <Col xs={{ span: 7, offset: 0 }}>开始时间</Col>
-            <Col xs={{ span: 4, offset: 0 }}>结束时间</Col>
-            <Col xs={{ span: 4, offset: 0 }}>操作</Col>
+            <Col xs={{ span: 5 }}>运动名称</Col>
+            <Col xs={{ span: 7}}>开始时间</Col>
+            <Col xs={{ span: 7}}>结束时间</Col>
+            <Col xs={{ span: 5 }}>操作</Col>
           </Row>
           {
             this.state.closeList.map((item, i) => (
               <Row key={i} style={{ borderBottom: '1px solid #E1E0E1' }}>
-                <Col xs={{ span: 4 }}>{item.sportname}</Col>
-                <Col xs={{ span: 7, offset: 0 }}>{item.starttime}</Col>
-                <Col xs={{ span: 4, offset: 0 }}>{item.endtime}</Col>
-                <Col xs={{ span: 4, offset: 0 }}>
+                <Col xs={{ span: 5 }}>{item.sportname}</Col>
+                <Col xs={{ span: 7}}>{item.starttime}</Col>
+                <Col xs={{ span: 7}}>{item.endtime}</Col>
+                <Col xs={{ span: 5}}>
                   {/* <img onClick={this.update} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp; */}
                   <Popconfirm
                     title="你确定要删除本条信息吗?"
@@ -304,7 +305,7 @@ class closeYu extends React.Component {
             <span>选择时间</span>
             <RangePicker
               style={{ width: 350, marginLeft: 15 }}
-              disabledDate={disabledDate}
+              // disabledDate={disabledDate}
               onChange={this.dateChange}
               onOk={this.dateSelect}
               locale={locale}

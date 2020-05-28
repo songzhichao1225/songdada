@@ -133,7 +133,7 @@ class register extends React.Component {
 
   showModal = e => {
     if (this.state.name === '') {
-      message.error('请输入用户名')
+      message.error('请输入字母+数字的用户名')
     }else if (this.state.code === '') {
       message.error('请输入验证码')
     } else if (this.state.password === '') {

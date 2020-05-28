@@ -217,7 +217,7 @@ class appointmentList extends React.Component {
           let value = <div><div data-type={resData[i].c[j].type} data-uuid={resData[i].c[j].uuid} onClick={this.lookDeta} style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#ADD2FF', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, lineHeight: 3 } : {}}><Checkbox className="chePe" defaultChecked={this.state.Cancels===1?false:false} onChange={this.checkbox} dtype={resData[i].c[j].type} time={resData[i].a}  venueid={resData[i].c[j].venueids} uuid={resData[i].c[j].uuid} style={resData[i].c[j].type === 1 && this.state.cofirmZ === 1 ? {} : { display: 'none' } && resData[i].c[j].type === 4 && this.state.Cancels === 1 ? {} : { display: 'none' }} />{resData[i].c[j].money}</div></div>
           obj[key] = value
           let koTwo = parseInt(resData[i].a.slice(1, 2)) + 1 + ':00'
-          obj.lppd = <div style={{ color: '#F5A623' }}>{resData[i].a}<br />{resData[i].a.slice(3, resData[i].a.length) === '00' ? resData[i].a.slice(0, 2) + ':30' : koTwo === '10:00' ? parseInt(koTwo.slice(0, 1)) + 1 + '0:00' : resData[i].a.slice(0, 1) + koTwo}</div>
+          obj.lppd = <div style={{ color: '#F5A623' }}>{resData[i].a}<br />{resData[i].a.slice(3, resData[i].a.length) === '00' ? resData[i].a.slice(0, 2) + ':30' : koTwo === '10:00'&&resData[i].a!=='19:30' ? '10:00' :resData[i].a==='19:30'?'20:00':resData[i].a.slice(0, 1) + koTwo}</div>
         }
         jood.push(obj)
       }
@@ -399,13 +399,13 @@ class appointmentList extends React.Component {
     return (
 
       <div className="orderList" style={{ position: 'relative', height: '100%' }}>
-        <div className="navTab">
+        <div className="navTab" style={{paddingLeft:'0'}}>
           <div className="sping"> <SyncOutlined className={this.state.Oneloading === true || this.state.number === '2' ? 'hidden' : 'block'} onClick={this.Oneloading} style={{ fontSize: 24, marginTop: 15 }} /><Spin indicator={antIcon} spinning={this.state.Oneloading} /></div>
         </div>
         <div className="xiange"></div>
 
         <div className={this.state.number === '2' ? 'circumstance' : 'circumstanceT'} style={{ height: '93%' }} >
-          <ul className="rightNav" style={{ top: '-48px' }}>
+          <ul className="rightNav" style={{ top: '-48px',left:'-20px' }}>
             <li className="dateSelect">
               <DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={locale} placeholder="请选择日期" className="DatePicker" onChange={this.dateChange} />
             </li>

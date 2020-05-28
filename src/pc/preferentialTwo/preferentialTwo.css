@@ -227,7 +227,7 @@
 .orderList .circumstance .rightNav{
     position: absolute;
     list-style: none;
-    left: 10px;
+    left: 0px;
    
 }
 .orderList .circumstance .rightNav>li{

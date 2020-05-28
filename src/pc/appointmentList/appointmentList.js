@@ -624,8 +624,8 @@ class appointmentList extends React.Component {
             </Select>
             <span style={{ paddingLeft: 20 }}>场地号</span> <InputNumber style={{ height: '30px' }} max={999} value={this.state.changNum} placeholder="场地号" onChange={this.changNum} className="changNum" />
           </div>
-          <TextArea style={{ marginTop: '20px' }} className="sending" maxLength={200} placeholder={this.state.placeholder} onChange={this.textArea} rows={4} />
-          <div style={{ clear: 'both', height: '30px', marginTop: '10px' }}><span style={{ float: 'left' }}>还可以输入{200 - this.state.textArea.length}字</span>  <span style={{ display: 'block', float: 'right', color: '#F5A623', cursor: 'pointer' }} onClick={this.History}>历史记录...</span></div>
+          <TextArea style={{ marginTop: '20px' }} className="sending" maxLength={50} placeholder={this.state.placeholder} onChange={this.textArea} rows={4} />
+          <div style={{ clear: 'both', height: '30px', marginTop: '10px' }}><span style={{ float: 'left' }}>还可以输入{50 - this.state.textArea.length}字</span>  <span style={{ display: 'block', float: 'right', color: '#F5A623', cursor: 'pointer' }} onClick={this.History}>历史记录...</span></div>
           <div className="sending">
             <div onClick={this.handleCancel}>取消</div>
             <div onClick={this.sendingMessage}>发送</div>

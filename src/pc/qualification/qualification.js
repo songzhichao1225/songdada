@@ -288,34 +288,48 @@ class qualification extends React.Component {
     let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageReT, imageReST, CorporateName } = this.state
     if (sessionStorage.getItem('notType') === '1') {
 
-      let data = {
-        lisenceURL: imageRes,
-        legalname: handleName,
-        legalcard: handleCardId,
-        legalphone: handlePhone,
-        legalBaseURL: legalBaseURL,
-        legalFilesURL: imageReT + '|' + imageReST,
-        Settlement: Radiovalue,
-        Bankaccount: handleBankNum,
-        OpeningBank: openingLine,
-        CorporateName: CorporateName
+
+      if(openingLine===''){
+        message.warning('请选择开户支行')
+      }else{
+        let data = {
+          lisenceURL: imageRes,
+          legalname: handleName,
+          legalcard: handleCardId,
+          legalphone: handlePhone,
+          legalBaseURL: legalBaseURL,
+          legalFilesURL: imageReT + '|' + imageReST,
+          Settlement: Radiovalue,
+          Bankaccount: handleBankNum,
+          OpeningBank: openingLine,
+          CorporateName: CorporateName
+        }
+        this.VenueQualificationInformationSave(data)
       }
-      this.VenueQualificationInformationSave(data)
+
+   
     } else {
-      let data = {
-        siteUUID: siteUUID,
-        lisenceURL: imageRes,
-        legalname: handleName,
-        legalcard: handleCardId,
-        legalphone: handlePhone,
-        legalBaseURL: legalBaseURL,
-        legalFilesURL: imageReT + '|' + imageReST,
-        Settlement: Radiovalue,
-        Bankaccount: handleBankNum,
-        OpeningBank: openingLine,
-        CorporateName: CorporateName
+      
+
+
+      if(openingLine===''){
+        message.warning('请选择开户支行')
+      }else{
+        let data = {
+          siteUUID: siteUUID,
+          lisenceURL: imageRes,
+          legalname: handleName,
+          legalcard: handleCardId,
+          legalphone: handlePhone,
+          legalBaseURL: legalBaseURL,
+          legalFilesURL: imageReT + '|' + imageReST,
+          Settlement: Radiovalue,
+          Bankaccount: handleBankNum,
+          OpeningBank: openingLine,
+          CorporateName: CorporateName
+        }
+        this.VenueQualifications(data)
       }
-      this.VenueQualifications(data)
     }
 
   }

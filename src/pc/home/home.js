@@ -327,21 +327,22 @@ class home extends React.Component {
         <Layout>
           <Header className="headerTor">
             <div className="Gname">
-              <img src={require("../../assets/icon_logo_Gname.png")} alt="logo" />
+              <img src={require("../../assets/icon_logo_Gname (2).png")} alt="logo" />
               <span>{this.state.gerVenueName.name}</span>
             </div>
             <div className="time">
             
               <div className="new">
                 <div onClick={this.news}>
-                  <img src={require("../../assets/icon_pc_new.png")} alt="message" />
+                  <img src={require("../../assets/icon_pc_new2.png")} alt="message" />
                   <div className="number"><span>{Number(sessionStorage.getItem('mess'))>=999?'...':sessionStorage.getItem('mess')}</span></div>
                 </div>
               </div>
               <div className="lvyue">场地履约率：{this.state.gerVenueName.rate}%</div>
             </div>
           </Header>
-          <div style={{ height: 8, background: '#F5F5F5', width: '100%' }}></div>
+         
+        <div className="xian"></div>
           <Content style={{
             background: '#fff',
            
@@ -359,11 +360,11 @@ class home extends React.Component {
                   <div className="right" ><img src={require("../../assets/icon_pc_money.png")} alt="icon" /></div>
                 </div>
                 <div onClick={this.mounthOrderTwo}>
-                  <div className="left"><span>本月预约</span><span>{this.state.getVenue.month_count}单</span></div>
+                  <div className="left"><span>本月成功预约</span><span>{this.state.getVenue.month_count}单</span></div>
                   <div className="right"><img src={require("../../assets/icon_pc_biji.png")} alt="icon" /></div>
                 </div>
                 <div onClick={this.mounthOrder}>
-                  <div className="left"><span>今日预约</span><span>{this.state.getVenue.today_count}单</span></div>
+                  <div className="left"><span>今日成功预约</span><span>{this.state.getVenue.today_count}单</span></div>
                   <div className="right"><img src={require("../../assets/icon_pc_biji.png")} alt="icon" /></div>
                 </div>
                 <div onClick={this.lppd}>

@@ -6,7 +6,7 @@ import RouterPh from './RouterPh';
 import * as serviceWorker from './serviceWorker';
 import { message } from 'antd';
 message.config({
-  top: 400,
+  top: 50,
   duration:1,
   maxCount:1,
   rtl:true
