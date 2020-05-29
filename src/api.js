@@ -364,6 +364,13 @@ export function DelSiteSettingDiscount(data,headers){    //删除优惠活动设
     return axios.post('/api/DelSiteSettingDiscount',data,{headers: {'token': headers}})
 }
 
+export function DelVenueTitle(data,headers){    //场地细分~删除某一个标签
+    return axios.post('/api/DelVenueTitle',data,{headers: {'token': headers}})
+}
+
+export function getSetPriceVenueSport(data,headers){    //获取某一个场馆已经设置了价格设置的运动项目（用户临时关闭预约列表）
+    return axios.post('/api/getSetPriceVenueSport',data,{headers: {'token': headers}})
+}
 
 
 

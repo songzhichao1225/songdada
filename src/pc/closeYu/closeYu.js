@@ -1,7 +1,7 @@
 import React from 'react';
 import './closeYu.css';
 import 'antd/dist/antd.css';
-import { VenueTemporarilyClosedList, VenueTemporarilyClosed, VenueTemporarilyClosedDel, VenueTemporarilyClosedSave, getVenueSportList } from '../../api';
+import { VenueTemporarilyClosedList, VenueTemporarilyClosed, VenueTemporarilyClosedDel, VenueTemporarilyClosedSave,getSetPriceVenueSport } from '../../api';
 import { message, Modal, Select, DatePicker, Input, Row, Col, Popconfirm, Result, Pagination } from 'antd';
 import { BankOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -65,14 +65,14 @@ class closeYu extends React.Component {
 
 
 
-  async getVenueSportList(data) {
-    const res = await getVenueSportList(data, sessionStorage.getItem('venue_token'))
+  async getSetPriceVenueSport(data) {
+    const res = await getSetPriceVenueSport(data, sessionStorage.getItem('venue_token'))
     this.setState({ ListSport: res.data.data })
   }
 
 
   model = () => {
-    this.getVenueSportList()
+    this.getSetPriceVenueSport()
     this.setState({ visible: true })
   }
   componentDidMount() {
@@ -80,7 +80,7 @@ class closeYu extends React.Component {
     let start = moment().startOf('day').add(1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
     let end = moment().endOf('day').add(1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
     this.setState({ start: start, end: end })
-    this.getVenueSportList()
+    this.getSetPriceVenueSport()
   }
 
   next = () => {
@@ -296,7 +296,7 @@ class closeYu extends React.Component {
             <Select placeholder="请选择" className="selectN" style={{ width: 350, marginLeft: 15 }} value={this.state.runName} onChange={this.handleChangeSelect}>
               {
                 this.state.ListSport.map((item, i) => (
-                  <Option key={i} value={item.value}>{item.label}</Option>
+                  <Option key={i} value={item.id}>{item.name}</Option>
                 ))
               }
             </Select>

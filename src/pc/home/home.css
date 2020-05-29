@@ -206,11 +206,13 @@ clear: left;
     background: #3E66DF;
     border-radius: 0 6px 6px 0;
     float: right;
-    border-left: 1px dashed#e4e4e4;
+    border-left: 0.5px solid#e4e4e4;
 }
 .homePage .divContent  .right img{
     display: block;
     margin: 70% auto 0;
+    width: 30px;
+    height: 29px;
 }
 .homePage .xing{
     margin-top: 10px;

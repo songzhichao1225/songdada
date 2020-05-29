@@ -367,7 +367,7 @@ class home extends React.Component {
                   <div className="left"><span>今日成功预约</span><span>{this.state.getVenue.today_count}单</span></div>
                   <div className="right"><img src={require("../../assets/icon_pc_biji.png")} alt="icon" /></div>
                 </div>
-                <div onClick={this.lppd}>
+                <div onClick={this.lppd}> 
                   <div className="left"><span style={{ marginTop: '20%' }}>场馆评分{this.state.getVenue.score}分</span>
                     <div className="xing">
                       <img src={this.state.getVenue.score >= 1 ? require('../../assets/50xing (3).png') : require('../../assets/oneXing.png') && this.state.getVenue.score < 1 && this.state.getVenue.score > 0 ? require('../../assets/50xing (1).png') : require('../../assets/oneXing.png')} alt="666" />

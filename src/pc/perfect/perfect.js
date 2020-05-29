@@ -442,8 +442,8 @@ class perfect extends React.Component {
               </div>
 
               <div className="name">
-                <span className="symbol">*</span><span className="boTitle">&nbsp;&nbsp;&nbsp;&nbsp;联系人</span>
-                <Input className="nameINput" onChange={this.handelPerson} value={this.state.handelPerson} placeholder="请输入联系人姓名" />
+                <span className="symbol">*</span><span className="boTitle">联系人</span>
+                <Input className="nameINput" onChange={this.handelPerson} style={{marginLeft:'43px'}} value={this.state.handelPerson} placeholder="请输入联系人姓名" />
               </div>
 
               <div className="name">

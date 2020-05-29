@@ -1,7 +1,7 @@
 import React from 'react';
 import './siteSettings.css';
 import 'antd/dist/antd.css';
-import { getSiteSettingList, addVenueField, getVenueSport, AddSiteSetting, DelSiteSetting, getVenueSportidTitle, SiteSettingDiscountSave, getVenueNumberTitleFirst, getSiteSettingFirst, getSiteSelectedTitle, DelVenueNumberTitle, getSiteSelectedVenueid, getVenueTitleSave, getVenueNumberTitleSave, getVenueNumberTitleList,DelSiteSettingDiscount } from '../../api';
+import { getSiteSettingList, addVenueField, getVenueSport, AddSiteSetting, DelSiteSetting, getVenueSportidTitle,DelVenueTitle, SiteSettingDiscountSave, getVenueNumberTitleFirst, getSiteSettingFirst, getSiteSelectedTitle, DelVenueNumberTitle, getSiteSelectedVenueid, getVenueTitleSave, getVenueNumberTitleSave, getVenueNumberTitleList, DelSiteSettingDiscount } from '../../api';
 import { Select, Row, Col, Modal, DatePicker, InputNumber, Input, message, Pagination, Popconfirm, Divider, Popover } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -80,8 +80,8 @@ class siteSettings extends React.Component {
     typeDetel: 0,
     tooltip: false,
     update: 0,
-    chekedFour:[],
-    lppd:0
+    chekedFour: [],
+    lppd: 0
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -141,14 +141,14 @@ class siteSettings extends React.Component {
   }
 
   componentDidMount() {
-    
+
     this.getVenueSport()
     this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
     sessionStorage.setItem('siteSettings', '')
     if (this.state.runId !== '') {
       this.setState({
         joinB: false
-      }) 
+      })
     }
     let arrNum = []
     for (let i = 1; i <= 100; i++) {
@@ -194,7 +194,7 @@ class siteSettings extends React.Component {
     })
   }
   handleChangeOne = e => {
-    this.setState({ runId: e, joinB: false,tags:'' })
+    this.setState({ runId: e, joinB: false, tags: '' })
     this.getVenueSportidTitle({ sportid: e })
     let day = ''
     switch (parseInt(e)) {
@@ -243,7 +243,7 @@ class siteSettings extends React.Component {
 
   handleChangeOneTwo = e => {
     this.getSiteSelectedTitle({ sportid: e })
-    this.setState({ runIdTwo: e, joinB: false,tagsTwo:'',chekedTwo:'',chekedTwoLen:0 })
+    this.setState({ runIdTwo: e, joinB: false, tagsTwo: '', chekedTwo: '', chekedTwoLen: 0 })
     this.getVenueSportidTitle({ sportid: e })
     let day = ''
     switch (parseInt(e)) {
@@ -339,8 +339,8 @@ class siteSettings extends React.Component {
   money = e => {
     this.setState({ costperhour: e })
   }
-  moneyTwo=e=>{
-    this.setState({costperhourTwo:e})
+  moneyTwo = e => {
+    this.setState({ costperhourTwo: e })
   }
   handleChangeFour = e => {
     this.setState({ maxScheduledDate: e })
@@ -517,7 +517,7 @@ class siteSettings extends React.Component {
       discount_sdate: res.data.data[0].discount_sdate, discount_edate: res.data.data[0].discount_edate, discount_start: res.data.data[0].discount_start,
       discount_end: res.data.data[0].discount_end, costperhourTwo: res.data.data[0].discount_costperhour === null ? res.data.data[0].costperhour : res.data.data[0].discount_costperhour,
       runIdTwo: res.data.data[0].sportid, tagsTwo: res.data.data[0].tags, opendayname: attop, openday: res.data.data[0].openday.split(','), starttime: res.data.data[0].starttime,
-      endtime: res.data.data[0].endtime, costperhour: res.data.data[0].costperhour, chekedTwo: res.data.data[0].venueid,chekedFour:res.data.data[0].venueid, chekedThree: res.data.data[0].discount_venueid !== null ? res.data.data[0].discount_venueid : res.data.data[0].venueid, chekedTwoLen: res.data.data[0].sitenumber, appointmenttime: res.data.data[0].appointmenttime,
+      endtime: res.data.data[0].endtime, costperhour: res.data.data[0].costperhour, chekedTwo: res.data.data[0].venueid, chekedFour: res.data.data[0].venueid, chekedThree: res.data.data[0].discount_venueid !== null ? res.data.data[0].discount_venueid : res.data.data[0].venueid, chekedTwoLen: res.data.data[0].sitenumber, appointmenttime: res.data.data[0].appointmenttime,
       tagsTwoId: res.data.data[0].tags_id, comment: res.data.data[0].comment, maxScheduledDate: res.data.data[0].maxScheduledDate, runNameTwo: res.data.data[0].sportname, Disid: res.data.data[0].uuid
     })
     if (this.state.runIdTwo !== '') {
@@ -553,7 +553,7 @@ class siteSettings extends React.Component {
     this.setState({
       joinXi: false,
       typeDetel: 0,
-      lppd:0,
+      lppd: 0,
     })
   }
 
@@ -574,7 +574,7 @@ class siteSettings extends React.Component {
       arrJoinTil.push(res.data.data[i].title)
     }
 
-    const arrTo = [{ title: '普通' }, { title: 'VIP' }]
+    const arrTo = [{ title: '普通',uuid:1 }, { title: 'VIP',uuid:1 }]
 
     this.setState({
       joinTil: [...arrTo, ...res.data.data]
@@ -589,7 +589,7 @@ class siteSettings extends React.Component {
     const res = await getVenueTitleSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.getVenueSportidTitle({ sportid: this.state.runId })
-    }else{
+    } else {
       message.warning(res.data.msg)
     }
   }
@@ -613,19 +613,19 @@ class siteSettings extends React.Component {
 
   title = e => {
     this.setState({
-      tags: e    
+      tags: e
     })
   }
-  serial = () => { 
+  serial = () => {
     let { arrNum } = this.state
     if (this.state.runId === '') {
       message.error('请选择场地类型')
     } else if (this.state.tags === '') {
       message.error('请选择细分标签')
     } else {
-        for (let i in arrNum) {
-          arrNum[i].cheked = false
-        }
+      for (let i in arrNum) {
+        arrNum[i].cheked = false
+      }
       this.getSiteSelectedVenueid({ sportid: this.state.runId })
       this.setState({
         serialNumber: true
@@ -642,7 +642,7 @@ class siteSettings extends React.Component {
     this.setState({
       interpretation: false,
       serialNumberTwo: false,
-      arrNumTwo:[]
+      arrNumTwo: []
     })
   }
 
@@ -705,7 +705,7 @@ class siteSettings extends React.Component {
   async getVenueNumberTitleSave(data) {
     const res = await getVenueNumberTitleSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ joinXi: false, arrCheked: [],lppd:0, })
+      this.setState({ joinXi: false, arrCheked: [], lppd: 0, })
       this.getVenueNumberTitleList({ sportid: this.state.nameChang, page: this.state.pageOne })
     } else if (res.data.code === 4002) {
       message.warning('请选择场地类型')
@@ -781,7 +781,7 @@ class siteSettings extends React.Component {
     const res = await getVenueNumberTitleFirst(data, sessionStorage.getItem('venue_token'))
     this.getVenueSportidTitle({ sportid: res.data.data[0].sportid })
     this.setState({
-      runId: res.data.data[0].sportid, joinB: false, tags: res.data.data[0].title, arrCheked: res.data.data[0].venueid.split(','),arrChekedTwope: res.data.data[0].venueid.split(','), venNumid: res.data.data[0].uuid
+      runId: res.data.data[0].sportid, joinB: false, tags: res.data.data[0].title, arrCheked: res.data.data[0].venueid.split(','), arrChekedTwope: res.data.data[0].venueid.split(','), venNumid: res.data.data[0].uuid
     })
 
   }
@@ -792,33 +792,33 @@ class siteSettings extends React.Component {
     for (let i in res.data.data) {
       arrNum[parseInt(res.data.data[i]) - 1].cheked = 'no'
     }
-    if(this.state.lppd===1){
+    if (this.state.lppd === 1) {
       if (this.state.arrCheked.length > 0) {
-        for(let k in this.state.arrChekedTwope){
+        for (let k in this.state.arrChekedTwope) {
           arrNum[parseInt(this.state.arrChekedTwope[k]) - 1].cheked = false
         }
         for (let j in this.state.arrCheked) {
           arrNum[parseInt(this.state.arrCheked[j]) - 1].cheked = true
         }
-      }else if (res.data.data.length === 0&&this.state.arrCheked===0) {
+      } else if (res.data.data.length === 0 && this.state.arrCheked === 0) {
         for (let i in arrNum) {
           arrNum[i].cheked = false
         }
       }
-    }else{
+    } else {
       if (this.state.arrCheked.length > 0) {
         for (let j in this.state.arrCheked) {
           arrNum[parseInt(this.state.arrCheked[j]) - 1].cheked = true
         }
-      }else if (res.data.data.length === 0&&this.state.arrCheked===0) {
+      } else if (res.data.data.length === 0 && this.state.arrCheked === 0) {
         for (let i in arrNum) {
           arrNum[i].cheked = false
         }
       }
     }
-    
 
-    
+
+
 
   }
 
@@ -829,8 +829,8 @@ class siteSettings extends React.Component {
     this.getVenueNumberTitleFirst(obj)
     this.setState({
       joinXi: true,
-      lppd:1,
-      typeDetel:0,
+      lppd: 1,
+      typeDetel: 0,
     })
   }
 
@@ -870,7 +870,7 @@ class siteSettings extends React.Component {
       joinXi: true,
       update: 0, starttime: '',
       endtime: '',
-      typeDetel:1
+      typeDetel: 1
     })
   }
   async getSiteSelectedTitle(data) {
@@ -878,7 +878,7 @@ class siteSettings extends React.Component {
     if (res.data.data.length === 0 && this.state.headerData === '2') {
       this.setState({
         nosubdivisions: true,
-        runId:data.sportid
+        runId: data.sportid
       })
     }
     let title = res.data.data
@@ -886,7 +886,7 @@ class siteSettings extends React.Component {
     for (let i in title) {
       arrTitle.push(title[i].title)
     }
-    
+
     this.setState({
       selecdTil: res.data.data,
       arrTitle: arrTitle
@@ -918,7 +918,7 @@ class siteSettings extends React.Component {
     }
   }
 
-                  
+
 
   confirmMoney = () => {
     this.DelSiteSetting({ uuid: this.state.moneyId })
@@ -941,27 +941,27 @@ class siteSettings extends React.Component {
   }
 
   serialTwo = () => {
-    let chekedTwoarr =typeof(this.state.chekedThree)==='string'?this.state.chekedThree.split(','):this.state.chekedThree
-   let chekedFour=typeof(this.state.chekedFour)==='string'?this.state.chekedFour.split(','):this.state.chekedFour
+    let chekedTwoarr = typeof (this.state.chekedThree) === 'string' ? this.state.chekedThree.split(',') : this.state.chekedThree
+    let chekedFour = typeof (this.state.chekedFour) === 'string' ? this.state.chekedFour.split(',') : this.state.chekedFour
     if (this.state.arrNumTwo.length === 0) {
       let arrNumTwo = []
-      for (let i in chekedFour) { 
+      for (let i in chekedFour) {
         let obj = {
-          idIdx: chekedFour[i], 
+          idIdx: chekedFour[i],
           cheked: false
         }
         arrNumTwo.push(obj)
-        if(chekedTwoarr.indexOf(chekedFour[i])!==-1){
-          arrNumTwo[i].cheked=true
+        if (chekedTwoarr.indexOf(chekedFour[i]) !== -1) {
+          arrNumTwo[i].cheked = true
         }
-        
+
       }
-      
+
       this.setState({
         serialNumberTwo: true,
         arrNumTwo: arrNumTwo
       })
-      
+
     } else {
       this.setState({
         serialNumberTwo: true,
@@ -992,14 +992,14 @@ class siteSettings extends React.Component {
     this.setState({
       chekedThree: arrCheked,
       serialNumberTwo: false,
-      arrNumTwo:[]
+      arrNumTwo: []
     })
   }
   startDate = (date, dateString) => {
     this.setState({
       discount_sdate: dateString[0].slice(0, 10),
       discount_start: dateString[0].slice(11, 16),
-      discount_edate:dateString[1].slice(0, 10),
+      discount_edate: dateString[1].slice(0, 10),
       discount_end: dateString[1].slice(11, 16),
     })
 
@@ -1060,20 +1060,32 @@ class siteSettings extends React.Component {
 
   async DelSiteSettingDiscount(data) {
     const res = await DelSiteSettingDiscount(data, sessionStorage.getItem('venue_token'))
-      
-      if(res.data.code===2000){
-        this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
-        this.setState({
-          Preferential:false
-        })
-        message.info(res.data.msg)
-      }else{
-        message.error(res.data.msg)
-      }
+
+    if (res.data.code === 2000) {
+      this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
+      this.setState({
+        Preferential: false
+      })
+      message.info(res.data.msg)
+    } else {
+      message.error(res.data.msg)
+    }
   }
 
-  DelSiteSettingcount=()=>{
-     this.DelSiteSettingDiscount({uuid:this.state.siteListId})
+  DelSiteSettingcount = () => {
+    this.DelSiteSettingDiscount({ uuid: this.state.siteListId })
+  }
+  async DelVenueTitle(data) {
+    const res = await DelVenueTitle(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      message.info('删除成功')
+      this.getVenueSportidTitle({ sportid: this.state.runId })
+    } else {
+      message.error(res.data.msg)
+    }
+  }
+  deletSelect=(e)=>{
+   this.DelVenueTitle({uuid:e.currentTarget.dataset.id})
   }
 
 
@@ -1131,7 +1143,7 @@ class siteSettings extends React.Component {
                   <Row key={i} className="rowList">
                     <Col xs={{ span: 2 }}>{item.sportname}</Col>
                     <Col xs={{ span: 2 }}>{item.tags}</Col>
-                    <Popover content={(<div className="titleVenid">{item.venueid}</div>)}  title='详情' trigger="click">
+                    <Popover content={(<div className="titleVenid">{item.venueid}</div>)} title='详情' trigger="click">
                       <Col xs={{ span: 2 }}>{item.venueid}</Col>
                     </Popover>
                     <Col xs={{ span: 2 }}>{item.sitenumber}</Col>
@@ -1164,7 +1176,6 @@ class siteSettings extends React.Component {
             </div>
           </div>
           <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} className={this.state.hidden === true ? 'fenye' : 'hidden'} current={this.state.page} total={this.state.other} onChange={this.current} />
-
         </div>
 
         <div className="join" style={this.state.headerData === '2' ? {} : { display: 'none' }} onClick={this.showModalTwo}><div style={{ textAlign: 'center', width: '150px', margin: '0 auto' }}>+添加价格设置</div></div>
@@ -1179,7 +1190,7 @@ class siteSettings extends React.Component {
           </Row>
           {
             this.state.joinXiList.map((item, i) => (
-              <Row key={i} style={{ borderBottom: '1px solid #E1E0E1'}}>
+              <Row key={i} style={{ borderBottom: '1px solid #E1E0E1' }}>
                 <Col xs={{ span: 5 }}>{item.sportid}</Col>
                 <Col xs={{ span: 5 }}>{item.title}</Col>
                 <Popover content={(<div className="titleVenid">{item.venueid}</div>)} title='详情' trigger="click">
@@ -1223,7 +1234,7 @@ class siteSettings extends React.Component {
         >
           <div className="modelList" style={{ height: '32px' }}>
             <span>场地类型</span>
-            <Select placeholder="请选择" disabled={this.state.update===1?true:false} value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 269, height: 32 }} onChange={this.handleChangeOneTwo}>
+            <Select placeholder="请选择" onInputKeyDown={this.ko} disabled={this.state.update === 1 ? true : false} value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 269, height: 32 }} onChange={this.handleChangeOneTwo}>
               {
                 this.state.ListSport.map((item, i) => (
                   <Option key={i} value={item.id}>{item.name}</Option>
@@ -1234,7 +1245,7 @@ class siteSettings extends React.Component {
 
           <div className="modelList" style={{ height: '32px' }}>
             <span>细分标签</span>
-            <Select placeholder="请选择" disabled={this.state.update===1?true:false} value={this.state.tagsTwo === '' ? [] : this.state.tagsTwo} className="selectModel" style={{ width: 269, height: 32 }} onChange={this.handleChangeTags}>
+            <Select placeholder="请选择" disabled={this.state.update === 1 ? true : false} value={this.state.tagsTwo === '' ? [] : this.state.tagsTwo} className="selectModel" style={{ width: 269, height: 32 }} onChange={this.handleChangeTags}>
 
               {
                 this.state.selecdTil.map((item, i) => (
@@ -1245,11 +1256,11 @@ class siteSettings extends React.Component {
           </div>
           <div className="modelList" style={{ height: '32px' }}>
             <span>场地编号</span>
-            <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 269, background: '#fff',cursor:'pointer' }} value={this.state.chekedTwo === '' ? [] : this.state.chekedTwo} disabled={true} placeholder="点击进行添加" onChange={this.money} />
+            <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 269, background: '#fff', cursor: 'pointer' }} value={this.state.chekedTwo === '' ? [] : this.state.chekedTwo} disabled={true} placeholder="点击进行添加" onChange={this.money} />
           </div>
           <div className="modelList">
             <span>场地总数量</span>
-            <div className="startTime" style={{marginRight:168}}>{this.state.chekedTwoLen}</div>
+            <div className="startTime" style={{ marginRight: 168 }}>{this.state.chekedTwoLen}</div>
           </div>
 
           <div className="modelList" style={{ height: 'auto' }}>
@@ -1276,7 +1287,7 @@ class siteSettings extends React.Component {
             <span>时间范围</span>
 
 
-            <RangePicker showTime dropdownClassName="timeRange" placeholder={['开始时间','结束时间']}  style={{ float: 'right', marginRight: 150, width: 269 }} value={this.state.starttime === ''?'':[moment(this.state.starttime === '' ? '' : this.state.starttime, 'HH:mm:'), moment(this.state.endtime === '' ? '' : this.state.endtime, 'HH:mm:')]} minuteStep={30} format='HH:mm' locale={locale} onChange={this.handleChangThree} />
+            <RangePicker showTime dropdownClassName="timeRange" placeholder={['开始时间', '结束时间']} style={{ float: 'right', marginRight: 150, width: 269 }} value={this.state.starttime === '' ? '' : [moment(this.state.starttime === '' ? '' : this.state.starttime, 'HH:mm:'), moment(this.state.endtime === '' ? '' : this.state.endtime, 'HH:mm:')]} minuteStep={30} format='HH:mm' locale={locale} onChange={this.handleChangThree} />
 
 
 
@@ -1333,7 +1344,7 @@ class siteSettings extends React.Component {
           </div>
           <div className="modelListT">
             <span>备注</span>
-            <TextArea className="textArea" rows={4} placeholder='请输入' style={{ marginRight: 151,width:269 }} value={this.state.comment} onChange={this.textArea} />
+            <TextArea className="textArea" rows={4} placeholder='请输入' style={{ marginRight: 151, width: 269 }} value={this.state.comment} onChange={this.textArea} />
           </div>
           <div className="submit" data-uuid={this.state.Disid !== '' ? this.state.Disid : ''} onClick={this.submit}>提交</div>
         </Modal>
@@ -1350,7 +1361,7 @@ class siteSettings extends React.Component {
           className='model'
         >
           <div className="modelList" style={{ height: '32px' }}>
-            <span>场地类型</span><span style={{ position: 'absolute', top: 0, right: 0, color: '#F5A623',cursor:'pointer' }} onClick={this.interpretation}>什么是细分标签?</span>
+            <span>场地类型</span><span style={{ position: 'absolute', top: 0, right: 0, color: '#F5A623', cursor: 'pointer' }} onClick={this.interpretation}>什么是细分标签?</span>
             <Select placeholder="请选择" className="selectModel" disabled={this.state.typeDetel === 0 ? true : false} value={this.state.runId === '' ? [] : this.state.runId} style={{ width: 249, height: 32 }} onChange={this.handleChangeOne}>
               {
                 this.state.ListSport.map((item, i) => (
@@ -1374,7 +1385,7 @@ class siteSettings extends React.Component {
                   {menu}
                   <Divider style={{ margin: '4px 0' }} />
                   <div style={{ display: 'flex', padding: 8 }}>
-                    <Input style={{ height: 32, background: '#fff' }} value={name} onChange={this.onNameChange} maxLength={5} />
+                    <Input style={{ height: 32, background: '#fff' }}  value={name} onChange={this.onNameChange} maxLength={5} />
                     <span style={{ flex: 'none', padding: '8px', display: 'block', cursor: 'pointer' }} onClick={this.addItem}>
                       <PlusOutlined /> 自定义(5个汉字以内)
                   </span>
@@ -1383,14 +1394,14 @@ class siteSettings extends React.Component {
               )}
             >
               {this.state.joinTil.map((item, i) => (
-                <Option key={i} value={item.title}>{item.title}</Option>
+                <Option  key={i} onContextMenu={this.deletSelect} data-id={item.uuid} value={item.title}><div><span>{item.title}</span><span style={item.uuid===1?{display:'none'}:{float:'right',fontSize:'12px',color:'#ccc'}}>(右键删除)</span></div></Option>
               ))}
             </Select>
           </div>
 
           <div className="modelList" style={{ height: '32px' }} onClick={this.serial}>
             <span>场地编号</span>
-            <Input className="startTime" value={this.state.arrCheked.length !== 0 ? this.state.arrCheked : []} style={{ paddingLeft: '10px', height: 32, background: '#fff',cursor:'pointer' }} disabled={true} placeholder="点击进行添加" />
+            <Input className="startTime" value={this.state.arrCheked.length !== 0 ? this.state.arrCheked : []} style={{ paddingLeft: '10px', height: 32, background: '#fff', cursor: 'pointer' }} disabled={true} placeholder="点击进行添加" />
           </div>
 
           <div className="modelList" style={{ height: '32px' }} >
@@ -1445,7 +1456,7 @@ class siteSettings extends React.Component {
           className='model'
         >
           <div>您还没对<span style={{ color: '#F5A623' }}>{this.state.runNameTwo}场地</span>进行场地细分，无法选择细分标签，请先去进行场地细分，谢谢！ </div>
-          <div onClick={this.toSetUp} style={{ width: '100px', height: '26px', background: '#F5A623', fontSize: '14px', color: '#fff', textAlign: 'center', lineHeight: '26px', margin: '30px auto 0',cursor:'pointer' }}>确定,去设置</div>
+          <div onClick={this.toSetUp} style={{ width: '100px', height: '26px', background: '#F5A623', fontSize: '14px', color: '#fff', textAlign: 'center', lineHeight: '26px', margin: '30px auto 0', cursor: 'pointer' }}>确定,去设置</div>
         </Modal>
 
 
@@ -1460,7 +1471,7 @@ class siteSettings extends React.Component {
         >
           <div className="modelList" style={{ height: '32px' }}>
             <span>场地类型</span>
-            <Select placeholder="请选择" disabled={true} value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 320, height: 32,marginRight:100,cursor:'pointer' }} onChange={this.handleChangeOneTwo}>
+            <Select placeholder="请选择" disabled={true} value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 330, height: 32, marginRight: 100, cursor: 'pointer' }} onChange={this.handleChangeOneTwo}>
               {
                 this.state.ListSport.map((item, i) => (
                   <Option key={i} value={item.id}>{item.name}</Option>
@@ -1471,7 +1482,7 @@ class siteSettings extends React.Component {
 
           <div className="modelList" style={{ height: '32px' }}>
             <span>场地标签</span>
-            <Select placeholder="请选择" disabled={true} value={this.state.tagsTwo === '' ? [] : this.state.tagsTwo} className="selectModel" style={{ width: 320, height: 32,marginRight:100 }} onChange={this.handleChangeTags}>
+            <Select placeholder="请选择" disabled={true} value={this.state.tagsTwo === '' ? [] : this.state.tagsTwo} className="selectModel" style={{ width: 330, height: 32, marginRight: 100 }} onChange={this.handleChangeTags}>
               {
                 this.state.joinTil.map((item, i) => (
                   <Option key={i} value={item.title}>{item.title}</Option>
@@ -1482,9 +1493,9 @@ class siteSettings extends React.Component {
 
           <div className="modelList" style={{ height: 'auto' }}>
             <span>休息日/工作日</span>
-            <Select placeholder="请选择" disabled={true}  mode='multiple' className="selectModel"
+            <Select placeholder="请选择" disabled={true} mode='multiple' className="selectModel"
               value={this.state.openday === '' ? [] : this.state.openday}
-              style={{ width: 320, height: 'auto',marginRight:100 }} onChange={this.handleChangeTwo}>
+              style={{ width: 330, height: 'auto', marginRight: 100 }} onChange={this.handleChangeTwo}>
               <Option value="1">周一</Option>
               <Option value="2">周二</Option>
               <Option value="3">周三</Option>
@@ -1497,11 +1508,11 @@ class siteSettings extends React.Component {
 
           <div className="modelList" style={{ height: '32px' }}>
             <span>时间范围</span>
-            <RangePicker disabled={true} style={{ float: 'right', marginRight: 100, width: 320}} value={[moment(this.state.starttime === '' ? '00:00' : this.state.starttime, 'HH:mm:'), moment(this.state.endtime === '' ? '00:00' : this.state.endtime, 'HH:mm:')]} minuteStep={30} format='HH:mm' locale={locale} onChange={this.handleChangThree} />
+            <RangePicker disabled={true} style={{ float: 'right', marginRight: 100, width: 330 }} value={[moment(this.state.starttime === '' ? '00:00' : this.state.starttime, 'HH:mm:'), moment(this.state.endtime === '' ? '00:00' : this.state.endtime, 'HH:mm:')]} minuteStep={30} format='HH:mm' locale={locale} onChange={this.handleChangThree} />
           </div>
           <div className="modelList" style={{ height: '32px' }} onClick={this.serialTwo}>
             <span>参加优惠的场地号</span>
-            <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 320, background: '#fff',cursor:'pointer',marginRight:100 }} disabled={true} value={this.state.chekedThree === '' ? [] : this.state.chekedThree} placeholder="点击进行添加" onChange={this.money} />
+            <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 330, background: '#fff', cursor: 'pointer', marginRight: 100 }} disabled={true} value={this.state.chekedThree === '' ? [] : this.state.chekedThree} placeholder="点击进行添加" onChange={this.money} />
           </div>
           <div className="modelList" style={{ height: '32px' }}>
             <span>优惠期限</span>
@@ -1536,51 +1547,60 @@ class siteSettings extends React.Component {
             <RangePicker
               showTime
               locale={locale}
-              style={{ float: 'left', marginLeft: 88, width: 320 }}
+              style={{ float: 'left', marginLeft: 78, width: 330 }}
               format="YYYY-MM-DD HH:mm"
               minuteStep={30}
               allowClear={false}
-              value={this.state.discount_sdate === null?'':[moment(this.state.discount_sdate + this.state.discount_start,'YYYY-MM-DD HH:mm'),moment(this.state.discount_edate + this.state.discount_end, 'YYYY-MM-DD HH:mm')]}
+              value={this.state.discount_sdate === null ? '' : [moment(this.state.discount_sdate + this.state.discount_start, 'YYYY-MM-DD HH:mm'), moment(this.state.discount_edate + this.state.discount_end, 'YYYY-MM-DD HH:mm')]}
               onChange={this.startDate}
             />
           </div>
           <div className="modelList" style={{ height: '32px' }}>
             <span>优惠后价格</span><span style={{ marginLeft: 0 }}>(元/小时)</span>
-            <InputNumber className="startTime" value={this.state.costperhourTwo}  min={0} style={{paddingLeft: '10px', height: 32, width: 320,marginRight:100 }} placeholder="请输入" onChange={this.moneyTwo} />
+            <InputNumber className="startTime" value={this.state.costperhourTwo} min={0} style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 100 }} placeholder="请输入" onChange={this.moneyTwo} />
           </div>
 
 
           <div className="footerSerial">
             <div className="seriaComfir" onClick={this.PreferentialComfir} data-type="1">{this.state.typeList === undefined ? '提交' : '提交修改'}</div>
-            <div className="seriaComfir" data-type="2" style={this.state.typeList === undefined ? { display: 'none' } : { display: 'block', marginRight: '15px' }} onClick={this.DelSiteSettingcount}>删除</div>
-          </div>
-        </Modal>
-
-
-        <Modal
-          title="添加场地编号"
-          visible={this.state.serialNumberTwo}
-          onOk={this.handleOk}
-          onCancel={this.handleserialNumberTwo}
-          width={630}
-          style={{ zIndex: 999 }}
-          className='model'
-        >
-          <div className="serialNumberTop"><span>请选择您要设置的场地编号</span></div>
-          {
-            this.state.arrNumTwo.map((item, i) => (
-              <div key={i} className="serialSon" onClick={this.seriaSonTwo} data-id={i} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {}}>{item.idIdx}</div>
-            ))
-          }
-          <div className="footerSerial" style={{ marginTop: '60px' }}>
-            <div className="seriaComfir" onClick={this.serialComfirTwo}>确定</div>
+            <Popconfirm
+              title="您确定删除该条优惠设置么?"
+              onConfirm={this.DelSiteSettingcount}
+              onCancel={this.btncancel}
+              okText="确定"
+              cancelText="删除"
+            >
+            <div className="seriaComfir" data-type="2" style={this.state.typeList === undefined ? { display: 'none' } : { display: 'block', marginRight: '15px' }}>删除</div>
+            </Popconfirm>
           </div>
         </Modal>
 
 
 
+      <Modal
+        title="添加场地编号"
+        visible={this.state.serialNumberTwo}
+        onOk={this.handleOk}
+        onCancel={this.handleserialNumberTwo}
+        width={630}
+        style={{ zIndex: 999 }}
+        className='model'
+      >
+        <div className="serialNumberTop"><span>请选择您要设置的场地编号</span></div>
+        {
+          this.state.arrNumTwo.map((item, i) => (
+            <div key={i} className="serialSon" onClick={this.seriaSonTwo} data-id={i} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {}}>{item.idIdx}</div>
+          ))
+        }
+        <div className="footerSerial" style={{ marginTop: '60px' }}>
+          <div className="seriaComfir" onClick={this.serialComfirTwo}>确定</div>
+        </div>
+      </Modal>
 
-      </div>
+
+
+
+      </div >
     )
   }
 }

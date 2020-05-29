@@ -127,7 +127,10 @@ class appOrder extends React.Component {
   }
 
   componentDidMount() {
-    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=NpufGAnsOJ0kjK0JrKDW2TyLsBqmfZaiS4TZkG1Lgkq0Kit5UjiyYKKlof7ZCy4V&sporttype=5'
+    //测试数据
+    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=r704gxb7rhkDMmT0H2g6jz3hMt2rssHwNgd7wrX3sBoCcsuRL3FHxI2Sj0KE62Do&sporttype=5'  
+
+
     let query = this.props.location.search
 
     let arr = query.split('&')
@@ -278,7 +281,14 @@ class appOrder extends React.Component {
         }
 
         this.setState({ obj: obj })
-        this.checkChooseTimes({ startTime: this.state.date.replace(/\//g, "-") + ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5 })
+        if(this.state.date.split('/')[0].length===4){
+          let mood= this.state.date.split('/')[0]+'-'+this.state.date.split('/')[1]+'-'+this.state.date.split('/')[2]
+          this.checkChooseTimes({ startTime: mood+ ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5 })
+        }else{
+          let mood= this.state.date.split('/')[2]+'-'+this.state.date.split('/')[0]+'-'+this.state.date.split('/')[1]
+          this.checkChooseTimes({ startTime: mood+ ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5 })
+        }
+      
       }
     } else {
       Toast.fail('请选择场地', 2, null, false);
@@ -327,7 +337,7 @@ class appOrder extends React.Component {
 
                 <span className="red"></span><span>已选中</span>
               </div>
-              <Table loading={false} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '88%' }} />,
+              <Table loading={false} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '83%' }} />,
               <Result
                 style={this.state.otherType.length === 0 ? { display: 'block' } : { display: 'none' }}
                 img={<Icon type="cross-circle-o" style={{ fill: 'rgba(245,166,35,1)', width: '4rem', height: '4rem' }} />}

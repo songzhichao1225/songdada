@@ -309,9 +309,6 @@ class qualification extends React.Component {
 
    
     } else {
-      
-
-
       if(openingLine===''){
         message.warning('请选择开户支行')
       }else{

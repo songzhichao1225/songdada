@@ -93,7 +93,8 @@ class appointmentList extends React.Component {
     Cancels: 0,
     duuid: [],
     loadingTwo: true,
-   
+    calesRed: 0,
+    arrTimeuid: [],
   };
 
   async getVenueSport(data) {
@@ -149,20 +150,28 @@ class appointmentList extends React.Component {
           }
         }
       }
+      for (let i in res.data.data) {
+        for (let j in res.data.data[i].c) {
+          res.data.data[i].c[j].checked = false
+          if (res.data.data[i].c[j].type === 4) {
+            this.setState({ calesRed: 1 })
+          }
+        }
+      }
 
 
       this.setState({
-        resData:res.data.data
+        resData: res.data.data
       })
 
 
 
       this.hoode(res.data.data)
 
-     
 
-    
-      
+
+
+
       for (let i in res.data.other) {
         res.data.other[i].dataIndex = res.data.other[i].venueid
         res.data.other[i].title = <div>{res.data.other[i].venueid}<br />{res.data.other[i].title}</div>
@@ -207,27 +216,27 @@ class appointmentList extends React.Component {
   }
 
 
-  hoode=(resData)=>{
+  hoode = (resData) => {
     let jood = []
-      for (let i in resData) {
-        let obj = {}
-        for (let j in resData[i].c) {
-          obj.key = j + 1
-          let key = resData[i].c[j].venueids
-          let value = <div><div data-type={resData[i].c[j].type} data-uuid={resData[i].c[j].uuid} onClick={this.lookDeta} style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#ADD2FF', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, lineHeight: 3 } : {}}><Checkbox className="chePe" defaultChecked={this.state.Cancels===1?false:false} onChange={this.checkbox} dtype={resData[i].c[j].type} time={resData[i].a}  venueid={resData[i].c[j].venueids} uuid={resData[i].c[j].uuid} style={resData[i].c[j].type === 1 && this.state.cofirmZ === 1 ? {} : { display: 'none' } && resData[i].c[j].type === 4 && this.state.Cancels === 1 ? {} : { display: 'none' }} />{resData[i].c[j].money}</div></div>
-          obj[key] = value
-          let koTwo = parseInt(resData[i].a.slice(1, 2)) + 1 + ':00'
-          obj.lppd = <div style={{ color: '#F5A623' }}>{resData[i].a}<br />{resData[i].a.slice(3, resData[i].a.length) === '00' ? resData[i].a.slice(0, 2) + ':30' : koTwo === '10:00'&&resData[i].a!=='19:30' ? '10:00' :resData[i].a==='19:30'?'20:00':resData[i].a.slice(0, 1) + koTwo}</div>
-        }
-        jood.push(obj)
+    for (let i in resData) {
+      let obj = {}
+      for (let j in resData[i].c) {
+        obj.key = j + 1
+        let key = resData[i].c[j].venueids
+        let value = <div><div data-type={resData[i].c[j].type} data-uuid={resData[i].c[j].uuid} onClick={this.lookDeta} style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#ADD2FF', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, lineHeight: 3 } : {}}><Checkbox className="chePe" idx={i} jdx={j} checked={resData[i].c[j].checked} onChange={this.checkbox} dtype={resData[i].c[j].type} time={resData[i].a} venueid={resData[i].c[j].venueids} uuid={resData[i].c[j].uuid} style={resData[i].c[j].type === 1 && this.state.cofirmZ === 1 ? {} : { display: 'none' } && resData[i].c[j].type === 4 && this.state.Cancels === 1 ? {} : { display: 'none' }} />{resData[i].c[j].money}</div></div>
+        obj[key] = value
+        let koTwo = parseInt(resData[i].a.slice(1, 2)) + 1 + ':00'
+        obj.lppd = <div style={{ color: '#F5A623' }}>{resData[i].a}<br />{resData[i].a.slice(3, resData[i].a.length) === '00' ? resData[i].a.slice(0, 2) + ':30' : koTwo === '10:00' && resData[i].a !== '19:30' ? '10:00' : resData[i].a === '19:30' ? '20:00' : resData[i].a.slice(0, 1) + koTwo}</div>
       }
-     
-      
-        this.setState({
-          lookBan: jood
-        })
-     
-      
+      jood.push(obj)
+    }
+
+
+    this.setState({
+      lookBan: jood
+    })
+
+
 
   }
 
@@ -241,37 +250,53 @@ class appointmentList extends React.Component {
   cofirmZ = () => {
     this.setState({
       cofirmZ: 1,
-      chePe:false
+      chePe: false
     })
-     setTimeout(() => {
+    setTimeout(() => {
       this.hoode(this.state.resData)
-      
-      }, 50)
-    
+
+    }, 50)
+
   }
   dateChange = (data, datatring) => {
     this.setState({ dateString: datatring })
     this.getVenueReservation({ sportid: this.state.liNum, date: datatring })
   }
   checkbox = e => {
-    this.setState({
-      dtype: e.target.dtype,
-      venueidids: [...this.state.venueidids, e.target.venueid],
-      dtime: [...this.state.dtime, e.target.time],
-      duuid: [...this.state.duuid, e.target.uuid],
-      
-    })
-  
+    if (this.state.resData[e.target.idx].c[e.target.jdx].checked === false) {
+      this.state.resData[e.target.idx].c[e.target.jdx].checked = true
+      this.hoode(this.state.resData)
+    } else {
+      this.state.resData[e.target.idx].c[e.target.jdx].checked = false
+      this.hoode(this.state.resData)
+    }
+    let timUid = e.target.uuid + '#' + e.target.time + '#' + e.target.venueid
+    if (this.state.arrTimeuid.indexOf(timUid) !== -1) {
+      this.state.arrTimeuid.splice(this.state.arrTimeuid.indexOf(timUid), 1)
+    } else {
+      this.setState({ arrTimeuid: [...this.state.arrTimeuid, timUid] })
+    }
+
+
+
+
+
   }
 
   shour = () => {
-    let { venueidids, dtime } = this.state
-    console.log(venueidids, dtime)
+    let { arrTimeuid } = this.state
+    let venueidids = []
+    let dtime = []
+    for (let i in arrTimeuid) {
+
+      venueidids.push(arrTimeuid[i].split('#')[2])
+      dtime.push(arrTimeuid[i].split('#')[1])
+    }
     if (venueidids.length !== 0) {
       this.setState({
         info: true,
-        venueidids:typeof(venueidids)==='string'?venueidids:venueidids.join(','),
-        dtime:typeof(dtime)==='string'?dtime:dtime.join(',')
+        venueidids: typeof (venueidids) === 'string' ? venueidids : venueidids.join(','),
+        dtime: typeof (dtime) === 'string' ? dtime : dtime.join(',')
       })
     } else {
       message.error('请选择空闲场地')
@@ -280,11 +305,16 @@ class appointmentList extends React.Component {
   }
   shourTwo = () => {
     this.setState({
-      cofirmZ: 0, venueidids: [], dtime: []
+      cofirmZ: 0, venueidids: [], dtime: [],arrTimeuid:[]
     })
-    setTimeout(()=>{
+    setTimeout(() => {
+      for (let i in this.state.resData) {
+        for (let j in this.state.resData[i].c) {
+          this.state.resData[i].c[j].checked = false
+        }
+      }
       this.hoode(this.state.resData)
-    },50)
+    }, 50)
   }
 
   placeName = e => {
@@ -312,12 +342,12 @@ class appointmentList extends React.Component {
         this.setState({ flagClick: 0 })
         message.info('该场地该时间段已向找对手线上释放')
       }
-      this.setState({ info: false, lotime: [] })
+      this.setState({ info: false, lotime: [], arrTimeuid: [] })
     } else {
       message.error('操作失败')
     }
-  
-    
+
+
   }
 
   placeSubmit = () => {
@@ -335,13 +365,22 @@ class appointmentList extends React.Component {
     this.setState({
       Cancels: 1
     })
-     setTimeout(() => {
+    setTimeout(() => {
       this.hoode(this.state.resData)
-      }, 50)
+    }, 50)
   }
 
   Cancelsshour = () => {
-    let { venueidids, dtime, duuid, dateString, liNum } = this.state
+    let { arrTimeuid, dateString, liNum } = this.state
+    let venueidids = []
+    let dtime = []
+    let duuid = []
+    for (let i in arrTimeuid) {
+
+      venueidids.push(arrTimeuid[i].split('#')[2])
+      dtime.push(arrTimeuid[i].split('#')[1])
+      duuid.push(arrTimeuid[i].split('#')[0])
+    }
     if (venueidids.length !== 0) {
       this.VenueClickCancelPlace({ date: dateString, sportid: liNum, type: 2, time: dtime.join(','), venueid: venueidids.join(','), uuid: duuid.join(','), other: '' })
     } else {
@@ -353,11 +392,17 @@ class appointmentList extends React.Component {
       venueidids: [],
       dtime: [],
       duuid: [],
-      Cancels: 0
+      Cancels: 0,
+      arrTimeuid:[]
     })
     setTimeout(() => {
+      for (let i in this.state.resData) {
+        for (let j in this.state.resData[i].c) {
+          this.state.resData[i].c[j].checked = false
+        }
+      }
       this.hoode(this.state.resData)
-      }, 50)
+    }, 50)
   }
 
   async VenueNewsHistoricalRecord(data) {
@@ -388,9 +433,9 @@ class appointmentList extends React.Component {
       this.setState({ otherObj: arrObj, menu: 1, History: true })
     }
   }
-  handleCancelInFo=()=>{
+  handleCancelInFo = () => {
     this.setState({
-      info:false
+      info: false
     })
   }
 
@@ -399,13 +444,13 @@ class appointmentList extends React.Component {
     return (
 
       <div className="orderList" style={{ position: 'relative', height: '100%' }}>
-        <div className="navTab" style={{paddingLeft:'0'}}>
+        <div className="navTab" style={{ paddingLeft: '0' }}>
           <div className="sping"> <SyncOutlined className={this.state.Oneloading === true || this.state.number === '2' ? 'hidden' : 'block'} onClick={this.Oneloading} style={{ fontSize: 24, marginTop: 15 }} /><Spin indicator={antIcon} spinning={this.state.Oneloading} /></div>
         </div>
         <div className="xiange"></div>
 
         <div className={this.state.number === '2' ? 'circumstance' : 'circumstanceT'} style={{ height: '93%' }} >
-          <ul className="rightNav" style={{ top: '-48px',left:'-20px' }}>
+          <ul className="rightNav" style={{ top: '-48px', left: '-20px' }}>
             <li className="dateSelect">
               <DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={locale} placeholder="请选择日期" className="DatePicker" onChange={this.dateChange} />
             </li>
@@ -423,9 +468,9 @@ class appointmentList extends React.Component {
                   <li key={i} onClick={this.clickLi} data-index={i} data-num={item.id} className={parseInt(this.state.dianIndex) === i ? 'borderLi' : ''}>{item.name}</li>
                 ))
               }
-              <li style={this.state.cofirmZ === 1 ? { display: 'none' } : { display: 'block' }}><div className="cofirmZ" onClick={this.cofirmZ}>设置线下占用</div></li>
+              <li style={this.state.cofirmZ === 1 || this.state.otherType.length === 0 || this.state.Cancels === 1 ? { display: 'none' } : { display: 'block' }}><div className="cofirmZ" onClick={this.cofirmZ}>设置线下占用</div></li>
               <li style={this.state.cofirmZ === 1 ? { display: 'block' } : { display: 'none' }}><div className="cofirmZText" onClick={this.shour}>确定</div><div style={{ marginLeft: 2 }} className="cofirmZText" onClick={this.shourTwo}>取消</div></li>
-              <li style={this.state.Cancels === 1 ? { display: 'none' } : { display: 'block' }}><div className="cofirmZ" onClick={this.Cancels}>取消线下占用</div></li>
+              <li style={this.state.Cancels === 1 || this.state.otherType.length === 0 || this.state.calesRed === 0 || this.state.cofirmZ === 1 ? { display: 'none' } : { display: 'block' }}><div className="cofirmZ" onClick={this.Cancels}>取消线下占用</div></li>
               <li style={this.state.Cancels === 1 ? { display: 'block' } : { display: 'none' }}><div className="cofirmZText" onClick={this.Cancelsshour}>确定</div><div style={{ marginLeft: 2 }} className="cofirmZText" onClick={this.CancelsshourTwo}>取消</div></li>
             </ul>
           </div>
@@ -434,8 +479,6 @@ class appointmentList extends React.Component {
           {/* 看板渲染标签 */}
           <Table loading={this.state.loadingTwo} style={this.state.otherType.length === 0 ? { display: 'none' } : { maxWidth: this.state.otherType.length * 100 }} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 76, minWidth: 40, y: '90%' }} />,
           <Result className={this.state.otherType.length === 0 ? '' : 'hidden'} icon={<FundOutlined style={{ color: '#F5A623' }} />} title="您还没有进行价格设置" />
-
-
         </div>
 
         <Drawer

@@ -66,12 +66,12 @@ class register extends React.Component {
     }
   }
   changePhone = (e) => {
-    if (e.target.value === '') {
-      this.setState({ visiblePhone: true })
-    } else if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(e.target.value))) {
-      this.setState({ visiblePhone: true })
+    console.log(e.target.value)
+     if ((/^1[3|4|5|8][0-9]\d{4,8}$/.test(e.target.value))!==false&&e.target.value.length===11) {
+       console.log(8888)
+      this.setState({ visiblePhone: false,phone: e.target.value})
     } else {
-      this.setState({ phone: e.target.value, visiblePhone: false })
+      this.setState({  visiblePhone: true })
     }
   }
   changeCode = (e) => {
