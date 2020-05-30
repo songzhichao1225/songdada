@@ -169,6 +169,16 @@ class register extends React.Component {
   onCancel=e=>{
     this.setState({Id:'',idName:''})
   }
+  visibleName=e=>{
+    if(e!==''){
+     this.setState({visibleName:false})
+    }
+  }
+  visiblePhone=e=>{
+    if(e!==''){
+      this.setState({visiblePhone:false})
+     }
+  }
 
   render() {
     return (
@@ -197,9 +207,9 @@ class register extends React.Component {
                 <span className="xing">*</span> <span>用户名:</span>
                 <Popover
                   content={this.state.text}
-                  visible={this.state.visibleName}
+                  visible={this.state.visiblePhone===true?false:this.state.visibleName}
                 >
-                  <Input type="text"  onBlur={this.changeName} className="phone" />
+                  <Input type="text"  onBlur={this.changeName} onChange={this.visibleName} className="phone" />
                 </Popover>
               </div>
 
@@ -207,9 +217,9 @@ class register extends React.Component {
                 <span className="xing">*</span> <span>手机号:</span>
                 <Popover
                   content={this.state.textTwo}
-                  visible={this.state.visiblePhone}
+                  visible={this.state.visibleName===true?false:this.state.visiblePhone}
                 >
-                  <Input maxLength={11} onBlur={this.changePhone} placeholder="操作员手机号" className="phone" />
+                  <Input maxLength={11} onBlur={this.changePhone} onChange={this.visiblePhone} placeholder="操作员手机号" className="phone" />
                 </Popover>
               </div>
 

@@ -372,6 +372,10 @@ export function getSetPriceVenueSport(data,headers){    //获取某一个场馆�
     return axios.post('/api/getSetPriceVenueSport',data,{headers: {'token': headers}})
 }
 
+export function getAPPVenueSelectSite(data,headers){    //选择场地时判断时间是否重叠、场馆是否关闭预约
+    return axios.post('/api/getAPPVenueSelectSite',data,{headers: {'token': headers}})
+}
+
 
 
 

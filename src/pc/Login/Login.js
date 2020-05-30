@@ -29,6 +29,7 @@ class Login extends React.Component {
         this.props.history.push('/statusAudits')
       }
     }
+    this.setState({phone:localStorage.getItem('nickName')})
   }
 
   phone = (e) => {
@@ -80,6 +81,7 @@ class Login extends React.Component {
       sessionStorage.setItem('issecondaudit', res.data.data.issecondaudit);
       sessionStorage.setItem('issportid', res.data.data.issportid);
       sessionStorage.setItem('legalphone', res.data.data.legalphone);
+      localStorage.setItem('nickName',res.data.data.name)
 
       setTimeout(() => {
         if (res.data.data.venue_token) {
@@ -206,7 +208,7 @@ class Login extends React.Component {
               <div className={this.state.navNum ? 'nameLogin' : 'nameLoginT'}  >
                 <Form layout="inline" onSubmit={this.handleSubmit} className="form">
                   <Form.Item className="input">
-                    <Input onChange={this.phone} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名/操作员手机号" />
+                    <Input onChange={this.phone} value={this.state.phone===undefined?'':this.state.phone} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名/操作员手机号" />
                   </Form.Item>
                   <Form.Item className="input" style={{ marginTop: 20 }}>
                     <Input.Password maxLength={8} onChange={this.onPassword} onPressEnter={this.onSubmitT} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" />

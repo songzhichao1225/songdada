@@ -716,6 +716,7 @@ class appointmentList extends React.Component {
           title="给参与人员发送消息"
           visible={this.state.visible}
           onCancel={this.handleCancel}
+          closeIcon={<CloseCircleOutlined style={{color:'#fff',fontSize:'20px'}} />}
         >
           <Radio.Group onChange={this.sendCheck} value={this.state.sendCheck}>
             <Radio value={2}>未预留场地</Radio>
@@ -823,6 +824,7 @@ class appointmentList extends React.Component {
           visible={this.state.info}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
+          closeIcon={<CloseCircleOutlined style={{color:'#fff',fontSize:'20px'}} />}
         >
           <div style={{ overflow: 'hidden' }}>
             <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>姓名：  </span>

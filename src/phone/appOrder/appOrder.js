@@ -3,7 +3,7 @@ import './appOrder.css';
 import { Calendar, Toast, Result, Icon, ActivityIndicator } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Table } from 'antd';
-import { getAppVenueReservations, checkChooseTimes, getVenueNumberTitleList } from '../../api';
+import { getAppVenueReservations,getVenueNumberTitleList,getAPPVenueSelectSite } from '../../api';
 const now = new Date();
 
 
@@ -225,8 +225,8 @@ class appOrder extends React.Component {
 
 
 
-  async checkChooseTimes(data) {
-    const res = await checkChooseTimes(data, this.state.token)
+  async getAPPVenueSelectSite(data) {
+    const res = await getAPPVenueSelectSite(data, this.state.token)
     if (res.data.code !== 2000) {
       Toast.fail(res.data.msg, 2, null, false);
     } else {
@@ -283,10 +283,10 @@ class appOrder extends React.Component {
         this.setState({ obj: obj })
         if(this.state.date.split('/')[0].length===4){
           let mood= this.state.date.split('/')[0]+'-'+this.state.date.split('/')[1]+'-'+this.state.date.split('/')[2]
-          this.checkChooseTimes({ startTime: mood+ ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5 })
+          this.getAPPVenueSelectSite({ startTime: mood+ ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5,siteUid:this.state.siteid })
         }else{
           let mood= this.state.date.split('/')[2]+'-'+this.state.date.split('/')[0]+'-'+this.state.date.split('/')[1]
-          this.checkChooseTimes({ startTime: mood+ ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5 })
+          this.getAPPVenueSelectSite({ startTime: mood+ ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5,siteUid:this.state.siteid })
         }
       
       }

@@ -9,9 +9,6 @@ import 'moment/locale/zh-cn';
 const { TextArea } = Input
 
 
-
-
-
 class systemSettings extends React.Component {
 
   state = {
@@ -394,7 +391,7 @@ class systemSettings extends React.Component {
         <div className={this.state.flagListOne === true ? 'list' : 'listNone'}>
           <ul className="ul">
             <Popconfirm
-              title={this.state.isClose===0?'您确定关闭预约吗？':'您确定取消关闭预约吗？'}
+              title={this.state.isClose===0?'您确定要关闭预约么，关闭后场馆的所有时间段将不能被提前预约！？':'您确定取消关闭预约么，取消后场馆的所有时间段可以被提前预约'}
               onConfirm={this.confirm}
               onCancel={this.cancel}
               okText="是"
@@ -453,7 +450,7 @@ class systemSettings extends React.Component {
               <span>确认密码</span>
               <Input.Password maxLength={8} onChange={this.passWordT} placeholder="请输入确认密码" />
             </div>
-            <div className="submit" onClick={this.submit}>确定</div>
+            <div className="submit" style={{marginLeft:72}} onClick={this.submit}>确定</div>
           </div>
         </div>
 

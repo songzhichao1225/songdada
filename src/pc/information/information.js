@@ -2,7 +2,7 @@ import React from 'react';
 import './information.css';
 import 'antd/dist/antd.css';
 import { Input,Row, Col, Select, Pagination, Spin, message, Result,DatePicker, Modal, Radio, Drawer, InputNumber,Popover } from 'antd';
-import {BankOutlined,SyncOutlined} from '@ant-design/icons';
+import {BankOutlined,SyncOutlined,CloseCircleOutlined} from '@ant-design/icons';
 import { getReservationActivitieslist, getVenueReservation, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import moment from 'moment';
@@ -596,6 +596,8 @@ class information extends React.Component {
           title="给参与人员发送消息"
           visible={this.state.visible}
           onCancel={this.handleCancel}
+          closeIcon={<CloseCircleOutlined style={{color:'#fff',fontSize:'20px'}} />}
+          
         >
           <Radio.Group onChange={this.sendCheck} value={this.state.sendCheck}>
             <Radio value={2}>未预留场地</Radio>
@@ -703,6 +705,7 @@ class information extends React.Component {
           visible={this.state.info}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
+          closeIcon={<CloseCircleOutlined style={{color:'#fff',fontSize:'20px'}} />}
         >
           <div style={{ overflow: 'hidden' }}>
             <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>姓名：  </span>

@@ -247,3 +247,12 @@ clear: left;
     height: 8px;
     background: rgb(245, 245, 245);
 }
+.footerC{
+    position: absolute;
+    bottom: 0px;
+}
+.footerC>div{
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
+}

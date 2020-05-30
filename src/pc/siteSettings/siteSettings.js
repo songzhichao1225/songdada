@@ -1,9 +1,9 @@
 import React from 'react';
 import './siteSettings.css';
 import 'antd/dist/antd.css';
-import { getSiteSettingList, addVenueField, getVenueSport, AddSiteSetting, DelSiteSetting, getVenueSportidTitle,DelVenueTitle, SiteSettingDiscountSave, getVenueNumberTitleFirst, getSiteSettingFirst, getSiteSelectedTitle, DelVenueNumberTitle, getSiteSelectedVenueid, getVenueTitleSave, getVenueNumberTitleSave, getVenueNumberTitleList, DelSiteSettingDiscount } from '../../api';
-import { Select, Row, Col, Modal, DatePicker, InputNumber, Input, message, Pagination, Popconfirm, Divider, Popover } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { getSiteSettingList, addVenueField, getVenueSport, AddSiteSetting, DelSiteSetting, getVenueSportidTitle, DelVenueTitle, SiteSettingDiscountSave, getVenueNumberTitleFirst, getSiteSettingFirst, getSiteSelectedTitle, DelVenueNumberTitle, getSiteSelectedVenueid, getVenueTitleSave, getVenueNumberTitleSave, getVenueNumberTitleList, DelSiteSettingDiscount } from '../../api';
+import { Select, Row, Col, Modal, DatePicker, InputNumber, Input, message, Pagination, Popconfirm, Divider, Popover, Spin, Result } from 'antd';
+import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 const { Option } = Select;
@@ -81,7 +81,9 @@ class siteSettings extends React.Component {
     tooltip: false,
     update: 0,
     chekedFour: [],
-    lppd: 0
+    lppd: 0,
+    lppding: true,
+    timer: [{ name: '00:00' }, { name: '00:30' }, { name: '01:00' }, { name: '01:30' }, { name: '02:00' }, { name: '02:30' }, { name: '03:00' }, { name: '03:30' }, { name: '04:00' }, { name: '04:30' }, { name: '05:00' }, { name: '05:30' }, { name: '06:00' }, { name: '06:30' }, { name: '07:00' }, { name: '07:30' }, { name: '08:00' }, { name: '08:30' }, { name: '09:00' }, { name: '09:30' }, { name: '10:00' }, { name: '10:30' }, { name: '11:00' }, { name: '11:30' }, { name: '12:00' }, { name: '12:30' }, { name: '13:00' }, { name: '13:30' }, { name: '14:00' }, { name: '14:30' }, { name: '15:00' }, { name: '15:30' }, { name: '16:00' }, { name: '16:30' }, { name: '17:00' }, { name: '17:30' }, { name: '18:00' }, { name: '18:30' }, { name: '19:00' }, { name: '19:30' }, { name: '20:00' }, { name: '20:30' }, { name: '21:00' }, { name: '21:30' }, { name: '22:00' }, { name: '22:30' }, { name: '23:00' }, { name: '23:30' }, { name: '24:00' }]
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -131,16 +133,17 @@ class siteSettings extends React.Component {
         }
       }
 
-      this.setState({ list: res.data.data, other: res.data.other, loading: false, hidden: true })
+      this.setState({ list: res.data.data, other: res.data.other, loading: false, hidden: true, lppding: false })
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆！')
     } else {
-      this.setState({ list: res.data.data, loading: false, hidden: false })
+      this.setState({ list: res.data.data, loading: false, hidden: false, lppding: false })
     }
   }
 
   componentDidMount() {
+
 
     this.getVenueSport()
     this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
@@ -187,10 +190,10 @@ class siteSettings extends React.Component {
 
   handleCancel = e => {
     this.setState({
-      visible: false, update: 0,
-      runIdTwo: '', tagsTwo: '', opendayname: '', openday: '', starttime: '',
-      endtime: '', costperhour: '', chekedTwo: '', chekedTwoLen: 0, appointmenttime: '',
-      tagsTwoId: '', comment: '', maxScheduledDate: '', maxScheduledDateName: [], runNameTwo: '', Disid: ''
+      visible: false, update: 0, Disid: '',
+      // runIdTwo: '', tagsTwo: '', opendayname: '', openday: '', starttime: '',
+      // endtime: '', costperhour: '', chekedTwo: '', chekedTwoLen: 0, appointmenttime: '',
+      // tagsTwoId: '', comment: '', maxScheduledDate: '', maxScheduledDateName: [], runNameTwo: '', Disid: ''   用于价格设置弹窗清空
     })
   }
   handleChangeOne = e => {
@@ -331,8 +334,8 @@ class siteSettings extends React.Component {
       starttime: timeString[0],
       endtime: timeString[1]
     })
-
   }
+
   endtime = (e) => {
     this.setState({ endtime: this.state.time[parseInt(e)].name })
   }
@@ -395,9 +398,10 @@ class siteSettings extends React.Component {
     } else {
       this.setState({
         visible: false,
-        update: 0, starttime: '',
-        endtime: '',
-      });
+        update: 0,
+        // starttime: '',
+        // endtime: '',
+      })
       this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
     }
   }
@@ -409,9 +413,7 @@ class siteSettings extends React.Component {
     if (res.data.code === 2000) {
       this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
       this.setState({
-        visible: false, update: 0, runIdTwo: '', tagsTwo: '', opendayname: '', openday: '', starttime: '',
-        endtime: '', costperhour: '', chekedTwo: '', chekedTwoLen: 0, appointmenttime: '',
-        tagsTwoId: '', comment: '', maxScheduledDate: '', maxScheduledDateName: [], runNameTwo: '', Disid: '', runId: '', tags: ''
+        visible: false, update: 0, Disid: '',
       })
     } else {
       message.error(res.data.msg)
@@ -574,7 +576,7 @@ class siteSettings extends React.Component {
       arrJoinTil.push(res.data.data[i].title)
     }
 
-    const arrTo = [{ title: '普通',uuid:1 }, { title: 'VIP',uuid:1 }]
+    const arrTo = [{ title: '普通', uuid: 1 }, { title: 'VIP', uuid: 1 }]
 
     this.setState({
       joinTil: [...arrTo, ...res.data.data]
@@ -607,6 +609,7 @@ class siteSettings extends React.Component {
       this.getVenueTitleSave({ sportid: this.state.runId, title: name })
     }
   }
+
   closeDelet = e => {
     console.log(e.currentTarget.dataset.id)
   }
@@ -858,9 +861,13 @@ class siteSettings extends React.Component {
     this.setState({
       visible: true,
       update: 0,
-      starttime: '',
-      endtime: '',
+      // starttime: '',
+      // endtime: '',
     })
+    if (this.state.update === 0 && this.state.runNameTwo !== '' && this.state.runNameTwo !== undefined) {
+      this.getSiteSelectedTitle({ sportid: this.state.runIdTwo })
+    }
+
   }
   toSetUp = () => {
     this.setState({
@@ -868,8 +875,9 @@ class siteSettings extends React.Component {
       nosubdivisions: false,
       visible: false,
       joinXi: true,
-      update: 0, starttime: '',
-      endtime: '',
+      update: 0,
+      // starttime: '',
+      // endtime: '',
       typeDetel: 1
     })
   }
@@ -1084,439 +1092,491 @@ class siteSettings extends React.Component {
       message.error(res.data.msg)
     }
   }
-  deletSelect=(e)=>{
-   this.DelVenueTitle({uuid:e.currentTarget.dataset.id})
+  deletSelect = (e) => {
+    this.DelVenueTitle({ uuid: e.currentTarget.dataset.id })
+  }
+  getPosition = e => {
+    const titleDom = e.target
+    const X = titleDom.getBoundingClientRect().left
+    const Y = document.getElementsByClassName('group')[0].offsetTop
+    let mouseX = e.pageX
+    let mouseY = e.screenY
+    const diffX = mouseX - X
+    const diffY = mouseY - Y
+    return { X, Y, mouseX, mouseY, diffX, diffY }
+  }
+  onMouseDown = e => {
+    const position = this.getPosition(e)
+    window.onmousemove = this.onMouseMove
+    window.onmouseup = this.onMouseUp
+    this.setState({ moving: true, diffX: position.diffX, diffY: position.diffY })
+  }
+  onMouseUp = e => {
+    const { moving } = this.state
+    moving && this.setState({ moving: false });
   }
 
+  onMouseMove = e => {
+    const { moving, diffX, diffY } = this.state
+    if (moving) {
+      const position = this.getPosition(e)
+      const x = position.mouseX - diffX
+      const y = position.mouseY - diffY
+      const { clientWidth, clientHeight } = document.documentElement
+      const modal = document.getElementsByClassName("group")[0]
+      if (modal) {
+        const maxHeight = clientHeight - modal.offsetHeight
+        const maxWidth = clientWidth - modal.offsetWidth
+        const left = x > 0 ? (x < maxWidth ? x : maxWidth) : 0
+        const top = y > 0 ? (y < maxHeight ? y : maxHeight) : 0
+        this.setState({ pageX: left, pageY: top })
+      }
+    }
+  }
 
   render() {
     const { name } = this.state;
     return (
-      <div className="siteStting">
-        <div className="header">
-          <div className="left" style={this.state.headerData === '1' ? { color: '#fff', background: '#F5A623', border: '1px solid #F5A623' } : {}} onClick={this.headerCli} data-id='1'>场地细分</div>
-          <div className="left" style={this.state.headerData === '2' ? { color: '#fff', background: '#F5A623', border: '1px solid #F5A623' } : {}} onClick={this.headerCli} data-id='2'>价格设置</div>
-          <div className="right"><span>场地类型</span>
-            <Select className="selectName" defaultValue="类型名称" value={this.state.nameChang === '' ? '全部' : this.state.nameChang} style={{ width: 130, padding: 0, textAlign: 'center' }} onChange={this.nameChang}>
-              <Option value="0">全部</Option>
-              <Option value="1">羽毛球</Option>
-              <Option value="2">兵乓球</Option>
-              <Option value="3">台球中式黑八</Option>
-              <Option value="4">台球美式九球</Option>
-              <Option value="5">台球斯诺克</Option>
-              <Option value="6">篮球</Option>
-              <Option value="7">足球11人制</Option>
-              <Option value="8">足球8人制</Option>
-              <Option value="9">足球7人制</Option>
-              <Option value="10">足球5人制</Option>
-              <Option value="11">排球</Option>
-              <Option value="12">网球</Option>
-            </Select>
+      <Spin spinning={this.state.lppding} style={{ height: '100%' }}>
+        <div className="siteStting">
+          <div className="header">
+            <div className="left" style={this.state.headerData === '1' ? { color: '#fff', background: '#F5A623', border: '1px solid #F5A623' } : {}} onClick={this.headerCli} data-id='1'>场地细分</div>
+            <div className="left" style={this.state.headerData === '2' ? { color: '#fff', background: '#F5A623', border: '1px solid #F5A623' } : {}} onClick={this.headerCli} data-id='2'>价格设置</div>
+            <div className="right"><span>场地类型</span>
+              <Select className="selectName" defaultValue="类型名称" value={this.state.nameChang === '' ? '全部' : this.state.nameChang} style={{ width: 130, padding: 0, textAlign: 'center' }} onChange={this.nameChang}>
+                <Option value="0">全部</Option>
+                <Option value="1">羽毛球</Option>
+                <Option value="2">兵乓球</Option>
+                <Option value="3">台球中式黑八</Option>
+                <Option value="4">台球美式九球</Option>
+                <Option value="5">台球斯诺克</Option>
+                <Option value="6">篮球</Option>
+                <Option value="7">足球11人制</Option>
+                <Option value="8">足球8人制</Option>
+                <Option value="9">足球7人制</Option>
+                <Option value="10">足球5人制</Option>
+                <Option value="11">排球</Option>
+                <Option value="12">网球</Option>
+              </Select>
 
-          </div>
-
-        </div>
-        <div className="xiange"></div>
-        <div style={this.state.headerData === '2' ? { overflowY: 'auto', height: '89%' } : { display: 'none' }}>
-          <div className={this.state.hidden === true ? 'siteList' : 'hidden'} style={{ paddingBottom: 0 }}>
-            <Row className="rowConten" style={{ background: '#FCF7EE' }}>
-              <Col xs={{ span: 2 }}>场地类型</Col>
-              <Col xs={{ span: 2 }}>细分标签</Col>
-              <Col xs={{ span: 2 }}>场地编号</Col>
-              <Col xs={{ span: 2 }}>场地数量</Col>
-              <Col xs={{ span: 2 }}>工作日/周六日</Col>
-              <Col xs={{ span: 2 }}>时间范围</Col>
-              <Col xs={{ span: 2 }}>价格<span className="fontColor">(元/时)</span></Col>
-              <Popover content={(<span>最长提前预定时间</span>)} title='详情' trigger="click">
-                <Col xs={{ span: 2 }}>最长提前预定时间</Col>
-              </Popover>
-              <Popover content={(<span>最短提前预定时间</span>)} title='详情' trigger="click">
-                <Col xs={{ span: 2 }}>最短提前预定时间</Col>
-              </Popover>
-              <Col xs={{ span: 2 }}>备注</Col>
-              <Col xs={{ span: 2 }}>打折优惠</Col>
-              <Col xs={{ span: 2, }}>操作</Col>
-            </Row>
-            <div className="dataList">
-              {
-                this.state.list.map((item, i) => (
-                  <Row key={i} className="rowList">
-                    <Col xs={{ span: 2 }}>{item.sportname}</Col>
-                    <Col xs={{ span: 2 }}>{item.tags}</Col>
-                    <Popover content={(<div className="titleVenid">{item.venueid}</div>)} title='详情' trigger="click">
-                      <Col xs={{ span: 2 }}>{item.venueid}</Col>
-                    </Popover>
-                    <Col xs={{ span: 2 }}>{item.sitenumber}</Col>
-                    <Popover content={(<span>{item.opendayname.slice(1, item.opendayname.length)}</span>)} title='详情' trigger="click">
-                      <Col xs={{ span: 2 }}>{item.opendayname.slice(1, item.opendayname.length)}</Col>
-                    </Popover>
-                    <Col xs={{ span: 2 }} style={{ lineHeight: '24px' }}>{item.starttime}<br />{item.endtime}</Col>
-                    <Col xs={{ span: 2 }}>{item.costperhour}</Col>
-                    <Col xs={{ span: 2 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
-                    <Col xs={{ span: 2 }}>{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</Col>
-                    <Popover content={(<span>{item.comment === '' ? '无' : item.comment}</span>)} title='详情' trigger="click">
-                      <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.comment === '' ? '无' : item.comment}</Col>
-                    </Popover>
-                    <Col xs={{ span: 2 }} style={{ cursor: 'pointer' }} data-uid={item.uuid} data-type={item.discount_edate} onClick={this.preferential}>{item.discount_edate === null ? '添加' : '查看'}</Col>
-                    <Col xs={{ span: 2 }}>
-                      <img onClick={this.update} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;
-                      <Popconfirm
-                        title={"你确定要删除该条价格设置么?删除后用户将无法预定" + item.sportname + '的' + item.tags + '场地'}
-                        onConfirm={this.confirmMoney}
-                        onCancel={this.cancel}
-                        okText="确定"
-                        cancelText="取消"
-                      >
-                        <img onClick={this.deletTwoMoney} data-uuid={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
-                      </Popconfirm>
-                    </Col>
-                  </Row>
-                ))
-              }
             </div>
+
           </div>
-          <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} className={this.state.hidden === true ? 'fenye' : 'hidden'} current={this.state.page} total={this.state.other} onChange={this.current} />
-        </div>
-
-        <div className="join" style={this.state.headerData === '2' ? {} : { display: 'none' }} onClick={this.showModalTwo}><div style={{ textAlign: 'center', width: '150px', margin: '0 auto' }}>+添加价格设置</div></div>
-
-        <div style={this.state.headerData === '1' ? { overflowY: 'auto', height: '89%' } : { display: 'none' }}>
-          <Row className="rowConten" style={{ background: '#FCF7EE', borderBottom: '1px solid #E1E0E1' }}>
-            <Col xs={{ span: 5 }}>场地类型</Col>
-            <Col xs={{ span: 5 }}>细分标签</Col>
-            <Col xs={{ span: 5 }}>场地编号</Col>
-            <Col xs={{ span: 5 }}>场地数量</Col>
-            <Col xs={{ span: 3 }}>操作</Col>
-          </Row>
-          {
-            this.state.joinXiList.map((item, i) => (
-              <Row key={i} style={{ borderBottom: '1px solid #E1E0E1' }}>
-                <Col xs={{ span: 5 }}>{item.sportid}</Col>
-                <Col xs={{ span: 5 }}>{item.title}</Col>
-                <Popover content={(<div className="titleVenid">{item.venueid}</div>)} title='详情' trigger="click">
-                  <Col xs={{ span: 5 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} onClick={this.tooltip}>{item.venueid}</Col>
+          <div className="xiange"></div>
+          <div style={this.state.headerData === '2' ? { overflowY: 'auto', height: '89%' } : { display: 'none' }}>
+            <div className='siteList' style={{ paddingBottom: 0 }}>
+              <Row className="rowConten" style={{ background: '#FCF7EE' }}>
+                <Col xs={{ span: 2 }}>场地类型</Col>
+                <Col xs={{ span: 2 }}>细分标签</Col>
+                <Col xs={{ span: 2 }}>场地编号</Col>
+                <Col xs={{ span: 2 }}>场地数量</Col>
+                <Col xs={{ span: 2 }}>工作日/周六日</Col>
+                <Col xs={{ span: 2 }}>时间范围</Col>
+                <Col xs={{ span: 2 }}>价格<span className="fontColor">(元/时)</span></Col>
+                <Popover content={(<span>最长提前预定时间</span>)} title='详情' trigger="click">
+                  <Col xs={{ span: 2 }}>最长提前预定时间</Col>
                 </Popover>
-
-                <Col xs={{ span: 5 }}>{item.number}</Col>
-                <Col xs={{ span: 3 }}>
-                  <img onClick={this.modification} data-uuid={item.uuid} style={{ marginRight: '5px' }} src={require("../../assets/icon_pc_updata.png")} alt="修改" />
-                  <Popconfirm
-                    title={'您确定要删除该条场地细分么?删除后用户将无法预定' + item.sportid + '的' + item.title + '场地'}
-                    onConfirm={this.confirmserisa}
-                    onCancel={this.cancel}
-                    okText="确定"
-                    cancelText="取消"
-                  >
-                    <img style={{ marginLeft: '5px' }} onClick={this.deletserisa} data-id={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
-                  </Popconfirm>
-                </Col>
+                <Popover content={(<span>最短提前预定时间</span>)} title='详情' trigger="click">
+                  <Col xs={{ span: 2 }}>最短提前预定时间</Col>
+                </Popover>
+                <Col xs={{ span: 2 }}>备注</Col>
+                <Col xs={{ span: 2 }}>打折优惠</Col>
+                <Col xs={{ span: 2, }}>操作</Col>
               </Row>
-            ))
-          }
-
-
-          <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.pageOne} onChange={this.recordListOther} total={this.state.otherseris} />
-
-        </div>
-
-        <div className="join" style={this.state.headerData === '1' ? {} : { display: 'none' }} onClick={this.showModal}><div style={{ textAlign: 'center', width: '150px', margin: '0 auto' }}>+添加场地细分</div></div>
-
-
-
-
-        <Modal
-          title="添加/修改价格设置"
-          visible={this.state.visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          width={630}
-          className='model'
-        >
-          <div className="modelList" style={{ height: '32px' }}>
-            <span>场地类型</span>
-            <Select placeholder="请选择" onInputKeyDown={this.ko} disabled={this.state.update === 1 ? true : false} value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 269, height: 32 }} onChange={this.handleChangeOneTwo}>
-              {
-                this.state.ListSport.map((item, i) => (
-                  <Option key={i} value={item.id}>{item.name}</Option>
-                ))
-              }
-            </Select>
+              <div className="dataList">
+                {
+                  this.state.list.map((item, i) => (
+                    <Row key={i} className="rowList">
+                      <Col xs={{ span: 2 }}>{item.sportname}</Col>
+                      <Col xs={{ span: 2 }}>{item.tags}</Col>
+                      <Popover content={(<div className="titleVenid">{item.venueid}</div>)} title='详情' trigger="click">
+                        <Col xs={{ span: 2 }}>{item.venueid}</Col>
+                      </Popover>
+                      <Col xs={{ span: 2 }}>{item.sitenumber}</Col>
+                      <Popover content={(<span>{item.opendayname.slice(1, item.opendayname.length)}</span>)} title='详情' trigger="click">
+                        <Col xs={{ span: 2 }}>{item.opendayname.slice(1, item.opendayname.length)}</Col>
+                      </Popover>
+                      <Col xs={{ span: 2 }} style={{ lineHeight: '24px' }}>{item.starttime}<br />{item.endtime}</Col>
+                      <Col xs={{ span: 2 }}>{item.costperhour}</Col>
+                      <Col xs={{ span: 2 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
+                      <Col xs={{ span: 2 }}>{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</Col>
+                      <Popover content={(<span>{item.comment === '' ? '无' : item.comment}</span>)} title='详情' trigger="click">
+                        <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.comment === '' ? '无' : item.comment}</Col>
+                      </Popover>
+                      <Col xs={{ span: 2 }} style={{ cursor: 'pointer' }} data-uid={item.uuid} data-type={item.discount_edate} onClick={this.preferential}>{item.discount_edate === null ? '添加' : '查看'}</Col>
+                      <Col xs={{ span: 2 }}>
+                        <img onClick={this.update} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;
+                      <Popconfirm
+                          title={"你确定要删除该条价格设置么?删除后用户将无法预定" + item.sportname + '的' + item.tags + '场地'}
+                          onConfirm={this.confirmMoney}
+                          onCancel={this.cancel}
+                          okText="确定"
+                          cancelText="取消"
+                        >
+                          <img onClick={this.deletTwoMoney} data-uuid={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
+                        </Popconfirm>
+                      </Col>
+                    </Row>
+                  ))
+                }
+              </div>
+            </div>
+            <Result
+              style={this.state.list.length === 0 ? {} : { display: 'none' }}
+              status="warning"
+              title="您还没有设置场地价格!"
+            />
+            <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} className={this.state.hidden === true ? 'fenye' : 'hidden'} current={this.state.page} total={this.state.other} onChange={this.current} />
           </div>
 
-          <div className="modelList" style={{ height: '32px' }}>
-            <span>细分标签</span>
-            <Select placeholder="请选择" disabled={this.state.update === 1 ? true : false} value={this.state.tagsTwo === '' ? [] : this.state.tagsTwo} className="selectModel" style={{ width: 269, height: 32 }} onChange={this.handleChangeTags}>
+          <div className="join" style={this.state.headerData === '2' ? {} : { display: 'none' }} onClick={this.showModalTwo}><div id="join" style={{ textAlign: 'center', width: '150px', margin: '0 auto' }}>+添加价格设置</div></div>
+          <div style={this.state.headerData === '1' ? { overflowY: 'auto', height: '89%' } : { display: 'none' }}>
+            <Row className="rowConten" style={{ background: '#FCF7EE', borderBottom: '1px solid #E1E0E1' }}>
+              <Col xs={{ span: 5 }}>场地类型</Col>
+              <Col xs={{ span: 5 }}>细分标签</Col>
+              <Col xs={{ span: 5 }}>场地编号</Col>
+              <Col xs={{ span: 5 }}>场地数量</Col>
+              <Col xs={{ span: 3 }}>操作</Col>
+            </Row>
+            {
+              this.state.joinXiList.map((item, i) => (
+                <Row key={i} style={{ borderBottom: '1px solid #E1E0E1' }}>
+                  <Col xs={{ span: 5 }}>{item.sportid}</Col>
+                  <Col xs={{ span: 5 }}>{item.title}</Col>
+                  <Popover content={(<div className="titleVenid">{item.venueid}</div>)} title='详情' trigger="click">
+                    <Col xs={{ span: 5 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} onClick={this.tooltip}>{item.venueid}</Col>
+                  </Popover>
 
-              {
-                this.state.selecdTil.map((item, i) => (
-                  <Option key={i} value={item.title}>{item.title}</Option>
-                ))
-              }
-            </Select>
+                  <Col xs={{ span: 5 }}>{item.number}</Col>
+                  <Col xs={{ span: 3 }}>
+                    <img onClick={this.modification} data-uuid={item.uuid} style={{ marginRight: '5px' }} src={require("../../assets/icon_pc_updata.png")} alt="修改" />
+                    <Popconfirm
+                      title={'您确定要删除该条场地细分么?删除后用户将无法预定' + item.sportid + '的' + item.title + '场地'}
+                      onConfirm={this.confirmserisa}
+                      onCancel={this.cancel}
+                      okText="确定"
+                      cancelText="取消"
+                    >
+                      <img style={{ marginLeft: '5px' }} onClick={this.deletserisa} data-id={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
+                    </Popconfirm>
+                  </Col>
+                </Row>
+              ))
+            }
+            <Result
+              style={this.state.joinXiList.length === 0 ? {} : { display: 'none' }}
+              status="warning"
+              title="您还没有设置场地细分!"
+            />
+            <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.pageOne} onChange={this.recordListOther} total={this.state.otherseris} />
           </div>
-          <div className="modelList" style={{ height: '32px' }}>
-            <span>场地编号</span>
-            <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 269, background: '#fff', cursor: 'pointer' }} value={this.state.chekedTwo === '' ? [] : this.state.chekedTwo} disabled={true} placeholder="点击进行添加" onChange={this.money} />
-          </div>
-          <div className="modelList">
-            <span>场地总数量</span>
-            <div className="startTime" style={{ marginRight: 168 }}>{this.state.chekedTwoLen}</div>
-          </div>
+          <div className="join" style={this.state.headerData === '1' ? {} : { display: 'none' }} onClick={this.showModal}><div style={{ textAlign: 'center', width: '150px', margin: '0 auto' }}>+添加场地细分</div></div>
+          <Modal
+            title="添加/修改价格设置"
+            visible={this.state.visible}
+            onOk={this.handleOk}
+            onCancel={this.handleCancel}
+            width={630}
+            className='model'
+            style={{ marginLeft: this.state.pageX, marginTop: this.state.pageY }}
+            closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
 
-          <div className="modelList" style={{ height: 'auto' }}>
-            <span>休息日/工作日</span>
-            <Select placeholder="请选择" mode='multiple' className="selectModel"
-              value={this.state.openday === '' ? [] : this.state.openday}
-              style={{ width: 269, height: 'auto' }} onChange={this.handleChangeTwo}>
-              <Option value="1">周一</Option>
-              <Option value="2">周二</Option>
-              <Option value="3">周三</Option>
-              <Option value="4">周四</Option>
-              <Option value="5">周五</Option>
-              <Option value="6">周六</Option>
-              <Option value="7">周日</Option>
-            </Select>
-          </div>
+          >
+            <div className="group" onClick={this.getPosition} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} onMouseMove={this.onMouseMove}>
+            </div>
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>场地类型</span>
+              <Select placeholder="请选择" onInputKeyDown={this.ko} disabled={this.state.update === 1 ? true : false} value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 269, height: 32 }} onChange={this.handleChangeOneTwo}>
+                {
+                  this.state.ListSport.map((item, i) => (
+                    <Option key={i} value={item.id}>{item.name}</Option>
+                  ))
+                }
+              </Select>
+            </div>
 
-          {/* <div className="modelList" style={this.state.update === 0 ? { height: '32px' } : { display: 'none' }}>
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>细分标签</span>
+              <Select placeholder="请选择" disabled={this.state.update === 1 ? true : false} value={this.state.tagsTwo === '' ? [] : this.state.tagsTwo} className="selectModel" style={{ width: 269, height: 32 }} onChange={this.handleChangeTags}>
+
+                {
+                  this.state.selecdTil.map((item, i) => (
+                    <Option key={i} value={item.title}>{item.title}</Option>
+                  ))
+                }
+              </Select>
+            </div>
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>场地编号</span>
+              <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 269, background: '#fff', cursor: 'pointer' }} value={this.state.chekedTwo === '' ? [] : this.state.chekedTwo} disabled={true} placeholder="点击进行添加" onChange={this.money} />
+            </div>
+            <div className="modelList">
+              <span>场地总数量</span>
+              <div className="startTime" style={{ marginRight: 168 }}>{this.state.chekedTwoLen}</div>
+            </div>
+
+            <div className="modelList" style={{ height: 'auto' }}>
+              <span>休息日/工作日</span>
+              <Select placeholder="请选择" mode='multiple' className="selectModel"
+                value={this.state.openday === '' ? [] : this.state.openday}
+                style={{ width: 269, height: 'auto' }} onChange={this.handleChangeTwo}>
+                <Option value="1">周一</Option>
+                <Option value="2">周二</Option>
+                <Option value="3">周三</Option>
+                <Option value="4">周四</Option>
+                <Option value="5">周五</Option>
+                <Option value="6">周六</Option>
+                <Option value="7">周日</Option>
+              </Select>
+            </div>
+
+            {/* <div className="modelList" style={this.state.update === 0 ? { height: '32px' } : { display: 'none' }}>
             <span>时间范围</span>
             <RangePicker style={{ float: 'right', marginRight: 150, width: 269 }} minuteStep={30} format={format} locale={locale} onChange={this.handleChangThree} />
           </div> */}
 
-          <div className="modelList" style={{ height: '32px' }}>
-            <span>时间范围</span>
-
-
-            <RangePicker showTime dropdownClassName="timeRange" placeholder={['开始时间', '结束时间']} style={{ float: 'right', marginRight: 150, width: 269 }} value={this.state.starttime === '' ? '' : [moment(this.state.starttime === '' ? '' : this.state.starttime, 'HH:mm:'), moment(this.state.endtime === '' ? '' : this.state.endtime, 'HH:mm:')]} minuteStep={30} format='HH:mm' locale={locale} onChange={this.handleChangThree} />
-
-
-
-          </div>
-
-          <div className="modelList" style={{ height: '32px' }}>
-            <span>价格</span><span>（元/小时）</span>
-            <InputNumber className="startTime" value={this.state.costperhour} defaultValue={0} min={0} style={{ paddingLeft: '10px', height: 32, width: 269 }} placeholder="请输入" onChange={this.money} />
-          </div>
-
-          <div className="modelList" style={{ height: 32 }}>
-            <span>最长提前预定时间</span>
-            <Select placeholder="请选择" className="selectModel" value={this.state.maxScheduledDateName} style={{ width: 269, height: 32 }} onChange={this.handleChangeFour}>
-              <Option value="0.1">一周</Option>
-              <Option value="0.2">两周</Option>
-              <Option value="0.3">三周</Option>
-              <Option value="1">一个月</Option>
-              <Option value="2">两个月</Option>
-            </Select>
-          </div>
-          <div className="modelList" style={{ height: 32 }}>
-            <span>最短提前预定时间</span>
-            <Select placeholder="请选择" className="selectModel"
-              defaultActiveFirstOption={false}
-              value={
-                this.state.appointmenttime === 0 ? '0分钟' : []
-                  && this.state.appointmenttime === 30 ? '30分钟' : []
-                    && this.state.appointmenttime === 60 ? '60分钟' : []
-                      && this.state.appointmenttime === 120 ? '2小时' : []
-                        && this.state.appointmenttime === 180 ? '3小时' : []
-                          && this.state.appointmenttime === 240 ? '4小时' : []
-                            && this.state.appointmenttime === 300 ? '5小时' : []
-                              && this.state.appointmenttime === 360 ? '6小时' : []
-                                && this.state.appointmenttime === 1140 ? '24小时' : []
-                                  && this.state.appointmenttime === 2880 ? '48小时' : []
-                                    && this.state.appointmenttime === 4320 ? '72小时' : []
-              }
-              style={{ width: 269, height: 32 }}
-              onChange={this.handleChangeFive}
-            >
-              <Option value="0">0分钟</Option>
-              <Option value="30">30分钟</Option>
-              <Option value="60">60分钟</Option>
-              <Option value="120">2小时</Option>
-              <Option value="180">3小时</Option>
-              <Option value="240">4小时</Option>
-              <Option value="300">5小时</Option>
-              <Option value="360">6小时</Option>
-              <Option value="1140">24小时</Option>
-              <Option value="2880">48小时</Option>
-              <Option value="4320">72小时</Option>
-
-            </Select>
-          </div>
-          <div className="modelListT">
-            <span>备注</span>
-            <TextArea className="textArea" rows={4} placeholder='请输入' style={{ marginRight: 151, width: 269 }} value={this.state.comment} onChange={this.textArea} />
-          </div>
-          <div className="submit" data-uuid={this.state.Disid !== '' ? this.state.Disid : ''} onClick={this.submit}>提交</div>
-        </Modal>
-
-
-
-
-        <Modal
-          title="添加/修改场地细分"
-          visible={this.state.joinXi}
-          onOk={this.handleOk}
-          onCancel={this.handlejoinXi}
-          width={630}
-          className='model'
-        >
-          <div className="modelList" style={{ height: '32px' }}>
-            <span>场地类型</span><span style={{ position: 'absolute', top: 0, right: 0, color: '#F5A623', cursor: 'pointer' }} onClick={this.interpretation}>什么是细分标签?</span>
-            <Select placeholder="请选择" className="selectModel" disabled={this.state.typeDetel === 0 ? true : false} value={this.state.runId === '' ? [] : this.state.runId} style={{ width: 249, height: 32 }} onChange={this.handleChangeOne}>
-              {
-                this.state.ListSport.map((item, i) => (
-                  <Option key={i} value={item.id}>{item.name}</Option>
-                ))
-              }
-            </Select>
-          </div>
-
-          <div className="modelList" style={{ height: '32px' }}>
-            <span>细分标签</span>
-            <Select
-              style={{ width: 249, height: 32, background: '#fff' }}
-              placeholder="请选择/添加后选择"
-              className="selectModel"
-              onChange={this.title}
-              value={this.state.tags === '' ? [] : this.state.tags}
-              disabled={this.state.typeDetel === 0 ? true : false}
-              dropdownRender={menu => (
-                <div>
-                  {menu}
-                  <Divider style={{ margin: '4px 0' }} />
-                  <div style={{ display: 'flex', padding: 8 }}>
-                    <Input style={{ height: 32, background: '#fff' }}  value={name} onChange={this.onNameChange} maxLength={5} />
-                    <span style={{ flex: 'none', padding: '8px', display: 'block', cursor: 'pointer' }} onClick={this.addItem}>
-                      <PlusOutlined /> 自定义(5个汉字以内)
-                  </span>
-                  </div>
-                </div>
-              )}
-            >
-              {this.state.joinTil.map((item, i) => (
-                <Option  key={i} onContextMenu={this.deletSelect} data-id={item.uuid} value={item.title}><div><span>{item.title}</span><span style={item.uuid===1?{display:'none'}:{float:'right',fontSize:'12px',color:'#ccc'}}>(右键删除)</span></div></Option>
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>时间范围</span>
+              {/* <Select style={{ width: 100, height: 'auto' }} placeholder="开始时间">
+              {this.state.timer.map((item,i)=>(
+                <Option key={i} value={i}>{item.name}</Option>
               ))}
-            </Select>
-          </div>
+            </Select> */}
 
-          <div className="modelList" style={{ height: '32px' }} onClick={this.serial}>
-            <span>场地编号</span>
-            <Input className="startTime" value={this.state.arrCheked.length !== 0 ? this.state.arrCheked : []} style={{ paddingLeft: '10px', height: 32, background: '#fff', cursor: 'pointer' }} disabled={true} placeholder="点击进行添加" />
-          </div>
+              <RangePicker showTime order={false} dropdownClassName="timeRange" placeholder={['开始时间', '结束时间']} style={{ float: 'right', marginRight: 150, width: 269 }} value={this.state.starttime === '' ? '' : [moment(this.state.starttime === '' ? '' : this.state.starttime, 'HH:mm:'), moment(this.state.endtime === '' ? '' : this.state.endtime, 'HH:mm:')]} minuteStep={30} format='HH:mm' locale={locale} onChange={this.handleChangThree} />
+            </div>
 
-          <div className="modelList" style={{ height: '32px' }} >
-            <span>场地数量</span>
-            <div className="startTime">{this.state.arrCheked.length}</div>
-          </div>
-          <div className="submit" data-id={this.state.venNumid} onClick={this.subSiteSubdivision}>提交</div>
-        </Modal>
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>价格</span><span>（元/小时）</span>
+              <InputNumber className="startTime" value={this.state.costperhour} defaultValue={0} min={0} style={{ paddingLeft: '10px', height: 32, width: 269 }} placeholder="请输入" onChange={this.money} />
+            </div>
+            <div className="modelList" style={{ height: 32 }}>
+              <span>最长提前预定时间</span>
+              <Select placeholder="请选择" className="selectModel" value={this.state.maxScheduledDateName} style={{ width: 269, height: 32 }} onChange={this.handleChangeFour}>
+                <Option value="0.1">一周</Option>
+                <Option value="0.2">两周</Option>
+                <Option value="0.3">三周</Option>
+                <Option value="1">一个月</Option>
+                <Option value="2">两个月</Option>
+              </Select>
+            </div>
+            <div className="modelList" style={{ height: 32 }}>
+              <span>最短提前预定时间</span>
+              <Select placeholder="请选择" className="selectModel"
+                defaultActiveFirstOption={false}
+                value={
+                  this.state.appointmenttime === 0 ? '0分钟' : []
+                    && this.state.appointmenttime === 30 ? '30分钟' : []
+                      && this.state.appointmenttime === 60 ? '60分钟' : []
+                        && this.state.appointmenttime === 120 ? '2小时' : []
+                          && this.state.appointmenttime === 180 ? '3小时' : []
+                            && this.state.appointmenttime === 240 ? '4小时' : []
+                              && this.state.appointmenttime === 300 ? '5小时' : []
+                                && this.state.appointmenttime === 360 ? '6小时' : []
+                                  && this.state.appointmenttime === 1140 ? '24小时' : []
+                                    && this.state.appointmenttime === 2880 ? '48小时' : []
+                                      && this.state.appointmenttime === 4320 ? '72小时' : []
+                }
+                style={{ width: 269, height: 32 }}
+                onChange={this.handleChangeFive}
+              >
+                <Option value="0">0分钟</Option>
+                <Option value="30">30分钟</Option>
+                <Option value="60">60分钟</Option>
+                <Option value="120">2小时</Option>
+                <Option value="180">3小时</Option>
+                <Option value="240">4小时</Option>
+                <Option value="300">5小时</Option>
+                <Option value="360">6小时</Option>
+                <Option value="1140">24小时</Option>
+                <Option value="2880">48小时</Option>
+                <Option value="4320">72小时</Option>
 
+              </Select>
+            </div>
+            <div className="modelListT">
+              <span>备注</span>
+              <TextArea className="textArea" rows={4} placeholder='请输入' maxLength={200} style={{ marginRight: 151, width: 269 }} value={this.state.comment} onChange={this.textArea} />
+            </div>
+            <div className="submit" data-uuid={this.state.Disid !== '' ? this.state.Disid : ''} onClick={this.submit}>提交</div>
 
-
-        <Modal
-          title="添加场地编号"
-          visible={this.state.serialNumber}
-          onOk={this.handleOk}
-          onCancel={this.handleserialNumber}
-          width={630}
-          style={{ zIndex: 999 }}
-          className='model'
-        >
-          <div className="serialNumberTop"><span>请选择您要设置的场地编号</span><div onClick={this.reverseElection}>反选</div><div onClick={this.allOfThem} style={{ marginRight: '10px' }}>全选</div></div>
-          {
-            this.state.arrNum.map((item, i) => (
-              <div key={i} className="serialSon" onClick={this.seriaSon} data-id={item.id} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', transition: '0.3s', opacity: '0.2' } : {}}>{item.id}</div>
-            ))
-          }
-          <div className="footerSerial">
-            <div className="seriaComfir" onClick={this.serialComfir}>提交</div>
-          </div>
-        </Modal>
-
-
-        <Modal
-          title="什么是细分标签?"
-          visible={this.state.interpretation}
-          onOk={this.handleOk}
-          onCancel={this.handleserialNumberTwo}
-          width={630}
-          className='model'
-        >
-          <div>请对所选场地类型进行再细分，如场地类型选择的是羽毛球，贵场馆羽毛球场地是否有普通场、VIP场等之分? 如没有，则所有场地选择一个标签即可，如有，则分开设置标签及对应的场地编号”。总之，同一时刻，不同价格的场地须细分并给出标签。</div>
-        </Modal>
-
-
-        <Modal
-          title="提示"
-          visible={this.state.nosubdivisions}
-          onOk={this.handleOk}
-          width={350}
-          closable={false}
-          style={{ paddingBottom: '0' }}
-          className='model'
-        >
-          <div>您还没对<span style={{ color: '#F5A623' }}>{this.state.runNameTwo}场地</span>进行场地细分，无法选择细分标签，请先去进行场地细分，谢谢！ </div>
-          <div onClick={this.toSetUp} style={{ width: '100px', height: '26px', background: '#F5A623', fontSize: '14px', color: '#fff', textAlign: 'center', lineHeight: '26px', margin: '30px auto 0', cursor: 'pointer' }}>确定,去设置</div>
-        </Modal>
+          </Modal>
 
 
 
-        <Modal
-          title="添加/修改优惠设置"
-          visible={this.state.Preferential}
-          onOk={this.handleOk}
-          onCancel={this.PreferentialCan}
-          width={630}
-          className='model'
-        >
-          <div className="modelList" style={{ height: '32px' }}>
-            <span>场地类型</span>
-            <Select placeholder="请选择" disabled={true} value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 330, height: 32, marginRight: 100, cursor: 'pointer' }} onChange={this.handleChangeOneTwo}>
-              {
-                this.state.ListSport.map((item, i) => (
-                  <Option key={i} value={item.id}>{item.name}</Option>
-                ))
-              }
-            </Select>
-          </div>
 
-          <div className="modelList" style={{ height: '32px' }}>
-            <span>场地标签</span>
-            <Select placeholder="请选择" disabled={true} value={this.state.tagsTwo === '' ? [] : this.state.tagsTwo} className="selectModel" style={{ width: 330, height: 32, marginRight: 100 }} onChange={this.handleChangeTags}>
-              {
-                this.state.joinTil.map((item, i) => (
-                  <Option key={i} value={item.title}>{item.title}</Option>
-                ))
-              }
-            </Select>
-          </div>
+          <Modal
+            title="添加/修改场地细分"
+            visible={this.state.joinXi}
+            onOk={this.handleOk}
+            onCancel={this.handlejoinXi}
+            width={630}
+            className='model'
+            closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
+          >
 
-          <div className="modelList" style={{ height: 'auto' }}>
-            <span>休息日/工作日</span>
-            <Select placeholder="请选择" disabled={true} mode='multiple' className="selectModel"
-              value={this.state.openday === '' ? [] : this.state.openday}
-              style={{ width: 330, height: 'auto', marginRight: 100 }} onChange={this.handleChangeTwo}>
-              <Option value="1">周一</Option>
-              <Option value="2">周二</Option>
-              <Option value="3">周三</Option>
-              <Option value="4">周四</Option>
-              <Option value="5">周五</Option>
-              <Option value="6">周六</Option>
-              <Option value="7">周日</Option>
-            </Select>
-          </div>
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>场地类型</span><span style={{ position: 'absolute', top: 0, right: 0, color: '#F5A623', cursor: 'pointer' }} onClick={this.interpretation}>什么是细分标签?</span>
+              <Select placeholder="请选择" className="selectModel" disabled={this.state.typeDetel === 0 ? true : false} value={this.state.runId === '' ? [] : this.state.runId} style={{ width: 249, height: 32 }} onChange={this.handleChangeOne}>
+                {
+                  this.state.ListSport.map((item, i) => (
+                    <Option key={i} value={item.id}>{item.name}</Option>
+                  ))
+                }
+              </Select>
+            </div>
 
-          <div className="modelList" style={{ height: '32px' }}>
-            <span>时间范围</span>
-            <RangePicker disabled={true} style={{ float: 'right', marginRight: 100, width: 330 }} value={[moment(this.state.starttime === '' ? '00:00' : this.state.starttime, 'HH:mm:'), moment(this.state.endtime === '' ? '00:00' : this.state.endtime, 'HH:mm:')]} minuteStep={30} format='HH:mm' locale={locale} onChange={this.handleChangThree} />
-          </div>
-          <div className="modelList" style={{ height: '32px' }} onClick={this.serialTwo}>
-            <span>参加优惠的场地号</span>
-            <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 330, background: '#fff', cursor: 'pointer', marginRight: 100 }} disabled={true} value={this.state.chekedThree === '' ? [] : this.state.chekedThree} placeholder="点击进行添加" onChange={this.money} />
-          </div>
-          <div className="modelList" style={{ height: '32px' }}>
-            <span>优惠期限</span>
-            {/* <DatePicker
+
+
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>细分标签</span>
+              <Select
+                style={{ width: 249, height: 32, background: '#fff' }}
+                placeholder="请选择/添加后选择"
+                className="selectModel"
+                onChange={this.title}
+                value={this.state.tags === '' ? [] : this.state.tags}
+                disabled={this.state.typeDetel === 0 ? true : false}
+                dropdownRender={menu => (
+                  <div>
+                    {menu}
+                    <Divider style={{ margin: '4px 0' }} />
+                    <div style={{ display: 'flex', padding: 8 }}>
+                      <Input style={{ height: 32, background: '#fff' }} value={name} onChange={this.onNameChange} maxLength={5} />
+                      <span style={{ flex: 'none', padding: '8px', display: 'block', cursor: 'pointer' }} onClick={this.addItem}>
+                        <PlusOutlined />自定义(5个汉字以内)
+                  </span>
+                    </div>
+                  </div>
+                )}
+              >
+                {this.state.joinTil.map((item, i) => (
+                  <Option key={i} onContextMenu={this.deletSelect} data-id={item.uuid} value={item.title}><div><span>{item.title}</span><span style={item.uuid === 1 ? { display: 'none' } : { float: 'right', fontSize: '12px', color: '#ccc' }}>(右键删除)</span></div></Option>
+                ))}
+              </Select>
+            </div>
+
+            <div className="modelList" style={{ height: '32px' }} onClick={this.serial}>
+              <span>场地编号</span>
+              <Input className="startTime" value={this.state.arrCheked.length !== 0 ? this.state.arrCheked : []} style={{ paddingLeft: '10px', height: 32, background: '#fff', cursor: 'pointer' }} disabled={true} placeholder="点击进行添加" />
+            </div>
+
+            <div className="modelList" style={{ height: '32px' }} >
+              <span>场地数量</span>
+              <div className="startTime">{this.state.arrCheked.length}</div>
+            </div>
+            <div className="submit" data-id={this.state.venNumid} onClick={this.subSiteSubdivision}>提交</div>
+          </Modal>
+
+
+
+          <Modal
+            title="添加场地编号"
+            visible={this.state.serialNumber}
+            onOk={this.handleOk}
+            onCancel={this.handleserialNumber}
+            width={630}
+            style={{ zIndex: 999 }}
+            className='model'
+            closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
+          >
+            <div className="serialNumberTop"><span>请选择您要设置的场地编号</span><div onClick={this.reverseElection}>反选</div><div onClick={this.allOfThem} style={{ marginRight: '10px' }}>全选</div></div>
+            {
+              this.state.arrNum.map((item, i) => (
+                <div key={i} className="serialSon" onClick={this.seriaSon} data-id={item.id} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', transition: '0.3s', opacity: '0.2' } : {}}>{item.id}</div>
+              ))
+            }
+            <div className="footerSerial">
+              <div className="seriaComfir" onClick={this.serialComfir}>提交</div>
+            </div>
+          </Modal>
+
+
+          <Modal
+            title="什么是细分标签?"
+            visible={this.state.interpretation}
+            onOk={this.handleOk}
+            onCancel={this.handleserialNumberTwo}
+            width={630}
+            className='model'
+            closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
+          >
+            <div>请对所选场地类型进行再细分，如场地类型选择的是羽毛球，贵场馆羽毛球场地是否有普通场、VIP场等之分? 如没有，则所有场地选择一个标签即可，如有，则分开设置标签及对应的场地编号”。总之，同一时刻，不同价格的场地须细分并给出标签。</div>
+          </Modal>
+
+
+          <Modal
+            title="提示"
+            visible={this.state.nosubdivisions}
+            onOk={this.handleOk}
+            width={350}
+            closable={false}
+            style={{ paddingBottom: '0' }}
+            className='model'
+          >
+            <div>您还没对<span style={{ color: '#F5A623' }}>{this.state.runNameTwo}场地</span>进行场地细分，无法选择细分标签，请先去进行场地细分，谢谢！ </div>
+            <div onClick={this.toSetUp} style={{ width: '100px', height: '26px', background: '#F5A623', fontSize: '14px', color: '#fff', textAlign: 'center', lineHeight: '26px', margin: '30px auto 0', cursor: 'pointer' }}>确定,去设置</div>
+          </Modal>
+
+
+
+          <Modal
+            title="添加/修改优惠设置"
+            visible={this.state.Preferential}
+            onOk={this.handleOk}
+            onCancel={this.PreferentialCan}
+            width={630}
+            className='model'
+            closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
+          >
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>场地类型</span>
+              <Select placeholder="请选择" disabled={true} value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 330, height: 32, marginRight: 100, cursor: 'pointer' }} onChange={this.handleChangeOneTwo}>
+                {
+                  this.state.ListSport.map((item, i) => (
+                    <Option key={i} value={item.id}>{item.name}</Option>
+                  ))
+                }
+              </Select>
+            </div>
+
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>场地标签</span>
+              <Select placeholder="请选择" disabled={true} value={this.state.tagsTwo === '' ? [] : this.state.tagsTwo} className="selectModel" style={{ width: 330, height: 32, marginRight: 100 }} onChange={this.handleChangeTags}>
+                {
+                  this.state.joinTil.map((item, i) => (
+                    <Option key={i} value={item.title}>{item.title}</Option>
+                  ))
+                }
+              </Select>
+            </div>
+
+            <div className="modelList" style={{ height: 'auto' }}>
+              <span>休息日/工作日</span>
+              <Select placeholder="请选择" disabled={true} mode='multiple' className="selectModel"
+                value={this.state.openday === '' ? [] : this.state.openday}
+                style={{ width: 330, height: 'auto', marginRight: 100 }} onChange={this.handleChangeTwo}>
+                <Option value="1">周一</Option>
+                <Option value="2">周二</Option>
+                <Option value="3">周三</Option>
+                <Option value="4">周四</Option>
+                <Option value="5">周五</Option>
+                <Option value="6">周六</Option>
+                <Option value="7">周日</Option>
+              </Select>
+            </div>
+
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>时间范围</span>
+              <RangePicker disabled={true} style={{ float: 'right', marginRight: 100, width: 330 }} value={[moment(this.state.starttime === '' ? '00:00' : this.state.starttime, 'HH:mm:'), moment(this.state.endtime === '' ? '00:00' : this.state.endtime, 'HH:mm:')]} minuteStep={30} format='HH:mm' locale={locale} onChange={this.handleChangThree} />
+            </div>
+            <div className="modelList" style={{ height: '32px' }} onClick={this.serialTwo}>
+              <span>参加优惠的场地号</span>
+              <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 330, background: '#fff', cursor: 'pointer', marginRight: 100 }} disabled={true} value={this.state.chekedThree === '' ? [] : this.state.chekedThree} placeholder="点击进行添加" onChange={this.money} />
+            </div>
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>优惠期限</span>
+              {/* <DatePicker
               showTime
               format="YYYY-MM-DD HH:mm"
               minuteStep={30}
@@ -1544,63 +1604,64 @@ class siteSettings extends React.Component {
               style={{ float: 'right', marginRight: 50, width: 170 }}
             />
           */}
-            <RangePicker
-              showTime
-              locale={locale}
-              style={{ float: 'left', marginLeft: 78, width: 330 }}
-              format="YYYY-MM-DD HH:mm"
-              minuteStep={30}
-              allowClear={false}
-              value={this.state.discount_sdate === null ? '' : [moment(this.state.discount_sdate + this.state.discount_start, 'YYYY-MM-DD HH:mm'), moment(this.state.discount_edate + this.state.discount_end, 'YYYY-MM-DD HH:mm')]}
-              onChange={this.startDate}
-            />
-          </div>
-          <div className="modelList" style={{ height: '32px' }}>
-            <span>优惠后价格</span><span style={{ marginLeft: 0 }}>(元/小时)</span>
-            <InputNumber className="startTime" value={this.state.costperhourTwo} min={0} style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 100 }} placeholder="请输入" onChange={this.moneyTwo} />
-          </div>
+              <RangePicker
+                showTime
+                locale={locale}
+                style={{ float: 'left', marginLeft: 78, width: 330 }}
+                format="YYYY-MM-DD HH:mm"
+                minuteStep={30}
+                allowClear={false}
+                value={this.state.discount_sdate === null ? '' : [moment(this.state.discount_sdate + this.state.discount_start, 'YYYY-MM-DD HH:mm'), moment(this.state.discount_edate + this.state.discount_end, 'YYYY-MM-DD HH:mm')]}
+                onChange={this.startDate}
+              />
+            </div>
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>优惠后价格</span><span style={{ marginLeft: 0 }}>(元/小时)</span>
+              <InputNumber className="startTime" value={this.state.costperhourTwo} min={0} style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 100 }} placeholder="请输入" onChange={this.moneyTwo} />
+            </div>
 
 
-          <div className="footerSerial">
-            <div className="seriaComfir" onClick={this.PreferentialComfir} data-type="1">{this.state.typeList === undefined ? '提交' : '提交修改'}</div>
-            <Popconfirm
-              title="您确定删除该条优惠设置么?"
-              onConfirm={this.DelSiteSettingcount}
-              onCancel={this.btncancel}
-              okText="确定"
-              cancelText="删除"
-            >
-            <div className="seriaComfir" data-type="2" style={this.state.typeList === undefined ? { display: 'none' } : { display: 'block', marginRight: '15px' }}>删除</div>
-            </Popconfirm>
-          </div>
-        </Modal>
-
-
-
-      <Modal
-        title="添加场地编号"
-        visible={this.state.serialNumberTwo}
-        onOk={this.handleOk}
-        onCancel={this.handleserialNumberTwo}
-        width={630}
-        style={{ zIndex: 999 }}
-        className='model'
-      >
-        <div className="serialNumberTop"><span>请选择您要设置的场地编号</span></div>
-        {
-          this.state.arrNumTwo.map((item, i) => (
-            <div key={i} className="serialSon" onClick={this.seriaSonTwo} data-id={i} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {}}>{item.idIdx}</div>
-          ))
-        }
-        <div className="footerSerial" style={{ marginTop: '60px' }}>
-          <div className="seriaComfir" onClick={this.serialComfirTwo}>确定</div>
-        </div>
-      </Modal>
+            <div className="footerSerial">
+              <div className="seriaComfir" onClick={this.PreferentialComfir} data-type="1">{this.state.typeList === undefined ? '提交' : '提交修改'}</div>
+              <Popconfirm
+                title="您确定删除该条优惠设置么?"
+                onConfirm={this.DelSiteSettingcount}
+                onCancel={this.btncancel}
+                okText="确定"
+                cancelText="删除"
+              >
+                <div className="seriaComfir" data-type="2" style={this.state.typeList === undefined ? { display: 'none' } : { display: 'block', marginRight: '15px' }}>删除</div>
+              </Popconfirm>
+            </div>
+          </Modal>
 
 
 
+          <Modal
+            title="添加场地编号"
+            visible={this.state.serialNumberTwo}
+            onOk={this.handleOk}
+            onCancel={this.handleserialNumberTwo}
+            width={630}
+            style={{ zIndex: 999 }}
+            className='model'
+            closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
+          >
+            <div className="serialNumberTop"><span>请选择您要设置的场地编号</span></div>
+            {
+              this.state.arrNumTwo.map((item, i) => (
+                <div key={i} className="serialSon" onClick={this.seriaSonTwo} data-id={i} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {}}>{item.idIdx}</div>
+              ))
+            }
+            <div className="footerSerial" style={{ marginTop: '60px' }}>
+              <div className="seriaComfir" onClick={this.serialComfirTwo}>确定</div>
+            </div>
+          </Modal>
 
-      </div >
+
+
+
+        </div ></Spin>
     )
   }
 }

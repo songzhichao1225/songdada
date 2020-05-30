@@ -135,10 +135,10 @@
     height: 100%;
 }
 .orderList .ant-spin-nested-loading{
-    height: 100%;
+    height: 91%;
 }
 .orderList .ant-table-wrapper{
-    height: 92%;
+    height: 98%;
 }
 .orderList .circumstance .prompt>div>span:first-child{
    display: block;

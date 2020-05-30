@@ -109,8 +109,8 @@ class forgetPassword extends React.Component {
             <Form>
               <Form.Item >
                 <div className="son">
-                  <span style={{ float: 'left', marginLeft: 17 }}>手机号码</span>
-                  <Input style={{ float: 'left' }} maxLength={11} className="phone" onChange={this.phoneChange} />
+                  <span style={{ float: 'left', marginLeft: 17,lineHeight:'30px' }}>手机号码</span>
+                  <Input style={{ float: 'left' }} placeholder="请输入法人手机号" maxLength={11} className="phone" onChange={this.phoneChange} />
                   <div className={this.state.textT === '获取验证码' ? 'huoBtn' : 'koohidden'} onClick={this.naCode} >
                     {this.state.textT}
                   </div>
@@ -122,9 +122,7 @@ class forgetPassword extends React.Component {
 
                 <Form.Item className={this.state.selectVeun.length>0?'selectVeun':'selectVeunNone'}>
                 <div > 
-
                   <Radio.Group className="radio" onChange={this.onChange} value={this.state.value} style={{width:'400px',marginLeft:'10px'}}>
-                   
                     {
                       this.state.selectVeun.map((item,i)=>(
                         <Radio key={i}  style={{float:'left'}} value={item.venueloginuuid}>{item.name}</Radio>

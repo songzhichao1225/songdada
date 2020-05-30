@@ -171,7 +171,7 @@ class myWallet extends React.Component {
                 <Col xs={{ span: 16 }}>明细</Col>
                 <Col xs={{ span: 4, }}>金额(元)</Col>
               </Row>
-             
+              
               {
                 this.state.moneyList.map((item, i) => (
                   <Row key={i} >
@@ -228,13 +228,12 @@ class myWallet extends React.Component {
           <div className="home">
             <span style={{ marginLeft: -15 }}>提现银行卡:</span><span className="textNext">{this.state.walletList.Bankaccount} {this.state.walletList.OpeningBank}</span>
             <div className="listSon">
-              
               <span>提现金额:</span>
               <Input className="input" onChange={this.allNow} value={this.state.moneyYuan} />元
               <span className="all" onClick={this.all}>全部提现</span>
             </div>
             <div className="listSon">
-              <span>到账时间:</span> 
+              <span>到账时间:</span>
               <span className="textNext">预计 2-3 个工作日到账</span>
             </div>
             <div className="listSon">
@@ -242,7 +241,6 @@ class myWallet extends React.Component {
               <span className="textNext">每月1号、15号</span>
             </div>
             <div className="comfir" onClick={this.comfir}>确定</div>
-
           </div>
 
 

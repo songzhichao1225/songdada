@@ -2,7 +2,7 @@ import React from 'react';
 import './preferentialTwo.css';
 import 'antd/dist/antd.css';
 import { Input, Spin, message, DatePicker, Modal, Drawer, Table, Checkbox, Result } from 'antd';
-import { SyncOutlined, FundOutlined } from '@ant-design/icons';
+import { SyncOutlined, FundOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { getVenueReservation, getVenueSport, VenueNumberSporttypeSave, getVenueNumberTitleList, VenueClickCancelPlace, getReservationActivitieslist, VenueNewsHistoricalRecord, VenueRemarksLabel } from '../../api';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import moment from 'moment';
@@ -95,6 +95,7 @@ class appointmentList extends React.Component {
     loadingTwo: true,
     calesRed: 0,
     arrTimeuid: [],
+    lppding: true,
   };
 
   async getVenueSport(data) {
@@ -188,10 +189,10 @@ class appointmentList extends React.Component {
       sessionStorage.setItem('kood', 1)
 
     } else if (res.data.code === 4005) {
-      this.setState({ lookList: res.data.data, spinningTwo: false, loadingTwo: false })
+      this.setState({ lookList: res.data.data, spinningTwo: false, loadingTwo: false, lppding: false })
       sessionStorage.setItem('kood', 1)
     } else if (res.data.code === 4003) {
-      this.setState({ otherType: [], lookBan: [], loadingTwo: false })
+      this.setState({ otherType: [], lookBan: [], loadingTwo: false, lppding: false })
       sessionStorage.setItem('kood', 1)
     }
   }
@@ -233,7 +234,8 @@ class appointmentList extends React.Component {
 
 
     this.setState({
-      lookBan: jood
+      lookBan: jood,
+      lppding: false
     })
 
 
@@ -265,6 +267,11 @@ class appointmentList extends React.Component {
   checkbox = e => {
     if (this.state.resData[e.target.idx].c[e.target.jdx].checked === false) {
       this.state.resData[e.target.idx].c[e.target.jdx].checked = true
+      // let lo='resData['+e.target.idx+'].c['+e.target.jdx+'].checked'
+      // console.log([lo])
+      // this.setState({
+      //   [lo]:true
+      // })
       this.hoode(this.state.resData)
     } else {
       this.state.resData[e.target.idx].c[e.target.jdx].checked = false
@@ -305,7 +312,7 @@ class appointmentList extends React.Component {
   }
   shourTwo = () => {
     this.setState({
-      cofirmZ: 0, venueidids: [], dtime: [],arrTimeuid:[]
+      cofirmZ: 0, venueidids: [], dtime: [], arrTimeuid: []
     })
     setTimeout(() => {
       for (let i in this.state.resData) {
@@ -393,7 +400,7 @@ class appointmentList extends React.Component {
       dtime: [],
       duuid: [],
       Cancels: 0,
-      arrTimeuid:[]
+      arrTimeuid: []
     })
     setTimeout(() => {
       for (let i in this.state.resData) {
@@ -477,8 +484,10 @@ class appointmentList extends React.Component {
 
           <div className="xiange"></div>
           {/* 看板渲染标签 */}
-          <Table loading={this.state.loadingTwo} style={this.state.otherType.length === 0 ? { display: 'none' } : { maxWidth: this.state.otherType.length * 100 }} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 76, minWidth: 40, y: '90%' }} />,
+          <Spin spinning={this.state.lppding}>
+            <Table loading={this.state.loadingTwo} style={this.state.otherType.length === 0 ? { display: 'none' } : { maxWidth: this.state.otherType.length * 100 }} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 76, minWidth: 40, y: '90%' }} />,
           <Result className={this.state.otherType.length === 0 ? '' : 'hidden'} icon={<FundOutlined style={{ color: '#F5A623' }} />} title="您还没有进行价格设置" />
+          </Spin>
         </div>
 
         <Drawer
@@ -561,6 +570,7 @@ class appointmentList extends React.Component {
           visible={this.state.info}
           onOk={this.handleOk}
           onCancel={this.handleCancelInFo}
+          closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
         >
           <div style={{ overflow: 'hidden' }}>
             <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>姓名：</span>

@@ -3,7 +3,7 @@ import './closeYu.css';
 import 'antd/dist/antd.css';
 import { VenueTemporarilyClosedList, VenueTemporarilyClosed, VenueTemporarilyClosedDel, VenueTemporarilyClosedSave,getSetPriceVenueSport } from '../../api';
 import { message, Modal, Select, DatePicker, Input, Row, Col, Popconfirm, Result, Pagination } from 'antd';
-import { BankOutlined } from '@ant-design/icons';
+import { BankOutlined,CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import 'moment/locale/zh-cn';
@@ -290,6 +290,7 @@ class closeYu extends React.Component {
           visible={this.state.visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
+          closeIcon={<CloseCircleOutlined style={{color:'#fff',fontSize:'20px'}} />}
         >
           <div className="one">
             <span>运动项目</span>

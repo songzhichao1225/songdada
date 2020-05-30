@@ -8,7 +8,12 @@
     height: 95%;
     position: relative;
 }
-
+.ant-spin-container{
+    height: 100%;
+}
+.ant-spin-nested-loading{
+    height: 100%;
+}
 .siteStting .header .left{
     width: 121px;
     height: 31px;
@@ -19,6 +24,11 @@
     color: #9B9B9B;
     margin-left: 20px;
     float: left;
+}
+.group{
+    width: 100%;
+    height: 39px;
+    margin-top: -60px;
 }
 .siteStting .header .right{
     float: right;
@@ -228,9 +238,14 @@ img{
    font-size: 18px;
    cursor: pointer;
    border-top: 1px solid #E1E0E1;
-  
-   
-   
+   animation: changebox 0.8s infinite;
+}
+
+@keyframes changebox {
+      10% {  font-size:20px;}
+      50% {  font-size:25;  }
+      70% {  font-size:25;  }
+      100% {  font-size:20;  }
 }
 .serialNumberTop>span{
     float: left;
@@ -288,5 +303,4 @@ img{
     display: block;
     max-width: 100%;
     overflow-x: auto;
-  
 }

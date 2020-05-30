@@ -3,6 +3,7 @@ import './news.css';
 import 'antd/dist/antd.css';
 import { getVenueNewsList, getVenueNewsFirst, VenueNewsSaveIsRead, delVenueNews, VenueNewsSendMessage, gerVenueName,VenueNewsOneKeyRead } from '../../api';
 import { Checkbox, Pagination, Drawer, message, Popconfirm, Modal, Input } from 'antd';
+import {CloseCircleOutlined} from '@ant-design/icons';
 const { TextArea } = Input
 
 class news extends React.Component {
@@ -266,6 +267,7 @@ class news extends React.Component {
           title="给找对手平台发消息"
           visible={this.state.visibleTwo}
           onCancel={this.handleCancel}
+          closeIcon={<CloseCircleOutlined style={{color:'#fff',fontSize:'20px'}} />}
         >
           <TextArea rows={3} placeholder="请输入您推送的消息" value={this.state.textArea} onChange={this.textArea} maxLength={200} />
           <span style={{ paddingTop: 15 }}>还可以输入{200 - this.state.textArea.length}字</span>
