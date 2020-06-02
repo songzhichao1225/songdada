@@ -1,14 +1,15 @@
 import React from 'react';
 import './register.css';
 import 'antd/dist/antd.css';
-import { _register, _code, getPromoteName,getIsUserName } from '../../api';
+import { _register, _code, getPromoteName, getIsUserName } from '../../api';
+
+import { CloseCircleOutlined } from '@ant-design/icons';
 import {
   message,
   Input,
   Button,
   Radio,
   Modal,
-  Popover,
   Popconfirm
 } from 'antd';
 
@@ -17,7 +18,7 @@ import {
 class register extends React.Component {
 
   state = {
-   
+
     Id: '',//推广员Id
     name: '',//用户名
     phone: '',//手机号
@@ -29,27 +30,32 @@ class register extends React.Component {
     textT: '获取验证码',
     visibleName: false,
     visiblePhone: false,
-    idName:'',
-    qipao:true,
-    promotid:'',
-    text:'请输入字母+数字',
-    textTwo:'请输入正确的手机号',
+    idName: '',
+    qipao: true,
+    promotid: '',
+    text: '请输入字母+数字',
+    textTwo: '请输入正确的手机号',
+    kod: '',
+    kodTwo: '',
+    kodThree: '',
+    cahngkoopd: '',
+    chaphong: ''
   };
 
   changID = (e) => {
     this.setState({ Id: e.target.value })
   }
 
-  
+
 
 
   async getIsUserName(data) {
     const res = await getIsUserName(data)
-    if(res.data.code!==2000){
-       this.setState({visibleName:true,text:res.data.msg})
-      this.setState({name:''})
-    }else{
-      this.setState({ name: data.name, visibleName: false })
+    if (res.data.code !== 2000) {
+      this.setState({ kodTwo: res.data.msg })
+      this.setState({ name: '' })
+    } else {
+      this.setState({ name: data.name })
     }
   }
 
@@ -57,21 +63,18 @@ class register extends React.Component {
   changeName = (e) => {
 
     if (/[\u4E00-\u9FA5]/g.test(e.target.value)) {
-      this.setState({ visibleName: true })
-    } else if (e.target.value === '') {
-      this.setState({ visibleName: true })
-    } else {
-       this.getIsUserName({name:e.target.value})
-    
+      this.setState({ kodTwo: '用户名只能包含数字、字母、数字+字母' })
+    } else if (this.state.cahngkoopd !== '') {
+      this.getIsUserName({ name: e.target.value })
+      this.setState({ name: e, kodTwo: '' })
     }
   }
   changePhone = (e) => {
-    console.log(e.target.value)
-     if ((/^1[3|4|5|8][0-9]\d{4,8}$/.test(e.target.value))!==false&&e.target.value.length===11) {
-       console.log(8888)
-      this.setState({ visiblePhone: false,phone: e.target.value})
-    } else {
-      this.setState({  visiblePhone: true })
+    if ((/^1[3|4|5|8][0-9]\d{4,8}$/.test(e.target.value)) !== false && e.target.value.length === 11) {
+      this.setState({ visiblePhone: false, phone: e.target.value, kodThree: '' })
+    } else if (this.state.chaphong !== '') {
+      this.setState({ kodThree: '请输入正确手机号' })
+      this.setState({ visiblePhone: true })
     }
   }
   changeCode = (e) => {
@@ -107,9 +110,9 @@ class register extends React.Component {
 
   async nacode(data) {
     const res = await _code(data)
-    if(res.data.code===4007){
-      this.setState({visiblePhone:true,textTwo:res.data.msg})
-    }else if(res.data.code===2000){
+    if (res.data.code === 4007) {
+      this.setState({ visiblePhone: true, textTwo: res.data.msg })
+    } else if (res.data.code === 2000) {
       let num = 60
       const timer = setInterval(() => {
         this.setState({ textT: num-- })
@@ -118,7 +121,7 @@ class register extends React.Component {
           this.setState({ textT: '获取验证码' })
         }
       }, 1000)
-    }else{
+    } else {
       message.error(res.data.msg)
     }
   }
@@ -133,8 +136,8 @@ class register extends React.Component {
 
   showModal = e => {
     if (this.state.name === '') {
-      message.error('请输入字母+数字的用户名')
-    }else if (this.state.code === '') {
+      message.error('请重新输入用户名')
+    } else if (this.state.code === '') {
       message.error('请输入验证码')
     } else if (this.state.password === '') {
       message.error('请输入密码')
@@ -146,40 +149,50 @@ class register extends React.Component {
       message.error('请勾选阅读协议')
     } else {
       let { Id, name, phone, code, password } = this.state
-      if(this.state.idName==='推广员不存在'){
+      if (this.state.idName === '推广员不存在') {
         let data = { name: name, phone: phone, pass: password, promoteid: '', code: code, Logintype: 'pc' }
         this.Ko(data)
-      }else{
+      } else {
         let data = { name: name, phone: phone, pass: password, promoteid: Id, code: code, Logintype: 'pc' }
         this.Ko(data)
       }
     }
   }
   blurId = e => {
-    this.getPromoteName({ promotid:e.target.value })
+    this.getPromoteName({ promotid: e.target.value })
   }
   async getPromoteName(data) {
     const res = await getPromoteName(data)
-     if(res.data.code===2000){
-      this.setState({idName:res.data.data.promotname})
-     }else{
-      this.setState({idName:'没有推广员？'})
-     }
-  }
-  onCancel=e=>{
-    this.setState({Id:'',idName:''})
-  }
-  visibleName=e=>{
-    if(e!==''){
-     this.setState({visibleName:false})
+    if (res.data.code === 2000) {
+      this.setState({ idName: res.data.data.promotname, kod: '' })
+    } else if (res.data.code !== 4001) {
+      this.setState({ kod: res.data.msg })
+    } else {
+      this.setState({ idName: '没有推广员？', kod: '' })
     }
   }
-  visiblePhone=e=>{
-    if(e!==''){
-      this.setState({visiblePhone:false})
-     }
+  onCancel = e => {
+    this.setState({ Id: '', idName: '' })
   }
-
+  visibleName = e => {
+    if (e !== '') {
+      this.setState({ visibleName: false })
+    }
+  }
+  visiblePhone = e => {
+    this.setState({ chaphong: e.target.value })
+    if ((/^1[3|4|5|8][0-9]\d{4,8}$/.test(e.target.value)) !== false && e.target.value.length === 11) {
+      this.setState({ phone: e.target.value, kodThree: '' })
+    } else if (this.state.chaphong === '') {
+      this.setState({ kodThree: '' })
+    }
+  }
+  cahngkoopd = e => {
+    this.setState({ cahngkoopd: e.target.value })
+    if (e.target.value === '') {
+      this.setState({ kodTwo: '' })
+    }
+  }
   render() {
     return (
       <div className="register">
@@ -190,48 +203,41 @@ class register extends React.Component {
           </div>
           <div className="content">
             <div className="nav">
-              <div><span>1.填写注册信息</span><img src={require("../../assets/oneline.png")} alt='5'/></div>
-              <div><span>2.完善场馆信息</span><img src={require("../../assets/twoline.png")} alt='5'/></div>
-              <div><span>3.等待审核</span><img src={require("../../assets/twoline.png")} alt='5'/></div>
-              <div><span>4.审核成功</span><img src={require("../../assets/twoline.png")} alt='5'/></div>
+              <div><span>1.填写注册信息</span><img src={require("../../assets/oneline.png")} alt='5' /></div>
+              <div><span>2.完善场馆信息</span><img src={require("../../assets/twoline.png")} alt='5' /></div>
+              <div><span>3.等待审核</span><img src={require("../../assets/twoline.png")} alt='5' /></div>
+              <div><span>4.审核成功</span><img src={require("../../assets/twoline.png")} alt='5' /></div>
             </div>
 
             <div className="authentication">
               <span className="title">用户注册</span>
               <div className="son">
                 <span>推广员ID:</span>
-                <Input maxLength={6} onChange={this.changID}  value={this.state.Id} onBlur={this.blurId} className="phone" />
+                <Input maxLength={6} onChange={this.changID} value={this.state.Id} onBlur={this.blurId} className="phone" />
+                <span className="rightWaning" style={this.state.kod !== '' ? {} : { display: 'none' }}><CloseCircleOutlined />{this.state.kod}，没有可不填</span>
               </div>
 
               <div className="son">
                 <span className="xing">*</span> <span>用户名:</span>
-                <Popover
-                  content={this.state.text}
-                  visible={this.state.visiblePhone===true?false:this.state.visibleName}
-                >
-                  <Input type="text"  onBlur={this.changeName} onChange={this.visibleName} className="phone" />
-                </Popover>
+                <Input type="text" onBlur={this.changeName} onChange={this.cahngkoopd} className="phone" />
+                <span className="rightWaning" style={this.state.kodTwo !== '' ? {} : { display: 'none' }}><CloseCircleOutlined />{this.state.kodTwo}</span>
               </div>
 
               <div className="son">
                 <span className="xing">*</span> <span>手机号:</span>
-                <Popover
-                  content={this.state.textTwo}
-                  visible={this.state.visibleName===true?false:this.state.visiblePhone}
-                >
-                  <Input maxLength={11} onBlur={this.changePhone} onChange={this.visiblePhone} placeholder="操作员手机号" className="phone" />
-                </Popover>
+                <Input maxLength={11} onBlur={this.changePhone} onChange={this.visiblePhone} placeholder="操作员手机号" className="phone" />
+                <span className="rightWaning" style={this.state.kodThree !== '' ? {} : { display: 'none' }}><CloseCircleOutlined />{this.state.kodThree}</span>
               </div>
 
               <div className="son">
                 <span className="xing">*</span> <span>验证码:</span>
                 <Button className="huoBtn" onClick={this.naCode}>{this.state.textT}</Button>
-                <Input maxLength={6} type="text"  onChange={this.changeCode} className="phone code" />
+                <Input maxLength={6} type="text" onChange={this.changeCode} className="phone code" />
               </div>
-      
+
               <div className="son">
                 <span className="xing">*</span> <span>密码:</span>
-                <Input  onFocus={this.onfoucs} maxLength={8} onChange={this.changePassword} className="phone" />
+                <Input onFocus={this.onfoucs} maxLength={8} onChange={this.changePassword} className="phone" />
               </div>
 
               <div className="son">
@@ -241,44 +247,38 @@ class register extends React.Component {
 
               <div className="agreement"><Radio onChange={this.changeRadio}><span>我已阅读并同意</span><span className="color">《用户协议》</span></Radio></div>
 
-              <Popconfirm 
-                title={this.state.idName===""?'没有推广员？':"推广员姓名："+this.state.idName&&this.state.idName==='推广员不存在'?'推广员不存在':"推广员姓名："+this.state.idName}
+              <Popconfirm
+                title={this.state.idName === "" ? '没有推广员？' : "推广员姓名：" + this.state.idName && this.state.idName === '推广员不存在' ? '推广员不存在' : "推广员姓名：" + this.state.idName}
                 onConfirm={this.showModal}
                 onCancel={this.onCancel}
                 okText="是"
                 cancelText="否"
                 disabled={false}
               >
-                <div  className="submint">注册</div>
+                <div className="submint">注册</div>
               </Popconfirm>
 
-                <div className="Existing"> 已有账号 <a href='#/'><span>请登录</span></a></div>
+              <div className="Existing"> 已有账号 <a href='#/'><span>请登录</span></a></div>
               <Modal
                 title="注册结果"
                 cancelText=''
                 closable={false}
                 footer={null}
-                style={{width:'200px',height:'50px'}}
+                style={{ width: '200px', height: '50px' }}
                 visible={this.state.visible}
                 onOk={this.handleOk}
                 width={800}
-
               >
                 <img className="logoRegister" src={require("../../assets/icon_pc.png")} alt="ico" />
                 <span className="modelTitle">恭喜您，注册成功</span>
                 <span className="modelPhone">用户名:{this.state.name}</span>
                 <Button className="remodelBtn"><a href="#/perfect">下一步</a></Button>
-
-
               </Modal>
             </div>
           </div>
-
-
         </div>
-
       </div>
-    );
+    )
   }
 }
 

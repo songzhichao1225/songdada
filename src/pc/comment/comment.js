@@ -126,7 +126,7 @@ class comment extends React.Component {
             <img src={this.state.scoreSon >= 3 ? require("../../assets/50xing (3).png") : require("../../assets/50xing (2).png") && this.state.scoreSon < 3 && this.state.scoreSon > 2 ? require("../../assets/50xing (1).png") : require("../../assets/50xing (2).png")} alt="星" />
             <img src={this.state.scoreSon >= 4 ? require("../../assets/50xing (3).png") : require("../../assets/50xing (2).png") && this.state.scoreSon < 4 && this.state.scoreSon > 3 ? require("../../assets/50xing (1).png") : require("../../assets/50xing (2).png")} alt="星" />
             <img src={this.state.scoreSon >= 5 ? require("../../assets/50xing (3).png") : require("../../assets/50xing (2).png") && this.state.scoreSon < 5 && this.state.scoreSon > 4 ? require("../../assets/50xing (1).png") : require("../../assets/50xing (2).png")} alt="星" />
-
+           <span style={{fontSize:'14px',paddingLeft:'5px',lineHeight:'28px',display:'block',float:'right'}}>{sessionStorage.getItem('score')}分</span>
           </div>
           <span className="title">设施   {this.state.score.equscore}分    服务   {this.state.score.envscore}分    价格  {this.state.score.xjbScore}分</span>
         </div>

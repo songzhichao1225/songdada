@@ -25,6 +25,13 @@
     line-height: 80px;
     font-family: PingFang-SC-Bold;
 }
+.register .rightWaning{
+   color: #F64A0C;
+   position: absolute;
+   left: 80px;
+   top: -30px;
+   font-size: 14px;
+}
 .register .content{
 	width: 80%;
 	margin: 20px auto;
@@ -79,7 +86,7 @@
 	margin-top: 30px;
 }
 .register .son{
-	overflow: hidden;
+	position: relative;
 }
 .register .phone{
 	width: 425px;

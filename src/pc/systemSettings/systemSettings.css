@@ -64,6 +64,9 @@
 }
 .systemSettings .reset{
     display: block;
+    height: 100%;
+    overflow: hidden;
+    background-color: #fff;
 }
 .systemSettings .resetSon{
     width: 350px;
@@ -142,6 +145,9 @@
 }
 .systemSettings .Untie{
     display: block;
+    height: 100%;
+    overflow: hidden;
+    background: #fff;
 }
 .systemSettings .one .selectN{
     width: 249px;

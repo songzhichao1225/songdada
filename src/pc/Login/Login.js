@@ -178,7 +178,7 @@ class Login extends React.Component {
                     <Input onChange={this.code} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="手机验证码" />
                   </Form.Item>
                   <Form.Item className="bind">
-                    <div className={this.state.textT === '获取验证码' ? 'codeBtn' : 'koohidden'} onClick={this.naCode} >
+                    <div className={this.state.textT === '获取验证码' ? 'codeBtn' : 'koohidden'} onClick={this.naCode}>
                       {this.state.textT}
                     </div>
                     <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'codeBtn'} >

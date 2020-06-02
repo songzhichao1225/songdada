@@ -55,7 +55,9 @@
     color: #fff; 
     width: 76px;
     background: #E9E9E9;
-    
+}
+.orderList .ant-table-tbody > tr > td:first-child{
+    background-color: #fff;
 }
 
 .ant-table-tbody > tr:hover:not(.ant-table-expanded-row) > td {
@@ -135,7 +137,7 @@
     height: 100%;
 }
 .orderList .ant-spin-nested-loading{
-    height: 91%;
+    height: 89%;
 }
 .orderList .ant-table-wrapper{
     height: 98%;

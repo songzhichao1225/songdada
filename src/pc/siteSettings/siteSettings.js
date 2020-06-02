@@ -335,10 +335,16 @@ class siteSettings extends React.Component {
       endtime: timeString[1]
     })
   }
-
-  endtime = (e) => {
-    this.setState({ endtime: this.state.time[parseInt(e)].name })
+  starttime=e=>{
+    this.setState({
+      starttime:e
+    })
   }
+  endtime=e=>{
+    this.setState({endtime:e})
+  }
+
+  
   money = e => {
     this.setState({ costperhour: e })
   }
@@ -546,6 +552,11 @@ class siteSettings extends React.Component {
     this.getVenueNumberTitleList({ sportid: this.state.nameChang, page: page })
   }
   headerCli = e => {
+    if(e.currentTarget.dataset.id==='2'){
+      this.getSiteSettingList({ sportid: this.state.nameChang, page: 1 })
+    }else if(e.currentTarget.dataset.id==='1'){
+      this.getVenueNumberTitleList({ sportid: this.state.nameChang, page:1 })
+    }
     this.setState({
       headerData: e.currentTarget.dataset.id,
       nameChang: ''
@@ -878,12 +889,13 @@ class siteSettings extends React.Component {
       update: 0,
       // starttime: '',
       // endtime: '',
-      typeDetel: 1
+      typeDetel: 1,
+      runIdTwo:'',
     })
   }
   async getSiteSelectedTitle(data) {
     const res = await getSiteSelectedTitle(data, sessionStorage.getItem('venue_token'))
-    if (res.data.data.length === 0 && this.state.headerData === '2') {
+    if (res.data.data.length === 0 && this.state.headerData === '2'&&this.state.runIdTwo!=='') {
       this.setState({
         nosubdivisions: true,
         runId: data.sportid
@@ -1158,9 +1170,7 @@ class siteSettings extends React.Component {
                 <Option value="11">排球</Option>
                 <Option value="12">网球</Option>
               </Select>
-
             </div>
-
           </div>
           <div className="xiange"></div>
           <div style={this.state.headerData === '2' ? { overflowY: 'auto', height: '89%' } : { display: 'none' }}>
@@ -1337,13 +1347,19 @@ class siteSettings extends React.Component {
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>时间范围</span>
-              {/* <Select style={{ width: 100, height: 'auto' }} placeholder="开始时间">
+              <Select style={{ width: 128, height: 'auto',marginLeft:88 }} value={this.state.starttime===''?undefined:this.state.starttime} onChange={this.starttime} placeholder="开始时间">
               {this.state.timer.map((item,i)=>(
-                <Option key={i} value={i}>{item.name}</Option>
+                <Option key={i} value={item.name}>{item.name}</Option>
               ))}
-            </Select> */}
+            </Select>
+            ~
+            <Select style={{ width: 130, height: 'auto' }} value={this.state.endtime===''?undefined:this.state.endtime} onChange={this.endtime} placeholder="结束时间">
+              {this.state.timer.map((item,i)=>(
+                <Option key={i} value={item.name}>{item.name}</Option>
+              ))}
+            </Select>
 
-              <RangePicker showTime order={false} dropdownClassName="timeRange" placeholder={['开始时间', '结束时间']} style={{ float: 'right', marginRight: 150, width: 269 }} value={this.state.starttime === '' ? '' : [moment(this.state.starttime === '' ? '' : this.state.starttime, 'HH:mm:'), moment(this.state.endtime === '' ? '' : this.state.endtime, 'HH:mm:')]} minuteStep={30} format='HH:mm' locale={locale} onChange={this.handleChangThree} />
+              {/* <RangePicker showTime order={false} dropdownClassName="timeRange" placeholder={['开始时间', '结束时间']} style={{ float: 'right', marginRight: 150, width: 269 }} value={this.state.starttime === '' ? '' : [moment(this.state.starttime === '' ? '' : this.state.starttime, 'HH:mm:'), moment(this.state.endtime === '' ? '' : this.state.endtime, 'HH:mm:')]} minuteStep={30} format='HH:mm' locale={locale} onChange={this.handleChangThree} /> */}
             </div>
 
             <div className="modelList" style={{ height: '32px' }}>
@@ -1399,7 +1415,6 @@ class siteSettings extends React.Component {
               <TextArea className="textArea" rows={4} placeholder='请输入' maxLength={200} style={{ marginRight: 151, width: 269 }} value={this.state.comment} onChange={this.textArea} />
             </div>
             <div className="submit" data-uuid={this.state.Disid !== '' ? this.state.Disid : ''} onClick={this.submit}>提交</div>
-
           </Modal>
 
 
@@ -1410,14 +1425,14 @@ class siteSettings extends React.Component {
             visible={this.state.joinXi}
             onOk={this.handleOk}
             onCancel={this.handlejoinXi}
-            width={630}
+            width={500}
             className='model'
             closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
           >
-
+<span style={{ position: 'absolute', bottom: 70, left: 45, color: '#F5A623', cursor: 'pointer' }} onClick={this.interpretation}>什么是细分标签?</span>
             <div className="modelList" style={{ height: '32px' }}>
-              <span>场地类型</span><span style={{ position: 'absolute', top: 0, right: 0, color: '#F5A623', cursor: 'pointer' }} onClick={this.interpretation}>什么是细分标签?</span>
-              <Select placeholder="请选择" className="selectModel" disabled={this.state.typeDetel === 0 ? true : false} value={this.state.runId === '' ? [] : this.state.runId} style={{ width: 249, height: 32 }} onChange={this.handleChangeOne}>
+              <span>场地类型</span>
+              <Select placeholder="请选择" className="selectModel" disabled={this.state.typeDetel === 0 ? true : false} value={this.state.runId === '' ? [] : this.state.runId} style={{ width: 249, height: 32,marginRight:100 }} onChange={this.handleChangeOne}>
                 {
                   this.state.ListSport.map((item, i) => (
                     <Option key={i} value={item.id}>{item.name}</Option>
@@ -1431,7 +1446,7 @@ class siteSettings extends React.Component {
             <div className="modelList" style={{ height: '32px' }}>
               <span>细分标签</span>
               <Select
-                style={{ width: 249, height: 32, background: '#fff' }}
+                style={{ width: 249, height: 32,marginRight:100 , background: '#fff' }}
                 placeholder="请选择/添加后选择"
                 className="selectModel"
                 onChange={this.title}
@@ -1458,14 +1473,16 @@ class siteSettings extends React.Component {
 
             <div className="modelList" style={{ height: '32px' }} onClick={this.serial}>
               <span>场地编号</span>
-              <Input className="startTime" value={this.state.arrCheked.length !== 0 ? this.state.arrCheked : []} style={{ paddingLeft: '10px', height: 32, background: '#fff', cursor: 'pointer' }} disabled={true} placeholder="点击进行添加" />
+              <Input className="startTime" value={this.state.arrCheked.length !== 0 ? this.state.arrCheked : []} style={{ paddingLeft: '10px', height: 32, background: '#fff', cursor: 'pointer',marginRight:100  }} disabled={true} placeholder="点击进行添加" />
             </div>
 
             <div className="modelList" style={{ height: '32px' }} >
               <span>场地数量</span>
-              <div className="startTime">{this.state.arrCheked.length}</div>
+              <div className="startTime" style={{marginRight:100 }}>{this.state.arrCheked.length}</div>
             </div>
+            <div className="footerLok">
             <div className="submit" data-id={this.state.venNumid} onClick={this.subSiteSubdivision}>提交</div>
+            </div>
           </Modal>
 
 

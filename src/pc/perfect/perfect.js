@@ -122,6 +122,7 @@ class perfect extends React.Component {
 
   handleArea = e => {
     let { province } = this.state
+    localStorage.setItem('handleCity', '')
     for (let i in Array.from(province)) {
       if (Array.from(province)[i].id === e) {
         localStorage.setItem('handleArea', Array.from(province)[i].name)
@@ -132,6 +133,7 @@ class perfect extends React.Component {
   }
   handleCity = e => {
     let { city } = this.state
+    localStorage.setItem('handleDistrict', '')
     for (let i in Array.from(city)) {
       if (Array.from(city)[i].id === e) {
         localStorage.setItem('handleCity', Array.from(city)[i].name)
@@ -144,6 +146,8 @@ class perfect extends React.Component {
     let { getArea } = this.state
     for (let i in Array.from(getArea)) {
       if (Array.from(getArea)[i].id === e) {
+        console.log(8888)
+        this.setState({ handleDistrict: Array.from(getArea)[i].name })
         localStorage.setItem('handleDistrict', Array.from(getArea)[i].name)
         localStorage.setItem('handleDistrictId', Array.from(getArea)[i].id)
       }
@@ -220,7 +224,7 @@ class perfect extends React.Component {
   }
 
   handleChangeT = ({ fileList }) => this.setState({ fileList });
-
+ 
   onChangeText = e => {
     this.setState({ onChangeText: e.target.value })
   }
@@ -245,13 +249,14 @@ class perfect extends React.Component {
 
   onClickNex = () => {
     let { imageRes, fileList, handleAddress, handelPerson, handleTelephone } = this.state
+    let fileListT=fileList.slice(0,9)
     if (sessionStorage.getItem('notType') === '1') {
       let filesURLarr = []
-      for (let i in fileList) {
-        if (fileList[i].response === undefined) {
-          filesURLarr.push(fileList[i].url)
+      for (let i in fileListT) {
+        if (fileListT[i].response === undefined) {
+          filesURLarr.push(fileListT[i].url)
         } else {
-          filesURLarr.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
+          filesURLarr.push(fileListT[i].response.data.baseURL + fileListT[i].response.data.filesURL)
         }
       }
       if (filesURLarr.length < 2) {
@@ -289,15 +294,15 @@ class perfect extends React.Component {
           message.error('请输入联系人电话')
         } else if (data.sport === '') {
           message.error('请选择运动项目')
-        }else{
+        } else {
           this.VenueInformationSave(data)
         }
       }
 
     } else {
       let filesURLarr = []
-      for (let i in fileList) {
-        filesURLarr.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
+      for (let i in fileListT) {
+        filesURLarr.push(fileListT[i].response.data.baseURL + fileListT[i].response.data.filesURL)
       }
       if (filesURLarr.length < 2) {
         message.warning("至少上传两张场地照片")
@@ -335,8 +340,8 @@ class perfect extends React.Component {
           message.error('请输入联系人电话')
         } else if (data.sport === '') {
           message.error('请选择运动项目')
-        }else{
-        this.PerfectingVenueInformation(data)
+        } else {
+          this.PerfectingVenueInformation(data)
         }
       }
     }
@@ -399,7 +404,7 @@ class perfect extends React.Component {
               <span className="titile">场馆基本信息</span>
               <div className="area">
                 <span className="symbol">*</span><span className="boTitle">选择地区</span>
-                <Select defaultValue={localStorage.getItem('handleArea') === null ? '请选择' : localStorage.getItem('handleArea')} className="one" style={{ width: 118 }} onChange={this.handleArea}>
+                <Select value={localStorage.getItem('handleArea') === null ? '请选择' : localStorage.getItem('handleArea')} className="one" style={{ width: 118 }} onChange={this.handleArea}>
                   {
                     data.map((item, i) => {
                       return <Option key={i} value={item.id} >{item.name}</Option>
@@ -407,7 +412,7 @@ class perfect extends React.Component {
                   }
                 </Select>
                 <span>省</span>
-                <Select defaultValue={localStorage.getItem('handleCity') === null ? '请选择' : localStorage.getItem('handleCity')} className="one" style={{ width: 118 }} onChange={this.handleCity}>
+                <Select value={localStorage.getItem('handleCity') === null || localStorage.getItem('handleCity') === '' ? '请选择' : localStorage.getItem('handleCity')} className="one" style={{ width: 118 }} onChange={this.handleCity}>
                   {
                     cityT.map((item, i) => {
                       return <Option key={i} value={item.id}>{item.name}</Option>
@@ -415,8 +420,7 @@ class perfect extends React.Component {
                   }
                 </Select>
                 <span>市</span>
-
-                <Select defaultValue={localStorage.getItem('handleDistrict') === null ? '请选择' : localStorage.getItem('handleDistrict')} className="one" style={{ width: 118 }} onChange={this.handleDistrict}>
+                <Select value={localStorage.getItem('handleDistrict') === '' ? '请选择' : localStorage.getItem('handleDistrict')} className="one" style={{ width: 118 }} onChange={this.handleDistrict}>
                   {
                     getAreaT.map((item, i) => {
                       return <Option key={i} value={item.id}>{item.name}</Option>
@@ -442,8 +446,8 @@ class perfect extends React.Component {
               </div>
 
               <div className="name">
-                <span className="symbol">*</span><span className="boTitle">联系人</span>
-                <Input className="nameINput" onChange={this.handelPerson} style={{marginLeft:'43px'}} value={this.state.handelPerson} placeholder="请输入联系人姓名" />
+                <span className="symbol">*</span><span className="boTitle">联<span style={{paddingLeft:8}}>系</span><span style={{paddingLeft:8}}>人</span></span>
+                <Input className="nameINput" onChange={this.handelPerson} style={{ marginLeft: '27px' }} value={this.state.handelPerson} placeholder="请输入联系人姓名" />
               </div>
 
               <div className="name">
@@ -472,14 +476,16 @@ class perfect extends React.Component {
                 <span className="symbol negativeTwo">*</span><span className="boTitle negativeTwoT">场地照片(2-8张)</span>
                 <div className="clearfix">
                   <Upload
+                    multiple={true}
+                    fileNumLimit='5'
                     name="files"
                     action="/api/UploadVenueImgs?type=Venue"
                     listType="picture-card"
-                    fileList={fileList}
+                    fileList={fileList.slice(0,9)}
                     onPreview={this.handlePreview}
                     onChange={this.handleChangeT}
                     accept=".jpg, .jpeg, .png"
-                    
+
                   >
                     {fileList.length >= 8 ? null : uploadButtonT}
                   </Upload>

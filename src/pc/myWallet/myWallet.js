@@ -35,14 +35,13 @@ class myWallet extends React.Component {
     page: 1,
     recordListOther: '',
     pageOne:1,
-  };
+  }
 
   dateChange = (data, dateString) => {
     this.setState({ dateString: dateString, start: dateString[0], end: dateString[1] })
   }
   search = () => {
     this.getVenueMoneyList({ start: this.state.dateString[0], end: this.state.dateString[1], page: this.state.page })
-
   }
 
   async getVenueMoneyList(data) {
@@ -76,18 +75,19 @@ class myWallet extends React.Component {
         let myDate = new Date()
         let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-        this.setState({ start: start, end: end })
+        this.setState({ start: start, end: end,dateString:[start,end] })
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
       } else if (this.props.location.query.time === 2) {
         let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-        this.setState({ start: start, end: end })
+        this.setState({ start: start, end: end,dateString:[start,end] })
+
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
       }
     } else if (this.props.location.query === undefined) {
       let start = moment().startOf('day').subtract(6, 'days')._d.toLocaleDateString().replace(/\//g, "-")
       let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-      this.setState({ start: start, end: end })
+      this.setState({ start: start, end: end,dateString:[start,end] })
       this.getVenueMoneyList({ start: start, end: end, page: 1 })
     }
 
@@ -147,7 +147,7 @@ class myWallet extends React.Component {
   }
   render() {
     return (
-      <div style={{height:'100%'}}>
+      <div style={{height:'98%'}}>
         <div className={this.state.flag === 1 ? 'myWallet' : 'myWalletNone'}>
           <div className="header">
             <span className="select">选择时间</span>
@@ -165,13 +165,13 @@ class myWallet extends React.Component {
             </div>
           </div>
           <div className="xiange"></div>
-            <div className={this.state.hidden === true ? 'listMoney' : 'hidden'} >
+            <div className={this.state.moneyList.length !==0 ? 'listMoney' : 'hidden'} >
               <Row>
                 <Col className="oneText" xs={{ span: 4 }}>到账时间</Col>
                 <Col xs={{ span: 16 }}>明细</Col>
                 <Col xs={{ span: 4, }}>金额(元)</Col>
               </Row>
-              
+              <div style={{position:'relative'}}>
               {
                 this.state.moneyList.map((item, i) => (
                   <Row key={i} >
@@ -182,10 +182,10 @@ class myWallet extends React.Component {
                 ))
               }
               <div className="moneyFoucs">查询期间收入(元)：￥{this.state.whereMoney}</div>
-              <Pagination current={this.state.page} className={this.state.moneyList.length < 1 ? 'myWalletNone' : 'fenye'} showSizeChanger={false} hideOnSinglePage={true} onChange={this.moneyFen} total={this.state.other} />
+              </div>
+              <Pagination current={this.state.page} className={this.state.moneyList.length===0 ? 'myWalletNone' : 'fenye'} showSizeChanger={false} onChange={this.moneyFen} total={this.state.other} />
             </div>
-            <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<MoneyCollectOutlined style={{color:'#F5A623'}}/>} title="还没有人预约您的场馆！" />
-          
+            <Result className={this.state.moneyList.length !== 0 ? 'hidden' : ''} icon={<MoneyCollectOutlined style={{color:'#F5A623'}}/>} title="还没有人预约您的场馆！" />
         </div>
         <div className={this.state.flag === 2 ? 'record myWallet' : 'myWalletNone'}>
           

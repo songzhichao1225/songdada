@@ -53,6 +53,7 @@ class stadiums extends React.Component {
     addtelephone: '',//新增电话
     adddress: '',//场馆位置
     imageUrl: '',
+    imageUrlOneY:'',
     sport: [],
     facilities: [],
     siteInfo: '',
@@ -217,6 +218,16 @@ class stadiums extends React.Component {
     }
   }
 
+
+  handleChangeOneY=info=>{
+    if (info.file.status === 'uploading') {
+      this.setState({ loading: true })
+      return
+    }
+    if (info.file.status === 'done') {
+      this.setState({ lisenceURL: info.file.response.data.baseURL + info.file.response.data.filesURL, loading: false })
+    }
+  }
 
 
 
@@ -462,7 +473,7 @@ class stadiums extends React.Component {
         <div className="ant-upload-text">反面照</div>
       </div>
     );
-    const { imageUrl, imageUrlTwo, imageUrlThree } = this.state;
+    const { imageUrl, imageUrlTwo, imageUrlThree ,lisenceURL} = this.state;
     const { previewVisible, previewImage, fileList } = this.state;
     const uploadButtonT = (
       <div>
@@ -581,7 +592,18 @@ class stadiums extends React.Component {
         <div className={this.state.flag === true ? 'none' : 'qualification'}>
           <div className="listing">
             <span>营业执照:</span>
-            <span style={{ lineHeight: '38px', display: 'block' }}>通过|长期</span>
+            <Upload
+              name="files"
+              listType="picture-card"
+              className="avatar-uploader addImg"
+              showUploadList={false}
+              action="/api/UploadVenueImgs?type=Venue"
+              beforeUpload={beforeUpload}
+              onChange={this.handleChangeOneY}
+              accept=".jpg, .jpeg, .png"
+            >
+              {lisenceURL ? <img src={'https://app.tiaozhanmeiyitian.com/' + lisenceURL} alt="avatar" style={{ width: '100%' }} /> : uploadButtonTwo}
+            </Upload>
           </div>
 
           <div className="listing">

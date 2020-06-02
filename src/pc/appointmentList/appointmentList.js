@@ -118,7 +118,6 @@ class appointmentList extends React.Component {
     const res = await getVenueNumberTitleList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ topNumList: res.data.data })
-      console.log(this.state.liNum)
       this.getVenueReservation({ sportid: this.state.liNum, date: this.state.dateString, types: 1 })
     }
   }
@@ -470,6 +469,7 @@ class appointmentList extends React.Component {
   }
 
 
+  
   noneBox = e => {
     this.setState({ value: e.currentTarget.dataset.num })
   }

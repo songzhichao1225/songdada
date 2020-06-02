@@ -101,6 +101,9 @@ class map extends React.Component {
       let myGeo = new BMap.Geocoder()
       myGeo.getLocation(pt, function(rs){
         var addComp = rs.addressComponents;
+        localStorage.setItem('handleArea',addComp.province)
+        localStorage.setItem('handleCity',addComp.city)
+        localStorage.setItem('handleDistrict',addComp.district)
         that.props.history.push({ pathname: '/perfect', query: {title:dateset.til, lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress,province:addComp.province,city:addComp.city,district:addComp.district } })
       }); 
 

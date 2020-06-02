@@ -64,8 +64,7 @@
     right:10px;
 }
 .ant-modal-close-x{
-    width: 18px;
-    height: 18px;
+    right: 0;
     top:-20px;
 }
 .ant-modal-footer{

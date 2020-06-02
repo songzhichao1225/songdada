@@ -39,6 +39,7 @@
 .ant-menu.ant-menu-dark{
     background: #4164E1;
 }
+
 .Gname{
  
   float: left
@@ -112,7 +113,6 @@
     background: #4164E1;
 }
 .homePage{
-    height:100%;
     display: block;
 }
 .homePageT{

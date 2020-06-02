@@ -456,7 +456,7 @@ class appointmentList extends React.Component {
         </div>
         <div className="xiange"></div>
 
-        <div className={this.state.number === '2' ? 'circumstance' : 'circumstanceT'} style={{ height: '93%' }} >
+        <div className={this.state.number === '2' ? 'circumstance' : 'circumstanceT'} style={{ height: '90%' }} >
           <ul className="rightNav" style={{ top: '-48px', left: '-20px' }}>
             <li className="dateSelect">
               <DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={locale} placeholder="请选择日期" className="DatePicker" onChange={this.dateChange} />

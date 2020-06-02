@@ -247,7 +247,7 @@ class closeYu extends React.Component {
   render() {
     return (
       <div className="closeYu">
-        <div className="headTitle"><span onClick={this.next}>系统设置</span><span style={{ color: '#F5A623' }}>>临时关闭预约列表</span> <div className='rightBtn' onClick={this.model}>添加</div></div>
+        <div className="headTitle"><span onClick={this.next}>系统设置</span><span style={{ color: '#F5A623' }}>>临时关闭预约列表</span> <div className='rightBtn' onClick={this.model}><span>添加</span></div></div>
         <div style={{ width: '100%', height: '8px', background: '#F5F5F5' }}></div>
         <div style={this.state.closeList.length < 1 ? { display: 'none' } : { display: 'block' }}>
           <Row style={{ borderBottom: '1px solid #E1E0E1' }}>
@@ -311,7 +311,7 @@ class closeYu extends React.Component {
               onOk={this.dateSelect}
               locale={locale}
               allowClear={false}
-              value={[moment(this.state.start),moment(this.state.end)]}
+              value={[moment(this.state.start,'YYYY-MM-DD HH:mm'),moment(this.state.end,'YYYY-MM-DD HH:mm')]}
               showTime={{
                 hideDisabledOptions: true,
                 defaultValue: [moment('00:00', 'HH:mm'), moment('00:00', 'HH:mm')],

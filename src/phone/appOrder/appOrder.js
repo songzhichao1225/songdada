@@ -129,8 +129,6 @@ class appOrder extends React.Component {
   componentDidMount() {
     //测试数据
     // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=r704gxb7rhkDMmT0H2g6jz3hMt2rssHwNgd7wrX3sBoCcsuRL3FHxI2Sj0KE62Do&sporttype=5'  
-
-
     let query = this.props.location.search
 
     let arr = query.split('&')
@@ -139,11 +137,14 @@ class appOrder extends React.Component {
     let token = arr[2].slice(6, arr[2].length)
     let sporttype = arr[3].slice(10, arr[3].length)
     this.setState({ sportidQuery: sportid })
-    this.getAppVenueReservations({ date: '', siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
+    setInterval(()=>{
+      this.getAppVenueReservations({ date: '', siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
+    },5000)
     let start = new Date().toLocaleDateString()
     this.setState({ date: start, token: token, siteid: siteuid, sportid: sportid, sporttypeTwo: sporttype, start: start })
   }
 
+ 
 
   scroll = () => {
     let scrollTop = this.scrollRef.scrollTop;
@@ -283,12 +284,15 @@ class appOrder extends React.Component {
         this.setState({ obj: obj })
         if(this.state.date.split('/')[0].length===4){
           let mood= this.state.date.split('/')[0]+'-'+this.state.date.split('/')[1]+'-'+this.state.date.split('/')[2]
+          console.log(this.state.lotime)
+          console.log(mood+ ' ' + time.slice(0, time.length - 1).split(',').sort()[0])
           this.getAPPVenueSelectSite({ startTime: mood+ ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5,siteUid:this.state.siteid })
         }else{
           let mood= this.state.date.split('/')[2]+'-'+this.state.date.split('/')[0]+'-'+this.state.date.split('/')[1]
+          console.log(this.state.lotime)
+          console.log(mood+ ' ' + time.slice(0, time.length - 1).split(',').sort()[0])
           this.getAPPVenueSelectSite({ startTime: mood+ ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5,siteUid:this.state.siteid })
         }
-      
       }
     } else {
       Toast.fail('请选择场地', 2, null, false);
