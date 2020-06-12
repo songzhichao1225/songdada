@@ -4,7 +4,7 @@ import 'antd/dist/antd.css';
 
 import {Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import Icon from '@ant-design/icons';
+import {LeftOutlined} from '@ant-design/icons';
 
 
 
@@ -35,7 +35,7 @@ class moneyDetailPh extends React.Component {
     
     return (
       <div className="moneyDetailPh">
-         <div className="headerTitle"> <Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px'}} />查看详情</div>
+         <div className="headerTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px'}} />查看详情</div>
          <div className="title">
            <span>入账金额</span>
            <span>{this.state.datatring.money}</span>

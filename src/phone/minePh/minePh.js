@@ -4,14 +4,14 @@ import './minePh.css';
 import {Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Drawer, Input,Pagination } from 'antd';
-import { VenueNewsSendMessage,getVenueHelpCenter } from '../../api';
+import { VenueFeedback,getVenueHelpCenter } from '../../api';
 
 const { TextArea } = Input
 
 
 
 class minePh extends React.Component {
-
+ 
   state = {
     visible: false,
     fanKui: false,
@@ -20,8 +20,8 @@ class minePh extends React.Component {
     help: false,
     helpList: [],
     other:0,
-   
-  };
+    page:1,
+  }
 
   componentDidMount() {
 
@@ -61,15 +61,15 @@ class minePh extends React.Component {
   }
 
 
-  async VenueNewsSendMessage(data) {
-    const res = await VenueNewsSendMessage(data, localStorage.getItem('venue_token'))
+  async VenueFeedback(data) {
+    const res = await VenueFeedback(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       Toast.success(res.data.msg, 1);
       this.setState({ fanKui: false })
     }
   }
   submit = () => {
-    this.VenueNewsSendMessage({ comment: this.state.TextArea })
+    this.VenueFeedback({ comment: this.state.TextArea })
   }
 
   async getVenueHelpCenter(data) {
@@ -85,6 +85,7 @@ class minePh extends React.Component {
   }
   current=(page,pageSize)=>{
     this.getVenueHelpCenter({page:page})
+    this.setState({page:page})
   }
 
   render() {
@@ -144,7 +145,7 @@ class minePh extends React.Component {
               </div>
             ))
           }
-         <Pagination className='fenye' defaultCurrent={1} onChange={this.current}  total={this.state.other}  />
+         <Pagination className='fenye' defaultCurrent={1} current={this.state.page} onChange={this.current}  total={this.state.other}  />
         </Drawer>
 
       

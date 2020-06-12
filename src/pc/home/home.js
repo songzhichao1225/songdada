@@ -69,6 +69,7 @@ class home extends React.Component {
   componentDidMount() {
     sessionStorage.setItem('kood', 1)
     sessionStorage.setItem('loodSo', '0')
+    sessionStorage.setItem('sitew',true)
     this.setState({ minheight: document.body.scrollHeight, path: this.props.history.location.pathname })
     this.getVenueIndex()
     this.gerVenueName()
@@ -234,7 +235,7 @@ class home extends React.Component {
     const res = await gerVenueName(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     } else {
       this.setState({ gerVenueNameName: res.data.data.name, gerVenueNameRate: res.data.data.rate })
       sessionStorage.setItem('mess', res.data.data.mess)
@@ -258,15 +259,21 @@ class home extends React.Component {
     this.gerVenueName()
     this.props.history.push("/home/news")
   }
+  sitew=()=>{
+    sessionStorage.setItem('sitew',false) 
+    this.props.history.push('/home/systemSettings')
+  }
   render() {
     return (
       <Layout style={{ height: '100%' }}>
         <Sider trigger={null} collapsible collapsed={this.state.collapsed} width={150} className="sider">
-          <div className="logo">
-            <img style={{ height: 40, margin: '0 auto', marginTop: 10, display: 'block' }}
+          <div className="logo" >
+          <Link to="/home">
+            <img style={{ height: 40, margin: '0 auto', marginTop: 8, display: 'block' }}
               src={require("../../assets/tiaozhanicon.png")} alt="logo" />
+              </Link>
           </div>
-          <Menu theme="dark" selectedKeys={[sessionStorage.getItem('path')]} onSelect={this.kood}>
+          <Menu theme="dark" selectedKeys={[sessionStorage.getItem('path')]} onSelect={this.kood} style={{marginTop:'-5px'}}>
             <Menu.Item key="1">
               <Link to="/home">
                 <i className="anticon anticon-gift">
@@ -295,6 +302,7 @@ class home extends React.Component {
                 <span>活动列表</span>
               </Link>
             </Menu.Item>
+
             <Menu.Item key="3">
               <Link to="/home/siteSettings">
                 <i className="anticon anticon-gift">
@@ -327,7 +335,7 @@ class home extends React.Component {
             </Menu.Item>
 
 
-            <Menu.Item key="6">
+            <Menu.Item key="6" onClick={this.sitew}>
               <Link to="/home/systemSettings">
                 <i className="anticon anticon-gift" >
                   <svg t="1590992057163" className="icon" viewBox="64 64 896 896" version="1.1" fill="currentColor" xmlns="http://www.w3.org/2000/svg" p-id="8504" width="1.5em" height="1.5em"><path d="M528.2 633.6c-69.9 0-126.7-56.9-126.7-126.7 0-69.9 56.9-126.7 126.7-126.7S655 436.9 655 506.8c0 69.9-56.9 126.8-126.8 126.8z m0-187.6c-33.6 0-60.9 27.3-60.9 60.9s27.3 60.9 60.9 60.9c33.6 0 60.9-27.3 60.9-60.9S561.8 446 528.2 446z" p-id="8505"></path><path d="M385.5 880.1c-4.3 0-8.7-0.8-12.8-2.6-31-13-60.5-30.1-87.8-50.9-9.2-7-14.1-18.3-12.8-29.8l15.8-145.4c0.4-3.8-1.5-7.2-5-8.6-0.1 0-0.2-0.1-0.2-0.1l-133.6-58.9c-10.5-4.6-17.9-14.5-19.4-25.9-2.1-16.5-3.2-33.6-3.2-51 0-17.2 1.1-33.9 3.2-50.9 1.5-11.5 8.8-21.3 19.4-26l133.4-58.8c3.8-1.7 5.8-5.2 5.4-9.1l-15.8-145.4c-1.2-11.5 3.6-22.8 12.8-29.8 27.3-20.7 56.8-37.8 87.8-50.9 10.7-4.5 22.9-3 32.2 3.8L523 226.5c3.2 2.4 7.2 2.4 10.4 0L651.5 140c9.3-6.8 21.6-8.3 32.2-3.8 31 13 60.5 30.1 87.8 50.9 9.2 7 14.1 18.3 12.8 29.8l-15.8 145.4c-0.4 3.9 1.6 7.4 5.4 9.1l133.4 58.8c10.6 4.7 17.9 14.5 19.4 26 2.2 17 3.2 33.6 3.2 50.9 0 17.4-1.1 34.5-3.2 51-1.5 11.4-8.8 21.2-19.4 25.9l-133.6 58.9c-0.1 0-0.2 0.1-0.2 0.1-3.4 1.5-5.4 4.9-5 8.6L784.3 797c1.2 11.5-3.6 22.8-12.8 29.8-27.3 20.7-56.8 37.8-87.8 50.9-10.7 4.5-22.9 3-32.2-3.8l-117.8-86.3c-3.3-2.3-7.6-2.3-10.9 0L405 873.9c-5.8 4-12.6 6.2-19.5 6.2z m-45.8-95.2c13.4 9.1 27.4 17.3 41.8 24.3L484.1 734c0.1-0.1 0.2-0.2 0.4-0.3 26.2-18.6 61.3-18.6 87.5 0 0.1 0.1 0.3 0.2 0.4 0.3L675 809.1c14.4-7 28.4-15.2 41.8-24.3l-13.7-126.3c-3.6-32.6 14.2-63.2 44.2-76.2l115.9-51.1c0.6-8 0.9-16.1 0.9-24.3s-0.3-16.3-0.9-24.3l-116-51.1c-0.1 0-0.2-0.1-0.3-0.1-29.8-13.4-47.4-44.1-43.9-76.4l13.7-126.3c-13.4-9.1-27.4-17.3-41.8-24.3l-102.6 75.1c-13.2 9.7-28.7 14.5-44.1 14.5-15.5 0-30.9-4.8-44.2-14.5l-102.6-75.1c-14.4 7-28.4 15.2-41.8 24.3L353.3 355c3.5 32.2-14.1 62.9-43.9 76.3-0.1 0-0.2 0.1-0.3 0.1l-116 51.1c-0.6 8-0.9 16.1-0.9 24.3s0.3 16.3 0.9 24.3L309 582.2c30 13 47.8 43.6 44.2 76.2l-13.5 126.5zM894 553.7z" p-id="8506"></path></svg>

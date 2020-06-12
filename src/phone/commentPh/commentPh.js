@@ -2,11 +2,11 @@ import React from 'react';
 import './commentPh.css';
 import 'antd/dist/antd.css';
 import ReactDOM from 'react-dom';
-import { Toast, PullToRefresh } from 'antd-mobile';
+import { Toast, PullToRefresh, Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { getCommentList, getOverallScore, VenueCommentReply } from '../../api';
-import { Pagination, Result, Modal, Input } from 'antd';
-import {DatabaseOutlined,ArrowLeftOutlined} from '@ant-design/icons';
+import { Pagination, Result, Input } from 'antd';
+import { DatabaseOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input
 
@@ -32,6 +32,7 @@ class commentPh extends React.Component {
     down: true,
     height: document.documentElement.clientHeight,
     data: [],
+    other:0,
   }
   async getCommentList(data) {
     const res = await getCommentList(data, localStorage.getItem('venue_token'))
@@ -39,7 +40,15 @@ class commentPh extends React.Component {
       this.props.history.push('/login')
       Toast.fail('登录超时请重新登录', 1);
     } else {
-      this.setState({ getCommentList: res.data.data, refreshing: false })
+      let resData=res.data.data
+      for(let i in resData){
+       if(resData[i].imgnames!==''&&resData[i].imgnames!==null){
+        resData[i].imgnames=resData[i].imgnames.split('|')
+       }else{
+        resData[i].imgnames=[]
+       }
+      }
+      this.setState({ getCommentList: res.data.data, refreshing: false ,other:res.data.other})
     }
   }
   async getOverallScore(data) {
@@ -119,7 +128,7 @@ class commentPh extends React.Component {
     return (
       <div className="commentPh">
         <div className="headerTitle">
-          <ArrowLeftOutlined onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />
+          <ArrowLeftOutlined onClick={this.reture} style={{ position: 'absolute', left: '0', width: '48px', height: '48px', lineHeight: '48px' }} />
           场馆评分
           </div>
         <div className="essence">
@@ -130,7 +139,7 @@ class commentPh extends React.Component {
             <img src={this.state.scoreSon >= 3 ? require("../../assets/50xing (3).png") : require("../../assets/50xing (2).png") && this.state.scoreSon < 3 && this.state.scoreSon > 2 ? require("../../assets/50xing (1).png") : require("../../assets/50xing (2).png")} alt="星" />
             <img src={this.state.scoreSon >= 4 ? require("../../assets/50xing (3).png") : require("../../assets/50xing (2).png") && this.state.scoreSon < 4 && this.state.scoreSon > 3 ? require("../../assets/50xing (1).png") : require("../../assets/50xing (2).png")} alt="星" />
             <img src={this.state.scoreSon >= 5 ? require("../../assets/50xing (3).png") : require("../../assets/50xing (2).png") && this.state.scoreSon < 5 && this.state.scoreSon > 4 ? require("../../assets/50xing (1).png") : require("../../assets/50xing (2).png")} alt="星" />
-            <span className="right">{this.state.score.score}</span>
+            <span className="right">{this.state.score.score}分</span>
           </div>
           <div className="serve"><span>设施 {this.state.score.equscore}</span> <span>服务 {this.state.score.envscore}</span> <span>价格 {this.state.score.xjbScore}</span></div>
         </div>
@@ -140,7 +149,7 @@ class commentPh extends React.Component {
           damping={60}
           ref={el => this.ptr = el}
           style={{
-            height: this.state.height,
+            height: this.state.height - 33,
             overflow: 'auto',
           }}
           indicator={this.state.down ? {} : { deactivate: '上拉可以刷新' }}
@@ -169,21 +178,28 @@ class commentPh extends React.Component {
                   </div>
                   <span style={{ display: 'block', clear: 'both' }}>{item.content}</span>
                   {/* 评论图片 */}
-                  <div style={{ display: 'block', clear: 'both' }} className="commentImg">
+                  <div style={item.imgnames.length===0?{display:'none'}:{ display: 'block', clear: 'both' }} className="commentImg">
+                   {
+                     item.imgnames.map((ko,j)=>(
+                       <img key={j} src={"https://app.tiaozhanmeiyitian.com/"+item.imgbaseurl+ko+""} alt="uimg"/>
+                     ))
+                   }
+
                   </div>
-                  <span style={{ display: 'block', clear: 'both' }}>{item.commentDate}</span>
+                  
+                  <div className="reply" data-uid={item.uid} onClick={this.showModal}><img src={require("../../assets/icon_pc_comment.png")} alt="回复" /></div>
+                  <span style={{ display: 'block',float:'left',marginTop:'0.75rem' }}>{item.commentDate}</span>
                   <div className={item.comment_reply !== null ? 'Stadium' : 'stadiumNone'}>
                     <div className="logoImg"><img src={require("../../assets/kefu.png")} alt="场馆端" /></div>
                     <span className="stadiumText">{item.comment_reply}</span>
                   </div>
-                  <span className={item.comment_reply !== null ? 'StaiumDate' : 'stadiumNone'}>{item.comment_reply_time}</span>
-                  <div className="reply" data-uid={item.uid} onClick={this.showModal}><img src={require("../../assets/icon_pc_comment.png")} alt="回复" /></div>
+                  {/* <span className={item.comment_reply !== null ? 'StaiumDate' : 'stadiumNone'}>{item.comment_reply_time}</span> */}
                 </div>
               ))
 
             }
 
-            <Modal
+            {/* <Modal
               title="回复该客户"
               footer={null}
               visible={this.state.visible}
@@ -195,11 +211,24 @@ class commentPh extends React.Component {
                 <div onClick={this.handleCancel}>取消</div>
                 <div style={{ marginLeft: '0.5rem', background: '#F5A623', color: '#fff' }} onClick={this.publish}>发布</div>
               </div>
+            </Modal> */}
+
+            <Modal
+              visible={this.state.visible}
+              transparent
+              maskClosable={false}
+              onClose={this.handleCancel}
+              title="回复该客户"
+              footer={[{ text: '取消', onPress: () => { this.handleCancel(); } },{ text: '回复', onPress: () => { this.publish(); } }]}
+             
+            >
+             <TextArea rows={4} maxLength={100} placeholder="最多可输入100字" onChange={this.textArea} />
+            
             </Modal>
 
 
-            <Pagination className="fenye" size='small' style={this.state.getCommentList.length > 0 ? {} : { display: 'none' }} current={parseInt(this.state.current)} pageSize={10} total={this.state.getCommentList.length} onChange={this.pageChang} />
-            <Result className={this.state.getCommentList.length === 0 ? '' : 'hidden'} icon={<DatabaseOutlined style={{ fontSize: '2rem',color:'#F5A623' }}/>} title="没有场馆评论" />
+            <Pagination className="fenye" size='small' style={this.state.getCommentList.length > 0 ? {} : { display: 'none' }} current={parseInt(this.state.current)} pageSize={10} total={this.state.other} onChange={this.pageChang} />
+            <Result className={this.state.getCommentList.length === 0 ? '' : 'hidden'} icon={<DatabaseOutlined style={{ fontSize: '2rem', color: '#F5A623' }} />} title="没有场馆评论" />
           </div>
 
         </PullToRefresh>

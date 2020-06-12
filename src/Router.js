@@ -27,7 +27,7 @@ const BasicRoute = () => (
             <Route  path="/home" component={home}/>
         </Switch>
     </HashRouter>
-);
+)
 
 
 

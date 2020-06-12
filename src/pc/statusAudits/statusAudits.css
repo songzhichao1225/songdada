@@ -85,6 +85,7 @@
   .statusAudits .img{
 	  display:block;
 	  margin: 110px auto 0;
+	  cursor: auto;
   }
   .statusAudits .titleText{
 	font-size: 36px;

@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { Toast, PullToRefresh } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Pagination, Result, Spin } from 'antd';
-import {AccountBookOutlined,ArrowLeftOutlined} from '@ant-design/icons';
+import {AccountBookOutlined,LeftOutlined} from '@ant-design/icons';
 import { getVenueWithdrawalList } from '../../api';
 
 function genData() {
@@ -67,7 +67,7 @@ class recordPh extends React.Component {
       <div className="recordPh">
 
 
-        <div className="headTitle"><ArrowLeftOutlined onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} /> 提现记录</div>
+        <div className="headTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} /> 提现记录</div>
         <div style={this.state.recordPhList.length>0?{}:{display:'none'}}>
 
         
@@ -75,7 +75,7 @@ class recordPh extends React.Component {
           damping={60}
           ref={el => this.ptr = el}
           style={{
-            height: this.state.height,
+            
             overflow: 'auto',
           }}
           indicator={this.state.down ? {} : { deactivate: '上拉可以刷新' }}

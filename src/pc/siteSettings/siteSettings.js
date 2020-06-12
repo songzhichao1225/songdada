@@ -89,7 +89,7 @@ class siteSettings extends React.Component {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     }
     this.setState({ ListSport: res.data.data })
   }
@@ -173,9 +173,11 @@ class siteSettings extends React.Component {
       nameChang: e
     })
     if (this.state.headerData === '1') {
-      this.getVenueNumberTitleList({ sportid: e, page: '' })
+      this.setState({pageOne:1})
+      this.getVenueNumberTitleList({ sportid: e, page: 1 })
     } else {
-      this.getSiteSettingList({ sportid: e, page: '' })
+      this.setState({page:1})
+      this.getSiteSettingList({ sportid: e, page: 1 })
     }
   }
 
@@ -341,7 +343,13 @@ class siteSettings extends React.Component {
     })
   }
   endtime=e=>{
-    this.setState({endtime:e})
+    console.log(this.state.starttime)
+    if(this.state.starttime===e){
+     message.error('开始时间不能等于结束时间')
+     this.setState({endtime:''})
+    }else{
+      this.setState({endtime:e})
+    }
   }
 
   
@@ -433,7 +441,7 @@ class siteSettings extends React.Component {
     } else if (tagsTwo === '') {
       message.warning('请选择细分标签类型')
     } else if (openday.length === 0) {
-      message.warning('请选择休息日/工作日')
+      message.warning('请选择星期')
     } else if (starttime === '') {
       message.warning('请选择时间范围（开始时间）')
     } else if (endtime === '') {
@@ -559,7 +567,6 @@ class siteSettings extends React.Component {
     }
     this.setState({
       headerData: e.currentTarget.dataset.id,
-      nameChang: ''
     })
   }
   handlejoinXi = () => {
@@ -1180,7 +1187,7 @@ class siteSettings extends React.Component {
                 <Col xs={{ span: 2 }}>细分标签</Col>
                 <Col xs={{ span: 2 }}>场地编号</Col>
                 <Col xs={{ span: 2 }}>场地数量</Col>
-                <Col xs={{ span: 2 }}>工作日/周六日</Col>
+                <Col xs={{ span: 2 }}>星期</Col>
                 <Col xs={{ span: 2 }}>时间范围</Col>
                 <Col xs={{ span: 2 }}>价格<span className="fontColor">(元/时)</span></Col>
                 <Popover content={(<span>最长提前预定时间</span>)} title='详情' trigger="click">
@@ -1236,7 +1243,7 @@ class siteSettings extends React.Component {
               status="warning"
               title="您还没有设置场地价格!"
             />
-            <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} className={this.state.hidden === true ? 'fenye' : 'hidden'} current={this.state.page} total={this.state.other} onChange={this.current} />
+            <Pagination style={{ marginBottom: '15px' }}  hideOnSinglePage={true} showSizeChanger={false}  className={this.state.hidden === true ? 'fenye' : 'hidden'} current={this.state.page} total={this.state.other} onChange={this.current} />
           </div>
 
           <div className="join" style={this.state.headerData === '2' ? {} : { display: 'none' }} onClick={this.showModalTwo}><div id="join" style={{ textAlign: 'center', width: '150px', margin: '0 auto' }}>+添加价格设置</div></div>
@@ -1308,7 +1315,6 @@ class siteSettings extends React.Component {
             <div className="modelList" style={{ height: '32px' }}>
               <span>细分标签</span>
               <Select placeholder="请选择" disabled={this.state.update === 1 ? true : false} value={this.state.tagsTwo === '' ? [] : this.state.tagsTwo} className="selectModel" style={{ width: 269, height: 32 }} onChange={this.handleChangeTags}>
-
                 {
                   this.state.selecdTil.map((item, i) => (
                     <Option key={i} value={item.title}>{item.title}</Option>
@@ -1326,7 +1332,7 @@ class siteSettings extends React.Component {
             </div>
 
             <div className="modelList" style={{ height: 'auto' }}>
-              <span>休息日/工作日</span>
+              <span>星期</span>
               <Select placeholder="请选择" mode='multiple' className="selectModel"
                 value={this.state.openday === '' ? [] : this.state.openday}
                 style={{ width: 269, height: 'auto' }} onChange={this.handleChangeTwo}>
@@ -1569,7 +1575,7 @@ class siteSettings extends React.Component {
             </div>
 
             <div className="modelList" style={{ height: 'auto' }}>
-              <span>休息日/工作日</span>
+              <span>星期</span>
               <Select placeholder="请选择" disabled={true} mode='multiple' className="selectModel"
                 value={this.state.openday === '' ? [] : this.state.openday}
                 style={{ width: 330, height: 'auto', marginRight: 100 }} onChange={this.handleChangeTwo}>
@@ -1622,7 +1628,7 @@ class siteSettings extends React.Component {
             />
           */}
               <RangePicker
-                showTime
+                showTime={{ defaultValue:  [moment('00:00', 'HH:mm'), moment('00:00', 'HH:mm')] }}
                 locale={locale}
                 style={{ float: 'left', marginLeft: 78, width: 330 }}
                 format="YYYY-MM-DD HH:mm"

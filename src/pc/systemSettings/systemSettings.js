@@ -1,8 +1,8 @@
 import React from 'react';
 import './systemSettings.css';
 import 'antd/dist/antd.css';
-import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport, VenueTemporarilyClosed, VenueIsClose, getVenueIsClose, VenueNewsSendMessage, getVenueHelpCenter } from '../../api';
-import { Input, message, Checkbox, Drawer, Pagination,Popconfirm } from 'antd';
+import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport, VenueTemporarilyClosed, VenueIsClose, getVenueIsClose, VenueFeedback, getVenueHelpCenter } from '../../api';
+import { Input, message, Checkbox, Drawer, Pagination, Popconfirm } from 'antd';
 import Icon from '@ant-design/icons';
 import 'moment/locale/zh-cn';
 
@@ -43,6 +43,7 @@ class systemSettings extends React.Component {
     help: false,
     helpList: [],
     other: 0,
+    page: 1
   }
 
   showDrawer = () => {
@@ -73,7 +74,20 @@ class systemSettings extends React.Component {
 
   componentDidMount() {
     this.getVenueIsClose()
-    this.setState({corporatePhone:sessionStorage.getItem('legalphone')})
+    this.setState({ corporatePhone: sessionStorage.getItem('legalphone') })
+    setInterval(()=>{
+      if(sessionStorage.getItem('sitew')==='false'){
+        this.setState({
+          flag: false,
+          flagList: true,
+          flagUntie: true,
+          flagListOne: true,
+        })
+        sessionStorage.setItem('sitew',true)
+      }
+    },50)
+  
+    
   }
 
 
@@ -88,14 +102,17 @@ class systemSettings extends React.Component {
       message.info(res.data.msg)
     }
   }
+
+
+
   confirm = () => {
-     if(this.state.isClose===0){
-      this.setState({ isClose:  1 })
-      this.VenueIsClose({ close: 1  })
-     }else{
-      this.setState({ isClose:  0 })
-      this.VenueIsClose({ close: 0  })
-     }
+    if (this.state.isClose === 0) {
+      this.setState({ isClose: 1 })
+      this.VenueIsClose({ close: 1 })
+    } else {
+      this.setState({ isClose: 0 })
+      this.VenueIsClose({ close: 0 })
+    }
   }
 
 
@@ -142,8 +159,8 @@ class systemSettings extends React.Component {
   }
 
   naCode = () => {
-    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))&&this.state.phone.length===11) {
-      this.nacode({ "mobile": this.state.phone, "type": 'venuesavepass',"uuid":sessionStorage.getItem('uuid') })
+    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone)) && this.state.phone.length === 11) {
+      this.nacode({ "mobile": this.state.phone, "type": 'venuesavepass', "uuid": sessionStorage.getItem('uuid') })
     } else {
       message.error('请输入正确手机号')
     }
@@ -170,7 +187,7 @@ class systemSettings extends React.Component {
 
 
   naCodeOutie = () => {
-    if (this.state.corporatePhone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.corporatePhone))&&this.state.corporatePhone.length===11) {
+    if (this.state.corporatePhone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.corporatePhone)) && this.state.corporatePhone.length === 11) {
       let num = 60
       const timer = setInterval(() => {
         this.setState({ textOne: num-- })
@@ -179,7 +196,7 @@ class systemSettings extends React.Component {
           this.setState({ textOne: '获取验证码' })
         }
       }, 1000)
-      this.nacode({ "mobile": this.state.corporatePhone, "type": 'venuebindingfr',"uuid":sessionStorage.getItem('uuid') })
+      this.nacode({ "mobile": this.state.corporatePhone, "type": 'venuebindingfr', "uuid": sessionStorage.getItem('uuid') })
     } else {
       message.error('请输入正确手机号')
     }
@@ -204,9 +221,9 @@ class systemSettings extends React.Component {
   }
 
   naCodeOutieTwo = () => {
-    if (this.state.operationPhone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.operationPhone))&&this.state.operationPhone.length===11) {
-      
-      this.nacodeTwo({ "mobile": this.state.operationPhone, "type":'venuebindingczy'})
+    if (this.state.operationPhone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.operationPhone)) && this.state.operationPhone.length === 11) {
+
+      this.nacodeTwo({ "mobile": this.state.operationPhone, "type": 'venuebindingczy' })
     } else {
       message.error('请输入正确手机号')
     }
@@ -275,7 +292,7 @@ class systemSettings extends React.Component {
     this.getVenueSport()
     this.setState({ visible: true })
   }
-  
+
   handleChangeSelect = e => {
     this.setState({ runId: e })
     let day = ''
@@ -354,15 +371,15 @@ class systemSettings extends React.Component {
     this.setState({ textNum: e.target.value.length, textAreaT: e.target.value })
 
   }
-  async VenueNewsSendMessage(data) {
-    const res = await VenueNewsSendMessage(data, sessionStorage.getItem('venue_token'))
+  async VenueFeedback(data) {
+    const res = await VenueFeedback(data, sessionStorage.getItem('venue_token'))
     message.info(res.data.msg)
     this.setState({ bot: false })
   }
 
   subfeed = () => {
     if (this.state.textAreaT !== '') {
-      this.VenueNewsSendMessage({ comment: this.state.textAreaT })
+      this.VenueFeedback({ comment: this.state.textAreaT })
     } else {
       message.warning('请输入意见反馈')
     }
@@ -379,6 +396,7 @@ class systemSettings extends React.Component {
     this.setState({ help: true })
   }
   current = (page, pageSize) => {
+    this.setState({ page: page })
     this.getVenueHelpCenter({ page: page })
   }
 
@@ -391,8 +409,9 @@ class systemSettings extends React.Component {
         <div className={this.state.flagListOne === true ? 'list' : 'listNone'}>
           <ul className="ul">
             <Popconfirm
-              title={this.state.isClose===0?'您确定要关闭预约么，关闭后场馆的所有时间段将不能被提前预约！？':'您确定取消关闭预约么，取消后场馆的所有时间段可以被提前预约'}
+              title={this.state.isClose === 0 ? '您确定要关闭预约么，关闭后场馆的所有时间段将不能被提前预约!' : '您确定取消关闭预约么，取消后场馆的所有时间段可以被提前预约!'}
               onConfirm={this.confirm}
+              placement="topLeft"
               onCancel={this.cancel}
               okText="是"
               cancelText="否"
@@ -421,7 +440,6 @@ class systemSettings extends React.Component {
                 <TextArea style={{ width: '300px', minHeight: '60px' }} maxLength={200} autosize={true} placeholder='输入意见反馈' onChange={this.text} />
                 <span style={{ marginLeft: '10px', padding: '4px 20px', background: '#F5A623', color: '#fff', fontSize: '16px' }} onClick={this.subfeed}>提交</span>
                 <div>{this.state.textNum}/200</div>
-
               </div>
             </li>
           </ul>
@@ -431,26 +449,26 @@ class systemSettings extends React.Component {
           <div className="resetSon">
             <div className="inputSon">
               <span>手机号码</span>
-              <Input maxLength={11} style={{marginLeft:13,padding:'0 5px',height:'43px'}} onChange={this.phone} placeholder="请输入手机号" />
+              <Input maxLength={11} style={{ marginLeft: 13, padding: '0 5px', height: '43px' }} onChange={this.phone} placeholder="请输入手机号" />
             </div>
 
             <div className="inputSonT inputSon">
               <span>验证码</span>
-              <Input maxLength={6} style={{width:150,marginLeft:28,padding:'0 5px',height:'43px'}} onChange={this.code} placeholder="请输入验证码" />
-              <div className={this.state.textT === '获取验证码' ? 'obtainCode' : 'koohidden'} style={{marginRight:32}} onClick={this.naCode}>{this.state.textT}</div>
+              <Input maxLength={6} style={{ width: 150, marginLeft: 28, padding: '0 5px', height: '43px' }} onChange={this.code} placeholder="请输入验证码" />
+              <div className={this.state.textT === '获取验证码' ? 'obtainCode' : 'koohidden'} style={{ marginRight: 32 }} onClick={this.naCode}>{this.state.textT}</div>
               <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textT}</div>
             </div>
 
             <div className="inputSon">
               <span>重置密码</span>
-              <Input.Password maxLength={8} onChange={this.passWord}  placeholder="请输入重置密码" />
+              <Input.Password maxLength={8} onChange={this.passWord} placeholder="请输入重置密码" />
             </div>
 
             <div className="inputSon">
               <span>确认密码</span>
               <Input.Password maxLength={8} onChange={this.passWordT} placeholder="请输入确认密码" />
             </div>
-            <div className="submit" style={{marginLeft:72}} onClick={this.submit}>确定</div>
+            <div className="submit" style={{ marginLeft: 72 }} onClick={this.submit}>确定</div>
           </div>
         </div>
 
@@ -460,12 +478,12 @@ class systemSettings extends React.Component {
               <span style={{ width: 145, marginLeft: -28, textAlign: 'right' }}>法人手机号</span>
               <Input maxLength={11} value={this.state.corporatePhone} disabled={true} prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.corporatePhone} placeholder="请输入手机号" />
             </div>
- 
+
             <div className="inputSonT inputSon">
               <span style={{ textAlign: 'right' }}>验证码</span>
               <Input maxLength={6} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.corporateCode} placeholder="请输入验证码" />
-              <div style={{height:43,lineHeight:'43px'}} className={this.state.textOne === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCodeOutie}>{this.state.textOne}</div>
-              <div style={{height:43,lineHeight:'43px'}} className={this.state.textOne === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textOne}</div>
+              <div style={{ height: 43, lineHeight: '43px' }} className={this.state.textOne === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCodeOutie}>{this.state.textOne}</div>
+              <div style={{ height: 43, lineHeight: '43px' }} className={this.state.textOne === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textOne}</div>
             </div>
             <div className="inputSon">
               <span style={{ width: 145, marginLeft: -84, textAlign: 'right' }}>绑定操作员新手机号</span>
@@ -474,8 +492,8 @@ class systemSettings extends React.Component {
             <div className="inputSonT inputSon">
               <span style={{ textAlign: 'right' }}>验证码</span>
               <Input maxLength={6} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.operationCode} placeholder="请输入验证码" />
-              <div style={{height:43,lineHeight:'43px'}} className={this.state.textTwo === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCodeOutieTwo}>{this.state.textTwo}</div>
-              <div style={{height:43,lineHeight:'43px'}} className={this.state.textTwo === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textTwo}</div>
+              <div style={{ height: 43, lineHeight: '43px' }} className={this.state.textTwo === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCodeOutieTwo}>{this.state.textTwo}</div>
+              <div style={{ height: 43, lineHeight: '43px' }} className={this.state.textTwo === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textTwo}</div>
             </div>
             <div className="submit" onClick={this.UoiteSubimt}>确定</div>
           </div>
@@ -494,6 +512,7 @@ class systemSettings extends React.Component {
           <span style={{ display: 'block', marginTop: '30px' }}> “找对手”是北京甲乙电子商务有限公司推出的用户找运动对手、伙伴平台，通过平台的服务：1）让用户更方便地找到运动对手、伙伴；2）建立技术等级，让用户更有征服欲、成就感，运动更有趣；3）让场馆提高场馆预订率、降低场馆人员支出成本。</span>
           <span style={{ display: 'block', marginTop: '30px' }}>公司的愿景：让运动更简单、更有趣！</span>
           <span style={{ display: 'block', marginTop: '30px' }}>期待志同道合的优秀人士加入到我公司，一起为这个愿景努力！</span>
+          <a href="http://www.zhaoduishou.com" >www.zhaoduishou.com</a>
         </Drawer>
 
 
@@ -513,7 +532,7 @@ class systemSettings extends React.Component {
               </div>
             ))
           }
-          <Pagination className='fenye' defaultCurrent={1} onChange={this.current} total={this.state.other} />
+          <Pagination className='fenye' defaultCurrent={1} hideOnSinglePage={true} showSizeChanger={false} current={this.state.page} onChange={this.current} total={this.state.other} />
 
         </Drawer>
 

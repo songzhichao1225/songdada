@@ -5,7 +5,7 @@ import { Toast, InputItem, NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { _code, VenueSelectSiteName, VenueForgetPass } from '../../api';
 import { Radio } from 'antd';
-import Icon from '@ant-design/icons';
+import {LeftOutlined,EllipsisOutlined} from '@ant-design/icons';
 const Item = Popover.Item;
 
 class forgetPasswordPh extends React.Component {
@@ -115,7 +115,7 @@ class forgetPasswordPh extends React.Component {
       <div className="forgetPasswordPh">
         <NavBar
           mode="dark"
-          icon={<Icon type="arrow-left" onClick={this.reture} />}
+          icon={<LeftOutlined  onClick={this.reture} />}
           rightContent={<Popover mask
             overlayClassName="fortest"
             overlayStyle={{ color: 'currentColor' }}
@@ -139,7 +139,7 @@ class forgetPasswordPh extends React.Component {
               alignItems: 'center',
             }}
             >
-              <Icon type="ellipsis" />
+              <EllipsisOutlined />
             </div>
           </Popover>}
         ><span style={{ fontSize: '1rem' }}>忘记密码</span></NavBar>
@@ -154,7 +154,7 @@ class forgetPasswordPh extends React.Component {
               onChange={this.phoneChange}
               autoFocus
               className="phone"
-            ><Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />
+            >
             </InputItem>
           </div>
 
@@ -168,7 +168,7 @@ class forgetPasswordPh extends React.Component {
               onChange={this.code}
               className="phone"
               maxLength={6}
-            ><Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />
+            >
             </InputItem>
             <div className={this.state.textT === '获取验证码' ? 'obtain' : 'koohidden'} onClick={this.naCode} >
               {this.state.textT}
@@ -200,7 +200,7 @@ class forgetPasswordPh extends React.Component {
               onChange={this.pass}
               className="phone"
               maxLength={8}
-            ><Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />
+            >
             </InputItem>
           </div>
 
@@ -208,13 +208,13 @@ class forgetPasswordPh extends React.Component {
 
             <InputItem
               type='password'
-              placeholder="请输入密码"
+              placeholder="请确认密码"
               clear={true}
               style={{ fontSize: '0.8rem' }}
               onChange={this.passTwo}
               className="phone"
               maxLength={8}
-            ><Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />
+            >
             </InputItem>
           </div>
           <div className="btn" onClick={this.comfir}>确定</div>

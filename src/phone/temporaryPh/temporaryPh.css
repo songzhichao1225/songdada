@@ -57,7 +57,6 @@
  }
  .temporaryPh .temScroll{
     height: 100%;
-    padding-bottom: 4rem;
     -webkit-overflow-scrolling: touch;
     overflow-y: scroll;
     white-space: nowrap;
@@ -85,4 +84,5 @@
 }
 .startTime  .am-list-line .am-list-extra{
     margin-right: 0.3rem;
+    flex-basis:50%;
 }

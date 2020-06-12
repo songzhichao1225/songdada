@@ -4,7 +4,7 @@ import './qualificationPh.css';
 import { Toast, Picker, List,NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Upload, Input, Button, Radio, Select, Tooltip } from 'antd';
-import Icon from '@ant-design/icons';
+import {LeftOutlined,EllipsisOutlined} from '@ant-design/icons';
 import { getIsStatus, getVenueOpenBankList, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity, VenueQualifications, getVenueQualificationInformation, VenueQualificationInformationSave } from '../../api';
 
 const { Option } = Select;
@@ -317,7 +317,6 @@ class qualificationPh extends React.Component {
 
     const uploadButton = (
       <div>
-        <Icon type="plus" />
         <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}>营业执照</div>
       </div>
     )
@@ -329,7 +328,7 @@ class qualificationPh extends React.Component {
       <div className="qualificationPh">
        <NavBar
             mode="dark"
-            icon={<Icon type="arrow-left" onClick={this.reture} />}
+            icon={<LeftOutlined  onClick={this.reture}/>}
             rightContent={<Popover mask
               overlayClassName="fortest"
               overlayStyle={{ color: 'currentColor' }}
@@ -354,7 +353,7 @@ class qualificationPh extends React.Component {
                 alignItems: 'center',
               }}
               >
-                <Icon type="ellipsis" />
+               <EllipsisOutlined />
               </div>
             </Popover>}
           ><span style={{ fontSize: '1rem' }}>完善资质信息</span></NavBar>

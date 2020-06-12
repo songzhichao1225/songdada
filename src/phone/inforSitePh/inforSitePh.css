@@ -27,7 +27,10 @@
     font-size: 1rem;
     color: #9B9B9B;
 }
-
+.inforSitePh .ant-upload-list-picture-card-container{
+    width: 4.5rem;
+    height: 2.5rem;
+}
 
 .inforSitePh .basic::-webkit-scrollbar {/*滚动条整体样式*/
     display: none;
@@ -69,8 +72,27 @@
     font-size: 0.75rem;
 }
 .inforSitePh .listSon .rightLi .ant-checkbox-wrapper{
-    width:40%;
+    float: left;
 }
+
+.inforSitePh .listSon .kop .ant-checkbox-wrapper{
+    width: 40%;
+}
+.inforSitePh .ant-select-disabled.ant-select-single:not(.ant-select-customize-input) .ant-select-selector{
+    width: 100%;
+    margin-top: 0.6rem;
+}
+.inforSitePh .ant-select-show-search.ant-select-single:not(.ant-select-customize-input) .ant-select-selector{
+    width: 100%;
+    margin-top: 0.6rem;
+}
+.ant-radio-checked::after{
+    border:1pxsolid #D85D27;
+}
+.ant-radio-wrapper:hover .ant-radio, .ant-radio:hover .ant-radio-inner, .ant-radio-input:focus + .ant-radio-inner{
+    border-color: #D85D27;
+}
+
 .inforSitePh .addImg{
     float: right;
     width: 80%;

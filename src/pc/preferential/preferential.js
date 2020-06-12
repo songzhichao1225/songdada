@@ -38,7 +38,7 @@ class appointmentList extends React.Component {
     textArea: '',
     publicUUID: '',
     placeholder: '其他说明（选填）',
-    page: 0,
+    page: 1,
     macNum: [],
     lookList: [],
     dateString: '',
@@ -82,7 +82,7 @@ class appointmentList extends React.Component {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     } else if (res.data.code === 2000) {
       this.setState({ activityNav: res.data.data})
       this.getVenueNumberTitleList({ sportid: this.state.liNum })
@@ -534,7 +534,7 @@ class appointmentList extends React.Component {
               </Row>
             ))
           }
-          <Pagination className="fenye" defaultCurrent={1} total={this.state.other} onChange={this.current} />
+          <Pagination className="fenye" defaultCurrent={1} current={this.state.page}  hideOnSinglePage={true} showSizeChanger={false} total={this.state.other} onChange={this.current} />
         </div>
       )
     } else {

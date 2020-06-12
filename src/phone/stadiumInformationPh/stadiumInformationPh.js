@@ -4,21 +4,12 @@ import './stadiumInformationPh.css';
 import { Toast, Picker, List, InputItem, NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Input, Upload, Checkbox, Modal, Button } from 'antd';
-import Icon from '@ant-design/icons';
-import { PerfectingVenueInformation, getVenueInformation, VenueInformationSave } from '../../api';
+import {LeftOutlined,EllipsisOutlined} from '@ant-design/icons';
+import { PerfectingVenueInformation, getVenueInformation, VenueInformationSave,getVenueSportList } from '../../api';
 let arr = require('./address.json');
 const { TextArea } = Input;
 const Item = Popover.Item;
-const plainOptions = [
-  { label: '篮球', value: '4' },
-  { label: '足球', value: '5' },
-  { label: '台球', value: '3' },
-  { label: '羽毛球', value: '1' },
-  { label: '排球', value: '6' },
-  { label: '网球', value: '7' },
-  { label: '乒乓球', value: '2' },
-  { label: '高尔夫球', value: '8' }
-];
+
 const options = [{ label: 'WiFi', value: '1' }, { label: '停车场', value: '2' }, { label: '淋浴', value: '3' }]
 
 function getBase64(img, callback) {
@@ -75,7 +66,8 @@ class stadiumInformationPh extends React.Component {
     arrPro: [],
     arrProNum: [],
     linkMan: '',
-    telephone: ''
+    telephone: '',
+    plainOptions:[]
   };
 
 
@@ -104,10 +96,19 @@ class stadiumInformationPh extends React.Component {
 
   }
 
+  async getVenueSportList(data) {
+    const res = await getVenueSportList(data)
+    this.setState({
+      plainOptions: res.data.data
+    })
+  }
 
 
   componentDidMount() {
-
+    this.getVenueSportList()
+      this.setState({
+        stadiumName:sessionStorage.getItem('stadiumName')
+      })
     if (sessionStorage.getItem('notType') === '1') {
       this.getVenueInformation()
     } else if (this.props.location.query !== undefined) {
@@ -217,6 +218,7 @@ class stadiumInformationPh extends React.Component {
   }
   stadiumName = e => {
     this.setState({ stadiumName: e })
+    sessionStorage.setItem('stadiumName',e)
   }
   onChangeRun = e => {
 
@@ -273,7 +275,7 @@ class stadiumInformationPh extends React.Component {
     let { stadiumName, lat, lng, linkMan, telephone, imageUrl, addressXian, address, fileList, imageRes, onChangeRun, onChangeRunTai, onChangeRunZu, onChangeRunGao, onChangeCheck, textKo } = this.state
     if (sessionStorage.getItem('notType') === '1') {
       let arrimg = []
-      for (let i in fileList) {
+      for (let i in fileList.slice(0,9)) {
         if (fileList[i].response === undefined) {
           arrimg.push(fileList[i].url)
         } else {
@@ -310,21 +312,24 @@ class stadiumInformationPh extends React.Component {
       this.VenueInformationSave(data)
 
     } else {
+
+
+      
       let arrimg = []
-      for (let i in fileList) {
+      for (let i in fileList.slice(0,9)) {
         arrimg.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
       }
       if (onChangeRun.indexOf('3') !== -1 && onChangeRunTai === '') {
-        Toast.fail('至少选择一项台球类型', 1);
+        Toast.fail('至少选择一项台球类型', 1)
       } else if (onChangeRun.indexOf('5') !== -1 && onChangeRunZu === '') {
-        Toast.fail('至少选择一项足球类型', 1);
+        Toast.fail('至少选择一项足球类型', 1)
       } else if (onChangeRun.indexOf('8') !== -1 && onChangeRunGao === '') {
-        Toast.fail('至少选择一项高尔夫类型', 1);
+        Toast.fail('至少选择一项高尔夫类型', 1)
       } else if (arrimg.length < 3) {
-        Toast.fail('最少上传三张场地照', 1);
+        Toast.fail('最少上传三张场地照', 1)
       } else {
         let data = {
-          venueloginuuid: localStorage.getItem('uuid'),
+          venueloginuuid: localStorage.getItem('uuid'), 
           province: sessionStorage.getItem('province'),
           city: sessionStorage.getItem('city'),
           area: sessionStorage.getItem('county'),
@@ -389,7 +394,7 @@ class stadiumInformationPh extends React.Component {
 
     const uploadButton = (
       <div>
-        <Icon type="plus" />
+       
         <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}>门脸照</div>
       </div>
     )
@@ -398,7 +403,7 @@ class stadiumInformationPh extends React.Component {
     const { previewVisible, previewImage, fileList } = this.state
     const uploadButtonT = (
       <div>
-        <Icon type="plus" />
+        
         <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}>场地照</div>
       </div>
     )
@@ -429,7 +434,7 @@ class stadiumInformationPh extends React.Component {
       <div className="stadiumInformationPh">
         <NavBar
           mode="dark"
-          icon={<Icon type="arrow-left" onClick={this.reture} style={{position:'absolute', left:'0',top:'0',width:'48px',height:'48px',lineHeight:'48px'}}  />}
+          icon={ <LeftOutlined  onClick={this.reture} />}
           rightContent={<Popover mask
             overlayClassName="fortest"
             overlayStyle={{ color: 'currentColor' }}
@@ -454,10 +459,10 @@ class stadiumInformationPh extends React.Component {
               alignItems: 'center',
             }}
             >
-              <Icon type="ellipsis" />
+               <EllipsisOutlined />
             </div>
           </Popover>}
-        ><span style={{ fontSize: '1rem' }}>完善基本信息</span></NavBar>
+        ><span style={{ fontSize: '1rem' }}>新用户注册/完善信息</span></NavBar>
         <div className="boss">
           <div className="input">
 
@@ -466,37 +471,10 @@ class stadiumInformationPh extends React.Component {
               title="选择地区"
               value={this.state.addressId}
               onOk={this.onOk}
+              extra="选择省份   选择市   选择区/县"
             >
               <List.Item arrow="horizontal" style={{fontSize:'16px'}}>选择地区</List.Item>
             </Picker>
-          </div>
-
-
-
-          <div className="input">
-            <span>场馆位置</span>
-            <InputItem
-              placeholder="点击图标选择地址"
-              value={this.props.location.query !== undefined ? this.props.location.query.title : this.state.address}
-              style={{ fontSize: '0.8rem',textAlign:'right' }}
-              className="select"
-              disabled={true}
-              onClick={this.mapPh}
-            >
-            </InputItem>
-            <img className="imgAddress" onClick={this.mapPh} src={require("../../assets/icon_pc_dingwei.png")} alt="地址" />
-          </div>
-
-          <div className="input">
-            <span>详细地址</span>
-            <InputItem
-              placeholder="请输入详细地址"
-              value={this.state.addressXian}
-              style={{ fontSize: '0.8rem',textAlign:'right' }}
-              className="select"
-              onChange={this.xaingxi}
-            >
-            </InputItem>
           </div>
 
           <div className="input">
@@ -504,20 +482,48 @@ class stadiumInformationPh extends React.Component {
             <InputItem
               placeholder="请输入场馆名称"
               value={this.state.stadiumName}
-              style={{ fontSize: '0.8rem',textAlign:'right' }}
+              style={{ fontSize: '0.8rem' }}
               className="select"
               onChange={this.stadiumName}
             >
             </InputItem>
           </div>
 
+          <div className="input">
+            <span>场馆位置</span>
+            <img className="imgAddress" onClick={this.mapPh} src={require("../../assets/icon_pc_dingwei.png")} alt="地址" />
+            <InputItem
+              placeholder="点击图标选择地址"
+              value={this.props.location.query !== undefined ? this.props.location.query.title : this.state.address}
+              style={{ fontSize: '0.8rem' }}
+              className="select selectOne"
+              disabled={true}
+              onClick={this.mapPh}
+            >
+            </InputItem>
+           
+          </div>
 
           <div className="input">
-            <span>&nbsp;&nbsp;&nbsp;&nbsp;联系人</span>
+            <span>详细地址</span>
+            <InputItem
+              placeholder="请输入详细地址"
+              value={this.state.addressXian}
+              style={{ fontSize: '0.8rem' }}
+              className="select"
+              onChange={this.xaingxi}
+            >
+            </InputItem>
+          </div>
+
+
+
+          <div className="input">
+            <span>联&nbsp;&nbsp;系&nbsp;&nbsp;人</span>
             <InputItem
               placeholder="请输入场馆联系人"
               value={this.state.linkMan}
-              style={{ fontSize: '0.8rem',textAlign:'right' }}
+              style={{ fontSize: '0.8rem'}}
               className="select"
               onChange={this.linkMan}
             >
@@ -530,7 +536,7 @@ class stadiumInformationPh extends React.Component {
               type='phone'
               placeholder="请输入场馆联系人电话"
               value={this.state.telephone}
-              style={{ fontSize: '0.8rem',textAlign:'right' }}
+              style={{ fontSize: '0.8rem' }}
               className="select"
               onChange={this.telephone}
             >
@@ -539,11 +545,8 @@ class stadiumInformationPh extends React.Component {
 
 
 
-
-
-
           <div className="input">
-            <span>门脸照</span>
+            <span style={{lineHeight:'5rem'}}>门脸照</span>
             <Upload
               name="files"
               listType="picture-card"
@@ -565,7 +568,7 @@ class stadiumInformationPh extends React.Component {
               name="files"
               action="/api/UploadVenueImgs?type=Venue"
               listType="picture-card"
-              fileList={fileList}
+              fileList={fileList.slice(0,9)}
               onPreview={this.handlePreview}
               onChange={this.handleChangeT}
               accept="image/*"
@@ -580,7 +583,7 @@ class stadiumInformationPh extends React.Component {
 
           <div className="input">
             <span>运动项目</span>
-            <Checkbox.Group options={plainOptions} value={this.state.onChangeRun} onChange={this.onChangeRun} /><br /><span className="kong"></span>
+            <Checkbox.Group options={this.state.plainOptions} value={this.state.onChangeRun} onChange={this.onChangeRun} /><br /><span className="kong"></span>
           </div>
 
 

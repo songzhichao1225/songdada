@@ -4,7 +4,7 @@ import './untiePhonePh.css';
 import {Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import {Input } from 'antd';
-import Icon from '@ant-design/icons';
+import {LeftOutlined} from '@ant-design/icons';
 import { _code,VenueBindingPhone} from '../../api';
 
 
@@ -100,7 +100,7 @@ class untiePhonePh extends React.Component {
   render() {
     return (
       <div className="untiePhonePh">
-        <div className="headTitle"><Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'0',width:'48px',height:'48px',lineHeight:'48px'}}/>解除绑定手机号</div>
+        <div className="headTitle"><LeftOutlined onClick={this.reture} style={{position:'absolute',left:'0',width:'48px',height:'48px',lineHeight:'48px'}}/>解除绑定手机号</div>
          <div className="listSon">
            <Input maxLength={11} onChange={this.phone} placeholder="请输入法人手机号" />
          </div>

@@ -19,7 +19,7 @@ class information extends React.Component {
   state = {
     number: '1',
     sport: 0,
-    status: '',
+    status: 10,
     listNot: '',
     list: [],
     dianIndex: '0',
@@ -37,7 +37,7 @@ class information extends React.Component {
     textArea: '',
     publicUUID: '',
     placeholder: '其他说明（选填）',
-    page: 0,
+    page: 1,
     macNum: [],
     lookList: [],
     dateString: '',
@@ -74,14 +74,15 @@ class information extends React.Component {
     tilValue: '',
     activityNavTwo: [],
     otherType: [],
-    sportName: ''
+    sportName: '',
+    kop:0,
   }
 
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     } else if (res.data.code === 2000) {
       this.setState({ activityNav: res.data.data, liNum: res.data.data[0].id })
       this.getVenueNumberTitleList({ sportid: res.data.data[0].id })
@@ -128,26 +129,28 @@ class information extends React.Component {
       if (this.props.location.query.time === 1) {
         let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-        this.setState({ start: start, end: end })
-        this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: start, enddate: end })
+        this.setState({ start: start, end: end,kop:1 })
+        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: start, enddate: end })
 
       } else if (this.props.location.query.time === 2) {
+       
         let myDate = new Date()
         let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         this.setState({ start: start, end: end })
-        this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: start, enddate: end })
+        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: start, enddate: end })
 
       } else if (this.props.location.query.uuid) {
+        
         let myDate = new Date()
         let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         this.setState({ start: start, end: end })
-        this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: start, enddate: end })
+        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: start, enddate: end })
         this.setState({ visible: true, publicUUID: this.props.location.query.uuid })
       }
     } else {
-      this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
+      this.getReservationActivitieslist({ page: 1, sport: '', status: 10 })
     }
     
     setInterval(()=>{
@@ -157,7 +160,7 @@ class information extends React.Component {
 
   dateonChangeS = (date, dateString) => {
     this.setState({ start: dateString[0], end: dateString[1] })
-    this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: dateString[0], enddate: dateString[1] })
+    this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: dateString[0], enddate: dateString[1] })
   }
 
   current = (page, pageSize) => {
@@ -173,7 +176,7 @@ class information extends React.Component {
   handelClick = (e) => {
     this.setState({ number: e.target.dataset.num })
     if (e.target.dataset.num === '1') {
-      this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
+      this.getReservationActivitieslist({ page: 1, sport: '', status: 10 })
     }
   }
 
@@ -337,7 +340,7 @@ class information extends React.Component {
         this.VenueRemarksLabel({ uuid: e.currentTarget.dataset.uuid })
       }
     } else if (e.currentTarget.dataset.type === "3") {
-      this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: '' })
+      this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: 10 })
       this.setState({ informVisible: true })
     }
   }
@@ -505,16 +508,16 @@ class information extends React.Component {
             this.state.list.map((item, i) => (
               <Row key={i}>
                 <Popover content={(<span>{item.orderId}</span>)} title='详情' trigger="click">
-                 <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.orderId}</Col>
+                 <Col xs={{ span: 4 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.orderId}</Col>
                 </Popover>
                 <Col xs={{ span: 2 }}>{item.SportName}</Col>
-                <Col xs={{ span: 3 }}><div style={{lineHeight:'25px'}}>{item.StartTime.slice(11,16)}</div><div style={{lineHeight:'25px'}}>{item.StartTime.slice(0,10)}</div></Col>
-                <Col xs={{ span: 3 }}><div style={{lineHeight:'25px'}}>{item.FinishedTime.slice(11,16)}</div><div style={{lineHeight:'25px'}}>{item.FinishedTime.slice(0,10)}</div></Col>
+                <Col xs={{ span: 2 }}><div style={{lineHeight:'25px'}}>{item.StartTime.slice(11,16)}</div><div style={{lineHeight:'25px'}}>{item.StartTime.slice(0,10)}</div></Col>
+                <Col xs={{ span: 2 }}><div style={{lineHeight:'25px'}}>{item.FinishedTime.slice(11,16)}</div><div style={{lineHeight:'25px'}}>{item.FinishedTime.slice(0,10)}</div></Col>
                 <Col xs={{ span: 2 }}>{item.PlayTime}小时</Col>
                 <Col xs={{ span: 2 }}>{item.Shouldarrive}</Col>
                 <Col xs={{ span: 2 }}>{item.TrueTo}</Col>
                 <Col xs={{ span: 2 }} style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{item.PublicStatus}</Col>
-                <Col xs={{ span: 2 }}>{item.SiteMoney}</Col>
+                <Col xs={{ span: 2 }}>￥{item.SiteMoney}</Col>
                 <Col xs={{ span: 2 }}>{item.SiteMoneyStatus}</Col>
                 <Col xs={{ span: 2 }}>
                   <img className={item.PublicStatus === '匹配中' ? 'img' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'img' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'img' : 'circumstanceT'} data-uid={item.uuid} data-siteid={item.venueid} data-sitenum={item.venuenumber} onClick={this.sending} src={require("../../assets/icon_pc_faNews.png")} alt="发送消息" />
@@ -522,7 +525,7 @@ class information extends React.Component {
               </Row>
             ))
           }
-          <Pagination className="fenye" defaultCurrent={1} showSizeChanger={false} total={this.state.other} onChange={this.current} />
+          <Pagination className="fenye" defaultCurrent={1} current={this.state.page}  hideOnSinglePage={true} showSizeChanger={false} total={this.state.other} onChange={this.current} />
         </div>
       )
     } else {
@@ -535,7 +538,7 @@ class information extends React.Component {
       <div className="orderList">
         <div className="navTab">
           <RangePicker
-            style={{ float: 'left', marginTop: '7px', marginRight: '40px' }}
+            style={this.state.kop===1?{display:'none'}:{ float: 'left', marginTop: '7px', marginRight: '40px' }}
             onChange={this.dateonChangeS}
             locale={locale}
             placeholder={[this.state.start, this.state.end]}
@@ -549,9 +552,9 @@ class information extends React.Component {
           <div className="xiange"></div>
 
             <Row className="rowConten" style={{background:'#FCF7EE',marginTop:0}}>
-              <Col xs={{ span: 2 }}>活动编号</Col>
+              <Col xs={{ span: 4 }}>活动编号</Col>
               <Col xs={{ span: 2 }}>
-                <Select className="selectName" defaultValue="项目名称" style={{ width:'100%',padding:0 }} onChange={this.nameChang}>
+                <Select className="selectName" defaultValue="项目名称" bordered={false} style={{ width:'100%',padding:0 }} onChange={this.nameChang}>
                   <Option value="0">全部</Option>
                   <Option value="1">羽毛球</Option>
                   <Option value="2">乒乓球</Option>
@@ -562,21 +565,22 @@ class information extends React.Component {
                   <Option value="7">网球</Option>
                 </Select>
               </Col>
-              <Col xs={{ span: 3 }}>开始时间</Col>
-              <Col xs={{ span: 3 }}>结束时间</Col>
+              <Col xs={{ span: 2 }}>开始时间</Col>
+              <Col xs={{ span: 2 }}>结束时间</Col>
               <Col xs={{ span: 2 }}>时长</Col>
               <Col xs={{ span: 2 }}>应到人数</Col>
               <Col xs={{ span: 2 }}>已报名人数</Col>
               <Col xs={{ span: 2 }}>
-                <Select className="selectName" defaultValue="活动状态" style={{ width: '100%' }} onChange={this.activityChang} >
+                <Select className="selectName" defaultValue="活动状态" bordered={false} style={{ width: '100%' }} onChange={this.activityChang} >
                   <Option value="0">全部</Option>
-                  {/* <Option value="1">匹配中</Option> */}
+                  <Option value="1">匹配中</Option>
                   <Option value="2">待出发</Option>
                   <Option value="3">活动中</Option>
                   <Option value="4" title="待填写结果">待填写结果</Option>
                   <Option value="6">待评价</Option>
-                  <Option value="5">已完成</Option>
                   <Option value="7">已取消</Option>
+                  <Option value="9">投诉中</Option>
+                  <Option value="5">已完成</Option>
                 </Select>
               </Col>
               <Col xs={{ span: 2 }}>场地费用</Col>
@@ -586,7 +590,7 @@ class information extends React.Component {
             <div className={this.state.hidden === true ? '' : 'hidden'} style={{height:'90%',overflowY:'auto'}}>
               {userMessage}
             </div>
-            <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<BankOutlined style={{ color: '#F5A623' }} />} title="您还没有预约活动！" />,
+            <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<BankOutlined style={{ color: '#F5A623' }} />} title="您的场馆还没有预约活动！" />,
 
 
 
@@ -618,8 +622,8 @@ class information extends React.Component {
             </Select>
             <span style={{ paddingLeft: 20 }}>场地号</span> <InputNumber style={{ height: '30px' }} max={999} value={this.state.changNum} placeholder="场地号" onChange={this.changNum} className="changNum" />
           </div>
-          <TextArea style={{ marginTop: '20px' }} className="sending" maxLength={200} placeholder={this.state.placeholder} onChange={this.textArea} rows={4} />
-          <div style={{ clear: 'both', height: '30px', marginTop: '10px' }}><span style={{ float: 'left' }}>还可以输入{200 - this.state.textArea.length}字</span>  <span style={{ display: 'block', float: 'right', color: '#F5A623', cursor: 'pointer' }} onClick={this.History}>历史记录...</span></div>
+          <TextArea style={{ marginTop: '20px' }} className="sending" maxLength={50} placeholder={this.state.placeholder} onChange={this.textArea} rows={4} />
+          <div style={{ clear: 'both', height: '30px', marginTop: '10px' }}><span style={{ float: 'left' }}>还可以输入{50 - this.state.textArea.length}字</span>  <span style={{ display: 'block', float: 'right', color: '#F5A623', cursor: 'pointer' }} onClick={this.History}>历史记录...</span></div>
           <div className="sending">
             <div onClick={this.handleCancel}>取消</div>
             <div onClick={this.sendingMessage}>发送</div>

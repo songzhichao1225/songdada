@@ -1,8 +1,8 @@
 import React from 'react';
 import './appointmentList.css';
 import 'antd/dist/antd.css';
-import { Input, Row, Col, Select, Pagination, Spin, message, Result, DatePicker, Modal, Radio, Drawer, InputNumber,Popover } from 'antd';
-import { BankOutlined, SyncOutlined,CloseCircleOutlined } from '@ant-design/icons';
+import { Input, Row, Col, Select, Pagination, Spin, message, Result, DatePicker, Modal, Radio, Drawer, InputNumber, Popover } from 'antd';
+import { BankOutlined, SyncOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { getReservationActivitieslist, getVenueReservation, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import moment from 'moment';
@@ -38,7 +38,7 @@ class appointmentList extends React.Component {
     textArea: '',
     publicUUID: '',
     placeholder: '其他说明（选填）',
-    page: 0,
+    page: 1,
     macNum: [],
     lookList: [],
     dateString: '',
@@ -82,7 +82,7 @@ class appointmentList extends React.Component {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     } else if (res.data.code === 2000) {
       this.setState({ activityNav: res.data.data })
       this.getVenueNumberTitleList({ sportid: this.state.liNum })
@@ -235,6 +235,7 @@ class appointmentList extends React.Component {
 
   nameChang = (e) => {
     this.setState({ sport: e })
+    this.setState({ page: 1 })
     if (this.state.start === '开始日期') {
       this.getReservationActivitieslist({ page: 1, sport: e, status: this.state.status, startdate: '', enddate: '' })
     } else {
@@ -469,7 +470,7 @@ class appointmentList extends React.Component {
   }
 
 
-  
+
   noneBox = e => {
     this.setState({ value: e.currentTarget.dataset.num })
   }
@@ -512,17 +513,17 @@ class appointmentList extends React.Component {
           {
             this.state.list.map((item, i) => (
               <Row key={i}>
-                 <Popover content={(<span>{item.orderId}</span>)} title='详情' trigger="click">
-                 <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.orderId}</Col>
+                <Popover content={(<span>{item.orderId}</span>)} title='详情' trigger="click">
+                  <Col xs={{ span: 4 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.orderId}</Col>
                 </Popover>
                 <Col xs={{ span: 2 }}>{item.SportName}</Col>
-                <Col xs={{ span: 3 }}><div style={{ lineHeight: '25px' }}>{item.StartTime.slice(11, 16)}</div><div style={{ lineHeight: '25px' }}>{item.StartTime.slice(0, 10)}</div></Col>
-                <Col xs={{ span: 3 }}><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(11, 16)}</div><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(0, 10)}</div></Col>
+                <Col xs={{ span: 2 }}><div style={{ lineHeight: '25px' }}>{item.StartTime.slice(11, 16)}</div><div style={{ lineHeight: '25px' }}>{item.StartTime.slice(0, 10)}</div></Col>
+                <Col xs={{ span: 2 }}><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(11, 16)}</div><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(0, 10)}</div></Col>
                 <Col xs={{ span: 2 }}>{item.PlayTime}小时</Col>
                 <Col xs={{ span: 2 }}>{item.Shouldarrive}</Col>
                 <Col xs={{ span: 2 }}>{item.TrueTo}</Col>
                 <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.PublicStatus}</Col>
-                <Col xs={{ span: 2 }}>{item.SiteMoney}</Col>
+                <Col xs={{ span: 2 }}>￥{item.SiteMoney}</Col>
                 <Col xs={{ span: 2 }}>{item.SiteMoneyStatus}</Col>
                 <Col xs={{ span: 2 }}>
                   <img className={item.PublicStatus === '匹配中' ? 'img' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'img' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'img' : 'circumstanceT'} data-uid={item.uuid} data-siteid={item.venueid} data-sitenum={item.venuenumber} onClick={this.sending} src={require("../../assets/icon_pc_faNews.png")} alt="发送消息" />
@@ -530,7 +531,7 @@ class appointmentList extends React.Component {
               </Row>
             ))
           }
-          <Pagination className="fenye" defaultCurrent={1} showSizeChanger={false} total={this.state.other} onChange={this.current} />
+          <Pagination className="fenye" hideOnSinglePage={true} showSizeChanger={false} current={this.state.page} total={this.state.other} onChange={this.current} />
         </div>
       )
     } else {
@@ -556,10 +557,10 @@ class appointmentList extends React.Component {
 
           <div className="xiange"></div>
 
-          <Row className="rowConten" style={{ background: '#FCF7EE',marginTop:0 }}>
-            <Col xs={{ span: 2 }}>活动编号</Col>
+          <Row className="rowConten" style={{ background: '#FCF7EE', marginTop: 0 }}>
+            <Col xs={{ span: 4 }}>活动编号</Col>
             <Col xs={{ span: 2 }}>
-              <Select className="selectName" defaultValue="项目名称" style={{ width: '100%', padding: 0 }} onChange={this.nameChang}>
+              <Select className="selectName" defaultValue="项目名称" bordered={false} style={{ width: '100%', padding: 0 }} onChange={this.nameChang}>
                 <Option value="0">全部</Option>
                 <Option value="1">羽毛球</Option>
                 <Option value="2">兵乓球</Option>
@@ -570,21 +571,22 @@ class appointmentList extends React.Component {
                 <Option value="7">网球</Option>
               </Select>
             </Col>
-            <Col xs={{ span: 3 }}>开始时间</Col>
-            <Col xs={{ span: 3 }}>结束时间</Col>
+            <Col xs={{ span: 2 }}>开始时间</Col>
+            <Col xs={{ span: 2 }}>结束时间</Col>
             <Col xs={{ span: 2 }}>时长</Col>
             <Col xs={{ span: 2 }}>应到人数</Col>
             <Col xs={{ span: 2 }}>已报名人数</Col>
             <Col xs={{ span: 2 }}>
-              <Select className="selectName" defaultValue="活动状态" style={{ width: '100%' }} onChange={this.activityChang} >
+              <Select className="selectName" defaultValue="活动状态" bordered={false} style={{ width: '100%' }} onChange={this.activityChang} >
                 <Option value="0">全部</Option>
-                {/* <Option value="1">匹配中</Option> */}
+                <Option value="1">匹配中</Option>
                 <Option value="2">待出发</Option>
                 <Option value="3">活动中</Option>
                 <Option value="4" title="待填写结果">待填写结果</Option>
                 <Option value="6">待评价</Option>
-                <Option value="5">已完成</Option>
                 <Option value="7">已取消</Option>
+                <Option value="9">投诉中</Option>
+                <Option value="5">已完成</Option>
               </Select>
             </Col>
             <Col xs={{ span: 2 }}>场地费用</Col>
@@ -594,7 +596,7 @@ class appointmentList extends React.Component {
           <div className={this.state.hidden === true ? '' : 'hidden'} style={{ height: '90%', overflowY: 'auto' }}>
             {userMessage}
           </div>
-          <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<BankOutlined style={{ color: '#F5A623' }} />} title="您还没有预约活动！" />,
+          <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<BankOutlined style={{ color: '#F5A623' }} />} title="您的场馆还没有预约活动！" />,
 
 
 
@@ -604,14 +606,14 @@ class appointmentList extends React.Component {
           title="给参与人员发送消息"
           visible={this.state.visible}
           onCancel={this.handleCancel}
-          closeIcon={<CloseCircleOutlined style={{color:'#fff',fontSize:'20px'}} />}
+          closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
         >
           <Radio.Group onChange={this.sendCheck} value={this.state.sendCheck}>
             <Radio value={2}>未预留场地</Radio>
           </Radio.Group>
           <div style={this.state.sendCheck === 1 ? {} : { display: 'none' }}>
             <span>场馆号</span>
-            <Select className='changName' value={this.state.changName} onChange={this.changName} style={{ width: 100, height: 30 }}>
+            <Select className='changName' value={this.state.changName} onChange={this.changName}  style={{ width: 100, height: 30 }}>
               <Option value="0">0</Option>
               <Option value="1">1</Option>
               <Option value="2">2</Option>
@@ -712,7 +714,7 @@ class appointmentList extends React.Component {
           visible={this.state.info}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
-          closeIcon={<CloseCircleOutlined style={{color:'#fff',fontSize:'20px'}} />}
+          closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
         >
           <div style={{ overflow: 'hidden' }}>
             <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>姓名：  </span>

@@ -35,15 +35,18 @@ class myWallet extends React.Component {
     page: 1,
     recordListOther: '',
     pageOne:1,
+    kod:0,
   }
 
   dateChange = (data, dateString) => {
-    this.setState({ dateString: dateString, start: dateString[0], end: dateString[1] })
+    
+    this.setState({ dateString: dateString, start: dateString[0], end: dateString[1],kod:1 })
   }
   search = () => {
+    this.setState({kod:0})
     this.getVenueMoneyList({ start: this.state.dateString[0], end: this.state.dateString[1], page: this.state.page })
   }
-
+ 
   async getVenueMoneyList(data) {
     const res = await getVenueMoneyList(data, sessionStorage.getItem('venue_token'))
 
@@ -51,7 +54,7 @@ class myWallet extends React.Component {
       this.setState({ loading: false, hidden: false })
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     } else {
       this.setState({ moneyList: res.data.data.data, sumMoney: res.data.data.sumMoney, whereMoney: res.data.data.whereMoney, other: parseInt(res.data.data.count), loading: false, hidden: true })
     }
@@ -61,7 +64,7 @@ class myWallet extends React.Component {
     const res = await getVenueWithdrawalList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     } else if (res.data.data.length < 1) {
       this.setState({ hiddenTwo: false })
     } else {
@@ -115,7 +118,7 @@ class myWallet extends React.Component {
     const res = await getVenueWithdrawalOneList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     } else {
       this.setState({ walletList: res.data.data })
     }
@@ -124,7 +127,7 @@ class myWallet extends React.Component {
     const res = await VenueWithdrawal(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     } else if (res.data.code === 2000) {
       this.setState({ flag: 1 })
       message.info('提现申请成功')
@@ -157,7 +160,7 @@ class myWallet extends React.Component {
               locale={locale}
               onChange={this.dateChange}
             />
-            <span className="query" onClick={this.search}>查询</span>
+            <span className="query" style={this.state.kod===1?{display:'block'}:{display:'none'}} onClick={this.search}>查询</span>
             <div className="rightMoney">
               <span className="sum">钱包余额(元): ￥{this.state.sumMoney} </span>
               <span className="withdrawal" onClick={this.withdrawal}>申请提现</span>
@@ -173,7 +176,7 @@ class myWallet extends React.Component {
               </Row>
               <div style={{position:'relative'}}>
               {
-                this.state.moneyList.map((item, i) => (
+                this.state.moneyList.map((item, i) => (  
                   <Row key={i} >
                     <Col className="oneText" xs={{ span: 4 }}>{item.time}</Col>
                     <Col xs={{ span: 16 }}>{item.public}</Col>
@@ -183,7 +186,7 @@ class myWallet extends React.Component {
               }
               <div className="moneyFoucs">查询期间收入(元)：￥{this.state.whereMoney}</div>
               </div>
-              <Pagination current={this.state.page} className={this.state.moneyList.length===0 ? 'myWalletNone' : 'fenye'} showSizeChanger={false} onChange={this.moneyFen} total={this.state.other} />
+              <Pagination current={this.state.page} className={this.state.moneyList.length===0 ? 'myWalletNone' : 'fenye'}  hideOnSinglePage={true} showSizeChanger={false} onChange={this.moneyFen} total={this.state.other} />
             </div>
             <Result className={this.state.moneyList.length !== 0 ? 'hidden' : ''} icon={<MoneyCollectOutlined style={{color:'#F5A623'}}/>} title="还没有人预约您的场馆！" />
         </div>

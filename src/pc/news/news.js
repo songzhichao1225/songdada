@@ -1,7 +1,7 @@
 import React from 'react';
 import './news.css';
 import 'antd/dist/antd.css';
-import { getVenueNewsList, getVenueNewsFirst, VenueNewsSaveIsRead, delVenueNews, VenueNewsSendMessage, gerVenueName,VenueNewsOneKeyRead } from '../../api';
+import { getVenueNewsList, getVenueNewsFirst, VenueNewsSaveIsRead, delVenueNews, VenueNewsSendMessage, gerVenueName,VenueNewsOneKeyRead,getVenueIndex } from '../../api';
 import { Checkbox, Pagination, Drawer, message, Popconfirm, Modal, Input } from 'antd';
 import {CloseCircleOutlined} from '@ant-design/icons';
 const { TextArea } = Input
@@ -10,8 +10,8 @@ class news extends React.Component {
 
   state = {
     newsList: [],
-    isredcount: '0',
-    sum: '0',
+    isredcount:0,
+    sum: 0,
     flag: false,
     oneChecked: null,
     visible: false,
@@ -21,14 +21,13 @@ class news extends React.Component {
     delet: [],
     visibleTwo: false,
     textArea: '',
+    kod:0,
   };
 
 
   componentDidMount() {
     this.getVenueNewsList({ page: 1 })
-    setInterval(()=>{
-      window.addEventListener('storage',sessionStorage.getItem('kood')==='2'? this.getVenueNewsList({ page: 1 }):this);
-    },2000)
+   
   }
 
 
@@ -41,12 +40,13 @@ class news extends React.Component {
         res.data.data[i].cheched = false
       }
       this.setState({ newsList: res.data.data, sum: res.data.other.sum, isredcount: res.data.other.isredcount })
+    }else{
+      this.setState({ newsList: res.data.data,sum:0, isredcount: 0})
     }
   }
   allOnChange = (e) => {
     let { newsList } = this.state
     if (e.target.checked === true) {
-
       for (let i in newsList) {
         newsList[i].cheched = true
       }
@@ -78,7 +78,13 @@ class news extends React.Component {
     if (res.data.code === 2000) {
       message.info(res.data.msg)
       this.setState({ oneChecked: false })
-      this.getVenueNewsList({ page: this.state.current })
+      if(this.state.kod===1){
+        this.getVenueNewsList({ page: 1 })
+        this.getVenueIndex()
+      }else{
+        this.getVenueIndex()
+        this.getVenueNewsList({ page: this.state.current })
+      }
     }
   }
 
@@ -99,9 +105,16 @@ class news extends React.Component {
      message.error('请选择要删除的消息')
     }else{
       this.delVenueNews({ uuid: koArr.join(',') })
-      this.setState({ oneChecked: !this.state.oneChecked })
+      this.setState({ oneChecked: !this.state.oneChecked,kod:1 })
     }
 
+  }
+
+  async getVenueIndex(data) {
+    const res = await getVenueIndex(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      sessionStorage.setItem('score', res.data.data.score)
+    }
   }
 
   // bossDelet = () => {
@@ -135,7 +148,7 @@ class news extends React.Component {
     const res = await gerVenueName(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     } else {
       this.setState({ gerVenueName: res.data.data })
       sessionStorage.setItem('siteuid', res.data.data.siteuid)
@@ -201,7 +214,7 @@ class news extends React.Component {
       this.gerVenueName()
       this.getVenueNewsList({ page: this.state.current })
     }else{
-      message.error(res.data.msg)
+      message.warning(res.data.msg)
     }
   }
 
@@ -210,6 +223,10 @@ class news extends React.Component {
 
   Read=()=>{
     this.VenueNewsOneKeyRead()
+  }
+
+  locad=()=>{
+    this.props.history.push('/home/appointmentList')
   }
 
 
@@ -231,6 +248,8 @@ class news extends React.Component {
             </Popconfirm>
              <span className="btn" style={{marginLeft:'10px'}} onClick={this.Read}>一键已读</span>
           </div>
+          <div style={this.state.newsList.length===0?{display:'none'}:{}}>
+            
           {
             this.state.newsList.map((item, i) => (
               <div key={i} className="newsList">
@@ -249,7 +268,8 @@ class news extends React.Component {
               </div>
             ))
           }
-          <Pagination hideOnSinglePage={true} showSizeChanger={false} className="fenye" current={this.state.current} onChange={this.current}  total={this.state.sum}  />
+          </div>
+          <Pagination hideOnSinglePage={true} showSizeChanger={false} style={this.state.newsList.length===0?{display:'none'}:{}} className="fenye" current={this.state.current} onChange={this.current}  total={this.state.sum}  />
           <Drawer
             title="消息详情"
             placement="top"
@@ -261,6 +281,7 @@ class news extends React.Component {
             <div>{this.state.newsDetail.intime_chk}</div>
             <div>{this.state.newsDetail.comment}</div>
             <div>{this.state.newsDetail.intime}</div>
+            <div onClick={this.locad} style={{color:'#F5A623',cursor:'pointer'}}>前往活动列表</div>
           </Drawer>
         </div> 
         <Modal

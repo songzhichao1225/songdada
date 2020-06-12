@@ -1,269 +1,176 @@
 .sitePh{
-    font-size: 0.75rem;
     height: 100%;
-    overflow: hidden;
-    background: #F5F5F5;
 }
-.sitePh .siteheaderTitle{
-    overflow: hidden;
-    border-bottom: 0.06rem solid #f5f5f5;
-    background-color: #fff;
+.sitePh .header{
+    height: 2.81rem;
+    border-bottom: 1px solid #E9E9E9;
 }
-.sitePh .siteheaderTitle>div{
+.sitePh .header>div{
+    width: 50%;
     float: left;
-    padding: 0.7rem 0.8rem;
-}
-
-.sitePh .selectBottom{
-    position: relative;
-    background: #f3f3f3;
-}
-.sitePh .selectBottom .top{
-  overflow: hidden;
-  margin-left: 0.5rem;
-  font-size: 0.75rem;
-  position: relative;
-  height: 2rem;
-  line-height: 2rem;
-}
-.sitePh .selectBottom .top>div{
-     float: left;
-     padding-left: 1rem;
-  }
-  .sitePh .selectBottom .top>div>span{
-      padding-right: 0.5rem;
-      color:#9B9B9B; 
-  }
-  .sitePh .selectBottom .top>div:nth-child(2){
-    margin-left: 4rem;
- }
-
- .sitePh .addList{
-     position: fixed;
-     right: 1rem;
-     bottom: 6rem;
-     display: block;
-     width: 3rem;
-     height: 3rem;
- }
- .site{
-     height: 100%;
-     overflow: hidden;
-    padding-bottom: 10rem;
- }
-
- .sitePh .contentScorll{
-    height: 100%;
-    padding-bottom: 3rem;
-    overflow: scroll;
- }
-
- .sitePh .contentScorll .detail>.ant-col{
-     height: 2rem;
-     line-height: 2rem;
- }
- 
-
-.sitePh .ant-select-selection{
-    border:none;
-    height: 100%;
-    background: transparent;
-}
-.sitePh .ant-select-selection-selected-value{
-    max-width: 120%;
-    min-width: 120%;
-    text-align: left;
-    font-size: 0.75rem;
-    background: transparent;
-}
-
-.nono{
-    display: none;
-}
-
-
- .picker-list .am-list-item .am-list-line .am-list-extra {
-    flex-basis: initial;
-  }
-  
- .test {
-    position: relative;
-    border-bottom: 0;
-  }
-  
-  .test:after {
-    content: '';
-    position: absolute;
-    background-color: #ddd;
-    display: block;
-    z-index: 1;
-    top: auto;
-    right: auto;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 1PX;
-    -webkit-transform-origin: 50% 100%;
-    -ms-transform-origin: 50% 100%;
-    transform-origin: 50% 100%;
-    -webkit-transform: scaleY(0.5);
-    -ms-transform: scaleY(0.5);
-    transform: scaleY(0.5);
-  }
-
-  .sitePhlistSon{
-      width: 95%;
-      min-height: 2.1rem;
-      margin: 1rem auto 0;
-      overflow:hidden;
-      border-bottom: 0.06rem solid #f5f5f5;
-  }
-  .sitePhlistSon  .ant-select-selection{
-    border: none;
-    box-shadow: none;
-}
-  .sitePhlistSon .ant-select-open .ant-select-selection{
-      border: none;
-      box-shadow: none;
-      margin-top: -0.1rem;
-  }
-  .sitePhlistSon .ant-select-focused .ant-select-selection , .ant-select-selection:focus{
-      box-shadow: none;
-  }
- .sitePhlistSon  .ant-time-picker-input{
-      border:none;
-      box-shadow: none;
-  }
-.sitePhsubmit{
-    width: 95%;
-    height: 3rem;
-    background:rgba(216,93,39,1);
-    border-radius:1.34rem;
     text-align: center;
-    line-height: 3rem;
-    color: #fff;
     font-size: 1rem;
-    margin:1rem auto 0;
+    line-height: 2.81rem;
 }
-  .sitePhclose{
-    width: 95%;
-    height: 3rem;
-    background:#ccc;
-    border-radius:1.34rem;
-    text-align: center;
-    line-height: 3rem;
+.sitePh .wsMa4{
+    height: 90%;
+    background-color: #F5F5F5;
+}
+.sitePh .wsMa4 .Subdivide{
+    overflow-y: auto;
+    height: 82%;
+}
+.sitePh .wsMa4 .Subdivide .card{
+  width: 95%;
+  margin: 0.75rem auto 0; 
+}
+.sitePh .wsMa4 .Subdivide .card .titleLeft{
+    color: #D85D27;
+    font-size: 0.88rem;
+}
+.sitePh .wsMa4 .Subdivide .card .titleRight{
     color: #000;
-    font-size: 1rem;
-    margin:1rem auto 0;
-  }
-  .SzSon{
-      width: 100%;
-      min-height: 2rem;
-      margin: 1rem auto 0;
-      border-bottom: 0.06rem solid #f5f5f5;
-      overflow: hidden;
-  }
-  .SzSon .ant-input{
-      height: 1.9rem;
-      margin-top: -0.1rem;
-      border: none;
-      box-shadow: none;
-  }
-  .SzSon  .ant-time-picker-input{
-    border:none;
-    box-shadow: none;
+    font-size:0.75rem ;
 }
-
-.SzSon  .ant-select-selection{
-    border: none;
-    box-shadow: none;
-    margin-top: -0.1rem;
+.sitePh .wsMa4 .Subdivide .card .idxNum{
+    width: 100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size: 0.88rem;
+    color: #000;
+    
 }
-.ant-input-number-input{
-    padding-left: 0;
-}
-.sitePh .oneCol{
-    text-align: left;
-    padding-left: 1.5rem;
-}
-.drawSite{
-    font-size: 0.75rem;
-}
-
-.sitePh .ant-result-icon{
-    margin-bottom: 0;
-}
-.sitePh .ant-result-title{
-    font-size: 0.75rem;
-}
-.site .ant-select-selection__rendered{
-    margin-left:0 ;
-}
-
-
-.preferential .ant-select-selection__rendered{
-    margin-left:0 ;
-}
-
-
-.preferential  .detail>.ant-col{
-    height: 2rem;
-    line-height: 2rem;
-}
-.preferential{
-    height: 80%;
-   overflow: scroll;
-    padding-bottom: 3rem;
-}
-
-
-
-.SzSon .ant-select-selection--multiple .ant-select-selection__rendered{
-    margin-left: 0;
-}
-.SzSon .ant-select-selection--multiple .ant-select-selection__placeholder{
-    margin-left: 0;
-}
-.SzSon .ant-select-selection__rendered{
-    margin-left: 0;
-}
-
-.sitePh .am-card{
-    width: 96%;
+.sitePh .wsMa4 .Subdivide .card .number{
+    color: #000;
+    font-size: 0.88rem;
+} 
+.sitePh .wsMa4 .footerSite{
+    width: 95%;
+    height: 2.5rem;
     margin: 0.5rem auto 0;
-    border-top: 1px solid #f5f5f5;
 }
-.sitePh .am-card-header{
-    padding: 3px  3px 0 6px;
-    font-size: 14px;
+.sitePh .wsMa4 .footerSite>div{
+    width: 48%;
+    float: left;
+    background: #fff;
+    line-height: 2.5rem;
+    border-radius: 0.19rem;
+    text-align: center;
+    color: #D85D27;
 }
-html:not([data-scale]) .am-card-body::before{
-    height: 0;
+.sitePh .wsMa4 .footerSite>div img{
+    width: 0.81rem;
+    height: 0.81rem;
 }
-.sitePh  .am-card-body{
-    padding: 15px 5px 6px;
+ .am-list-item .am-list-line .am-list-content{
+    font-size: 0.88rem;
 }
-.sitePh .am-card-header-content{
-    flex: 5 3;
+.am-list-item .am-list-line .am-list-extra{
+    font-size: 0.88rem;
 }
-
-.am-picker-popup-item{
-    font-size: 14px;
+.btnSub{
+    width: 100%;
+    height:2.69rem;
+    background-color: #D85D27;
+    color: #fff;
+    text-align: center;
+    font-size: 1.06rem;
+    line-height: 2.69rem;
+    border-radius: 2.69rem;
+    margin-top: 1.5rem;
 }
-
-.SzSon .am-list-item .am-list-line .am-list-content{
-    font-size: 14px;
-    color:rgba(0, 0, 0, 0.65);
+.sitePhtitle .titleHead{
+    border-bottom: 1px solid #e9e9e9;
+    overflow: hidden;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
-.SzSon .am-list-item{
-    padding-left: 0;
-    border-bottom: 0.06rem solid #f5f5f5;
+.sitePhtitle .titleHead .son{
+    width: 5rem;
+    height: 1.75rem;
+    line-height: 1.75rem;
+    text-align: center;
+    border-radius: 1.75rem;
+    background: #E9E9E9;
+    float: left;
+    margin-left: 0.75rem;
+    margin-top: 0.3rem;
+    font-size: 0.75rem;
+    position: relative;
 }
-.SzSon  .am-list-item .am-list-line .am-list-extra{
-    font-size: 14px;
-    text-align: left;
-    flex-basis:50%
+.sitePhtitle .titleHead .son:first-child{
+    margin-left: 0;
 }
-.SzSon .am-list-item .am-list-line .am-list-arrow{
-    display: none;
+.sitePhtitle .titleHead .son>div{
+    position: absolute;
+    width: 1rem;
+    height:1rem;
+    border-radius: 50%;
+    background: #D85D27;
+    color: #fff;
+    right: -0.3rem;
+    top:-0.3rem;
+    line-height: 0.8rem;
+}
+.sitePhtitle .titleHead .InputItem{
+    width: 40%;
+    font-size: 0.75rem;
+}
+.sitePhtitle .titleHead span{
+    color: #D85D27;
+    font-size: 0.75rem;
+}
+.sitePhtitle .btnDetle{
+    width: 5rem;
+    height: 1.75rem;
+    border-radius: 1.75rem;
+    color: #fff;
+    text-align: center;
+    line-height: 1.75rem;
+    margin-top: 0.5rem;
+    float: left;
+}
+.sitePhtitle .btnComfir{
+    height: 2.69rem;
+    border-radius: 2.69rem;
+    background: #D85D27;
+    color: #fff;
+    font-size: 1.06rem;
+    text-align: center;
+    line-height: 2.69rem;
+    clear: both;
+    margin-top: 6rem;
+}
+.sitePhSerial{
+    clear: both;
+}
+.sitePhSerial div{
+    width:1.5rem;
+    height:1.5rem;
+    text-align: center;
+    line-height: 1.5rem;
+    float: left;
+    background:#F3F3F3;
+    color:#000;
+    margin-left: 0.5rem;
+    margin-top: 0.6rem;
+}
+.sitePhSerialHeader{
+    float: right;
+}
+.sitePhSerialHeader>span{
+   padding: 0 0.5rem;
+}
+.sitePhFooter{
+    width: 90%;
+    height: 2.5rem;
+    margin: 22rem auto 0;
+    background: #D85D27;
+    border-radius: 2.5rem;
+    font-size: 1rem;
+    text-align: center;
+    line-height: 2.5rem;
+    color: #fff;
+    clear: both;
 }

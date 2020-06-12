@@ -94,17 +94,19 @@ background: #fff;
 }
 .commentPh .commentList .Son .commentImg{
 	display: flex;
+	margin-top: 0.75rem;
 }
 .commentPh .commentList .Son .commentImg>img{
 	flex: 1;
-	width: 30%;
-	height: 30%;
-    margin-left: 5%;
+	width: 6rem;
+	height: 6.63rem;
+	margin-left: 0.5rem;
+    
 }
 .commentPh .Stadium{
 	clear: both;
 	height: 2rem;
-	margin-top: 1rem;
+	margin-top: 3rem;
 	
 }
 .commentPh .Stadium .logoImg{
@@ -117,9 +119,12 @@ background: #fff;
 .commentPh .Stadium .stadiumText{
 	display: block;
 	float: left;
-	line-height: 2rem;
+	min-height: 2rem;
+	background-color:#F3F3F3 ;
 	width: 70%;
 	line-height: 1rem;
+	border-radius: 0.19rem;
+	padding: 0.5rem 0 0 0.5rem;
 
 }
 .commentPh .StaiumDate{
@@ -137,9 +142,9 @@ background: #fff;
 .commentPh .commentList .Son .reply{
   width: 1rem;
   height: 1rem;
-  position: absolute;
-  bottom: 1rem;
-  right: 1rem;
+  float:right;
+  margin-top: 0.75rem;
+  margin-right: 1rem;
 }
 .commentPh .commentList .Son .reply>img{
 	width: 100%;

@@ -83,7 +83,7 @@ class qualification extends React.Component {
     const res = await getIsStatus(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     }
     this.setState({ siteUUID: res.data.data.siteUid })
   }
@@ -129,7 +129,7 @@ class qualification extends React.Component {
     const res = await getVenueQualificationInformation(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     } else if (res.data.code === 2000) {
       if (res.data.data.legalFilesURL !== '') {
         this.setState({

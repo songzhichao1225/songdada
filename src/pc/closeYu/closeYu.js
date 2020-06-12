@@ -1,9 +1,9 @@
 import React from 'react';
 import './closeYu.css';
 import 'antd/dist/antd.css';
-import { VenueTemporarilyClosedList, VenueTemporarilyClosed, VenueTemporarilyClosedDel, VenueTemporarilyClosedSave,getSetPriceVenueSport } from '../../api';
+import { VenueTemporarilyClosedList, VenueTemporarilyClosed, VenueTemporarilyClosedDel, VenueTemporarilyClosedSave, getSetPriceVenueSport, getIsClosedPublic } from '../../api';
 import { message, Modal, Select, DatePicker, Input, Row, Col, Popconfirm, Result, Pagination } from 'antd';
-import { BankOutlined,CloseCircleOutlined } from '@ant-design/icons';
+import { BankOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import 'moment/locale/zh-cn';
@@ -39,6 +39,7 @@ class closeYu extends React.Component {
     page: 0,
     update: 0,
     colseuuid: '',
+    textNum:'',
   };
 
 
@@ -50,7 +51,7 @@ class closeYu extends React.Component {
     const res = await VenueTemporarilyClosedList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     } else if (res.data.code !== 2000 && res.data.code !== 4001) {
       this.setState({ closeList: res.data.data, other: res.data.other })
     } else {
@@ -166,9 +167,9 @@ class closeYu extends React.Component {
     const res = await VenueTemporarilyClosed(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     } else if (res.data.code === 2000) {
-      this.setState({ visible: false,update: 0 })
+      this.setState({ visible: false, update: 0 })
       message.info(res.data.msg)
       this.VenueTemporarilyClosedList({ page: this.state.page })
     } else {
@@ -182,7 +183,7 @@ class closeYu extends React.Component {
     const res = await VenueTemporarilyClosedSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     } else {
       this.setState({ visible: false, update: 0 })
       message.info(res.data.msg)
@@ -190,15 +191,31 @@ class closeYu extends React.Component {
     }
   }
 
+  async getIsClosedPublic(data) {
+    const res = await getIsClosedPublic(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 4001) {
+      this.props.history.push('/')
+      message.error('登陆超时请重新登陆!')
+    } else if(res.data.code===2001) {
+      this.setState({textNum:'您确定关闭临时预约吗'})
+    }else{
+      this.setState({textNum:res.data.msg})
+    }
+  }
+
   modelSubmit = () => {
+    let { runId, start, end } = this.state
+    this.getIsClosedPublic({sportid:runId,starttime:start,endtime:end})
+
+  }
+
+  confirmHood=()=>{
     let { runName, runId, start, end, textArea, colseuuid } = this.state
     if (this.state.update === 0) {
       this.VenueTemporarilyClosed({ sportid: runId, sportname: runName, starttime: start, endtime: end, comment: textArea })
     } else if (this.state.update === 1) {
       this.VenueTemporarilyClosedSave({ colseuuid: colseuuid, sportid: runId, sportname: runName, starttime: start, endtime: end, comment: textArea })
     }
-
-
   }
 
   delet = e => {
@@ -210,7 +227,7 @@ class closeYu extends React.Component {
     const res = await VenueTemporarilyClosedDel(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     } else {
       this.setState({ visible: false, update: 0 })
       message.info(res.data.msg)
@@ -252,17 +269,17 @@ class closeYu extends React.Component {
         <div style={this.state.closeList.length < 1 ? { display: 'none' } : { display: 'block' }}>
           <Row style={{ borderBottom: '1px solid #E1E0E1' }}>
             <Col xs={{ span: 5 }}>运动名称</Col>
-            <Col xs={{ span: 7}}>开始时间</Col>
-            <Col xs={{ span: 7}}>结束时间</Col>
+            <Col xs={{ span: 7 }}>开始时间</Col>
+            <Col xs={{ span: 7 }}>结束时间</Col>
             <Col xs={{ span: 5 }}>操作</Col>
           </Row>
           {
             this.state.closeList.map((item, i) => (
               <Row key={i} style={{ borderBottom: '1px solid #E1E0E1' }}>
                 <Col xs={{ span: 5 }}>{item.sportname}</Col>
-                <Col xs={{ span: 7}}>{item.starttime}</Col>
-                <Col xs={{ span: 7}}>{item.endtime}</Col>
-                <Col xs={{ span: 5}}>
+                <Col xs={{ span: 7 }}>{item.starttime}</Col>
+                <Col xs={{ span: 7 }}>{item.endtime}</Col>
+                <Col xs={{ span: 5 }}>
                   {/* <img onClick={this.update} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp; */}
                   <Popconfirm
                     title="你确定要删除本条信息吗?"
@@ -280,7 +297,7 @@ class closeYu extends React.Component {
           }
         </div>
 
-        <Pagination className={this.state.closeList.length > 1 ? 'fenye' : 'hidden'} defaultCurrent={1} total={parseInt(this.state.other)} onChange={this.current} />
+        <Pagination className={this.state.closeList.length > 1 ? 'fenye' : 'hidden'} defaultCurrent={1} hideOnSinglePage={true}   showSizeChanger={false}  total={parseInt(this.state.other)} onChange={this.current} />
         <Result style={this.state.closeList.length < 1 ? { display: 'block' } : { display: 'none' }} icon={<BankOutlined style={{ color: '#F5A623' }} />} title="您还没有关闭预约" />,
 
 
@@ -290,7 +307,7 @@ class closeYu extends React.Component {
           visible={this.state.visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
-          closeIcon={<CloseCircleOutlined style={{color:'#fff',fontSize:'20px'}} />}
+          closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
         >
           <div className="one">
             <span>运动项目</span>
@@ -311,7 +328,7 @@ class closeYu extends React.Component {
               onOk={this.dateSelect}
               locale={locale}
               allowClear={false}
-              value={[moment(this.state.start,'YYYY-MM-DD HH:mm'),moment(this.state.end,'YYYY-MM-DD HH:mm')]}
+              value={[moment(this.state.start, 'YYYY-MM-DD HH:mm'), moment(this.state.end, 'YYYY-MM-DD HH:mm')]}
               showTime={{
                 hideDisabledOptions: true,
                 defaultValue: [moment('00:00', 'HH:mm'), moment('00:00', 'HH:mm')],
@@ -324,7 +341,16 @@ class closeYu extends React.Component {
             <span style={{ display: 'block', float: 'left' }}>备注</span>
             <TextArea style={{ width: 350, marginLeft: 43 }} onChange={this.textArea} value={this.state.textArea} rows={3} />
           </div>
-          <div className="submit" onClick={this.modelSubmit}>确认</div>
+
+          <Popconfirm
+            title={this.state.textNum}
+            onConfirm={this.confirmHood}
+            onCancel={this.cancel}
+            okText="确定"
+            cancelText="取消"
+          >
+            <div className="submit" onClick={this.modelSubmit}>确认</div>
+          </Popconfirm>
         </Modal>
       </div>
 

@@ -25,7 +25,7 @@ class register extends React.Component {
     code: '',//验证码
     password: '',//密码
     passwordT: '',//确认密码
-    changeRadio: 'false',//是否选中协议
+    changeRadio: false,//是否选中协议
     visible: false,
     textT: '获取验证码',
     visibleName: false,
@@ -87,7 +87,7 @@ class register extends React.Component {
     this.setState({ passwordT: e.target.value })
   }
   changeRadio = e => {
-    this.setState({ changeRadio: e.target.checked })
+    this.setState({ changeRadio: !this.state.changeRadio })
   }
 
   async Ko(data) {
@@ -213,13 +213,13 @@ class register extends React.Component {
               <span className="title">用户注册</span>
               <div className="son">
                 <span>推广员ID:</span>
-                <Input maxLength={6} onChange={this.changID} value={this.state.Id} onBlur={this.blurId} className="phone" />
+                <Input maxLength={6} onChange={this.changID} value={this.state.Id} placeholder="选填" onBlur={this.blurId} className="phone" />
                 <span className="rightWaning" style={this.state.kod !== '' ? {} : { display: 'none' }}><CloseCircleOutlined />{this.state.kod}，没有可不填</span>
               </div>
 
               <div className="son">
                 <span className="xing">*</span> <span>用户名:</span>
-                <Input type="text" onBlur={this.changeName} onChange={this.cahngkoopd} className="phone" />
+                <Input type="text" onBlur={this.changeName} onChange={this.cahngkoopd} placeholder="用户名只能包含数字、字母、数字+字母" className="phone" />
                 <span className="rightWaning" style={this.state.kodTwo !== '' ? {} : { display: 'none' }}><CloseCircleOutlined />{this.state.kodTwo}</span>
               </div>
 
@@ -245,7 +245,7 @@ class register extends React.Component {
                 <Input maxLength={8} onChange={this.changePasswordT} className="phone" />
               </div>
 
-              <div className="agreement"><Radio onChange={this.changeRadio}><span>我已阅读并同意</span><span className="color">《用户协议》</span></Radio></div>
+              <div className="agreement"><Radio onChange={this.changeRadio} checked={this.state.changeRadio}><span>我已阅读并同意</span><span className="color">《用户协议》</span></Radio></div>
 
               <Popconfirm
                 title={this.state.idName === "" ? '没有推广员？' : "推广员姓名：" + this.state.idName && this.state.idName === '推广员不存在' ? '推广员不存在' : "推广员姓名：" + this.state.idName}

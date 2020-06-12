@@ -376,6 +376,15 @@ export function getAPPVenueSelectSite(data,headers){    //选择场地时判断�
     return axios.post('/api/getAPPVenueSelectSite',data,{headers: {'token': headers}})
 }
 
+export function getIsClosedPublic(data,headers){    //查询临时关闭预约时所选择的时间段中是否有活动
+    return axios.post('/api/getIsClosedPublic',data,{headers: {'token': headers}})
+}
+
+export function VenueFeedback(data,headers){    //意见反馈 
+    return axios.post('/api/VenueFeedback',data,{headers: {'token': headers}})
+}
+
+
 
 
 

@@ -6,7 +6,7 @@ import { getVenueMoneyList } from '../../api';
 import { Toast, DatePicker,List,PullToRefresh } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Pagination, Result, Spin } from 'antd';
-import {MoneyCollectOutlined,ArrowLeftOutlined} from '@ant-design/icons';
+import {MoneyCollectOutlined,LeftOutlined} from '@ant-design/icons';
 import moment from 'moment';
 class monthlyIncomePh extends React.Component {
 
@@ -15,8 +15,8 @@ class monthlyIncomePh extends React.Component {
     moneyList: [],
     start: '',
     end: '',
-    current: '1',
-    flag: '',
+    current: 1,
+    flag: false,
     spin: true,
   };
   async getVenueMoneyList(data) {
@@ -98,7 +98,7 @@ class monthlyIncomePh extends React.Component {
     return (
       <div className="monthlyIncomePh">
         <div className="headerTitle">
-          <ArrowLeftOutlined onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }}/>
+          <LeftOutlined  onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }}/>
           {this.props.location.query !== undefined && this.props.location.query.income === 'month' ? '钱包明细' : '钱包明细'}
         </div>
         <div className="timer">
@@ -147,7 +147,7 @@ class monthlyIncomePh extends React.Component {
           <span className="text">收入￥{this.state.getVenueMoneyList.whereMoney === undefined ? '0.00' : this.state.getVenueMoneyList.whereMoney}</span>
         </div>
 
-        <div className={this.state.flag === false ? 'content' : 'contentNone'}>
+        <div className={this.state.moneyList.length!==0 ? 'content' : 'contentNone'}>
 
  
         <PullToRefresh
@@ -179,7 +179,7 @@ class monthlyIncomePh extends React.Component {
       </PullToRefresh>
 
         </div>
-        <Result className={this.state.spin === false && this.state.flag === true ? '' : 'contentNone'} icon={ <MoneyCollectOutlined style={{ fontSize: '2rem',color:'#F5A623' }}/>} title="您还没有收入" />
+        <Result className={ this.state.moneyList.length===0 ? '' : 'contentNone'} icon={ <MoneyCollectOutlined style={{ fontSize: '2rem',color:'#F5A623' }}/>} title="您还没有收入" />
         <Spin spinning={this.state.spin} style={{ width: '100%', marginTop: '45%' }} />
 
       </div>

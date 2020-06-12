@@ -1,10 +1,10 @@
 import React from 'react';
 import './registerPh.css';
 
-import { Toast, InputItem, Modal, Button, NavBar, Popover } from 'antd-mobile';
+import { Toast, InputItem, Modal, Button, NavBar, Popover,Checkbox } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Checkbox } from 'antd';
-import Icon from '@ant-design/icons';
+import {  } from 'antd';
+import {EllipsisOutlined,LeftOutlined} from '@ant-design/icons';
 import { _register, _code, getPromoteName, getIsUserName } from '../../api';
 const Item = Popover.Item;
 const alert = Modal.alert;
@@ -21,7 +21,7 @@ class registerPh extends React.Component {
     visible: false,
     textT: '获取验证码',
     visibleName: false,
-    idName: '',
+    idName: '没有推广员？',
     qipao: true,
   };
 
@@ -39,7 +39,7 @@ class registerPh extends React.Component {
     if (res.data.code === 2000) {
       this.setState({ name: data.name })
     } else {
-      Toast.fail(res.data.msg, 1);
+      Toast.fail(res.data.msg, 2);
       this.setState({ name: '' })
     }
   }
@@ -47,7 +47,11 @@ class registerPh extends React.Component {
 
   changeName = (e) => {
     this.setState({ qipao: false })
-    this.getIsUserName({ name: e })
+    if(e!==''){
+      if(/[\u4E00-\u9FA5]/g.test(e)){
+        Toast.fail('用户名只包含数字/字母', 2);
+      }else{this.getIsUserName({ name: e })}
+    }
   }
   changePhone = (e) => {
     this.setState({ phone: e })
@@ -114,19 +118,23 @@ class registerPh extends React.Component {
     }
   }
   blurId = e => {
-    this.getPromoteName({ promotid: e })
+    if(e!==''){
+      this.getPromoteName({ promotid: e })
+    }
   }
   async getPromoteName(data) {
     const res = await getPromoteName(data)
     if (res.data.code === 2000) {
-      this.setState({ idName: '推广员姓名：' + res.data.data.promotname + '?', qipao: false })
+      this.setState({ idName: '请确认推广员姓名：' + res.data.data.promotname, qipao: false })
     } else {
+      Toast.fail('推广员不存在', 2);
       this.setState({ idName: '您没有推广员？', })
     }
   }
 
-  alert = () => {
-    alert('注册', this.state.idName, [
+  alertTwo = () => {
+    console.log(444)
+    alert('提示', this.state.idName, [
       { text: '否', onPress: () => console.log('cancel'), style: 'default' },
       { text: '是', onPress: () => this.showModal() },
     ]);
@@ -171,7 +179,7 @@ class registerPh extends React.Component {
       <div className="registerPh">
           <NavBar
             mode="dark"
-            icon={<Icon type="arrow-left" onClick={this.reture} />}
+            icon={<LeftOutlined onClick={this.reture} />}
             rightContent={<Popover mask
               overlayClassName="fortest"
               overlayStyle={{ color: 'currentColor' }}
@@ -196,22 +204,23 @@ class registerPh extends React.Component {
                 alignItems: 'center',
               }}
               >
-                <Icon type="ellipsis" />
+              <EllipsisOutlined />
               </div>
             </Popover>}
-          ><span style={{ fontSize: '1rem' }}>注册</span></NavBar>
+          ><span style={{ fontSize: '1rem' }}>新用户注册/注册</span></NavBar>
         <div className="bossInput">
           <div className="input">
             <InputItem
               type='number'
               placeholder="请填写推广员ID号，没有可不填"
-              clear={true}
+              clear={false}
               style={{ fontSize: '0.8rem' }}
               maxLength={6} 
               onChange={this.changID}
               onBlur={this.blurId}
               autoFocus
-            ><Icon type="credit-card" style={{ color: 'rgba(0,0,0,.25)' }} />
+            >
+              {/* <CreditCardOutlined style={{ color: 'rgba(0,0,0,.25)' }} /> */}
             </InputItem>
           </div>
 
@@ -219,10 +228,11 @@ class registerPh extends React.Component {
             <InputItem
               type='text'
               placeholder="请输入用户名"
-              clear={true}
+              clear={false}
               style={{ fontSize: '0.8rem' }}
               onBlur={this.changeName}
-            ><Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />
+            >
+              {/* <UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} /> */}
             </InputItem>
           </div>
 
@@ -230,10 +240,11 @@ class registerPh extends React.Component {
             <InputItem
               type='phone'
               placeholder="请输入手机号"
-              clear={true}
+              clear={false}
               style={{ fontSize: '0.8rem' }}
               onChange={this.changePhone}
-            ><Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />
+            >
+              {/* <Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} /> */}
             </InputItem>
           </div>
 
@@ -246,7 +257,8 @@ class registerPh extends React.Component {
               className="codeInput"
               maxLength={6}
               onChange={this.changeCode}
-            ><Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />
+            >
+              {/* <Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} /> */}
             </InputItem>
             <div className="codeBtn" onClick={this.state.textT === '获取验证码' ? this.naCode : ''} >{this.state.textT}</div>
           </div>
@@ -260,7 +272,8 @@ class registerPh extends React.Component {
               style={{ fontSize: '0.8rem' }}
               onChange={this.changePassword}
               maxLength={8}
-            ><Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />
+            >
+              {/* <Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} /> */}
             </InputItem>
           </div>
           <div className="input">
@@ -271,17 +284,17 @@ class registerPh extends React.Component {
               style={{ fontSize: '0.8rem' }}
               onChange={this.changePasswordT}
               maxLength={8}
-            ><Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />
+            >
+              {/* <Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} /> */}
             </InputItem>
           </div>
           <div className="input line">
-            <Checkbox onChange={this.changeRadio}><span style={{ fontSize: '0.75rem' }}>已阅读并同意</span><span style={{ color: '#D85D27', paddingLeft: '0.5rem', fontSize: '0.75rem' }}>《用户协议》</span></Checkbox>
+            <Checkbox onChange={this.changeRadio}><span style={{ fontSize: '0.9rem',paddingLeft:'1rem', }}>已阅读并同意</span><span style={{ color: '#D85D27', paddingLeft: '0.5rem', fontSize: '0.9rem' }}>《用户协议》</span></Checkbox>
           </div>
           <div className="input line">
             <Button
               className="btn"
-              onClick={this.alert}
-              disabled={this.state.qipao}
+              onClick={this.alertTwo}
             >
               注册
              </Button>

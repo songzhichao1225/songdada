@@ -3,11 +3,10 @@ import './orderPh.css';
 
 import { DatePicker, Toast, Card, Modal, InputItem, List } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Pagination, Input, Drawer, Result, Spin, Select } from 'antd';
-import { getReservationActivitieslist, VenueSendMessage, getVenueReservation, getVenueSport, VenueClickCancelPlace, getVenueNumberTitleList, VenueRemarksLabel, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave, getVenueSporttypelist } from '../../api';
-import {BankOutlined,LoadingOutlined,CloseOutlined,CheckOutlined,ReconciliationOutlined} from '@ant-design/icons';
+import { Pagination, Drawer, Result, Spin, Table, Checkbox } from 'antd';
+import { getReservationActivitieslist, VenueSendMessage, getVenueReservation, getVenueSport, VenueClickCancelPlace, getVenueNumberTitleList, VenueRemarksLabel, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave } from '../../api';
+import { BankOutlined, LoadingOutlined, ReconciliationOutlined, FundOutlined } from '@ant-design/icons';
 import moment from 'moment';
-const { Option } = Select;
 const prompt = Modal.prompt;
 const alert = Modal.alert;
 
@@ -61,7 +60,7 @@ class orderPh extends React.Component {
       { name: '已完成', id: 5 },
       { name: '已取消', id: 7 }
     ],
-    page: 0,
+    page: 1,
     clenTop: 0,
     clickY: 0,
     moveY: 0,
@@ -102,7 +101,13 @@ class orderPh extends React.Component {
 
     modalTwo: false,
     timeOutEvent: 0,
-    liNum:'1'
+    liNum: '1',
+    loadingTwo: true,
+    cofirmZ:0,
+    Cancels:0,
+    arrTimeuid:[],
+    info:false,
+    venueidids:[]
   };
 
 
@@ -110,7 +115,7 @@ class orderPh extends React.Component {
     const res = await getVenueNumberTitleList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ topNumList: res.data.data })
-      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.qiDate, types: 1 })
+      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.qiDate })
     }
   }
 
@@ -119,6 +124,8 @@ class orderPh extends React.Component {
 
   async getVenueReservation(data) {
     const res = await getVenueReservation(data, localStorage.getItem('venue_token'))
+
+
     if (res.data.code === 2000) {
       if (this.state.topNumList.length > 0) {
         for (let j = 0; j < this.state.topNumList.length; j++) {
@@ -128,34 +135,88 @@ class orderPh extends React.Component {
           }
         }
       }
-      sessionStorage.setItem('kood', 1)
-      this.setState({ lookList: res.data.data, otherType: res.data.other.sporttype, macNum: res.data.data[0].c, value: 'l' })
-
-      if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 24) {
-        if (res.data.data[res.data.data.length - 1].a.slice(-2) === '00') {
-          if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) < 10) {
-            this.setState({ lastTime: '0' + (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2))) + ':30' })
-          } else {
-            this.setState({ lastTime: parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + ':30' })
-          }
-        } else if (res.data.data[res.data.data.length - 1].a.slice(-2) === '30') {
-          if (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1 < 10) {
-            this.setState({ lastTime: '0' + (parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1) + ':00' })
-          } else {
-            this.setState({ lastTime: parseInt(res.data.data[res.data.data.length - 1].a.slice(0, 2)) + 1 + ':00' })
+      for (let i in res.data.data) {
+        for (let j in res.data.data[i].c) {
+          res.data.data[i].c[j].checked = false
+          if (res.data.data[i].c[j].type === 4) {
+            this.setState({ calesRed: 1 })
           }
         }
       }
 
+
+      this.setState({
+        resData: res.data.data
+      })
+
+
+
+      this.hoode(res.data.data)
+
+
+
+
+
+      for (let i in res.data.other) {
+        res.data.other[i].dataIndex = res.data.other[i].venueid
+        res.data.other[i].title = <div>{res.data.other[i].venueid}<br />{res.data.other[i].title}</div>
+        res.data.other[i].width = 80
+      }
+      let ploboj = {
+        title: <div>场地号<br />标签</div>,
+        fixed: 'left',
+        width: 80,
+        dataIndex: 'lppd',
+      }
+      res.data.other.unshift(ploboj)
+      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c, otherType: res.data.other, value: 'l', spinningTwo: false, loadingTwo: false })
+      sessionStorage.setItem('kood', 1)
+
     } else if (res.data.code === 4005) {
-      this.setState({ lookList: res.data.data })
+      this.setState({ lookList: res.data.data, spinningTwo: false, loadingTwo: false, lppding: false })
       sessionStorage.setItem('kood', 1)
     } else if (res.data.code === 4003) {
-      this.setState({ lookList: [] })
+      this.setState({ otherType: [], lookBan: [], loadingTwo: false, lppding: false })
       sessionStorage.setItem('kood', 1)
+    } else if (res.data.code === 4004) {
+      this.setState({ lppding: false, textNuma: res.data.msg })
     }
   }
 
+
+  hoode = (resData) => {
+    let jood = []
+    for (let i in resData) {
+      let obj = {}
+      for (let j in resData[i].c) {
+        obj.key = j + 1
+        let key = resData[i].c[j].venueids
+        let value = <div><div data-type={resData[i].c[j].type} data-uuid={resData[i].c[j].uuid} onClick={this.lookDeta} style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#ADD2FF', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, lineHeight: 3 } : {}}><Checkbox className="chePe" idx={i} jdx={j} checked={resData[i].c[j].checked} onChange={this.checkbox} dtype={resData[i].c[j].type} time={resData[i].a} venueid={resData[i].c[j].venueids} uuid={resData[i].c[j].uuid} style={resData[i].c[j].type === 1 && this.state.cofirmZ === 1 ? {} : { display: 'none' } && resData[i].c[j].type === 4 && this.state.Cancels === 1 ? {} : { display: 'none' }} />{resData[i].c[j].money}</div></div>
+        obj[key] = value
+        let koTwo = parseInt(resData[i].a.slice(1, 2)) + 1 + ':00'
+        obj.lppd = <div style={{ color: '#F5A623' }}>{resData[i].a}<br />{resData[i].a.slice(3, resData[i].a.length) === '00' ? resData[i].a.slice(0, 2) + ':30' : koTwo === '10:00' && resData[i].a !== '19:30' ? '10:00' : resData[i].a === '19:30' ? '20:00' : resData[i].a.slice(0, 1) + koTwo}</div>
+      }
+      jood.push(obj)
+    }
+
+
+    this.setState({
+      lookBan: jood,
+      lppding: false
+    })
+
+
+
+  }
+
+  lookDeta = e => {
+    if (e.currentTarget.dataset.type === "3") {
+      this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: '' })
+      this.setState({ informVisible: true })
+    } else if (e.currentTarget.dataset.type === '4' && this.state.Cancels === 0) {
+      this.VenueRemarksLabel({ uuid: e.currentTarget.dataset.uuid })
+    }
+  }
 
 
   async getReservationActivitieslist(data) {
@@ -183,12 +244,6 @@ class orderPh extends React.Component {
     }
   }
 
-  async getVenueSporttypelist(data) {
-    const res = await getVenueSporttypelist(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 2000) {
-      this.setState({ activityNavTwo: res.data.data })
-    }
-  }
 
   async VenueNumberSporttypeSave(data) {
     await VenueNumberSporttypeSave(data, localStorage.getItem('venue_token'))
@@ -206,7 +261,7 @@ class orderPh extends React.Component {
   componentDidMount() {
 
     this.setState({ qiDate: new Date(), nowDate: new Date().toLocaleDateString().replace(/\//g, "-") })
-    this.getVenueReservation({ sportid: 1, date: new Date().toLocaleDateString().replace(/\//g, "-"), types: 1 })
+    this.getVenueReservation({ sportid: 1, date: new Date().toLocaleDateString().replace(/\//g, "-") })
     this.getVenueSport()
     if (this.props.location.query !== undefined) {
       if (this.props.location.query.time === 1) {
@@ -243,14 +298,12 @@ class orderPh extends React.Component {
 
 
     if (this.props.location.query !== undefined) {
-      console.log(this.props.location.query)
       this.setState({
         activityList: false,
         liIndex: this.props.location.query.liIndex,
       })
       this.setState({ liNum: this.props.location.query.id, liIndex: this.props.location.query.liIndex })
-      this.getVenueNumberTitleList({ sportid:this.props.location.query.id })
-      this.getVenueSporttypelist({ sportid: this.props.location.query.id })
+      this.getVenueNumberTitleList({ sportid: this.props.location.query.id })
     }
 
 
@@ -266,6 +319,7 @@ class orderPh extends React.Component {
 
   activityList = () => {
     this.setState({ activityList: true })
+    this.setState({ page: 1 })
     this.getReservationActivitieslist({ page: 1, sport: '', status: '', publicuid: '' })
   }
   bookingKanban = () => {
@@ -385,7 +439,6 @@ class orderPh extends React.Component {
   sportName = e => {
     this.setState({ liNum: e.currentTarget.dataset.id, liIndex: e.currentTarget.dataset.index })
     this.getVenueNumberTitleList({ sportid: e.target.dataset.id })
-    this.getVenueSporttypelist({ sportid: e.target.dataset.id })
   }
 
   informOnClose = () => {
@@ -395,13 +448,14 @@ class orderPh extends React.Component {
   async VenueClickCancelPlace(data) {
     const res = await VenueClickCancelPlace(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.qiDate, types: 1 })
+      this.setState({ cofirmZ: 0, venueidids: [], dtime: [], Cancels: 0 })
+      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.qiDate })
       if (data.type === 1) {
         Toast.success('该场地该时间段已标记为线下占用', 1)
       } else if (data.type === 2) {
         Toast.success('该场地该时间段已向找对手线上释放', 1)
       }
-      this.setState({ modalTwo: false, lotime: [] })
+      this.setState({ info: false, lotime: [],arrTimeuid:[] })
     } else {
       Toast.fail('操作失败', 1)
     }
@@ -425,39 +479,9 @@ class orderPh extends React.Component {
 
 
 
-  lookPlate = e => {
-    let time = e.currentTarget.dataset.time
-    let uuid = e.currentTarget.dataset.uuid
-    let num = e.currentTarget.dataset.num
-    this.setState({ uuidClick: uuid })
-    let lotime = e.currentTarget.dataset.lo
-    if (e.currentTarget.dataset.type !== '3' && e.currentTarget.dataset.type !== '2') {
-      if (e.currentTarget.dataset.type === '1') {
-        if (this.state.lotime.length > 0) {
-          if (this.state.lotime.indexOf(lotime) !== -1) {
-            this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
-          } else {
-            this.setState({ lotime: [...this.state.lotime, lotime] })
-          }
-        } else {
-          this.setState({ lotime: [...this.state.lotime, lotime] })
-        }
-      } else if (e.currentTarget.dataset.type === '4') {
-        this.VenueClickCancelPlace({ uuid: uuid, date: this.state.qiDate, venueid: num, other: '', time: time, sportid: this.state.liNum, type: 2 })
-      }
-    } else if (e.currentTarget.dataset.type === "3") {
-      this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: '' })
-      this.setState({ informVisible: true })
-    }
-  }
 
 
 
-  scroll = () => {
-    let scrollTop = this.scrollRef.scrollTop;
-    let scrollLeft = this.scrollRef.scrollLeft;
-    this.setState({ left: scrollLeft, top: scrollTop })
-  }
 
 
 
@@ -529,7 +553,7 @@ class orderPh extends React.Component {
 
 
   placeSubmit = () => {
-    let { vIpChang, nameChang, phoneChang, qitaChang, changNum, changTime, liNum, qiDate } = this.state
+    let {  venueidids, dtime, vIpChang, nameChang, phoneChang, qitaChang } = this.state
 
 
     let obj = {
@@ -538,8 +562,8 @@ class orderPh extends React.Component {
       placePhone: phoneChang,
       placeQi: qitaChang,
     }
-    this.VenueClickCancelPlace({ uuid: '', date: qiDate, venueid: changNum.slice(0, changNum.length - 1), other: JSON.stringify(obj), time: changTime.slice(0, changTime.length - 1), sportid: liNum, type: 1 })
-
+    this.VenueClickCancelPlace({ uuid: '', date: this.state.qiDate, venueid: venueidids, other: JSON.stringify(obj), time: dtime, sportid: this.state.liNum, type: 1 })
+    
 
   }
 
@@ -581,16 +605,130 @@ class orderPh extends React.Component {
 
   dateChange = (date) => {
     this.getVenueNumberTitleList({ sportid: this.state.liNum })
-    // this.getVenueReservationss({ date: date.toLocaleDateString().replace(/\//g, "-"), sportid: , types: 1, siteUUID: '' })
   }
 
   totitle = e => {
-    console.log(e.currentTarget.dataset.type)
     if (e.currentTarget.dataset.type === '1') {
       Toast.info('请为各场地选择对应的场地类型，如1号场地为11人制足球场地；2号场地为5人制足球场地等', 5);
     } else {
       Toast.info('请为各场地填写标签，如普通、VIP、赛台、独立包间、楼上、楼下、人造草皮、真草皮等标签，也可不填写', 5);
     }
+  }
+
+  cofirmZ = () => {
+    this.setState({
+      cofirmZ: 1,
+      chePe: false
+    })
+    setTimeout(() => {
+      this.hoode(this.state.resData)
+    }, 50)
+
+  }
+
+ checkbox = e => {
+    if (this.state.resData[e.target.idx].c[e.target.jdx].checked === false) {
+      this.state.resData[e.target.idx].c[e.target.jdx].checked = true
+      // let lo='resData['+e.target.idx+'].c['+e.target.jdx+'].checked'
+      // console.log([lo])
+      // this.setState({
+      //   [lo]:true
+      // })
+      this.hoode(this.state.resData)
+    } else {
+      this.state.resData[e.target.idx].c[e.target.jdx].checked = false
+      this.hoode(this.state.resData)
+    }
+    let timUid = e.target.uuid + '#' + e.target.time + '#' + e.target.venueid
+    if (this.state.arrTimeuid.indexOf(timUid) !== -1) {
+      this.state.arrTimeuid.splice(this.state.arrTimeuid.indexOf(timUid), 1)
+    } else {
+      this.setState({ arrTimeuid: [...this.state.arrTimeuid, timUid] })
+    }
+
+
+
+
+
+  }
+
+  shour = () => {
+    let { arrTimeuid } = this.state
+    let venueidids = []
+    let dtime = []
+    for (let i in arrTimeuid) {
+
+      venueidids.push(arrTimeuid[i].split('#')[2])
+      dtime.push(arrTimeuid[i].split('#')[1])
+    }
+    if (venueidids.length !== 0) {
+      this.setState({
+        info: true,
+        venueidids: typeof (venueidids) === 'string' ? venueidids : venueidids.join(','),
+        dtime: typeof (dtime) === 'string' ? dtime : dtime.join(',')
+      })
+    } else {
+      Toast.fail('请选择空闲场地', 1)
+
+    }
+
+  }
+  shourTwo = () => {
+    this.setState({
+      cofirmZ: 0, venueidids: [], dtime: [], arrTimeuid: []
+    })
+    setTimeout(() => {
+      for (let i in this.state.resData) {
+        for (let j in this.state.resData[i].c) {
+          this.state.resData[i].c[j].checked = false
+        }
+      }
+      this.hoode(this.state.resData)
+    }, 50)
+  }
+
+  Cancels = () => {
+    this.setState({
+      Cancels: 1
+    })
+    setTimeout(() => {
+      this.hoode(this.state.resData)
+    }, 50)
+  }
+
+  Cancelsshour = () => {
+    let { arrTimeuid, dateString, liNum } = this.state
+    let venueidids = []
+    let dtime = []
+    let duuid = []
+    for (let i in arrTimeuid) {
+
+      venueidids.push(arrTimeuid[i].split('#')[2])
+      dtime.push(arrTimeuid[i].split('#')[1])
+      duuid.push(arrTimeuid[i].split('#')[0])
+    }
+    if (venueidids.length !== 0) {
+      this.VenueClickCancelPlace({ date: this.state.qiDate, sportid: liNum, type: 2, time: dtime.join(','), venueid: venueidids.join(','), uuid: duuid.join(','), other: '' })
+    } else {
+      Toast.fail('请选择需要释放的场地', 1)
+    }
+  }
+  CancelsshourTwo = () => {
+    this.setState({
+      venueidids: [],
+      dtime: [],
+      duuid: [],
+      Cancels: 0,
+      arrTimeuid: []
+    })
+    setTimeout(() => {
+      for (let i in this.state.resData) {
+        for (let j in this.state.resData[i].c) {
+          this.state.resData[i].c[j].checked = false
+        }
+      }
+      this.hoode(this.state.resData)
+    }, 50)
   }
 
 
@@ -634,23 +772,44 @@ class orderPh extends React.Component {
                         <svg t="1577274065679" className="icon" viewBox="0 0 1235 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15123" width="30" height="30"><path d="M899.65056 979.48672c-120.35072 0-218.2656-97.95584-218.2656-218.35776s97.91488-218.35776 218.2656-218.35776 218.2656 97.95584 218.2656 218.35776S1020.00128 979.48672 899.65056 979.48672M899.65056 498.25792c-144.88576 0-262.76352 117.92384-262.76352 262.87104S754.75968 1024 899.65056 1024s262.76352-117.92384 262.76352-262.87104S1045.53984 498.25792 899.65056 498.25792M586.60864 862.70976 130.58048 862.70976c-17.21344 0-31.21152-14.53568-31.21152-32.41472L99.36896 112.66048c0-17.86368 14.0032-32.39936 31.21152-32.39936l926.38208 0c17.21344 0 31.2064 14.53568 31.2064 32.39936l0 377.84576c0 12.29824 9.6 22.25664 21.43744 22.25664 11.83232 0 21.43744-9.9584 21.43744-22.25664L1131.04384 112.66048c0-42.40896-33.23392-76.91264-74.08128-76.91264L130.58048 35.74784c-40.84736 0-74.0864 34.50368-74.0864 76.91264l0 717.63456c0 42.41408 33.23904 76.928 74.0864 76.928l456.02816 0c11.83744 0 21.43744-9.96352 21.43744-22.25664S598.44608 862.70976 586.60864 862.70976M1042.52928 95.83616l-448.768 343.95648c-0.87552 0.24064-2.25792 0.24576-3.10272 0.03072l-445.5936-343.936c-8.63232-8.74496-22.72256-8.832-31.4624-0.18944-8.74496 8.6272-8.82688 22.72768-0.19456 31.47264l447.42144 345.7792c0.7168 0.73216 1.48992 1.41312 2.30912 2.03264 8.28416 6.33856 18.6624 9.51296 29.05088 9.51296 10.37824 0 20.76672-3.1744 29.05088-9.50784 0.79872-0.60928 1.55136-1.26976 2.25792-1.98144l450.5856-345.7792c8.66304-8.71936 8.6272-22.8096-0.08704-31.47776C1065.27232 87.08608 1051.17696 87.11168 1042.52928 95.83616M779.74016 783.3856l186.10176 0-44.78976 44.8c-8.68864 8.69376-8.68864 22.784 0 31.47776 8.68352 8.69376 22.76864 8.69376 31.4624 0.00512l82.7648-82.79552c0.16384-0.16384 0.27136-0.36352 0.43008-0.52736 0.83456-0.88576 1.63328-1.81248 2.31424-2.82112 0.26624-0.39936 0.44544-0.83968 0.68096-1.2544 0.49152-0.83968 0.9984-1.67424 1.37216-2.57536 0.20992-0.50176 0.31232-1.03424 0.48128-1.55136 0.28672-0.86528 0.60928-1.70496 0.7936-2.60608 0.29184-1.43872 0.44544-2.91328 0.44544-4.40832l0 0 0 0c0-0.05632-0.02048-0.11264-0.02048-0.17408-0.01024-1.42848-0.14848-2.8416-0.42496-4.224-0.20992-1.024-0.55808-1.99168-0.896-2.95936-0.13824-0.39424-0.21504-0.80896-0.37376-1.19296-0.44544-1.07008-1.024-2.05824-1.62304-3.03104-0.1536-0.26112-0.26112-0.54272-0.42496-0.78848-0.81408-1.21344-1.7408-2.3552-2.76992-3.38432l-82.75456-98.23232c-4.34688-4.34176-10.0352-6.51776-15.73376-6.51776-5.68832 0-11.392 2.176-15.73376 6.51776-8.68864 8.69376-8.68864 38.23616 0 46.92992l44.78976 44.8-186.10176 0c-12.288 0-22.2464 9.96352-22.2464 22.25664S767.45216 783.3856 779.74016 783.3856" p-id="15124" fill='#888'></path></svg>
                       </i></div>
                     </Card.Body>
-                    <Card.Footer />
+                    <Card.Footer/>
                   </Card>
                 </div>
 
               ))
             }
 
-            <Pagination className={this.state.activeSon.length > 0 ? 'fenye' : 'hidden'} style={{ marginTop: '10px' }} size="small" defaultCurrent={1} onChange={this.current} total={this.state.total} />
-
+            <Pagination hideOnSinglePage={true} showSizeChanger={false} current={this.state.page} className={this.state.activeSon.length > 0 ? 'fenye' : 'hidden'} style={{ marginTop: '10px' }} size="small" defaultCurrent={1} onChange={this.current} total={this.state.total} />
           </div>
 
           <Spin style={{ width: '100%', marginTop: '45%' }} spinning={this.state.spin} />
-          <Result className={this.state.spin === false && this.state.activeSon.length === 0 ? '' : 'hidden'} icon={<BankOutlined style={{ fontSize: '2rem',color:'#F5A623' }} />} title="没有活动列表" />
-
-
-
+          <Result className={this.state.spin === false && this.state.activeSon.length === 0 ? '' : 'hidden'} icon={<BankOutlined style={{ fontSize: '2rem', color: '#F5A623' }} />} title="没有活动列表" />
         </div>
+        <div className={this.state.activityList === false ? 'bookingKanban' : 'hidden'}>
+          <div className="modTitle">
+            <span className="blue"></span><span>空闲</span><span className="white"></span><span>不可选</span><span className="yellow"></span><span>线上占用</span><span className="red"></span><span>线下占用</span>
+           <span className="btnSi" style={this.state.cofirmZ === 1 || this.state.otherType.length === 0 || this.state.Cancels === 1 ? { display: 'none' } : { display: 'block' }} onClick={this.cofirmZ}><span>设置占用</span></span>
+           <span style={this.state.cofirmZ === 1 ? { display: 'block' } : { display: 'none' }}><div className="cofirmZText" onClick={this.shour}>确定</div><div style={{marginLeft:'2px'}} className="cofirmZText" onClick={this.shourTwo}>取消</div></span>
+           <span className="btnSi" style={this.state.Cancels === 1 || this.state.otherType.length === 0 || this.state.calesRed === 0 || this.state.cofirmZ === 1 ? { display: 'none' } : { display: 'block' }} onClick={this.Cancels}>释放占用</span>
+            <span style={this.state.Cancels === 1 ? { display: 'block' } : { display: 'none' }}><div className="cofirmZText" onClick={this.Cancelsshour}>确定</div><div style={{ marginLeft: 2 }} className="cofirmZText" onClick={this.CancelsshourTwo}>取消</div></span>
+          </div>
+
+          <div style={{ width: '100%', overflowX: 'auto' }}>
+            <div className="locaList">
+              {
+                this.state.remList.map((item, i) => (
+                  <div key={i} data-id={item.id} data-index={i} onClick={this.sportName} style={parseInt(this.state.liIndex) === i ? { borderBottom: '0.06rem solid #D85D27', color: '#D85D27' } : {}}>{item.name}</div>
+                ))
+              }
+            </div>
+          </div>
+          {/* 看板渲染标签 */}
+          <Spin spinning={this.state.lppding}>
+            <Table loading={this.state.loadingTwo} style={this.state.otherType.length === 0 ? { display: 'none' } : { maxWidth: this.state.otherType.length * 80 }} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 76, minWidth: 40, y: '90%' }} />,
+          <Result className={this.state.otherType.length === 0 ? '' : 'hidden'} icon={<FundOutlined style={{ color: '#F5A623' }} />} title={this.state.textNuma} />
+          </Spin>
+        </div>
+
 
 
 
@@ -728,98 +887,14 @@ class orderPh extends React.Component {
           <div className="modTitle">
             <span className="blue"></span><span>空闲</span><span className="white"></span><span>不可选</span><span className="yellow"></span><span>线上占用</span><span className="red"></span><span>线下占用</span>
           </div>
-          <div className="locaList">
-            {
-              this.state.remList.map((item, i) => (
-                <div key={i} data-id={item.id} data-index={i} onClick={this.sportName} style={parseInt(this.state.liIndex) === i ? { borderBottom: '0.06rem solid #D85D27', color: '#D85D27' } : {}}>{item.name}</div>
-              ))
-            }
-          </div>
 
 
-          <div className="lookList" onScrollCapture={this.scroll} ref={c => { this.scrollRef = c }} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block' }}>
-            <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 4.25 + 'rem' }}>
-              <div className="topFixd" style={{ paddingTop: 5 + this.state.top, paddingBottom: '10px', minWidth: '100%', zIndex: '999' }}>
-                <span>
-                  <span >场地号</span>
-                  <div onClick={this.totitle} data-type='1' style={this.state.liNum === '3' || this.state.liNum === '5' || this.state.liNum === '8' ? { display: 'block' } : { display: 'none' }}>场地类型</div>
-                  <div onClick={this.totitle} data-type='2'>标签</div>
-                </span>
-                {
-                  this.state.macNum.map((item, i) => (
-                    <span key={i}>{i + 1}
-                      <div className="boxBoss" style={{ position: 'relative', width: '100%', height: '26px' }}>
-                        <Select
-                          placeholder={Object.keys(this.state.otherType).indexOf("" + parseInt(i + 1) + "") !== -1 ? Object.values(this.state.otherType)[Object.keys(this.state.otherType).indexOf("" + parseInt(i + 1) + "")].sporttypename : '请选择'}
-                          className="lookFir"
-                          key={'-' + i + this.state.liNum}
-                          showArrow={false}
-                          dropdownMenuStyle={{ width: '100%', padding: '0', margin: '0' }}
-                          style={this.state.liNum === '3' ? { display: 'block', borderRadius: '4px', marginBottom: '0.1rem' } : { display: 'none' } && this.state.liNum === '5' ? { display: 'block', borderRadius: '4px', marginBottom: '0.1rem' } : { display: 'none' } && this.state.liNum === '8' ? { display: 'block', borderRadius: '4px', marginBottom: '0.1rem' } : { display: 'none' }}
-                          dropdownStyle={{ right: '0', marginRight: '0', padding: '0' }}
-                          onChange={this.classList}
-                        >
-                          {
-                            this.state.activityNavTwo.map((itemS, j) => (
-                              <Option key={j} style={{ padding: '0' }} value={itemS.sporttype + '-' + parseInt(i + 1)}>{itemS.sporttypename}</Option>
-                            ))
-                          }
 
-                        </Select>
-                        <Input className='inputAppList'
-                          key={parseInt(i + this.state.liNum + 'l')}
-                          placeholder={item.title === '' ? '普通/VIP' : item.title}
-                          style={{ height: '26px', width: '4.15rem', border: '1px solid #ddd', borderRadius: '4px' }}
-                          data-uuid={item.uuid}
-                          onChange={this.tilChange}
-                          data-num={i + 1}
-                          onBlur={this.tilBlur}
-                          suffix={item.title === '' ? '' :<CloseOutlined data-uuid={item.uuid} onClick={this.delTitle} style={{ color: 'rgba(0,0,0,.25)' }}/> }
-                          onFocus={this.tilFocus}
-                          maxLength={5} />
-                      </div>
-                    </span>
-                  ))
-                }
-              </div>
-              <div style={{ height: 80 }}></div>
-              {
-                this.state.lookList.map((index, i) => (
-                  <div key={i} className="sonList">
-                    <div style={{ width: 45 + this.state.left, textAlign: 'right', paddingRight: '8px' }}>{index.a}<br /><div style={{ marginTop: '0.9rem' }}>{i === this.state.lookList.length - 1 ? this.state.lastTime : ''}</div></div>
-                    <span></span>
-                    {
-                      this.state.lookList[i].c.map((item, i) => (
-                        <span
-                          className='spanFa'
-                          key={i}
-                          data-time={index.a}
-                          data-num={i + 1}
-                          data-uuid={item.uuid}
-                          data-type={item.type}
-                          onClick={this.lookPlate}
-                          onTouchStart={this.onTouchStart}
-                          onTouchMove={this.onTouchMove}
-                          onTouchEnd={this.onTouchEnd}
-                          // onContextMenu={this.menu}
-                          data-lo={index.a + '-' + (i + 1)}
-                          style={item.type === 1 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 2 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff', opacity: '.3' } : {} && item.type === 3 ? { background: '#F5A623', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 4 ? { background: 'red', marginTop: '0.12rem', color: '#fff' } : {}}
-                        >
-                          {this.state.lotime.indexOf(index.a + '-' + (i + 1)) !== -1 ? <CheckOutlined /> : ''}
-                          {item.type === 1 ? item.money : ''}
-                        </span>
-                      ))
-                    }
-                  </div>
-                ))
-              }
-            </div>
-          </div>
 
 
 
           <Modal
-            visible={this.state.modalTwo}
+            visible={this.state.info}
             transparent
             maskClosable={false}
             onClose={this.onClose}
@@ -857,7 +932,7 @@ class orderPh extends React.Component {
             <List.Item className="dateT" style={{ fontSize: '14px' }}></List.Item>
           </DatePicker>
 
-          <Result style={{ fontSize: '0.75rem' }} className={this.state.lookList.length === 0 ? '' : 'hidden'} icon={<ReconciliationOutlined  style={{ fontSize: '2rem',color:'#F5A623' }}/>} title="没有预约情况" />
+          <Result style={{ fontSize: '0.75rem' }} className={this.state.lookList.length === 0 ? '' : 'hidden'} icon={<ReconciliationOutlined style={{ fontSize: '2rem', color: '#F5A623' }} />} title="没有预约情况" />
           <Drawer
             title="该场地详细信息"
             placement="right"

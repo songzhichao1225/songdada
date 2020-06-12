@@ -211,7 +211,7 @@ class Login extends React.Component {
                     <Input onChange={this.phone} value={this.state.phone===undefined?'':this.state.phone} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名/操作员手机号" />
                   </Form.Item>
                   <Form.Item className="input" style={{ marginTop: 20 }}>
-                    <Input.Password maxLength={8} onChange={this.onPassword} onPressEnter={this.onSubmitT} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" />
+                    <Input.Password style={{paddingLeft:'15px'}} maxLength={8} onChange={this.onPassword} onPressEnter={this.onSubmitT}  placeholder="密码" />
                   </Form.Item>
                   <Form.Item className="bind">
                     <Button className="btnSubmit" onClick={this.onSubmitT} >

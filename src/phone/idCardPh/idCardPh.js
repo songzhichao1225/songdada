@@ -4,7 +4,7 @@ import './idCardPh.css';
 import {Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Upload, Modal,Button} from 'antd';
-import Icon from '@ant-design/icons';
+import {LeftOutlined} from '@ant-design/icons';
 import { } from '../../api';
 
 function getBase64(img, callback) {
@@ -127,14 +127,12 @@ class idCardPh extends React.Component {
 
     const uploadButton = (
       <div>
-        <Icon type="plus" />
         <div className="ant-upload-text">正面</div>
       </div>
     );
 
     const uploadButtonT = (
       <div>
-        <Icon type="plus" />
         <div className="ant-upload-text">反面</div>
       </div>
     );
@@ -144,7 +142,7 @@ class idCardPh extends React.Component {
 
     return (
       <div className="idCardPh">
-        <div className="headTtitle">  <Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'0',width:'48px',height:'48px',lineHeight:'48px',fontSize:'1rem'}}/>请上传您的身份证图片</div>
+        <div className="headTtitle"><LeftOutlined onClick={this.reture} style={{position:'absolute',left:'0',width:'48px',height:'48px',lineHeight:'48px',fontSize:'1rem'}} /> 请上传您的身份证图片</div>
         <div className="boss">
           <div className="input">
             <span>手持身份证正面照</span>  <span style={{ paddingLeft: '20px', color: '#D85D27' }} onClick={this.positive}>示例图</span>

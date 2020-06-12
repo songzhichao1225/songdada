@@ -713,7 +713,6 @@ class orderPhT extends React.Component {
             }
           </div>
 
-
           <div className="lookList" onScrollCapture={this.scroll} ref={c => { this.scrollRef = c }} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block' }}>
             <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 4.25 + 'rem' }}>
               <div className="topFixd" style={{ paddingTop: 5 + this.state.top, paddingBottom: '10px', minWidth: '100%', zIndex: '999' }}>

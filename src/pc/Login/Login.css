@@ -118,7 +118,9 @@
 }
 .login .ant-input{
 	height: 45px;
+	width: 90%;
 }
+
 .koohidden{
 	width: 89px;
 	height: 43px;

@@ -4,7 +4,7 @@ import './withdrawalPh.css';
 import { Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { getVenueWithdrawalOneList, getVenueMoney, VenueWithdrawal } from '../../api';
-import Icon from '@ant-design/icons';
+import {LeftOutlined} from '@ant-design/icons';
 
 class withdrawalPh extends React.Component {
 
@@ -64,7 +64,7 @@ class withdrawalPh extends React.Component {
   render() {
     return (
       <div className="withdrawalPh">
-        <div className="headTitle"><Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', width:'48px',height:'48px',left:'0',lineHeight:'48px'}} />提现</div>
+        <div className="headTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', width:'48px',height:'48px',left:'0',lineHeight:'48px'}}/>提现</div>
         <div className="white"></div>
         <div className="bankCards">
           <span>{this.state.withdrawalPh.Settlement === 1 ? '法人账户' : '公司银行账户'}</span>

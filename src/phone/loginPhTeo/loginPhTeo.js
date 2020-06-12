@@ -5,7 +5,7 @@ import 'antd/dist/antd.css';
 import { Toast, InputItem,NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { _login } from '../../api';
-import Icon from '@ant-design/icons';
+import {EllipsisOutlined} from '@ant-design/icons';
 
 const Item = Popover.Item;
 class loginPhTeo extends React.Component {
@@ -13,6 +13,7 @@ class loginPhTeo extends React.Component {
   state = {
     phone: '',
     password: '',
+    eyes:false,
   };
 
   componentDidMount() {
@@ -99,6 +100,11 @@ class loginPhTeo extends React.Component {
   }
 }
 
+eyes=()=>{
+  this.setState({
+    eyes:!this.state.eyes
+  })
+}
   render() {
     return (
       <div className="loginPhTeo">
@@ -129,45 +135,46 @@ class loginPhTeo extends React.Component {
                 alignItems: 'center',
               }}
               >
-                <Icon type="ellipsis" />
+                
+              <EllipsisOutlined />
               </div>
             </Popover>}
-          ><span style={{ fontSize: '1rem' }}>用户名登录</span></NavBar>
+          ><span style={{ fontSize: '1rem' }}>合作场馆/登录</span></NavBar>
         <div className="loginInput">
           <div className="name">
             <InputItem
               type='text'
-              placeholder="用户名"
+              placeholder="用户名/手机号"
               clear={true}
-              style={{ fontSize: '0.8rem' }}
+              style={{ fontSize: '0.88rem' }}
               onChange={this.phone}
               className="phone"
-            ><Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />
+            >
             </InputItem>
           </div>
           <div className="name">
 
             <InputItem
-              type='password'
-              placeholder="密码"
-              clear={true}
-              style={{ fontSize: '0.8rem' }}
-              onChange={this.pssword}
+              type={this.state.eyes===true?'text':'password'}
+              placeholder="请输入密码"
+              clear={false}   
+              style={{ fontSize: '0.88rem' }}
+              onChange={this.pssword}  
               maxLength={8}
-              className="phone"
-            ><Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />
+              className="phone"  
+            >
             </InputItem>
-
-            <span style={{ color: '#D85D27' }} onClick={this.forgetPassword}>忘记密码</span>
+            <span style={{display:'block',width:'15%'}} onClick={this.eyes}><img src={require('../../assets/eyes.png')} style={this.state.eyes===true?{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}:{display:'none'}} alt="eyes"/> <img src={require('../../assets/eyesTwo.png')} style={this.state.eyes===true?{display:'none'}:{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}} alt="eyes"/></span>
+            <span onClick={this.forgetPassword}>忘记密码</span>
           </div>
           <div className="loginBtn" onClick={this.submit}>登录</div>
-          <div className="footer" style={{ marginTop: '1rem' }}>
+          <div className="footer" style={{ marginTop: '1rem' }}>  
             <span onClick={this.corporatePh}>法人手机号登录</span>
-            <span onClick={this.registerPh}>新用户注册</span>
+            <span onClick={this.registerPh}>新用户注册</span>  
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 

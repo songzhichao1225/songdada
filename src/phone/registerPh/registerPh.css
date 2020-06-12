@@ -26,8 +26,8 @@
 }
 .registerPh .input{
     width: 20rem;
-    height: 3.1rem;
-    border-bottom:0.06rem solid #f0f0f0;
+
+    border-bottom:0.06rem solid #999999;
     margin:1rem auto 0;
     overflow: hidden;
 }
@@ -57,11 +57,11 @@
     float: right;
     width:5.56rem;
     height:1.5rem;
-    background:rgba(216,93,39,1);
+    background:#D85D27;
     border-radius:0.75rem;
     color: #fff;
-    line-height: 1.5rem;
-    margin-top: 0.8rem;
+    line-height: 1.7rem;
+    margin-top: 0.5rem;
     text-align: center;
     font-size: 0.6rem;
 }
@@ -70,14 +70,17 @@
 }
 .registerPh .btn{
     width: 20rem;
-    height: 3rem;
-    background:rgba(216,93,39,1);
+    height: 2.69rem;
+    background:#D85D27;
     border-radius:1.34rem;
     line-height: 3rem;
     text-align: center;
     color: #fff;
     font-size: 1.06rem;
     margin: 0 auto;
+}
+.registerPh .am-button.am-button-disabled{
+    opacity: 1;
 }
 
 .registerPh .logoRegister{
@@ -114,4 +117,12 @@
 }
 .am-list-item .am-input-label.am-input-label-5{
     width: 20px;
+}
+
+.registerPh .am-checkbox.am-checkbox-checked .am-checkbox-inner {
+    background-color: #F5A623;
+    border:1px solid  #F5A623;
+}
+.registerPh .am-checkbox{
+    margin-top: -3px;
 }

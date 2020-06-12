@@ -4,7 +4,7 @@ import './temporaryPh.css';
 import { Toast, DatePicker, List } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Select, Row, Col, Drawer, Pagination, Popconfirm, Result } from 'antd';
-import {GiftOutlined,ArrowLeftOutlined,LoadingOutlined} from '@ant-design/icons';
+import {GiftOutlined,LeftOutlined,LoadingOutlined} from '@ant-design/icons';
 import { getVenueSport, VenueTemporarilyClosedList, VenueTemporarilyClosedSave, VenueTemporarilyClosedDel, VenueTemporarilyClosed } from '../../api';
 import moment from 'moment';
 const { Option } = Select;
@@ -27,7 +27,7 @@ class temporaryPh extends React.Component {
     total: 0,
     listUUid: null,
     upUUid: '',
-    temPage: 0,
+    temPage: 1,
     clenTop: 0,  //下拉加载参数
     clickY: 0,
     moveY: 0,
@@ -108,22 +108,34 @@ class temporaryPh extends React.Component {
         day = "乒乓球";
         break;
       case 3:
-        day = "台球";
+        day = "台球中式黑八";
         break;
       case 4:
-        day = "篮球";
+        day = "台球美式九球";
         break;
       case 5:
-        day = "足球";
+        day = "台球斯诺克";
         break;
       case 6:
-        day = "排球";
+        day = "篮球";
         break;
       case 7:
-        day = "网球";
+        day = "足球11人制";
         break;
       case 8:
-        day = "高尔夫";
+        day = "足球8人制";
+        break;
+        case 9:
+        day = "足球7人制";
+        break;
+        case 10:
+        day = "足球5人制";
+        break;
+        case 11:
+        day = "排球";
+        break;
+        case 12:
+        day = "网球";
         break;
       default:
         day = "";
@@ -183,7 +195,6 @@ class temporaryPh extends React.Component {
       }
       this.VenueTemporarilyClosedSave(data)
     }
-
   }
 
   mood = (e) => {
@@ -236,7 +247,7 @@ class temporaryPh extends React.Component {
   render() {
     return (
       <div className="temporaryPh">
-        <div className="headTitle"><ArrowLeftOutlined  onClick={this.reture} style={{ position: 'absolute',left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />设置临时关闭预约</div>
+        <div className="headTitle"><LeftOutlined  onClick={this.reture} style={{ position: 'absolute',left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />设置临时关闭预约</div>
         <Row className='Row'>
           <Col xs={{ span: 6 }} lg={{ span: 6 }}>运动名称</Col>
           <Col xs={{ span: 12 }} lg={{ span: 12 }}>时间</Col>
@@ -271,7 +282,7 @@ class temporaryPh extends React.Component {
           }
         </div>
         <img className="addList" onClick={this.addYouList} src={require("../../assets/comeOn@2x.png")} alt="添加" />
-        <Pagination className="fenye" defaultCurrent={1} style={this.state.VenueTemporarilyClosedList.length < 1 ? { display: 'none' } : {}} size="small" onChange={this.current} total={this.state.total} />
+        <Pagination className="fenye" defaultCurrent={1} hideOnSinglePage={true} current={this.state.temPage} showSizeChanger={false} style={this.state.VenueTemporarilyClosedList.length < 1 ? { display: 'none' } : {}} size="small" onChange={this.current} total={this.state.total} />
         <Result className={this.state.VenueTemporarilyClosedList.length === 0 ? '' : 'nono'} icon={<GiftOutlined style={{ fontSize: '2rem',color:'F5A623' }}/>} title="没有场地设置" />
 
 
@@ -287,7 +298,7 @@ class temporaryPh extends React.Component {
         >
           <div className='drawerInput'>
             <span>运动项目</span>
-            <Select placeholder='请选择' style={{ width: '27%', border: 'none', boxShadow: 'none', float: 'right' }} value={this.state.sportName} onChange={this.sportChange}>
+            <Select placeholder='请选择' bordered={false} style={{ width: '42%', border: 'none', boxShadow: 'none', float: 'right' }} value={this.state.sportName} onChange={this.sportChange}>
               {
                 this.state.sportList.map((item, i) => (
                   <Option key={i} value={item.id}>{item.name}</Option>

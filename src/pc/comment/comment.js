@@ -2,10 +2,9 @@ import React from 'react';
 import './comment.css';
 import 'antd/dist/antd.css';
 import { getCommentList, VenueCommentReply, getOverallScore } from '../../api';
-import { Spin, Input, message, Result,Pagination } from 'antd';
+import { Spin, Input, message, Result,Pagination,Modal } from 'antd';
 import {CalendarOutlined,SyncOutlined} from '@ant-design/icons';
 const { TextArea } = Input;
-
 
 
 
@@ -17,13 +16,15 @@ class comment extends React.Component {
     textValue: '',
     flag: null,
     commentList: [],
-    imgArr: '',
+    imgArr: [],
     hidden: '',
     Oneloading: true,
     score: '',
     scoreSon: '',
     other:1,
     page:1,
+    visible:false,
+    url:'',
   };
 
 
@@ -35,36 +36,38 @@ class comment extends React.Component {
   componentDidMount() {
     this.getCommentList({ page: 1 })
     this.getOverallScore()
+  
+ 
+
   }
 
 
-
+ 
 
 
   async getCommentList(data) {
-    const res = await getCommentList(data, sessionStorage.getItem('venue_token'))
+    const res = await getCommentList(data, sessionStorage.getItem('venue_token')) 
     if (res.data.code === 2000) {
       let imgArr = []
       if (res.data.data.length > 0) {
         for (let i in res.data.data) {
-          if (res.data.data[i].imgnames !== null) {
-            let imgS = res.data.data[i].imgnames.split('|')
-            for (let i in imgS) {
-              imgArr.push(imgS[i])
-            }
+          if (res.data.data[i].imgnames !== null&&res.data.data[i].imgnames !== '') {
+            res.data.data[i].imgnames = res.data.data[i].imgnames.split('|') 
+          }else{
+            res.data.data[i].imgnames=[]
           }
-
         }
-
+        console.log(res.data.data)
         this.setState({ commentList: res.data.data, imgArr: imgArr, other:res.data.other, loading: false, hidden: false, Oneloading: false })
       }
     } else if (res.data.code === 4001) {
+       
+      
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     } else {
       this.setState({ loading: false, hidden: false, Oneloading: false })
     }
-
   }
   textValue = e => {
     this.setState({ textValue: e.target.value })
@@ -89,7 +92,7 @@ class comment extends React.Component {
       this.setState({flag:null})
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     } else {
       message.error(res.data.msg)
     }
@@ -108,8 +111,16 @@ class comment extends React.Component {
     this.setState({page:page})
     this.getCommentList({ page: page })
   }
-
-
+  handleCancel=()=>{
+    this.setState({visible:false})
+  }
+  visible=e=>{
+    console.log(e.currentTarget.dataset.url)
+    this.setState({
+      visible:true,
+      url:e.currentTarget.dataset.url
+    })
+  }
 
 
 
@@ -159,10 +170,16 @@ class comment extends React.Component {
                       <span className="text">
                         {item.content}
                       </span>
-                      <div className={this.state.imgArr.length > 0 ? 'imgA' : 'hidden'}>
+                      <div className={item.imgnames.length === 0 ? 'hidden' : 'imgA'}>
+                        {
+                          item.imgnames.map((idx,i)=>(
+                             <img key={i} onClick={this.visible} data-url={'https://app.tiaozhanmeiyitian.com/'+item.imgbaseurl+idx} src={'https://app.tiaozhanmeiyitian.com/'+item.imgbaseurl+idx} alt="img"/>
+                          ))
+                        }
                       </div>
                       <span className="timer">{item.commentDate}</span>
                     </div>
+                    <div style={{overflow:'hidden',height:'15px',width:'100%'}}></div>
                     <div className={item.comment_reply === null ? 'publishNone' : 'kefu'}>
                       <img src={require("../../assets/kefu.png")} alt="客服" />
                       <div className="kefuSon">
@@ -185,14 +202,24 @@ class comment extends React.Component {
             }
              
              <Pagination  hideOnSinglePage={true} showSizeChanger={false}  className={this.state.commentList.length === 0 ? 'hidden' : 'fenye'} defaultCurrent={1} onChange={this.current} total={this.state.other} />
-
-            <Result className={this.state.commentList.length === 0 ? 'block' : 'hidden'} icon={<CalendarOutlined style={{color:'#F5A623'}}/>} title="还没有人评价！" />
+ 
+            <Result className={this.state.commentList.length === 0 ? ' block' : 'hidden'} icon={<CalendarOutlined style={{color:'#F5A623'}}/>} title="还没有人评价！" />
           </Spin>
         </div>
 
+        <Modal
+          visible={this.state.visible}
+          onOk={this.handleOk}
+          width="400px"
+          onCancel={this.handleCancel}
+        >
+          <img style={{width:'100%'}} src={this.state.url} alt="img"/>
+        </Modal>
+
+
 
       </div>
-    );
+    )
   }
 }
 

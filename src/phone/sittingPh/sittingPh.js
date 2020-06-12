@@ -4,7 +4,7 @@ import './sittingPh.css';
 import {Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import {Switch } from 'antd';
-import Icon from '@ant-design/icons';
+import {LeftOutlined} from '@ant-design/icons';
 import {VenueIsClose,getVenueIsClose } from '../../api';
 
 
@@ -71,7 +71,7 @@ class sittingPh extends React.Component {
   render() {
     return (
       <div className="sittingPh">
-        <div className="headTitle"><Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'0',width:'48px',height:'48px',lineHeight:'48px'}}/>设置</div>
+        <div className="headTitle"><LeftOutlined onClick={this.reture} style={{position:'absolute',left:'0',width:'48px',height:'48px',lineHeight:'48px'}}/>设置</div>
         <div className="siteSon"><img src={require("../../assets/closeYuyue.png")} alt="icon"/><span>关闭场地预约</span><Switch className="switch" checked={this.state.flag} onChange={this.onChange} /></div>
         
         <div className="siteSon" onClick={this.temporaryPh}>

@@ -458,7 +458,7 @@ class special extends React.Component {
               }
             </div>
           </div>
-          <Pagination className={this.state.hidden === true ? 'fenye' : 'hidden'} defaultCurrent={1} total={this.state.other === '' ? this.state.list.length : this.state.other} onChange={this.current} />
+          <Pagination className={this.state.hidden === true ? 'fenye' : 'hidden'} current={this.state.page}  hideOnSinglePage={true} showSizeChanger={false}  defaultCurrent={1} total={this.state.other === '' ? this.state.list.length : this.state.other} onChange={this.current} />
           <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<GiftOutlined style={{color:'#F5A623'}}/>} title="您还没有设置特殊场地" />
         </Spin>
 

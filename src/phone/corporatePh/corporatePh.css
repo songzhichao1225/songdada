@@ -14,7 +14,8 @@
 .corporatePh .loginInput .name{
     width: 100%;
     min-height: 46px;
-    border-bottom: 0.06rem solid #f0f0f0;
+    border-bottom: 0.06rem solid #999999;
+    margin-top: 1rem;
 }
 .corporatePh .loginInput .name .phone{
     outline: none;
@@ -41,8 +42,8 @@
     font-weight:500;
     color:rgba(255,255,255,1);
     text-align: center;
-    line-height: 1.5rem;
-    margin-top: 1rem;
+    line-height: 1.7rem;
+    margin-top: 0.5rem;
     display: block
 }
 .corporatePh .loginBtn{
@@ -91,4 +92,10 @@
     text-align: center;
     position: relative;
     
+}
+.ant-radio-inner::after{
+    background-color:#D85D27 ;
+}
+.ant-radio-checked .ant-radio-inner{
+    border-color: #D85D27;
 }

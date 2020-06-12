@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
@@ -8,8 +9,8 @@ import { message } from 'antd';
 message.config({
   top: 100,
   duration:1,
-  maxCount:1,
-  rtl:true
+  maxCount:1
+  
 })
 var sUserAgent = navigator.userAgent;
 var mobileAgents = ['Android', 'iPhone'];

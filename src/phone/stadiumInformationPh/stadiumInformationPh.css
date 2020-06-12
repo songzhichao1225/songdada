@@ -52,10 +52,13 @@
     float: left;
 }
 .stadiumInformationPh .boss .input .select{
-    width: 70%;
+    width: 66%;
     height: 44px;
-    margin-left: 1rem;
-    float: left;
+    float: right;
+    text-align: left;
+}
+.stadiumInformationPh .boss .input .selectOne{
+    width: 62%;
 }
 .stadiumInformationPh .ant-input{
     border:none;
@@ -81,9 +84,9 @@
 .stadiumInformationPh .addImg{
     width: 5rem;
     min-height: 5rem;
-    margin-top: 1rem;
+    margin-left: 5rem;
     margin-bottom: 1rem;       
-    clear: both;
+    
 }
 .stadiumInformationPh .addImg .ant-upload.ant-upload-select-picture-card{
     width: 100%;
@@ -99,9 +102,17 @@
     height: 5rem;
 }
 .stadiumInformationPh .ant-checkbox-wrapper{
-    width: 6rem;
+    width: 6.5rem;
     margin-top: 8px;
 }
+.stadiumInformationPh .ant-upload-list-picture-card-container{
+    width: 5rem;
+    height: 5rem;
+}
+.stadiumInformationPh .ant-upload-list-picture-card-container{
+   margin:8px 0 0 8px;
+}
+
 .stadiumInformationPh .ant-checkbox-group{
     padding-bottom: 0.63rem;
 }
@@ -132,7 +143,10 @@
 }
 .stadiumInformationPh .am-list-item .am-list-line .am-list-extra{
     font-size: 0.8rem;
-    flex-basis:60%
+    flex-basis:60%;
+    text-align: left;
+    color: #c0c0c0;
+    
 }
 .stadiumInformationPh .am-list-item .am-list-line{
     padding-right: 0;

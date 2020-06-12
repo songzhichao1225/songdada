@@ -29,7 +29,7 @@ class mapPh extends React.Component {
     var option = {
       renderOptions: { map: map, panel: "results" }, onSearchComplete: function (results) {
         if (results !== undefined){
-          that.setState({ mapList: results.Uq })
+          that.setState({ mapList: results.Qq })
         }
       }
     } 
@@ -46,11 +46,22 @@ class mapPh extends React.Component {
 
   handleClick = e => {
     let dateset = e.target.dataset
-
+    let that=this
     if(sessionStorage.getItem('inforMap')!==null){
-      this.props.history.push({ pathname:'/homePh/inforSitePh', query: {title:dateset.til, lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })
+      let pt=new BMap.Point(dateset.lng,dateset.lat)
+      let myGeo = new BMap.Geocoder()
+      myGeo.getLocation(pt, function(rs){
+        var addComp = rs.addressComponents;
+        that.props.history.push({ pathname:'/homePh/inforSitePh', query: {title:dateset.til, lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress,province:addComp.province,city:addComp.city,district:addComp.district } })
+      })
+     
     }else{
-      this.props.history.push({ pathname:'/stadiumInformationPh', query: {title:dateset.til,lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress } })
+      let pt=new BMap.Point(dateset.lng,dateset.lat)
+      let myGeo = new BMap.Geocoder()
+      myGeo.getLocation(pt, function(rs){
+        var addComp = rs.addressComponents;
+        that.props.history.push({ pathname:'/stadiumInformationPh', query: {title:dateset.til, lat: dateset.lat, lng: dateset.lng, adddress: dateset.adress,province:addComp.province,city:addComp.city,district:addComp.district } })
+      })
     }
    
   }

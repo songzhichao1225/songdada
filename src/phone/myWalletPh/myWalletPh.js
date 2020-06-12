@@ -3,7 +3,7 @@ import './myWalletPh.css';
 
 import {Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import Icon from '@ant-design/icons';
+import {LeftOutlined} from '@ant-design/icons';
 import {getVenueMoney } from '../../api';
 
 
@@ -46,7 +46,7 @@ class myWalletPh extends React.Component {
     return (
       <div className="myWalletPh">
          <div className="headBanner">
-           <div className="headerTitle"><Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'0',width:'48px',height:'48px',lineHeight:'48px'}}/>场馆钱包</div>
+           <div className="headerTitle"><LeftOutlined onClick={this.reture} style={{position:'absolute',left:'0',width:'48px',height:'48px',lineHeight:'48px'}}/>场馆钱包</div>
            <div className="content">
              <span>账户余额(元)</span>
              <span>{this.state.money}</span>

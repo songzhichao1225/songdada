@@ -7,6 +7,7 @@
   color: #000;
 }
 
+
 .homePh .kog{
   position: relative;
   height: 100%;
@@ -58,7 +59,6 @@
 .homePagePh{
   height: 100%;
   padding-bottom: 4rem;
-
   white-space: nowrap;
 }
 
@@ -67,7 +67,7 @@
 
 .homePagePh .homeScroll>div:first-child{
   width: 90%;
-  height: 5.5rem;
+  height: 5.8rem;
   margin: 1rem auto 0;
   background-image: url('../../assets/one.png');
   background-repeat: no-repeat;
@@ -75,7 +75,7 @@
 }
 .homePagePh .homeScroll>div:nth-child(2){
   width: 90%;
-  height: 5.5rem;
+  height: 5.8rem;
   margin: 0.5rem auto 0;
   background-image: url('../../assets/two.png');
   background-repeat: no-repeat;
@@ -83,7 +83,7 @@
 }
 .homePagePh .homeScroll>div:nth-child(3){
   width: 90%;
-  height: 5.5rem;
+  height: 5.8rem;
   margin: 0.5rem auto 0;
   background-image: url('../../assets/three.png');
   background-repeat: no-repeat;
@@ -91,7 +91,7 @@
 }
 .homePagePh .homeScroll>div:nth-child(4){
   width: 90%;
-  height: 5.5rem;
+  height: 5.8rem;
   margin: 0.5rem auto 0;
   background-image: url('../../assets/four.png');
   background-repeat: no-repeat;
@@ -99,7 +99,7 @@
 }
 .homePagePh .homeScroll>div:nth-child(5){
   width: 90%;
-  height: 5.5rem;
+  height: 5.8rem;
   margin: 0.5rem auto 0;
   background-image: url('../../assets/five.png');
   background-repeat: no-repeat;
@@ -109,7 +109,7 @@
   font-size:1rem;
   color:rgba(255,255,255,1);
   display: block;
-  padding:1rem 0 0 2rem;
+  padding:1.3rem 0 0 2rem;
 }
 .homePagePh .homeScroll>div>.content{
   margin-left: 2rem;

@@ -137,11 +137,15 @@ class appOrder extends React.Component {
     let token = arr[2].slice(6, arr[2].length)
     let sporttype = arr[3].slice(10, arr[3].length)
     this.setState({ sportidQuery: sportid })
-    setInterval(()=>{
       this.getAppVenueReservations({ date: '', siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
-    },5000)
     let start = new Date().toLocaleDateString()
-    this.setState({ date: start, token: token, siteid: siteuid, sportid: sportid, sporttypeTwo: sporttype, start: start })
+    if(start.split('/')[0].length===4){
+      let yoo=start.split('/')[0]+'/'+start.split('/')[1]+'/'+start.split('/')[2]
+      this.setState({ date: yoo, token: token, siteid: siteuid, sportid: sportid, sporttypeTwo: sporttype, start: yoo })
+    }else{
+      let yoo=start.split('/')[2]+'/'+start.split('/')[0]+'/'+start.split('/')[1]
+      this.setState({ date: yoo, token: token, siteid: siteuid, sportid: sportid, sporttypeTwo: sporttype, start: yoo })
+    }
   }
 
  
@@ -284,13 +288,9 @@ class appOrder extends React.Component {
         this.setState({ obj: obj })
         if(this.state.date.split('/')[0].length===4){
           let mood= this.state.date.split('/')[0]+'-'+this.state.date.split('/')[1]+'-'+this.state.date.split('/')[2]
-          console.log(this.state.lotime)
-          console.log(mood+ ' ' + time.slice(0, time.length - 1).split(',').sort()[0])
           this.getAPPVenueSelectSite({ startTime: mood+ ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5,siteUid:this.state.siteid })
         }else{
           let mood= this.state.date.split('/')[2]+'-'+this.state.date.split('/')[0]+'-'+this.state.date.split('/')[1]
-          console.log(this.state.lotime)
-          console.log(mood+ ' ' + time.slice(0, time.length - 1).split(',').sort()[0])
           this.getAPPVenueSelectSite({ startTime: mood+ ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5,siteUid:this.state.siteid })
         }
       }

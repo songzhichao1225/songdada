@@ -96,13 +96,14 @@ class appointmentList extends React.Component {
     calesRed: 0,
     arrTimeuid: [],
     lppding: true,
+    textNuma:'您还没有进行价格设置'
   };
 
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登陆超时请重新登陆!')
     } else if (res.data.code === 2000) {
       this.setState({ activityNav: res.data.data })
       this.getVenueNumberTitleList({ sportid: this.state.liNum })
@@ -194,6 +195,8 @@ class appointmentList extends React.Component {
     } else if (res.data.code === 4003) {
       this.setState({ otherType: [], lookBan: [], loadingTwo: false, lppding: false })
       sessionStorage.setItem('kood', 1)
+    }else if(res.data.code===4004){
+      this.setState({lppding: false,textNuma:res.data.msg})
     }
   }
 
@@ -256,7 +259,6 @@ class appointmentList extends React.Component {
     })
     setTimeout(() => {
       this.hoode(this.state.resData)
-
     }, 50)
 
   }
@@ -359,13 +361,22 @@ class appointmentList extends React.Component {
 
   placeSubmit = () => {
     let { venueidids, dtime, placeHui, placeName, placePhone, placeQi } = this.state
-    let obj = {
-      placeHui: placeHui,
-      placeName: placeName,
-      placePhone: placePhone,
-      placeQi: placeQi,
+    if((/^1[3|4|5|8][0-9]\d{4,8}$/.test(placePhone)) === false){
+      message.error('请输入正确手机号')
+    }else if(placePhone.length!==11){
+      message.error('请输入正确手机号')
+    }else{
+      let obj = {
+        placeHui: placeHui,
+        placeName: placeName,
+        placePhone: placePhone,
+        placeQi: placeQi,
+      }
+
+      this.VenueClickCancelPlace({ uuid: '', date: this.state.dateString, venueid: venueidids, other: JSON.stringify(obj), time: dtime, sportid: this.state.liNum, type: 1 })
+    
     }
-    this.VenueClickCancelPlace({ uuid: '', date: this.state.dateString, venueid: venueidids, other: JSON.stringify(obj), time: dtime, sportid: this.state.liNum, type: 1 })
+ 
   }
 
   Cancels = () => {
@@ -482,11 +493,11 @@ class appointmentList extends React.Component {
             </ul>
           </div>
 
-          <div className="xiange"></div>
+          <div className="xiange"></div> 
           {/* 看板渲染标签 */}
           <Spin spinning={this.state.lppding}>
             <Table loading={this.state.loadingTwo} style={this.state.otherType.length === 0 ? { display: 'none' } : { maxWidth: this.state.otherType.length * 100 }} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 76, minWidth: 40, y: '90%' }} />,
-          <Result className={this.state.otherType.length === 0 ? '' : 'hidden'} icon={<FundOutlined style={{ color: '#F5A623' }} />} title="您还没有进行价格设置" />
+          <Result className={this.state.otherType.length === 0 ? '' : 'hidden'} icon={<FundOutlined style={{ color: '#F5A623' }} />} title={this.state.textNuma} />
           </Spin>
         </div>
 
@@ -516,7 +527,7 @@ class appointmentList extends React.Component {
           </div>
           <div className="informDrawer">
             <span>时长：</span>
-            <span>{this.state.informList.length > 0 ? this.state.informList[0].PlayTime : ''}</span>
+            <span>{this.state.informList.length > 0 ? this.state.informList[0].PlayTime : ''}小时</span>
           </div>
           <div className="informDrawer" style={this.state.informList.length > 0 && this.state.informList[0].reserve === 0 ? {} : { display: 'none' }}>
             <span>应到人数：</span>
@@ -578,7 +589,7 @@ class appointmentList extends React.Component {
           </div>
           <div style={{ overflow: 'hidden', marginTop: '10px' }}>
             <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>手机号：</span>
-            <Input style={{ width: 250, float: 'left' }} onChange={this.placePhone} placeholder="(选填)" />
+            <Input style={{ width: 250, float: 'left' }} maxLength={11} onChange={this.placePhone} placeholder="(必填)" />
           </div>
           <div style={{ overflow: 'hidden', marginTop: '10px' }}>
             <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>会员卡卡号：</span>

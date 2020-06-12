@@ -4,7 +4,7 @@ import './resetPasswordPh.css';
 import {Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Input } from 'antd';
-import Icon from '@ant-design/icons';
+import {LeftOutlined} from '@ant-design/icons';
 import { _code,VenueChangePassword } from '../../api';
 
 
@@ -96,7 +96,7 @@ class resetPasswordPh extends React.Component {
   render() {
     return (
       <div className="resetPasswordPh">
-        <div className="headTitile"><Icon type="arrow-left" onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />重置密码</div>
+        <div className="headTitile"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />重置密码</div>
 
         <div className="listSon">
           <Input maxLength={11} placeholder="请输入法人/操作员手机号"  onChange={this.phone} />
@@ -113,10 +113,10 @@ class resetPasswordPh extends React.Component {
         </div>
 
         <div className="listSon">
-          <Input.Password placeholder="请输入新密码" onChange={this.pass} />
+          <Input.Password style={{border:'none',boxShadow:'none'}} placeholder="请输入新密码" onChange={this.pass} />
         </div>
         <div className="listSon">
-          <Input.Password placeholder="请确认密码" onChange={this.passTwo} />
+          <Input.Password style={{border:'none',boxShadow:'none'}} placeholder="请确认密码" onChange={this.passTwo} />
         </div>
         <div className='restSubmit' onClick={this.submit}>确认</div>
 

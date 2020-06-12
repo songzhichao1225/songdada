@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import { Route, Link } from 'react-router-dom';
 import { gerVenueName, getVenueIndex } from '../../api';
 
-import { Toast, NavBar, Popover, PullToRefresh, Modal } from 'antd-mobile';
+import { Toast, NavBar, Popover, PullToRefresh } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import {  notification } from 'antd';
 import Icon from '@ant-design/icons';
@@ -62,7 +62,6 @@ class homePh extends React.Component {
     data: [],
     visible: false,
     mode: false,
-    issporttype: [],
   };
   async getVenueIndex(data) {
     const res = await getVenueIndex(data, localStorage.getItem('venue_token'))
@@ -76,14 +75,7 @@ class homePh extends React.Component {
   }
   async gerVenueName(data) {
     const res = await gerVenueName(data, localStorage.getItem('venue_token'))
-
-    this.setState({
-      issporttype: res.data.data.issporttype,
-     
-    })
-    if(this.props.history.location.pathname !== '/homePh/orderPh'&&res.data.data.issporttype.length!==0){
-      this.setState({ mode:true})
-    }
+  
 
 
     localStorage.setItem('name', res.data.data.name)
@@ -118,7 +110,6 @@ class homePh extends React.Component {
 
 
   componentDidMount() {
-
 
 
     sessionStorage.setItem('kood', 1)
@@ -312,8 +303,8 @@ class homePh extends React.Component {
               onRefresh={this.refResh}
             >
               <div className="homeScroll" style={{ paddingBottom: '8rem' }}>
-                <div><span className="title" onClick={this.yuYue}>今日预约</span><div className="content"><span>{this.state.getVenue.today_count}</span><span>单</span></div></div>
-                <div><span className="title" onClick={this.yuYueTwo}>本月预约</span><div className="content"><span>{this.state.getVenue.month_count}</span><span>单</span></div></div>
+                <div><span className="title" onClick={this.yuYue}>今日成功预约</span><div className="content"><span>{this.state.getVenue.today_count}</span><span>单</span></div></div>
+                <div><span className="title" onClick={this.yuYueTwo}>本月成功预约</span><div className="content"><span>{this.state.getVenue.month_count}</span><span>单</span></div></div>
                 <div><span className="title" onClick={this.dayIncomePh}>今日收入</span><div className="content"><span>￥{this.state.getVenue.today_money}</span></div></div>
                 <div><span className="title" onClick={this.monthlyIncomePh}>本月收入</span><div className="content"><span>￥{this.state.getVenue.month_money}</span></div></div>
                 <div><span className="title" onClick={this.commentPh}>场馆评分  {this.state.getVenue.score}分</span>
@@ -350,26 +341,7 @@ class homePh extends React.Component {
           <Route path="/homePh/orderPhT" component={orderPhT} />
 
 
-          <Modal
-            visible={this.state.mode}
-            transparent
-            maskClosable={false}
-            onClose={this.onClose}
-            title="提示"
-            footer={[{ text: '取消', onPress: () => { this.setState({ mode: false }) } }]}
-            wrapProps={{ onTouchStart: this.onWrapTouchStart }}
-
-          >
-            {
-              this.state.issporttype.map((item, i) => (
-                <div className="lpodf" key={i}>
-                  <span>您还未选择{item}场地的场地类型，请到预约信息—场地预约情况—{item}页面选择每一块场地的场地类型，谢谢</span>
-                  <div onClick={this.setUp} data-type={item}>去设置</div>
-                </div>
-              ))
-            }
-
-          </Modal>
+        
 
         </div>
         <div className="footer">

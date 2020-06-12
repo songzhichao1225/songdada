@@ -1,12 +1,13 @@
 import React from 'react';
 import './corporatePh.css';
 import 'antd/dist/antd.css';
-import { Toast, InputItem, NavBar, Popover } from 'antd-mobile';
+import { Toast, InputItem, NavBar, Popover, Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { _login, VenueSelectSiteName, _code } from '../../api';
 import { Radio } from 'antd';
 import Icon from '@ant-design/icons';
 const Item = Popover.Item;
+const alert = Modal.alert;
 class corporatePh extends React.Component {
 
   state = {
@@ -19,6 +20,7 @@ class corporatePh extends React.Component {
     visiblePhone: false,
     selectVeun: [],
     value: '',
+    eyes: false,
   };
 
 
@@ -38,29 +40,47 @@ class corporatePh extends React.Component {
 
 
   phone = (e) => {
-    this.setState({ phone: e.replace(/\s*/g,"") })
+    this.setState({ phone: e.replace(/\s*/g, "") })
     if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(e))) {
       this.setState({ visiblePhone: true })
     } else if (e === '') {
       this.setState({ visiblePhone: true })
     } else {
-      this.setState({ phone: e.replace(/\s*/g,""), visiblePhone: false })
+      this.setState({ phone: e.replace(/\s*/g, ""), visiblePhone: false })
     }
   }
   code = e => {
     this.setState({ code: e })
   }
   onPassword = e => {
-    this.setState({ pass: e})
+    this.setState({ pass: e })
   }
 
   async nacode(data) {
     const res = await _code(data)
     if (res.data.code === 2000) {
-      Toast.success(res.data.msg, 1);
+      let num = 60
+      const timer = setInterval(() => {
+        this.setState({ textT: num-- })
+        if (num === -1) {
+          clearInterval(timer)
+          this.setState({ textT: '获取验证码' })
+        }
+      }, 1000)
+      alert('提示',
+        (<Radio.Group onChange={this.onChange} defaultValue={this.state.value}>
+          {
+            this.state.selectVeun.map((item,i)=>(
+            <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
+            ))
+          }
+        </Radio.Group>),
+        [
+          { text: '取消', onPress: () => console.log('cancel'), style: 'default' },
+          { text: '确定', onPress: () => console.log('cancel') }
+        ])
     } else {
-
-      Toast.fail(res.data.msg, 1);
+      Toast.fail(res.data.msg, 1)
     }
   }
 
@@ -93,7 +113,7 @@ class corporatePh extends React.Component {
     }
   }
   code = e => {
-    this.setState({ code: e})
+    this.setState({ code: e })
   }
   password = e => {
     this.setState({ pass: e })
@@ -103,20 +123,12 @@ class corporatePh extends React.Component {
 
     if (res.data.code === 2000) {
       this.setState({ selectVeun: res.data.data, value: res.data.data[0].venueloginuuid })
-      let num = 60
-      const timer = setInterval(() => {
-        this.setState({ textT: num-- })
-        if (num === -1) {
-          clearInterval(timer)
-          this.setState({ textT: '获取验证码' })
-        }
-      }, 1000)
       this.nacode({ "mobile": this.state.phone, "type": 'venuelogin' })
     } else {
       Toast.fail(res.data.msg, 1);
     }
   }
-
+  
   loginPhTeo = () => {
     this.props.history.goBack();
   }
@@ -137,13 +149,14 @@ class corporatePh extends React.Component {
   }
 
   onChange = e => {
-    this.setState({ value:e })
+    this.setState({ value: e.target.value })
   }
 
   onSubmit = () => {
     let data = {
       username: this.state.phone, usercode: this.state.code, userpass: this.state.pass, type: 2, Logintype: 'mobile', venueloginuuid: this.state.value
     }
+
     this.login(data)
   }
 
@@ -159,50 +172,55 @@ class corporatePh extends React.Component {
     }
   }
 
-  closeWeb=()=>{
+  closeWeb = () => {
     console.log(111)
-  if(window.location.href.indexOf('flag=1')===-1){
-    this.props.history.push('/phone')
-     this.setState({visible:false})
-  }else{
-    this.close()
+    if (window.location.href.indexOf('flag=1') === -1) {
+      this.props.history.push('/phone')
+      this.setState({ visible: false })
+    } else {
+      this.close()
+    }
   }
-}
 
+  eyes = () => {
+    this.setState({
+      eyes: !this.state.eyes
+    })
+  }
   render() {
     return (
       <div className="corporatePh">
-          <NavBar
-            mode="dark"
-            icon={<img style={{ width: '2rem', height: '2rem', display: 'block', marginTop: '-0.3rem' }} src={require('../../assets/logo.png')} alt="logo" />}
-            rightContent={<Popover mask
-              overlayClassName="fortest"
-              overlayStyle={{ color: 'currentColor' }}
-              visible={this.state.visible}
-              onSelect={this.closeWeb}
-              overlay={[
-              (<Item key="1" value="scan" style={{ fontSize: '0.7rem' }} data-seed="logId">{window.location.href.indexOf('flag=1')===-1?'返回官网':'关闭'}</Item>),
-              ]}
-              align={{
-                overflow: { adjustY: 0, adjustX: 0 },
-                offset: [-10, 0],
-              }}
-              onVisibleChange={this.handleVisibleChange}
-            
+        <NavBar
+          mode="dark"
+          icon={<img style={{ width: '2rem', height: '2rem', display: 'block', marginTop: '-0.3rem' }} src={require('../../assets/logo.png')} alt="logo" />}
+          rightContent={<Popover mask
+            overlayClassName="fortest"
+            overlayStyle={{ color: 'currentColor' }}
+            visible={this.state.visible}
+            onSelect={this.closeWeb}
+            overlay={[
+              (<Item key="1" value="scan" style={{ fontSize: '0.7rem' }} data-seed="logId">{window.location.href.indexOf('flag=1') === -1 ? '返回官网' : '关闭'}</Item>),
+            ]}
+            align={{
+              overflow: { adjustY: 0, adjustX: 0 },
+              offset: [-10, 0],
+            }}
+            onVisibleChange={this.handleVisibleChange}
+
+          >
+            <div style={{
+              height: '100%',
+              padding: '0 15px',
+              marginRight: '-15px',
+              fontSize: '2rem',
+              display: 'flex',
+              alignItems: 'center',
+            }}
             >
-              <div style={{
-                height: '100%',
-                padding: '0 15px',
-                marginRight: '-15px',
-                fontSize: '2rem',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-              >
-                <Icon type="ellipsis" />
-              </div>
-            </Popover>}
-          ><span style={{ fontSize: '1rem' }}>法人手机号登录</span></NavBar>
+              <Icon type="ellipsis" />
+            </div>
+          </Popover>}
+        ><span style={{ fontSize: '1rem' }}>合作场馆/登录</span></NavBar>
         <div className="loginInput">
           <div className="name">
 
@@ -214,9 +232,8 @@ class corporatePh extends React.Component {
               onChange={this.phone}
               autoFocus
               className="phone"
-            ><Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />
+            >
             </InputItem>
-
 
           </div>
           <div className="name">
@@ -229,7 +246,7 @@ class corporatePh extends React.Component {
               onChange={this.code}
               className="phone"
               maxLength={6}
-            ><Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />
+            >
             </InputItem>
             <div className={this.state.textT === '获取验证码' ? 'obtain' : 'koohidden'} onClick={this.naCode} >
               {this.state.textT}
@@ -238,29 +255,22 @@ class corporatePh extends React.Component {
               {this.state.textT}
             </div>
           </div>
-          <div className={this.state.selectVeun.length > 0 ? 'name' : 'koohidden'}>
-            <Radio.Group className="radio" onChange={this.onChange} value={this.state.value}>
-              {
-                this.state.selectVeun.map((item, i) => (
-                  <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
-                ))
-              }
 
-            </Radio.Group>
-          </div>
           <div className="name">
-
             <InputItem
-              type='password'
+              type={this.state.eyes === true ? 'text' : 'password'}
               placeholder="请输入密码"
               clear={true}
               style={{ fontSize: '0.8rem' }}
               onChange={this.password}
               className="phone"
               maxLength={8}
-            ><Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />
+            >
             </InputItem>
-            <span style={{ color: '#D85D27' }} onClick={this.forgetPassword}>忘记密码</span>
+
+            <span onClick={this.forgetPassword}>忘记密码</span>
+            <span style={{ display: 'block', width: '15%' }} onClick={this.eyes}><img src={require('../../assets/eyes.png')} style={this.state.eyes === true ? { width: '1.13rem', height: '0.81rem', marginLeft: '1rem' } : { display: 'none' }} alt="eyes" /> <img src={require('../../assets/eyesTwo.png')} style={this.state.eyes === true ? { display: 'none' } : { width: '1.13rem', height: '0.81rem', marginLeft: '1rem' }} alt="eyes" /></span>
+
           </div>
 
           <div className="loginBtn" onClick={this.onSubmit}>登录</div>
