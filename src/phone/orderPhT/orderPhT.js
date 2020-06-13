@@ -1,13 +1,12 @@
 import React from 'react';
 import './orderPhT.css';
 
-import { DatePicker, Toast, Card, Modal, InputItem, List } from 'antd-mobile';
+import { DatePicker, Toast, Card, Modal, List } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Pagination, Input, Drawer, Result, Spin, Select } from 'antd';
+import { Pagination, Drawer, Result, Spin } from 'antd';
 import { getReservationActivitieslist, VenueSendMessage, getVenueReservation, getVenueSport, VenueClickCancelPlace, getVenueNumberTitleList, VenueRemarksLabel, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave, getVenueSporttypelist } from '../../api';
-import {BankOutlined,LoadingOutlined,CloseOutlined,CheckOutlined,ReconciliationOutlined} from '@ant-design/icons';
+import {BankOutlined,LoadingOutlined,} from '@ant-design/icons';
 import moment from 'moment';
-const { Option } = Select;
 const prompt = Modal.prompt;
 const alert = Modal.alert;
 
@@ -61,7 +60,7 @@ class orderPhT extends React.Component {
       { name: '已完成', id: 5 },
       { name: '已取消', id: 7 }
     ],
-    page: 0,
+    page: 1,
     clenTop: 0,
     clickY: 0,
     moveY: 0,
@@ -579,7 +578,6 @@ class orderPhT extends React.Component {
       <div className="orderPh">
         <div className="headerNav">
           <div onClick={this.activityList} style={this.state.activityList === true ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>预约活动列表</div>
-          <div onClick={this.bookingKanban} style={this.state.activityList === false ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>场地预约情况</div>
         </div>
         <div className='headSelect' style={this.state.spinFlag === false ? { display: 'none' } : { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' }} ><LoadingOutlined className='loadingY' style={{ top: this.state.clenTop / 4 }}/></div>
         <div style={{ height: '0.5rem', background: '#f5f5f5' }}></div>
@@ -619,7 +617,7 @@ class orderPhT extends React.Component {
               ))
             }
 
-            <Pagination className={this.state.activeSon.length > 0 ? 'fenye' : 'hidden'} size="small" defaultCurrent={1} onChange={this.current} total={this.state.total} />
+            <Pagination className={this.state.activeSon.length > 0 ? 'fenye' : 'hidden'} size="small" defaultCurrent={1} onChange={this.current} current={this.state.page} total={this.state.total} />
 
           </div>
 
@@ -701,201 +699,7 @@ class orderPhT extends React.Component {
 
 
 
-        <div className={this.state.activityList === false ? 'bookingKanban' : 'hidden'}>
-          <div className="modTitle">
-            <span className="blue"></span><span>空闲</span><span className="white"></span><span>不可选</span><span className="yellow"></span><span>线上占用</span><span className="red"></span><span>线下占用</span>
-          </div>
-          <div className="locaList">
-            {
-              this.state.remList.map((item, i) => (
-                <div key={i} data-id={item.id} data-index={i} onClick={this.sportName} style={parseInt(this.state.liIndex) === i ? { borderBottom: '0.06rem solid #D85D27', color: '#D85D27' } : {}}>{item.name}</div>
-              ))
-            }
-          </div>
-
-          <div className="lookList" onScrollCapture={this.scroll} ref={c => { this.scrollRef = c }} style={this.state.lookList.length < 1 ? { display: 'none' } : { display: 'block' }}>
-            <div className="headerSon" style={{ width: '' + (this.state.macNum.length + 1) * 4.25 + 'rem' }}>
-              <div className="topFixd" style={{ paddingTop: 5 + this.state.top, paddingBottom: '10px', minWidth: '100%', zIndex: '999' }}>
-                <span>
-                <span >场地号</span>
-                  <div onClick={this.totitle} data-type='1' style={this.state.liNum === '3'||this.state.liNum === '5'||this.state.liNum === '8'?{display:'block'}:{display:'none'}}>场地类型</div>
-                  <div onClick={this.totitle} data-type='2'>标签</div>
-                </span>
-                {
-                  this.state.macNum.map((item, i) => (
-
-
-                    <span key={i}>{i + 1}
-                      <div className="boxBoss" style={{ position: 'relative', width: '100%', height: '26px' }}>
-                        <Select
-                          placeholder={Object.keys(this.state.otherType).indexOf("" + parseInt(i + 1) + "") !== -1 ? Object.values(this.state.otherType)[Object.keys(this.state.otherType).indexOf("" + parseInt(i + 1) + "")].sporttypename : '请选择'}
-                          className="lookFir"
-                          key={'-' + i + this.state.liNum}
-                          showArrow={false}
-                          dropdownMenustyle={{ width: '100%', padding: '0', margin: '0' }}
-                          style={this.state.liNum === '3' ? { display: 'block', borderRadius: '4px', marginBottom: '0.1rem' } : { display: 'none' } && this.state.liNum === '5' ? { display: 'block', borderRadius: '4px', marginBottom: '0.1rem' } : { display: 'none' } && this.state.liNum === '8' ? { display: 'block', borderRadius: '4px', marginBottom: '0.1rem' } : { display: 'none' }}
-                          dropdownStyle={{ right: '0', marginRight: '0', padding: '0' }}
-                          onChange={this.classList}
-                        >
-                          {
-                            this.state.activityNavTwo.map((itemS, j) => (
-                              <Option key={j} style={{ padding: '0' }} value={itemS.sporttype + '-' + parseInt(i + 1)}>{itemS.sporttypename}</Option>
-                            ))
-                          }
-
-                        </Select>
-                        <Input className='inputAppList'
-                          key={parseInt(i + this.state.liNum + 'l')}
-                          placeholder={item.title===''?'普通/VIP':item.title}
-                          style={{ height: '26px', width: '4.15rem', border: '1px solid #ddd', borderRadius: '4px' }}
-                          data-uuid={item.uuid}
-                          onChange={this.tilChange}
-                          data-num={i + 1}
-                          onPressEnter={this.tilBlur}
-                          suffix={item.title === '' ? '' :<CloseOutlined data-uuid={item.uuid} onClick={this.delTitle} style={{ color: 'rgba(0,0,0,.25)' }} /> }
-                          onFocus={this.tilFocus}
-                          maxLength={5} />
-                      </div>
-                    </span>
-                  ))
-                }
-              </div>
-              <div style={{ height: 80 }}></div>
-              {
-                this.state.lookList.map((index, i) => (
-                  <div key={i} className="sonList">
-                    <div style={{ width: 45 + this.state.left, textAlign: 'right', paddingRight: '8px' }}>{index.a}<br /><div style={{ marginTop: '0.9rem' }}>{i === this.state.lookList.length - 1 ? this.state.lastTime : ''}</div></div>
-                    <span></span>
-                    {
-                      this.state.lookList[i].c.map((item, i) => (
-                        <span
-                          className='spanFa'
-                          key={i}
-                          data-time={index.a}
-                          data-num={i + 1}
-                          data-uuid={item.uuid}
-                          data-type={item.type}
-                          onClick={this.lookPlate}
-                          onTouchStart={this.onTouchStart}
-                          onTouchMove={this.onTouchMove}
-                          onTouchEnd={this.onTouchEnd}
-                          // onContextMenu={this.menu}
-                          data-lo={index.a + '-' + (i + 1)}
-                          style={item.type === 1 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 2 ? { background: '#6FB2FF', marginTop: '0.12rem', color: '#fff', opacity: '.3' } : {} && item.type === 3 ? { background: '#F5A623', marginTop: '0.12rem', color: '#fff' } : {} && item.type === 4 ? { background: 'red', marginTop: '0.12rem', color: '#fff' } : {}}
-                        >
-                          {this.state.lotime.indexOf(index.a + '-' + (i + 1)) !== -1 ? <CheckOutlined />: ''}
-                          {item.type === 1 ? item.money : ''}
-                        </span>
-                      ))
-                    }
-                  </div>
-                ))
-              }
-            </div>
-          </div>
-
-
-
-          <Modal
-            visible={this.state.modalTwo}
-            transparent
-            maskClosable={false}
-            onClose={this.onClose}
-            title="请输入线下预订人的相关信息"
-            footer={[{ text: '提交', onPress: () => { this.placeSubmit(); } }]}
-            wrapProps={{ onTouchStart: this.onWrapTouchStart }}
-
-          >
-            <InputItem className="inputModel" style={{ fontSize: '12px' }} placeholder="(选填)" onChange={this.nameChang} ><span style={{ fontSize: '12px' }}>姓名:</span></InputItem>
-            <InputItem className="inputModel" style={{ fontSize: '12px' }} placeholder="(选填)" onChange={this.phoneChang}  ><span style={{ fontSize: '12px' }}>手机号:</span></InputItem>
-            <InputItem className="inputModel" style={{ fontSize: '12px' }} placeholder="(选填)" onChange={this.vIpChang}  ><span style={{ fontSize: '12px' }}>会员卡:</span></InputItem>
-            <InputItem className="inputModel" style={{ fontSize: '12px' }} placeholder="(选填)" onChange={this.qitaChang}  ><span style={{ fontSize: '12px' }}>其他:</span></InputItem>
-
-          </Modal>
-
-
-
-
-
-
-
-
-
-
-
-          {/* <DatePicker
-            mode="date"
-            extra="Optional"
-            title='选择日期'
-            onChange={this.dateChange}
-            locale={zh_CN}
-            value={this.state.qiDate}
-          >
-            <div className="dateT">{this.state.dataString}</div>
-          </DatePicker> */}
-          <DatePicker
-            mode="date"
-            extra='选择日期'
-            title='选择日期'
-            value={this.state.qiDate}
-            onChange={qiDate => this.setState({ qiDate })}
-            onOk={this.dateChange}
-
-          >
-            <List.Item className="dateT" style={{ fontSize: '14px' }}></List.Item>
-          </DatePicker>
-
-          <Result style={{ fontSize: '0.75rem' }} className={this.state.lookList.length === 0 ? '' : 'hidden'} icon={<ReconciliationOutlined style={{ fontSize: '2rem',color:'#F5A623' }} />} title="没有预约情况" />
-          <Drawer
-            title="该场地详细信息"
-            placement="right"
-            closable={false}
-            width='80%'
-            onClose={this.informOnClose}
-            visible={this.state.informVisible}
-          >
-            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
-              <span>活动编号：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].orderId : ''}</span>
-            </div>
-            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
-              <span>项目名称：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].SportName : ''}</span>
-            </div>
-            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
-              <span>开始时间：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].StartTime : ''}</span>
-            </div>
-            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
-              <span>结束时间：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].FinishedTime : ''}</span>
-            </div>
-            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
-              <span>时长：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].PlayTime : ''}</span>
-            </div>
-            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
-              <span>应到人数：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].Shouldarrive : ''}</span>
-            </div>
-            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
-              <span>已报名人数：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].TrueTo : ''}</span>
-            </div>
-            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
-              <span>活动状态：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].PublicStatus : ''}</span>
-            </div>
-            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
-              <span>场地费金额：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoney : ''}</span>
-            </div>
-            <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
-              <span>场地费状态：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoneyStatus : ''}</span>
-            </div>
-          </Drawer>
-        </div>
+        
       </div>
     )
   }

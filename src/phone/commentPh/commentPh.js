@@ -6,7 +6,7 @@ import { Toast, PullToRefresh, Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { getCommentList, getOverallScore, VenueCommentReply } from '../../api';
 import { Pagination, Result, Input } from 'antd';
-import { DatabaseOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { DatabaseOutlined, LeftOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input
 
@@ -128,7 +128,7 @@ class commentPh extends React.Component {
     return (
       <div className="commentPh">
         <div className="headerTitle">
-          <ArrowLeftOutlined onClick={this.reture} style={{ position: 'absolute', left: '0', width: '48px', height: '48px', lineHeight: '48px' }} />
+          <LeftOutlined onClick={this.reture} style={{ position: 'absolute', left: '0', width: '48px', height: '48px', lineHeight: '48px' }} />
           场馆评分
           </div>
         <div className="essence">

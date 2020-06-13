@@ -99,12 +99,12 @@ class homePh extends React.Component {
   }
   yuYue = () => {
     this.props.history.push({ pathname: '/homePh/orderPhT', query: { time: 1 } })
-    this.setState({ title: '今日预约' })
+    this.setState({ title: '今日成功预约' })
   }
 
   yuYueTwo = () => {
     this.props.history.push({ pathname: '/homePh/orderPhT', query: { time: 2 } })
-    this.setState({ title: '本月预约' })
+    this.setState({ title: '本月成功预约' })
   }
 
 

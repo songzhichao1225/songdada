@@ -31,8 +31,8 @@ class newsPh extends React.Component {
     clickY: 0,
     moveY: 0,
     spinFlag: false,
-    newsPage: 0,
-    newsPageTwo: 0,
+    newsPage: 1,
+    newsPageTwo: 1,
 
 
     refreshing: false,
@@ -181,7 +181,7 @@ class newsPh extends React.Component {
                 ))
               }
               <Spin spinning={this.state.spin} style={{ width: '100%', marginTop: '45%' }} />
-              <Pagination className={this.state.getVenueNewsList.length === 0 ? 'hidden' : 'fenye'} size="small" onChange={this.current} defaultCurrent={1} total={this.state.other} />
+              <Pagination className={this.state.getVenueNewsList.length === 0 ? 'hidden' : 'fenye'} size="small" onChange={this.current} defaultCurrent={1} current={this.state.newsPage} total={this.state.other} />
               <Result className={this.state.spin === false && this.state.getVenueNewsList.length === 0 ? '' : 'hidden'} icon={<MessageOutlined style={{ fontSize: '2rem',color:'#F5A623' }} />} title="没有系统消息" />
             </div>
           </PullToRefresh>
@@ -237,7 +237,7 @@ class newsPh extends React.Component {
                   </div>
                 ))
               }
-              <Pagination className={this.state.getVenueNewsReceivedList.length === 0 ? 'hidden' : 'fenye'} size="small" onChange={this.currentPush} defaultCurrent={1} total={this.state.otherPush} />
+              <Pagination className={this.state.getVenueNewsReceivedList.length === 0 ? 'hidden' : 'fenye'} size="small" onChange={this.currentPush} defaultCurrent={1} current={this.state.newsPageTwo} total={this.state.otherPush} />
               <Result className={this.state.getVenueNewsReceivedList.length === 0 ? '' : 'hidden'} icon={<MessageOutlined style={{ fontSize: '2rem',color:'#F5A623' }} />} title="没有发布消息" />
             </div>
           </PullToRefresh>

@@ -99,6 +99,9 @@
     font-size: 0.75rem;
     position: relative;
 }
+.sitePhtitle .titleHead .son:nth-child(3n+1){
+    margin-left: 0;
+}
 .sitePhtitle .titleHead .son:first-child{
     margin-left: 0;
 }
@@ -173,4 +176,124 @@
     line-height: 2.5rem;
     color: #fff;
     clear: both;
+}
+.sitePh .request img {
+       width: 4rem;
+       height: 4rem;
+       display: block;
+       margin: 40% auto 0;
+}
+.sitePh .request div{
+    text-align: center;
+}
+
+.sitePh .siting68 .Subdivide .card{
+    width: 95%;
+    margin: 0.75rem auto 0; 
+  }
+
+  .sitePh .siting68{
+    height: 90%;
+    background-color: #F5F5F5;
+}
+.sitePh .siting68 .Subdivide{
+    overflow-y: auto;
+    height: 82%;
+}
+
+.sitePh .siting68 .Subdivide .card .titleLeft{
+    color: #D85D27;
+    font-size: 0.88rem;
+}
+.sitePh .siting68 .Subdivide .card .titleRight{
+    color: #000;
+    font-size:0.75rem ;
+}
+.sitePh .siting68 .Subdivide .card .bossname{
+    overflow: hidden;
+}
+.sitePh .siting68 .Subdivide .card .bossname>div{
+    width: 45%;
+    font-size: 0.75rem;
+    color: #000;
+    float: left;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap
+}
+.sitePh .siting68 .Subdivide .card .bossname>div:nth-child(2n){
+    margin-left: 10%;
+}
+.sitePh .siting68 .Subdivide .card  .lookYou{
+    width: 3.88rem;
+    height: 1.38rem;
+    background: #FFEAE0;
+    text-align: center;
+    line-height: 1.38rem;
+    font-size: 0.63rem;
+    color: #D85D27;
+    border-radius: 1rem;
+}
+
+.sitePh .siting68 .footerSite{
+    width: 95%;
+    height: 2.5rem;
+    margin: 0.5rem auto 0;
+}
+.sitePh .siting68 .footerSite>div{
+    width: 48%;
+    float: left;
+    background: #fff;
+    line-height: 2.5rem;
+    border-radius: 0.19rem;
+    text-align: center;
+    color: #D85D27;
+}
+.sitePh .siting68 .footerSite>div img{
+    width: 0.81rem;
+    height: 0.81rem;
+}
+.am-modal-mask{
+    z-index: 1001;
+}
+.am-modal-wrap{
+    z-index: 1001;
+}
+.bianhao{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.LitName{
+    width: 4.13rem;
+    height: 2.13rem;
+    background: #F3F3F3;
+    border-radius:0.19rem;
+    text-align: center;
+    line-height: 2.13rem;
+    float: left;
+    margin-left: 0.8rem;
+    margin-top: 0.5rem;
+}
+.LitBtn{
+    height: 2.63rem;
+    background-color: #D85D27;
+    border-radius: 2.63rem;
+    text-align: center;
+    line-height: 2.63rem;
+    color: #fff;
+    font-size: 1.06rem;
+    clear: both;
+    margin-top: 7rem;
+}
+ .am-list-item .am-input-control .fake-input-container .fake-input{
+    font-size: 0.88rem;
+    color: #888;
+}
+ .am-list-item .am-input-control .fake-input-container .fake-input-placeholder{
+    font-size: 0.88rem;
+    color: #888;
+}
+.am-list-item .am-list-line .am-list-content{
+    padding: 0;
 }
