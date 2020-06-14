@@ -18,7 +18,7 @@
 }
 .sitePh .wsMa4 .Subdivide{
     overflow-y: auto;
-    height: 82%;
+    height: 75%;
 }
 .sitePh .wsMa4 .Subdivide .card{
   width: 95%;
@@ -198,7 +198,7 @@
 }
 .sitePh .siting68 .Subdivide{
     overflow-y: auto;
-    height: 82%;
+    height: 75%;
 }
 
 .sitePh .siting68 .Subdivide .card .titleLeft{
@@ -296,4 +296,26 @@
 }
 .am-list-item .am-list-line .am-list-content{
     padding: 0;
+}
+.am-textarea-control textarea{
+    font-size: 0.88rem;
+}
+.am-textarea-label{
+    font-size: 0.88rem;
+}
+.am-list-item{
+    border-bottom: 1px solid #e9e9e9;
+}
+.Siscount{
+    margin-top: 2rem;
+}
+.Siscount .leftSiscount{
+    width: 49.5%;
+    height: 2.5rem;
+    float: left;
+    color:#fff;
+    text-align: center;
+    line-height: 2.5rem;
+    background: #D85D27;
+    border-radius: 3px;
 }

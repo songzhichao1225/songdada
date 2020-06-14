@@ -1,14 +1,36 @@
 import React from 'react';
 import './sitePh.css';
-import { Card, Picker, List, Toast, InputItem, Modal, DatePicker } from 'antd-mobile';
+import { Card, Picker, List, Toast, InputItem, Modal, DatePicker, TextareaItem } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Pagination, Drawer, Spin } from 'antd';
 import { } from '@ant-design/icons';
-import { getVenueNumberTitleList, getVenueSportidTitle, DelVenueTitle, getVenueTitleSave, getSiteSelectedVenueid, DelVenueNumberTitle, DelSiteSetting, getVenueNumberTitleSave, getVenueNumberTitleFirst, getSiteSettingList, getSiteSelectedTitle } from '../../api';
+import { getVenueNumberTitleList, getVenueSportidTitle, DelVenueTitle, getVenueTitleSave, getSiteSelectedVenueid, DelVenueNumberTitle, DelSiteSetting, AddSiteSetting, getVenueNumberTitleSave, getVenueNumberTitleFirst, getSiteSettingList, getSiteSelectedTitle, getSiteSettingFirst, DelSiteSettingDiscount, SiteSettingDiscountSave } from '../../api';
 
 const alert = Modal.alert;
 
 let moneyKeyboardWrapProps;
+
+function dateFormat(fmt, date) {
+  let ret;
+  const opt = {
+    "Y+": date.getFullYear().toString(),        // 年
+    "m+": (date.getMonth() + 1).toString(),     // 月
+    "d+": date.getDate().toString(),            // 日
+    "H+": date.getHours().toString(),           // 时
+    "M+": date.getMinutes().toString(),         // 分
+    "S+": date.getSeconds().toString()          // 秒
+    // 有其他格式化字符需求可以继续添加，必须转化成字符串
+  };
+  for (let k in opt) {
+    ret = new RegExp("(" + k + ")").exec(fmt);
+    if (ret) {
+      fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+    };
+  };
+  return fmt;
+}
+
+
 
 
 class sitePh extends React.Component {
@@ -45,9 +67,9 @@ class sitePh extends React.Component {
       { label: '排球', value: 11 },
       { label: '网球', value: 12 }
     ],
-    Longest:[{label:'一周',value:0.1},{label:'两周',value:0.2},{label:'三周',value:0.3},{label:'一个月',value:1},{label:'两个月',value:2},],
-    Shortest:[{label:'0分钟',value:0},{label:'30分钟',value:30},{label:'60分钟',value:60},{label:'120分钟',value:120},{label:'180分钟',value:180},{label:'240分钟',value:240},{label:'360分钟',value:360},{label:'1140分钟',value:1140},{label:'2280分钟',value:2280},{label:'4320分钟',value:4320},],
-    LiturgyArr: [{ name: '周一', cheked: false }, { name: '周二', cheked: false }, { name: '周三', cheked: false }, { name: '周四', cheked: false }, { name: '周五', cheked: false }, { name: '周六', cheked: false, }, { name: '周日', cheked: false }],
+    Longest: [{ label: '一周', value: 0.1 }, { label: '两周', value: 0.2 }, { label: '三周', value: 0.3 }, { label: '一个月', value: 1 }, { label: '两个月', value: 2 },],
+    Shortest: [{ label: '0分钟', value: 0 }, { label: '30分钟', value: 30 }, { label: '60分钟', value: 60 }, { label: '120分钟', value: 120 }, { label: '180分钟', value: 180 }, { label: '240分钟', value: 240 }, { label: '360分钟', value: 360 }, { label: '1140分钟', value: 1140 }, { label: '2280分钟', value: 2280 }, { label: '4320分钟', value: 4320 },],
+    LiturgyArr: [{ name: "周一", idx: 1, cheked: false }, { name: "周二", idx: 2, cheked: false }, { name: "周三", idx: 3, cheked: false }, { name: "周四", idx: 4, cheked: false }, { name: "周五", idx: 5, cheked: false }, { name: "周六", idx: 6, cheked: false, }, { name: "周日", idx: 7, cheked: false }],
     asyncValue: 0,
     index: '1',
     visibleXi: false,
@@ -76,11 +98,21 @@ class sitePh extends React.Component {
     titleArrFoterNum: 0,
     Liturgy: false,
     Liturgyche: '请选择',
-    starttime:'',
-    endtime:'',
-    money:'',
-    pickerValueFour:[],
-    pickerValueFive:[],
+    starttime: '',
+    endtime: '',
+    money: '',
+    pickerValueFour: [],
+    pickerValueFive: [],
+    comment: '',
+    tagId: '',
+    LiturgycheNum: '',
+    jiageUUid: '',
+    specialOffer: false,
+    specialOfferH: 0,
+    offer: false,
+    venueidSiscount: [],
+    startDate: '',
+    endDate: '',
   };
 
   header = e => {
@@ -396,20 +428,21 @@ class sitePh extends React.Component {
       }
     }
     for (let i in res.data.data) {
+      res.data.data[i].opendaynameTwo = ''
       if (res.data.data[i].openday.split(',').indexOf('1') !== -1) {
-        res.data.data[i].opendayname = res.data.data[i].opendayname + ',周一'
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周一'
       } if (res.data.data[i].openday.split(',').indexOf('2') !== -1) {
-        res.data.data[i].opendayname = res.data.data[i].opendayname + ',周二'
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周二'
       } if (res.data.data[i].openday.split(',').indexOf('3') !== -1) {
-        res.data.data[i].opendayname = res.data.data[i].opendayname + ',周三'
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周三'
       } if (res.data.data[i].openday.split(',').indexOf('4') !== -1) {
-        res.data.data[i].opendayname = res.data.data[i].opendayname + ',周四'
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周四'
       } if (res.data.data[i].openday.split(',').indexOf('5') !== -1) {
-        res.data.data[i].opendayname = res.data.data[i].opendayname + ',周五'
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周五'
       } if (res.data.data[i].openday.split(',').indexOf('6') !== -1) {
-        res.data.data[i].opendayname = res.data.data[i].opendayname + ',周六'
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周六'
       } if (res.data.data[i].openday.split(',').indexOf('7') !== -1) {
-        res.data.data[i].opendayname = res.data.data[i].opendayname + ',周日'
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周日'
       }
     }
     this.setState({
@@ -439,7 +472,7 @@ class sitePh extends React.Component {
     this.setState({ Price: true })
   }
   onClosePrice = () => {
-    this.setState({ Price: false})
+    this.setState({ Price: false, jiageUUid: '' })
   }
 
 
@@ -452,7 +485,6 @@ class sitePh extends React.Component {
         let obj = { label: res.data.data[i].title, value: i }
         titleArr.push(obj)
       }
-
       this.setState({ titleArr: titleArr })
     } else {
       alert('提示', <div style={{ textAlign: 'center', fontSize: '0.88rem' }}>您还没对{this.state.sportArrTwo[data.sportid - 1].label}场地进行场地细分，无法选择细分标签，请先去进行场地细分，谢谢！</div>, [
@@ -464,13 +496,13 @@ class sitePh extends React.Component {
     this.setState({
       pickerValueTwo: e[0]
     })
-    this.setState({pickerValueThree:[],cheStr:'',titleArrFoterNum:0})
+    this.setState({ pickerValueThree: [], cheStr: '', titleArrFoterNum: 0 })
     this.getSiteSelectedTitle({ sportid: e[0] })
   }
   pickerValueThree = v => {
     for (let i in this.state.titleArrFoter) {
       if (this.state.titleArrFoter[i].title === this.state.titleArr[v].label) {
-        this.setState({ cheStr: this.state.titleArrFoter[i].venueid, titleArrFoterNum: this.state.titleArrFoter[i].number })
+        this.setState({ cheStr: this.state.titleArrFoter[i].venueid, titleArrFoterNum: this.state.titleArrFoter[i].number, tagId: this.state.titleArrFoter[i].uuid })
       }
     }
     this.setState({ pickerValueThree: v })
@@ -490,25 +522,259 @@ class sitePh extends React.Component {
   }
   LiturgyArrChe = () => {
     let Liturgyche = []
+    let LiturgycheNum = []
     for (let i in this.state.LiturgyArr) {
       if (this.state.LiturgyArr[i].cheked === true) {
         Liturgyche.push(this.state.LiturgyArr[i].name)
+        LiturgycheNum.push(this.state.LiturgyArr[i].idx)
       }
     }
     if (Liturgyche.length === 0) {
       Toast.success('请选择星期', 1);
     } else {
-      this.setState({ Liturgyche: Liturgyche.join(','), Liturgy: false })
+      this.setState({ Liturgyche: Liturgyche.join(','), LiturgycheNum: LiturgycheNum.join(','), Liturgy: false })
     }
   }
 
-  pickerValueFour=e=>{
-     this.setState({pickerValueFour:e})
+  pickerValueFour = e => {
+    this.setState({ pickerValueFour: e })
   }
-  pickerValueFive=e=>{
-    this.setState({pickerValueFive:e})
+  pickerValueFive = e => {
+    this.setState({ pickerValueFive: e })
   }
 
+
+  async AddSiteSetting(data) {
+    const res = await AddSiteSetting(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ Price: false, jiageUUid: '' })
+      this.getSiteSettingList({ page: 1, sportid: '' })
+    } else {
+      Toast.fail(res.data.msg, 2);
+    }
+
+  }
+  comment = e => {
+    this.setState({ comment: e })
+  }
+
+  jiageSub = () => {
+
+    let { pickerValueTwo, pickerValueThree, Liturgyche, starttime, endtime, money, cheStr, titleArrFoterNum, pickerValueFour, pickerValueFive, comment, tagId, titleArr, sportArrTwo, LiturgycheNum, jiageUUid } = this.state
+
+    if (pickerValueTwo === '') {
+      Toast.fail('请选择场地类型', 1);
+    } else if (pickerValueThree === '') {
+      Toast.fail('请选择细分标签', 1);
+    } else if (Liturgyche.length === 0) {
+      Toast.fail('请选择星期', 1);
+    } else if (starttime === '') {
+      Toast.fail('请选择开始时间', 1);
+    } else if (endtime === '') {
+      Toast.fail('请选择结束时间', 1);
+    } else if (money === '') {
+      Toast.fail('请输入价格', 1);
+    } else if (pickerValueFour.length === 0) {
+      Toast.fail('请选择最长提前预定时间', 1);
+    } if (pickerValueFive.length === 0) {
+      Toast.fail('请选择最短提前预定时间', 1);
+    } else {
+      let obj = {
+        uuid: jiageUUid,
+        sportid: pickerValueTwo,
+        sportname: sportArrTwo[pickerValueTwo - 1].label,
+        tags: titleArr[pickerValueThree].label,
+        openday: LiturgycheNum,
+        opendayname: Liturgyche,
+        starttime: dateFormat("HH:MM", starttime),
+        endtime: dateFormat("HH:MM", endtime),
+        costperhour: money,
+        venueid: cheStr,
+        sitenumber: titleArrFoterNum,
+        maxScheduledDate: pickerValueFour[0],
+        appointmenttime: pickerValueFive[0],
+        comment: comment,
+        tags_id: tagId
+      }
+      this.AddSiteSetting(obj)
+
+    }
+
+  }
+
+
+
+  async getSiteSettingFirst(data) {
+    const res = await getSiteSettingFirst(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      if (this.state.specialOfferH !== 1) {
+        this.getSiteSelectedTitle({ sportid: res.data.data[0].sportid })
+        let that = this
+        setTimeout(() => {
+          for (let i in that.state.titleArr) {
+            if (that.state.titleArr[i].label === res.data.data[0].tags) {
+              this.setState({ pickerValueThree: that.state.titleArr[i].value })
+            }
+          }
+        }, 1000)
+        let open = res.data.data[0].openday.split(',')
+        let p = []
+        for (let i in open) {
+          if (open[i].indexOf("1") !== -1) {
+            p.push("周一")
+            this.state.LiturgyArr[0].cheked = true
+          } else if (open[i].indexOf("2") !== -1) {
+            p.push("周二")
+            this.state.LiturgyArr[1].cheked = true
+          } else if (open[i].indexOf("3") !== -1) {
+            p.push("周三")
+            this.state.LiturgyArr[2].cheked = true
+          } else if (open[i].indexOf("4") !== -1) {
+            p.push("周四")
+            this.state.LiturgyArr[3].cheked = true
+          } else if (open[i].indexOf("5") !== -1) {
+            p.push("周五")
+            this.state.LiturgyArr[4].cheked = true
+          } else if (open[i].indexOf("6") !== -1) {
+            p.push("周六")
+            this.state.LiturgyArr[5].cheked = true
+          } else if (open[i].indexOf("7") !== -1) {
+            p.push("周日")
+            this.state.LiturgyArr[6].cheked = true
+          }
+        }
+
+
+        this.setState({
+          Price: true, pickerValueTwo: res.data.data[0].sportid,
+          cheStr: res.data.data[0].venueid, titleArrFoterNum: res.data.data[0].sitenumber,
+          LiturgycheNum: res.data.data[0].openday, Liturgyche: p.join(','), starttime: new Date('2019-10-12 ' + res.data.data[0].starttime + ''), endtime: new Date('2019-10-12 ' + res.data.data[0].endtime + ''),
+          money: res.data.data[0].costperhour, pickerValueFour: [Number(res.data.data[0].maxScheduledDate)], pickerValueFive: [res.data.data[0].appointmenttime],
+          tagId: res.data.data[0].tags_id,
+          comment: res.data.data[0].comment
+        })
+
+      } else {
+        let open = res.data.data[0].openday.split(',')
+        let p = []
+        for (let i in open) {
+          if (open[i].indexOf("1") !== -1) {
+            p.push("周一")
+            this.state.LiturgyArr[0].cheked = true
+          } else if (open[i].indexOf("2") !== -1) {
+            p.push("周二")
+            this.state.LiturgyArr[1].cheked = true
+          } else if (open[i].indexOf("3") !== -1) {
+            p.push("周三")
+            this.state.LiturgyArr[2].cheked = true
+          } else if (open[i].indexOf("4") !== -1) {
+            p.push("周四")
+            this.state.LiturgyArr[3].cheked = true
+          } else if (open[i].indexOf("5") !== -1) {
+            p.push("周五")
+            this.state.LiturgyArr[4].cheked = true
+          } else if (open[i].indexOf("6") !== -1) {
+            p.push("周六")
+            this.state.LiturgyArr[5].cheked = true
+          } else if (open[i].indexOf("7") !== -1) {
+            p.push("周日")
+            this.state.LiturgyArr[6].cheked = true
+          }
+        }
+        let h = res.data.data[0].venueid.split(',')
+        let g = res.data.data[0].discount_venueid === null ? [] : res.data.data[0].discount_venueid.split(',')
+        let kol = []
+        for (let i in h) {
+            let obj = { num: h[i], cheked: false }
+            kol.push(obj)
+        }
+        for(let i in g){
+          kol[Number(g[i]-1)].cheked=true
+        }
+        this.setState({
+          kop: res.data.data[0].discount_costperhour,
+          SiscountUUid: res.data.data[0].uuid,
+          specialOffer: true, sportSiscount: res.data.data[0].sportname, titleSiscount: res.data.data[0].tags, xingSiscount: p.join(','),
+          moneySiscount: res.data.data[0].discount_costperhour === null ? res.data.data[0].costperhour : res.data.data[0].discount_costperhour,
+          startDate: res.data.data[0].discount_sdate === null ? '' : new Date(res.data.data[0].discount_sdate + ' ' + res.data.data[0].discount_start),
+          endDate: res.data.data[0].discount_edate === null ? '' : new Date(res.data.data[0].discount_edate + ' ' + res.data.data[0].discount_end),
+          starttimeSiscount: res.data.data[0].starttime, endtimeSiscount: res.data.data[0].endtime, venueidSiscount: kol, venueidSiscountTwo: res.data.data[0].discount_venueid === null ? '请选择' : res.data.data[0].discount_venueid
+        })
+      }
+    }
+
+  }
+
+  jiaUpdata = e => {
+    this.setState({ jiageUUid: e.currentTarget.dataset.uuid })
+    this.getSiteSettingFirst({ uuid: e.currentTarget.dataset.uuid })
+  }
+
+  specialOfferClose = () => {
+    this.setState({ specialOffer: false, specialOfferH: 0 })
+  }
+  specialOffer = e => {
+    this.getSiteSettingFirst({ uuid: e.currentTarget.dataset.uuid })
+    this.setState({ specialOfferH: 1 })
+  }
+
+  offerClose = () => {
+    this.setState({ offer: false })
+  }
+  offer = () => {
+    this.setState({ offer: true })
+  }
+  numArrSiscount = e => {
+    this.state.venueidSiscount[Number(e.currentTarget.dataset.num) - 1].cheked = !this.state.venueidSiscount[Number(e.currentTarget.dataset.num) - 1].cheked
+    this.setState({
+      venueidSiscount: this.state.venueidSiscount
+    })
+  }
+  koNumArrSiscount = () => {
+    let arrTo = []
+    for (let i in this.state.venueidSiscount) {
+      if (this.state.venueidSiscount[i].cheked === true) {
+        arrTo.push(this.state.venueidSiscount[i].num)
+      }
+    }
+    this.setState({ venueidSiscountTwo: arrTo.join(','), offer: false })
+  }
+
+
+  async DelSiteSettingDiscount(data) {
+    const res = await DelSiteSettingDiscount(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ specialOffer: false })
+      this.getSiteSettingList({ page: this.state.pageTwo, sportid: this.state.asyncValueTwo })
+    }else{
+      Toast.fail(res.data.msg, 2);
+    }
+  }
+
+  async SiteSettingDiscountSave(data) {
+    const res = await SiteSettingDiscountSave(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ specialOffer: false })
+      this.getSiteSettingList({ page: this.state.pageTwo, sportid: this.state.asyncValueTwo })
+    }else{
+      Toast.fail(res.data.msg, 2);
+    }
+  }
+
+  joinSiscount = () => {
+    let { SiscountUUid, startDate, endDate, venueidSiscountTwo, moneySiscount } = this.state
+    let obj = {
+      uuid: SiscountUUid,
+      discount_start: dateFormat("HH:MM", startDate),
+      discount_end: dateFormat("HH:MM", endDate),
+      discount_venueid: venueidSiscountTwo,
+      discount_costperhour: moneySiscount,
+      discount_sdate: dateFormat("YYYY-mm-dd", startDate),
+      discount_edate: dateFormat("YYYY-mm-dd", endDate)
+    }
+    this.SiteSettingDiscountSave(obj)
+
+  }
 
   render() {
     return (
@@ -566,7 +832,7 @@ class sitePh extends React.Component {
                     <div className="bossname">
                       <div>场地编号：{item.venueid}</div>
                       <div>场地数量：{item.sitenumber}</div>
-                      <div>星期：{item.opendayname}</div>
+                      <div>星期：{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</div>
                       <div>时间范围：{item.starttime}~{item.endtime}</div>
                       <div>价格：{item.costperhour}元/时</div>
                       <div>最长提前预定时间：{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</div>
@@ -574,7 +840,7 @@ class sitePh extends React.Component {
                       <div>备注：{item.comment === '' ? '无' : item.comment}</div>
                     </div>
                   </Card.Body>
-                  <Card.Footer content={<div className="lookYou">查看优惠</div>} extra={<div><img style={{ marginRight: '10px' }} src={require('../../assets/upLoad.png')} alt="img" /><img onClick={() =>
+                  <Card.Footer content={<div className="lookYou" onClick={this.specialOffer} data-uuid={item.uuid}>{item.discount_venueid !== null ? '查看优惠' : '添加优惠'}</div>} extra={<div><img style={{ marginRight: '10px' }} onClick={this.jiaUpdata} data-uuid={item.uuid} src={require('../../assets/upLoad.png')} alt="img" /><img onClick={() =>
                     alert('提示', '您确定要删除该条价格设置么？删除后用户将无法预订' + item.sportname + '的' + item.tags + '场地。', [
                       { text: '取消', onPress: () => console.log('cancel') },
                       { text: '确定', onPress: () => this.DelSiteSetting({ uuid: item.uuid }) },
@@ -689,6 +955,7 @@ class sitePh extends React.Component {
             data={this.state.sportArrTwo}
             value={[this.state.pickerValueTwo]}
             onOk={this.pickerValueTwo}
+            disabled={this.state.jiageUUid !== '' ? true : false}
             cols={1} className="forss">
             <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>场地类型</List.Item>
           </Picker>
@@ -696,6 +963,7 @@ class sitePh extends React.Component {
             data={this.state.titleArr}
             value={this.state.pickerValueThree}
             onOk={this.pickerValueThree}
+            disabled={this.state.jiageUUid !== '' ? true : false}
             cols={1} className="forss">
             <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>细分标签</List.Item>
           </Picker>
@@ -707,6 +975,7 @@ class sitePh extends React.Component {
             mode="time"
             extra="请选择"
             minuteStep={30}
+            format="HH:mm"
             value={this.state.starttime}
             onChange={starttime => this.setState({ starttime })}
           >
@@ -722,18 +991,18 @@ class sitePh extends React.Component {
           >
             <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>结束时间</List.Item>
           </DatePicker>
-          <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty"> 
-          <InputItem
-            type='money'
-            placeholder="请输入"
-            value={this.state.money}
-            onChange={(v) => { this.setState({money:v}) }}
-            onBlur={(v) => { console.log('onBlur', v); }}
-            style={{padding:'0'}}
-            moneyKeyboardWrapProps={moneyKeyboardWrapProps}
-          ><span style={{fontSize:'0.75rem'}}>价格(元/时)</span></InputItem></List.Item>
-         
-         <Picker
+          <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">
+            <InputItem
+              type='money'
+              placeholder="请输入"
+              value={this.state.money}
+              onChange={(v) => { this.setState({ money: v }) }}
+              onBlur={(v) => { console.log('onBlur', v); }}
+              style={{ padding: '0' }}
+              moneyKeyboardWrapProps={moneyKeyboardWrapProps}
+            ><span style={{ fontSize: '0.75rem' }}>价格(元/时)</span></InputItem></List.Item>
+
+          <Picker
             data={this.state.Longest}
             value={this.state.pickerValueFour}
             onOk={this.pickerValueFour}
@@ -749,9 +1018,18 @@ class sitePh extends React.Component {
             <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>最短提前预定时间</List.Item>
           </Picker>
 
-           
+          <TextareaItem
+            title="备注"
+            placeholder="请输入"
+            maxLength={200}
+            data-seed="logId"
+            ref={el => this.autoFocusInst = el}
+            autoHeight
+            onChange={this.comment}
+          />
 
-          <div className="btnSub" onClick={this.xifenPush}>提交</div>
+
+          <div className="btnSub" onClick={this.jiageSub}>提交</div>
         </Drawer>
 
 
@@ -774,7 +1052,78 @@ class sitePh extends React.Component {
         </Drawer>
 
 
+        <Drawer
+          title={'添加/修改' + this.state.sportSiscount + '优惠设置'}
+          placement="bottom"
+          height='100%'
+          onClose={this.specialOfferClose}
+          visible={this.state.specialOffer}
+        >
+          <List.Item arrow="horizontal" extra={this.state.sportSiscount} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">运动项目</List.Item>
+          <List.Item arrow="horizontal" extra={this.state.titleSiscount} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty" >细分标签</List.Item>
+          <List.Item arrow="horizontal" extra={this.state.xingSiscount} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">星期</List.Item>
+          <List.Item arrow="horizontal" extra={this.state.starttimeSiscount + '~' + this.state.endtimeSiscount} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">时间范围</List.Item>
+          <List.Item arrow="horizontal" extra={this.state.venueidSiscountTwo} onClick={this.offer} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">参加优惠的场地</List.Item>
+          <DatePicker
+            mode="datetime"
+            extra="请选择"
+            minuteStep={30}
+            format="YYYY-MM-DD HH:mm"
+            value={this.state.startDate}
+            onChange={startDate => this.setState({ startDate })}
+          >
+            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>优惠期限(开始)</List.Item>
+          </DatePicker>
 
+          <DatePicker
+            mode="datetime"
+            extra="请选择"
+            minuteStep={30}
+            format="YYYY-MM-DD HH:mm"
+            value={this.state.endDate}
+            onChange={endDate => this.setState({ endDate })}
+          >
+            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>优惠期限(结束)</List.Item>
+          </DatePicker>
+
+          <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">
+            <InputItem
+              type='money'
+              placeholder={this.state.moneySiscount}
+              
+              onChange={(v) => { this.setState({ moneySiscount: v }) }}
+              onBlur={(v) => { console.log('onBlur', v); }}
+              style={{ padding: '0' }}
+              moneyKeyboardWrapProps={moneyKeyboardWrapProps}
+            ><span style={{ fontSize: '0.75rem' }}>价格(元/时)</span></InputItem></List.Item>
+
+          <div className="Siscount"><div style={this.state.kop === null ? { display: 'none' } : {}} onClick={() =>
+            alert('提示', '您确定要删除该条优惠设置么？删除后用户将无法预订' + this.state.sportSiscount + '的优惠场地', [
+              { text: '取消', onPress: () => console.log('cancel') },
+              { text: '确定', onPress: () => this.DelSiteSettingDiscount({ uuid: this.state.SiscountUUid }) },
+            ])} className="leftSiscount">删除</div><div className="leftSiscount" onClick={this.joinSiscount} style={this.state.kop === null ? { width: '100%', borderRadius: '2.5rem' } : { marginLeft: '1%' }}>提交</div></div>
+
+        </Drawer>
+
+
+        <Drawer
+          title="选择优惠场地编号"
+          placement="bottom"
+          height='60%'
+          onClose={this.offerClose}
+          visible={this.state.offer}
+        >
+          <div className="sitePhSerialHeader"><span onClick={this.reverseC}>反选</span><span onClick={this.allThem}>全选</span></div>
+          <div className="sitePhSerial">
+
+            {
+              this.state.venueidSiscount.map((item, i) => (
+                <div key={i} onClick={this.numArrSiscount} data-num={item.num} style={item.cheked === true ? { background: '#F5A623', color: '#fff' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', opacity: '0.2' } : {}}>{item.num}</div>
+              ))
+            }
+          </div>
+          <div className="sitePhFooter" onClick={this.koNumArrSiscount}>确定</div>
+        </Drawer>
 
 
 
