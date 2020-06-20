@@ -109,9 +109,7 @@
     width: 5rem;
     height: 5rem;
 }
-.stadiumInformationPh .ant-upload-list-picture-card-container{
-   margin:8px 0 0 8px;
-}
+
 
 .stadiumInformationPh .ant-checkbox-group{
     padding-bottom: 0.63rem;
@@ -153,6 +151,7 @@
 }
 .stadiumInformationPh .am-list-item{
     padding-left: 0;
+    border: none;
    
 }
 html:not([data-scale]) .am-list-item:not(:last-child) .am-list-line::after{

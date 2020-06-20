@@ -2,7 +2,7 @@ import React from 'react';
 import './siteSettings.css';
 import 'antd/dist/antd.css';
 import { getSiteSettingList, addVenueField, getVenueSport, AddSiteSetting, DelSiteSetting, getVenueSportidTitle, DelVenueTitle, SiteSettingDiscountSave, getVenueNumberTitleFirst, getSiteSettingFirst, getSiteSelectedTitle, DelVenueNumberTitle, getSiteSelectedVenueid, getVenueTitleSave, getVenueNumberTitleSave, getVenueNumberTitleList, DelSiteSettingDiscount } from '../../api';
-import { Select, Row, Col, Modal, DatePicker, InputNumber, Input, message, Pagination, Popconfirm, Divider, Popover, Spin, Result } from 'antd';
+import { Select, Row, Col, Modal, DatePicker, InputNumber, Input, message, Pagination, Popconfirm, Divider, Popover, Spin } from 'antd';
 import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/zh_CN';
@@ -83,6 +83,7 @@ class siteSettings extends React.Component {
     chekedFour: [],
     lppd: 0,
     lppding: true,
+    titleDel:'',
     timer: [{ name: '00:00' }, { name: '00:30' }, { name: '01:00' }, { name: '01:30' }, { name: '02:00' }, { name: '02:30' }, { name: '03:00' }, { name: '03:30' }, { name: '04:00' }, { name: '04:30' }, { name: '05:00' }, { name: '05:30' }, { name: '06:00' }, { name: '06:30' }, { name: '07:00' }, { name: '07:30' }, { name: '08:00' }, { name: '08:30' }, { name: '09:00' }, { name: '09:30' }, { name: '10:00' }, { name: '10:30' }, { name: '11:00' }, { name: '11:30' }, { name: '12:00' }, { name: '12:30' }, { name: '13:00' }, { name: '13:30' }, { name: '14:00' }, { name: '14:30' }, { name: '15:00' }, { name: '15:30' }, { name: '16:00' }, { name: '16:30' }, { name: '17:00' }, { name: '17:30' }, { name: '18:00' }, { name: '18:30' }, { name: '19:00' }, { name: '19:30' }, { name: '20:00' }, { name: '20:30' }, { name: '21:00' }, { name: '21:30' }, { name: '22:00' }, { name: '22:30' }, { name: '23:00' }, { name: '23:30' }, { name: '24:00' }]
   };
   async getVenueSport(data) {
@@ -1106,12 +1107,17 @@ class siteSettings extends React.Component {
     const res = await DelVenueTitle(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.info('删除成功')
+      if(this.state.titleDel===this.state.tags){
+        this.setState({tags:''})
+      }
       this.getVenueSportidTitle({ sportid: this.state.runId })
     } else {
       message.error(res.data.msg)
     }
   }
   deletSelect = (e) => {
+    this.setState({titleDel:e.currentTarget.dataset.title})
+    
     this.DelVenueTitle({ uuid: e.currentTarget.dataset.id })
   }
   getPosition = e => {
@@ -1238,11 +1244,8 @@ class siteSettings extends React.Component {
                 }
               </div>
             </div>
-            <Result
-              style={this.state.list.length === 0 ? {} : { display: 'none' }}
-              status="warning"
-              title="您还没有设置场地价格!"
-            />
+            
+             <div style={this.state.list.length === 0?{width:'100%'}:{display:'none'}}><img style={{width:'84px',height:'84px',display:'block',margin:'64px auto 0'}} src={require('../../assets/xifen (6).png')} alt='icon'/><span style={{display:'block',textAlign:'center'}}>您还没有设置场地价格!</span></div>
             <Pagination style={{ marginBottom: '15px' }}  hideOnSinglePage={true} showSizeChanger={false}  className={this.state.hidden === true ? 'fenye' : 'hidden'} current={this.state.page} total={this.state.other} onChange={this.current} />
           </div>
 
@@ -1280,11 +1283,8 @@ class siteSettings extends React.Component {
                 </Row>
               ))
             }
-            <Result
-              style={this.state.joinXiList.length === 0 ? {} : { display: 'none' }}
-              status="warning"
-              title="您还没有设置场地细分!"
-            />
+           
+            <div style={this.state.joinXiList.length === 0?{width:'100%'}:{display:'none'}}><img style={{width:'84px',height:'84px',display:'block',margin:'64px auto 0'}} src={require('../../assets/xifen (1).png')} alt='icon'/><span style={{display:'block',textAlign:'center'}}>您还没有设置场地细分!</span></div>
             <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.pageOne} onChange={this.recordListOther} total={this.state.otherseris} />
           </div>
           <div className="join" style={this.state.headerData === '1' ? {} : { display: 'none' }} onClick={this.showModal}><div style={{ textAlign: 'center', width: '150px', margin: '0 auto' }}>+添加场地细分</div></div>
@@ -1418,7 +1418,7 @@ class siteSettings extends React.Component {
             </div>
             <div className="modelListT">
               <span>备注</span>
-              <TextArea className="textArea" rows={4} placeholder='请输入' maxLength={200} style={{ marginRight: 151, width: 269 }} value={this.state.comment} onChange={this.textArea} />
+              <TextArea className="textArea" rows={4} placeholder='请输入' maxLength={50} style={{ marginRight: 151, width: 269 }} value={this.state.comment} onChange={this.textArea} />
             </div>
             <div className="submit" data-uuid={this.state.Disid !== '' ? this.state.Disid : ''} onClick={this.submit}>提交</div>
           </Modal>
@@ -1472,7 +1472,7 @@ class siteSettings extends React.Component {
                 )}
               >
                 {this.state.joinTil.map((item, i) => (
-                  <Option key={i} onContextMenu={this.deletSelect} data-id={item.uuid} value={item.title}><div><span>{item.title}</span><span style={item.uuid === 1 ? { display: 'none' } : { float: 'right', fontSize: '12px', color: '#ccc' }}>(右键删除)</span></div></Option>
+                  <Option key={i} onContextMenu={this.deletSelect} data-id={item.uuid} data-title={item.title} value={item.title}><div><span>{item.title}</span><span style={item.uuid === 1 ? { display: 'none' } : { float: 'right', fontSize: '12px', color: '#ccc' }}>(右键删除)</span></div></Option>
                 ))}
               </Select>
             </div>

@@ -1,8 +1,8 @@
 import React from 'react';
 import './preferentialTwo.css';
 import 'antd/dist/antd.css';
-import { Input, Spin, message, DatePicker, Modal, Drawer, Table, Checkbox, Result } from 'antd';
-import { SyncOutlined, FundOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { Input, Spin, message, DatePicker, Modal, Drawer, Table, Checkbox } from 'antd';
+import { SyncOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { getVenueReservation, getVenueSport, VenueNumberSporttypeSave, getVenueNumberTitleList, VenueClickCancelPlace, getReservationActivitieslist, VenueNewsHistoricalRecord, VenueRemarksLabel } from '../../api';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import moment from 'moment';
@@ -161,6 +161,23 @@ class appointmentList extends React.Component {
         }
       }
 
+      let arrTime=[]
+      for(let i in res.data.data){
+        arrTime.push(res.data.data[i].a)
+      }
+      
+      let ko=''
+      if(new Date().getMinutes()>=30){
+        ko=new Date().getHours()+':'+'30'
+      }else{
+        ko=new Date().getHours()+':'+'00'
+      }
+      setTimeout(()=>{
+        if(document.querySelector('.ant-table-body')!==null){
+          document.querySelector('.ant-table-body').scrollTo(0,arrTime.indexOf(ko)*45)
+         }
+      },2000)
+
 
       this.setState({
         resData: res.data.data
@@ -227,7 +244,7 @@ class appointmentList extends React.Component {
       for (let j in resData[i].c) {
         obj.key = j + 1
         let key = resData[i].c[j].venueids
-        let value = <div><div data-type={resData[i].c[j].type} data-uuid={resData[i].c[j].uuid} onClick={this.lookDeta} style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#ADD2FF', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, lineHeight: 3 } : {}}><Checkbox className="chePe" idx={i} jdx={j} checked={resData[i].c[j].checked} onChange={this.checkbox} dtype={resData[i].c[j].type} time={resData[i].a} venueid={resData[i].c[j].venueids} uuid={resData[i].c[j].uuid} style={resData[i].c[j].type === 1 && this.state.cofirmZ === 1 ? {} : { display: 'none' } && resData[i].c[j].type === 4 && this.state.Cancels === 1 ? {} : { display: 'none' }} />{resData[i].c[j].money}</div></div>
+        let value = <div><div data-type={resData[i].c[j].type} data-uuid={resData[i].c[j].uuid} onClick={this.lookDeta} style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, lineHeight: 3 } : {}}><Checkbox className="chePe" idx={i} jdx={j} checked={resData[i].c[j].checked} onChange={this.checkbox} dtype={resData[i].c[j].type} time={resData[i].a} venueid={resData[i].c[j].venueids} uuid={resData[i].c[j].uuid} style={resData[i].c[j].type === 1 && this.state.cofirmZ === 1 ? {} : { display: 'none' } && resData[i].c[j].type === 4 && this.state.Cancels === 1 ? {} : { display: 'none' }} />{resData[i].c[j].money}</div></div>
         obj[key] = value
         let koTwo = parseInt(resData[i].a.slice(1, 2)) + 1 + ':00'
         obj.lppd = <div style={{ color: '#F5A623' }}>{resData[i].a}<br />{resData[i].a.slice(3, resData[i].a.length) === '00' ? resData[i].a.slice(0, 2) + ':30' : koTwo === '10:00' && resData[i].a !== '19:30' ? '10:00' : resData[i].a === '19:30' ? '20:00' : resData[i].a.slice(0, 1) + koTwo}</div>
@@ -268,16 +285,18 @@ class appointmentList extends React.Component {
   }
   checkbox = e => {
     if (this.state.resData[e.target.idx].c[e.target.jdx].checked === false) {
-      this.state.resData[e.target.idx].c[e.target.jdx].checked = true
+      let item=this.state.resData
+      item[e.target.idx].c[e.target.jdx].checked = true
       // let lo='resData['+e.target.idx+'].c['+e.target.jdx+'].checked'
       // console.log([lo])
       // this.setState({
       //   [lo]:true
       // })
-      this.hoode(this.state.resData)
+      this.hoode(item)
     } else {
-      this.state.resData[e.target.idx].c[e.target.jdx].checked = false
-      this.hoode(this.state.resData)
+      let item=this.state.resData
+      item[e.target.idx].c[e.target.jdx].checked = false
+      this.hoode(item)
     }
     let timUid = e.target.uuid + '#' + e.target.time + '#' + e.target.venueid
     if (this.state.arrTimeuid.indexOf(timUid) !== -1) {
@@ -317,12 +336,13 @@ class appointmentList extends React.Component {
       cofirmZ: 0, venueidids: [], dtime: [], arrTimeuid: []
     })
     setTimeout(() => {
-      for (let i in this.state.resData) {
-        for (let j in this.state.resData[i].c) {
-          this.state.resData[i].c[j].checked = false
+      let items=this.state.resData
+      for (let i in items) {
+        for (let j in items[i].c) {
+          items[i].c[j].checked = false
         }
       }
-      this.hoode(this.state.resData)
+      this.hoode(items)
     }, 50)
   }
 
@@ -347,6 +367,7 @@ class appointmentList extends React.Component {
       this.getVenueReservation({ sportid: this.state.liNum, date: this.state.dateString })
       if (data.type === 1) {
         message.info('该场地该时间段已标记为线下占用')
+        this.setState({placeHui:'',placeName:'',placePhone:'',placeQi:''})
       } else if (data.type === 2) {
         this.setState({ flagClick: 0 })
         message.info('该场地该时间段已向找对手线上释放')
@@ -414,12 +435,13 @@ class appointmentList extends React.Component {
       arrTimeuid: []
     })
     setTimeout(() => {
-      for (let i in this.state.resData) {
-        for (let j in this.state.resData[i].c) {
-          this.state.resData[i].c[j].checked = false
+      let items=this.state.resData
+      for (let i in items) { 
+        for (let j in items[i].c) {
+          items[i].c[j].checked = false
         }
       }
-      this.hoode(this.state.resData)
+      this.hoode(items)
     }, 50)
   }
 
@@ -475,7 +497,7 @@ class appointmentList extends React.Component {
           </ul>
           <div className="prompt">
             <div><span></span><span>空闲</span></div>
-            <div><span style={{ background: '#6FB2FF', opacity: '.3', }}></span><span>不可选</span></div>
+            <div><span style={{ background: '#E9E9E9'}}></span><span>不可选</span></div>
             <div><span></span><span>线下占用</span></div>
             <div><span></span><span>线上占用</span></div>
           </div>
@@ -497,7 +519,7 @@ class appointmentList extends React.Component {
           {/* 看板渲染标签 */}
           <Spin spinning={this.state.lppding}>
             <Table loading={this.state.loadingTwo} style={this.state.otherType.length === 0 ? { display: 'none' } : { maxWidth: this.state.otherType.length * 100 }} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 76, minWidth: 40, y: '90%' }} />,
-          <Result className={this.state.otherType.length === 0 ? '' : 'hidden'} icon={<FundOutlined style={{ color: '#F5A623' }} />} title={this.state.textNuma} />
+           <div style={this.state.otherType.length === 0?{width:'100%'}:{display:'none'}}><img style={{width:'84px',height:84,display:'block',margin:'84px auto 0'}} src={require('../../assets/xifen (2).png')} alt="icon"/><span style={{display:'block',textAlign:'center'}}>{this.state.textNuma+'!'}</span></div>
           </Spin>
         </div>
 
@@ -585,19 +607,19 @@ class appointmentList extends React.Component {
         >
           <div style={{ overflow: 'hidden' }}>
             <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>姓名：</span>
-            <Input style={{ width: 250, float: 'left' }} onChange={this.placeName} placeholder='(选填)' />
+            <Input style={{ width: 250, float: 'left' }} value={this.state.placeName} maxLength={20} onChange={this.placeName} placeholder='(选填)' />
           </div>
           <div style={{ overflow: 'hidden', marginTop: '10px' }}>
             <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>手机号：</span>
-            <Input style={{ width: 250, float: 'left' }} maxLength={11} onChange={this.placePhone} placeholder="(必填)" />
+            <Input style={{ width: 250, float: 'left' }} maxLength={11} value={this.state.placePhone} onChange={this.placePhone} placeholder="(必填)" />
           </div>
           <div style={{ overflow: 'hidden', marginTop: '10px' }}>
             <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>会员卡卡号：</span>
-            <Input style={{ width: 250, float: 'left' }} onChange={this.placeHui} placeholder="(选填)" />
+            <Input style={{ width: 250, float: 'left' }} maxLength={20} onChange={this.placeHui} value={this.state.placeHui} placeholder="(选填)" />
           </div>
           <div style={{ overflow: 'hidden', marginTop: '10px' }}>
             <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>其他：</span>
-            <Input style={{ width: 250, float: 'left' }} onChange={this.placeQi} placeholder="(选填)" />
+            <Input style={{ width: 250, float: 'left' }} maxLength={50} value={this.state.placeQi} onChange={this.placeQi} placeholder="(选填)" />
           </div>
           <span onClick={this.placeSubmit} style={{ cursor: 'pointer', padding: '4px 8px', background: '#F5A623', color: '#fff', float: 'right', marginRight: '125px', marginTop: '20px' }}>提交</span>
         </Modal>

@@ -123,6 +123,12 @@
 .sitePhtitle .titleHead span{
     color: #D85D27;
     font-size: 0.75rem;
+    line-height: 2.5rem;
+}
+.capzuo>img{
+    width: 1.37rem;
+    height: 1.37rem;
+    
 }
 .sitePhtitle .btnDetle{
     width: 5rem;
@@ -181,7 +187,7 @@
        width: 4rem;
        height: 4rem;
        display: block;
-       margin: 40% auto 0;
+       margin: 4rem auto 0;
 }
 .sitePh .request div{
     text-align: center;
@@ -265,7 +271,7 @@
     white-space:nowrap;
 }
 .LitName{
-    width: 4.13rem;
+    width: 4rem;
     height: 2.13rem;
     background: #F3F3F3;
     border-radius:0.19rem;

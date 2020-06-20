@@ -50,11 +50,10 @@
     text-align: center;
 }
 .orderList .ant-table-tbody > tr > td{
-    padding:0 2px; 
+    padding:2px 2px; 
     text-align: center;
     color: #fff; 
     width: 76px;
-    background: #E9E9E9;
 }
 .orderList .ant-table-tbody > tr > td:first-child{
     background-color: #fff;

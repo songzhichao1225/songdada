@@ -2,8 +2,8 @@ import React from 'react';
 import './closeYu.css';
 import 'antd/dist/antd.css';
 import { VenueTemporarilyClosedList, VenueTemporarilyClosed, VenueTemporarilyClosedDel, VenueTemporarilyClosedSave, getSetPriceVenueSport, getIsClosedPublic } from '../../api';
-import { message, Modal, Select, DatePicker, Input, Row, Col, Popconfirm, Result, Pagination } from 'antd';
-import { BankOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { message, Modal, Select, DatePicker, Input, Row, Col, Popconfirm, Pagination } from 'antd';
+import {  CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import 'moment/locale/zh-cn';
@@ -264,7 +264,7 @@ class closeYu extends React.Component {
   render() {
     return (
       <div className="closeYu">
-        <div className="headTitle"><span onClick={this.next}>系统设置</span><span style={{ color: '#F5A623' }}>>临时关闭预约列表</span> <div className='rightBtn' onClick={this.model}><span>添加</span></div></div>
+        <div className="headTitle"><span onClick={this.next}>系统设置</span><span style={{ color: '#F5A623' }}>临时关闭预约列表</span> <div className='rightBtn' onClick={this.model}><span>添加</span></div></div>
         <div style={{ width: '100%', height: '8px', background: '#F5F5F5' }}></div>
         <div style={this.state.closeList.length < 1 ? { display: 'none' } : { display: 'block' }}>
           <Row style={{ borderBottom: '1px solid #E1E0E1' }}>
@@ -282,7 +282,7 @@ class closeYu extends React.Component {
                 <Col xs={{ span: 5 }}>
                   {/* <img onClick={this.update} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp; */}
                   <Popconfirm
-                    title="你确定要删除本条信息吗?"
+                    title={"你确定要解除"+item.sportname+"临时关闭预约么?"}
                     onConfirm={this.confirm}
                     onCancel={this.cancel}
                     okText="确定"
@@ -298,8 +298,7 @@ class closeYu extends React.Component {
         </div>
 
         <Pagination className={this.state.closeList.length > 1 ? 'fenye' : 'hidden'} defaultCurrent={1} hideOnSinglePage={true}   showSizeChanger={false}  total={parseInt(this.state.other)} onChange={this.current} />
-        <Result style={this.state.closeList.length < 1 ? { display: 'block' } : { display: 'none' }} icon={<BankOutlined style={{ color: '#F5A623' }} />} title="您还没有关闭预约" />,
-
+        <div style={this.state.closeList.length < 1 ?{width:'100%'}:{display:'none'}}><img style={{width:84,height:84,display:'block',margin:'84px auto 0'}} src={require('../../assets/xifen (4).png')} alt="icon"/><span style={{display:'block',textAlign:'center'}}>您还没有添加临时关闭预约!</span></div>
 
 
         <Modal
@@ -328,6 +327,7 @@ class closeYu extends React.Component {
               onOk={this.dateSelect}
               locale={locale}
               allowClear={false}
+              minuteStep={30}
               value={[moment(this.state.start, 'YYYY-MM-DD HH:mm'), moment(this.state.end, 'YYYY-MM-DD HH:mm')]}
               showTime={{
                 hideDisabledOptions: true,

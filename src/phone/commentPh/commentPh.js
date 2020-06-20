@@ -5,8 +5,8 @@ import ReactDOM from 'react-dom';
 import { Toast, PullToRefresh, Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { getCommentList, getOverallScore, VenueCommentReply } from '../../api';
-import { Pagination, Result, Input } from 'antd';
-import { DatabaseOutlined, LeftOutlined } from '@ant-design/icons';
+import { Pagination, Input } from 'antd';
+import {  LeftOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input
 
@@ -33,13 +33,13 @@ class commentPh extends React.Component {
     height: document.documentElement.clientHeight,
     data: [],
     other:0,
+    modal1:false,
+    src:'',
+    Illegality:['妈','逼','狗','日','共产党','法轮功','解放军','暴动','煞笔','沙比']
   }
   async getCommentList(data) {
     const res = await getCommentList(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
-    } else {
+    
       let resData=res.data.data
       for(let i in resData){
        if(resData[i].imgnames!==''&&resData[i].imgnames!==null){
@@ -49,7 +49,7 @@ class commentPh extends React.Component {
        }
       }
       this.setState({ getCommentList: res.data.data, refreshing: false ,other:res.data.other})
-    }
+    
   }
   async getOverallScore(data) {
     const res = await getOverallScore(data, localStorage.getItem('venue_token'))
@@ -65,6 +65,8 @@ class commentPh extends React.Component {
       data: genData(),
     }), 0)
   }
+
+
 
 
   showModal = (e) => {
@@ -86,7 +88,12 @@ class commentPh extends React.Component {
     })
   }
   textArea = e => {
-    this.setState({ textArea: e.target.value })
+    let p=e.target.value
+    for(let i in this.state.Illegality){
+      var r = new RegExp(this.state.Illegality[i], "ig");
+      p = p.replace(r, "*");
+    }
+    this.setState({ textArea: p })
   }
   publish = e => {
     let { uid, textArea } = this.state
@@ -97,10 +104,7 @@ class commentPh extends React.Component {
     if (res.data.code === 2000) {
       this.setState({ visible: false })
       this.getCommentList({ page: 1 })
-    } else if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
-    } else {
+    }  else {
       Toast.fail(res.data.msg, 1);
     }
   }
@@ -122,7 +126,12 @@ class commentPh extends React.Component {
       this.getCommentList({ page: this.state.current })
     }, 1000)
   }
-
+  model1=e=>{
+    this.setState({modal1:true,src:e.currentTarget.dataset.src})
+  }
+  modal1Close=()=>{
+    this.setState({modal1:false})
+  }
   render() {
 
     return (
@@ -144,7 +153,6 @@ class commentPh extends React.Component {
           <div className="serve"><span>设施 {this.state.score.equscore}</span> <span>服务 {this.state.score.envscore}</span> <span>价格 {this.state.score.xjbScore}</span></div>
         </div>
         <div style={{ height: '1rem', background: '#f5f5f5', marginTop: '1rem' }}></div>
-
         <PullToRefresh
           damping={60}
           ref={el => this.ptr = el}
@@ -181,17 +189,17 @@ class commentPh extends React.Component {
                   <div style={item.imgnames.length===0?{display:'none'}:{ display: 'block', clear: 'both' }} className="commentImg">
                    {
                      item.imgnames.map((ko,j)=>(
-                       <img key={j} src={"https://app.tiaozhanmeiyitian.com/"+item.imgbaseurl+ko+""} alt="uimg"/>
+                       <img key={j} onClick={this.model1} data-src={"https://app.tiaozhanmeiyitian.com/"+item.imgbaseurl+ko+""} src={"https://app.tiaozhanmeiyitian.com/"+item.imgbaseurl+ko+""} alt="uimg"/>
                      ))
                    }
 
                   </div>
                   
-                  <div className="reply" data-uid={item.uid} onClick={this.showModal}><img src={require("../../assets/icon_pc_comment.png")} alt="回复" /></div>
+                  <div className="reply" data-uid={item.uid} style={item.comment_reply!==null?{display:'none'}:{}} onClick={this.showModal}><img src={require("../../assets/icon_pc_comment.png")} alt="回复" /></div>
                   <span style={{ display: 'block',float:'left',marginTop:'0.75rem' }}>{item.commentDate}</span>
                   <div className={item.comment_reply !== null ? 'Stadium' : 'stadiumNone'}>
                     <div className="logoImg"><img src={require("../../assets/kefu.png")} alt="场馆端" /></div>
-                    <span className="stadiumText">{item.comment_reply}</span>
+                  <span className="stadiumText">{item.comment_reply}<br/><span style={{paddingTop:'0.3rem',display:'block'}}>{item.comment_reply_time}</span></span>
                   </div>
                   {/* <span className={item.comment_reply !== null ? 'StaiumDate' : 'stadiumNone'}>{item.comment_reply_time}</span> */}
                 </div>
@@ -199,19 +207,7 @@ class commentPh extends React.Component {
 
             }
 
-            {/* <Modal
-              title="回复该客户"
-              footer={null}
-              visible={this.state.visible}
-              onOk={this.handleOk}
-              onCancel={this.handleCancel}
-            >
-              <TextArea rows={4} maxLength={100} onChange={this.textArea} />
-              <div className="commentPhbtn">
-                <div onClick={this.handleCancel}>取消</div>
-                <div style={{ marginLeft: '0.5rem', background: '#F5A623', color: '#fff' }} onClick={this.publish}>发布</div>
-              </div>
-            </Modal> */}
+           
 
             <Modal
               visible={this.state.visible}
@@ -222,16 +218,25 @@ class commentPh extends React.Component {
               footer={[{ text: '取消', onPress: () => { this.handleCancel(); } },{ text: '回复', onPress: () => { this.publish(); } }]}
              
             >
-             <TextArea rows={4} maxLength={100} placeholder="最多可输入100字" onChange={this.textArea} />
-            
+             <TextArea rows={4} maxLength={100} value={this.state.textArea} placeholder="最多可输入100字" onInput={this.textArea}  />
             </Modal>
 
 
             <Pagination className="fenye" size='small' style={this.state.getCommentList.length > 0 ? {} : { display: 'none' }} current={parseInt(this.state.current)} pageSize={10} total={this.state.other} onChange={this.pageChang} />
-            <Result className={this.state.getCommentList.length === 0 ? '' : 'hidden'} icon={<DatabaseOutlined style={{ fontSize: '2rem', color: '#F5A623' }} />} title="没有场馆评论" />
+          <div style={this.state.getCommentList.length > 0?{display:'none'}:{width:'100%'}}><img style={{width:'4rem',height:'4rem',display:'block',margin:'4rem auto 0'}} src={require('../../assets/xifen (3).png')} alt="666"/><span style={{display:'block',textAlign:'center'}}>没有场馆评论</span></div>
           </div>
 
         </PullToRefresh>
+
+        <Modal
+          visible={this.state.modal1}
+          transparent
+          onClose={this.modal1Close}
+         
+         
+        >
+        <img style={{width:'100%'}} src={this.state.src} alt="img"/>
+        </Modal>
 
 
 

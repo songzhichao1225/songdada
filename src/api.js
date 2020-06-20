@@ -385,6 +385,12 @@ export function VenueFeedback(data,headers){    //意见反馈
 }
 
 
+export function getIsSignOut(data,headers){    //查询该token是否可用
+    return axios.post('/api/getIsSignOut',data,{headers: {'token': headers}})
+}
+
+
+
 
 
 

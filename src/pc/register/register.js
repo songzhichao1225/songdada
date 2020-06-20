@@ -237,12 +237,12 @@ class register extends React.Component {
 
               <div className="son">
                 <span className="xing">*</span> <span>密码:</span>
-                <Input onFocus={this.onfoucs} maxLength={8} onChange={this.changePassword} className="phone" />
+                <Input.Password onFocus={this.onfoucs} maxLength={8} onChange={this.changePassword} className="phone" />
               </div>
 
               <div className="son">
                 <span className="xing">*</span> <span>确认密码:</span>
-                <Input maxLength={8} onChange={this.changePasswordT} className="phone" />
+                <Input.Password maxLength={8} onChange={this.changePasswordT} style={{height:'41px'}} className="phone" />
               </div>
 
               <div className="agreement"><Radio onChange={this.changeRadio} checked={this.state.changeRadio}><span>我已阅读并同意</span><span className="color">《用户协议》</span></Radio></div>

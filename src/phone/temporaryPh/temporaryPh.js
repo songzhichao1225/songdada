@@ -3,8 +3,8 @@ import './temporaryPh.css';
 
 import { Toast, DatePicker, List } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Select, Row, Col, Drawer, Pagination, Popconfirm, Result } from 'antd';
-import {GiftOutlined,LeftOutlined,LoadingOutlined} from '@ant-design/icons';
+import { Select, Row, Col, Drawer, Pagination, Popconfirm } from 'antd';
+import {  LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 import { getVenueSport, VenueTemporarilyClosedList, VenueTemporarilyClosedSave, VenueTemporarilyClosedDel, VenueTemporarilyClosed } from '../../api';
 import moment from 'moment';
 const { Option } = Select;
@@ -35,28 +35,22 @@ class temporaryPh extends React.Component {
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
-    } else {
-      this.setState({ sportList: res.data.data })
-    }
+
+    this.setState({ sportList: res.data.data })
+
   }
 
 
   async VenueTemporarilyClosedList(data) {
     const res = await VenueTemporarilyClosedList(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
+
+    this.setState({ spinFlag: false })
+    if (this.state.upUUid !== '') {
+      this.setState({ sportName: res.data.data[0].sportname, startValue: new Date(res.data.data[0].starttime), EndValue: new Date(res.data.data[0].endtime), textarea: res.data.data[0].comment })
     } else {
-      this.setState({ spinFlag: false })
-      if (this.state.upUUid !== '') {
-        this.setState({ sportName: res.data.data[0].sportname, startValue: new Date(res.data.data[0].starttime), EndValue: new Date(res.data.data[0].endtime), textarea: res.data.data[0].comment })
-      } else {
-        this.setState({ VenueTemporarilyClosedList: res.data.data, total: res.data.other, upUUid: '' })
-      }
+      this.setState({ VenueTemporarilyClosedList: res.data.data, total: res.data.other, upUUid: '' })
     }
+
   }
 
 
@@ -125,16 +119,16 @@ class temporaryPh extends React.Component {
       case 8:
         day = "足球8人制";
         break;
-        case 9:
+      case 9:
         day = "足球7人制";
         break;
-        case 10:
+      case 10:
         day = "足球5人制";
         break;
-        case 11:
+      case 11:
         day = "排球";
         break;
-        case 12:
+      case 12:
         day = "网球";
         break;
       default:
@@ -149,10 +143,7 @@ class temporaryPh extends React.Component {
 
   async VenueTemporarilyClosed(data) {
     const res = await VenueTemporarilyClosed(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/')
-      Toast.fail('登录超时请重新登录', 1);
-    } else if (res.data.code === 2000) {
+    if (res.data.code === 2000) {
       this.setState({ visible: false })
       this.VenueTemporarilyClosedList()
     } else {
@@ -163,14 +154,11 @@ class temporaryPh extends React.Component {
 
   async VenueTemporarilyClosedSave(data) {
     const res = await VenueTemporarilyClosedSave(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
-    } else {
-      Toast.success(res.data.msg, 1);
-      this.setState({ visible: false })
-      this.VenueTemporarilyClosedList()
-    }
+
+    Toast.success(res.data.msg, 1);
+    this.setState({ visible: false })
+    this.VenueTemporarilyClosedList()
+
   }
   subCilck = () => {
     let { sportId, sportName, startValue, EndValue, textarea, upUUid } = this.state
@@ -204,14 +192,11 @@ class temporaryPh extends React.Component {
 
   async VenueTemporarilyClosedDel(data) {
     const res = await VenueTemporarilyClosedDel(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
-    } else {
-      Toast.success(res.data.msg, 1);
 
-      this.VenueTemporarilyClosedList()
-    }
+    Toast.success(res.data.msg, 1);
+
+    this.VenueTemporarilyClosedList()
+
   }
   temDelet = () => {
     this.VenueTemporarilyClosedDel({ colseuuid: this.state.listUUid })
@@ -247,13 +232,13 @@ class temporaryPh extends React.Component {
   render() {
     return (
       <div className="temporaryPh">
-        <div className="headTitle"><LeftOutlined  onClick={this.reture} style={{ position: 'absolute',left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />设置临时关闭预约</div>
+        <div className="headTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', left: '0', width: '48px', height: '48px', lineHeight: '48px' }} />设置临时关闭预约</div>
         <Row className='Row'>
-          <Col xs={{ span: 6 }} lg={{ span: 6 }}>运动名称</Col>
+          <Col xs={{ span: 6 }} lg={{ span: 6 }}>运动项目</Col>
           <Col xs={{ span: 12 }} lg={{ span: 12 }}>时间</Col>
           <Col xs={{ span: 6 }} lg={{ span: 6 }}>操作</Col>
         </Row>
-        <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block', height: this.state.clenTop, transition: '0.3s', background: '#f5f5f5', position: 'relative' } : { display: 'none' }} ><LoadingOutlined className='loadingY' style={{ top: this.state.clenTop / 7 }}/></div>
+        <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block', height: this.state.clenTop, transition: '0.3s', background: '#f5f5f5', position: 'relative' } : { display: 'none' }} ><LoadingOutlined className='loadingY' style={{ top: this.state.clenTop / 7 }} /></div>
 
         <div className="temScroll" >
           {
@@ -262,7 +247,7 @@ class temporaryPh extends React.Component {
                 <Col xs={{ span: 6 }} lg={{ span: 6 }}>{item.sportname}</Col>
                 <Col style={{ lineHeight: '1.5rem' }} xs={{ span: 12 }} lg={{ span: 12 }}>{item.starttime}<br />{item.endtime}</Col>
                 <Col xs={{ span: 6 }} lg={{ span: 6 }}>
-                  <img style={{ paddingRight: '0.5rem' }} data-uuid={item.uuid} onClick={this.upload} src={require("../../assets/upLoad.png")} alt='修改' />
+                  {/* <img style={{ paddingRight: '0.5rem',width:'1.37rem',height:'1.37rem' }} data-uuid={item.uuid} onClick={this.upload} src={require("../../assets/upLoad.png")} alt='修改' /> */}
 
                   <Popconfirm
                     title="你确定要删除吗?"
@@ -271,7 +256,7 @@ class temporaryPh extends React.Component {
                     okText="确定"
                     cancelText="取消"
                   >
-                    <img className="upLoad" style={{ right: '1.5rem' }} onClick={this.mood} data-uuid={item.uuid} src={require("../../assets/delet.png")} alt="删除" />
+                    <img className="upLoad" style={{ right: '1.5rem', width: '1.37rem', height: '1.37rem' }} onClick={this.mood} data-uuid={item.uuid} src={require("../../assets/delet.png")} alt="删除" />
                   </Popconfirm>
                 </Col>
               </Row>
@@ -283,8 +268,7 @@ class temporaryPh extends React.Component {
         </div>
         <img className="addList" onClick={this.addYouList} src={require("../../assets/comeOn@2x.png")} alt="添加" />
         <Pagination className="fenye" defaultCurrent={1} hideOnSinglePage={true} current={this.state.temPage} showSizeChanger={false} style={this.state.VenueTemporarilyClosedList.length < 1 ? { display: 'none' } : {}} size="small" onChange={this.current} total={this.state.total} />
-        <Result className={this.state.VenueTemporarilyClosedList.length === 0 ? '' : 'nono'} icon={<GiftOutlined style={{ fontSize: '2rem',color:'F5A623' }}/>} title="没有场地设置" />
-
+        <div style={this.state.VenueTemporarilyClosedList.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (4).png')} alt="555" /><span style={{ display: 'block', textAlign: 'center' }}>没有添加临时关闭预约</span></div>
 
 
         <Drawer
@@ -298,7 +282,7 @@ class temporaryPh extends React.Component {
         >
           <div className='drawerInput'>
             <span>运动项目</span>
-            <Select placeholder='请选择' bordered={false} style={{ width: '42%', border: 'none', boxShadow: 'none', float: 'right' }} value={this.state.sportName} onChange={this.sportChange}>
+            <Select placeholder='请选择' bordered={false} style={{ width: '42%', border: 'none', boxShadow: 'none', float: 'right', textAlign: 'center' }} value={this.state.sportName} onChange={this.sportChange}>
               {
                 this.state.sportList.map((item, i) => (
                   <Option key={i} value={item.id}>{item.name}</Option>
@@ -307,7 +291,7 @@ class temporaryPh extends React.Component {
             </Select>
           </div>
 
-          <div className='drawerInput'>
+          <div className='drawerInput' style={{ border: 'none' }}>
             {/* <DatePicker
               locale={zh_CN}
               disabledDate={this.disabledStartDate}
@@ -320,7 +304,7 @@ class temporaryPh extends React.Component {
 
             <DatePicker
               value={this.state.startValue}
-              minDate={this.state.startValue}
+              minuteStep={30}
               onChange={startValue => this.setState({ startValue })}
             >
               <List.Item className="startTime">开始时间</List.Item>
@@ -330,19 +314,20 @@ class temporaryPh extends React.Component {
 
           </div>
 
-          <div className='drawerInput'>
+          <div className='drawerInput' style={{ border: 'none' }}>
 
 
             <DatePicker
               value={this.state.EndValue}
-              minDate={this.state.EndValue}
+              minDate={this.state.startValue}
+              minuteStep={30}
               onChange={EndValue => this.setState({ EndValue })}
             >
               <List.Item className="startTime">结束时间</List.Item>
             </DatePicker>
           </div>
 
-          <div className='drawerInput'>
+          <div className='drawerInput' >
             <span style={{ display: 'block', float: 'left' }}>备注</span>
             <textarea rows={3} style={{ marginLeft: '2.5rem' }} maxLength={200} placeholder="请输入备注" onChange={this.textArea}></textarea>
           </div>

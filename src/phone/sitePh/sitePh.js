@@ -24,7 +24,7 @@ function dateFormat(fmt, date) {
   for (let k in opt) {
     ret = new RegExp("(" + k + ")").exec(fmt);
     if (ret) {
-      fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+      fmt = fmt.replace(ret[1], (ret[1].length === 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
     };
   };
   return fmt;
@@ -113,6 +113,8 @@ class sitePh extends React.Component {
     venueidSiscount: [],
     startDate: '',
     endDate: '',
+    venDuo: false,
+    venueidDuo: '',
   };
 
   header = e => {
@@ -120,11 +122,11 @@ class sitePh extends React.Component {
       index: e.currentTarget.dataset.index
     })
     if (e.currentTarget.dataset.index === '1') {
-      this.getVenueNumberTitleList({ page: 1, sportid: '' })
-      this.setState({ asyncValue: 0 })
+      this.getVenueNumberTitleList({ page: 1, sportid: this.state.asyncValueTwo })
+      this.setState({ asyncValue: this.state.asyncValueTwo })
     } else {
-      this.getSiteSettingList({ page: 1, sportid: '' })
-      this.setState({ asyncValueTwo: 0 })
+      this.getSiteSettingList({ page: 1, sportid: this.state.asyncValue })
+      this.setState({ asyncValueTwo: this.state.asyncValue })
     }
   }
 
@@ -281,7 +283,7 @@ class sitePh extends React.Component {
   async getSiteSelectedVenueid(data) {
     const res = await getSiteSelectedVenueid(data, localStorage.getItem('venue_token'))
     if (this.state.Serial === true) {
-
+      console.log(this.state.chekedArr)
       for (let i in res.data.data) {
         this.state.numArr[parseInt(res.data.data[i] - 1)].cheked = 'no'
       }
@@ -307,33 +309,45 @@ class sitePh extends React.Component {
 
 
   SerialClose = () => {
-    for (let j in this.state.numArr) {
-      if (this.state.numArr[j].cheked === true) {
-        this.state.numArr[j].cheked = false
+    let items=this.state.numArr
+    for (let j in items) {
+      if (items[j].cheked === true) {
+        items[j].cheked = false;
+        this.setState({
+          numArr: items
+        });
       }
     }
     this.setState({ Serial: false })
   }
+
+
+
   numArrSon = e => {
-    if (this.state.numArr[parseInt(e.currentTarget.dataset.num) - 1].cheked !== 'no') {
-      this.state.numArr[parseInt(e.currentTarget.dataset.num) - 1].cheked = !this.state.numArr[parseInt(e.currentTarget.dataset.num) - 1].cheked
-      this.setState({ numArr: this.state.numArr })
+    let items=this.state.numArr
+    if (items[parseInt(e.currentTarget.dataset.num) - 1].cheked !== 'no') {
+      items[parseInt(e.currentTarget.dataset.num) - 1].cheked = !items[parseInt(e.currentTarget.dataset.num) - 1].cheked
+      this.setState({ numArr: items })
     }
 
   }
   reverseC = () => {
-    for (let i in this.state.numArr) {
-      if (this.state.numArr[i].cheked === false) {
-        this.state.numArr[i].cheked = true
+    let items=this.state.numArr
+    for (let i in items) {
+      if (items[i].cheked === false) {
+        items[i].cheked = true
+        this.setState({numArr:items})
       }
     }
     this.setState({ numArr: this.state.numArr })
   }
 
   allThem = () => {
-    for (let i in this.state.numArr) {
-      if (this.state.numArr[i].cheked === false) {
-        this.state.numArr[i].cheked = true
+    let items=this.state.numArr
+    for (let i in items) {
+      if (items[i].cheked === false) {
+        items[i].cheked = true
+        this.setState({numArr:items})
       }
     }
     this.setState({ numArr: this.state.numArr })
@@ -347,11 +361,15 @@ class sitePh extends React.Component {
       }
     }
     if (chekedArr.length === 0) {
-      Toast.fail('请选择场地编号', 1);
+      Toast.fail('请选择场地编号', 1)
     } else {
-      for (let i in this.state.numArr) {
-        if (this.state.numArr[i].cheked === true) {
-          this.state.numArr[i].cheked = false
+      let items=this.state.numArr
+      for (let i in items) {
+        if (items[i].cheked === true) {
+          items[i].cheked = false
+          this.setState({
+            numArr:items
+          })
         }
       }
       this.setState({ Serial: false, chekedArr: chekedArr })
@@ -377,7 +395,6 @@ class sitePh extends React.Component {
     const res = await getVenueNumberTitleSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ visibleXi: false, firstUUid: '', upData: 0, page: 1 })
-      Toast.success('删除成功', 1);
       this.getVenueNumberTitleList({ page: this.state.page, sportid: this.state.asyncValue })
     } else {
       Toast.fail(res.data.msg, 1);
@@ -517,8 +534,9 @@ class sitePh extends React.Component {
   }
 
   LiturgySon = e => {
-    this.state.LiturgyArr[e.currentTarget.dataset.index].cheked = !this.state.LiturgyArr[e.currentTarget.dataset.index].cheked
-    this.setState({ LiturgyArr: this.state.LiturgyArr })
+    let items=this.state.LiturgyArr
+    items[e.currentTarget.dataset.index].cheked = !items[e.currentTarget.dataset.index].cheked
+    this.setState({ LiturgyArr: items })
   }
   LiturgyArrChe = () => {
     let Liturgyche = []
@@ -685,11 +703,11 @@ class sitePh extends React.Component {
         let g = res.data.data[0].discount_venueid === null ? [] : res.data.data[0].discount_venueid.split(',')
         let kol = []
         for (let i in h) {
-            let obj = { num: h[i], cheked: false }
-            kol.push(obj)
+          let obj = { num: h[i], cheked: false }
+          kol.push(obj)
         }
-        for(let i in g){
-          kol[Number(g[i]-1)].cheked=true
+        for (let i in g) {
+          kol[Number(g[i] - 1)].cheked = true
         }
         this.setState({
           kop: res.data.data[0].discount_costperhour,
@@ -725,9 +743,10 @@ class sitePh extends React.Component {
     this.setState({ offer: true })
   }
   numArrSiscount = e => {
-    this.state.venueidSiscount[Number(e.currentTarget.dataset.num) - 1].cheked = !this.state.venueidSiscount[Number(e.currentTarget.dataset.num) - 1].cheked
+    let items=this.state.venueidSiscount
+    items[Number(e.currentTarget.dataset.num) - 1].cheked = !items[Number(e.currentTarget.dataset.num) - 1].cheked
     this.setState({
-      venueidSiscount: this.state.venueidSiscount
+      venueidSiscount: items
     })
   }
   koNumArrSiscount = () => {
@@ -746,7 +765,7 @@ class sitePh extends React.Component {
     if (res.data.code === 2000) {
       this.setState({ specialOffer: false })
       this.getSiteSettingList({ page: this.state.pageTwo, sportid: this.state.asyncValueTwo })
-    }else{
+    } else {
       Toast.fail(res.data.msg, 2);
     }
   }
@@ -756,7 +775,7 @@ class sitePh extends React.Component {
     if (res.data.code === 2000) {
       this.setState({ specialOffer: false })
       this.getSiteSettingList({ page: this.state.pageTwo, sportid: this.state.asyncValueTwo })
-    }else{
+    } else {
       Toast.fail(res.data.msg, 2);
     }
   }
@@ -776,6 +795,15 @@ class sitePh extends React.Component {
 
   }
 
+  venDuo = e => {
+    this.setState({ venDuo: true, venueidDuo: e.currentTarget.dataset.venueid })
+  }
+  venDuoTwo = () => {
+    this.setState({
+      venDuo: false
+    })
+  }
+
   render() {
     return (
       <div className="sitePh">
@@ -793,9 +821,9 @@ class sitePh extends React.Component {
                     extra={<span className="titleRight">细分标签：{item.title}</span>}
                   />
                   <Card.Body>
-                    <div className="idxNum">场地编号：{item.venueid}</div>
+                    <div className="idxNum" onClick={this.venDuo} data-venueid={item.venueid}>场地编号：{item.venueid}</div>
                   </Card.Body>
-                  <Card.Footer content={<span className="number">场地数量：{item.number}</span>} extra={<div><img style={{ marginRight: '10px' }} onClick={this.upData} data-uuid={item.uuid} src={require('../../assets/upLoad.png')} alt="img" /><img onClick={() =>
+                  <Card.Footer content={<span className="number">场地数量：{item.number}</span>} extra={<div className="capzuo"><img style={{ marginRight: '10px' }} onClick={this.upData} data-uuid={item.uuid} src={require('../../assets/upLoad.png')} alt="img" /><img onClick={() =>
                     alert('提示', '您确定要删除该条场地细分么？删除后用户将无法预订' + item.sportid + '的' + item.title + '场地。', [
                       { text: '取消', onPress: () => console.log('cancel') },
                       { text: '确定', onPress: () => this.DelVenueNumberTitle({ uuid: item.uuid }) },
@@ -830,17 +858,17 @@ class sitePh extends React.Component {
                   />
                   <Card.Body>
                     <div className="bossname">
-                      <div>场地编号：{item.venueid}</div>
+                      <div onClick={this.venDuo} data-venueid={item.venueid}>场地编号：{item.venueid}</div>
                       <div>场地数量：{item.sitenumber}</div>
-                      <div>星期：{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</div>
+                      <div onClick={this.venDuo} data-venueid={item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}>星期：{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</div>
                       <div>时间范围：{item.starttime}~{item.endtime}</div>
                       <div>价格：{item.costperhour}元/时</div>
                       <div>最长提前预定时间：{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</div>
                       <div>最短提前预定时间：{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</div>
-                      <div>备注：{item.comment === '' ? '无' : item.comment}</div>
+                      <div onClick={item.comment === null ? '' : this.venDuo} data-venueid={item.comment}>备注：{item.comment === '' ? '无' : item.comment}</div>
                     </div>
                   </Card.Body>
-                  <Card.Footer content={<div className="lookYou" onClick={this.specialOffer} data-uuid={item.uuid}>{item.discount_venueid !== null ? '查看优惠' : '添加优惠'}</div>} extra={<div><img style={{ marginRight: '10px' }} onClick={this.jiaUpdata} data-uuid={item.uuid} src={require('../../assets/upLoad.png')} alt="img" /><img onClick={() =>
+                  <Card.Footer content={<div className="lookYou" onClick={this.specialOffer} data-uuid={item.uuid}>{item.discount_venueid !== null ? '查看优惠' : '添加优惠'}</div>} extra={<div className="capzuo"><img style={{ marginRight: '10px' }} onClick={this.jiaUpdata} data-uuid={item.uuid} src={require('../../assets/upLoad.png')} alt="img" /><img onClick={() =>
                     alert('提示', '您确定要删除该条价格设置么？删除后用户将无法预订' + item.sportname + '的' + item.tags + '场地。', [
                       { text: '取消', onPress: () => console.log('cancel') },
                       { text: '确定', onPress: () => this.DelSiteSetting({ uuid: item.uuid }) },
@@ -848,6 +876,7 @@ class sitePh extends React.Component {
                 </Card>
               ))
             }
+            <div style={this.state.siteList.length!==0?{display:'none'}:{width:'100%'}}><img style={{width:'4rem',height:'4rem',display:'block',margin:'4rem auto 0'}} src={require('../../assets/xifen (6).png')} alt="666"/><span style={{display:'block',textAlign:'center'}}>您还没有添加价格设置!</span></div>
             <Pagination style={{ marginBottom: '15px' }} size="small" hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.pageTwo} total={this.state.otherTwo} onChange={this.currentTwo} />
           </div>
           <div className="footerSite">
@@ -861,13 +890,6 @@ class sitePh extends React.Component {
             <div style={{ marginLeft: '4%' }} onClick={this.Price}>+添加价格设置</div>
           </div>
         </div>
-
-
-
-
-
-
-
 
 
 
@@ -896,7 +918,7 @@ class sitePh extends React.Component {
         <Drawer
           title="选择/添加细分标签"
           placement="bottom"
-          height='50%'
+          height='60%'
           onClose={this.onCloseTitle}
           visible={this.state.visibleTitle}
         >
@@ -945,7 +967,7 @@ class sitePh extends React.Component {
 
 
         <Drawer
-          title="添加价格设置"
+          title="添加/修改价格设置"
           placement="bottom"
           height='100%'
           onClose={this.onClosePrice}
@@ -968,8 +990,8 @@ class sitePh extends React.Component {
             <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>细分标签</List.Item>
           </Picker>
 
-          <List.Item arrow="horizontal" extra={<span className="bianhao">{this.state.cheStr === '' ? '无' : this.state.cheStr}</span>} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">场地编号</List.Item>
-          <List.Item arrow="horizontal" extra={this.state.titleArrFoterNum} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">场地数量</List.Item>
+          <List.Item arrow="horizontal" extra={<span className="bianhao">{this.state.cheStr === '' ? '无' : this.state.cheStr}</span>} style={{ borderBottom: '1px solid #E9E9E9' }}>场地编号</List.Item>
+          <List.Item arrow="horizontal" extra={this.state.titleArrFoterNum} style={{ borderBottom: '1px solid #E9E9E9' }} >场地数量</List.Item>
           <List.Item arrow="horizontal" extra={this.state.Liturgyche} onClick={this.Liturgy} style={{ borderBottom: '1px solid #E9E9E9' }} >星期</List.Item>
           <DatePicker
             mode="time"
@@ -991,7 +1013,7 @@ class sitePh extends React.Component {
           >
             <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>结束时间</List.Item>
           </DatePicker>
-          <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">
+          <List.Item  arrow="empty">
             <InputItem
               type='money'
               placeholder="请输入"
@@ -1000,7 +1022,7 @@ class sitePh extends React.Component {
               onBlur={(v) => { console.log('onBlur', v); }}
               style={{ padding: '0' }}
               moneyKeyboardWrapProps={moneyKeyboardWrapProps}
-            ><span style={{ fontSize: '0.75rem' }}>价格(元/时)</span></InputItem></List.Item>
+            ><span style={{ fontSize: '0.88rem' }}>价格(元/时)</span></InputItem></List.Item>
 
           <Picker
             data={this.state.Longest}
@@ -1022,6 +1044,7 @@ class sitePh extends React.Component {
             title="备注"
             placeholder="请输入"
             maxLength={200}
+            value={this.state.comment}
             data-seed="logId"
             ref={el => this.autoFocusInst = el}
             autoHeight
@@ -1037,7 +1060,7 @@ class sitePh extends React.Component {
         <Drawer
           title="选择星期"
           placement="bottom"
-          height='30%'
+          height='40%'
           onClose={this.LiturgyClose}
           visible={this.state.Liturgy}
         >
@@ -1059,11 +1082,11 @@ class sitePh extends React.Component {
           onClose={this.specialOfferClose}
           visible={this.state.specialOffer}
         >
-          <List.Item arrow="horizontal" extra={this.state.sportSiscount} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">运动项目</List.Item>
-          <List.Item arrow="horizontal" extra={this.state.titleSiscount} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty" >细分标签</List.Item>
-          <List.Item arrow="horizontal" extra={this.state.xingSiscount} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">星期</List.Item>
-          <List.Item arrow="horizontal" extra={this.state.starttimeSiscount + '~' + this.state.endtimeSiscount} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">时间范围</List.Item>
-          <List.Item arrow="horizontal" extra={this.state.venueidSiscountTwo} onClick={this.offer} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">参加优惠的场地</List.Item>
+          <List.Item  extra={this.state.sportSiscount} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">运动项目</List.Item>
+          <List.Item  extra={this.state.titleSiscount} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty" >细分标签</List.Item>
+          <List.Item  extra={this.state.xingSiscount} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">星期</List.Item>
+          <List.Item  extra={this.state.starttimeSiscount + '~' + this.state.endtimeSiscount} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">时间范围</List.Item>
+          <List.Item arrow="horizontal" extra={this.state.venueidSiscountTwo} onClick={this.offer} style={{ borderBottom: '1px solid #E9E9E9' }} >参加优惠的场地</List.Item>
           <DatePicker
             mode="datetime"
             extra="请选择"
@@ -1086,11 +1109,10 @@ class sitePh extends React.Component {
             <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>优惠期限(结束)</List.Item>
           </DatePicker>
 
-          <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">
+          <List.Item  style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">
             <InputItem
               type='money'
               placeholder={this.state.moneySiscount}
-              
               onChange={(v) => { this.setState({ moneySiscount: v }) }}
               onBlur={(v) => { console.log('onBlur', v); }}
               style={{ padding: '0' }}
@@ -1125,6 +1147,18 @@ class sitePh extends React.Component {
           <div className="sitePhFooter" onClick={this.koNumArrSiscount}>确定</div>
         </Drawer>
 
+
+        <Modal
+          visible={this.state.venDuo}
+          transparent
+          maskClosable={true}
+          onClose={this.venDuoTwo}
+          title="详情"
+        >
+          <div style={{ width: '100%', height: '50px' }}>
+            {this.state.venueidDuo}
+          </div>
+        </Modal>
 
 
       </div>

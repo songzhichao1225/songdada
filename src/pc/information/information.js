@@ -1,8 +1,8 @@
 import React from 'react';
 import './information.css';
 import 'antd/dist/antd.css';
-import { Input,Row, Col, Select, Pagination, Spin, message, Result,DatePicker, Modal, Radio, Drawer, InputNumber,Popover } from 'antd';
-import {BankOutlined,SyncOutlined,CloseCircleOutlined} from '@ant-design/icons';
+import { Input,Row, Col, Select, Pagination, Spin, message,DatePicker, Modal, Radio, Drawer, InputNumber,Popover } from 'antd';
+import {SyncOutlined,CloseCircleOutlined} from '@ant-design/icons';
 import { getReservationActivitieslist, getVenueReservation, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import moment from 'moment';
@@ -238,11 +238,11 @@ class information extends React.Component {
     }
   }
   activityChang = (e) => {
-    this.setState({ status: e })
+    this.setState({ status: e,page:1 })
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: e, startdate: '', enddate: '' })
+      this.getReservationActivitieslist({ page:1, sport: this.state.sport, status: e, startdate: '', enddate: '' })
     } else {
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: e, startdate: this.state.start, enddate: this.state.end })
+      this.getReservationActivitieslist({ page:1, sport: this.state.sport, status: e, startdate: this.state.start, enddate: this.state.end })
     }
   }
   clickLi = (e) => {
@@ -590,7 +590,8 @@ class information extends React.Component {
             <div className={this.state.hidden === true ? '' : 'hidden'} style={{height:'90%',overflowY:'auto'}}>
               {userMessage}
             </div>
-            <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<BankOutlined style={{ color: '#F5A623' }} />} title="您的场馆还没有预约活动！" />,
+            <div style={this.state.hidden === true ?{display:'none'}:{width:'100%'}}><img style={{width:84,height:84,display:'block',margin:'84px auto 0'}} src={require('../../assets/xifen (5).png')} alt="icon"/><span style={{display:'block',textAlign:'center'}}>您的场馆还没有预约活动!</span></div>
+
 
 
 

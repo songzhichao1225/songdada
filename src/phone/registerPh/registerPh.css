@@ -126,3 +126,7 @@
 .registerPh .am-checkbox{
     margin-top: -3px;
 }
+.registerPh .bossInput .am-list-item.am-input-item{
+    width: 70%;
+    float: left;
+}

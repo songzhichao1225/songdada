@@ -1,69 +1,65 @@
 import React from 'react';
 import './sittingPh.css';
 
-import {Toast } from 'antd-mobile';
+import { Toast, Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import {Switch } from 'antd';
-import {LeftOutlined} from '@ant-design/icons';
-import {VenueIsClose,getVenueIsClose } from '../../api';
+import { Switch } from 'antd';
+import { LeftOutlined } from '@ant-design/icons';
+import { VenueIsClose, getVenueIsClose } from '../../api';
 
-
+const alert = Modal.alert;
 class sittingPh extends React.Component {
 
   state = {
-    flag:false,
+    flag: false,
   };
 
 
   async getVenueIsClose(data) {
-    const res = await getVenueIsClose(data,localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
+    const res = await getVenueIsClose(data, localStorage.getItem('venue_token'))
+
+    if (res.data.data.isclose === 1) {
+      this.setState({ flag: true })
     } else {
-      if(res.data.data.isclose===1){
-        this.setState({flag:true})
-      }else{
-        this.setState({flag:false})
-      }
+      this.setState({ flag: false })
     }
+
   }
 
   async VenueIsClose(data) {
-    const res = await VenueIsClose(data,localStorage.getItem('venue_token'))
-       if(res.data.code===2000){
-         Toast.success(res.data.msg, 1);
-        this.getVenueIsClose()
-       }
+    const res = await VenueIsClose(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      Toast.success(res.data.msg, 1);
+      this.getVenueIsClose()
+    }
   }
-  
+
   componentDidMount() {
     this.getVenueIsClose()
   }
-         
-  onChange=(e)=>{
-     this.setState({flag:e})
-     if(e===false){
-      this.VenueIsClose({close:0})
-     }else if(e===true){
-      this.VenueIsClose({close:1})
-     }
+
+  onChange = (e) => {
+    this.setState({ flag: e })
+    if (e === false) {
+      this.VenueIsClose({ close: 0 })
+    } else if (e === true) {
+      this.VenueIsClose({ close: 1 })
+    }
   }
-  temporaryPh=()=>{
+  temporaryPh = () => {
     this.props.history.push('/homePh/temporaryPh')
   }
 
-  untiePhonePh=()=>{
+  untiePhonePh = () => {
     this.props.history.push('/homePh/untiePhonePh')
   }
-  resetPasswordPh=()=>{
+  resetPasswordPh = () => {
     this.props.history.push('/homePh/resetPasswordPh')
   }
-  reture=()=>{
+  reture = () => {
     this.props.history.goBack()
   }
-  
-  exitLogin=()=>{
+  exitLogin = () => {
     this.props.history.replace('/login')
     localStorage.removeItem('venue_token')
   }
@@ -71,33 +67,96 @@ class sittingPh extends React.Component {
   render() {
     return (
       <div className="sittingPh">
-        <div className="headTitle"><LeftOutlined onClick={this.reture} style={{position:'absolute',left:'0',width:'48px',height:'48px',lineHeight:'48px'}}/>设置</div>
-        <div className="siteSon"><img src={require("../../assets/closeYuyue.png")} alt="icon"/><span>关闭场地预约</span><Switch className="switch" checked={this.state.flag} onChange={this.onChange} /></div>
-        
+        <div className="headTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', left: '0', width: '48px', height: '48px', lineHeight: '48px' }} />设置</div>
+        <div className="siteSon">
+          <svg width="16px" height="17px" viewBox="0 0 16 17" style={{ float: 'left' }} version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <title>Icon / 合作场馆 / 我的 / 关闭预约</title>
+            <desc>Created with Sketch.</desc>
+            <g id="合作场馆" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g id="54-|-我的设置" transform="translate(-12.000000, -92.000000)" fill="#D85D27">
+                <g id="表单-/-输入框-/-右箭头" transform="translate(12.000000, 74.000000)">
+                  <g transform="translate(0.000000, 10.500000)" id="编组2">
+                    <g transform="translate(0.000000, 6.000000)">
+                      <g id="Icon-/-合作场馆-/-我的-/-关闭预约" transform="translate(0.000000, 2.000000)">
+                        <path d="M7.96414278,7.30983432 L5.3685447,4.62160669 C5.1635772,4.41072666 4.82853417,4.40678498 4.61765414,4.61175248 C4.51517039,4.70832371 4.45604515,4.84234092 4.45407431,4.9842415 C4.45013263,5.12614208 4.50531619,5.26213014 4.60188741,5.36264305 L7.19748549,8.05087067 L4.50925787,10.6464687 C4.29837784,10.8514363 4.29443616,11.1864793 4.49940366,11.3973593 C4.59597489,11.4998431 4.7299921,11.5589683 4.87189268,11.5609391 C5.01379326,11.5648808 5.14978131,11.5096973 5.25029422,11.413126 L7.93852185,8.81752796 L10.5341199,11.5057556 C10.7390874,11.7166356 11.0741305,11.7205773 11.2850105,11.5156098 C11.3874942,11.4190386 11.4466195,11.2850214 11.4485903,11.1431208 C11.452532,11.0012202 11.3973484,10.8652321 11.3007772,10.7647192 L8.70517914,8.07649161 L11.3934068,5.48089353 C11.6042868,5.27592602 11.6082285,4.94088299 11.403261,4.73000297 C11.3066897,4.62751922 11.1726725,4.56839397 11.030772,4.56642313 C10.8888714,4.56248145 10.7528833,4.61766501 10.6523704,4.71423624 L7.96414278,7.30983432 Z M2.25461534,13.563314 C-0.813984664,10.3843468 -0.725296802,5.32125538 2.45169948,2.25068453 C5.63066661,-0.817915482 10.6937581,-0.72922762 13.7643289,2.44776866 C16.8329289,5.62673579 16.7462119,10.6898273 13.5672448,13.7603981 C10.3882777,16.8289981 5.32518619,16.7422811 2.25461534,13.563314 Z" id="icon_合作场馆_我的_关闭预约"></path>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </svg>
+
+          <span>关闭场地预约</span><Switch className="switch" checked={this.state.flag} onChange={this.onChange} /></div>
+
         <div className="siteSon" onClick={this.temporaryPh}>
-          <img src={require("../../assets/linshi.png")} alt="icon"/>
+          <svg width="16px" height="16px" viewBox="0 0 16 16" style={{ float: 'left' }} version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <title>icon/合作场馆/我的/设置</title>
+            <desc>Created with Sketch.</desc>
+            <g id="合作场馆" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g id="54-|-我的设置" transform="translate(-12.000000, -146.000000)" fill="#D85D27">
+                <g id="编组-3" transform="translate(12.000000, 128.000000)">
+                  <g id="表单/输入框/右箭头" transform="translate(0.000000, 16.000000)">
+                    <g id="编组-2">
+                      <g id="icon/合作场馆/我的/临时关闭" transform="translate(0.000000, 2.000000)">
+                        <path d="M13.6639752,2.35493756 C12.1520726,0.843034985 10.1424052,0.0103255787 8.00713355,0.0103255787 C5.87186193,0.0103255787 3.8621945,0.843034985 2.35029195,2.35493756 C0.838389403,3.86684012 0.00567997685,5.87650753 0.00567997685,8.01177915 C0.00567997685,10.1470508 0.838389383,12.1567182 2.35029195,13.6686208 C3.86219452,15.1805233 5.87186193,16.0085807 8.00713355,16.0085807 C10.1470572,16.0085807 12.1567246,15.1758713 13.6686272,13.6639688 C16.7854725,10.5517755 16.7854725,5.47178285 13.6639752,2.35493756 Z M11.7706079,10.882068 C11.5845276,11.2030566 11.240279,11.3100528 10.9239425,11.1239724 L8.17460585,9.45855361 C8.08156569,9.40738153 7.92804942,9.32829738 7.87687734,9.24456124 C7.67684101,9.12826105 7.36980847,8.92357271 7.36980847,8.67701628 L7.36980847,4.01105237 C7.36980847,3.64354374 7.66753697,3.34581523 8.0350456,3.34581523 C8.40255422,3.34581523 8.70028273,3.64354374 8.70028273,4.01105237 L8.70028273,8.37463577 L11.4635754,9.97492649 C11.784564,10.1563548 11.9566883,10.5657315 11.7706079,10.882068 L11.7706079,10.882068 Z" id="icon_合作场馆_我的_临时关闭"></path>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </svg>
+
           <span>设置临时关闭预约时间</span>
-          <img className="switch" style={{width:'0.44rem',height:'0.6rem',marginTop:'0.5rem'}} src={require("../../assets/right.png")} alt="arrow"/>
+          <img className="switch" style={{ width: '0.44rem', height: '0.6rem', marginTop: '0.5rem' }} src={require("../../assets/right.png")} alt="arrow" />
         </div>
 
         <div className="siteSon" onClick={this.untiePhonePh}>
-          <img src={require("../../assets/phoneteo.png")} alt="icon"/>
+          <svg width="16px" height="16px" style={{float:'left'}} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <title>icon/合作场馆/我的/解绑手机</title>
+            <desc>Created with Sketch.</desc>
+            <g id="icon/合作场馆/我的/解绑手机" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <path d="M13.2554022,15.9268162 L3.97283286,15.9268162 C3.70905889,15.9268162 3.4560884,15.8220324 3.26957204,15.6355161 C3.08305567,15.4489997 2.97827187,15.1960292 2.97827187,14.9322553 L2.97827187,1.00840131 C2.97827187,0.459120444 3.42355199,0.0138403199 3.97283286,0.0138403199 L13.2554022,0.0138403199 C13.804683,0.0138403199 14.2499631,0.459120444 14.2499631,1.00840131 L14.2499631,14.9322553 C14.2499631,15.4815361 13.804683,15.9268162 13.2554022,15.9268162 Z M8.61411751,15.2637756 C9.16339838,15.2637756 9.6086785,14.8184954 9.6086785,14.2692146 C9.6086785,13.7199337 9.16339838,13.2746536 8.61411751,13.2746536 C8.06483664,13.2746536 7.61955651,13.7199337 7.61955651,14.2692146 C7.61955651,14.5329886 7.72434032,14.785959 7.91085668,14.9724754 C8.09737305,15.1589918 8.35034353,15.2637756 8.61411751,15.2637756 Z M12.9238818,2.00296232 C12.917873,1.8224162 12.7729076,1.67745082 12.5923615,1.67144199 L4.63587353,1.67144199 C4.45532741,1.67745082 4.31036203,1.8224162 4.3043532,2.00296232 L4.3043532,12.2800926 C4.31036203,12.4606387 4.45532741,12.6056041 4.63587353,12.6116129 L12.5923615,12.6116129 C12.7729076,12.6056041 12.917873,12.4606387 12.9238818,12.2800926 L12.9238818,2.00296232 L12.9238818,2.00296232 Z M11.4320403,8.96488928 L7.61955651,8.96488928 L7.61955651,9.95945027 C7.62077224,10.1124223 7.51634902,10.2460324 7.367615,10.2818109 C7.21888097,10.3175893 7.06511724,10.246087 6.99662981,10.1092975 L5.47163628,8.59855931 L5.47428845,8.58761914 C5.36781041,8.53177107 5.30049039,8.4220738 5.29891419,8.30184862 C5.29891419,8.11875499 5.4473409,7.97032828 5.63043453,7.97032828 L11.4320403,7.97032828 C11.706645,7.97037889 11.9292292,8.19300413 11.9292292,8.46760878 C11.9292292,8.74221343 11.706645,8.96483867 11.4320403,8.96488928 Z M11.5978005,6.31272663 L5.7961947,6.31272663 C5.52155426,6.31272663 5.29891419,6.09008657 5.29891419,5.81544613 C5.29891419,5.54080569 5.52155426,5.31816562 5.7961947,5.31816562 L9.6086785,5.31816562 L9.6086785,4.32360463 C9.60746277,4.17063263 9.711886,4.03702253 9.86062002,4.00124404 C10.009354,3.96546555 10.1631178,4.03696788 10.2316052,4.17375744 L11.7565987,5.68449559 L11.753615,5.69543577 C11.8602215,5.75119487 11.9276794,5.86090954 11.9293208,5.9812063 C11.9293208,6.06913096 11.8943929,6.15345445 11.8322208,6.21562657 C11.7700486,6.2777987 11.6857251,6.31272663 11.5978005,6.31272663 L11.5978005,6.31272663 Z" id="icon_合作场馆_我的_解绑手机" fill="#6FB2FF"></path>
+            </g>
+          </svg>
+
           <span>解除/更换绑定手机号</span>
-          <img className="switch" style={{width:'0.44rem',height:'0.6rem',marginTop:'0.5rem'}} src={require("../../assets/right.png")} alt="arrow"/>
+          <img className="switch" style={{ width: '0.44rem', height: '0.6rem', marginTop: '0.5rem' }} src={require("../../assets/right.png")} alt="arrow" />
         </div>
 
         <div className="siteSon" onClick={this.resetPasswordPh}>
-          <img src={require("../../assets/mineSite.png")} alt="icon"/>
+          <svg width="16px" height="16px" style={{ float: 'left' }} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" >
+            <title>icon/合作场馆/我的/设置</title>
+            <desc>Created with Sketch.</desc>
+            <g id="合作场馆" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g id="54-|-我的设置" transform="translate(-12.000000, -252.000000)" fill="#6FB2FF">
+                <g id="编组-3" transform="translate(12.000000, 234.000000)">
+                  <g id="表单/输入框/右箭头" transform="translate(0.000000, 16.000000)">
+                    <g id="编组-2">
+                      <g id="icon/合作场馆/我的/重置密码" transform="translate(0.000000, 2.000000)">
+                        <path d="M16,12 L14.1333281,13.8666719 L12.2666719,12 L13.3333281,12 C13.1555625,11.2 12.4444375,10.6666719 11.6444375,10.6666719 C10.6666719,10.6666719 9.86667187,11.4666719 9.86667187,12.4444375 C9.86667187,13.4222031 10.6666719,14.2222188 11.6444375,14.2222188 L11.8222187,14.2222188 L11.8222187,16 L11.6444375,16 C9.68890625,16 8.08890625,14.4 8.08890625,12.4444375 C8.08890625,10.488875 9.68890625,8.88889062 11.6444531,8.88889062 C13.4222344,8.88889062 14.9333594,10.2222187 15.111125,12 L16,12 L16,12 Z M8.88889063,16 L0.888890625,16 C0.3555625,16 0,15.6444375 0,15.1111094 L0,7.11110937 C0,6.57778125 0.3555625,6.22221875 0.888890625,6.22221875 L1.77778125,6.22221875 L1.77778125,4.4444375 C1.77778125,1.9555625 3.73332813,0 6.22221875,0 L7.111125,0 C9.6,0 11.5555469,1.9555625 11.5555469,4.4444375 L11.5555469,6.22221875 L12.4444219,6.22221875 C12.9777656,6.22221875 13.3333281,6.57778125 13.3333281,7.111125 L13.3333281,8.3555625 C12.8,8.17778125 12.1777656,8 11.5555469,8 C9.06664062,8 7.11109375,9.9555625 7.11109375,12.4444375 C7.11109375,13.8666719 7.82220312,15.2 8.888875,16 L8.88889063,16 Z M3.5555625,6.22221875 L9.77778125,6.22221875 L9.77778125,4.88890625 C9.77778125,3.20001562 8.3555625,1.77779687 6.66667188,1.77779687 C4.97778125,1.77779687 3.5555625,3.2 3.5555625,4.888875 L3.5555625,6.22221875 Z" id="形状"></path>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </svg>
+
           <span>重置密码</span>
-          <img className="switch" style={{width:'0.44rem',height:'0.6rem',marginTop:'0.5rem'}} src={require("../../assets/right.png")} alt="arrow"/>
+          <img className="switch" style={{ width: '0.44rem', height: '0.6rem', marginTop: '0.5rem' }} src={require("../../assets/right.png")} alt="arrow" />
         </div>
 
-        <div className="siteSon" onClick={this.exitLogin}>
-          <svg t="1571739117706" style={{float:'left'}} viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8015" id="mx_n_1571739117707" width="16" height="16"><path d="M1010.152 905.832c0 58.4-47.344 105.744-105.744 105.744H117.68c-58.4 0-105.736-47.344-105.736-105.744v-786.72c0-58.4 47.336-105.736 105.736-105.736h786.728c58.4 0 105.744 47.336 105.744 105.736v786.72z" fill="#4D54A3" p-id="8016"></path><path d="M512.392 212.192a49.736 49.736 0 0 0-49.728 49.736v248.688a49.736 49.736 0 0 0 49.728 49.736 49.736 49.736 0 0 0 49.728-49.736V261.928a49.744 49.744 0 0 0-49.728-49.736z m0 641.96c-175.688 0-318.648-142.96-318.648-318.648 0-98.2 44.272-189.416 121.432-250.328a37.296 37.296 0 1 1 46.216 58.576C302.28 390.4 268.376 460.288 268.376 535.504c0 134.544 109.472 244.04 244.032 244.04 134.552 0 244.024-109.488 244.024-244.04 0-75.232-33.92-145.144-93.104-191.784a37.296 37.296 0 1 1 46.184-58.6c77.232 60.888 121.528 152.152 121.528 250.384 0 175.68-142.96 318.648-318.648 318.648z m0 0" fill="#F7F8F8" p-id="8017"></path></svg>
+        <div className="siteSon" onClick={() =>
+          alert('提示', '您确定退出该账号么?', [
+            { text: '取消', onPress: () => console.log('cancel') },
+            { text: '确定', onPress: () => this.exitLogin() },
+          ])}>
+          <svg t="1571739117706" style={{ float: 'left' }} viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8015" id="mx_n_1571739117707" width="16" height="16"><path d="M1010.152 905.832c0 58.4-47.344 105.744-105.744 105.744H117.68c-58.4 0-105.736-47.344-105.736-105.744v-786.72c0-58.4 47.336-105.736 105.736-105.736h786.728c58.4 0 105.744 47.336 105.744 105.736v786.72z" fill="#4D54A3" p-id="8016"></path><path d="M512.392 212.192a49.736 49.736 0 0 0-49.728 49.736v248.688a49.736 49.736 0 0 0 49.728 49.736 49.736 49.736 0 0 0 49.728-49.736V261.928a49.744 49.744 0 0 0-49.728-49.736z m0 641.96c-175.688 0-318.648-142.96-318.648-318.648 0-98.2 44.272-189.416 121.432-250.328a37.296 37.296 0 1 1 46.216 58.576C302.28 390.4 268.376 460.288 268.376 535.504c0 134.544 109.472 244.04 244.032 244.04 134.552 0 244.024-109.488 244.024-244.04 0-75.232-33.92-145.144-93.104-191.784a37.296 37.296 0 1 1 46.184-58.6c77.232 60.888 121.528 152.152 121.528 250.384 0 175.68-142.96 318.648-318.648 318.648z m0 0" fill="#F7F8F8" p-id="8017"></path></svg>
           <span>退出登录</span>
-          <img className="switch" style={{width:'0.44rem',height:'0.6rem',marginTop:'0.5rem'}} src={require("../../assets/right.png")} alt="arrow"/>
+          <img className="switch" style={{ width: '0.44rem', height: '0.6rem', marginTop: '0.5rem' }} src={require("../../assets/right.png")} alt="arrow" />
         </div>
-
       </div>
     )
   }

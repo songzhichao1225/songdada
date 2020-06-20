@@ -5,8 +5,8 @@ import { getVenueMoneyList } from '../../api';
 
 import { Toast, DatePicker,List,PullToRefresh } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Pagination, Result, Spin } from 'antd';
-import {MoneyCollectOutlined,LeftOutlined} from '@ant-design/icons';
+import { Pagination, Spin } from 'antd';
+import {LeftOutlined} from '@ant-design/icons';
 import moment from 'moment';
 class monthlyIncomePh extends React.Component {
 
@@ -22,11 +22,7 @@ class monthlyIncomePh extends React.Component {
   async getVenueMoneyList(data) {
     const res = await getVenueMoneyList(data, localStorage.getItem('venue_token'))
     this.setState({ getVenueMoneyList: res.data.data, spin: false })
-
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
-    } else if (res.data.data.data !== undefined) {
+     if (res.data.data.data !== undefined) {
       this.setState({ moneyList: res.data.data.data, flag: false,refreshing:false })
     } else {
       Toast.fail(res.data.msg, 1)
@@ -52,7 +48,8 @@ class monthlyIncomePh extends React.Component {
         this.setState({ qiStart: new Date(start), qiEnd: new Date(end) })
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
       } else {
-        let start = moment().startOf('day')._d
+        let myDate = new Date()
+        let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d
         let end = moment().endOf('day')._d
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
         this.setState({ qiStart: new Date(start), qiEnd: new Date(end)})
@@ -93,45 +90,35 @@ class monthlyIncomePh extends React.Component {
       this.getVenueMoneyList({ start: this.state.qiStart, end: this.state.qiEnd, page: this.state.current })
     }, 1000)
   }
+  qiEnd=e=>{
+    this.setState({qiEnd:e})
+    this.getVenueMoneyList({ start: this.state.qiStart, end:e, page: 1 })
+  }
+  qiStart=e=>{
+    this.setState({qiStart:e})
+    this.getVenueMoneyList({ start:e, end: this.state.qiEnd, page: 1 })
+  }
 
   render() {
     return (
       <div className="monthlyIncomePh">
         <div className="headerTitle">
           <LeftOutlined  onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }}/>
-          {this.props.location.query !== undefined && this.props.location.query.income === 'month' ? '钱包明细' : '钱包明细'}
+          {sessionStorage.getItem('income') === undefined?'钱包明细':'' &&sessionStorage.getItem('income') !== undefined&&sessionStorage.getItem('income')  === 'month' ? '本月收入' : '钱包明细'&& sessionStorage.getItem('income')  !== undefined&&sessionStorage.getItem('income')  === 'day' ? '今日收入' : '钱包明细'}
         </div>
         <div className="timer">
-          {/* <DatePicker
-            mode="date"
-            extra="Optional"
-            title='选择日期'
-            onChange={this.startDate}
-            value={this.state.qiStart}
-          >
-            <div className="start" style={{ lineHeight: '2rem', fontSize: '12px' }}>{this.state.start}</div>
-          </DatePicker> */}
-
-
+        <div style={sessionStorage.getItem('income')=== 'all' ?{}:{display:'none'}}>
           <DatePicker
           mode="date"
           title="选择日期"
           extra="Optional"
           value={this.state.qiStart}
-          onChange={qiStart => this.setState({ qiStart })}
+          onChange={this.qiStart}
         >
           <List.Item  className="start" ></List.Item>
         </DatePicker>
 
-          {/* <DatePicker
-            mode="date"
-            extra="Optional"
-            title='选择日期'
-            onChange={this.endDate}
-            value={this.state.qiEnd}
-          >
-            <div className="start" style={{ lineHeight: '2rem', fontSize: '12px' }}>{this.state.end}</div>
-          </DatePicker> */}
+         
              <span style={{float:'left',lineHeight:'3rem',marginLeft:'0.5rem',display:'block'}}>至</span>
 
           <DatePicker
@@ -139,10 +126,11 @@ class monthlyIncomePh extends React.Component {
           title="选择日期"
           extra="Optional"
           value={this.state.qiEnd}
-          onChange={qiEnd => this.setState({ qiEnd })}
+          onChange={this.qiEnd}
         >
           <List.Item  className="start" ></List.Item>
         </DatePicker>
+        </div>
 
           <span className="text">收入￥{this.state.getVenueMoneyList.whereMoney === undefined ? '0.00' : this.state.getVenueMoneyList.whereMoney}</span>
         </div>
@@ -154,7 +142,7 @@ class monthlyIncomePh extends React.Component {
         damping={60}
         ref={el => this.ptr = el}
         style={{
-          height: this.state.height,
+          height: '100%',
           overflow: 'auto',
         }}
         indicator={this.state.down ? {} : { deactivate: '上拉可以刷新' }}
@@ -173,14 +161,14 @@ class monthlyIncomePh extends React.Component {
               )) 
             }
 
-            <Pagination className="fenye" current={parseInt(this.state.current)} size="small" pageSize={10} total={this.state.getVenueMoneyList.count} onChange={this.pageChang} />
+            <Pagination className="fenye" current={parseInt(this.state.current)}  hideOnSinglePage={true} showSizeChanger={false} size="small"  pageSize={10} total={this.state.getVenueMoneyList.count} onChange={this.pageChang} />
           </div>
 
       </PullToRefresh>
 
         </div>
-        <Result className={ this.state.moneyList.length===0 ? '' : 'contentNone'} icon={ <MoneyCollectOutlined style={{ fontSize: '2rem',color:'#F5A623' }}/>} title="您还没有收入" />
-        <Spin spinning={this.state.spin} style={{ width: '100%', marginTop: '45%' }} />
+        <div style={this.state.moneyList.length===0 ?{width:'100%'}:{display:'none'}}><img style={{width:'4rem',height:'4rem',display:'block',margin:'4rem auto 0'}} src={require('../../assets/xifen (7).png')} alt="555"/><span style={{display:'block',textAlign:'center'}}>您还没有收入!</span></div>
+       <Spin spinning={this.state.spin} style={{ width: '100%', marginTop: '45%' }} />
 
       </div>
     )

@@ -1,10 +1,10 @@
 import React from 'react';
 import './recordPh.css';
 import ReactDOM from 'react-dom';
-import { Toast, PullToRefresh } from 'antd-mobile';
+import {  PullToRefresh } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Pagination, Result, Spin } from 'antd';
-import {AccountBookOutlined,LeftOutlined} from '@ant-design/icons';
+import { Pagination, Spin } from 'antd';
+import {LeftOutlined} from '@ant-design/icons';
 import { getVenueWithdrawalList } from '../../api';
 
 function genData() {
@@ -28,12 +28,9 @@ class recordPh extends React.Component {
   };
   async getVenueWithdrawalList(data) {
     const res = await getVenueWithdrawalList(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
-    } else {
+    
       this.setState({ recordPhList: res.data.data, other: res.data.other, spin: false,refreshing:false })
-    }
+    
   }
 
 
@@ -101,9 +98,8 @@ class recordPh extends React.Component {
         </div>
 
         <Spin spinning={this.state.spin} style={{ width: '100%', marginTop: '45%' }} />
-        <Pagination className={this.state.recordPhList.length === 0 ? 'hidden' : 'fenye'} onChange={this.current} size='small' defaultCurrent={1} total={this.state.other} />
-        <Result className={this.state.spin === false && this.state.recordPhList.length === 0 ? '' : 'hidden'} icon={<AccountBookOutlined style={{ fontSize: '2rem',coloe:'#F5A623' }}/>} title="没有提现记录" />
-
+        <Pagination className={this.state.recordPhList.length === 0 ? 'hidden' : 'fenye'} hideOnSinglePage={true} showSizeChanger={false} current={this.state.page} onChange={this.current} size='small' defaultCurrent={1} total={this.state.other} />
+       <div style={this.state.spin === false && this.state.recordPhList.length === 0?{width:'100%'}:{display:'none'}}><img style={{width:'4rem',height:"4rem",display:'block',margin:'4rem auto 0'}} src={require('../../assets/xifen (8).png')}  alt="555"/><span style={{display:'block',textAlign:'center'}}>没有提现记录!</span></div>
       </div>
     )
   }

@@ -2,7 +2,7 @@ import React from 'react';
 import './mapPh.css';
 import 'antd/dist/antd.css';
 import { Input } from 'antd';
-import Icon from '@ant-design/icons';
+import {LeftOutlined} from '@ant-design/icons';
 const { Search } = Input;
 
 
@@ -75,7 +75,7 @@ class mapPh extends React.Component {
     })
     return (
       <div className="mapLocation">
-          <Icon type="arrow-left" onClick={this.reture} style={{position:'absolute',left:'5%',top:'2%',zIndex:'99',fontSize:'1rem'}}/>
+        <LeftOutlined onClick={this.reture} style={{position:'absolute',left:'5%',top:'2%',zIndex:'99',fontSize:'1rem'}}/>
         <div id="allmap" style={{ position: "absolute", top: 0, left: 0, width: '100vw', height: '100vh' }}>
         </div>
         <div className="search">

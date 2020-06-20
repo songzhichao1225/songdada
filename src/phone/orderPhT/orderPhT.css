@@ -105,8 +105,8 @@
 
 
 .drawerBossTwo>div:last-child{
-    margin-left: 0;
-    clear: both;
+    margin-left: 0.5rem;
+    float: left;
 }
 .drawerBtn{
     overflow: hidden;

@@ -128,4 +128,14 @@
     flex: 3 1;
     height: 25px;
 }
+.newsPh .bottomLook{
+    height: 3rem;
+    width: 100%;
+    margin-top: 1rem;
+    border-top: 1px solid #000;
+}
+.newsPh .bottomLook .content{
+    width: 30%;
+    margin: 0.5rem auto 0;
+}
 

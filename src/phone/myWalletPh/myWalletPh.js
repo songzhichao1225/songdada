@@ -1,7 +1,7 @@
 import React from 'react';
 import './myWalletPh.css';
 
-import {Toast } from 'antd-mobile';
+import {} from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import {LeftOutlined} from '@ant-design/icons';
 import {getVenueMoney } from '../../api';
@@ -15,12 +15,9 @@ class myWalletPh extends React.Component {
 
   async getVenueMoney(data) {
     const res = await getVenueMoney(data,localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
-    } else {
+    
       this.setState({money:res.data.data.money})
-    }
+    
   }
 
   componentDidMount() {
@@ -32,6 +29,7 @@ class myWalletPh extends React.Component {
   }
  
   walletDetailsPh=()=>{
+    sessionStorage.setItem('income','all')
     this.props.history.push('/homePh/monthlyIncomePh')
   }
 

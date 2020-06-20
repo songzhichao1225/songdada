@@ -64,10 +64,10 @@ class untiePhonePh extends React.Component {
   }
  
   nacodeOne=()=>{
-    this.nacode({ "mobile": this.state.phone, "type": 'venuebinding' })
+    this.nacode({ "mobile": this.state.phone, "type": 'venuebindingfr',uuid:localStorage.getItem('uuid') })
   }
   nacodeTwoT=()=>{
-    this.nacodeTwo({ "mobile": this.state.phoneTwo, "type": 'venuebinding' })
+    this.nacodeTwo({ "mobile": this.state.phoneTwo, "type": 'venuebindingczy' })
   }
   codeOne=e=>{
     this.setState({codeOne:e.target.value})
@@ -78,13 +78,10 @@ class untiePhonePh extends React.Component {
   
   async VenueBindingPhone(data) {
     const res = await VenueBindingPhone(data,localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1)
-    } else {
+   
       Toast.success(res.data.msg, 1)
       this.props.history.goBack()
-    }
+    
   }
  
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import './inforSitePh.css';
-import { Toast } from 'antd-mobile';
+import { Toast,Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Input, Checkbox, Upload,Popconfirm, Button, Radio, Select, Tooltip, Spin } from 'antd';
 import {LeftOutlined} from '@ant-design/icons';
@@ -83,11 +83,7 @@ class inforSitePh extends React.Component {
 
   async getVenueInformation(data) {
     const res = await getVenueInformation(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
-    } else if (res.data.code === 2000) {
-
+     if (res.data.code === 2000) {
       let imgS = (res.data.data.filesURL).split('|')
       let arrImg = []
       for (let i in imgS) {
@@ -379,10 +375,7 @@ class inforSitePh extends React.Component {
 
   async VenueQualificationInformationSave(data) {
     const res = await VenueQualificationInformationSave(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1)
-    } else if (res.data.code === 2000) {
+   if (res.data.code === 2000) {
       Toast.success('提交成功', 1)
       this.setState({ issecondaudit: 0 })
     } else {
@@ -424,6 +417,9 @@ class inforSitePh extends React.Component {
   mapPh = (e) => {
     this.props.history.push('/mapPh')
     sessionStorage.setItem('inforMap', e.currentTarget.dataset.position)
+  }
+  onClose=()=>{
+    this.setState({previewVisible:false})
   }
 
   render() {
@@ -477,7 +473,7 @@ class inforSitePh extends React.Component {
           <div className={localStorage.getItem('ismethod') === '1' ? 'left' : 'width'} style={this.state.flag === 1 ? { color: '#fff' } : {}} onClick={this.left}>基本信息</div>
           <div className={localStorage.getItem('ismethod') === '1' ? 'right' : 'none'} style={this.state.flag === 1 ? {} : { color: '#fff' }} onClick={this.right}>资质信息</div>
         </div>
-        <div className="basic" style={this.state.spin === false && this.state.flag === 1 ? { display: 'block', overflow: 'scroll', height: '100%' } : { display: 'none' }}>
+        <div className="basic" style={this.state.spin === false && this.state.flag === 1 ? { display: 'block', overflow: 'scroll', height: '98%' } : { display: 'none' }}>
           <div className="listSon">
             <span>推广员</span>
             <span className="right" style={{ paddingLeft: '11px' }}>{listSon.promote}</span>
@@ -556,13 +552,10 @@ class inforSitePh extends React.Component {
 
           <div className="listSon">
             <span>场馆介绍</span>
-            <Input className="right" value={this.state.siteInfo} placeholder='场馆介绍如：比赛等' onChange={this.siteInfo} />
+            <Input className="right" value={this.state.comment} placeholder='场馆介绍如：比赛等' onChange={this.comment} />
           </div>
 
-          <div className="listSon">
-            <span>其他</span>
-            <Input className="right" value={this.state.comment} placeholder="利于场馆的信息" onChange={this.comment} />
-          </div>
+         
           <Popconfirm
             title="您确定本次修改吗?"
             onConfirm={this.confirm}
@@ -714,7 +707,13 @@ class inforSitePh extends React.Component {
           <Button className="submit" style={this.state.issecondaudit === 0 ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
         </div>
 
-
+        <Modal
+          visible={this.state.previewVisible}
+          transparent
+          onClose={this.onClose}
+        >
+          <img alt="example" style={{ width: '100%' }} src={this.state.previewImage} />
+        </Modal>
 
       </div>
     )

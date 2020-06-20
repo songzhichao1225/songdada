@@ -109,7 +109,7 @@ class resultsAuditsPh extends React.Component {
               <span className="text">抱歉！未通过审核</span>
                <span className="content">审核未通过原因如下:<span style={{color:'#D85D27'}}>{this.state.content}</span><br/>联系电话：010-88777777 </span>
                 <span onClick={this.goback} style={{color:'#D85D27',marginLeft:'1rem',fontSize:'0.75rem'}}> 返回修改信息 </span>
-                <span onClick={this.login} style={{marginLeft:'1rem',display:'block',fontSize:'0.75rem'}}> 返回重新登录 </span>
+                <span onClick={this.login} style={{marginLeft:'1rem',color:'#D85D27',display:'block',fontSize:'0.75rem'}}> 返回重新登录 </span>
 
          </div>
          <div className="boss" style={this.state.islegal===1?{display:'block'}:{display:'none'}}>

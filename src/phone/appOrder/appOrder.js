@@ -60,6 +60,22 @@ class appOrder extends React.Component {
           arrVen.push(parseInt(res.data.other[i].venueid))
         }
       
+        let arrTime=[]
+        for(let i in res.data.data){
+          arrTime.push(res.data.data[i].a)
+        }
+        
+        let ko=''
+        if(new Date().getMinutes()>=30){
+          ko=new Date().getHours()+':'+'30'
+        }else{
+          ko=new Date().getHours()+':'+'00'
+        }
+        setTimeout(()=>{
+          if(document.querySelector('.ant-table-body')!==null){
+            document.querySelector('.ant-table-body').scrollTo(0,arrTime.indexOf(ko)*45)
+           }
+        },2000)
         this.setState({
           resData:res.data
         })
@@ -102,7 +118,7 @@ class appOrder extends React.Component {
           onClick={this.lookPlate}
           data-money={resData.data[i].c[j].money}
           data-lo={resData.data[i].a+ '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money}
-          style={resData.data[i].c[j].type === 1&&this.state.lotime.indexOf(resData.data[i].a + '-' + resData.data[i].c[j].venueid  + '-' + resData.data[i].c[j].money) === -1 ? { background: '#6FB2FF', height: 40, lineHeight: 3, color: '#fff' } : {} && resData.data[i].c[j].type === 2 ? { background: '#ADD2FF', color: 'transparent', height: 40, lineHeight: 3 } : {} && resData.data[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 40, lineHeight: 3 } : {} && resData.data[i].c[j].type === 4 ? { background: 'red', height: 40, lineHeight: 3 } : {background: 'red', height: 40, lineHeight: 3, color: '#fff'}}
+          style={resData.data[i].c[j].type === 1&&this.state.lotime.indexOf(resData.data[i].a + '-' + resData.data[i].c[j].venueid  + '-' + resData.data[i].c[j].money) === -1 ? { background: '#6FB2FF', height: 40, lineHeight: 3, color: '#fff' } : {} && resData.data[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 40, lineHeight: 3 } : {} && resData.data[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 40, lineHeight: 3 } : {} && resData.data[i].c[j].type === 4 ? { background: 'red', height: 40, lineHeight: 3 } : {background: 'red', height: 40, lineHeight: 3, color: '#fff'}}
         > {resData.data[i].c[j].money}</div>
           obj[key] = value
           let koTwo = parseInt(resData.data[i].a.slice(1, 2)) + 1 + ':00'
@@ -123,14 +139,14 @@ class appOrder extends React.Component {
     const res = await getVenueNumberTitleList(data)
     if (res.data.code === 2000) {
       this.setState({ topNumList: res.data.data })
-    }
+    }  
   }
 
-  componentDidMount() {
+  componentDidMount() { 
     //测试数据
     // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=r704gxb7rhkDMmT0H2g6jz3hMt2rssHwNgd7wrX3sBoCcsuRL3FHxI2Sj0KE62Do&sporttype=5'  
-    let query = this.props.location.search
-
+    let query = this.props.location.search 
+  
     let arr = query.split('&')
     let siteuid = arr[0].slice(9, arr[0].length)
     let sportid = arr[1].slice(8, arr[1].length)
@@ -225,7 +241,7 @@ class appOrder extends React.Component {
     }
     setTimeout(()=>{
       this.loodp(this.state.resData)
-    },50)
+    },1)
   }
 
 
@@ -241,7 +257,6 @@ class appOrder extends React.Component {
         if (sUserAgent.indexOf('Android') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
           let objT = JSON.stringify(this.state.obj)
           window.JsAndroid.goTime(objT)
-
 
         } else if (sUserAgent.indexOf('iPhone') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
           try {

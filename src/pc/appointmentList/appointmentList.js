@@ -1,11 +1,10 @@
 import React from 'react';
 import './appointmentList.css';
 import 'antd/dist/antd.css';
-import { Input, Row, Col, Select, Pagination, Spin, message, Result, DatePicker, Modal, Radio, Drawer, InputNumber, Popover } from 'antd';
-import { BankOutlined, SyncOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { Input, Row, Col, Select, Pagination, Spin, message, DatePicker, Modal, Radio, Drawer, InputNumber, Popover } from 'antd';
+import {  SyncOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { getReservationActivitieslist, getVenueReservation, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
 import locale from 'antd/es/date-picker/locale/zh_CN';
-import moment from 'moment';
 import 'moment/locale/zh-cn';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -124,43 +123,19 @@ class appointmentList extends React.Component {
 
 
   componentDidMount() {
+    console.log(this.props.location.query )
     this.getVenueSport()
-    if (this.props.location.query !== undefined) {
-      this.setState({
-        number: this.props.location.query.number.toString()
-      })
-      this.setState({ dianIndex: this.props.location.query.dataIndex, liNum: this.props.location.query.id.toString(), spinningTwo: true })
-      this.getVenueNumberTitleList({ sportid: this.props.location.query.id })
-      this.getVenueSporttypelist({ sportid: this.props.location.query.id })
+    if(this.props.location.query!==undefined){
+      this.getReservationActivitieslist({ page: 1,publicuid:this.props.location.query.uuid, sport: '', status: '' })
+    }else{
+      this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
     }
 
 
     this.setState({ dateString: new Date().toLocaleDateString().replace(/\//g, "-") })
-    if (this.props.location.query !== undefined) {
-      if (this.props.location.query.time === 1) {
-        let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-        let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-        this.setState({ start: start, end: end })
-        this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: start, enddate: end })
-
-      } else if (this.props.location.query.time === 2) {
-        let myDate = new Date()
-        let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
-        let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-        this.setState({ start: start, end: end })
-        this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: start, enddate: end })
-
-      } else if (this.props.location.query.uuid) {
-        let myDate = new Date()
-        let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
-        let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-        this.setState({ start: start, end: end })
-        this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: start, enddate: end })
-        this.setState({ visible: true, publicUUID: this.props.location.query.uuid })
-      }
-    } else {
-      this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
-    }
+    
+     
+    
 
     setInterval(() => {
       window.addEventListener('storage', sessionStorage.getItem('kood') === '2' ? this.getVenueNumberTitleList({ sportid: this.state.liNum }) : this);
@@ -244,10 +219,11 @@ class appointmentList extends React.Component {
   }
   activityChang = (e) => {
     this.setState({ status: e })
+    this.setState({page:1})
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: e, startdate: '', enddate: '' })
+      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e, startdate: '', enddate: '' })
     } else {
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: e, startdate: this.state.start, enddate: this.state.end })
+      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e, startdate: this.state.start, enddate: this.state.end })
     }
   }
   clickLi = (e) => {
@@ -596,8 +572,7 @@ class appointmentList extends React.Component {
           <div className={this.state.hidden === true ? '' : 'hidden'} style={{ height: '90%', overflowY: 'auto' }}>
             {userMessage}
           </div>
-          <Result className={this.state.hidden === true ? 'hidden' : ''} icon={<BankOutlined style={{ color: '#F5A623' }} />} title="您的场馆还没有预约活动！" />,
-
+        <div style={this.state.hidden === true ?{display:'none'}:{width:'100%'}}><img style={{width:84,height:84,display:'block',margin:'84px auto 0'}} src={require('../../assets/xifen (5).png')} alt="icon"/><span style={{display:'block',textAlign:'center'}}>您的场馆还没有预约活动!</span></div>
 
 
         </div>

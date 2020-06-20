@@ -23,6 +23,8 @@ class registerPh extends React.Component {
     visibleName: false,
     idName: '没有推广员？',
     qipao: true,
+    eyes:false,
+    eyesTwo:false,
   };
 
   componentDidMount() {
@@ -171,7 +173,12 @@ class registerPh extends React.Component {
     this.close()
   }
 }
-
+eyes=()=>{
+  this.setState({eyes:!this.state.eyes})
+}
+eyesTwo=()=>{
+  this.setState({eyesTwo:!this.state.eyesTwo})
+}
 
 
   render() {
@@ -207,7 +214,7 @@ class registerPh extends React.Component {
               <EllipsisOutlined />
               </div>
             </Popover>}
-          ><span style={{ fontSize: '1rem' }}>新用户注册/注册</span></NavBar>
+          ><span style={{ fontSize: '1rem' }}>新用户注册</span></NavBar>
         <div className="bossInput">
           <div className="input">
             <InputItem
@@ -266,30 +273,31 @@ class registerPh extends React.Component {
 
           <div className="input">
             <InputItem
-              type='password'
+              type={this.state.eyes===true?'text':'password'}
               placeholder="密码"
               clear={true}
               style={{ fontSize: '0.8rem' }}
               onChange={this.changePassword}
               maxLength={8}
             >
-              {/* <Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} /> */}
+               
             </InputItem>
+            <span style={{display:'block',width:'15%',float:'right',marginTop:'0.7rem'}} onClick={this.eyes}><img src={require('../../assets/eyes.png')} style={this.state.eyes===true?{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}:{display:'none'}} alt="eyes"/> <img src={require('../../assets/eyesTwo.png')} style={this.state.eyes===true?{display:'none'}:{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}} alt="eyes"/></span>
           </div>
           <div className="input">
             <InputItem
-              type='password'
+              type={this.state.eyesTwo===true?'text':'password'}
               placeholder="确认密码"
               clear={true}
               style={{ fontSize: '0.8rem' }}
               onChange={this.changePasswordT}
               maxLength={8}
             >
-              {/* <Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} /> */}
             </InputItem>
+            <span style={{display:'block',width:'15%',float:'right',marginTop:'0.7rem'}} onClick={this.eyesTwo}><img src={require('../../assets/eyes.png')} style={this.state.eyesTwo===true?{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}:{display:'none'}} alt="eyes"/> <img src={require('../../assets/eyesTwo.png')} style={this.state.eyesTwo===true?{display:'none'}:{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}} alt="eyes"/></span>
           </div>
           <div className="input line">
-            <Checkbox onChange={this.changeRadio}><span style={{ fontSize: '0.9rem',paddingLeft:'1rem', }}>已阅读并同意</span><span style={{ color: '#D85D27', paddingLeft: '0.5rem', fontSize: '0.9rem' }}>《用户协议》</span></Checkbox>
+            <Checkbox onChange={this.changeRadio}><span style={{ fontSize: '0.9rem',paddingLeft:'1rem', }}>已阅读并同意</span></Checkbox><span style={{ color: '#D85D27', paddingLeft: '0.5rem', fontSize: '0.9rem' }}>《用户协议》</span>
           </div>
           <div className="input line">
             <Button

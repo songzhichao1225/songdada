@@ -12,7 +12,7 @@ class loginPh extends React.Component {
     let query = window.location.href
     let arr = query.split('&')
     if (arr[1]!== undefined) {
-      if (localStorage.getItem('phone') === arr[1].slice(6, 17)) {
+      if (localStorage.getItem('phone') === arr[1].slice(6, 17)||localStorage.getItem('legalphone') === arr[1].slice(6, 17)) {
 
       } else {
         localStorage.clear()

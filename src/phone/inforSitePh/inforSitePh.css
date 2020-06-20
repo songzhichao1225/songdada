@@ -29,7 +29,7 @@
 }
 .inforSitePh .ant-upload-list-picture-card-container{
     width: 4.5rem;
-    height: 2.5rem;
+    height: 4.5rem;
 }
 
 .inforSitePh .basic::-webkit-scrollbar {/*滚动条整体样式*/
@@ -132,7 +132,7 @@
 .inforSitePh .submit{
 	width: 80%;
 	height: 3rem;
-	background: #F5A623;
+	background: #D85D27;
 	border-radius: 3rem;
 	float: left;
 	 margin-left: 10%;
@@ -153,11 +153,11 @@
 }
 .inforSitePh .ant-upload.ant-upload-select-picture-card{
     width: 4.5rem;
-    height: 2.5rem;
+    height: 4.5rem;
 }
 .inforSitePh .ant-upload-list-picture-card .ant-upload-list-item{
     width: 4.5rem;
-    height: 2.5rem;
+    height: 4.5rem;
     margin: 0 4px 4px 0;
 }
 .inforSitePh .ant-upload-list-picture-card .ant-upload-list-item{

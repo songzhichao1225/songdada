@@ -105,8 +105,8 @@
 
 
 .drawerBossTwo>div:last-child{
-    margin-left: 0;
-    clear: both;
+    margin-left: 0.5rem;
+    float: left;
 }
 .drawerBtn{
     overflow: hidden;
@@ -138,6 +138,7 @@
     color: #fff;
     border-radius: 2px;
     padding: 0 0.2rem;
+    margin-top: 0.6rem;
 }
 
 
@@ -153,6 +154,7 @@
     color: #fff;
     padding: 0 0.1rem;
     border-radius: 2px;
+    margin-top: 0.6rem;
 }
 .orderPh .bookingKanban .modTitle>span{
     display: block;
@@ -173,7 +175,7 @@
 .orderPh .bookingKanban .modTitle>.white{
     width:1rem;
     height:1rem;
-    background:rgba(111, 178, 255,0.3);
+    background:#E9E9E9;
     border-radius:0.13rem;
     margin-top: 0.1rem;
     float: left;
@@ -455,19 +457,16 @@ html:not([data-scale]) .am-card-body::before{
     text-align: center;
 }
 .orderPh .ant-table-tbody > tr > td{
-    padding:0 2px; 
+    padding:2px 2px; 
     text-align: center;
     color: #fff; 
     width: 76px;
-    background: #E9E9E9;
 }
 .orderPh .ant-table-tbody > tr > td:first-child{
     background-color: #fff;
 }
 
-.orderPh .ant-table-tbody > tr:hover:not(.ant-table-expanded-row) > td {
-	background-color: #E9E9E9;
-}
+
 .orderPh .ant-table-body .ant-table-row-hover{
 	background: transparent;
 }
@@ -479,9 +478,8 @@ html:not([data-scale]) .am-card-body::before{
 .orderPh .ant-table-tbody > tr{
     background-color: #fff;
 }
-.orderPh .ant-table-tbody > tr > td:first-chil{
-    background-color: #E9E9E9;
-}
+
+
 
 
 .orderPh .ant-table-ping-right:not(.ant-table-has-fix-right) .ant-table-container{
@@ -491,14 +489,14 @@ html:not([data-scale]) .am-card-body::before{
     height: 100%;
 }
 .orderPh .ant-spin-container{
-    height: 100%;
+    height: 93%;
 }
 .orderPh .ant-table-container{
     height: 100%;
 }
 .orderPh .ant-spin-nested-loading{
-    height: 89%;
+    height: 95%;
 }
 .orderPh .ant-table-wrapper{
-    height: 98%;
+    height: 96%;
 }

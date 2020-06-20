@@ -17,7 +17,7 @@ class loginPhTeo extends React.Component {
   };
 
   componentDidMount() {
-   
+    
     
                 
   }
@@ -48,7 +48,7 @@ class loginPhTeo extends React.Component {
       localStorage.setItem('isqult', res.data.data.isqult);
       localStorage.setItem('ismethod', res.data.data.ismethod);
       localStorage.setItem('phone', res.data.data.phone);
-      
+      localStorage.setItem('legalphone', res.data.data.legalphone);
       setTimeout(() => {
         if (res.data.data.venue_token) {
           if (res.data.data.issite === 0) {
@@ -67,7 +67,14 @@ class loginPhTeo extends React.Component {
 
   submit = () => {
     let { phone, password } = this.state
-    this.login({ username: phone, userpass: password, usercode: '', type: '1', Logintype: 'mobile', venueloginuuid: '', })
+    if(phone===''){
+      Toast.fail('请输入手机号', 1);
+    }else if(password===''){
+      Toast.fail('请输入密码', 1);
+    }else{
+      this.login({ username: phone, userpass: password, usercode: '', type: '1', Logintype: 'mobile', venueloginuuid: '', })
+    }
+    
   }
 
 
@@ -139,7 +146,7 @@ eyes=()=>{
               <EllipsisOutlined />
               </div>
             </Popover>}
-          ><span style={{ fontSize: '1rem' }}>合作场馆/登录</span></NavBar>
+          ><span style={{ fontSize: '1rem' }}>登录/注册</span></NavBar>
         <div className="loginInput">
           <div className="name">
             <InputItem

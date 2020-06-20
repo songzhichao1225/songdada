@@ -1,7 +1,7 @@
 import React from 'react';
 import './walletDetailsPh.css';
 
-import {Toast } from 'antd-mobile';
+import { } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { DatePicker, Pagination,Result } from 'antd';
 import {MoneyCollectOutlined} from '@ant-design/icons';
@@ -22,14 +22,12 @@ class walletDetailsPh extends React.Component {
     endDate: '',
     start:'',
     end:'',
+    page:1
   };
 
   async getVenueMoneyList(data) {
     const res = await getVenueMoneyList(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
-    } else if (res.data.code === 2000) {
+   if (res.data.code === 2000) {
       this.setState({ details: res.data.data.data, other: res.data.data })
     }
   }
@@ -39,6 +37,7 @@ class walletDetailsPh extends React.Component {
   }
 
   current = (page, pageSize) => {
+    this.setState({page:page})
     this.getVenueMoneyList({ page: page, start: this.state.startDate, end: this.state.endDate })
   }
 
@@ -75,7 +74,7 @@ class walletDetailsPh extends React.Component {
             </div>
           ))
         }
-        <Pagination className={this.state.details.length===0?'hidden':'fenye'} size="small" defaultCurrent={1} onChange={this.current} total={this.state.other.count} />
+        <Pagination className={this.state.details.length===0?'hidden':'fenye'} size="small" hideOnSinglePage={true} showSizeChanger={false} current={this.state.page} defaultCurrent={1} onChange={this.current} total={this.state.other.count} />
         <Result className={this.state.details.length===0?'':'hidden'} icon={<MoneyCollectOutlined />} title="没有发布消息" />
       </div>
     );

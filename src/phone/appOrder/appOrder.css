@@ -103,7 +103,7 @@
 .appOrder .bookingKanban .modTitle>.white{
     width:1rem;
     height:1rem;
-    background:#ADD2FF;
+    background:#E9E9E9;
     border-radius:0.13rem;
     margin-top: 1rem;
 }
@@ -112,7 +112,6 @@
     text-align: center;
     color: #fff; 
     width: 76px;
-    background: #E9E9E9;
     
 }
 .appOrder .ant-table-tbody > tr > td:first-child{

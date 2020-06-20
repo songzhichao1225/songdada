@@ -481,7 +481,7 @@ class perfect extends React.Component {
                     name="files"
                     action="/api/UploadVenueImgs?type=Venue"
                     listType="picture-card"
-                    fileList={fileList.slice(0,9)}
+                    fileList={fileList.slice(0,8)}
                     onPreview={this.handlePreview}
                     onChange={this.handleChangeT}
                     accept=".jpg, .jpeg, .png"
@@ -500,6 +500,7 @@ class perfect extends React.Component {
                 <span className="symbol">*</span><span className="boTitle">运动项目</span><span className="kong"></span>
                 <Checkbox.Group style={{ float: 'left', width: '80%', marginLeft: '26.8px' }} options={this.state.plainOptions} onChange={this.onChangeCheck} value={this.state.onChangeCheck} /><br /><span className="kong"></span>
               </div>
+
 
 
               <div className="name" >

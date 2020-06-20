@@ -32,7 +32,6 @@ function jo() {
     window.speechSynthesis.speak(msg)
     notification.open({ description: message_info.percent, duration: 5 })
     sessionStorage.setItem('kood', 2)
-
   }
   ws.onclose = function () {
     jo()
@@ -269,7 +268,7 @@ class home extends React.Component {
         <Sider trigger={null} collapsible collapsed={this.state.collapsed} width={150} className="sider">
           <div className="logo" >
           <Link to="/home">
-            <img style={{ height: 40, margin: '0 auto', marginTop: 8, display: 'block' }}
+            <img style={{ height: 40, margin: '0 auto', marginTop: 8, display: 'block',cursor:'pointer' }}
               src={require("../../assets/tiaozhanicon.png")} alt="logo" />
               </Link>
           </div>

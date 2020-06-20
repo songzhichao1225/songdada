@@ -13,7 +13,7 @@ class news extends React.Component {
     isredcount:0,
     sum: 0,
     flag: false,
-    oneChecked: null,
+    oneChecked: false,
     visible: false,
     newsDetail: '',
     current: 1,
@@ -105,7 +105,7 @@ class news extends React.Component {
      message.error('请选择要删除的消息')
     }else{
       this.delVenueNews({ uuid: koArr.join(',') })
-      this.setState({ oneChecked: !this.state.oneChecked,kod:1 })
+      this.setState({kod:1 })
     }
 
   }
@@ -222,11 +222,22 @@ class news extends React.Component {
 
 
   Read=()=>{
-    this.VenueNewsOneKeyRead()
+    let koArr = []
+    for (let i in this.state.newsList) {
+      if (this.state.newsList[i].cheched === true) {
+        koArr.push(this.state.newsList[i].uuid)
+      }
+    }
+    if(koArr.length===0){
+     message.error('请选择未读消息')
+    }else{
+      this.VenueNewsOneKeyRead({ uuid: koArr.join(',') })
+      this.setState({kod:1 })
+    }
   }
 
-  locad=()=>{
-    this.props.history.push('/home/appointmentList')
+  locad=e=>{
+    this.props.history.push({pathname:'/home/appointmentList',query:{uuid:e.currentTarget.dataset.uuid}})
   }
 
 
@@ -269,6 +280,7 @@ class news extends React.Component {
             ))
           }
           </div>
+          <div style={this.state.newsList.length===0?{width:'100%'}:{display:'none'}}><img style={{width:84,height:84,display:'block',margin:'84px auto 0'}} src={require('../../assets/xifen (9).png')} alt="icon"/><span style={{display:'block',textAlign:'center'}}>没有收到消息!</span></div>
           <Pagination hideOnSinglePage={true} showSizeChanger={false} style={this.state.newsList.length===0?{display:'none'}:{}} className="fenye" current={this.state.current} onChange={this.current}  total={this.state.sum}  />
           <Drawer
             title="消息详情"
@@ -281,7 +293,7 @@ class news extends React.Component {
             <div>{this.state.newsDetail.intime_chk}</div>
             <div>{this.state.newsDetail.comment}</div>
             <div>{this.state.newsDetail.intime}</div>
-            <div onClick={this.locad} style={{color:'#F5A623',cursor:'pointer'}}>前往活动列表</div>
+            <div onClick={this.locad} style={this.state.newsDetail.publicuuid===''?{display:'none'}:{color:'#F5A623',cursor:'pointer'}} data-uuid={this.state.newsDetail.publicuuid}>前往活动列表</div>
           </Drawer>
         </div> 
         <Modal

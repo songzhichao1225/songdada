@@ -74,10 +74,7 @@ class stadiumInformationPh extends React.Component {
 
   async getVenueInformation(data) {
     const res = await getVenueInformation(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
-    } else if (res.data.code === 2000) {
+     if (res.data.code === 2000) {
       let imgS = (res.data.data.filesURL).split('|')
       let arrImg = []
       for (let i in imgS) {
@@ -86,8 +83,8 @@ class stadiumInformationPh extends React.Component {
       this.setState({
         address: res.data.data.position, addressXian: res.data.data.address, stadiumName: res.data.data.name,
         telephone: res.data.data.telephone.replace(/\s*/g,""), linkMan: res.data.data.linkMan,
-        imageUrl: res.data.data.firstURL, fileList: arrImg, onChangeRun: res.data.data.sport, onChangeRunTai: res.data.data.sporttype.split('|')[0].split(','),
-        onChangeRunZu: res.data.data.sporttype.split('|')[1].split(','), onChangeRunGao: res.data.data.sporttype.split('|')[2].split(','),
+        imageUrl: res.data.data.firstURL, fileList: arrImg, onChangeRun: res.data.data.sport, onChangeRunTai: '',
+        onChangeRunZu: '', onChangeRunGao:'',
         onChangeCheck: res.data.data.facilities, textKo: res.data.data.siteInfo,
         lat: res.data.data.lat, lng: res.data.data.lng
       })
@@ -260,10 +257,7 @@ class stadiumInformationPh extends React.Component {
 
   async VenueInformationSave(data) {
     const res = await VenueInformationSave(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
-    } else if (res.data.code === 2000) {
+     if (res.data.code === 2000) {
       Toast.success(res.data.msg, 1)
       sessionStorage.setItem('siteId', res.data.data.siteUUID)
       this.props.history.push('/qualificationPh')
@@ -408,28 +402,7 @@ class stadiumInformationPh extends React.Component {
       </div>
     )
 
-    const plainOptionsTwo = [
-      { label: '中式黑八', value: '1' },
-      { label: '美式九球', value: '2' },
-      { label: '斯诺克', value: '3' }
-    ]
-
-
-    const plainOptionsThree = [
-      { label: '11人制', value: '13' },
-      { label: '8人制', value: '14' },
-      { label: '7人制', value: '15' },
-      { label: '5人制', value: '16' }
-    ]
-
-    const plainOptionsFour = [
-      { label: '9洞', value: '25' },
-      { label: '18洞', value: '26' },
-      { label: '27洞', value: '27' },
-      { label: '36洞', value: '28' },
-      { label: '练习', value: '19' },
-    ]
-
+  
     return (
       <div className="stadiumInformationPh">
         <NavBar
@@ -563,7 +536,7 @@ class stadiumInformationPh extends React.Component {
           </div>
 
           <div className="input">
-            <span>场地照片 (请上传3-9张)</span>
+            <span>场地照片 (请上传3-8张)</span>
             <Upload
               name="files"
               action="/api/UploadVenueImgs?type=Venue"
@@ -587,21 +560,7 @@ class stadiumInformationPh extends React.Component {
           </div>
 
 
-          <div className="input" style={this.state.onChangeRun.indexOf('3') !== -1 ? { display: 'block' } : { display: 'none' }}>
-            <span>台球桌类型</span>
-            <Checkbox.Group options={plainOptionsTwo} value={this.state.onChangeRunTai} onChange={this.onChangeRunTai} /><br /><span className="kong"></span>
-          </div>
-
-
-          <div className="input" style={this.state.onChangeRun.indexOf('5') !== -1 ? { display: 'block' } : { display: 'none' }}>
-            <span>足球场地类型</span>
-            <Checkbox.Group options={plainOptionsThree} value={this.state.onChangeRunZu} onChange={this.onChangeRunZu} /><br /><span className="kong"></span>
-          </div>
-
-          <div className="input" style={this.state.onChangeRun.indexOf('8') !== -1 ? { display: 'block' } : { display: 'none' }}>
-            <span>高尔夫场地类型</span>
-            <Checkbox.Group options={plainOptionsFour} value={this.state.onChangeRunGao} onChange={this.onChangeRunGao} /><br /><span className="kong"></span>
-          </div>
+          
 
 
 

@@ -3,12 +3,12 @@ import './homePh.css';
 import 'antd/dist/antd.css';
 import ReactDOM from 'react-dom';
 import { Route, Link } from 'react-router-dom';
-import { gerVenueName, getVenueIndex } from '../../api';
+import { gerVenueName, getVenueIndex,getIsSignOut } from '../../api';
 
-import { Toast, NavBar, Popover, PullToRefresh } from 'antd-mobile';
+import { NavBar, Popover, PullToRefresh,Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import {  notification } from 'antd';
-import Icon from '@ant-design/icons';
+import {EllipsisOutlined,LoadingOutlined} from '@ant-design/icons';
 
 import orderPh from '../orderPh/orderPh';
 import sitePh from '../sitePh/sitePh';
@@ -17,7 +17,7 @@ import minePh from '../minePh/minePh';
 import orderPhT from '../orderPhT/orderPhT';
 const Item = Popover.Item;
 
-
+const alert = Modal.alert;
 function genData() {
   const dataArr = [];
   for (let i = 0; i < 20; i++) {
@@ -45,6 +45,7 @@ function jo() {
 }
 
 
+
 class homePh extends React.Component {
 
   state = {
@@ -62,13 +63,11 @@ class homePh extends React.Component {
     data: [],
     visible: false,
     mode: false,
+    flag:false,
   };
   async getVenueIndex(data) {
     const res = await getVenueIndex(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
-    } else {
+    if(res.data.code===2000){
       this.setState({ getVenue: res.data.data, spin: false, spinFlag: false })
       sessionStorage.setItem('score', res.data.data.score)
     }
@@ -87,30 +86,44 @@ class homePh extends React.Component {
   }
 
   monthlyIncomePh = () => {
-    this.props.history.push({ pathname: '/homePh/monthlyIncomePh' })
+    this.props.history.push({ pathname: '/homePh/monthlyIncomePh',query:{income:'month'}})
     sessionStorage.setItem('income', 'month')
   }
   dayIncomePh = () => {
-    this.props.history.push({ pathname: '/homePh/monthlyIncomePh' })
+    this.props.history.push({ pathname: '/homePh/monthlyIncomePh',query:{income:'day'} })
     sessionStorage.setItem('income', 'day')
   }
   commentPh = () => {
     this.props.history.push('/homePh/commentPh')
   }
   yuYue = () => {
+    sessionStorage.setItem('modl',1)
     this.props.history.push({ pathname: '/homePh/orderPhT', query: { time: 1 } })
     this.setState({ title: '今日成功预约' })
   }
 
   yuYueTwo = () => {
+    sessionStorage.setItem('modl',2)
     this.props.history.push({ pathname: '/homePh/orderPhT', query: { time: 2 } })
     this.setState({ title: '本月成功预约' })
   }
 
+  async getIsSignOut(data) {
+    const res = await getIsSignOut(data, localStorage.getItem('venue_token'))
+    
+    if(res.data.code!==2000){
+       this.setState({flag:true})
+    alert('强制下线', <div>{res.data.msg}</div>, [
+        { text: '确定', onPress: () => this.props.history.push('/login') },
+      ])
+    }
+  
+
+  }
 
 
   componentDidMount() {
-
+     
 
     sessionStorage.setItem('kood', 1)
     this.getVenueIndex()
@@ -124,7 +137,21 @@ class homePh extends React.Component {
         this.props.history.push('/resultsAuditsPh')
       }
     }
+  
+   
+     
+    var timer=setInterval(() => {
+      let flag=this.state.flag
+      if(flag===true){
+        clearInterval(timer)
+      }else if(flag!==true&&this.props.history.location.pathname!=='/login'){
+        this.getIsSignOut()
+      }
+      
+     }, 3000);
+     
 
+     
 
 
     if (this.props.history.location.pathname === '/homePh') {
@@ -278,7 +305,7 @@ class homePh extends React.Component {
                 alignItems: 'center',
               }}
               >
-                <Icon type="ellipsis" />
+               <EllipsisOutlined />
               </div>
             </Popover>}
           ><span style={{ fontSize: '1rem' }}>{this.state.title}</span></NavBar>
@@ -286,7 +313,7 @@ class homePh extends React.Component {
           {/* <Icon type="close" onClick={this.close} style={{ position: 'absolute', right: '5%', top: '35%' }}/> */}
         </div>
         <div className='kog'>
-          <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' } : { display: 'none' }} ><Icon type="loading" className='loadingY' style={{ top: this.state.clenTop / 4 }} /></div>
+          <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' } : { display: 'none' }} ><LoadingOutlined className='loadingY' style={{ top: this.state.clenTop / 4 }}  /></div>
 
           <div className={this.props.location.pathname === '/homePh' && this.state.spin === false ? 'homePagePh' : 'none'} onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}  >
 
@@ -303,11 +330,11 @@ class homePh extends React.Component {
               onRefresh={this.refResh}
             >
               <div className="homeScroll" style={{ paddingBottom: '8rem' }}>
-                <div><span className="title" onClick={this.yuYue}>今日成功预约</span><div className="content"><span>{this.state.getVenue.today_count}</span><span>单</span></div></div>
-                <div><span className="title" onClick={this.yuYueTwo}>本月成功预约</span><div className="content"><span>{this.state.getVenue.month_count}</span><span>单</span></div></div>
-                <div><span className="title" onClick={this.dayIncomePh}>今日收入</span><div className="content"><span>￥{this.state.getVenue.today_money}</span></div></div>
-                <div><span className="title" onClick={this.monthlyIncomePh}>本月收入</span><div className="content"><span>￥{this.state.getVenue.month_money}</span></div></div>
-                <div><span className="title" onClick={this.commentPh}>场馆评分  {this.state.getVenue.score}分</span>
+                <div onClick={this.yuYue}><span className="title" >今日成功预约</span><div className="content"><span>{this.state.getVenue.today_count}</span><span>单</span></div></div>
+                <div onClick={this.yuYueTwo}><span className="title">本月成功预约</span><div className="content"><span>{this.state.getVenue.month_count}</span><span>单</span></div></div>
+                <div onClick={this.dayIncomePh}><span className="title" >今日收入</span><div className="content"><span>￥{this.state.getVenue.today_money}</span></div></div>
+                <div onClick={this.monthlyIncomePh}><span className="title" >本月收入</span><div className="content"><span>￥{this.state.getVenue.month_money}</span></div></div>
+                <div onClick={this.commentPh}><span className="title" >场馆评分  {this.state.getVenue.score}分</span>
                   <div className="content">
                     <div className="img">
                       <img src={this.state.getVenue.score >= 1 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 1 && this.state.getVenue.score > 0 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />

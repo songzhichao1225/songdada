@@ -31,15 +31,6 @@ class resetPasswordPh extends React.Component {
     const res = await _code(data)
     
     if(res.data.code===2000){
-      Toast.success(res.data.msg, 1);
-    }else{
-      Toast.fail(res.data.msg, 1);
-    }
-  }
-
-
-  naCode = () => {
-    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
       let num = 60
       const timer = setInterval(() => {
         this.setState({ textT: num-- })
@@ -48,7 +39,16 @@ class resetPasswordPh extends React.Component {
           this.setState({ textT: '获取验证码' })
         }
       }, 1000)
-      this.nacode({ "mobile": this.state.phone, "type": 'venuesavepass' })
+      Toast.success(res.data.msg, 1);
+    }else{
+      Toast.fail(res.data.msg, 2);
+    }
+  }
+
+
+  naCode = () => {
+    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
+      this.nacode({ "mobile": this.state.phone, "type": 'venuesavepass',uuid:localStorage.getItem('uuid') })
     } else {
       Toast.fail('请输入手机号', 1);
     }
@@ -79,7 +79,11 @@ class resetPasswordPh extends React.Component {
 
   submit=()=>{
     let {phone,code,pass,passTwo}=this.state
-    if(pass!==passTwo){
+    if(phone===''){
+      Toast.fail('请输入手机号', 1);
+    }else if(code===''){
+      Toast.fail('请输入验证码', 1);
+    }else if(pass!==passTwo){
       Toast.fail('两次密码输入不一致', 1);
     }else{
      this.VenueChangePassword({phone:phone,code:code,pass:pass})

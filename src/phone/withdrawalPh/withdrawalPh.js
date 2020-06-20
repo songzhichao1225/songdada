@@ -16,10 +16,9 @@ class withdrawalPh extends React.Component {
 
   async getVenueWithdrawalOneList(data) {
     const res = await getVenueWithdrawalOneList(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
-    } else if (res.data.code === 2000) {
+     if (res.data.code === 2000) {
+      res.data.data.Bankaccount=res.data.data.Bankaccount.slice(res.data.data.Bankaccount.length-4,res.data.data.Bankaccount.length)
+      res.data.data.legalname='***'+res.data.data.legalname.slice(-1)
       this.setState({ withdrawalPh: res.data.data })
     }
   }
@@ -42,10 +41,7 @@ class withdrawalPh extends React.Component {
   }
   async VenueWithdrawal(data) {
     const res = await VenueWithdrawal(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 4001) {
-      this.props.history.push('/login')
-      Toast.fail('登录超时请重新登录', 1);
-    } else if (res.data.code !== 4001 && res.data.code !== 2000) {
+    if (res.data.code !== 4001 && res.data.code !== 2000) {
       Toast.fail(res.data.msg, 1);
     } else {
       Toast.success('提现成功', 1);
@@ -68,8 +64,8 @@ class withdrawalPh extends React.Component {
         <div className="white"></div>
         <div className="bankCards">
           <span>{this.state.withdrawalPh.Settlement === 1 ? '法人账户' : '公司银行账户'}</span>
-          <span>{this.state.withdrawalPh.Settlement === 1 ? "**" + this.state.withdrawalPh.legalname.slice(-1) : this.state.withdrawalPh.legalname}</span>
-          <span>{this.state.withdrawalPh.OpeningBank} {this.state.withdrawalPh.Bankaccount}</span>
+          <span>{this.state.withdrawalPh.legalname}</span>
+          <span>{this.state.withdrawalPh.OpeningBank} | {'*****'+this.state.withdrawalPh.Bankaccount}</span>
         </div>
         <div className="white"></div>
         <div className="money">

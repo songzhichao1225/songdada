@@ -19,9 +19,9 @@
 }
 .corporatePh .loginInput .name .phone{
     outline: none;
-    width: 70%;
+    width: 60%; 
     height:44px;
-    border: none;
+    border: none; 
     line-height: 44px;
     display: block;
     float: left;

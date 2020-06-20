@@ -2,8 +2,8 @@ import React from 'react';
 import './myWallet.css';
 import 'antd/dist/antd.css';
 import { getVenueMoneyList, getVenueWithdrawalList, getVenueWithdrawalOneList, VenueWithdrawal } from '../../api';
-import { DatePicker, Row, Col, Pagination, message, Result,  Input } from 'antd';
-import {ReconciliationOutlined,MoneyCollectOutlined} from '@ant-design/icons';
+import { DatePicker, Row, Col, Pagination, message,  Input } from 'antd';
+import {} from '@ant-design/icons';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 
@@ -120,6 +120,8 @@ class myWallet extends React.Component {
       this.props.history.push('/')
       message.error('登陆超时请重新登陆!')
     } else {
+      res.data.data.Bankaccount=res.data.data.Bankaccount.slice(res.data.data.Bankaccount.length-4,res.data.data.Bankaccount.length)
+      res.data.data.legalname='***'+res.data.data.legalname.slice(-1)
       this.setState({ walletList: res.data.data })
     }
   }
@@ -188,12 +190,13 @@ class myWallet extends React.Component {
               </div>
               <Pagination current={this.state.page} className={this.state.moneyList.length===0 ? 'myWalletNone' : 'fenye'}  hideOnSinglePage={true} showSizeChanger={false} onChange={this.moneyFen} total={this.state.other} />
             </div>
-            <Result className={this.state.moneyList.length !== 0 ? 'hidden' : ''} icon={<MoneyCollectOutlined style={{color:'#F5A623'}}/>} title="还没有人预约您的场馆！" />
+            <div style={this.state.moneyList.length !== 0 ?{display:'none'}:{width:'100%'}}><img style={{width:84,height:84,display:'block',margin:'84px auto 0'}} src={require('../../assets/xifen (7).png')} alt="icon"/><span style={{display:'block',textAlign:'center'}}>还没有人预约您的场馆!</span></div>
+        
         </div>
         <div className={this.state.flag === 2 ? 'record myWallet' : 'myWalletNone'}>
           
           <div className="header">
-            <span className="previousStep" onClick={this.returnN}>我的钱包 ></span><span>提现记录</span>
+            <span className="previousStep" onClick={this.returnN}>我的钱包</span><span>提现记录</span>
           </div>
           <div className="xiange"></div>
           <div className={this.state.hiddenTwo === true ? '' : 'hidden'} >
@@ -217,22 +220,22 @@ class myWallet extends React.Component {
             }
           </div>
           <Pagination className={this.state.hiddenTwo === true ? 'fenye' : 'hidden'} current={this.state.pageOne} showSizeChanger={false} hideOnSinglePage={true} onChange={this.recordListOther} total={this.state.recordListOther===''?0:this.state.recordListOther} />
-          <Result className={this.state.hiddenTwo === true ? 'hidden' : ''} icon={<ReconciliationOutlined style={{color:'#F5A623'}}/>} title="您还没有提现记录！" />
+          <div style={this.state.hiddenTwo === true ?{display:'none'}:{width:'100%'}}><img style={{width:84,height:84,display:'block',margin:'84px auto 0'}} src={require('../../assets/xifen (8).png')} alt="icon"/><span style={{display:'block',textAlign:'center'}}>您还没有提现记录!</span></div>
         </div>
         <div className={this.state.flag === 3 ? 'withdrawal myWallet' : 'myWalletNone'}>
           
           <div className="header">
-            <span className="previousStep" onClick={this.returnN}>我的钱包 ></span><span>提现</span>
+            <span className="previousStep" onClick={this.returnN}>我的钱包</span><span>提现</span>
           </div>
           <div className="xiange"></div>
           <div className="balance">
             <span>钱包余额</span> <span>{this.state.walletList.money}</span><span>元</span>
           </div>
           <div className="home">
-            <span style={{ marginLeft: -15 }}>提现银行卡:</span><span className="textNext">{this.state.walletList.Bankaccount} {this.state.walletList.OpeningBank}</span>
+            <span style={{ marginLeft: -15 }}>提现银行卡:</span><span className="textNext">{'******'+this.state.walletList.Bankaccount} {this.state.walletList.OpeningBank}</span>
             <div className="listSon">
               <span>提现金额:</span>
-              <Input className="input" onChange={this.allNow} value={this.state.moneyYuan} />元
+              <Input className="input" onChange={this.allNow} value={this.state.moneyYuan} />&nbsp;&nbsp;&nbsp;元
               <span className="all" onClick={this.all}>全部提现</span>
             </div>
             <div className="listSon">
