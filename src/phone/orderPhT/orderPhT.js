@@ -28,7 +28,7 @@ class orderPhT extends React.Component {
     macNum: [],
     sportid: 1,
     sportIdVal: 0,
-    statusIdVal: 0,
+    statusIdVal: 10,
     flag: false,
     remList: [],
     dataString: '选择时间',
@@ -50,10 +50,10 @@ class orderPhT extends React.Component {
       { name: '高尔夫', id: 8 }
     ],
     status: [
-      { name: '全部', id: 0 },
-      { name: '匹配中', id: 1 },
+      { name: '全部', id: 10 },
       { name: '待出发', id: 2 },
       { name: '活动中', id: 3 },
+      { name: '投诉中', id: 9 },
       { name: '待填写比赛结果', id: 4 },
       { name: '待评价', id: 6 },
       { name: '已完成', id: 5 },
@@ -309,12 +309,13 @@ class orderPhT extends React.Component {
   }
 
   submitVal = () => {
+    
     this.getReservationActivitieslist({
       page: 1, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '' ? '' : this.state.start,
       enddate: this.state.end === '' ? '' : this.state.end
     })
     this.setState({
-      Drawervisible: false
+      Drawervisible: false,page:1
     })
   }
 

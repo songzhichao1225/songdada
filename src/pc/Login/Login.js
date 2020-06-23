@@ -144,6 +144,11 @@ class Login extends React.Component {
   guan = () => {
 
   }
+  iphoneInput=e=>{
+    if(e.target.value===''){
+      this.setState({selectVeun:[]})
+    }
+  }
 
   render() {
     return (
@@ -171,7 +176,7 @@ class Login extends React.Component {
                       content='请输入正确的手机号'
                       visible={this.state.visiblePhone}
                     >
-                      <Input onBlur={this.phone} maxLength={11} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="法人手机号" />
+                      <Input onBlur={this.phone} maxLength={11} onInput={this.iphoneInput} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="法人手机号" />
                     </Popover>
                   </Form.Item>
                   <Form.Item className="code">

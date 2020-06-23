@@ -110,11 +110,10 @@ class homePh extends React.Component {
 
   async getIsSignOut(data) {
     const res = await getIsSignOut(data, localStorage.getItem('venue_token'))
-    
     if(res.data.code!==2000){
-       this.setState({flag:true})
+      this.props.history.push('/login')
     alert('强制下线', <div>{res.data.msg}</div>, [
-        { text: '确定', onPress: () => this.props.history.push('/login') },
+        { text: '确定', onPress: () =>  console.log(5)},
       ])
     }
   
@@ -141,14 +140,14 @@ class homePh extends React.Component {
    
      
     var timer=setInterval(() => {
-      let flag=this.state.flag
-      if(flag===true){
+
+      if(this.props.history.location.pathname==='/login'){
         clearInterval(timer)
-      }else if(flag!==true&&this.props.history.location.pathname!=='/login'){
+      }else{
         this.getIsSignOut()
       }
       
-     }, 3000);
+     }, 5000);
      
 
      

@@ -117,10 +117,10 @@ class resetPasswordPh extends React.Component {
         </div>
 
         <div className="listSon">
-          <Input.Password style={{border:'none',boxShadow:'none'}} placeholder="请输入新密码" onChange={this.pass} />
+          <Input.Password style={{border:'none',boxShadow:'none'}} maxLength={8} placeholder="请输入新密码" onChange={this.pass} />
         </div>
         <div className="listSon">
-          <Input.Password style={{border:'none',boxShadow:'none'}} placeholder="请确认密码" onChange={this.passTwo} />
+          <Input.Password style={{border:'none',boxShadow:'none'}} maxLength={8}  placeholder="请确认密码" onChange={this.passTwo} />
         </div>
         <div className='restSubmit' onClick={this.submit}>确认</div>
 

@@ -89,23 +89,23 @@
 }
   .drawerBossTwo>div{
     float: left;
-    padding: 0.2rem 0.6rem;
+    padding: 0.1rem 1.2rem;
     background:rgba(243,243,243,1);
     border-radius:0.19rem;
     color: #333;
     font-size: 0.7rem;
     line-height: 2rem;
     text-align: center;
-    margin-left: 0.5rem;
+    margin-left: 0.3rem;
     margin-top: 0.5rem;
 }
-.drawerBossTwo>div:nth-child(5n+1){
+.drawerBossTwo>div:nth-child(4n+1){
     margin-left: 0;
 }
 
 
 .drawerBossTwo>div:last-child{
-    margin-left: 0.5rem;
+    margin-left: 0.3rem;
     float: left;
 }
 .drawerBtn{

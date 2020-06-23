@@ -117,20 +117,21 @@ class siteSettings extends React.Component {
       }
 
       for (let i in res.data.data) {
+        res.data.data[i].opendaynameTwo=''
         if (res.data.data[i].openday.split(',').indexOf('1') !== -1) {
-          res.data.data[i].opendayname = res.data.data[i].opendayname + ',周一'
+          res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周一'
         } if (res.data.data[i].openday.split(',').indexOf('2') !== -1) {
-          res.data.data[i].opendayname = res.data.data[i].opendayname + ',周二'
+          res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周二'
         } if (res.data.data[i].openday.split(',').indexOf('3') !== -1) {
-          res.data.data[i].opendayname = res.data.data[i].opendayname + ',周三'
+          res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周三'
         } if (res.data.data[i].openday.split(',').indexOf('4') !== -1) {
-          res.data.data[i].opendayname = res.data.data[i].opendayname + ',周四'
+          res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周四'
         } if (res.data.data[i].openday.split(',').indexOf('5') !== -1) {
-          res.data.data[i].opendayname = res.data.data[i].opendayname + ',周五'
+          res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周五'
         } if (res.data.data[i].openday.split(',').indexOf('6') !== -1) {
-          res.data.data[i].opendayname = res.data.data[i].opendayname + ',周六'
+          res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周六'
         } if (res.data.data[i].openday.split(',').indexOf('7') !== -1) {
-          res.data.data[i].opendayname = res.data.data[i].opendayname + ',周日'
+          res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周日'
         }
       }
 
@@ -1216,8 +1217,8 @@ class siteSettings extends React.Component {
                         <Col xs={{ span: 2 }}>{item.venueid}</Col>
                       </Popover>
                       <Col xs={{ span: 2 }}>{item.sitenumber}</Col>
-                      <Popover content={(<span>{item.opendayname.slice(1, item.opendayname.length)}</span>)} title='详情' trigger="click">
-                        <Col xs={{ span: 2 }}>{item.opendayname.slice(1, item.opendayname.length)}</Col>
+                      <Popover content={(<span>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</span>)} title='详情' trigger="click">
+                        <Col xs={{ span: 2 }}>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</Col>
                       </Popover>
                       <Col xs={{ span: 2 }} style={{ lineHeight: '24px' }}>{item.starttime}<br />{item.endtime}</Col>
                       <Col xs={{ span: 2 }}>{item.costperhour}</Col>

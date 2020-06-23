@@ -102,14 +102,16 @@
 }
 .login .content  .right .codeBtn{
 	width: 89px;
+	height: 52px;
 	background: #F5A623;
 	color: #fff;
 	text-align: center;
 	display: block;
-	position: absolute;
+	position: absolute;  
 	cursor: pointer;
 	margin-left: -16px;
-	margin-top: -4px;
+	margin-top: -8px;
+	line-height: 52px;
 }
 
 .login .ant-col{
@@ -120,17 +122,20 @@
 	height: 45px;
 	width: 90%;
 }
+.login .ant-input-affix-wrapper > input.ant-input{
+	height: 42px;
+}
 
 .koohidden{
 	width: 89px;
-	height: 43px;
+	height: 52px;
 	background: #F5A623;
 	color: #fff;
 	text-align: center;
 	display: none;
 	position: absolute;
 	cursor: pointer;
-	line-height: 55px;
+	line-height: 52px;
 	margin-top: -7px;
 }
 .login .content  .right .btnSubmit{

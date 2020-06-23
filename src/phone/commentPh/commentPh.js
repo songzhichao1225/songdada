@@ -227,7 +227,7 @@ class commentPh extends React.Component {
           </div>
 
         </PullToRefresh>
-
+ 
         <Modal
           visible={this.state.modal1}
           transparent

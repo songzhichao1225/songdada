@@ -508,7 +508,7 @@ class information extends React.Component {
             this.state.list.map((item, i) => (
               <Row key={i}>
                 <Popover content={(<span>{item.orderId}</span>)} title='详情' trigger="click">
-                 <Col xs={{ span: 4 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.orderId}</Col>
+                 <Col xs={{ span: 3 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.orderId}</Col>
                 </Popover>
                 <Col xs={{ span: 2 }}>{item.SportName}</Col>
                 <Col xs={{ span: 2 }}><div style={{lineHeight:'25px'}}>{item.StartTime.slice(11,16)}</div><div style={{lineHeight:'25px'}}>{item.StartTime.slice(0,10)}</div></Col>
@@ -516,7 +516,7 @@ class information extends React.Component {
                 <Col xs={{ span: 2 }}>{item.PlayTime}小时</Col>
                 <Col xs={{ span: 2 }}>{item.Shouldarrive}</Col>
                 <Col xs={{ span: 2 }}>{item.TrueTo}</Col>
-                <Col xs={{ span: 2 }} style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{item.PublicStatus}</Col>
+                <Col xs={{ span: 3 }} style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{item.PublicStatus}</Col>
                 <Col xs={{ span: 2 }}>￥{item.SiteMoney}</Col>
                 <Col xs={{ span: 2 }}>{item.SiteMoneyStatus}</Col>
                 <Col xs={{ span: 2 }}>
@@ -552,7 +552,7 @@ class information extends React.Component {
           <div className="xiange"></div>
 
             <Row className="rowConten" style={{background:'#FCF7EE',marginTop:0}}>
-              <Col xs={{ span: 4 }}>活动编号</Col>
+              <Col xs={{ span: 3 }}>活动编号</Col>
               <Col xs={{ span: 2 }}>
                 <Select className="selectName" defaultValue="项目名称" bordered={false} style={{ width:'100%',padding:0 }} onChange={this.nameChang}>
                   <Option value="0">全部</Option>
@@ -570,16 +570,14 @@ class information extends React.Component {
               <Col xs={{ span: 2 }}>时长</Col>
               <Col xs={{ span: 2 }}>应到人数</Col>
               <Col xs={{ span: 2 }}>已报名人数</Col>
-              <Col xs={{ span: 2 }}>
-                <Select className="selectName" defaultValue="活动状态" bordered={false} style={{ width: '100%' }} onChange={this.activityChang} >
-                  <Option value="0">全部</Option>
-                  <Option value="1">匹配中</Option>
+              <Col xs={{ span: 3 }}>
+                <Select className="selectName" defaultValue="活动状态" bordered={false} listHeight={250} dropdownStyle={{height:'250px',textAlign:'center'}} style={{ width: '100%' }} onChange={this.activityChang} >
+                  <Option value="10">全部</Option>
                   <Option value="2">待出发</Option>
                   <Option value="3">活动中</Option>
-                  <Option value="4" title="待填写结果">待填写结果</Option>
-                  <Option value="6">待评价</Option>
-                  <Option value="7">已取消</Option>
                   <Option value="9">投诉中</Option>
+                  <Option value="4" title="待填写结果">待填写比赛结果</Option>
+                  <Option value="6">待评价</Option>
                   <Option value="5">已完成</Option>
                 </Select>
               </Col>

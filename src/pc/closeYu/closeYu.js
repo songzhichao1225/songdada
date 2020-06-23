@@ -264,7 +264,7 @@ class closeYu extends React.Component {
   render() {
     return (
       <div className="closeYu">
-        <div className="headTitle"><span onClick={this.next}>系统设置</span><span style={{ color: '#F5A623' }}>临时关闭预约列表</span> <div className='rightBtn' onClick={this.model}><span>添加</span></div></div>
+        <div className="headTitle"><span onClick={this.next}>系统设置 > </span><span style={{ color: '#F5A623' }}> 临时关闭预约列表</span> <div className='rightBtn' onClick={this.model}><span>添加</span></div></div>
         <div style={{ width: '100%', height: '8px', background: '#F5F5F5' }}></div>
         <div style={this.state.closeList.length < 1 ? { display: 'none' } : { display: 'block' }}>
           <Row style={{ borderBottom: '1px solid #E1E0E1' }}>

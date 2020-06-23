@@ -1,16 +1,16 @@
 import React from 'react';
 import './temporaryPh.css';
 
-import { Toast, DatePicker, List } from 'antd-mobile';
+import { Toast, DatePicker, List,Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Select, Row, Col, Drawer, Pagination, Popconfirm } from 'antd';
 import {  LeftOutlined, LoadingOutlined } from '@ant-design/icons';
-import { getVenueSport, VenueTemporarilyClosedList, VenueTemporarilyClosedSave, VenueTemporarilyClosedDel, VenueTemporarilyClosed } from '../../api';
+import { getVenueSport, VenueTemporarilyClosedList, VenueTemporarilyClosedSave, VenueTemporarilyClosedDel, VenueTemporarilyClosed,getIsClosedPublic } from '../../api';
 import moment from 'moment';
 const { Option } = Select;
 
 
-
+const alert = Modal.alert;
 
 
 class temporaryPh extends React.Component {
@@ -145,22 +145,45 @@ class temporaryPh extends React.Component {
     const res = await VenueTemporarilyClosed(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ visible: false })
+      Toast.fail(res.data.msg, 2);
       this.VenueTemporarilyClosedList()
     } else {
-      Toast.success(res.data.msg, 1);
+      Toast.fail(res.data.msg, 1);
       this.VenueTemporarilyClosedList()
     }
   }
 
   async VenueTemporarilyClosedSave(data) {
     const res = await VenueTemporarilyClosedSave(data, localStorage.getItem('venue_token'))
+    if(res.data.code===2000){
 
-    Toast.success(res.data.msg, 1);
-    this.setState({ visible: false })
-    this.VenueTemporarilyClosedList()
+      Toast.success(res.data.msg, 2);
+      this.setState({ visible: false })
+      this.VenueTemporarilyClosedList()
+    }else{
+      Toast.fail(res.data.msg, 2);
+    }
 
   }
-  subCilck = () => {
+
+
+  async getIsClosedPublic(data) {
+    const res = await getIsClosedPublic(data, localStorage.getItem('venue_token'))
+    if(res.data.code===2000){
+
+      alert('提示', '您选择的时间段内有活动，继续添加么?', [
+        { text: '取消', onPress: () => console.log('cancel') },
+        { text: '确定', onPress: () => this.sublok()},
+      ])
+    }else if(res.data.code!==2000&&res.data.code!==2001){
+      Toast.fail(res.data.msg, 2);
+    }else{
+      this.sublok()
+    }
+
+  }
+
+  sublok=()=>{
     let { sportId, sportName, startValue, EndValue, textarea, upUUid } = this.state
     if (upUUid === '') {
       let data = {
@@ -170,7 +193,6 @@ class temporaryPh extends React.Component {
         endtime: EndValue,
         comment: textarea,
       }
-      console.log(666)
       this.VenueTemporarilyClosed(data)
     } else {
       let data = {
@@ -183,6 +205,14 @@ class temporaryPh extends React.Component {
       }
       this.VenueTemporarilyClosedSave(data)
     }
+  }
+
+
+  subCilck = () => {
+    let { sportId, startValue, EndValue } = this.state
+
+       this.getIsClosedPublic({sportid:sportId,starttime:startValue,endtime:EndValue})
+    
   }
 
   mood = (e) => {

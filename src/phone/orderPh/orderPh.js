@@ -54,11 +54,11 @@ class orderPh extends React.Component {
       { name: '匹配中', id: 1 },
       { name: '待出发', id: 2 },
       { name: '活动中', id: 3 },
+      { name: '投诉中', id: 9 },
       { name: '待填写比赛结果', id: 4 },
       { name: '待评价', id: 6 },
       { name: '已完成', id: 5 },
       { name: '已取消', id: 7 },
-      { name: '投诉中', id: 9 }
     ],
     page: 1,
     clenTop: 0,
@@ -424,24 +424,31 @@ class orderPh extends React.Component {
   }
 
   submitVal = () => {
-    let start=this.state.start.toLocaleDateString().replace(/\//g, "-").split('-')
-    let end=this.state.end.toLocaleDateString().replace(/\//g, "-").split('-')
-    let startT=''
-    let endT=''
-    if(start[0].length===4){
-      startT=start[0]+'-'+start[1]+'-'+start[2]
-      endT=end[0]+'-'+end[1]+'-'+end[2]
-    }else if(start[0].length!==4){
-      startT=start[2]+'-'+start[0]+'-'+start[1]
-      endT=end[2]+'-'+end[0]+'-'+end[1]
+    if(this.state.start===''){
+      Toast.fail('请选择开始时间',1)
+    }else if(this.state.end===''){
+      Toast.fail('请选择结束时间',1)
+    }else{
+      let start=this.state.start.toLocaleDateString().replace(/\//g, "-").split('-')
+      let end=this.state.end.toLocaleDateString().replace(/\//g, "-").split('-')
+      let startT=''
+      let endT=''
+      if(start[0].length===4){
+        startT=start[0]+'-'+start[1]+'-'+start[2]
+        endT=end[0]+'-'+end[1]+'-'+end[2]
+      }else if(start[0].length!==4){
+        startT=start[2]+'-'+start[0]+'-'+start[1]
+        endT=end[2]+'-'+end[0]+'-'+end[1]
+      }
+      this.getReservationActivitieslist({
+        page: 1, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '' ? '' :startT,
+        enddate: this.state.end === '' ? '' : endT
+      })
+      this.setState({
+        Drawervisible: false,page:1
+      })
     }
-    this.getReservationActivitieslist({
-      page: 1, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '' ? '' :startT,
-      enddate: this.state.end === '' ? '' : endT
-    })
-    this.setState({
-      Drawervisible: false,page:1
-    })
+    
   }
 
   sportName = e => {
@@ -757,6 +764,9 @@ class orderPh extends React.Component {
     }, 50)
   }
 
+  onCloseKO=()=>{
+    this.setState({info:false})
+  }
 
 
 
@@ -923,8 +933,7 @@ class orderPh extends React.Component {
           <Modal
             visible={this.state.info}
             transparent
-            maskClosable={true}
-            onClose={this.onClose}
+            onClose={this.onCloseKO}
             title="请输入线下预订人的相关信息"
             footer={[{ text: '提交', onPress: () => { this.placeSubmit(); } }]}
             wrapProps={{ onTouchStart: this.onWrapTouchStart }}

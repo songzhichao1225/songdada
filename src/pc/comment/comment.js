@@ -202,7 +202,7 @@ class comment extends React.Component {
             }
 
             <Pagination hideOnSinglePage={true} showSizeChanger={false} className={this.state.commentList.length === 0 ? 'hidden' : 'fenye'} defaultCurrent={1} onChange={this.current} total={this.state.other} />
-            <div style={{ width: '100%' }}><img style={{ wdith: 84, height: 94, display: 'block', margin: '84px auto 0' }} src={require('../../assets/xifen (3).png')} alt="icon" /><span style={{ display: 'block', textAlign: 'center' }}>还没有人评价!</span></div>
+            <div style={this.state.commentList.length===0?{ width: '100%' }:{display:'none'}}><img style={{ wdith: 84, height: 94, display: 'block', margin: '84px auto 0' }} src={require('../../assets/xifen (3).png')} alt="icon" /><span style={{ display: 'block', textAlign: 'center' }}>还没有人评价!</span></div>
           </Spin>
         </div>
 
