@@ -49,6 +49,10 @@ class monthlyIncomePh extends React.Component {
         let end = moment().endOf('day')._d
         this.setState({ qiStart: new Date(start), qiEnd: new Date(end) })
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
+      }else if(sessionStorage.getItem('qiStart')!==undefined){
+    
+        this.setState({ qiStart:new Date(sessionStorage.getItem('qiStart')) , qiEnd: new Date(sessionStorage.getItem('qiEnd')) })
+        this.getVenueMoneyList({ start: new Date(sessionStorage.getItem('qiStart')), end: new Date(sessionStorage.getItem('qiEnd')), page: 1 })
       } else {
         let myDate = new Date()
         let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d
@@ -78,7 +82,6 @@ class monthlyIncomePh extends React.Component {
   }
 
   detail = e => {
-
     this.props.history.push({ pathname: '/homePh/monthlyIncomePh/moneyDetailPh', query: e.currentTarget.dataset })
   }          
 
@@ -93,11 +96,13 @@ class monthlyIncomePh extends React.Component {
     }, 1000)
   }
   qiEnd=e=>{
-    this.setState({qiEnd:e})
+    this.setState({qiEnd:e,current:1})
     this.getVenueMoneyList({ start: this.state.qiStart, end:e, page: 1 })
+
   }
   qiStart=e=>{
-    this.setState({qiStart:e})
+    console.log(e)
+    this.setState({qiStart:e,current:1})
     this.getVenueMoneyList({ start:e, end: this.state.qiEnd, page: 1 })
   }
 
@@ -155,7 +160,7 @@ class monthlyIncomePh extends React.Component {
          <div className="moneyScroll">
             {
               this.state.moneyList.map((item, i) => (
-                <div className="contentSon" key={i} data-time={item.time} data-money={item.money} data-public={item.public} onClick={this.detail}>
+                <div className="contentSon" key={i} data-time={item.time} data-money={item.money} data-public={item.public} data-qiStart={this.state.qiStart} data-qiEnd={this.state.qiEnd} onClick={this.detail}>
                   <div className="left"><span>场地费</span><span>{item.time}</span></div>
                   <img className="image" src={require("../../assets/right.png")} alt="下一步" />
                   <span className="right">+{item.money}</span>

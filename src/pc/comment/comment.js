@@ -64,7 +64,7 @@ class comment extends React.Component {
 
 
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else {
       this.setState({ loading: false, hidden: false, Oneloading: false })
     }
@@ -92,7 +92,7 @@ class comment extends React.Component {
       this.setState({ flag: null })
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else {
       message.error(res.data.msg)
     }
@@ -168,7 +168,7 @@ class comment extends React.Component {
                         <span className="titleThree">设施 {item.equscore}分   服务 {item.envscore}分   价格 {item.xjbScore}分</span>
                       </div>
                       <span className="text">
-                        {item.content}
+                        {item.content===''?'此用户没有添加评论':item.content}
                       </span>
                       <div className={item.imgnames.length === 0 ? 'hidden' : 'imgA'}>
                         {
@@ -183,7 +183,7 @@ class comment extends React.Component {
                     <div className={item.comment_reply === null ? 'publishNone' : 'kefu'}>
                       <img src={require("../../assets/kefu.png")} alt="客服" />
                       <div className="kefuSon">
-                        <span className="text" style={{ wdith: 500 }}>{item.comment_reply}</span>
+                        <span className="text" style={{ wdith: 500,wordBreak:'break-all',wordWrap:'break-word' }}>{item.comment_reply}</span>
                         <span className="timerLok">{item.comment_reply_time}</span>
                       </div>
                     </div>
@@ -191,7 +191,7 @@ class comment extends React.Component {
                   </div>
                   <div className={this.state.flag === i ? 'publish' : 'publishNone'}>
                     <img src={require('../../assets/kefu.png')} alt="场馆" />
-                    <TextArea className="news" onChange={this.textValue} value={this.state.textValue} placeholder="请输入您的回复内容" maxLength={200} rows={2} />
+                    <TextArea className="news" onChange={this.textValue} value={this.state.textValue} placeholder="请输入您的回复内容(最多可输入100字)" maxLength={100} rows={2} />
                     <div className="operation">
                       <div onClick={this.clear}>清空</div>
                       <div onClick={this.operation} data-uid={item.uid}>发布</div>
@@ -209,7 +209,8 @@ class comment extends React.Component {
         <Modal
           visible={this.state.visible}
           onOk={this.handleOk}
-          width="400px"
+          width="300px"
+          className="mode"
           onCancel={this.handleCancel}
         >
           <img style={{ width: '100%' }} src={this.state.url} alt="img" />

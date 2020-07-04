@@ -6,7 +6,6 @@ import 'antd-mobile/dist/antd-mobile.css';
 import { Select, Row, Col, Drawer, Pagination, Popconfirm } from 'antd';
 import {  LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 import { getVenueSport, VenueTemporarilyClosedList, VenueTemporarilyClosedSave, VenueTemporarilyClosedDel, VenueTemporarilyClosed,getIsClosedPublic } from '../../api';
-import moment from 'moment';
 const { Option } = Select;
 
 
@@ -57,9 +56,10 @@ class temporaryPh extends React.Component {
   componentDidMount() {
     this.getVenueSport()
     this.VenueTemporarilyClosedList({ page: 1 })
-    let start = moment().startOf('day').add(1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
-    let end = moment().endOf('day').add(1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
-    this.setState({ startValue: new Date(start), EndValue: new Date(end) })
+    let now = new Date()   
+    let kpo=now.setMinutes (now.getMinutes () - now.getMinutes() );
+    let kpotWO=now.setMinutes (now.getMinutes () - now.getMinutes()+30 );
+    this.setState({ startValue:new Date(kpo), EndValue: new Date(kpotWO) })
   }
 
   current = (page, pageSize) => {
@@ -145,7 +145,7 @@ class temporaryPh extends React.Component {
     const res = await VenueTemporarilyClosed(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ visible: false })
-      Toast.fail(res.data.msg, 2);
+      Toast.success(res.data.msg, 2);
       this.VenueTemporarilyClosedList()
     } else {
       Toast.fail(res.data.msg, 1);
@@ -264,7 +264,7 @@ class temporaryPh extends React.Component {
       <div className="temporaryPh">
         <div className="headTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', left: '0', width: '48px', height: '48px', lineHeight: '48px' }} />设置临时关闭预约</div>
         <Row className='Row'>
-          <Col xs={{ span: 6 }} lg={{ span: 6 }}>运动项目</Col>
+          <Col xs={{ span: 6 }} lg={{ span: 6 }}>场地类型</Col>
           <Col xs={{ span: 12 }} lg={{ span: 12 }}>时间</Col>
           <Col xs={{ span: 6 }} lg={{ span: 6 }}>操作</Col>
         </Row>
@@ -311,8 +311,8 @@ class temporaryPh extends React.Component {
           bodyStyle={{ padding: '5%' }}
         >
           <div className='drawerInput'>
-            <span>运动项目</span>
-            <Select placeholder='请选择' bordered={false} style={{ width: '42%', border: 'none', boxShadow: 'none', float: 'right', textAlign: 'center' }} value={this.state.sportName} onChange={this.sportChange}>
+            <span style={{color:'#333'}}>场地类型</span>
+            <Select placeholder='请选择'  bordered={false} style={{ width: '52%', border: 'none', boxShadow: 'none', float: 'right', textAlign: 'center' }} value={this.state.sportName} onChange={this.sportChange}>
               {
                 this.state.sportList.map((item, i) => (
                   <Option key={i} value={item.id}>{item.name}</Option>
@@ -357,7 +357,7 @@ class temporaryPh extends React.Component {
             </DatePicker>
           </div>
 
-          <div className='drawerInput' >
+          <div className='drawerInput' style={{paddingTop:'1rem'}} >
             <span style={{ display: 'block', float: 'left' }}>备注</span>
             <textarea rows={3} style={{ marginLeft: '2.5rem' }} maxLength={200} placeholder="请输入备注" onChange={this.textArea}></textarea>
           </div>

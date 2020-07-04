@@ -103,7 +103,7 @@ class appointmentList extends React.Component {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else if (res.data.code === 2000) {
       this.setState({ activityNav: res.data.data })
       this.getVenueNumberTitleList({ sportid: this.state.liNum })
@@ -489,7 +489,7 @@ class appointmentList extends React.Component {
         </div>
         <div className="xiange"></div>
 
-        <div className={this.state.number === '2' ? 'circumstance' : 'circumstanceT'} style={{ height: '90%' }} >
+        <div className={this.state.number === '2' ? 'circumstance' : 'circumstanceT'} style={{ height: '92%' }} >
           <ul className="rightNav" style={{ top: '-48px', left: '-20px' }}>
             <li className="dateSelect">
               <DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={locale} placeholder="请选择日期" className="DatePicker" onChange={this.dateChange} />
@@ -517,10 +517,12 @@ class appointmentList extends React.Component {
 
           <div className="xiange"></div> 
           {/* 看板渲染标签 */}
+          <div style={{height:'88%'}}>
           <Spin spinning={this.state.lppding}>
             <Table loading={this.state.loadingTwo} style={this.state.otherType.length === 0 ? { display: 'none' } : { maxWidth: this.state.otherType.length * 100 }} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 76, minWidth: 40, y: '90%' }} />,
            <div style={this.state.otherType.length === 0?{width:'100%'}:{display:'none'}}><img style={{width:'84px',height:84,display:'block',margin:'84px auto 0'}} src={require('../../assets/xifen (2).png')} alt="icon"/><span style={{display:'block',textAlign:'center'}}>{this.state.textNuma+'!'}</span></div>
           </Spin>
+          </div>
         </div>
 
         <Drawer
@@ -602,6 +604,7 @@ class appointmentList extends React.Component {
           title="请输入线下预订人的相关信息"
           visible={this.state.info}
           onOk={this.handleOk}
+          className="mode"
           onCancel={this.handleCancelInFo}
           closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
         >

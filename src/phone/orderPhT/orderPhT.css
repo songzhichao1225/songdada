@@ -98,18 +98,10 @@
     font-size: 0.7rem;
     line-height: 2rem;
     text-align: center;
-    margin-left: 0.3rem;
+    margin-left: 0.5rem;
     margin-top: 0.5rem;
 }
-.drawerBossTwo>div:nth-child(4n+1){
-    margin-left: 0;
-}
 
-
-.drawerBossTwo>div:last-child{
-   
-    float: left;
-}
 .drawerBtn{
     overflow: hidden;
     margin-top: 1rem;

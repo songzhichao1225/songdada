@@ -184,7 +184,7 @@ class commentPh extends React.Component {
                       </div>
                     </div>
                   </div>
-                  <span style={{ display: 'block', clear: 'both' }}>{item.content}</span>
+                  <span style={{ display: 'block', clear: 'both' }}>{item.content===''?'此用户没有添加评论':item.content}</span>
                   {/* 评论图片 */}
                   <div style={item.imgnames.length===0?{display:'none'}:{ display: 'block', clear: 'both' }} className="commentImg">
                    {
@@ -199,7 +199,7 @@ class commentPh extends React.Component {
                   <span style={{ display: 'block',float:'left',marginTop:'0.75rem' }}>{item.commentDate}</span>
                   <div className={item.comment_reply !== null ? 'Stadium' : 'stadiumNone'}>
                     <div className="logoImg"><img src={require("../../assets/kefu.png")} alt="场馆端" /></div>
-                  <span className="stadiumText">{item.comment_reply}<br/><span style={{paddingTop:'0.3rem',display:'block'}}>{item.comment_reply_time}</span></span>
+                  <div className="stadiumText"><div style={{wordBreak:'break-all',wordWrap:'break-word'}}>{item.comment_reply}</div><div style={{paddingTop:'0.3rem',display:'block'}}>{item.comment_reply_time}</div></div>
                   </div>
                   {/* <span className={item.comment_reply !== null ? 'StaiumDate' : 'stadiumNone'}>{item.comment_reply_time}</span> */}
                 </div>
@@ -216,11 +216,10 @@ class commentPh extends React.Component {
               onClose={this.handleCancel}
               title="回复该客户"
               footer={[{ text: '取消', onPress: () => { this.handleCancel(); } },{ text: '回复', onPress: () => { this.publish(); } }]}
-             
             >
-             <TextArea rows={4} maxLength={100} value={this.state.textArea} placeholder="最多可输入100字" onInput={this.textArea}  />
+             <TextArea rows={4} maxLength={100} value={this.state.textArea} placeholder="最多可输入100字" onInput={this.textArea}  /> 
             </Modal>
-
+ 
 
             <Pagination className="fenye" size='small' style={this.state.getCommentList.length > 0 ? {} : { display: 'none' }} current={parseInt(this.state.current)} pageSize={10} total={this.state.other} onChange={this.pageChang} />
           <div style={this.state.getCommentList.length > 0?{display:'none'}:{width:'100%'}}><img style={{width:'4rem',height:'4rem',display:'block',margin:'4rem auto 0'}} src={require('../../assets/xifen (3).png')} alt="666"/><span style={{display:'block',textAlign:'center'}}>没有场馆评论</span></div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import './inforSitePh.css';
-import { Toast,Modal } from 'antd-mobile';
+import { Toast,Modal,TextareaItem } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Input, Checkbox, Upload,Popconfirm, Button, Radio, Select, Tooltip, Spin } from 'antd';
 import {LeftOutlined} from '@ant-design/icons';
@@ -78,6 +78,7 @@ class inforSitePh extends React.Component {
     imgHood: '',
     spin: true,
     onChangeCheckTwo:[],
+    CorporateName:''
 
   };
 
@@ -130,7 +131,7 @@ class inforSitePh extends React.Component {
         baseImg: corporate.legalBaseURL,
         imgFile: cardImg[0], imgFileTwo: cardImg[1],
         corporateName: corporate.legalname, corporateId: corporate.legalcard, corporatePhone: corporate.legalphone,
-        numRadio: corporate.Settlement, corporateCardId: corporate.Bankaccount, corporateOpen: corporate.OpeningBank, lisenceURL: corporate.lisenceURL
+        numRadio: corporate.Settlement, corporateCardId: corporate.Bankaccount,CorporateName:corporate.CorporateName, corporateOpen: corporate.OpeningBank, lisenceURL: corporate.lisenceURL
       })
     }
   }
@@ -175,7 +176,7 @@ class inforSitePh extends React.Component {
     this.setState({ cgName: e.target.value })
   }
   address = e => {
-    this.setState({ address: e.target.value })
+    this.setState({ address: e })
   }
   linkMan = e => {
     this.setState({ linkMan: e.target.value })
@@ -309,11 +310,18 @@ class inforSitePh extends React.Component {
 
   numRadio = e => {
     this.setState({ numRadio: e.target.value,upData:false,corporateCardId:'',corporateOpen:'' })
+    if(e.target.value===1){
+     this.setState({CorporateName:''})
+    }
   }
 
   corporateCardId = e => {
     this.setState({ corporateCardId: e.target.value })
   }
+  CorporateName=e=>{
+    this.setState({CorporateName:e.target.value})
+  }
+
 
   async getVenueOpenBank(data) {
     const res = await getVenueOpenBank(data, localStorage.getItem('venue_token'))
@@ -442,7 +450,7 @@ class inforSitePh extends React.Component {
 
   
 
-    const optionsTwo = [{ label: 'WiFi', value: '1' }, { label: '停车场', value: '2' }, { label: '淋浴', value: '3' }]
+    const optionsTwo = [{ label: '停车场', value: '1' },{ label: 'WiFi', value: '2' },  { label: '淋浴', value: '3' },{ label: '室内摄像头', value: '4' },]
     const uploadButton = (
       <div>
        
@@ -484,13 +492,19 @@ class inforSitePh extends React.Component {
           </div>
           <div className="listSon" onClick={this.mapPh} data-position={listSon.position}>
             <span style={{float:'left'}}>场馆位置</span>
-            <img style={{float:'right',marginTop:'0.7rem'}} src={require('../../assets/icon_pc_dingwei.png')} alt="icon"/>
+            <img style={{float:'right',width:'0.85rem',marginTop:'0.9rem'}} src={require('../../assets/icon_pc_dingwei.png')} alt="icon"/>
             <Input className="right" style={{width:'75%'}} value={this.state.position} disabled={true} />
             
           </div>
           <div className="listSon">
-            <span>详细地址</span>
-            <Input className="right" value={this.state.address} onChange={this.address} />
+            <TextareaItem
+            title="详细地址"
+            placeholder="click the button below to focus"
+            value={this.state.address}
+            onChange={this.address}
+            style={{minHeight:'2rem'}}
+            autoHeight
+          />
           </div>
 
           <div className="listSon">
@@ -543,7 +557,7 @@ class inforSitePh extends React.Component {
 
 
           <div className="listSon">
-            <span>运动项目</span>
+            <span>场地类型</span>
             <div className="rightLi kop">
               <Checkbox.Group options={options} value={this.state.sport} onChange={this.onChangeCheck} />
             </div>
@@ -621,7 +635,7 @@ class inforSitePh extends React.Component {
 
           <div className="listSon">
             <span>法人身份证号</span>
-            <Input className="right" style={{width:'79%',paddingLeft:'0.5rem'}} placeholder="请输入法人身份证号" value={this.state.corporateId} onChange={this.corporateId} />
+            <Input className="right" style={{width:'60%',paddingLeft:'0.5rem',marginRight:'19%'}} placeholder="请输入法人身份证号" value={this.state.corporateId} onChange={this.corporateId} />
           </div>
 
           <div className="listSon">
@@ -636,10 +650,16 @@ class inforSitePh extends React.Component {
             </Radio.Group>
           </div>
 
+          <div className="listSon" style={this.state.numRadio===1?{display:'none'}:{}}>
+            <span>公司名称</span>
+            <Input className="right" value={this.state.CorporateName}  placeholder="请输入公司名称" onChange={this.CorporateName} />
+          </div>
+
           <div className="listSon">
             <span>银行账号</span>
             <Input className="right" value={this.state.corporateCardId} placeholder="请输入银行账号" onChange={this.corporateCardId} />
           </div>
+          
 
           <div className="listSon" style={this.state.upData === true ? { display: 'none' } : { display: 'block' }}>
             <span>开户所在地</span>

@@ -69,6 +69,7 @@ class home extends React.Component {
     sessionStorage.setItem('kood', 1)
     sessionStorage.setItem('loodSo', '0')
     sessionStorage.setItem('sitew',true)
+    sessionStorage.setItem('wallet',true)
     this.setState({ minheight: document.body.scrollHeight, path: this.props.history.location.pathname })
     this.getVenueIndex()
     this.gerVenueName()
@@ -234,7 +235,7 @@ class home extends React.Component {
     const res = await gerVenueName(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else {
       this.setState({ gerVenueNameName: res.data.data.name, gerVenueNameRate: res.data.data.rate })
       sessionStorage.setItem('mess', res.data.data.mess)
@@ -260,7 +261,10 @@ class home extends React.Component {
   }
   sitew=()=>{
     sessionStorage.setItem('sitew',false) 
-    this.props.history.push('/home/systemSettings')
+  }
+  wallet=()=>{
+    sessionStorage.setItem('wallet',false)
+    this.props.history.push('/home/myWallet')
   }
   render() {
     return (
@@ -342,7 +346,7 @@ class home extends React.Component {
                 <span>系统设置</span>
               </Link>
             </Menu.Item>
-            <Menu.Item key="7">
+            <Menu.Item key="7" onClick={this.wallet}>
               <Link to="/home/myWallet">
                 <i className="anticon anticon-gift" >
                   <svg width="1.3em" height="1.3em" viewBox="0 0 22 22" version="1.1" fill="currentColor"  xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink">

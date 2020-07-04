@@ -12,6 +12,7 @@ class withdrawalPh extends React.Component {
     withdrawalPh: '',
     money: 0.00,
     value: '',
+    flag:0
   };
 
   async getVenueWithdrawalOneList(data) {
@@ -19,7 +20,7 @@ class withdrawalPh extends React.Component {
      if (res.data.code === 2000) {
       res.data.data.Bankaccount=res.data.data.Bankaccount.slice(res.data.data.Bankaccount.length-4,res.data.data.Bankaccount.length)
       res.data.data.legalname='***'+res.data.data.legalname.slice(-1)
-      this.setState({ withdrawalPh: res.data.data })
+      this.setState({ withdrawalPh: res.data.data,flag:1 })
     }
   }
 
@@ -44,7 +45,7 @@ class withdrawalPh extends React.Component {
     if (res.data.code !== 4001 && res.data.code !== 2000) {
       Toast.fail(res.data.msg, 1);
     } else {
-      Toast.success('提现成功', 1);
+      Toast.success('提现申请成功', 1);
       setTimeout(() => {
         this.props.history.goBack()
       }, 2000)
@@ -59,7 +60,7 @@ class withdrawalPh extends React.Component {
 
   render() {
     return (
-      <div className="withdrawalPh">
+      <div className="withdrawalPh" style={this.state.flag===1?{}:{display:'none'}}>
         <div className="headTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', width:'48px',height:'48px',left:'0',lineHeight:'48px'}}/>提现</div>
         <div className="white"></div>
         <div className="bankCards">

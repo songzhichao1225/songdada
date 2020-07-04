@@ -89,7 +89,7 @@ class recordPh extends React.Component {
                 </div>
                 <div className="right">
                   <span>￥{item.RequestMoney}</span>
-                  <span>{item.status === 1 ? '待处理' : '' || item.status === 2 ? '已处理' : '' && item.status === 3 ? '未通过' : ''}</span>
+                  <span>{item.status === 1 ? '待处理' : '' || item.status === 2 ? '已处理' : '' || item.status === 3 ? '未通过' : ''}</span>
                 </div>
               </div>
             ))

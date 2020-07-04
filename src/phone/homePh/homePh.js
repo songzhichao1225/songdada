@@ -64,6 +64,7 @@ class homePh extends React.Component {
     visible: false,
     mode: false,
     flag:false,
+    flagK:false
   };
   async getVenueIndex(data) {
     const res = await getVenueIndex(data, localStorage.getItem('venue_token'))
@@ -112,8 +113,9 @@ class homePh extends React.Component {
     const res = await getIsSignOut(data, localStorage.getItem('venue_token'))
     if(res.data.code!==2000){
       this.props.history.push('/login')
+      this.setState({flagK:true})
     alert('强制下线', <div>{res.data.msg}</div>, [
-        { text: '确定', onPress: () =>  console.log(5)},
+        { text: '确定', onPress: () => this.setState({flagK:true})},
       ])
     }
   
@@ -140,8 +142,7 @@ class homePh extends React.Component {
    
      
     var timer=setInterval(() => {
-
-      if(this.props.history.location.pathname==='/login'){
+      if(this.props.history.location.pathname.split('/')[1]!=='homePh'){
         clearInterval(timer)
       }else{
         this.getIsSignOut()
@@ -279,7 +280,7 @@ class homePh extends React.Component {
           {/* <span style={{ display: 'block', textAlign: 'center' }}>{this.state.title}</span> */}
           <NavBar
             mode="dark"
-            icon={<img style={{ width: '2rem', height: '2rem', display: 'block', marginTop: '-0.3rem' }} src={require('../../assets/logo.png')} alt="logo" />}
+            icon={<img style={{ width: '2rem', height: '2rem', display: 'block' }} src={require('../../assets/logoHead.png')} alt="logo" />}
             rightContent={<Popover mask
               overlayClassName="fortest"
               overlayStyle={{ color: 'currentColor' }}

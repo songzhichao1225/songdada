@@ -164,7 +164,7 @@ class qualificationPh extends React.Component {
       localStorage.setItem('isqult',undefined)
       localStorage.setItem('issite',undefined)
       localStorage.setItem('islegal',undefined)
-      Toast.fail('登陆超时请重新登陆！', 1);
+      Toast.fail('登录超时请重新登录!', 1);
     }
     this.setState({ siteUUID: res.data.data.siteUid })
   }

@@ -82,7 +82,7 @@ class appointmentList extends React.Component {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else if (res.data.code === 2000) {
       this.setState({ activityNav: res.data.data})
       this.getVenueNumberTitleList({ sportid: this.state.liNum })
@@ -716,6 +716,7 @@ class appointmentList extends React.Component {
           title="给参与人员发送消息"
           visible={this.state.visible}
           onCancel={this.handleCancel}
+          className="mode"
           closeIcon={<CloseCircleOutlined style={{color:'#fff',fontSize:'20px'}} />}
         >
           <Radio.Group onChange={this.sendCheck} value={this.state.sendCheck}>
@@ -823,6 +824,7 @@ class appointmentList extends React.Component {
           title="请输入线下预订人的相关信息"
           visible={this.state.info}
           onOk={this.handleOk}
+          className="mode"
           onCancel={this.handleCancel}
           closeIcon={<CloseCircleOutlined style={{color:'#fff',fontSize:'20px'}} />}
         >

@@ -25,6 +25,14 @@
     line-height: 80px;
     font-family: PingFang-SC-Bold;
 }
+.perfect .ant-upload.ant-upload-select-picture-card > .ant-upload{
+	width: 86px;
+	height: 86px;
+}
+
+.perfect .ant-modal-footer{
+	display: block;
+}
 .perfect .content{
 	width: 80%;
 	margin: 20px auto;
@@ -180,4 +188,8 @@ float: left;
 	position: absolute;
 	top: 100px;
 	right: -30px;
+}
+.chekkoh .ant-checkbox-group-item {
+	width: 120px;
+
 }

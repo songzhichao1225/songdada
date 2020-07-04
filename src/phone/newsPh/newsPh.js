@@ -52,16 +52,20 @@ class newsPh extends React.Component {
         res.data.data[i].Checkbox = false
       }
       this.setState({ getVenueNewsList: res.data.data, other: res.data.other.sum, refreshing: false })
+    }else{
+
+      this.setState({ spin: false, spinFlag: false,getVenueNewsList:[] })
     }
-    this.setState({ spin: false, spinFlag: false })
   }
 
   async getVenueNewsReceivedList(data) {
     const res = await getVenueNewsReceivedList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ getVenueNewsReceivedList: res.data.data, otherPush: res.data.other, refreshingTwo: false })
+    }else{
+      this.setState({ spinFlag: false,getVenueNewsReceivedList:[] })
     }
-    this.setState({ spinFlag: false })
+
   }
   async getVenueNewsFirst(data) {
     const res = await getVenueNewsFirst(data, localStorage.getItem('venue_token'))
@@ -146,9 +150,8 @@ class newsPh extends React.Component {
     this.setState({ visibleTwo: false, visibleDrawerNum: 0 })
   }
   Checkbox = e => {
-    console.log(e.currentTarget.dataset.idx)
     let items = this.state.getVenueNewsList
-    items[e.currentTarget.dataset.idx].Checkbox = true
+    items[e.currentTarget.dataset.idx].Checkbox = !items[e.currentTarget.dataset.idx].Checkbox
     this.setState({ getVenueNewsList: items })
   }
 
@@ -160,7 +163,7 @@ class newsPh extends React.Component {
   }
   CheckboxTwo = e => {
     let items = this.state.getVenueNewsReceivedList
-    items[e.currentTarget.dataset.idx].Checkbox = true
+    items[e.currentTarget.dataset.idx].Checkbox = !items[e.currentTarget.dataset.idx].Checkbox
     this.setState({ getVenueNewsReceivedList: items })
   }
 
@@ -169,10 +172,12 @@ class newsPh extends React.Component {
     if (res.data.code === 2000) {
       this.getVenueNewsList({ page: 1 })
       this.getVenueNewsReceivedList({ page: 1 })
+      this.setState({newsPage:1,newsPageTwo:1})
       this.setState({ visibleDrawerNum: 0, visibleTwo: false, visibleDrawerNumTwo: 0, visibleThree: false })
     } else {
       this.getVenueNewsList({ page: 1 })
       this.getVenueNewsReceivedList({ page: 1 })
+      this.setState({newsPage:1,newsPageTwo:1})
       Toast.fail(res.data.msg, 2);
     }
   }
@@ -185,7 +190,11 @@ class newsPh extends React.Component {
         arrUi.push(items[i].uuid)
       }
     }
-    this.delVenueNews({ uuid: arrUi.join(',') })
+    if(arrUi.length===0){
+      Toast.fail('请选择要删除的消息', 2);
+    }else{
+      this.delVenueNews({ uuid: arrUi.join(',') })
+    }
   }
 
   deletTwo = () => {
@@ -196,14 +205,18 @@ class newsPh extends React.Component {
         arrUi.push(items[i].uuid)
       }
     }
-    this.delVenueNews({ uuid: arrUi.join(',') })
+    if(arrUi.length===0){
+      Toast.fail('请选择要删除的消息', 2);
+    }else{
+      this.delVenueNews({ uuid: arrUi.join(',') })
+    }
   }
 
 
   allThem = () => {
     let items = this.state.getVenueNewsList
     for (let i in items) {
-      items[i].Checkbox = true
+      items[i].Checkbox = !items[i].Checkbox
     }
     this.setState({ getVenueNewsList: items })
   }
@@ -211,9 +224,15 @@ class newsPh extends React.Component {
   allThemTwo = () => {
     let items = this.state.getVenueNewsReceivedList
     for (let i in items) {
-      items[i].Checkbox = true
+      items[i].Checkbox = !items[i].Checkbox
     }
     this.setState({ getVenueNewsReceivedList: items })
+  }
+  locad=e=>{
+    this.props.history.push({pathname:'/homePh/orderPhT',query:{uuid:e.currentTarget.dataset.uuid}})
+  }
+  inforsite=()=>{
+    this.props.history.push('/homePh/inforSitePh')
   }
 
   render() {
@@ -283,7 +302,8 @@ class newsPh extends React.Component {
           <span style={this.state.newsDetails.intime_chk !== undefined ? { display: 'block', fontSize: '0.6rem', color: '#888' } : { display: 'none' }}>{this.state.newsDetails.intime_chk}</span>
           <span style={{ display: 'block' }}>{this.state.newsDetails.comment}</span>
           <span style={{ display: 'block', fontSize: '0.6rem', color: '#888' }}>{this.state.newsDetails.intime}</span>
-
+          <div onClick={this.inforsite} style={this.state.newsDetails.type===6?{color:'#F5A623',cursor:'pointer'}:{display:'none'}}>再次前往修改</div>
+          <div onClick={this.locad} style={this.state.newsDetails.publicuuid===''?{display:'none'}:{color:'#F5A623',cursor:'pointer'}} data-uuid={this.state.newsDetails.publicuuid}>前往活动列表</div>
         </Drawer>
 
 
@@ -321,7 +341,7 @@ class newsPh extends React.Component {
                 ))
               }
               <Pagination className={this.state.getVenueNewsReceivedList.length === 0 || this.state.visibleDrawerNumTwo === 1 ? 'hidden' : 'fenye'} size="small" hideOnSinglePage={true} showSizeChanger={false} onChange={this.currentPush} defaultCurrent={1} current={this.state.newsPageTwo} total={this.state.otherPush} />
-              <div style={this.state.getVenueNewsReceivedList.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (9).png')} alt="555" /><span style={{ display: 'block', textAlign: 'center' }}>没有发布消息!</span></div>
+              <div style={this.state.getVenueNewsReceivedList.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (9).png')} alt="555" /><span style={{ display: 'block', textAlign: 'center' }}>没有发送的消息!</span></div>
               <div className="bottomLook" style={this.state.visibleThree === true ? { display: 'block' } : { display: 'none' }}>
                 <div className="content">
                   <div onClick={this.closeXTwo} style={{ float: 'left' }}><CloseCircleOutlined style={{ fontSize: '1.2rem' }} /> <span style={{ display: 'block' }}>取消</span></div>

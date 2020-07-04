@@ -63,7 +63,7 @@ class systemSettings extends React.Component {
     const res = await getVenueIsClose(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登录超时请重新登录!')
     } else {
       this.setState({ isClose: res.data.data.isclose })
     }
@@ -75,19 +75,19 @@ class systemSettings extends React.Component {
   componentDidMount() {
     this.getVenueIsClose()
     this.setState({ corporatePhone: sessionStorage.getItem('legalphone') })
-    setInterval(()=>{
-      if(sessionStorage.getItem('sitew')==='false'){
+    setInterval(() => {
+      if (sessionStorage.getItem('sitew') === 'false') {
         this.setState({
           flag: false,
           flagList: true,
           flagUntie: true,
           flagListOne: true,
         })
-        sessionStorage.setItem('sitew',true)
+        sessionStorage.setItem('sitew', true)
       }
-    },50)
-  
-    
+    }, 50)
+
+
   }
 
 
@@ -97,7 +97,7 @@ class systemSettings extends React.Component {
     const res = await VenueIsClose(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登录超时请重新登录!')
     } else {
       message.info(res.data.msg)
     }
@@ -173,7 +173,7 @@ class systemSettings extends React.Component {
       message.error(res.data.msg)
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登录超时请重新登录!')
     } else {
       message.success('修改成功')
       setTimeout(() => {
@@ -261,7 +261,7 @@ class systemSettings extends React.Component {
       message.error(res.data.msg)
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登录超时请重新登录!')
     } else {
       message.success('修改成功')
       this.setState({ flagListOne: true, flagList: true, flagUntie: true })
@@ -278,7 +278,7 @@ class systemSettings extends React.Component {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else {
       this.setState({ ListSport: res.data.data })
     }
@@ -349,7 +349,7 @@ class systemSettings extends React.Component {
     const res = await VenueTemporarilyClosed(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登录超时请重新登录!')
     } else {
       this.setState({ visible: false })
       message.info(res.data.msg)
@@ -484,6 +484,10 @@ class systemSettings extends React.Component {
               <Input maxLength={6} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.corporateCode} placeholder="请输入验证码" />
               <div style={{ height: 43, lineHeight: '43px' }} className={this.state.textOne === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCodeOutie}>{this.state.textOne}</div>
               <div style={{ height: 43, lineHeight: '43px' }} className={this.state.textOne === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textOne}</div>
+            </div>
+            <div className="inputSon">
+              <span style={{ width: 145, marginLeft: -28, textAlign: 'right' }}>操作员手机号：{sessionStorage.getItem('phone')}</span>
+            
             </div>
             <div className="inputSon">
               <span style={{ width: 145, marginLeft: -84, textAlign: 'right' }}>绑定操作员新手机号</span>

@@ -4,6 +4,7 @@ import 'antd/dist/antd.css';
 import { getIsStatus, VenueQualifications, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity, getVenueOpenBankList, getVenueQualificationInformation, VenueQualificationInformationSave } from '../../api';
 import { Input, Radio, Button, Upload, message, Select, Tooltip } from 'antd';
 import Icon from '@ant-design/icons';
+import ImgCrop from 'antd-img-crop';
 const { Option } = Select;
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -83,7 +84,7 @@ class qualification extends React.Component {
     const res = await getIsStatus(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     }
     this.setState({ siteUUID: res.data.data.siteUid })
   }
@@ -129,7 +130,7 @@ class qualification extends React.Component {
     const res = await getVenueQualificationInformation(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else if (res.data.code === 2000) {
       if (res.data.data.legalFilesURL !== '') {
         this.setState({
@@ -289,9 +290,9 @@ class qualification extends React.Component {
     if (sessionStorage.getItem('notType') === '1') {
 
 
-      if(openingLine===''){
+      if (openingLine === '') {
         message.warning('请选择开户支行')
-      }else{
+      } else {
         let data = {
           lisenceURL: imageRes,
           legalname: handleName,
@@ -307,11 +308,11 @@ class qualification extends React.Component {
         this.VenueQualificationInformationSave(data)
       }
 
-   
+
     } else {
-      if(openingLine===''){
+      if (openingLine === '') {
         message.warning('请选择开户支行')
-      }else{
+      } else {
         let data = {
           siteUUID: siteUUID,
           lisenceURL: imageRes,
@@ -356,6 +357,24 @@ class qualification extends React.Component {
       </div>
     );
     const { imageUrlS } = this.state;
+    const propsLo={
+      aspect: 1 / 1.41,
+      resize: false, //裁剪是否可以调整大小
+      resizeAndDrag: true, //裁剪是否可以调整大小、可拖动
+      modalTitle: "编辑图片", //弹窗标题
+      modalWidth: 600, //弹窗宽度
+      modalOk: "确定",
+      modalCancel: "取消"
+    }
+    const propsLoTwo={
+      aspect: 1.58 / 1,
+      resize: false, //裁剪是否可以调整大小
+      resizeAndDrag: true, //裁剪是否可以调整大小、可拖动
+      modalTitle: "编辑图片", //弹窗标题
+      modalWidth: 600, //弹窗宽度
+      modalOk: "确定",
+      modalCancel: "取消"
+    }
     return (
       <div className="qualification">
         <div className="header">
@@ -365,27 +384,30 @@ class qualification extends React.Component {
           </div>
           <div className="content">
             <div className="nav">
-              <div><span>1.填写注册信息</span><img src={require("../../assets/oneline.png")} alt="5"/></div>
-              <div><span>2.完善场馆信息</span><img src={require("../../assets/lineThree.png")} alt="5"/></div>
-              <div><span>3.等待审核</span><img src={require("../../assets/twoline.png")} alt="5"/></div>
-              <div><span>4.审核成功</span><img src={require("../../assets/twoline.png")} alt="5"/></div>
+              <div><span>1.填写注册信息</span><img src={require("../../assets/oneline.png")} alt="5" /></div>
+              <div><span>2.完善场馆信息</span><img src={require("../../assets/lineThree.png")} alt="5" /></div>
+              <div><span>3.等待审核</span><img src={require("../../assets/twoline.png")} alt="5" /></div>
+              <div><span>4.审核成功</span><img src={require("../../assets/twoline.png")} alt="5" /></div>
             </div>
             <div className="contentSon">
               <span className="titile">场馆资质信息</span>
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">营业执照</span>
-                <Upload
-                  name="files"
-                  listType="picture-card"
-                  className="avatar-uploader addImg"
-                  showUploadList={false}
-                  action="/api/UploadVenueImgs?type=Venuelisence"
-                  beforeUpload={beforeUpload}
-                  onChange={this.handleChange}
-                >
-                  {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '104px',maxHeight:'104px' }} /> : uploadButton}
-                </Upload>
+                <ImgCrop rotate  {...propsLo}>
+                  <Upload
+                    name="files"
+                    listType="picture-card"
+                    className="avatar-uploader addImg"
+                    showUploadList={false}
+                    action="/api/UploadVenueImgs?type=Venuelisence"
+                    beforeUpload={beforeUpload}
+                    onChange={this.handleChange}
+                  >
+                    {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '80px', maxHeight: '121px' }} /> : uploadButton}
+                  </Upload>
+                </ImgCrop>
+
               </div>
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">法人姓名</span>
@@ -398,11 +420,12 @@ class qualification extends React.Component {
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">法人手机号</span>
-                <Input className="nameINput phone" maxLength={11} value={this.state.handlePhone} onChange={this.handlePhone} style={{fontSize:'14px'}} placeholder="请输入11位手机号" />
+                <Input className="nameINput phone" maxLength={11} value={this.state.handlePhone} onChange={this.handlePhone} style={{ fontSize: '14px' }} placeholder="请输入11位手机号" />
               </div>
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">法人身份证</span>
+                <ImgCrop rotate  {...propsLoTwo}>
                 <Upload
                   name="files"
                   listType="picture-card"
@@ -412,9 +435,10 @@ class qualification extends React.Component {
                   beforeUpload={beforeUploadT}
                   onChange={this.handleChangeT}
                 >
-                  {imageUrlT ? <img src={imageUrlT} alt="avatar" style={{ width: '104px',height:'104px' }} /> : uploadButtonT}
+                  {imageUrlT ? <img src={imageUrlT} alt="avatar" style={{ width: '128px', height: '70px' }} /> : uploadButtonT}
                 </Upload>
-
+                </ImgCrop>
+                <ImgCrop rotate  {...propsLoTwo}>
                 <Upload
                   name="files"
                   listType="picture-card"
@@ -424,8 +448,9 @@ class qualification extends React.Component {
                   beforeUpload={beforeUploadTS}
                   onChange={this.handleChangeTS}
                 >
-                  {imageUrlS ? <img src={imageUrlS} alt="avatar" style={{ width: '104px',height:'104px' }} /> : uploadButtonS}
+                  {imageUrlS ? <img src={imageUrlS} alt="avatar" style={{ width: '128px', height: '70px' }} /> : uploadButtonS}
                 </Upload>
+                </ImgCrop>
               </div>
 
               <div className="name">
@@ -437,7 +462,7 @@ class qualification extends React.Component {
               </div>
 
               <div className="name" style={this.state.Radiovalue === 0 ? { display: 'block' } : { display: 'none' }}>
-              <span className="symbol">*</span><span className="boTitle">公司名称</span>
+                <span className="symbol">*</span><span className="boTitle">公司名称</span>
                 <Input className="nameINput" value={this.state.CorporateName} onChange={this.CorporateName} placeholder="请输入公司名称" />
               </div>
 
@@ -446,7 +471,7 @@ class qualification extends React.Component {
                 <Input className="nameINput" maxLength={19} onChange={this.handleBankNum} value={this.state.handleBankNum} placeholder="请输入银行卡号" />
               </div>
 
-              
+
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">开户行及所在地</span>

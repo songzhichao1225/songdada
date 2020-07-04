@@ -44,7 +44,7 @@ class myWallet extends React.Component {
   }
   search = () => {
     this.setState({kod:0})
-    this.getVenueMoneyList({ start: this.state.dateString[0], end: this.state.dateString[1], page: this.state.page })
+    this.getVenueMoneyList({ start: this.state.dateString[0], end: this.state.dateString[1], page: 1 })
   }
  
   async getVenueMoneyList(data) {
@@ -54,7 +54,7 @@ class myWallet extends React.Component {
       this.setState({ loading: false, hidden: false })
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else {
       this.setState({ moneyList: res.data.data.data, sumMoney: res.data.data.sumMoney, whereMoney: res.data.data.whereMoney, other: parseInt(res.data.data.count), loading: false, hidden: true })
     }
@@ -64,7 +64,7 @@ class myWallet extends React.Component {
     const res = await getVenueWithdrawalList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else if (res.data.data.length < 1) {
       this.setState({ hiddenTwo: false })
     } else {
@@ -73,6 +73,14 @@ class myWallet extends React.Component {
   }
 
   componentDidMount() {
+    console.log(666)
+    setInterval(() => {
+      if(sessionStorage.getItem('wallet')==='false'){
+        this.setState({flag:1})
+        sessionStorage.setItem('wallet',true)
+      }
+    }, 50);
+    
     if (this.props.location.query !== undefined) {
       if (this.props.location.query.time === 1) {
         let myDate = new Date()
@@ -96,8 +104,9 @@ class myWallet extends React.Component {
 
   }
   record = () => {
-    this.setState({ flag: 2 })
+    this.setState({ flag: 2,pageOne:1 })
     this.getVenueWithdrawalList({ page: 1 })
+
   }
   returnN = () => {
     this.setState({ flag: 1 })
@@ -118,7 +127,7 @@ class myWallet extends React.Component {
     const res = await getVenueWithdrawalOneList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else {
       res.data.data.Bankaccount=res.data.data.Bankaccount.slice(res.data.data.Bankaccount.length-4,res.data.data.Bankaccount.length)
       res.data.data.legalname='***'+res.data.data.legalname.slice(-1)
@@ -129,12 +138,13 @@ class myWallet extends React.Component {
     const res = await VenueWithdrawal(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else if (res.data.code === 2000) {
       this.setState({ flag: 1 })
       message.info('提现申请成功')
+      this.getVenueMoneyList({ start: this.state.dateString[0], end: this.state.dateString[1], page: 1 })
     } else {
-      message.info(res.data.msg)
+      message.error(res.data.msg)
     }
   }
   all = () => {
@@ -155,11 +165,12 @@ class myWallet extends React.Component {
       <div style={{height:'98%'}}>
         <div className={this.state.flag === 1 ? 'myWallet' : 'myWalletNone'}>
           <div className="header">
-            <span className="select">选择时间</span>
+            <span className="select"></span>
             <RangePicker
               placeholder={[this.state.start, this.state.end]}
               style={{marginTop:'8px',float:'left',marginLeft:'10px'}}
               locale={locale}
+              allowClear={false}
               onChange={this.dateChange}
             />
             <span className="query" style={this.state.kod===1?{display:'block'}:{display:'none'}} onClick={this.search}>查询</span>
@@ -190,13 +201,13 @@ class myWallet extends React.Component {
               </div>
               <Pagination current={this.state.page} className={this.state.moneyList.length===0 ? 'myWalletNone' : 'fenye'}  hideOnSinglePage={true} showSizeChanger={false} onChange={this.moneyFen} total={this.state.other} />
             </div>
-            <div style={this.state.moneyList.length !== 0 ?{display:'none'}:{width:'100%'}}><img style={{width:84,height:84,display:'block',margin:'84px auto 0'}} src={require('../../assets/xifen (7).png')} alt="icon"/><span style={{display:'block',textAlign:'center'}}>还没有人预约您的场馆!</span></div>
+            <div style={this.state.moneyList.length !== 0 ?{display:'none'}:{width:'100%'}}><img style={{width:84,height:84,display:'block',margin:'84px auto 0'}} src={require('../../assets/xifen (7).png')} alt="icon"/><span style={{display:'block',textAlign:'center'}}>您没有收入记录!</span></div>
         
         </div>
         <div className={this.state.flag === 2 ? 'record myWallet' : 'myWalletNone'}>
           
           <div className="header">
-            <span className="previousStep" onClick={this.returnN}>我的钱包</span><span>提现记录</span>
+            <span className="previousStep" onClick={this.returnN}>我的钱包 ></span><span>提现记录</span>
           </div>
           <div className="xiange"></div>
           <div className={this.state.hiddenTwo === true ? '' : 'hidden'} >
@@ -225,7 +236,7 @@ class myWallet extends React.Component {
         <div className={this.state.flag === 3 ? 'withdrawal myWallet' : 'myWalletNone'}>
           
           <div className="header">
-            <span className="previousStep" onClick={this.returnN}>我的钱包</span><span>提现</span>
+            <span className="previousStep" onClick={this.returnN}>我的钱包> </span><span>提现</span>
           </div>
           <div className="xiange"></div>
           <div className="balance">

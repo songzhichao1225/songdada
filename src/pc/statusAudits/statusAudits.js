@@ -16,7 +16,7 @@ class statusAudits extends React.Component {
     const res = await getIsStatus(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     }
     this.setState({ content: res.data.data.content, islegal: res.data.data.islegal })
   }

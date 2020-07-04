@@ -29,18 +29,40 @@ class Login extends React.Component {
         this.props.history.push('/statusAudits')
       }
     }
-    this.setState({phone:localStorage.getItem('nickName')})
+    this.setState({ phone: localStorage.getItem('nickName') })
   }
 
   phone = (e) => {
-    this.setState({ phone: e.target.value })
-    if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(e.target.value))) {
-      this.setState({ visiblePhone: true })
-    } else if (e.target.value === '') {
-      this.setState({ visiblePhone: true })
-    } else {
-      this.setState({ phone: e.target.value, visiblePhone: false })
+    if (e.target.value.indexOf('①')!== -1) {
+      this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
+    }else if (e.target.value.indexOf('②')!== -1) {
+      this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
+    }else if (e.target.value.indexOf('③')!== -1) {
+      this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
+    }else if (e.target.value.indexOf('④')!== -1) {
+      this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
+    }else if (e.target.value.indexOf('⑤')!== -1) {
+      this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
+    }else if (e.target.value.indexOf('⑥')!== -1) {
+      this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
+    }else if (e.target.value.indexOf('⑦')!== -1) {
+      this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
+    }else if (e.target.value.indexOf('⑧')!== -1) {
+      this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
+    }else if (e.target.value.indexOf('⑨')!== -1) {
+      this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
+    }else {
+      this.setState({ phone: e.target.value })
+      if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(e.target.value))) {
+        this.setState({ visiblePhone: true })
+      } else if (e.target.value === '') {
+        this.setState({ visiblePhone: true })
+      } else {
+        this.setState({ phone: e.target.value, visiblePhone: false })
+      }
     }
+
+
   }
   code = e => {
     this.setState({ code: e.target.value })
@@ -81,7 +103,8 @@ class Login extends React.Component {
       sessionStorage.setItem('issecondaudit', res.data.data.issecondaudit);
       sessionStorage.setItem('issportid', res.data.data.issportid);
       sessionStorage.setItem('legalphone', res.data.data.legalphone);
-      localStorage.setItem('nickName',res.data.data.name)
+      sessionStorage.setItem('phone', res.data.data.phone);
+      localStorage.setItem('nickName', res.data.data.name)
 
       setTimeout(() => {
         if (res.data.data.venue_token) {
@@ -110,7 +133,7 @@ class Login extends React.Component {
   }
 
   naCode = () => {
-    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))&&this.state.phone.length===11) {
+    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone)) && this.state.phone.length === 11) {
       this.VenueSelectSiteName({ phone: this.state.phone })
     } else {
       message.error('请输入正确手机号')
@@ -144,9 +167,9 @@ class Login extends React.Component {
   guan = () => {
 
   }
-  iphoneInput=e=>{
-    if(e.target.value===''){
-      this.setState({selectVeun:[]})
+  iphoneInput = e => {
+    if (e.target.value === '') {
+      this.setState({ selectVeun: [] })
     }
   }
 
@@ -190,7 +213,7 @@ class Login extends React.Component {
                       {this.state.textT}
                     </div>
                   </Form.Item>
-                  <Radio.Group className="radio" className={this.state.selectVeun.length >0 ? 'input' : 'selectVeunNone'} onChange={this.onChange} value={this.state.value}>
+                  <Radio.Group className="radio" className={this.state.selectVeun.length > 0 ? 'input' : 'selectVeunNone'} onChange={this.onChange} value={this.state.value}>
                     {
                       this.state.selectVeun.map((item, i) => (
                         <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
@@ -213,10 +236,10 @@ class Login extends React.Component {
               <div className={this.state.navNum ? 'nameLogin' : 'nameLoginT'}  >
                 <Form layout="inline" onSubmit={this.handleSubmit} className="form">
                   <Form.Item className="input">
-                    <Input onChange={this.phone} value={this.state.phone===undefined?'':this.state.phone} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名/操作员手机号" />
+                    <Input onChange={this.phone} value={this.state.phone === undefined ? '' : this.state.phone} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名/操作员手机号" />
                   </Form.Item>
                   <Form.Item className="input" style={{ marginTop: 20 }}>
-                    <Input.Password style={{paddingLeft:'15px'}} maxLength={8} onChange={this.onPassword} onPressEnter={this.onSubmitT}  placeholder="密码" />
+                    <Input.Password style={{ paddingLeft: '15px' }} maxLength={8} onChange={this.onPassword} onPressEnter={this.onSubmitT} placeholder="密码" />
                   </Form.Item>
                   <Form.Item className="bind">
                     <Button className="btnSubmit" onClick={this.onSubmitT} >
@@ -227,7 +250,7 @@ class Login extends React.Component {
               </div>
 
               <div className="checke">
-                <a href='#/forgetPassword'><span>忘记密码?</span></a>
+                <a href='#/forgetPassword'><span>忘记密码</span></a>
                 <a href='#/register'><span>注册</span></a>
               </div>
             </div>

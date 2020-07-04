@@ -245,7 +245,7 @@ class register extends React.Component {
                 <Input.Password maxLength={8} onChange={this.changePasswordT} style={{height:'41px'}} className="phone" />
               </div>
 
-              <div className="agreement"><Radio onChange={this.changeRadio} checked={this.state.changeRadio}><span>我已阅读并同意</span><span className="color">《用户协议》</span></Radio></div>
+              <div className="agreement"><Radio onChange={this.changeRadio} checked={this.state.changeRadio}></Radio><span>我已阅读并同意</span><span className="color">《用户协议》</span></div>
 
               <Popconfirm
                 title={this.state.idName === "" ? '没有推广员？' : "推广员姓名：" + this.state.idName && this.state.idName === '推广员不存在' ? '推广员不存在' : "推广员姓名：" + this.state.idName}

@@ -11,76 +11,54 @@ class map extends React.Component {
 
   state = {
     mapList: [],
-    position: '请输入搜索内容'
+    position: '请输入搜索内容',
+    pointLng:'',
+    pointLat:''
   };
 
   componentDidMount() {
-
-    // let map = new BMap.Map("allmap"); // 创建Map实例
-    // map.enableScrollWheelZoom(true);
-
-    // let myGeo = new BMap.Geocoder();
-    // // 将地址解析结果显示在地图上，并调整地图视野    
-    // myGeo.getPoint(localStorage.getItem('handleDistrict'), function (point) {
-    //   if (point) {
-    //     map.centerAndZoom(point, 16);
-    //     var marker = new BMap.Marker(point);  // 创建标注
-    //     map.addOverlay(marker);              // 将标注添加到地图中
-    //     marker.addEventListener("click", () => {
-    //       console.log(marker.getPosition())
-
-    //     });
-    //   }
-    // },
-    //   localStorage.getItem('handleDistrict'));
-    // let that = this
-    // let option = {
-    //   renderOptions: { map: map, panel: "results" }, onSearchComplete: function (results) {
-    //     if (results !== undefined) {
-    //       that.setState({ mapList: results.Qq })
-    //     }
-    //   }
-    // }
-    // let local = new BMap.LocalSearch(map, option);
-
-    // local.search(data)
-     if(this.props.location.query!==undefined){
-      this.setState({position:this.props.location.query.type})
-        this.look(this.props.location.query.type)
-     }
-  
+    let map = new BMap.Map("allmap")
+    let myGeo = new BMap.Geocoder()
+    let that=this
+    myGeo.getPoint(""+localStorage.getItem('handleCity')+localStorage.getItem('handleDistrict')+"", function (point) {
+      if (point) {
+        that.setState({pointLng:point.lng,pointLat:point.lat})
+        map.centerAndZoom(new BMap.Point(point.lng,point.lat ), 13)
+      
+      }
+    }) 
+        
+        
   }
 
 
   look=(data)=>{
-    let map = new BMap.Map("allmap") // 创建Map实例
-    map.enableScrollWheelZoom(true)
-    let myGeo = new BMap.Geocoder()
-    // 将地址解析结果显示在地图上，并调整地图视野   
-    myGeo.getPoint(localStorage.getItem('handleCity'), function (point) {
-      if (point) {
-        map.centerAndZoom(point, 16)
-        map.addEventListener("click", (e)=>{
-          map.clearOverlays()
-          var marker = new BMap.Marker(e.point) // 创建标注
-          map.addOverlay(marker)
-          var pt = marker.getPosition()
-          myGeo.getLocation(pt, function (rs) {
-            var addComp = rs.addressComponents
-            local.search(addComp.city+addComp.district+addComp.street+addComp.streetNumber)
-          })
-        })
-      }
-    }) 
-
-    let that = this
-     let option = {
-      renderOptions: { map: map, panel:"r-results" }, onSearchComplete:function (results) {
-        if (results !== undefined) {
-          that.setState({ mapList: results.Qq })
+  
+    let map = new BMap.Map("allmap")
+    map.centerAndZoom(new BMap.Point(this.state.pointLng,this.state.pointLat ), 13)
+    let that=this
+    var option = {onSearchComplete: function(results){
+        // 判断状态是否正确
+        if (local.getStatus() === 0){
+          var s = [];
+          for (var i = 0; i < results.getCurrentNumPois(); i ++){
+            console.log(results.getPoi(i))
+            let obj={
+              title:results.getPoi(i).title,
+              address: results.getPoi(i).address,
+              lng:results.getPoi(i).point.lng,
+              lat:results.getPoi(i).point.lat
+            }
+            s.push(obj);
+          }
+          that.setState({ mapList: s })
+        }else{
+          that.setState({ mapList: [] })
         }
       }
-    }
+    };
+
+   
     let local = new BMap.LocalSearch(map, option)
     local.search(data)
 
@@ -120,7 +98,7 @@ class map extends React.Component {
   
   render() {
     let list = this.state.mapList.map((val, i) => {
-      return <li key={i} onClick={this.handleClick} data-til={val.title} data-lat={val.point.lat} data-lng={val.point.lng} data-adress={val.address}><span data-til={val.title} data-lat={val.point.lat} data-lng={val.point.lng} data-adress={val.address}>{val.title}</span><span data-til={val.title} data-lat={val.point.lat} data-lng={val.point.lng} data-adress={val.address} >{val.address}</span></li>
+      return <li key={i} onClick={this.handleClick} data-til={val.title} data-lat={val.lat} data-lng={val.lng} data-adress={val.address}><span data-til={val.title} data-lat={val.lat} data-lng={val.lng} data-adress={val.address}>{val.title}</span><span data-til={val.title} data-lat={val.lat} data-lng={val.lng} data-adress={val.address} >{val.address}</span></li>
     })
     return (
       <div className="mapLocationOne">

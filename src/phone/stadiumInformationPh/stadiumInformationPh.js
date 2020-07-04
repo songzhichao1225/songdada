@@ -10,7 +10,7 @@ let arr = require('./address.json');
 const { TextArea } = Input;
 const Item = Popover.Item;
 
-const options = [{ label: 'WiFi', value: '1' }, { label: '停车场', value: '2' }, { label: '淋浴', value: '3' }]
+const options = [ { label: '停车场', value: '1' },{ label: 'WiFi', value: '2' }, { label: '淋浴', value: '3' }, { label: '室内摄像头', value: '4' }]
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -306,21 +306,27 @@ class stadiumInformationPh extends React.Component {
       this.VenueInformationSave(data)
 
     } else {
-
-
-      
+      console.log(onChangeRun)
       let arrimg = []
       for (let i in fileList.slice(0,9)) {
         arrimg.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
       }
-      if (onChangeRun.indexOf('3') !== -1 && onChangeRunTai === '') {
-        Toast.fail('至少选择一项台球类型', 1)
-      } else if (onChangeRun.indexOf('5') !== -1 && onChangeRunZu === '') {
-        Toast.fail('至少选择一项足球类型', 1)
-      } else if (onChangeRun.indexOf('8') !== -1 && onChangeRunGao === '') {
-        Toast.fail('至少选择一项高尔夫类型', 1)
+      if (sessionStorage.getItem('province')=== null) {
+        Toast.fail('请先选择地区', 1)
+      } else if (stadiumName=== null) {
+        Toast.fail('请输入场馆名称', 1)
+      } else if (lat === '') {
+        Toast.fail('请选择场馆位置', 1)
+      }else if(imageRes===''){
+        Toast.fail('请选择场馆门脸照', 1)
       } else if (arrimg.length < 3) {
         Toast.fail('最少上传三张场地照', 1)
+      }else if(onChangeRun.length===0){
+        Toast.fail('请选择场地类型', 1)
+      }else if(onChangeCheck.length===0){
+        Toast.fail('请选择场地设施', 1)
+      }else if(textKo===''){
+        Toast.fail('请输入场地介绍', 1)
       } else {
         let data = {
           venueloginuuid: localStorage.getItem('uuid'), 
@@ -435,7 +441,7 @@ class stadiumInformationPh extends React.Component {
                <EllipsisOutlined />
             </div>
           </Popover>}
-        ><span style={{ fontSize: '1rem' }}>新用户注册/完善信息</span></NavBar>
+        ><span style={{ fontSize: '1rem' }}>完善信息</span></NavBar>
         <div className="boss">
           <div className="input">
 
@@ -520,6 +526,7 @@ class stadiumInformationPh extends React.Component {
 
           <div className="input">
             <span style={{lineHeight:'5rem'}}>门脸照</span>
+            
             <Upload
               name="files"
               listType="picture-card"
@@ -531,8 +538,9 @@ class stadiumInformationPh extends React.Component {
               accept="image/*"
               multiple={false}
             >
-              {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+              {imageUrl ? <div className="avatar"><img src={imageUrl} alt="avatar" style={{ width: '100%',height:'100%',position:'absolute',left:'50%',marginLeft:'-2rem',top:'0' }} /></div> : uploadButton}
             </Upload>
+            
           </div>
 
           <div className="input">
@@ -555,7 +563,7 @@ class stadiumInformationPh extends React.Component {
           </div>
 
           <div className="input">
-            <span>运动项目</span>
+            <span>场地类型</span>
             <Checkbox.Group options={this.state.plainOptions} value={this.state.onChangeRun} onChange={this.onChangeRun} /><br /><span className="kong"></span>
           </div>
 

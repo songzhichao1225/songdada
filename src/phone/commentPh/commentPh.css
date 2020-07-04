@@ -6,15 +6,15 @@ background: #fff;
 	 height: 3rem;
 	 border-bottom: 0.06rem solid #f5f5f5;
 	 text-align: center;
-	 line-height: 3rem;
+	 line-height: 3rem;  
 	 position: relative;
 	 color:#fff;
+	 font-size: 1rem;
 	 background: #374D66;
 }
 .commentPh .essence{
 	width: 90%;
 	margin: 0 auto;
-	
 }
 .commentPh .essence .whole{
 	margin-top: 1rem;

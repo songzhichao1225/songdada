@@ -81,7 +81,7 @@ class appointmentList extends React.Component {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else if (res.data.code === 2000) {
       this.setState({ activityNav: res.data.data })
       this.getVenueNumberTitleList({ sportid: this.state.liNum })
@@ -145,7 +145,7 @@ class appointmentList extends React.Component {
 
   dateonChangeS = (date, dateString) => {
     this.setState({ start: dateString[0], end: dateString[1] })
-    this.getReservationActivitieslist({ page: 1, sport: '', status: '', startdate: dateString[0], enddate: dateString[1] })
+    this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: '', startdate: dateString[0], enddate: dateString[1] })
   }
 
   current = (page, pageSize) => {
@@ -572,7 +572,7 @@ class appointmentList extends React.Component {
           <div className={this.state.hidden === true ? '' : 'hidden'} style={{ height: '90%', overflowY: 'auto' }}>
             {userMessage}
           </div>
-        <div style={this.state.hidden === true ?{display:'none'}:{width:'100%'}}><img style={{width:84,height:84,display:'block',margin:'84px auto 0'}} src={require('../../assets/xifen (5).png')} alt="icon"/><span style={{display:'block',textAlign:'center'}}>您的场馆还没有预约活动!</span></div>
+        <div style={this.state.hidden === true ?{display:'none'}:{width:'100%'}}><img style={{width:84,height:84,display:'block',margin:'84px auto 0'}} src={require('../../assets/xifen (5).png')} alt="icon"/><span style={{display:'block',textAlign:'center'}}>您的场馆没有相关活动!</span></div>
 
 
         </div>
@@ -603,7 +603,7 @@ class appointmentList extends React.Component {
             <span style={{ paddingLeft: 20 }}>场地号</span> <InputNumber style={{ height: '30px' }} max={999} value={this.state.changNum} placeholder="场地号" onChange={this.changNum} className="changNum" />
           </div>
           <TextArea style={{ marginTop: '20px' }} className="sending" maxLength={50} placeholder={this.state.placeholder} onChange={this.textArea} rows={4} />
-          <div style={{ clear: 'both', height: '30px', marginTop: '10px' }}><span style={{ float: 'left' }}>还可以输入{50 - this.state.textArea.length}字</span>  <span style={{ display: 'block', float: 'right', color: '#F5A623', cursor: 'pointer' }} onClick={this.History}>历史记录...</span></div>
+          <div style={{ clear: 'both', height: '30px', marginTop: '10px' }}><span style={{ float: 'left' }}>还可以输入{50 - this.state.textArea.length}字</span>  </div>
           <div className="sending">
             <div onClick={this.handleCancel}>取消</div>
             <div onClick={this.sendingMessage}>发送</div>

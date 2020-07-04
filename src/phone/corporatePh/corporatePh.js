@@ -192,7 +192,7 @@ class corporatePh extends React.Component {
       <div className="corporatePh">
         <NavBar
           mode="dark"
-          icon={<img style={{ width: '2rem', height: '2rem', display: 'block', marginTop: '-0.3rem' }} src={require('../../assets/logo.png')} alt="logo" />}
+          icon={<img style={{ width: '2rem', height: '2rem', display: 'block' }} src={require('../../assets/logoHead.png')} alt="logo" />}
           rightContent={<Popover mask
             overlayClassName="fortest"
             overlayStyle={{ color: 'currentColor' }}
@@ -206,7 +206,6 @@ class corporatePh extends React.Component {
               offset: [-10, 0],
             }}
             onVisibleChange={this.handleVisibleChange}
-
           >
             <div style={{
               height: '100%',
@@ -220,17 +219,16 @@ class corporatePh extends React.Component {
               <Icon type="ellipsis" />
             </div>
           </Popover>}
-        ><span style={{ fontSize: '1rem' }}>合作场馆/登录</span></NavBar>
+        ><span style={{ fontSize: '1rem' }}>法人手机号登录</span></NavBar>
         <div className="loginInput">
           <div className="name">
-
-            <InputItem
+            <InputItem 
               type='phone'
               placeholder="法人手机号"
               clear={true}
-              style={{ fontSize: '0.8rem' }}
+              style={{fontSize: '0.8rem' }}
               onChange={this.phone}
-              autoFocus
+              autoFocus 
               className="phone"
             >
             </InputItem>

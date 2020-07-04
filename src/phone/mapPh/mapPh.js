@@ -29,7 +29,7 @@ class mapPh extends React.Component {
     var option = {
       renderOptions: { map: map, panel: "results" }, onSearchComplete: function (results) {
         if (results !== undefined){
-          that.setState({ mapList: results.Qq })
+          that.setState({ mapList: results.Yq })
         }
       }
     } 

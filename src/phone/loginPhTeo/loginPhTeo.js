@@ -29,7 +29,27 @@ class loginPhTeo extends React.Component {
     this.props.history.push('/registerPh')
   }
   phone = e => {
-    this.setState({ phone: e })
+    if(e.indexOf('①')!==-1){
+      this.setState({phone:e.slice(0,e.length-1)})
+    }else if(e.indexOf('②')!==-1){
+      this.setState({phone:e.slice(0,e.length-1)})
+    }else if(e.indexOf('③')!==-1){
+      this.setState({phone:e.slice(0,e.length-1)})
+    }else if(e.indexOf('④')!==-1){
+      this.setState({phone:e.slice(0,e.length-1)})
+    }else if(e.indexOf('⑤')!==-1){
+      this.setState({phone:e.slice(0,e.length-1)})
+    }else if(e.indexOf('⑥')!==-1){
+      this.setState({phone:e.slice(0,e.length-1)})
+    }else if(e.indexOf('⑦')!==-1){
+      this.setState({phone:e.slice(0,e.length-1)})
+    }else if(e.indexOf('⑧')!==-1){
+      this.setState({phone:e.slice(0,e.length-1)})
+    }else if(e.indexOf('⑨')!==-1){
+      this.setState({phone:e.slice(0,e.length-1)})
+    }else{
+      this.setState({ phone: e })
+    }
   }
   pssword = e => {
     this.setState({ password: e })
@@ -117,7 +137,7 @@ eyes=()=>{
       <div className="loginPhTeo">
        <NavBar
             mode="dark"
-            icon={<img style={{ width: '2rem', height: '2rem', display: 'block', marginTop: '-0.3rem' }} src={require('../../assets/logo.png')} alt="logo" />}
+            icon={<img style={{ width: '2rem', height: '2rem', display: 'block' }} src={require('../../assets/logoHead.png')} alt="logo" />}
             rightContent={<Popover mask
               overlayClassName="fortest"
               overlayStyle={{ color: 'currentColor' }}
@@ -156,6 +176,7 @@ eyes=()=>{
               style={{ fontSize: '0.88rem' }}
               onChange={this.phone}
               className="phone"
+              value={this.state.phone}
             >
             </InputItem>
           </div>

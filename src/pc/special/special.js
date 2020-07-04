@@ -94,7 +94,7 @@ class special extends React.Component {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登录超时请重新登录!')
     }
     this.setState({ ListSport: res.data.data })
   }
@@ -323,7 +323,7 @@ class special extends React.Component {
       message.error(res.data.msg)
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登录超时请重新登录!')
     } else {
       this.setState({
         visible: false,
@@ -368,7 +368,7 @@ class special extends React.Component {
       message.error(res.data.msg)
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登录超时请重新登录!')
     } else {
       message.info('删除成功')
       this.getVenueSpecialList({ sportid: sessionStorage.getItem('preferential'), page: this.state.page })
@@ -381,14 +381,14 @@ class special extends React.Component {
     if (this.state.runId.length !== 0) {
       this.setState({ minNum: e })
     } else {
-      message.warning('选择运动项目')
+      message.warning('选择场地类型')
     }
   }
   maxNum = e => {
     if (this.state.runId.length !== 0) {
       this.setState({ maxNum: e })
     } else {
-      message.warning('选择运动项目')
+      message.warning('选择场地类型')
     }
   }
 
@@ -405,7 +405,7 @@ class special extends React.Component {
     return (
       <div className="siteStting">
         <div className="header">
-          <span>运动项目</span>
+          <span>场地类型</span>
           <Select defaultValue="全部" className="selectN" style={{ width: 100 }} onChange={this.handleChangeSelect}>
             <Option value=''>全部</Option>
             {
@@ -423,7 +423,7 @@ class special extends React.Component {
         <Spin spinning={this.state.loading} style={{ minHeight: 600 }} size="large">
           <div className={this.state.hidden === true ? 'siteList' : 'hidden'} >
             <Row className="rowConten">
-              <Col xs={{ span: 2 }}>运动项目</Col>
+              <Col xs={{ span: 2 }}>场地类型</Col>
               <Col xs={{ span: 4 }}>节假日/工作日</Col>
               <Col xs={{ span: 2 }}>开始时间</Col>
               <Col xs={{ span: 2 }}>结束时间</Col>
@@ -474,7 +474,7 @@ class special extends React.Component {
         >
           <Form>
             <div className="modelList">
-              <span>运动项目</span>
+              <span>场地类型</span>
               <Select placeholder="请选择" value={this.state.runId} className="selectModel" style={{ width: 249 }} onChange={this.handleChangeOne}>
                 {
                   this.state.upSportid.map((item, i) => (

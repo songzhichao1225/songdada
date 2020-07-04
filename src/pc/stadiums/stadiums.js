@@ -4,16 +4,15 @@ import 'antd/dist/antd.css';
 import { getVenueInformation, VenueInformationSave, getVenueIssecondaudit, getVenueQualificationInformation, getVenueOpenBank,getVenueSportList, VenueQualificationInformationSave, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
 import { Modal, Upload, Input, message, Checkbox, Button, Popconfirm, Radio, Select, Tooltip,Spin } from 'antd';
 import Icon from '@ant-design/icons';
-
+import ImgCrop from 'antd-img-crop';
 const { Option } = Select;
 const { TextArea } = Input;
 
 
 
 
-const options = [{ label: 'WiFi', value: '1' }, { label: '停车场', value: '2' }, { label: '淋浴', value: '3' }]
 
-
+const options = [ { label: '停车场', value: '1' },{ label: 'WiFi', value: '2' }, { label: '淋浴', value: '3' },{ label: '室内摄像头', value: '4' },]
 
 
 function getBase64T(file) {
@@ -106,7 +105,8 @@ class stadiums extends React.Component {
       for (let i in imgS) {
         arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: imgS[i] })
       }
-
+      localStorage.setItem('handleCity',res.data.data.city)
+      localStorage.setItem('handleDistrict',res.data.data.area)
       if (this.props.location.query !== undefined && this.props.location.query.name !== 'sunny') {
         let sportId=res.data.data.sport.split(',')
         let lo=[]
@@ -141,7 +141,7 @@ class stadiums extends React.Component {
       }
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登录超时请重新登录!')
     }
   }
 
@@ -216,6 +216,11 @@ class stadiums extends React.Component {
     if (info.file.status === 'done') {
       this.setState({ imageUrl: info.file.response.data.baseURL + info.file.response.data.filesURL, loading: false })
     }
+    if(info.file.response.code===4004){
+       message.error(info.file.response.msg)
+    }else if(info.file.response.code===4002){
+      message.error('上传失败')
+    }
   }
 
 
@@ -266,8 +271,19 @@ class stadiums extends React.Component {
     this.setState({ addtelephone: e.target.value })
   }
 
-  handleChangeT = ({ fileList }) => this.setState({ fileList });
-
+  handleChangeT=({fileList})=>{
+    this.setState({ fileList:fileList })
+    for(let i in fileList){
+      if(fileList[i].response!==undefined&&fileList[i].response.code===4004){
+        fileList[i].thumbUrl=''
+        fileList[i].name='图片违规'
+        message.error('有图片违规请重新上传')
+        this.setState({ fileList:fileList })
+      }
+      
+    }
+    
+  }
   onChangeCheck = e => {
     this.setState({ sport: e })
   }
@@ -308,12 +324,20 @@ class stadiums extends React.Component {
       if (fileList[i].response !== undefined) {
         filesURLarr.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
       } else if (fileList[i].response === undefined) {
+        console.log(fileList[i].url)
         filesURLarr.push(fileList[i].url)
       }
     }
+    for(let i in filesURLarr){
+     
+      if(isNaN(filesURLarr[i])){
+        console.log(filesURLarr[i])
+      }
+    }
+
      if (filesURLarr.length < 2) {
       message.error('至少上传两张室内照')
-    } else {
+    }else {
       let data = {
         venuename: name,
         lat: this.state.lat!==undefined?this.state.lat:informationList.lat,
@@ -333,7 +357,8 @@ class stadiums extends React.Component {
         comment: comment,
         type: 2
       }
-      this.VenueInformationSave(data)
+      console.log(data)
+      // this.VenueInformationSave(data)
     }
   }
   basic = () => {
@@ -345,6 +370,10 @@ class stadiums extends React.Component {
 
   numRadio = e => {
     this.setState({ numRadio: e.target.value })
+    if(e.target.value===1){
+      this.setState({corporateCardId:'',upData:false,corporateOpen:''})
+    }
+
   }
 
   handleChangeTwo = info => {
@@ -394,6 +423,7 @@ class stadiums extends React.Component {
       message.error('登录超时请重新登录')
     } else if (res.data.code === 2000) {
       message.info('提交成功')
+      this.setState({issecondaudit:0})
     } else {
       message.error(res.data.msg)
     }
@@ -481,6 +511,43 @@ class stadiums extends React.Component {
         <div className="ant-upload-text">场地照</div>
       </div>
     );
+
+    const propsOne = {
+      aspect: 1.295 / 1,
+      resize: false, //裁剪是否可以调整大小
+      resizeAndDrag: true, //裁剪是否可以调整大小、可拖动
+      modalTitle: "编辑图片", //弹窗标题
+      modalWidth: 600, //弹窗宽度
+      modalOk: "确定",
+      modalCancel: "取消"
+    }
+    const props = {
+      aspect: 1.64 / 1,
+      resize: false, //裁剪是否可以调整大小
+      resizeAndDrag: true, //裁剪是否可以调整大小、可拖动
+      modalTitle: "编辑图片", //弹窗标题
+      modalWidth: 600, //弹窗宽度
+      modalOk: "确定",
+      modalCancel: "取消"
+    }
+    const propsLo={
+      aspect: 1 / 1.41,
+      resize: false, //裁剪是否可以调整大小
+      resizeAndDrag: true, //裁剪是否可以调整大小、可拖动
+      modalTitle: "编辑图片", //弹窗标题
+      modalWidth: 600, //弹窗宽度
+      modalOk: "确定",
+      modalCancel: "取消"
+    }
+    const propsLoTwo={
+      aspect: 1.58 / 1,
+      resize: false, //裁剪是否可以调整大小
+      resizeAndDrag: true, //裁剪是否可以调整大小、可拖动
+      modalTitle: "编辑图片", //弹窗标题
+      modalWidth: 600, //弹窗宽度
+      modalOk: "确定",
+      modalCancel: "取消"
+    }
     return (
       <div className="stadiums">
         <div className="navTap">
@@ -493,7 +560,7 @@ class stadiums extends React.Component {
         <div className={this.state.flag === true ? 'information' : 'none'}>
           <div className="name">
             <span className="boTitle">推广员:</span>
-            <span className="nameINput">{this.state.informationList.promote===''?'无':this.state.informationList.promote}</span>
+            <span className="nameINput" >{this.state.informationList.promote===''?'无':this.state.informationList.promote}</span>
           </div>
           <div className="name">
             <span className="boTitle">场馆名称:</span>
@@ -520,6 +587,7 @@ class stadiums extends React.Component {
 
           <div className="name">
             <span className="boTitle">门脸照:</span>
+            <ImgCrop scale {...propsOne}>
             <Upload
               name="files"
               listType="picture-card"
@@ -532,22 +600,26 @@ class stadiums extends React.Component {
             >
               {imageUrl ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
             </Upload>
+            </ImgCrop>
           </div>
 
           <div className="name">
             <span className="boTitle">场地照片:</span>
             <div className="clearfix">
+            
               <Upload
                 name="files"
                 action="/api/UploadVenueImgs?type=Venue"
                 listType="picture-card"
-                fileList={fileList}
+                fileList={fileList.slice(0,8)}
                 onPreview={this.handlePreview}
                 onChange={this.handleChangeT}
                 accept=".jpg, .jpeg, .png"
+                multiple={true}
               >
                 {fileList.length >= 8 ? null : uploadButtonT}
               </Upload>
+              
               <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
                 <img alt="example" style={{ width: '100%' }} src={previewImage} />
               </Modal>
@@ -555,8 +627,8 @@ class stadiums extends React.Component {
           </div>
 
           <div className="name" style={{overflow:'hidden'}}>
-            <span className="boTitle">运动项目:</span><span className="kong"></span>
-            <Checkbox.Group style={{float:'left',width:'80%',marginLeft:'26.8px'}} options={this.state.plainOptions} value={this.state.sport}  onChange={this.onChangeCheck} /><br /><span className="kong"></span>
+            <span className="boTitle">场地类型:</span><span className="kong"></span>
+            <Checkbox.Group style={{float:'left',width:'50%',marginLeft:'26.8px'}} className="chekkoh" options={this.state.plainOptions} value={this.state.sport}  onChange={this.onChangeCheck} /><br /><span className="kong"></span>
           </div>
 
           <div className="name">
@@ -592,6 +664,7 @@ class stadiums extends React.Component {
         <div className={this.state.flag === true ? 'none' : 'qualification'}>
           <div className="listing">
             <span>营业执照:</span>
+            <ImgCrop rotate  {...propsLo}>
             <Upload
               name="files"
               listType="picture-card"
@@ -602,12 +675,14 @@ class stadiums extends React.Component {
               onChange={this.handleChangeOneY}
               accept=".jpg, .jpeg, .png"
             >
-              {lisenceURL ? <img src={'https://app.tiaozhanmeiyitian.com/' + lisenceURL} alt="avatar" style={{ width: '100%' }} /> : uploadButtonTwo}
+              {lisenceURL ? <img src={'https://app.tiaozhanmeiyitian.com/' + lisenceURL} alt="avatar" style={{ width: '80px', maxHeight: '121px'  }} /> : uploadButtonTwo}
             </Upload>
+            </ImgCrop>
           </div>
 
           <div className="listing">
             <span>身份证:</span>
+            <ImgCrop rotate  {...propsLoTwo}>
             <Upload
               name="files"
               listType="picture-card"
@@ -618,9 +693,11 @@ class stadiums extends React.Component {
               onChange={this.handleChangeTwo}
               accept=".jpg, .jpeg, .png"
             >
-              {imageUrlTwo ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrlTwo} alt="avatar" style={{ width: '100%' }} /> : uploadButtonTwo}
+              {imageUrlTwo ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrlTwo} alt="avatar" style={{ width: '128px', height: '70px' }} /> : uploadButtonTwo}
             </Upload>
+            </ImgCrop>
             <div style={{ clear: 'both' }}></div>
+            <ImgCrop rotate  {...propsLoTwo}>
             <Upload
               name="files"
               listType="picture-card"
@@ -631,8 +708,9 @@ class stadiums extends React.Component {
               onChange={this.handleChangeThree}
               accept=".jpg, .jpeg, .png"
             >
-              {imageUrlThree ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrlThree} alt="avatar" style={{ width: '100%' }} /> : uploadButtonThree}
+              {imageUrlThree ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrlThree} alt="avatar" style={{ width: '128px', height: '70px' }} /> : uploadButtonThree}
             </Upload>
+            </ImgCrop>
           </div>
 
           <div className="listing">

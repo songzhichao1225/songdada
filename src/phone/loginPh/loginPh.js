@@ -9,8 +9,10 @@ class loginPh extends React.Component {
   };
 
   componentDidMount() {
+    localStorage.setItem('now',false)
     let query = window.location.href
     let arr = query.split('&')
+    console.log(arr[1])
     if (arr[1] !== undefined) {
       if (localStorage.getItem('phone') === arr[1].slice(6, 17) || localStorage.getItem('legalphone') === arr[1].slice(6, 17)) {
 
@@ -18,16 +20,17 @@ class loginPh extends React.Component {
         localStorage.clear()
         this.props.history.push('/login')
       }
-    } else {
-      localStorage.clear()
-      this.props.history.push('/login')
+    } else if(localStorage.getItem('now')==='false') {
+      this.props.history.push('/')
     }
+    
     if (localStorage.getItem('venue_token')) {
       this.props.history.push('/homePh')
     }
   }
 
   login = () => {
+    localStorage.setItem('now',true)
     this.props.history.push('/login')
   }
 

@@ -383,4 +383,6 @@
     top: 8px;
     right: 1px;
 }
-
+.mode .ant-modal-footer{
+    display: none;
+}

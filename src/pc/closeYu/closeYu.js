@@ -51,7 +51,7 @@ class closeYu extends React.Component {
     const res = await VenueTemporarilyClosedList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else if (res.data.code !== 2000 && res.data.code !== 4001) {
       this.setState({ closeList: res.data.data, other: res.data.other })
     } else {
@@ -167,7 +167,7 @@ class closeYu extends React.Component {
     const res = await VenueTemporarilyClosed(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else if (res.data.code === 2000) {
       this.setState({ visible: false, update: 0 })
       message.info(res.data.msg)
@@ -183,7 +183,7 @@ class closeYu extends React.Component {
     const res = await VenueTemporarilyClosedSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else {
       this.setState({ visible: false, update: 0 })
       message.info(res.data.msg)
@@ -195,7 +195,7 @@ class closeYu extends React.Component {
     const res = await getIsClosedPublic(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else if(res.data.code===2001) {
       this.setState({textNum:'您确定关闭临时预约吗'})
     }else{
@@ -227,7 +227,7 @@ class closeYu extends React.Component {
     const res = await VenueTemporarilyClosedDel(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else {
       this.setState({ visible: false, update: 0 })
       message.info(res.data.msg)
@@ -305,11 +305,12 @@ class closeYu extends React.Component {
           title="添加/修改临时关闭预约时间"
           visible={this.state.visible}
           onOk={this.handleOk}
+          className="mode"
           onCancel={this.handleCancel}
           closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
         >
           <div className="one">
-            <span>运动项目</span>
+            <span>场地类型</span>
             <Select placeholder="请选择" className="selectN" style={{ width: 350, marginLeft: 15 }} value={this.state.runName} onChange={this.handleChangeSelect}>
               {
                 this.state.ListSport.map((item, i) => (

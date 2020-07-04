@@ -109,13 +109,13 @@
 }
 .register .huoBtn{
 	width: 94px;
-	height: 32px;
+	height: 40px;
 	background: #F5A623;
 	border-radius: 2px;
 	margin-left: 16px;
 	color: #fff;
 	float: right;
-	margin-top: 6.5px
+	
 }
 .register .code{
 	width: 315px;
@@ -130,6 +130,7 @@
 .register .agreement .color{
 	font-size: 13px;
 	color: #F5A623;
+	cursor: pointer;
 }
 .register .submint{
 	width: 425px;
@@ -191,4 +192,8 @@
 .ant-btn-sm{
 	height: 30px;
 	padding: 0 18px;
+}
+
+.register .son .ant-input-affix-wrapper > input.ant-input{
+	width: 80%;
 }

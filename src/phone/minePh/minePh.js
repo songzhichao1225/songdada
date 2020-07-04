@@ -96,7 +96,10 @@ class minePh extends React.Component {
       <div className="minePh">
         <div className="headerbanner">
           <div className="headContent">
-            <img className="avatar" src={localStorage.getItem('avatar')} alt='头像' />
+            <div className="avatar">
+            <img  src={localStorage.getItem('avatar')} alt='头像' />
+            </div>
+            
             <div className="right">
               <span>{localStorage.getItem('name')}</span>
               <span>场地履约率{localStorage.getItem('lyv')}%</span>
@@ -129,7 +132,7 @@ class minePh extends React.Component {
             </svg>
             <span>场馆信息</span><img src={require("../../assets/right.png")} alt="arrow" /></li>
           <li onClick={this.myWalletPh}>
-            <svg width="16px" height="16px" style={{float:'left',marginTop:'0.75rem'}} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <svg width="16px" height="16px" style={{float:'left',marginTop:'1rem'}} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/设置</title>
               <desc>Created with Sketch.</desc>
               <g id="合作场馆" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -150,7 +153,7 @@ class minePh extends React.Component {
             </svg>
             <span>场馆钱包</span><img src={require("../../assets/right.png")} alt="arrow" /></li>
           <li>
-            <svg width="14px" height="16px" viewBox="0 0 14 16" style={{ float: 'left', marginTop: '0.75rem' }} version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <svg width="14px" height="16px" viewBox="0 0 14 16" style={{ float: 'left', marginTop: '1rem' }} version="1.1" xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/设置</title>
               <desc>Created with Sketch.</desc>
               <g id="合作场馆" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -171,7 +174,7 @@ class minePh extends React.Component {
             </svg>
             <span>用户协议</span><img src={require("../../assets/right.png")} alt="arrow" /></li>
           <li onClick={this.showDrawer}>
-            <svg width="16px" height="16px" viewBox="0 0 16 16" style={{ float: "left", marginTop: '0.75rem' }} version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <svg width="16px" height="16px" viewBox="0 0 16 16" style={{ float: "left", marginTop: '1rem' }} version="1.1" xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/关于我们</title>
               <desc>Created with Sketch.</desc>
               <g id="icon/合作场馆/我的/关于我们" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -180,7 +183,7 @@ class minePh extends React.Component {
             </svg>
             <span>关于我们</span><img src={require("../../assets/right.png")} alt="arrow" /></li>
           <li>
-            <svg width="16px" height="16px" style={{ float: 'left', marginTop: '0.75rem' }} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" >
+            <svg width="16px" height="16px" style={{ float: 'left', marginTop: '1rem' }} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" >
               <title>icon/合作场馆/我的/客服电话</title>
               <desc>Created with Sketch.</desc>
               <g id="icon/合作场馆/我的/客服电话" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -189,7 +192,7 @@ class minePh extends React.Component {
             </svg>
             <span ><a href="tel:18567837551" style={{ color: 'rgba(0, 0, 0, 0.65)' }}>客服电话(010-1008611)</a></span><img src={require("../../assets/right.png")} alt="arrow" /></li>
           <li onClick={this.help}>
-            <svg width="16px" height="16px" style={{ float: 'left', marginTop: '0.75rem' }} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <svg width="16px" height="16px" style={{ float: 'left', marginTop: '1rem' }} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/设置</title>
               <desc>Created with Sketch.</desc>
               <g id="合作场馆" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -210,7 +213,7 @@ class minePh extends React.Component {
             </svg>
             <span>帮助中心</span><img src={require("../../assets/right.png")} alt="arrow" /></li>
           <li onClick={this.fanKui}>
-            <svg width="16px" height="14px" style={{ float: "left", marginTop: '0.75rem' }} viewBox="0 0 16 14" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <svg width="16px" height="14px" style={{ float: "left", marginTop: '1rem' }} viewBox="0 0 16 14" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/设置</title>
               <desc>Created with Sketch.</desc>
               <g id="合作场馆" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -231,7 +234,7 @@ class minePh extends React.Component {
             </svg>
             <span>意见反馈</span><img src={require("../../assets/right.png")} alt="arrow" /></li>
           <li onClick={this.sittingPh}>
-            <svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" style={{ float: 'left', marginTop: '0.75rem' }} xmlns="http://www.w3.org/2000/svg">
+            <svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" style={{ float: 'left', marginTop: '1rem' }} xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/设置</title>
               <desc>Created with Sketch.</desc>
               <g id="icon/合作场馆/我的/设置" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">

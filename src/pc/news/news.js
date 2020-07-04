@@ -80,9 +80,11 @@ class news extends React.Component {
       this.setState({ oneChecked: false })
       if(this.state.kod===1){
         this.getVenueNewsList({ page: 1 })
+        this.setState({oneChecked:false})
         this.getVenueIndex()
       }else{
         this.getVenueIndex()
+        this.setState({oneChecked:false})
         this.getVenueNewsList({ page: this.state.current })
       }
     }
@@ -148,7 +150,7 @@ class news extends React.Component {
     const res = await gerVenueName(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     } else {
       this.setState({ gerVenueName: res.data.data })
       sessionStorage.setItem('siteuid', res.data.data.siteuid)
@@ -213,6 +215,7 @@ class news extends React.Component {
       message.info(res.data.msg)
       this.gerVenueName()
       this.getVenueNewsList({ page: this.state.current })
+      this.setState({oneChecked:false})
     }else{
       message.warning(res.data.msg)
     }
@@ -239,7 +242,9 @@ class news extends React.Component {
   locad=e=>{
     this.props.history.push({pathname:'/home/appointmentList',query:{uuid:e.currentTarget.dataset.uuid}})
   }
-
+  stamic=()=>{
+    this.props.history.push('/home/stadiums')
+  }
 
   render() {
     return (
@@ -294,6 +299,7 @@ class news extends React.Component {
             <div>{this.state.newsDetail.comment}</div>
             <div>{this.state.newsDetail.intime}</div>
             <div onClick={this.locad} style={this.state.newsDetail.publicuuid===''?{display:'none'}:{color:'#F5A623',cursor:'pointer'}} data-uuid={this.state.newsDetail.publicuuid}>前往活动列表</div>
+            <div onClick={this.stamic} style={this.state.newsDetail.type===6?{color:'#F5A623',cursor:'pointer'}:{display:'none'}} data-uuid={this.state.newsDetail.publicuuid}>前往修改</div>
           </Drawer>
         </div> 
         <Modal

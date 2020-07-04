@@ -84,13 +84,14 @@ class siteSettings extends React.Component {
     lppd: 0,
     lppding: true,
     titleDel:'',
-    timer: [{ name: '00:00' }, { name: '00:30' }, { name: '01:00' }, { name: '01:30' }, { name: '02:00' }, { name: '02:30' }, { name: '03:00' }, { name: '03:30' }, { name: '04:00' }, { name: '04:30' }, { name: '05:00' }, { name: '05:30' }, { name: '06:00' }, { name: '06:30' }, { name: '07:00' }, { name: '07:30' }, { name: '08:00' }, { name: '08:30' }, { name: '09:00' }, { name: '09:30' }, { name: '10:00' }, { name: '10:30' }, { name: '11:00' }, { name: '11:30' }, { name: '12:00' }, { name: '12:30' }, { name: '13:00' }, { name: '13:30' }, { name: '14:00' }, { name: '14:30' }, { name: '15:00' }, { name: '15:30' }, { name: '16:00' }, { name: '16:30' }, { name: '17:00' }, { name: '17:30' }, { name: '18:00' }, { name: '18:30' }, { name: '19:00' }, { name: '19:30' }, { name: '20:00' }, { name: '20:30' }, { name: '21:00' }, { name: '21:30' }, { name: '22:00' }, { name: '22:30' }, { name: '23:00' }, { name: '23:30' }, { name: '24:00' }]
+    timer: [{ name: '00:00' }, { name: '00:30' }, { name: '01:00' }, { name: '01:30' }, { name: '02:00' }, { name: '02:30' }, { name: '03:00' }, { name: '03:30' }, { name: '04:00' }, { name: '04:30' }, { name: '05:00' }, { name: '05:30' }, { name: '06:00' }, { name: '06:30' }, { name: '07:00' }, { name: '07:30' }, { name: '08:00' }, { name: '08:30' }, { name: '09:00' }, { name: '09:30' }, { name: '10:00' }, { name: '10:30' }, { name: '11:00' }, { name: '11:30' }, { name: '12:00' }, { name: '12:30' }, { name: '13:00' }, { name: '13:30' }, { name: '14:00' }, { name: '14:30' }, { name: '15:00' }, { name: '15:30' }, { name: '16:00' }, { name: '16:30' }, { name: '17:00' }, { name: '17:30' }, { name: '18:00' }, { name: '18:30' }, { name: '19:00' }, { name: '19:30' }, { name: '20:00' }, { name: '20:30' }, { name: '21:00' }, { name: '21:30' }, { name: '22:00' }, { name: '22:30' }, { name: '23:00' }, { name: '23:30' }, { name: '24:00' }],
+    open:false
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆!')
+      message.error('登录超时请重新登录!')
     }
     this.setState({ ListSport: res.data.data })
   }
@@ -138,7 +139,7 @@ class siteSettings extends React.Component {
       this.setState({ list: res.data.data, other: res.data.other, loading: false, hidden: true, lppding: false })
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登录超时请重新登录！')
     } else {
       this.setState({ list: res.data.data, loading: false, hidden: false, lppding: false })
     }
@@ -153,7 +154,7 @@ class siteSettings extends React.Component {
     if (this.state.runId !== '') {
       this.setState({
         joinB: false
-      })
+      }) 
     }
     let arrNum = []
     for (let i = 1; i <= 100; i++) {
@@ -410,7 +411,7 @@ class siteSettings extends React.Component {
       message.error(res.data.msg)
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
-      message.error('登陆超时请重新登陆！')
+      message.error('登录超时请重新登录!')
     } else {
       this.setState({
         visible: false,
@@ -564,8 +565,10 @@ class siteSettings extends React.Component {
   headerCli = e => {
     if(e.currentTarget.dataset.id==='2'){
       this.getSiteSettingList({ sportid: this.state.nameChang, page: 1 })
+      this.setState({page:1})
     }else if(e.currentTarget.dataset.id==='1'){
       this.getVenueNumberTitleList({ sportid: this.state.nameChang, page:1 })
+      this.setState({pageOne:1})
     }
     this.setState({
       headerData: e.currentTarget.dataset.id,
@@ -738,12 +741,12 @@ class siteSettings extends React.Component {
   }
 
   subSiteSubdivision = (e) => {
-    let { runId, tags, arrCheked, arrChekedLen } = this.state
+    let { runId, tags, arrCheked } = this.state
     let obj = {
       sportid: runId,
       title: tags,
       venueid: typeof (arrCheked) === 'string' ? arrCheked : arrCheked.join(),
-      number: arrChekedLen,
+      number: arrCheked.length,
       uuid: e.currentTarget.dataset.id
     }
     this.getVenueNumberTitleSave(obj)
@@ -1159,6 +1162,9 @@ class siteSettings extends React.Component {
       }
     }
   }
+  openSelect=(open)=>{
+    this.setState({open:open})
+  }
 
   render() {
     const { name } = this.state;
@@ -1218,7 +1224,7 @@ class siteSettings extends React.Component {
                       </Popover>
                       <Col xs={{ span: 2 }}>{item.sitenumber}</Col>
                       <Popover content={(<span>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</span>)} title='详情' trigger="click">
-                        <Col xs={{ span: 2 }}>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</Col>
+                        <Col style={{cursor:'pointer'}} xs={{ span: 2 }}>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</Col>
                       </Popover>
                       <Col xs={{ span: 2 }} style={{ lineHeight: '24px' }}>{item.starttime}<br />{item.endtime}</Col>
                       <Col xs={{ span: 2 }}>{item.costperhour}</Col>
@@ -1227,9 +1233,9 @@ class siteSettings extends React.Component {
                       <Popover content={(<span>{item.comment === '' ? '无' : item.comment}</span>)} title='详情' trigger="click">
                         <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.comment === '' ? '无' : item.comment}</Col>
                       </Popover>
-                      <Col xs={{ span: 2 }} style={{ cursor: 'pointer' }} data-uid={item.uuid} data-type={item.discount_edate} onClick={this.preferential}>{item.discount_edate === null ? '添加' : '查看'}</Col>
+                      <Col xs={{ span: 2 }} ><span style={{ cursor: 'pointer',padding:'3px 6px' }} data-uid={item.uuid} data-type={item.discount_edate} onClick={this.preferential}>{item.discount_edate === null ? '添加' : '查看'}</span></Col>
                       <Col xs={{ span: 2 }}>
-                        <img onClick={this.update} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;
+                        <img onClick={this.update} style={{ cursor: 'pointer' }}  data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;
                       <Popconfirm
                           title={"你确定要删除该条价格设置么?删除后用户将无法预定" + item.sportname + '的' + item.tags + '场地'}
                           onConfirm={this.confirmMoney}
@@ -1237,7 +1243,7 @@ class siteSettings extends React.Component {
                           okText="确定"
                           cancelText="取消"
                         >
-                          <img onClick={this.deletTwoMoney} data-uuid={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
+                          <img onClick={this.deletTwoMoney} style={{ cursor: 'pointer' }}  data-uuid={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
                         </Popconfirm>
                       </Col>
                     </Row>
@@ -1270,7 +1276,7 @@ class siteSettings extends React.Component {
 
                   <Col xs={{ span: 5 }}>{item.number}</Col>
                   <Col xs={{ span: 3 }}>
-                    <img onClick={this.modification} data-uuid={item.uuid} style={{ marginRight: '5px' }} src={require("../../assets/icon_pc_updata.png")} alt="修改" />
+                    <img onClick={this.modification}  data-uuid={item.uuid} style={{ marginRight: '5px',cursor: 'pointer' }} src={require("../../assets/icon_pc_updata.png")} alt="修改" />
                     <Popconfirm
                       title={'您确定要删除该条场地细分么?删除后用户将无法预定' + item.sportid + '的' + item.title + '场地'}
                       onConfirm={this.confirmserisa}
@@ -1278,7 +1284,7 @@ class siteSettings extends React.Component {
                       okText="确定"
                       cancelText="取消"
                     >
-                      <img style={{ marginLeft: '5px' }} onClick={this.deletserisa} data-id={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
+                      <img style={{ marginLeft: '5px',cursor:'pointer' }} onClick={this.deletserisa} data-id={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
                     </Popconfirm>
                   </Col>
                 </Row>
@@ -1457,6 +1463,7 @@ class siteSettings extends React.Component {
                 placeholder="请选择/添加后选择"
                 className="selectModel"
                 onChange={this.title}
+                onDropdownVisibleChange={this.openSelect}
                 value={this.state.tags === '' ? [] : this.state.tags}
                 disabled={this.state.typeDetel === 0 ? true : false}
                 dropdownRender={menu => (
@@ -1473,7 +1480,7 @@ class siteSettings extends React.Component {
                 )}
               >
                 {this.state.joinTil.map((item, i) => (
-                  <Option key={i} onContextMenu={this.deletSelect} data-id={item.uuid} data-title={item.title} value={item.title}><div><span>{item.title}</span><span style={item.uuid === 1 ? { display: 'none' } : { float: 'right', fontSize: '12px', color: '#ccc' }}>(右键删除)</span></div></Option>
+                  <Option key={i} onContextMenu={this.deletSelect} data-id={item.uuid} data-title={item.title} value={item.title}><div><span>{item.title}</span><span style={item.uuid === 1||this.state.open===false ? { display: 'none' } : { float: 'right', fontSize: '12px', color: '#ccc' }}>(右键删除)</span></div></Option>
                 ))}
               </Select>
             </div>
@@ -1525,7 +1532,7 @@ class siteSettings extends React.Component {
             className='model'
             closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
           >
-            <div>请对所选场地类型进行再细分，如场地类型选择的是羽毛球，贵场馆羽毛球场地是否有普通场、VIP场等之分? 如没有，则所有场地选择一个标签即可，如有，则分开设置标签及对应的场地编号”。总之，同一时刻，不同价格的场地须细分并给出标签。</div>
+            <div>请对所选场地类型进行再细分，如场地类型选择的是羽毛球，贵场馆羽毛球场地是否有普通场、VIP场等之分? 如没有，则所有场地选择一个标签即可，如有，则分开设置标签及对应的“场地编号”。总之，同一时刻，不同价格的场地须细分并给出标签。</div>
           </Modal>
 
 

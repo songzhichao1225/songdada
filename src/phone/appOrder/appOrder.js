@@ -145,9 +145,9 @@ class appOrder extends React.Component {
   componentDidMount() {
     //测试数据
     // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=r704gxb7rhkDMmT0H2g6jz3hMt2rssHwNgd7wrX3sBoCcsuRL3FHxI2Sj0KE62Do&sporttype=5'
-    let query = this.props.location.search 
+    let query = this.props.location.search  
 
-    let arr = query.split('&')
+    let arr = query.split('&') 
     let siteuid = arr[0].slice(9, arr[0].length)
     let sportid = arr[1].slice(8, arr[1].length)
     let token = arr[2].slice(6, arr[2].length)

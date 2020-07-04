@@ -63,7 +63,6 @@
   height: 85%;
   margin: 0 auto;
   display: block;
-  padding-bottom: 3rem;
 }
 .monthlyIncomePh .moneyScroll{
    overflow-y: scroll;
@@ -71,6 +70,7 @@
    height: 100%;
    width: 100%;
    position: relative;
+   padding-bottom: 3rem;
 }
 
 .monthlyIncomePh .moneyScroll::-webkit-scrollbar {/*滚动条整体样式*/

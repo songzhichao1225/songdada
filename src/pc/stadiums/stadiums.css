@@ -130,7 +130,7 @@ float: left;
 	color: #FFFFFF;
 }
 .stadiums .ant-upload-picture-card-wrapper{
-	width: 600px;
+	width: 500px;
 	margin-left: 26.8px;
 }
 .stadiums .mapLocation{
@@ -172,7 +172,7 @@ float: left;
 }
 .stadiums .qualification .listing>span:nth-child(1){
 	width: 120px;
-	text-align: right;
+	text-align: left;
 	font-size: 16px;
 	line-height: 38px;
 }
@@ -211,4 +211,8 @@ float: left;
 }
 .stadiums .ko{
 	margin-left: 138px;
+}
+.chekkoh .ant-checkbox-group-item {
+	width: 120px;
+
 }

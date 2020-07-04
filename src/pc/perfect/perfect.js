@@ -4,6 +4,7 @@ import 'antd/dist/antd.css';
 import { getProvince, getCrty, getArea, PerfectingVenueInformation, getVenueInformation, getVenueSportList, VenueInformationSave } from '../../api';
 import { Select, Input, Checkbox, Button, Upload, message, Modal } from 'antd';
 import Icon from '@ant-design/icons';
+import ImgCrop from 'antd-img-crop';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -11,7 +12,7 @@ const { TextArea } = Input;
 
 
 
-const options = [{ label: 'WiFi', value: '1' }, { label: '停车场', value: '2' }, { label: '淋浴', value: '3' }]
+const options = [ { label: '停车场', value: '1' },{ label: 'WiFi', value: '2' }, { label: '淋浴', value: '3' },{ label: '室内摄像头', value: '4' },]
 
 
 
@@ -154,7 +155,7 @@ class perfect extends React.Component {
     }
   }
   routerMap = () => {
-    if (localStorage.getItem('handleDistrict') !== null) {
+    if (localStorage.getItem('handleDistrict') !== ''&&localStorage.getItem('handleDistrict') !==null) {
       this.props.history.push({ pathname: '/map', query: { type: localStorage.getItem('handleDistrict'), city: localStorage.getItem('handleCity') } })
       sessionStorage.setItem('hanclick', 1)
     } else {
@@ -224,7 +225,7 @@ class perfect extends React.Component {
   }
 
   handleChangeT = ({ fileList }) => this.setState({ fileList });
- 
+
   onChangeText = e => {
     this.setState({ onChangeText: e.target.value })
   }
@@ -249,7 +250,7 @@ class perfect extends React.Component {
 
   onClickNex = () => {
     let { imageRes, fileList, handleAddress, handelPerson, handleTelephone } = this.state
-    let fileListT=fileList.slice(0,9)
+    let fileListT = fileList.slice(0, 9)
     if (sessionStorage.getItem('notType') === '1') {
       let filesURLarr = []
       for (let i in fileListT) {
@@ -293,7 +294,7 @@ class perfect extends React.Component {
         } else if (data.telephone === '') {
           message.error('请输入联系人电话')
         } else if (data.sport === '') {
-          message.error('请选择运动项目')
+          message.error('请选择场地类型')
         } else {
           this.VenueInformationSave(data)
         }
@@ -339,7 +340,7 @@ class perfect extends React.Component {
         } else if (data.telephone === '') {
           message.error('请输入联系人电话')
         } else if (data.sport === '') {
-          message.error('请选择运动项目')
+          message.error('请选择场地类型')
         } else {
           this.PerfectingVenueInformation(data)
         }
@@ -384,6 +385,26 @@ class perfect extends React.Component {
         <div className="ant-upload-text">场地照</div>
       </div>
     )
+    const props = {
+      aspect: 1.64 / 1,
+      resize: false, //裁剪是否可以调整大小
+      resizeAndDrag: true, //裁剪是否可以调整大小、可拖动
+      modalTitle: "编辑图片", //弹窗标题
+      modalWidth: 600, //弹窗宽度
+      modalOk: "确定",
+      modalCancel: "取消"
+    }
+    const propsOne = {
+      aspect: 1.295 / 1,
+      resize: false, //裁剪是否可以调整大小
+      resizeAndDrag: true, //裁剪是否可以调整大小、可拖动
+      modalTitle: "编辑图片", //弹窗标题
+      modalWidth: 600, //弹窗宽度
+      modalOk: "确定",
+      modalCancel: "取消"
+    }
+
+
 
 
     return (
@@ -420,7 +441,7 @@ class perfect extends React.Component {
                   }
                 </Select>
                 <span>市</span>
-                <Select value={localStorage.getItem('handleDistrict') === '' ? '请选择' : localStorage.getItem('handleDistrict')} className="one" style={{ width: 118 }} onChange={this.handleDistrict}>
+                <Select value={localStorage.getItem('handleDistrict') === ''||localStorage.getItem('handleDistrict') === null ? '请选择' : localStorage.getItem('handleDistrict')} className="one" style={{ width: 118 }} onChange={this.handleDistrict}>
                   {
                     getAreaT.map((item, i) => {
                       return <Option key={i} value={item.id}>{item.name}</Option>
@@ -446,7 +467,7 @@ class perfect extends React.Component {
               </div>
 
               <div className="name">
-                <span className="symbol">*</span><span className="boTitle">联<span style={{paddingLeft:8}}>系</span><span style={{paddingLeft:8}}>人</span></span>
+                <span className="symbol">*</span><span className="boTitle">联<span style={{ paddingLeft: 8 }}>系</span><span style={{ paddingLeft: 8 }}>人</span></span>
                 <Input className="nameINput" onChange={this.handelPerson} style={{ marginLeft: '27px' }} value={this.state.handelPerson} placeholder="请输入联系人姓名" />
               </div>
 
@@ -457,48 +478,52 @@ class perfect extends React.Component {
 
               <div className="name">
                 <span className="symbol negative">*</span><span className="boTitle negativeT">门脸照(1张)</span>
-                <Upload
-                  name="files"
-                  listType="picture-card"
-                  className="avatar-uploader addImg"
-                  showUploadList={false}
-                  action="/api/UploadVenueImgs?type=Venue"
-                  beforeUpload={beforeUpload}
-                  onChange={this.handleChange}
-                  accept=".jpg, .jpeg, .png"
-                >
-                  {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
-                </Upload>
-                <span className="rightText">上传图片小于3M<br />上传图片尺寸在1200px*860px 之内</span>
+                <ImgCrop scale {...propsOne}>
+                  <Upload
+                    name="files"
+                    listType="picture-card"
+                    className="avatar-uploader addImg"
+                    showUploadList={false}
+                    action="/api/UploadVenueImgs?type=Venue"
+                    beforeUpload={beforeUpload}
+                    onChange={this.handleChange}
+                    accept=".jpg, .jpeg, .png"
+                  >
+                    {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%', height: '100%' }} /> : uploadButton}
+                  </Upload>
+                </ImgCrop>
+                <span className="rightText">上传图片小于3M</span>
               </div>
 
               <div className="name">
                 <span className="symbol negativeTwo">*</span><span className="boTitle negativeTwoT">场地照片(2-8张)</span>
                 <div className="clearfix">
-                  <Upload
-                    multiple={true}
-                    fileNumLimit='5'
-                    name="files"
-                    action="/api/UploadVenueImgs?type=Venue"
-                    listType="picture-card"
-                    fileList={fileList.slice(0,8)}
-                    onPreview={this.handlePreview}
-                    onChange={this.handleChangeT}
-                    accept=".jpg, .jpeg, .png"
-
-                  >
-                    {fileList.length >= 8 ? null : uploadButtonT}
-                  </Upload>
+                  
+                    <Upload
+                      multiple={false}
+                      fileNumLimit='5'
+                      name="files"
+                      action="/api/UploadVenueImgs?type=Venue"
+                      listType="picture-card"
+                      fileList={fileList.slice(0, 8)}
+                      onPreview={this.handlePreview}
+                      onChange={this.handleChangeT}
+                      accept=".jpg, .jpeg, .png"
+                      multiple={true}
+                    >
+                      {fileList.length >= 8 ? null : uploadButtonT}
+                    </Upload>
+                  
+                  <span className="rightText">上传图片小于3M</span>
                   <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
                     <img alt="example" style={{ width: '100%' }} src={previewImage} />
                   </Modal>
                 </div>
-                <span className="rightText">上传图片小于3M<br />上传图片尺寸在1200px*860px 之内</span>
               </div>
 
               <div className="name" style={{ overflow: 'hidden' }}>
-                <span className="symbol">*</span><span className="boTitle">运动项目</span><span className="kong"></span>
-                <Checkbox.Group style={{ float: 'left', width: '80%', marginLeft: '26.8px' }} options={this.state.plainOptions} onChange={this.onChangeCheck} value={this.state.onChangeCheck} /><br /><span className="kong"></span>
+                <span className="symbol">*</span><span className="boTitle">场地类型</span><span className="kong"></span>
+                <Checkbox.Group style={{ float: 'left', width: '80%', marginLeft: '26.8px' }} className="chekkoh" options={this.state.plainOptions} onChange={this.onChangeCheck} value={this.state.onChangeCheck} /><br /><span className="kong"></span>
               </div>
 
 

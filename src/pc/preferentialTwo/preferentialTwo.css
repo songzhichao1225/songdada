@@ -136,7 +136,7 @@
     height: 100%;
 }
 .orderList .ant-spin-nested-loading{
-    height: 89%;
+    height: 100%;
 }
 .orderList .ant-table-wrapper{
     height: 98%;
@@ -455,4 +455,3 @@
     top: 8px;
     right: 1px;
 }
-
