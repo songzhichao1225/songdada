@@ -264,9 +264,9 @@ class sitePh extends React.Component {
   joinTitle = () => {
     if (this.state.joinTitleC === '') {
       Toast.fail('请输入新增标签', 1);
-    } else if (this.state.joinTitleC === '普通') {
+    } else if (this.state.joinTitleC.replace(/\s*/g,"") === '普通') {
       Toast.fail('该标签已存在', 1);
-    } else if (this.state.joinTitleC.toUpperCase() === 'VIP') {
+    } else if (this.state.joinTitleC.replace(/\s*/g,"").toUpperCase() === 'VIP') {
       Toast.fail('该标签已存在', 1);
     } else {
       this.getVenueTitleSave({ sportid: this.state.pickerValue[0], title: this.state.joinTitleC, uuid: '' })
@@ -1003,7 +1003,7 @@ class sitePh extends React.Component {
         <Drawer
           title="选择场地编号"
           placement="bottom"
-          height='65%'
+          height='70%'
           onClose={this.SerialClose}
           bodyStyle={{ padding: '8px' }}
           visible={this.state.Serial}
@@ -1101,7 +1101,7 @@ class sitePh extends React.Component {
           <TextareaItem
             title="备注"
             placeholder="请输入"
-            maxLength={200}
+            maxLength={50}
             value={this.state.comment}
             data-seed="logId"
             ref={el => this.autoFocusInst = el}

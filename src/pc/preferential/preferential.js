@@ -103,7 +103,7 @@ class appointmentList extends React.Component {
   async DelVenueNumberTitle(data) {
     const res = await DelVenueNumberTitle(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info('删除成功')
+      message.success('删除成功')
       this.getVenueNumberTitleList({ sportid: this.state.liNum })
     }
   }
@@ -280,7 +280,7 @@ class appointmentList extends React.Component {
   async VenueSendMessage(data) {
     const res = await VenueSendMessage(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info(res.data.msg)
+      message.success(res.data.msg)
       this.setState({ visible: false })
       if (this.state.start === '开始日期') {
         this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '' })
@@ -317,10 +317,10 @@ class appointmentList extends React.Component {
     if (res.data.code === 2000) {
       this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.dateString, types: 1 })
       if (data.type === 1) {
-        message.info('该场地该时间段已标记为线下占用')
+        message.success('该场地该时间段已标记为线下占用')
       } else if (data.type === 2) {
         this.setState({ flagClick: 0 })
-        message.info('该场地该时间段已向找对手线上释放')
+        message.success('该场地该时间段已向找对手线上释放')
       }
       this.setState({ info: false, lotime: [] })
     } else {
@@ -457,7 +457,7 @@ class appointmentList extends React.Component {
   async getVenueNumberTitleSave(data) {
     const res = await getVenueNumberTitleSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info(res.data.msg)
+      message.success(res.data.msg)
       this.getVenueNumberTitleList({ sportid: this.state.liNum })
     }
   }

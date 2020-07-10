@@ -67,6 +67,7 @@
     float: left;
 }
 .contentSon .introduction{
+    width: 70%;
     float: left;
     margin-left: 10px;
 }
@@ -196,4 +197,7 @@
 
 .mode .ant-modal-footer{
     display: none;
+}
+.modeGo .ant-modal-content{
+    padding-bottom: 0;
 }

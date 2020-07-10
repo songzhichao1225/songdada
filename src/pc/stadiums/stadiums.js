@@ -95,6 +95,7 @@ class stadiums extends React.Component {
     city:'',
     area:'',
     plainOptions:[],
+    other:false
   };
 
   async getVenueInformation(data) {
@@ -214,7 +215,12 @@ class stadiums extends React.Component {
       return
     }
     if (info.file.status === 'done') {
-      this.setState({ imageUrl: info.file.response.data.baseURL + info.file.response.data.filesURL, loading: false })
+      if (info.file.response.data.baseURL !== undefined) {
+        this.setState({ imageUrl: info.file.response.data.baseURL + info.file.response.data.filesURL, loading: false })
+      } else {
+        this.setState({ imageUrl: '' })
+      }
+      
     }
     if(info.file.response.code===4004){
        message.error(info.file.response.msg)
@@ -309,8 +315,8 @@ class stadiums extends React.Component {
   async VenueInformationSave(data) {
     const res = await VenueInformationSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info('提交成功')
-      this.setState({ issecondaudit: 0 })
+      message.success('提交成功')
+      this.setState({ issecondaudit: 0,other:res.data.other })
       this.getVenueInformation()
     } else {
       message.error(res.data.msg)
@@ -322,18 +328,17 @@ class stadiums extends React.Component {
     let filesURLarr = []
     for (let i in fileList) {
       if (fileList[i].response !== undefined) {
-        filesURLarr.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
+        if (fileList[i].response.data.length === 0) {
+          filesURLarr.push('无')
+        } else {
+          filesURLarr.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
+        }
+       
       } else if (fileList[i].response === undefined) {
-        console.log(fileList[i].url)
         filesURLarr.push(fileList[i].url)
       }
     }
-    for(let i in filesURLarr){
-     
-      if(isNaN(filesURLarr[i])){
-        console.log(filesURLarr[i])
-      }
-    }
+   
 
      if (filesURLarr.length < 2) {
       message.error('至少上传两张室内照')
@@ -357,8 +362,13 @@ class stadiums extends React.Component {
         comment: comment,
         type: 2
       }
-      console.log(data)
-      // this.VenueInformationSave(data)
+      if (data.firstURL === '') {
+        message.error('门脸照违规请重新上传');
+      } else if (data.filesURL.split('|').indexOf('无')!==-1) {
+        message.error('场地照有违规图片请重新上传');
+      } else {
+        this.VenueInformationSave(data)
+      }
     }
   }
   basic = () => {
@@ -422,7 +432,7 @@ class stadiums extends React.Component {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
     } else if (res.data.code === 2000) {
-      message.info('提交成功')
+      message.success('提交成功')
       this.setState({issecondaudit:0})
     } else {
       message.error(res.data.msg)
@@ -606,7 +616,6 @@ class stadiums extends React.Component {
           <div className="name">
             <span className="boTitle">场地照片:</span>
             <div className="clearfix">
-            
               <Upload
                 name="files"
                 action="/api/UploadVenueImgs?type=Venue"
@@ -654,9 +663,9 @@ class stadiums extends React.Component {
             okText="确定"
             cancelText="返回"
           >
-            <Button className="submit" style={this.state.issecondaudit !== 0 ? { display: 'block' } : { display: 'none' }}>提交修改</Button>
+            <Button className="submit" style={this.state.other === false ? { display: 'block' } : { display: 'none' }}>提交修改</Button>
           </Popconfirm>
-          <Button className="submit" style={this.state.issecondaudit === 0 ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
+          <Button className="submit" style={this.state.other === true ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
         </div>
 
 

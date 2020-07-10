@@ -47,7 +47,7 @@ class forgetPassword extends React.Component {
   async nacode(data) {
     const res = await _code(data)
      if(res.data.code===2000){
-      message.info(res.data.msg)
+      message.success(res.data.msg)
      }else{
        message.warning(res.data.msg)
      }
@@ -76,7 +76,7 @@ class forgetPassword extends React.Component {
   async VenueForgetPass(data) {
     const res = await VenueForgetPass(data)
     if(res.data.code===2000){
-       message.info('密码修改成功')
+       message.success('密码修改成功')
        this.props.history.goBack()
     }else{
       message.error(res.data.msg)

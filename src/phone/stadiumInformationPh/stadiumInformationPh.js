@@ -6,6 +6,7 @@ import 'antd-mobile/dist/antd-mobile.css';
 import { Input, Upload, Checkbox, Modal, Button } from 'antd';
 import {LeftOutlined,EllipsisOutlined} from '@ant-design/icons';
 import { PerfectingVenueInformation, getVenueInformation, VenueInformationSave,getVenueSportList } from '../../api';
+import ImgCrop from 'antd-img-crop';
 let arr = require('./address.json');
 const { TextArea } = Input;
 const Item = Popover.Item;
@@ -175,7 +176,11 @@ class stadiumInformationPh extends React.Component {
       return
     }
     if (info.file.status === 'done') {
-      this.setState({ imageRes: info.file.response.data.baseURL + info.file.response.data.filesURL })
+      if (info.file.response.data.baseURL !== undefined) {
+        this.setState({ imageRes: info.file.response.data.baseURL + info.file.response.data.filesURL })
+      } else {
+        this.setState({ imageRes: '' })
+      }
       getBase64(info.file.originFileObj, imageUrl =>
         this.setState({
           imageUrl,
@@ -183,6 +188,13 @@ class stadiumInformationPh extends React.Component {
         })
       )
     }
+    if (info.file.response.code === 4004) {
+      Toast.fail(info.file.response.msg, 2)
+
+    } else if (info.file.response.code === 4002) {
+      Toast.fail('上传失败', 2)
+    }
+
   }
 
   handlePreview = async file => {
@@ -196,7 +208,19 @@ class stadiumInformationPh extends React.Component {
     })
   }
 
-  handleChangeT = ({ fileList }) => this.setState({ fileList });
+  handleChangeT = ({ fileList }) => {
+    this.setState({ fileList: fileList })
+    for (let i in fileList) {
+      if (fileList[i].response !== undefined && fileList[i].response.code === 4004) {
+        fileList[i].thumbUrl = ''
+        fileList[i].name = '图片违规'
+        Toast.fail('有图片违规请重新上传', 2)
+        this.setState({ fileList: fileList })
+      }
+
+    }
+
+  }
 
   handleCancel = () => this.setState({ previewVisible: false });
 
@@ -347,7 +371,15 @@ class stadiumInformationPh extends React.Component {
           telephone: telephone.replace(/\s*/g,""),
           position: addressXian,
         }
-        this.PerfectingVenueInformation(data)
+        if (data.firstURL === '') {
+          Toast.fail('门脸照违规请重新上传', 2);
+        } else if (data.filesURL.split('|').indexOf('无')!==-1) {
+          Toast.fail('场地照有违规图片请重新上传', 2);
+        } else {
+         this.PerfectingVenueInformation(data)
+        }
+
+        
       }
     }
   }
@@ -394,11 +426,10 @@ class stadiumInformationPh extends React.Component {
 
     const uploadButton = (
       <div>
-       
         <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}>门脸照</div>
       </div>
     )
-    const { imageUrl } = this.state;
+    const { imageRes } = this.state;
 
     const { previewVisible, previewImage, fileList } = this.state
     const uploadButtonT = (
@@ -407,6 +438,16 @@ class stadiumInformationPh extends React.Component {
         <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}>场地照</div>
       </div>
     )
+
+    const propsOne = {
+      aspect: 1.295 / 1,
+      resize: false, //裁剪是否可以调整大小
+      resizeAndDrag: true, //裁剪是否可以调整大小、可拖动
+      modalTitle: "编辑图片", //弹窗标题
+      modalWidth: 600, //弹窗宽度
+      modalOk: "确定",
+      modalCancel: "取消"
+    }
 
   
     return (
@@ -526,7 +567,7 @@ class stadiumInformationPh extends React.Component {
 
           <div className="input">
             <span style={{lineHeight:'5rem'}}>门脸照</span>
-            
+            <ImgCrop scale {...propsOne}>
             <Upload
               name="files"
               listType="picture-card"
@@ -538,18 +579,18 @@ class stadiumInformationPh extends React.Component {
               accept="image/*"
               multiple={false}
             >
-              {imageUrl ? <div className="avatar"><img src={imageUrl} alt="avatar" style={{ width: '100%',height:'100%',position:'absolute',left:'50%',marginLeft:'-2rem',top:'0' }} /></div> : uploadButton}
+              {imageRes ? <div className="avatar"><img src={'https://app.tiaozhanmeiyitian.com/'+imageRes} alt="avatar" style={{ width: '100%',height:'100%',position:'absolute',left:'50%',marginLeft:'-2rem',top:'0' }} /></div> : uploadButton}
             </Upload>
-            
+            </ImgCrop>
           </div>
 
           <div className="input">
-            <span>场地照片 (请上传3-8张)</span>
+            <span>场地照片 (请上传2-8张)</span>
             <Upload
               name="files"
               action="/api/UploadVenueImgs?type=Venue"
               listType="picture-card"
-              fileList={fileList.slice(0,9)}
+              fileList={fileList.slice(0,8)}
               onPreview={this.handlePreview}
               onChange={this.handleChangeT}
               accept="image/*"

@@ -377,8 +377,8 @@ class home extends React.Component {
 
               <div className="new">
                 <div onClick={this.news}>
-                  <img src={require("../../assets/icon_pc_new2.png")} alt="message" />
-                  <div className="number"><span>{Number(sessionStorage.getItem('mess')) >= 999 ? '...' : sessionStorage.getItem('mess')}</span></div>
+                  <img src={require("../../assets/icon_pc_new2.png")} style={{cursor:'pointer'}} alt="message" />
+                  <div className="number"><span>{Number(sessionStorage.getItem('mess')) >999 ? '999+' : sessionStorage.getItem('mess')}</span></div>
                 </div>
               </div>
               <div className="lvyue">场地履约率：{this.state.gerVenueNameRate}%</div>

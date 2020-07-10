@@ -51,7 +51,7 @@ class newsPh extends React.Component {
       for (let i in res.data.data) {
         res.data.data[i].Checkbox = false
       }
-      this.setState({ getVenueNewsList: res.data.data, other: res.data.other.sum, refreshing: false })
+      this.setState({ getVenueNewsList: res.data.data, other: res.data.other.sum, refreshing: false,spin: false, })
     }else{
 
       this.setState({ spin: false, spinFlag: false,getVenueNewsList:[] })

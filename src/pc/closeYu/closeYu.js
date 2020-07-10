@@ -36,7 +36,7 @@ class closeYu extends React.Component {
     closeList: [],
     Uid: '',
     other: 0,
-    page: 0,
+    page: 1,
     update: 0,
     colseuuid: '',
     textNum:'',
@@ -80,7 +80,8 @@ class closeYu extends React.Component {
     this.VenueTemporarilyClosedList()
     let start = moment().startOf('day').add(1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
     let end = moment().endOf('day').add(1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
-    this.setState({ start: start, end: end })
+    console.log(end)
+    this.setState({ start: start+' 00:00', end: end+' 23:00' })
     this.getSetPriceVenueSport()
   }
 
@@ -95,6 +96,7 @@ class closeYu extends React.Component {
   dateSelect = (e) => {
     let start = this.timer(e[0]._d)
     let end = this.timer(e[1]._d)
+    console.log(start,end)
     this.setState({ start: start, end: end })
   }
 
@@ -170,7 +172,7 @@ class closeYu extends React.Component {
       message.error('登录超时请重新登录!')
     } else if (res.data.code === 2000) {
       this.setState({ visible: false, update: 0 })
-      message.info(res.data.msg)
+      message.success(res.data.msg)
       this.VenueTemporarilyClosedList({ page: this.state.page })
     } else {
       message.warning(res.data.msg)
@@ -186,7 +188,7 @@ class closeYu extends React.Component {
       message.error('登录超时请重新登录!')
     } else {
       this.setState({ visible: false, update: 0 })
-      message.info(res.data.msg)
+      message.success(res.data.msg)
       this.VenueTemporarilyClosedList()
     }
   }
@@ -230,7 +232,7 @@ class closeYu extends React.Component {
       message.error('登录超时请重新登录!')
     } else {
       this.setState({ visible: false, update: 0 })
-      message.info(res.data.msg)
+      message.success(res.data.msg)
       this.VenueTemporarilyClosedList({ page: this.state.page })
     }
   }
@@ -282,7 +284,7 @@ class closeYu extends React.Component {
                 <Col xs={{ span: 5 }}>
                   {/* <img onClick={this.update} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp; */}
                   <Popconfirm
-                    title={"你确定要解除"+item.sportname+"临时关闭预约么?"}
+                    title={"您确定要解除"+item.sportname+"临时关闭预约么?"}
                     onConfirm={this.confirm}
                     onCancel={this.cancel}
                     okText="确定"
@@ -324,7 +326,7 @@ class closeYu extends React.Component {
             <RangePicker
               style={{ width: 350, marginLeft: 15 }}
               // disabledDate={disabledDate}
-              onChange={this.dateChange}
+              
               onOk={this.dateSelect}
               locale={locale}
               allowClear={false}
@@ -332,7 +334,7 @@ class closeYu extends React.Component {
               value={[moment(this.state.start, 'YYYY-MM-DD HH:mm'), moment(this.state.end, 'YYYY-MM-DD HH:mm')]}
               showTime={{
                 hideDisabledOptions: true,
-                defaultValue: [moment('00:00', 'HH:mm'), moment('00:00', 'HH:mm')],
+                defaultValue: [moment('00:00', 'HH:mm'), moment('23:00', 'HH:mm')],
               }}
               format="YYYY-MM-DD HH:mm"
             />

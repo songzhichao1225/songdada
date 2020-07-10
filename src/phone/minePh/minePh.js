@@ -65,7 +65,7 @@ class minePh extends React.Component {
   async VenueFeedback(data) {
     const res = await VenueFeedback(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      Toast.success(res.data.msg, 1);
+      Toast.fail(res.data.msg, 1);
       this.setState({ fanKui: false })
     } else {
       Toast.success(res.data.msg, 2);

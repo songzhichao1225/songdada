@@ -174,3 +174,10 @@
 .inforSitePh .am-list-item{
     padding-left: 0;
 }
+.textItem{
+    border: none;
+}
+.textItem .am-textarea-label{
+    color: rgba(0, 0, 0, 0.65);
+    font-size: 0.75rem;
+}

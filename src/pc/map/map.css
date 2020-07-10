@@ -27,7 +27,10 @@
 	margin-left:-40px; 
 	height: 60px;
 	padding-left: 10px;
-	overflow: hidden;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap
+
 }
 
 .mapLocationOne .ulList li:hover{

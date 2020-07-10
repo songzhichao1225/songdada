@@ -68,7 +68,7 @@ class myWallet extends React.Component {
     } else if (res.data.data.length < 1) {
       this.setState({ hiddenTwo: false })
     } else {
-      this.setState({ recordList: res.data.data, recordListOther: res.data.other, hiddenTwo: true })
+      this.setState({ recordList: res.data.data, recordListOther: res.data.other.maxcount,maxmoney:res.data.other.maxmoney, hiddenTwo: true })
     }
   }
 
@@ -141,7 +141,7 @@ class myWallet extends React.Component {
       message.error('登录超时请重新登录!')
     } else if (res.data.code === 2000) {
       this.setState({ flag: 1 })
-      message.info('提现申请成功')
+      message.success('提现申请成功')
       this.getVenueMoneyList({ start: this.state.dateString[0], end: this.state.dateString[1], page: 1 })
     } else {
       message.error(res.data.msg)
@@ -207,7 +207,8 @@ class myWallet extends React.Component {
         <div className={this.state.flag === 2 ? 'record myWallet' : 'myWalletNone'}>
           
           <div className="header">
-            <span className="previousStep" onClick={this.returnN}>我的钱包 ></span><span>提现记录</span>
+            <span className="previousStep" onClick={this.returnN}>我的钱包 ></span><span style={{color:'#F5A623'}}>提现记录</span>
+            <div style={{float:'right',fontSize:'16px',marginRight:'130px',lineHeight:'46px'}}>总计:{this.state.maxmoney}</div>
           </div>
           <div className="xiange"></div>
           <div className={this.state.hiddenTwo === true ? '' : 'hidden'} >

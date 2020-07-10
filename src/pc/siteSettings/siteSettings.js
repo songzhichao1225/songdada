@@ -624,9 +624,9 @@ class siteSettings extends React.Component {
     const { name } = this.state;
     if (name === '') {
       message.warning('请输入标签')
-    } else if (name === '普通') {
+    } else if (name.replace(/\s*/g,"") === '普通') {
       message.warning('该标签已存在')
-    } else if (name.toUpperCase() === 'VIP') {
+    } else if (name.replace(/\s*/g,"").toUpperCase() === 'VIP') {
       message.warning('该标签已存在')
     } else {
       this.getVenueTitleSave({ sportid: this.state.runId, title: name })
@@ -869,7 +869,7 @@ class siteSettings extends React.Component {
   async DelVenueNumberTitle(data) {
     const res = await DelVenueNumberTitle(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info('删除成功')
+      message.success('删除成功')
       this.getVenueNumberTitleList({ sportid: this.state.nameChang, page: this.state.pageOne })
     } else {
       message.error(res.data.msg)
@@ -942,7 +942,7 @@ class siteSettings extends React.Component {
   async DelSiteSetting(data) {
     const res = await DelSiteSetting(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info('删除成功')
+      message.success('删除成功')
       this.getVenueNumberTitleList({ sportid: this.state.nameChang, page: this.state.pageOne })
       this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
     } else {
@@ -1098,7 +1098,7 @@ class siteSettings extends React.Component {
       this.setState({
         Preferential: false
       })
-      message.info(res.data.msg)
+      message.success(res.data.msg)
     } else {
       message.error(res.data.msg)
     }
@@ -1110,7 +1110,7 @@ class siteSettings extends React.Component {
   async DelVenueTitle(data) {
     const res = await DelVenueTitle(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info('删除成功')
+      message.success('删除成功')
       if(this.state.titleDel===this.state.tags){
         this.setState({tags:''})
       }
@@ -1120,9 +1120,11 @@ class siteSettings extends React.Component {
     }
   }
   deletSelect = (e) => {
-    this.setState({titleDel:e.currentTarget.dataset.title})
-    
-    this.DelVenueTitle({ uuid: e.currentTarget.dataset.id })
+    if(e.currentTarget.dataset.id!=='1'){
+      this.setState({titleDel:e.currentTarget.dataset.title})
+      this.DelVenueTitle({ uuid: e.currentTarget.dataset.id })
+    }
+  
   }
   getPosition = e => {
     const titleDom = e.target
@@ -1164,6 +1166,20 @@ class siteSettings extends React.Component {
   }
   openSelect=(open)=>{
     this.setState({open:open})
+  }
+  allChed=()=>{
+    let items=this.state.arrNumTwo
+    for(let i in items){
+      items[i].cheked=true
+    }
+    this.setState({arrNumTwo:items})
+  }
+  allChedTwo=()=>{
+    let items=this.state.arrNumTwo
+    for(let i in items){
+      items[i].cheked=!items[i].cheked
+    }
+    this.setState({arrNumTwo:items})
   }
 
   render() {
@@ -1310,7 +1326,7 @@ class siteSettings extends React.Component {
             </div>
             <div className="modelList" style={{ height: '32px' }}>
               <span>场地类型</span>
-              <Select placeholder="请选择" onInputKeyDown={this.ko} disabled={this.state.update === 1 ? true : false} value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 269, height: 32 }} onChange={this.handleChangeOneTwo}>
+              <Select placeholder="请选择" onInputKeyDown={this.ko} disabled={this.state.update === 1 ? true : false} showArrow={this.state.update === 1 ? false : true} value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 269, height: 32 }} onChange={this.handleChangeOneTwo}>
                 {
                   this.state.ListSport.map((item, i) => (
                     <Option key={i} value={item.id}>{item.name}</Option>
@@ -1321,7 +1337,7 @@ class siteSettings extends React.Component {
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>细分标签</span>
-              <Select placeholder="请选择" disabled={this.state.update === 1 ? true : false} value={this.state.tagsTwo === '' ? [] : this.state.tagsTwo} className="selectModel" style={{ width: 269, height: 32 }} onChange={this.handleChangeTags}>
+              <Select placeholder="请选择" disabled={this.state.update === 1 ? true : false} showArrow={this.state.update === 1 ? false : true} value={this.state.tagsTwo === '' ? [] : this.state.tagsTwo} className="selectModel" style={{ width: 269, height: 32 }} onChange={this.handleChangeTags}>
                 {
                   this.state.selecdTil.map((item, i) => (
                     <Option key={i} value={item.title}>{item.title}</Option>
@@ -1331,7 +1347,7 @@ class siteSettings extends React.Component {
             </div>
             <div className="modelList" style={{ height: '32px' }}>
               <span>场地编号</span>
-              <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 269, background: '#fff', cursor: 'pointer' }} value={this.state.chekedTwo === '' ? [] : this.state.chekedTwo} disabled={true} placeholder="点击进行添加" onChange={this.money} />
+              <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 269, cursor: 'pointer' }} value={this.state.chekedTwo === '' ? [] : this.state.chekedTwo} disabled={true} placeholder="点击进行添加" onChange={this.money} />
             </div>
             <div className="modelList">
               <span>场地总数量</span>
@@ -1445,7 +1461,7 @@ class siteSettings extends React.Component {
 <span style={{ position: 'absolute', bottom: 70, left: 45, color: '#F5A623', cursor: 'pointer' }} onClick={this.interpretation}>什么是细分标签?</span>
             <div className="modelList" style={{ height: '32px' }}>
               <span>场地类型</span>
-              <Select placeholder="请选择" className="selectModel" disabled={this.state.typeDetel === 0 ? true : false} value={this.state.runId === '' ? [] : this.state.runId} style={{ width: 249, height: 32,marginRight:100 }} onChange={this.handleChangeOne}>
+              <Select placeholder="请选择" className="selectModel" showArrow={this.state.typeDetel === 0 ? false : true} disabled={this.state.typeDetel === 0 ? true : false} value={this.state.runId === '' ? [] : this.state.runId} style={{ width: 249, height: 32,marginRight:100 }} onChange={this.handleChangeOne}>
                 {
                   this.state.ListSport.map((item, i) => (
                     <Option key={i} value={item.id}>{item.name}</Option>
@@ -1466,6 +1482,7 @@ class siteSettings extends React.Component {
                 onDropdownVisibleChange={this.openSelect}
                 value={this.state.tags === '' ? [] : this.state.tags}
                 disabled={this.state.typeDetel === 0 ? true : false}
+                showArrow={this.state.typeDetel === 0 ? false : true}
                 dropdownRender={menu => (
                   <div>
                     {menu}
@@ -1487,7 +1504,7 @@ class siteSettings extends React.Component {
 
             <div className="modelList" style={{ height: '32px' }} onClick={this.serial}>
               <span>场地编号</span>
-              <Input className="startTime" value={this.state.arrCheked.length !== 0 ? this.state.arrCheked : []} style={{ paddingLeft: '10px', height: 32, background: '#fff', cursor: 'pointer',marginRight:100  }} disabled={true} placeholder="点击进行添加" />
+              <Input className="startTime" value={this.state.arrCheked.length !== 0 ? this.state.arrCheked : []} style={{ paddingLeft: '10px', height: 32, background: '#fff',color:'#333', cursor: 'pointer',marginRight:100  }} disabled={true} placeholder="点击进行添加" />
             </div>
 
             <div className="modelList" style={{ height: '32px' }} >
@@ -1562,7 +1579,7 @@ class siteSettings extends React.Component {
           >
             <div className="modelList" style={{ height: '32px' }}>
               <span>场地类型</span>
-              <Select placeholder="请选择" disabled={true} value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 330, height: 32, marginRight: 100, cursor: 'pointer' }} onChange={this.handleChangeOneTwo}>
+              <Select placeholder="请选择" disabled={true} showArrow={false}  value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 330, height: 32, marginRight: 100, cursor: 'pointer' }} onChange={this.handleChangeOneTwo}>
                 {
                   this.state.ListSport.map((item, i) => (
                     <Option key={i} value={item.id}>{item.name}</Option>
@@ -1573,7 +1590,7 @@ class siteSettings extends React.Component {
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>场地标签</span>
-              <Select placeholder="请选择" disabled={true} value={this.state.tagsTwo === '' ? [] : this.state.tagsTwo} className="selectModel" style={{ width: 330, height: 32, marginRight: 100 }} onChange={this.handleChangeTags}>
+              <Select placeholder="请选择" disabled={true} showArrow={false} value={this.state.tagsTwo === '' ? [] : this.state.tagsTwo} className="selectModel" style={{ width: 330, height: 32, marginRight: 100 }} onChange={this.handleChangeTags}>
                 {
                   this.state.joinTil.map((item, i) => (
                     <Option key={i} value={item.title}>{item.title}</Option>
@@ -1584,7 +1601,7 @@ class siteSettings extends React.Component {
 
             <div className="modelList" style={{ height: 'auto' }}>
               <span>星期</span>
-              <Select placeholder="请选择" disabled={true} mode='multiple' className="selectModel"
+              <Select placeholder="请选择" disabled={true} showArrow={false} mode='multiple' className="selectModel"
                 value={this.state.openday === '' ? [] : this.state.openday}
                 style={{ width: 330, height: 'auto', marginRight: 100 }} onChange={this.handleChangeTwo}>
                 <Option value="1">周一</Option>
@@ -1659,7 +1676,7 @@ class siteSettings extends React.Component {
                 onConfirm={this.DelSiteSettingcount}
                 onCancel={this.btncancel}
                 okText="确定"
-                cancelText="删除"
+                cancelText="取消"
               >
                 <div className="seriaComfir" data-type="2" style={this.state.typeList === undefined ? { display: 'none' } : { display: 'block', marginRight: '15px' }}>删除</div>
               </Popconfirm>
@@ -1679,6 +1696,7 @@ class siteSettings extends React.Component {
             closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
           >
             <div className="serialNumberTop"><span>请选择您要设置的场地编号</span></div>
+            <div className="serialNumberTop" style={{float:'right',marginTop:'-8px'}}><span onClick={this.allChed}>全选</span><span onClick={this.allChedTwo}>反选</span></div>
             {
               this.state.arrNumTwo.map((item, i) => (
                 <div key={i} className="serialSon" onClick={this.seriaSonTwo} data-id={i} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {}}>{item.idIdx}</div>

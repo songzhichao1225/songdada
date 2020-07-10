@@ -1,16 +1,11 @@
 import React from 'react';
 import './qualification.css';
 import 'antd/dist/antd.css';
-import { getIsStatus, VenueQualifications, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity, getVenueOpenBankList, getVenueQualificationInformation, VenueQualificationInformationSave } from '../../api';
+import { getIsStatus, VenueQualifications, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity,TemporaryQualificationInformation, getVenueOpenBankList, getVenueQualificationInformation, VenueQualificationInformationSave } from '../../api';
 import { Input, Radio, Button, Upload, message, Select, Tooltip } from 'antd';
 import Icon from '@ant-design/icons';
-import ImgCrop from 'antd-img-crop';
 const { Option } = Select;
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
+
 
 function beforeUpload(file) {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -130,21 +125,22 @@ class qualification extends React.Component {
     const res = await getVenueQualificationInformation(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
+      sessionStorage.clear()
       message.error('登录超时请重新登录!')
     } else if (res.data.code === 2000) {
       if (res.data.data.legalFilesURL !== '') {
         this.setState({
           imageUrl: res.data.data.lisenceURL, handleName: res.data.data.legalname, handleCardId: res.data.data.legalcard, imageRes: res.data.data.lisenceURL,
           handlePhone: res.data.data.legalphone, Radiovalue: res.data.data.Settlement, handleBankNum: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, legalBaseURL: res.data.data.legalBaseURL,
-          imageReT: res.data.data.legalFilesURL.split('|')[0], imageReST: res.data.data.legalFilesURL.split('|')[1], imageUrlT: res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0],
-          imageUrlS: res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1], CorporateName: res.data.data.CorporateName
+           imageResT:res.data.data.legalBaseURL===''?'':res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0],
+          imageReST:res.data.data.legalBaseURL===''?'': res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1], CorporateName: res.data.data.CorporateName
         })
       } else {
         this.setState({
           imageUrl: res.data.data.lisenceURL, handleName: res.data.data.legalname, handleCardId: res.data.data.legalcard, imageRes: res.data.data.lisenceURL,
           handlePhone: res.data.data.legalphone, Radiovalue: res.data.data.Settlement, handleBankNum: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, legalBaseURL: res.data.data.legalBaseURL,
-          imageReT: res.data.data.legalFilesURL.split('|')[0], imageReST: res.data.data.legalFilesURL.split('|')[1], imageUrlT: res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0],
-          imageUrlS: '', CorporateName: res.data.data.CorporateName
+           imageResT:res.data.data.legalBaseURL===''?'':res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0],
+          imageReST:res.data.data.legalBaseURL===''?'': res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1], CorporateName: res.data.data.CorporateName
         })
       }
 
@@ -204,53 +200,70 @@ class qualification extends React.Component {
 
   handleChange = info => {
     if (info.file.status === 'uploading') {
-      this.setState({ loading: true });
-      return;
+      this.setState({ loading: true })
+      return
     }
     if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      this.setState({ imageRes: info.file.response.data.baseURL + info.file.response.data.filesURL })
-      getBase64(info.file.originFileObj, imageUrl =>
-        this.setState({
-          imageUrl,
-          loading: false,
-        }),
-      );
+      if (info.file.response.data.baseURL !== undefined) {
+        this.setState({ imageRes: info.file.response.data.baseURL + info.file.response.data.filesURL })
+      } else {
+        this.setState({ imageRes: 1 })
+      }
+      
     }
-  };
+    if(info.file.response.code===4004){
+       message.error(info.file.response.msg)
+    }else if(info.file.response.code===4002){
+      message.error('上传失败')
+    }
+  }
+
+
+
+ 
+
   handleChangeT = info => {
     if (info.file.status === 'uploading') {
-      this.setState({ loading: true });
-      return;
+      this.setState({ loading: true })
+      return
     }
     if (info.file.status === 'done') {
-      this.setState({ imageReT: info.file.response.data.filesURL, legalBaseURL: info.file.response.data.baseURL })
-      getBase64(info.file.originFileObj, imageUrlT =>
-        this.setState({
-          imageUrlT,
-          loading: false,
-        }),
-      );
+      if (info.file.response.data.baseURL !== undefined) {
+        this.setState({ imageResT: info.file.response.data.baseURL + info.file.response.data.filesURL })
+      } else {
+        this.setState({ imageResT: 1 })
+      }
+      
     }
-  };
+    if(info.file.response.code===4004){
+       message.error(info.file.response.msg)
+    }else if(info.file.response.code===4002){
+      message.error('上传失败')
+    }
+  }
+
+
 
 
   handleChangeTS = info => {
     if (info.file.status === 'uploading') {
-      this.setState({ loading: true });
-      return;
+      this.setState({ loading: true })
+      return
     }
     if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      this.setState({ imageReST: info.file.response.data.filesURL })
-      getBase64(info.file.originFileObj, imageUrlS =>
-        this.setState({
-          imageUrlS,
-          loading: false,
-        }),
-      );
+      if (info.file.response.data.baseURL !== undefined) {
+        this.setState({ imageReST: info.file.response.data.baseURL + info.file.response.data.filesURL })
+      } else {
+        this.setState({ imageReST: 1 })
+      }
+      
     }
-  };
+    if(info.file.response.code===4004){
+       message.error(info.file.response.msg)
+    }else if(info.file.response.code===4002){
+      message.error('上传失败')
+    }
+  }
 
 
 
@@ -286,33 +299,9 @@ class qualification extends React.Component {
 
 
   submit = () => {
-    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageReT, imageReST, CorporateName } = this.state
-    if (sessionStorage.getItem('notType') === '1') {
-
-
-      if (openingLine === '') {
-        message.warning('请选择开户支行')
-      } else {
-        let data = {
-          lisenceURL: imageRes,
-          legalname: handleName,
-          legalcard: handleCardId,
-          legalphone: handlePhone,
-          legalBaseURL: legalBaseURL,
-          legalFilesURL: imageReT + '|' + imageReST,
-          Settlement: Radiovalue,
-          Bankaccount: handleBankNum,
-          OpeningBank: openingLine,
-          CorporateName: CorporateName
-        }
-        this.VenueQualificationInformationSave(data)
-      }
-
-
-    } else {
-      if (openingLine === '') {
-        message.warning('请选择开户支行')
-      } else {
+    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageResT, imageReST, CorporateName } = this.state
+   
+     
         let data = {
           siteUUID: siteUUID,
           lisenceURL: imageRes,
@@ -320,35 +309,78 @@ class qualification extends React.Component {
           legalcard: handleCardId,
           legalphone: handlePhone,
           legalBaseURL: legalBaseURL,
-          legalFilesURL: imageReT + '|' + imageReST,
+          legalFilesURL: imageResT + '|' + imageReST,
           Settlement: Radiovalue,
           Bankaccount: handleBankNum,
           OpeningBank: openingLine,
           CorporateName: CorporateName
         }
-        this.VenueQualifications(data)
-      }
-    }
+        if (data.lisenceURL === 1) {
+          message.error('营业执照违规请重新上传');
+        }else if(imageResT===1){
+          message.error('身份证正面照违规请重新上传');
+        }else if(imageReST===1){
+          message.error('身份证反面照违规请重新上传');
+        }else{
+          this.VenueQualifications(data)
+        }
+        
+      
+    
 
   }
+  stepBack=()=>{
+    this.props.history.push('perfect')
+  }
 
+  
+  async TemporaryQualificationInformation(data) {
+    const res = await TemporaryQualificationInformation(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      message.success(res.data.msg)
+    }
+  }
+  save=()=>{
+    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageResT, imageReST, CorporateName } = this.state
+    let data = {
+      siteUUID: siteUUID,
+      lisenceURL: imageRes,
+      legalname: handleName,
+      legalcard: handleCardId,
+      legalphone: handlePhone,
+      legalBaseURL: legalBaseURL,
+      legalFilesURL: imageResT + '|' + imageReST,
+      Settlement: Radiovalue,
+      Bankaccount: handleBankNum,
+      OpeningBank: openingLine,
+      CorporateName: CorporateName
+    }
+    if (data.lisenceURL === 1) {
+      message.error('营业执照违规请重新上传');
+    }else if(imageResT===1){
+      message.error('身份证正面照违规请重新上传');
+    }else if(imageReST===1){
+      message.error('身份证反面照违规请重新上传');
+    }else{
+    this.TemporaryQualificationInformation(data)
+    }
+    
+  }
 
   render() {
     const uploadButton = (
       <div>
-        <Icon type={this.state.loading ? 'loading' : 'plus'} />
         <div className="ant-upload-text">营业执照</div>
       </div>
     )
-    const { imageUrl } = this.state;
+    const { imageRes } = this.state;
 
     const uploadButtonT = (
       <div>
-        <Icon type={this.state.loading ? 'loading' : 'plus'} />
         <div className="ant-upload-text">( 正面 )</div>
       </div>
     );
-    const { imageUrlT } = this.state;
+    const { imageResT } = this.state;
 
     const uploadButtonS = (
       <div>
@@ -356,25 +388,8 @@ class qualification extends React.Component {
         <div className="ant-upload-text">( 反面 )</div>
       </div>
     );
-    const { imageUrlS } = this.state;
-    const propsLo={
-      aspect: 1 / 1.41,
-      resize: false, //裁剪是否可以调整大小
-      resizeAndDrag: true, //裁剪是否可以调整大小、可拖动
-      modalTitle: "编辑图片", //弹窗标题
-      modalWidth: 600, //弹窗宽度
-      modalOk: "确定",
-      modalCancel: "取消"
-    }
-    const propsLoTwo={
-      aspect: 1.58 / 1,
-      resize: false, //裁剪是否可以调整大小
-      resizeAndDrag: true, //裁剪是否可以调整大小、可拖动
-      modalTitle: "编辑图片", //弹窗标题
-      modalWidth: 600, //弹窗宽度
-      modalOk: "确定",
-      modalCancel: "取消"
-    }
+    const { imageReST } = this.state;
+ 
     return (
       <div className="qualification">
         <div className="header">
@@ -385,7 +400,7 @@ class qualification extends React.Component {
           <div className="content">
             <div className="nav">
               <div><span>1.填写注册信息</span><img src={require("../../assets/oneline.png")} alt="5" /></div>
-              <div><span>2.完善场馆信息</span><img src={require("../../assets/lineThree.png")} alt="5" /></div>
+              <div><span>2.完善资质信息</span><img src={require("../../assets/lineThree.png")} alt="5" /></div>
               <div><span>3.等待审核</span><img src={require("../../assets/twoline.png")} alt="5" /></div>
               <div><span>4.审核成功</span><img src={require("../../assets/twoline.png")} alt="5" /></div>
             </div>
@@ -394,7 +409,7 @@ class qualification extends React.Component {
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">营业执照</span>
-                <ImgCrop rotate  {...propsLo}>
+                
                   <Upload
                     name="files"
                     listType="picture-card"
@@ -404,9 +419,9 @@ class qualification extends React.Component {
                     beforeUpload={beforeUpload}
                     onChange={this.handleChange}
                   >
-                    {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '80px', maxHeight: '121px' }} /> : uploadButton}
+                    {imageRes!==1&&imageRes!=='' ? <img src={'https://app.tiaozhanmeiyitian.com/'+imageRes} alt="avatar" style={{ maxWidth: '4.5rem', maxHeight: '4.5rem' }} /> : uploadButton}
                   </Upload>
-                </ImgCrop>
+               
 
               </div>
               <div className="name">
@@ -425,7 +440,7 @@ class qualification extends React.Component {
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">法人身份证</span>
-                <ImgCrop rotate  {...propsLoTwo}>
+              
                 <Upload
                   name="files"
                   listType="picture-card"
@@ -435,10 +450,9 @@ class qualification extends React.Component {
                   beforeUpload={beforeUploadT}
                   onChange={this.handleChangeT}
                 >
-                  {imageUrlT ? <img src={imageUrlT} alt="avatar" style={{ width: '128px', height: '70px' }} /> : uploadButtonT}
+                  {imageResT!==1&&imageResT!=='' ? <img src={'https://app.tiaozhanmeiyitian.com/'+imageResT} alt="avatar" style={{maxWidth: '4.5rem', maxHeight: '4.5rem'  }} /> : uploadButtonT}
                 </Upload>
-                </ImgCrop>
-                <ImgCrop rotate  {...propsLoTwo}>
+             
                 <Upload
                   name="files"
                   listType="picture-card"
@@ -448,15 +462,15 @@ class qualification extends React.Component {
                   beforeUpload={beforeUploadTS}
                   onChange={this.handleChangeTS}
                 >
-                  {imageUrlS ? <img src={imageUrlS} alt="avatar" style={{ width: '128px', height: '70px' }} /> : uploadButtonS}
+                  {imageReST!==1&&imageReST!=='' ? <img src={'https://app.tiaozhanmeiyitian.com/'+imageReST} alt="avatar" style={{ maxWidth: '4.5rem', maxHeight: '4.5rem'  }} /> : uploadButtonS}
                 </Upload>
-                </ImgCrop>
+              
               </div>
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">结算账号</span><span className="kong"></span>
                 <Radio.Group onChange={this.onChangeRadio} value={this.state.Radiovalue}>
-                  <Radio value={0}>公司银行账号</Radio>
+                  <Radio value={0}>公司银行账号<span style={{fontSize:'12px',paddingLeft:'5px'}}>(法人不是股东或有多个股东时只能选择公司银行账户结算)</span></Radio><br/>
                   <Radio value={1}>法人账号</Radio>
                 </Radio.Group>
               </div>
@@ -523,7 +537,7 @@ class qualification extends React.Component {
 
               </div>
               <div className="prompt">请注意<span>*</span>为必填项</div>
-              <Button className="next" onClick={this.submit}>提交</Button>
+              <Button className="next" onClick={this.stepBack}>上一步</Button><Button className="next" style={{marginLeft:20}} onClick={this.save}>保存</Button><Button className="next" style={{marginLeft:20}} onClick={this.submit}>提交</Button>
             </div>
           </div>
         </div>

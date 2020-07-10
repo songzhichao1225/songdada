@@ -99,7 +99,7 @@ class systemSettings extends React.Component {
       this.props.history.push('/')
       message.error('登录超时请重新登录!')
     } else {
-      message.info(res.data.msg)
+      message.success(res.data.msg)
     }
   }
 
@@ -140,7 +140,7 @@ class systemSettings extends React.Component {
           this.setState({ textT: '获取验证码' })
         }
       }, 1000)
-      message.info(res.data.msg)
+      message.success(res.data.msg)
     } else {
       message.error(res.data.msg)
     }
@@ -214,7 +214,7 @@ class systemSettings extends React.Component {
           this.setState({ textTwo: '获取验证码' })
         }
       }, 1000)
-      message.info(res.data.msg)
+      message.success(res.data.msg)
     } else {
       message.error(res.data.msg)
     }
@@ -352,7 +352,7 @@ class systemSettings extends React.Component {
       message.error('登录超时请重新登录!')
     } else {
       this.setState({ visible: false })
-      message.info(res.data.msg)
+      message.success(res.data.msg)
     }
   }
   modelSubmit = () => {
@@ -373,7 +373,11 @@ class systemSettings extends React.Component {
   }
   async VenueFeedback(data) {
     const res = await VenueFeedback(data, sessionStorage.getItem('venue_token'))
-    message.info(res.data.msg)
+    if (res.data.code === 2000) {
+      message.success(res.data.msg)
+    } else {
+      message.success(res.data.msg)
+    }
     this.setState({ bot: false })
   }
 
@@ -461,12 +465,12 @@ class systemSettings extends React.Component {
 
             <div className="inputSon">
               <span>重置密码</span>
-              <Input.Password maxLength={8} onChange={this.passWord} placeholder="请输入重置密码" />
+              <Input.Password maxLength={8} autocomplete="new-password" onChange={this.passWord} placeholder="请输入重置密码" />
             </div>
 
             <div className="inputSon">
               <span>确认密码</span>
-              <Input.Password maxLength={8} onChange={this.passWordT} placeholder="请输入确认密码" />
+              <Input.Password maxLength={8} autocomplete="new-password" onChange={this.passWordT} placeholder="请输入确认密码" />
             </div>
             <div className="submit" style={{ marginLeft: 72 }} onClick={this.submit}>确定</div>
           </div>
@@ -487,7 +491,7 @@ class systemSettings extends React.Component {
             </div>
             <div className="inputSon">
               <span style={{ width: 145, marginLeft: -28, textAlign: 'right' }}>操作员手机号：{sessionStorage.getItem('phone')}</span>
-            
+
             </div>
             <div className="inputSon">
               <span style={{ width: 145, marginLeft: -84, textAlign: 'right' }}>绑定操作员新手机号</span>

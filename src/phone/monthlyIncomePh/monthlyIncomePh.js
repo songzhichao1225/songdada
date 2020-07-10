@@ -49,14 +49,15 @@ class monthlyIncomePh extends React.Component {
         let end = moment().endOf('day')._d
         this.setState({ qiStart: new Date(start), qiEnd: new Date(end) })
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
-      }else if(sessionStorage.getItem('qiStart')!==undefined){
-    
+      }else if(sessionStorage.getItem('qiStart')!==null){
+        
         this.setState({ qiStart:new Date(sessionStorage.getItem('qiStart')) , qiEnd: new Date(sessionStorage.getItem('qiEnd')) })
         this.getVenueMoneyList({ start: new Date(sessionStorage.getItem('qiStart')), end: new Date(sessionStorage.getItem('qiEnd')), page: 1 })
       } else {
         let myDate = new Date()
         let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d
         let end = moment().endOf('day')._d
+        console.log(start,end)
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
         this.setState({ qiStart: new Date(start), qiEnd: new Date(end)})
       }

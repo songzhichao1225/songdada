@@ -199,11 +199,11 @@ class Login extends React.Component {
                       content='请输入正确的手机号'
                       visible={this.state.visiblePhone}
                     >
-                      <Input onBlur={this.phone} maxLength={11} onInput={this.iphoneInput} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="法人手机号" />
+                      <Input onBlur={this.phone} autoComplete="off" readonly maxLength={11} onInput={this.iphoneInput} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="法人手机号" />
                     </Popover>
                   </Form.Item>
                   <Form.Item className="code">
-                    <Input onChange={this.code} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="手机验证码" />
+                    <Input onChange={this.code} autoComplete="off" readonly prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="手机验证码" />
                   </Form.Item>
                   <Form.Item className="bind">
                     <div className={this.state.textT === '获取验证码' ? 'codeBtn' : 'koohidden'} onClick={this.naCode}>
@@ -221,7 +221,7 @@ class Login extends React.Component {
                     }
                   </Radio.Group>
                   <Form.Item className="input" style={{ marginTop: '20px' }}>
-                    <Input.Password maxLength={8} onChange={this.onPassword} onPressEnter={this.onSubmit} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" />
+                    <Input.Password maxLength={8} onChange={this.onPassword} autoComplete="new-password" readonly onPressEnter={this.onSubmit} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" />
                   </Form.Item>
                   <Form.Item className="bind">
                     <Button className="btnSubmit" onClick={this.onSubmit} htmlType="submit">
@@ -236,25 +236,28 @@ class Login extends React.Component {
               <div className={this.state.navNum ? 'nameLogin' : 'nameLoginT'}  >
                 <Form layout="inline" onSubmit={this.handleSubmit} className="form">
                   <Form.Item className="input">
-                    <Input onChange={this.phone} value={this.state.phone === undefined ? '' : this.state.phone} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名/操作员手机号" />
+                    <Input onChange={this.phone} autoComplete="off" readonly  value={this.state.phone === undefined ? '' : this.state.phone} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名/操作员手机号" />
+                  </Form.Item>
+                  <Form.Item className="input" style={{display:'none'}}>
+                    <Input  />
                   </Form.Item>
                   <Form.Item className="input" style={{ marginTop: 20 }}>
-                    <Input.Password style={{ paddingLeft: '15px' }} maxLength={8} onChange={this.onPassword} onPressEnter={this.onSubmitT} placeholder="密码" />
+                    <Input.Password  readonly  style={{ paddingLeft: '5px' }} autoComplete="new-password" readonly maxLength={8} onChange={this.onPassword} onPressEnter={this.onSubmitT} placeholder="密码" />
                   </Form.Item>
                   <Form.Item className="bind">
-                    <Button className="btnSubmit" onClick={this.onSubmitT} >
+                    <Button className="btnSubmit" onClick={this.onSubmitT}>
                       登录
                 </Button>
                   </Form.Item>
                 </Form>
               </div>
-
               <div className="checke">
                 <a href='#/forgetPassword'><span>忘记密码</span></a>
                 <a href='#/register'><span>注册</span></a>
               </div>
             </div>
           </div>
+
 
 
         </div>

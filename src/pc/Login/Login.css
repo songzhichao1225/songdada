@@ -102,7 +102,7 @@
 }
 .login .content  .right .codeBtn{
 	width: 89px;
-	height: 52px;
+	height: 45px;
 	background: #F5A623;
 	color: #fff;
 	text-align: center;
@@ -110,8 +110,8 @@
 	position: absolute;  
 	cursor: pointer;
 	margin-left: -16px;
-	margin-top: -8px;
-	line-height: 52px;
+	margin-top: -4px;
+	line-height: 45px;
 }
 
 .login .ant-col{
@@ -227,4 +227,7 @@
 .login .ant-radio-group{
 	padding-top: 40px;
 	
+}
+.ant-input-affix-wrapper{
+	padding: 0;
 }

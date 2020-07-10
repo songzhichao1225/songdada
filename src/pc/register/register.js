@@ -3,7 +3,7 @@ import './register.css';
 import 'antd/dist/antd.css';
 import { _register, _code, getPromoteName, getIsUserName } from '../../api';
 
-import { CloseCircleOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined,EyeInvisibleOutlined,EyeOutlined } from '@ant-design/icons';
 import {
   message,
   Input,
@@ -39,7 +39,9 @@ class register extends React.Component {
     kodTwo: '',
     kodThree: '',
     cahngkoopd: '',
-    chaphong: ''
+    chaphong: '',
+    ko:false,
+    koTwo:false
   };
 
   changID = (e) => {
@@ -63,6 +65,8 @@ class register extends React.Component {
   changeName = (e) => {
 
     if (/[\u4E00-\u9FA5]/g.test(e.target.value)) {
+      this.setState({ kodTwo: '用户名只能包含数字、字母、数字+字母' })
+    }else if( /[^a-zA-Z0-9]/g.test(e.target.value)){
       this.setState({ kodTwo: '用户名只能包含数字、字母、数字+字母' })
     } else if (this.state.cahngkoopd !== '') {
       this.getIsUserName({ name: e.target.value })
@@ -183,7 +187,9 @@ class register extends React.Component {
     this.setState({ chaphong: e.target.value })
     if ((/^1[3|4|5|8][0-9]\d{4,8}$/.test(e.target.value)) !== false && e.target.value.length === 11) {
       this.setState({ phone: e.target.value, kodThree: '' })
-    } else if (this.state.chaphong === '') {
+    } else if(e.target.value===''){
+      this.setState({ phone: e.target.value, kodThree: '' })
+    }else if (this.state.chaphong === '') {
       this.setState({ kodThree: '' })
     }
   }
@@ -192,6 +198,34 @@ class register extends React.Component {
     if (e.target.value === '') {
       this.setState({ kodTwo: '' })
     }
+  }
+  onfoucs=()=>{
+    this.setState({ko:true})
+  }
+  onfoucsTwo=()=>{
+    this.setState({koTwo:true})
+  }
+  componentDidMount(){
+    this.setState({BlurOne:'text',BlurOneTwo:'text'})
+  }
+  
+  BlurOne=()=>{
+    this.setState({BlurOne:'password'})
+  }
+  BlurOneTwo=()=>{
+    this.setState({BlurOneTwo:'password'})
+  }
+  textOne=()=>{
+    this.setState({BlurOne:'text'})
+  }
+  textOneTwo=()=>{
+    this.setState({BlurOne:'password'})
+  }
+  textTwo=()=>{
+    this.setState({BlurOneTwo:'text'})
+  }
+  textTwoTwo=()=>{
+    this.setState({BlurOneTwo:'password'})
   }
   render() {
     return (
@@ -212,37 +246,37 @@ class register extends React.Component {
             <div className="authentication">
               <span className="title">用户注册</span>
               <div className="son">
-                <span>推广员ID:</span>
+                <span>推</span><span style={{paddingLeft:'3px'}}>广</span><span style={{paddingLeft:'3px'}}>员</span><span style={{paddingLeft:'3px'}}>ID:</span>
                 <Input maxLength={6} onChange={this.changID} value={this.state.Id} placeholder="选填" onBlur={this.blurId} className="phone" />
                 <span className="rightWaning" style={this.state.kod !== '' ? {} : { display: 'none' }}><CloseCircleOutlined />{this.state.kod}，没有可不填</span>
               </div>
 
               <div className="son">
-                <span className="xing">*</span> <span>用户名:</span>
+                <span className="xing">*</span> <span>用</span><span style={{paddingLeft:'6px'}}>户</span><span style={{paddingLeft:'6px'}}>名:</span>
                 <Input type="text" onBlur={this.changeName} onChange={this.cahngkoopd} placeholder="用户名只能包含数字、字母、数字+字母" className="phone" />
                 <span className="rightWaning" style={this.state.kodTwo !== '' ? {} : { display: 'none' }}><CloseCircleOutlined />{this.state.kodTwo}</span>
               </div>
 
               <div className="son">
-                <span className="xing">*</span> <span>手机号:</span>
+                <span className="xing">*</span> <span>手</span><span style={{paddingLeft:'6px'}}>机</span><span style={{paddingLeft:'6px'}}>号:</span>
                 <Input maxLength={11} onBlur={this.changePhone} onChange={this.visiblePhone} placeholder="操作员手机号" className="phone" />
                 <span className="rightWaning" style={this.state.kodThree !== '' ? {} : { display: 'none' }}><CloseCircleOutlined />{this.state.kodThree}</span>
               </div>
 
               <div className="son">
-                <span className="xing">*</span> <span>验证码:</span>
+                <span className="xing">*</span> <span>验</span><span style={{paddingLeft:'6px'}}>证</span><span style={{paddingLeft:'6px'}}>码:</span>
                 <Button className="huoBtn" onClick={this.naCode}>{this.state.textT}</Button>
-                <Input maxLength={6} type="text" onChange={this.changeCode} className="phone code" />
+                <Input maxLength={6} type="text"  onChange={this.changeCode} className="phone code" />
               </div>
 
               <div className="son">
-                <span className="xing">*</span> <span>密码:</span>
-                <Input.Password onFocus={this.onfoucs} maxLength={8} onChange={this.changePassword} className="phone" />
+                <span className="xing" style={{marginLeft:"2px"}}>*</span> <span>密</span><span style={{paddingLeft:'25px'}}>码:</span>
+                <Input type={this.state.BlurOne}  suffix={<div><EyeInvisibleOutlined style={this.state.BlurOne==='text'?{display:'none'}:{}} onClick={this.textOne} /> <EyeOutlined  style={this.state.BlurOne==='text'?{}:{display:'none'}} onClick={this.textOneTwo}/></div>} onFocus={this.BlurOne}  maxLength={8} onChange={this.changePassword}  className="phone" />
               </div>
 
-              <div className="son">
+              <div className="son" >
                 <span className="xing">*</span> <span>确认密码:</span>
-                <Input.Password maxLength={8} onChange={this.changePasswordT} style={{height:'41px'}} className="phone" />
+                <Input type={this.state.BlurOneTwo} maxLength={8} suffix={<div><EyeInvisibleOutlined style={this.state.BlurOneTwo==='text'?{display:'none'}:{}}  onClick={this.textTwo}/><EyeOutlined  style={this.state.BlurOneTwo==='text'?{}:{display:'none'}} onClick={this.textTwoTwo}/></div>} onFocus={this.BlurOneTwo} style={{height:'41px'}}  onChange={this.changePasswordT}   className="phone" />
               </div>
 
               <div className="agreement"><Radio onChange={this.changeRadio} checked={this.state.changeRadio}></Radio><span>我已阅读并同意</span><span className="color">《用户协议》</span></div>
@@ -270,7 +304,7 @@ class register extends React.Component {
                 width={800}
               >
                 <img className="logoRegister" src={require("../../assets/icon_pc.png")} alt="ico" />
-                <span className="modelTitle">恭喜您，注册成功</span>
+                <span className="modelTitle">恭喜您! 注册成功</span>
                 <span className="modelPhone">用户名:{this.state.name}</span>
                 <Button className="remodelBtn"><a href="#/perfect">下一步</a></Button>
               </Modal>

@@ -20,7 +20,11 @@ class map extends React.Component {
     let map = new BMap.Map("allmap")
     let myGeo = new BMap.Geocoder()
     let that=this
-    myGeo.getPoint(""+localStorage.getItem('handleCity')+localStorage.getItem('handleDistrict')+"", function (point) {
+    setTimeout(function(){
+      map.setZoom(14);   
+    }, 2000);  //2秒后放大到14级
+    map.enableScrollWheelZoom(true);
+    myGeo.getPoint("北京市", function (point) {
       if (point) {
         that.setState({pointLng:point.lng,pointLat:point.lat})
         map.centerAndZoom(new BMap.Point(point.lng,point.lat ), 13)
@@ -33,35 +37,43 @@ class map extends React.Component {
 
 
   look=(data)=>{
-  
+   
     let map = new BMap.Map("allmap")
-    map.centerAndZoom(new BMap.Point(this.state.pointLng,this.state.pointLat ), 13)
+    let myGeo = new BMap.Geocoder()
+    map.enableScrollWheelZoom(true);
+    
+    map.centerAndZoom(new BMap.Point(this.state.pointLng,this.state.pointLat ), 14)
     let that=this
     var option = {onSearchComplete: function(results){
         // 判断状态是否正确
         if (local.getStatus() === 0){
           var s = [];
           for (var i = 0; i < results.getCurrentNumPois(); i ++){
-            console.log(results.getPoi(i))
             let obj={
               title:results.getPoi(i).title,
               address: results.getPoi(i).address,
               lng:results.getPoi(i).point.lng,
               lat:results.getPoi(i).point.lat
             }
-            s.push(obj);
+            s.push(obj)
           }
           that.setState({ mapList: s })
         }else{
           that.setState({ mapList: [] })
         }
-      }
+      },renderOptions:{map: map}
     };
 
    
     let local = new BMap.LocalSearch(map, option)
     local.search(data)
-
+   
+    map.addEventListener("click", function(e){        
+      var pt = e.point;
+      myGeo.getLocation(pt, function(){
+        that.setState({mapList:[]})
+      });        
+    });
 
 
   }
@@ -74,6 +86,7 @@ class map extends React.Component {
   handleClick = e => {
     let dateset = e.target.dataset
     let that=this
+    console.log(dateset)
     if (sessionStorage.getItem('hanclick') === '1') {
       let pt=new BMap.Point(dateset.lng,dateset.lat)
       let myGeo = new BMap.Geocoder()

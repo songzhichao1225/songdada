@@ -52,6 +52,8 @@ class registerPh extends React.Component {
     if(e!==''){
       if(/[\u4E00-\u9FA5]/g.test(e)){
         Toast.fail('用户名只包含数字/字母', 2);
+      }else if( /[^u4e00-u9fa5w]/g.test(e)){
+        Toast.fail('用户名只包含数字/字母', 2);
       }else{this.getIsUserName({ name: e })}
     }
   }
@@ -234,24 +236,22 @@ eyesTwo=()=>{
           <div className="input">
             <InputItem
               type='text'
-              placeholder="请输入用户名"
+              placeholder="用户名只能包含数字、字母、数字+字母"
               clear={false}
               style={{ fontSize: '0.8rem' }}
               onBlur={this.changeName}
             >
-              {/* <UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} /> */}
             </InputItem>
           </div>
 
           <div className="input">
             <InputItem
               type='phone'
-              placeholder="请输入手机号"
+              placeholder="操作员手机号"
               clear={false}
               style={{ fontSize: '0.8rem' }}
               onChange={this.changePhone}
             >
-              {/* <Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} /> */}
             </InputItem>
           </div>
 

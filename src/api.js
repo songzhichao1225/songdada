@@ -389,6 +389,14 @@ export function getIsSignOut(data,headers){    //查询该token是否可用
     return axios.post('/api/getIsSignOut',data,{headers: {'token': headers}})
 }
 
+export function TemporaryVenueInformation(data,headers){    //临时添加场馆基本信息（保存按钮）
+    return axios.post('/api/TemporaryVenueInformation',data,{headers: {'token': headers}})
+}
+
+export function TemporaryQualificationInformation(data,headers){    //临时添加资质信息（保存按钮）
+    return axios.post('/api/TemporaryQualificationInformation',data,{headers: {'token': headers}})
+}
+
 
 
 

@@ -96,7 +96,7 @@ class appointmentList extends React.Component {
     calesRed: 0,
     arrTimeuid: [],
     lppding: true,
-    textNuma:'您还没有进行价格设置'
+    textNuma:'您还没有进行场地设置,请前往设置！'
   };
 
   async getVenueSport(data) {
@@ -242,9 +242,9 @@ class appointmentList extends React.Component {
     for (let i in resData) {
       let obj = {}
       for (let j in resData[i].c) {
-        obj.key = j + 1
+        obj.key = i + 1
         let key = resData[i].c[j].venueids
-        let value = <div><div data-type={resData[i].c[j].type} data-uuid={resData[i].c[j].uuid} onClick={this.lookDeta} style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, lineHeight: 3 } : {}}><Checkbox className="chePe" idx={i} jdx={j} checked={resData[i].c[j].checked} onChange={this.checkbox} dtype={resData[i].c[j].type} time={resData[i].a} venueid={resData[i].c[j].venueids} uuid={resData[i].c[j].uuid} style={resData[i].c[j].type === 1 && this.state.cofirmZ === 1 ? {} : { display: 'none' } && resData[i].c[j].type === 4 && this.state.Cancels === 1 ? {} : { display: 'none' }} />{resData[i].c[j].money}</div></div>
+        let value = <div><div data-type={resData[i].c[j].type} data-uuid={resData[i].c[j].uuid} onClick={this.lookDeta} style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, color: 'transparent', lineHeight: 3 } : {}}><Checkbox className="chePe" idx={i} jdx={j} checked={resData[i].c[j].checked} onChange={this.checkbox} dtype={resData[i].c[j].type} time={resData[i].a} venueid={resData[i].c[j].venueids} uuid={resData[i].c[j].uuid} style={resData[i].c[j].type === 1 && this.state.cofirmZ === 1 ? {} : { display: 'none' } && resData[i].c[j].type === 4 && this.state.Cancels === 1 ? {} : { display: 'none' }} />{resData[i].c[j].money}</div></div>
         obj[key] = value
         let koTwo = parseInt(resData[i].a.slice(1, 2)) + 1 + ':00'
         obj.lppd = <div style={{ color: '#F5A623' }}>{resData[i].a}<br />{resData[i].a.slice(3, resData[i].a.length) === '00' ? resData[i].a.slice(0, 2) + ':30' : koTwo === '10:00' && resData[i].a !== '19:30' ? '10:00' : resData[i].a === '19:30' ? '20:00' : resData[i].a.slice(0, 1) + koTwo}</div>
@@ -366,11 +366,11 @@ class appointmentList extends React.Component {
       this.setState({ cofirmZ: 0, venueidids: [], dtime: [], Cancels: 0 })
       this.getVenueReservation({ sportid: this.state.liNum, date: this.state.dateString })
       if (data.type === 1) {
-        message.info('该场地该时间段已标记为线下占用')
+        message.success('该场地该时间段已标记为线下占用')
         this.setState({placeHui:'',placeName:'',placePhone:'',placeQi:''})
       } else if (data.type === 2) {
         this.setState({ flagClick: 0 })
-        message.info('该场地该时间段已向找对手线上释放')
+        message.success('该场地该时间段已向找对手线上释放')
       }
       this.setState({ info: false, lotime: [], arrTimeuid: [] })
     } else {
@@ -565,7 +565,7 @@ class appointmentList extends React.Component {
 
           <div className="informDrawer">
             <span>场地费金额：</span>
-            <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoney : ''}</span>
+            <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoney+'元' : ''}</span>
           </div>
           <div className="informDrawer">
             <span>场地费状态：</span>

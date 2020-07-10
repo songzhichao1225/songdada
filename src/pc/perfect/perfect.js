@@ -1,18 +1,17 @@
 import React from 'react';
 import './perfect.css';
 import 'antd/dist/antd.css';
-import { getProvince, getCrty, getArea, PerfectingVenueInformation, getVenueInformation, getVenueSportList, VenueInformationSave } from '../../api';
-import { Select, Input, Checkbox, Button, Upload, message, Modal } from 'antd';
+import { PerfectingVenueInformation, getVenueInformation, getVenueSportList, VenueInformationSave, TemporaryVenueInformation } from '../../api';
+import { Input, Checkbox, Button, Upload, message, Modal } from 'antd';
 import Icon from '@ant-design/icons';
 import ImgCrop from 'antd-img-crop';
 
-const { Option } = Select;
 const { TextArea } = Input;
 
 
 
 
-const options = [ { label: '停车场', value: '1' },{ label: 'WiFi', value: '2' }, { label: '淋浴', value: '3' },{ label: '室内摄像头', value: '4' },]
+const options = [{ label: '停车场', value: '1' }, { label: 'WiFi', value: '2' }, { label: '淋浴', value: '3' }, { label: '室内摄像头', value: '4' },]
 
 
 
@@ -47,9 +46,6 @@ function beforeUpload(file) {
 class perfect extends React.Component {
 
   state = {
-    handleArea: '',//省
-    handleCity: '',//市,
-    handleDistrict: '',//区
     handleName: '',//场馆名称
     handleAddress: this.props.location.query === undefined ? '' : this.props.location.query.adddress,//场馆详细地址
     onChangeCheck: '',//运动项目
@@ -68,7 +64,8 @@ class perfect extends React.Component {
     lng: '',
     handelPerson: '',
     handleTelephone: '',
-    plainOptions: []
+    plainOptions: [],
+    siteUid: ''
   };
 
 
@@ -77,18 +74,24 @@ class perfect extends React.Component {
     const res = await getVenueInformation(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
+      sessionStorage.clear()
       message.error('登录超时请重新登录')
     } else if (res.data.code === 2000) {
-      let imgS = (res.data.data.filesURL).split('|')
       let arrImg = []
-      for (let i in imgS) {
-        arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: imgS[i] })
+      if (res.data.data.filesURL !== null && res.data.data.filesURL !== '') {
+        let imgS = (res.data.data.filesURL).split('|')
+        for (let i in imgS) {
+          arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: imgS[i] })
+        }
+      } else {
+        arrImg = []
       }
+
       localStorage.setItem('handleName', res.data.data.name)
       this.setState({
-        position: res.data.data.position, handleAddress: res.data.data.address, handleName: res.data.data.name, imageUrl: res.data.data.firstURL, fileList: arrImg,
-        onChangeCheck: res.data.data.sport, onChangeSite: res.data.data.facilities, onChangeText: res.data.data.siteInfo, lat: res.data.data.lat, lng: res.data.data.lng,
-        province: res.data.data.province, city: res.data.data.city, area: res.data.data.area,
+        position: res.data.data.position, handleAddress: this.props.location.query === undefined ? res.data.data.address : this.props.location.query.adddress, handleName: res.data.data.name, imageUrl: res.data.data.firstURL, fileList: arrImg,
+        onChangeCheck: res.data.data.sport, onChangeSite: res.data.data.facilities === ',,,' ? '' : res.data.data.facilities, onChangeText: res.data.data.siteInfo, lat: res.data.data.lat, lng: res.data.data.lng,
+        province: res.data.data.province, city: res.data.data.city, area: res.data.data.area, siteUid: res.data.data.uid,
         imageRes: res.data.data.firstURL, handelPerson: res.data.data.linkMan, handleTelephone: res.data.data.telephone
       })
     }
@@ -106,61 +109,18 @@ class perfect extends React.Component {
 
   componentDidMount() {
     this.getVenueSportList()
-    this.getProvince()
-    if (localStorage.getItem('handleAreaId') !== null) {
-      this.getCrty({ parent: localStorage.getItem('handleAreaId') })
-    }
-    if (localStorage.getItem('handleCityId') !== null) {
-      this.getArea({ crty: localStorage.getItem('handleCityId') })
-    }
-    if (sessionStorage.getItem('notType') === '1') {
-      this.getVenueInformation()
-    }
+    this.getVenueInformation()
   }
 
 
 
 
-  handleArea = e => {
-    let { province } = this.state
-    localStorage.setItem('handleCity', '')
-    for (let i in Array.from(province)) {
-      if (Array.from(province)[i].id === e) {
-        localStorage.setItem('handleArea', Array.from(province)[i].name)
-        localStorage.setItem('handleAreaId', Array.from(province)[i].id)
-      }
-    }
-    this.getCrty({ parent: localStorage.getItem('handleAreaId') })
-  }
-  handleCity = e => {
-    let { city } = this.state
-    localStorage.setItem('handleDistrict', '')
-    for (let i in Array.from(city)) {
-      if (Array.from(city)[i].id === e) {
-        localStorage.setItem('handleCity', Array.from(city)[i].name)
-        localStorage.setItem('handleCityId', Array.from(city)[i].id)
-      }
-    }
-    this.getArea({ crty: localStorage.getItem('handleCityId') })
-  }
-  handleDistrict = e => {
-    let { getArea } = this.state
-    for (let i in Array.from(getArea)) {
-      if (Array.from(getArea)[i].id === e) {
-        console.log(8888)
-        this.setState({ handleDistrict: Array.from(getArea)[i].name })
-        localStorage.setItem('handleDistrict', Array.from(getArea)[i].name)
-        localStorage.setItem('handleDistrictId', Array.from(getArea)[i].id)
-      }
-    }
-  }
+
   routerMap = () => {
-    if (localStorage.getItem('handleDistrict') !== ''&&localStorage.getItem('handleDistrict') !==null) {
-      this.props.history.push({ pathname: '/map', query: { type: localStorage.getItem('handleDistrict'), city: localStorage.getItem('handleCity') } })
-      sessionStorage.setItem('hanclick', 1)
-    } else {
-      message.warning('请先选择地区')
-    }
+
+    this.props.history.push({ pathname: '/map', query: { type: localStorage.getItem('handleDistrict'), city: localStorage.getItem('handleCity') } })
+    sessionStorage.setItem('hanclick', 1)
+
   }
   handleName = e => {
     this.setState({ handleName: e.target.value })
@@ -179,36 +139,29 @@ class perfect extends React.Component {
     sessionStorage.setItem('onChangeSite', e)
   }
 
-  async getProvince(data) {
-    const res = await getProvince(data)
-    this.setState({ province: res.data.data })
-  }
 
-  async getCrty(data) {
-    const res = await getCrty(data)
-    this.setState({ city: res.data.data })
-  }
 
-  async getArea(data) {
-    const res = await getArea(data)
-    this.setState({ getArea: res.data.data })
-  }
-
+ 
+  
   handleChange = info => {
     if (info.file.status === 'uploading') {
       this.setState({ loading: true })
       return
     }
     if (info.file.status === 'done') {
-      this.setState({ imageRes: info.file.response.data.baseURL + info.file.response.data.filesURL })
-      getBase64(info.file.originFileObj, imageUrl =>
-        this.setState({
-          imageUrl,
-          loading: false,
-        }),
-      );
+      if (info.file.response.data.baseURL !== undefined) {
+        this.setState({ imageRes: info.file.response.data.baseURL + info.file.response.data.filesURL })
+      } else {
+        this.setState({ imageRes: 1 })
+      }
+      
     }
-  };
+    if(info.file.response.code===4004){
+       message.error(info.file.response.msg)
+    }else if(info.file.response.code===4002){
+      message.error('上传失败')
+    }
+  }
 
 
   handleCancel = () => this.setState({ previewVisible: false });
@@ -224,7 +177,19 @@ class perfect extends React.Component {
     })
   }
 
-  handleChangeT = ({ fileList }) => this.setState({ fileList });
+  handleChangeT=({fileList})=>{
+    this.setState({ fileList:fileList })
+    for(let i in fileList){
+      if(fileList[i].response!==undefined&&fileList[i].response.code===4004){
+        fileList[i].thumbUrl=''
+        fileList[i].name='图片违规'
+        message.error('有图片违规请重新上传')
+        this.setState({ fileList:fileList })
+      }
+      
+    }
+    
+  }
 
   onChangeText = e => {
     this.setState({ onChangeText: e.target.value })
@@ -239,7 +204,6 @@ class perfect extends React.Component {
     const res = await VenueInformationSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.props.history.push('/qualification')
-      message.info(res.data.msg)
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登录超时请重新登录')
@@ -249,23 +213,26 @@ class perfect extends React.Component {
   }
 
   onClickNex = () => {
-    let { imageRes, fileList, handleAddress, handelPerson, handleTelephone } = this.state
+    let { imageRes, fileList, handleAddress, handelPerson, handleTelephone, onChangeSite, onChangeCheck } = this.state
     let fileListT = fileList.slice(0, 9)
-    if (sessionStorage.getItem('notType') === '1') {
+    if (this.state.siteUid!== '') {
       let filesURLarr = []
       for (let i in fileListT) {
-        if (fileListT[i].response === undefined) {
+        if (fileListT[i].response !== undefined) {
+          if (fileListT[i].response.data.length === 0) {
+            filesURLarr.push('无')
+          } else {
+            filesURLarr.push(fileListT[i].response.data.baseURL + fileListT[i].response.data.filesURL)
+          }
+         
+        } else if (fileListT[i].response === undefined) {
           filesURLarr.push(fileListT[i].url)
-        } else {
-          filesURLarr.push(fileListT[i].response.data.baseURL + fileListT[i].response.data.filesURL)
         }
       }
       if (filesURLarr.length < 2) {
         message.warning("至少上传两张场地照片")
 
       } else {
-        let sportId = sessionStorage.getItem('onChangeCheck') === null ? this.state.onChangeCheck.split(',') : sessionStorage.getItem('onChangeCheck').split(',')
-        let facilitiesId = sessionStorage.getItem('onChangeSite') === null ? this.state.onChangeSite.split(',') : sessionStorage.getItem('onChangeSite').split(',')
         let data = {
           venuename: localStorage.getItem('handleName'),
           lat: this.props.location.query === undefined ? this.state.lat : this.props.location.query.lat,
@@ -276,11 +243,10 @@ class perfect extends React.Component {
           address: handleAddress,
           filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
           firstURL: imageRes,
-          sport: sportId === '' ? [] : sportId.join(','),
-          facilities: facilitiesId === '' ? [] : facilitiesId.join(','),
+          sport: onChangeCheck === '' ? [] : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
+          facilities: onChangeSite === '' ? [] : typeof (onChangeSite) !== 'string' ? onChangeSite.join(',') : onChangeSite,
           siteInfo: this.state.onChangeText,
           position: this.props.location.query === undefined ? this.state.position : this.props.location.query.title,
-          comment: '',
           type: 1,
           linkMan: handelPerson,
           telephone: handleTelephone,
@@ -295,7 +261,13 @@ class perfect extends React.Component {
           message.error('请输入联系人电话')
         } else if (data.sport === '') {
           message.error('请选择场地类型')
-        } else {
+        }else if(/^[a-zA-Z\u4e00-\u9fa5]+$/.test(handelPerson)===false){
+          message.error('联系人只允许输入文字/字母')
+       } else if (data.firstURL === '') {
+        message.error('门脸照违规请重新上传');
+      } else if (data.filesURL.split('|').indexOf('无')!==-1) {
+        message.error('场地照有违规图片请重新上传');
+      } else {
           this.VenueInformationSave(data)
         }
       }
@@ -303,31 +275,38 @@ class perfect extends React.Component {
     } else {
       let filesURLarr = []
       for (let i in fileListT) {
-        filesURLarr.push(fileListT[i].response.data.baseURL + fileListT[i].response.data.filesURL)
+        if (fileListT[i].response !== undefined) {
+          if (fileListT[i].response.data.length === 0) {
+            filesURLarr.push('无')
+          } else {
+            filesURLarr.push(fileListT[i].response.data.baseURL + fileListT[i].response.data.filesURL)
+          }
+         
+        } else if (fileListT[i].response === undefined) {
+          filesURLarr.push(fileListT[i].url)
+        }
       }
       if (filesURLarr.length < 2) {
         message.warning("至少上传两张场地照片")
 
-      } else if (this.props.location.query === undefined) {
+      } else if (handleAddress === '') {
         message.warning('请选择场馆位置')
       } else {
-        let sportId = sessionStorage.getItem('onChangeCheck') === null ? '' : sessionStorage.getItem('onChangeCheck').split(',')
-        let facilitiesId = sessionStorage.getItem('onChangeSite') === null ? '' : sessionStorage.getItem('onChangeSite').split(',')
         let data = {
           venueloginuuid: sessionStorage.getItem('uuid'),
           province: localStorage.getItem('handleArea'),
           city: localStorage.getItem('handleCity'),
           area: localStorage.getItem('handleDistrict'),
           venuename: localStorage.getItem('handleName'),
-          lat: this.props.location.query === undefined ? '' : this.props.location.query.lat,
-          lng: this.props.location.query === undefined ? '' : this.props.location.query.lng,
+          lat: this.props.location.query === undefined ? this.state.lat : this.props.location.query.lat,
+          lng: this.props.location.query === undefined ? this.state.lng : this.props.location.query.lng,
           address: handleAddress,
           filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
           firstURL: imageRes,
-          sport: sportId === '' ? [] : sportId.join(','),
-          facilities: facilitiesId === '' ? '' : facilitiesId.join(','),
+          sport: onChangeCheck === '' ? [] : typeof (onChangeCheck) === 'array' ? onChangeCheck.join(',') : onChangeCheck,
+          facilities: onChangeSite === '' ? [] : typeof (onChangeSite) === 'array' ? onChangeSite.join(',') : onChangeSite,
           siteInfo: this.state.onChangeText,
-          position: this.props.location.query.title,
+          position: this.props.location.query === undefined ? this.state.position : this.props.location.query.title,
           linkMan: handelPerson,
           telephone: handleTelephone,
         }
@@ -341,7 +320,13 @@ class perfect extends React.Component {
           message.error('请输入联系人电话')
         } else if (data.sport === '') {
           message.error('请选择场地类型')
-        } else {
+        }else if(/^[a-zA-Z\u4e00-\u9fa5]+$/.test(handelPerson)===false){
+          message.error('联系人只允许输入文字/字母')
+       }else if (data.firstURL === '') {
+        message.error('门脸照违规请重新上传');
+      } else if (data.filesURL.split('|').indexOf('无')!==-1) {
+        message.error('场地照有违规图片请重新上传');
+      }  else {
           this.PerfectingVenueInformation(data)
         }
       }
@@ -364,19 +349,80 @@ class perfect extends React.Component {
     this.setState({ handleTelephone: e.target.value })
   }
 
+
+  async TemporaryVenueInformation(data) {
+    const res = await TemporaryVenueInformation(data)
+    if (res.data.code === 2000) {
+      message.success(res.data.msg)
+    } else {
+      message.success(res.data.msg)
+    }
+  }
+
+  onClickSave = () => {
+    let { imageRes, fileList, handleAddress, handelPerson, handleTelephone, onChangeCheck, onChangeSite } = this.state
+    let fileListT = fileList.slice(0, 9)
+    let filesURLarr = []
+    for (let i in fileListT) {
+      if (fileListT[i].response !== undefined) {
+        if (fileListT[i].response.data.length === 0) {
+          filesURLarr.push('无')
+        } else {
+          filesURLarr.push(fileListT[i].response.data.baseURL + fileListT[i].response.data.filesURL)
+        }
+       
+      } else if (fileListT[i].response === undefined) {
+        filesURLarr.push(fileListT[i].url)
+      }
+    }
+    
+    console.log(typeof (onChangeCheck))
+    let data = {
+      siteuuid: this.state.siteUid,
+      venueloginuuid: sessionStorage.getItem('uuid'),
+      province: localStorage.getItem('handleArea'),
+      city: localStorage.getItem('handleCity'),
+      area: localStorage.getItem('handleDistrict'),
+      venuename: localStorage.getItem('handleName'),
+      lat: this.props.location.query === undefined ? this.state.lat : this.props.location.query.lat,
+      lng: this.props.location.query === undefined ? this.state.lng : this.props.location.query.lng,
+      address: handleAddress,
+      filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
+      firstURL: imageRes,
+      sport: onChangeCheck === '' ? [] : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
+      facilities: onChangeSite === '' ? [] : typeof (onChangeSite) !== 'string' ? onChangeSite.join(',') : onChangeSite,
+      siteInfo: this.state.onChangeText,
+      position: this.props.location.query === undefined ? this.state.position : this.props.location.query.title,
+      linkMan: handelPerson,
+      telephone: handleTelephone,
+    }
+    if (localStorage.getItem('handleName') === 'null') {
+      message.error('请填写场馆名称')
+    }else if(/^[a-zA-Z\u4e00-\u9fa5]+$/.test(handelPerson)===false){
+       message.error('联系人只允许输入文字/字母')
+    }else if (data.firstURL === 1) {
+      message.error('门脸照违规请重新上传');
+    } else if (data.filesURL.split('|').indexOf('无')!==-1) {
+      message.error('场地照有违规图片请重新上传');
+    }else {
+      console.log(data)
+      // this.TemporaryVenueInformation(data)
+
+    }
+
+  }
+
   render() {
-    const { province, city, getArea } = this.state
-    const data = Array.from(province);
-    const cityT = Array.from(city);
-    const getAreaT = Array.from(getArea);
+
+
 
     const uploadButton = (
       <div>
-        <Icon type={this.state.loading ? 'loading' : 'plus'} />
+        
         <div className="ant-upload-text">门脸照</div>
       </div>
     )
-    const { imageUrl } = this.state
+    const { imageRes } = this.state
 
     const { previewVisible, previewImage, fileList } = this.state
     const uploadButtonT = (
@@ -385,15 +431,7 @@ class perfect extends React.Component {
         <div className="ant-upload-text">场地照</div>
       </div>
     )
-    const props = {
-      aspect: 1.64 / 1,
-      resize: false, //裁剪是否可以调整大小
-      resizeAndDrag: true, //裁剪是否可以调整大小、可拖动
-      modalTitle: "编辑图片", //弹窗标题
-      modalWidth: 600, //弹窗宽度
-      modalOk: "确定",
-      modalCancel: "取消"
-    }
+
     const propsOne = {
       aspect: 1.295 / 1,
       resize: false, //裁剪是否可以调整大小
@@ -417,48 +455,26 @@ class perfect extends React.Component {
           <div className="content">
             <div className="nav">
               <div><span>1.填写注册信息</span><img src={require("../../assets/oneline.png")} alt="5" /></div>
-              <div><span>2.完善场馆信息</span><img src={require("../../assets/lineThree.png")} alt="5" /></div>
+              <div><span>2.完善基本信息</span><img src={require("../../assets/lineThree.png")} alt="5" /></div>
               <div><span>3.等待审核</span><img src={require("../../assets/twoline.png")} alt="5" /></div>
               <div><span>4.审核成功</span><img src={require("../../assets/twoline.png")} alt="5" /></div>
             </div>
             <div className="contentSon">
               <span className="titile">场馆基本信息</span>
               <div className="area">
-                <span className="symbol">*</span><span className="boTitle">选择地区</span>
-                <Select value={localStorage.getItem('handleArea') === null ? '请选择' : localStorage.getItem('handleArea')} className="one" style={{ width: 118 }} onChange={this.handleArea}>
-                  {
-                    data.map((item, i) => {
-                      return <Option key={i} value={item.id} >{item.name}</Option>
-                    })
-                  }
-                </Select>
-                <span>省</span>
-                <Select value={localStorage.getItem('handleCity') === null || localStorage.getItem('handleCity') === '' ? '请选择' : localStorage.getItem('handleCity')} className="one" style={{ width: 118 }} onChange={this.handleCity}>
-                  {
-                    cityT.map((item, i) => {
-                      return <Option key={i} value={item.id}>{item.name}</Option>
-                    })
-                  }
-                </Select>
-                <span>市</span>
-                <Select value={localStorage.getItem('handleDistrict') === ''||localStorage.getItem('handleDistrict') === null ? '请选择' : localStorage.getItem('handleDistrict')} className="one" style={{ width: 118 }} onChange={this.handleDistrict}>
-                  {
-                    getAreaT.map((item, i) => {
-                      return <Option key={i} value={item.id}>{item.name}</Option>
-                    })
-                  }
-                </Select>
-                <span>区/县</span>
+
+
+
               </div>
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">场馆位置</span>
-                <Input className="nameINput" value={this.props.location.query !== undefined ? this.props.location.query.title : this.state.position} placeholder="请输选择场馆位置" />
+                <Input className="nameINput" disabled={true} value={this.props.location.query !== undefined ? this.props.location.query.title : this.state.position} placeholder="请选择场馆位置" />
                 <img onClick={this.routerMap} className="dingImg" src={require("../../assets/icon_pc_dingwei.png")} alt="" />
               </div>
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">详细地址</span>
-                <Input className="nameINput" onChange={this.handleAddress} value={this.state.handleAddress} placeholder="请输入场馆详细地址如门牌号楼层" />
+                <TextArea className="nameINput" autoSize={true} onChange={this.handleAddress} value={this.state.handleAddress} placeholder="请输入场馆详细地址如门牌号楼层" />
               </div>
 
               <div className="name">
@@ -489,7 +505,7 @@ class perfect extends React.Component {
                     onChange={this.handleChange}
                     accept=".jpg, .jpeg, .png"
                   >
-                    {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%', height: '100%' }} /> : uploadButton}
+                    {imageRes!==1&&imageRes!=='' ? <img src={'https://app.tiaozhanmeiyitian.com/'+imageRes} alt="avatar" style={{ width: '100%', height: '100%' }} /> : uploadButton}
                   </Upload>
                 </ImgCrop>
                 <span className="rightText">上传图片小于3M</span>
@@ -498,22 +514,22 @@ class perfect extends React.Component {
               <div className="name">
                 <span className="symbol negativeTwo">*</span><span className="boTitle negativeTwoT">场地照片(2-8张)</span>
                 <div className="clearfix">
-                  
-                    <Upload
-                      multiple={false}
-                      fileNumLimit='5'
-                      name="files"
-                      action="/api/UploadVenueImgs?type=Venue"
-                      listType="picture-card"
-                      fileList={fileList.slice(0, 8)}
-                      onPreview={this.handlePreview}
-                      onChange={this.handleChangeT}
-                      accept=".jpg, .jpeg, .png"
-                      multiple={true}
-                    >
-                      {fileList.length >= 8 ? null : uploadButtonT}
-                    </Upload>
-                  
+
+                  <Upload
+                    multiple={false}
+                    fileNumLimit='5'
+                    name="files"
+                    action="/api/UploadVenueImgs?type=Venue"
+                    listType="picture-card"
+                    fileList={fileList.slice(0, 8)}
+                    onPreview={this.handlePreview}
+                    onChange={this.handleChangeT}
+                    accept=".jpg, .jpeg, .png"
+                    multiple={true}
+                  >
+                    {fileList.length >= 8 ? null : uploadButtonT}
+                  </Upload>
+
                   <span className="rightText">上传图片小于3M</span>
                   <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
                     <img alt="example" style={{ width: '100%' }} src={previewImage} />
@@ -540,7 +556,7 @@ class perfect extends React.Component {
 
               <div className="prompt">请注意<span>*</span>为必填项</div>
 
-              <Button className="next" onClick={this.onClickNex}>下一步</Button>
+              <Button className="next" onClick={this.onClickNex}>下一步</Button><Button className="next" style={{ marginLeft: '20px' }} onClick={this.onClickSave}>保存</Button>
             </div>
           </div>
         </div>

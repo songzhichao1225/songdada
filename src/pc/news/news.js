@@ -76,14 +76,16 @@ class news extends React.Component {
   async delVenueNews(data) {
     const res = await delVenueNews(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info(res.data.msg)
+      message.success(res.data.msg)
       this.setState({ oneChecked: false })
       if(this.state.kod===1){
         this.getVenueNewsList({ page: 1 })
         this.setState({oneChecked:false})
         this.getVenueIndex()
+        this.gerVenueName()
       }else{
         this.getVenueIndex()
+        this.gerVenueName()
         this.setState({oneChecked:false})
         this.getVenueNewsList({ page: this.state.current })
       }
@@ -196,7 +198,7 @@ class news extends React.Component {
   async VenueNewsSendMessage(data) {
     const res = await VenueNewsSendMessage(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info(res.data.msg)
+      message.success(res.data.msg)
       this.setState({ visibleTwo: false,textArea:'' })
     }
   }
@@ -212,7 +214,7 @@ class news extends React.Component {
   async VenueNewsOneKeyRead(data) {
     const res = await VenueNewsOneKeyRead(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.info(res.data.msg)
+      message.success(res.data.msg)
       this.gerVenueName()
       this.getVenueNewsList({ page: this.state.current })
       this.setState({oneChecked:false})
@@ -306,6 +308,7 @@ class news extends React.Component {
           title="给找对手平台发消息"
           visible={this.state.visibleTwo}
           onCancel={this.handleCancel}
+          className="mode"
           closeIcon={<CloseCircleOutlined style={{color:'#fff',fontSize:'20px'}} />}
         >
           <TextArea rows={3} placeholder="请输入您推送的消息" value={this.state.textArea} onChange={this.textArea} maxLength={200} />

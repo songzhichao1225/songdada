@@ -9,7 +9,8 @@
     line-height: 3rem;
     position: relative;
     background: #374D66;
-    color:#fff
+    color:#fff;
+    font-size: 1.06rem;
 }
 .recordPh .recordSon{
    width: 95%;

@@ -328,7 +328,7 @@ class special extends React.Component {
       this.setState({
         visible: false,
       });
-      message.info(res.data.msg)
+      message.success(res.data.msg)
       this.getVenueSpecialList({ sportid: '', page: '' })
     }
   }
@@ -370,7 +370,7 @@ class special extends React.Component {
       this.props.history.push('/')
       message.error('登录超时请重新登录!')
     } else {
-      message.info('删除成功')
+      message.success('删除成功')
       this.getVenueSpecialList({ sportid: sessionStorage.getItem('preferential'), page: this.state.page })
     }
   }

@@ -108,7 +108,7 @@ class appOrder extends React.Component {
     for (let i in resData.data) {
       let obj = {}
       for (let j in resData.data[i].c) {
-        obj.key = j + 1
+        obj.key = i + 1
         let key = resData.data[i].c[j].venueid
         let value = <div
           data-type={resData.data[i].c[j].type}

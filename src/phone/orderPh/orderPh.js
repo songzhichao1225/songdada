@@ -206,9 +206,9 @@ class orderPh extends React.Component {
     for (let i in resData) {
       let obj = {}
       for (let j in resData[i].c) {
-        obj.key = j + 1
+        obj.key = i+1
         let key = resData[i].c[j].venueids
-        let value = <div><div data-type={resData[i].c[j].type} data-uuid={resData[i].c[j].uuid} onClick={this.lookDeta} style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, lineHeight: 3 } : {}}><Checkbox className="chePe" idx={i} jdx={j} checked={resData[i].c[j].checked} onChange={this.checkbox} dtype={resData[i].c[j].type} time={resData[i].a} venueid={resData[i].c[j].venueids} uuid={resData[i].c[j].uuid} style={resData[i].c[j].type === 1 && this.state.cofirmZ === 1 ? {} : { display: 'none' } && resData[i].c[j].type === 4 && this.state.Cancels === 1 ? {} : { display: 'none' }} />{resData[i].c[j].money}</div></div>
+        let value = <div><div data-type={resData[i].c[j].type} data-uuid={resData[i].c[j].uuid} onClick={this.lookDeta} style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45,color:'transparent', lineHeight: 3 } : {}}><Checkbox className="chePe" idx={i} jdx={j} checked={resData[i].c[j].checked} onChange={this.checkbox} dtype={resData[i].c[j].type} time={resData[i].a} venueid={resData[i].c[j].venueids} uuid={resData[i].c[j].uuid} style={resData[i].c[j].type === 1 && this.state.cofirmZ === 1 ? {} : { display: 'none' } && resData[i].c[j].type === 4 && this.state.Cancels === 1 ? {} : { display: 'none' }} />{resData[i].c[j].money}</div></div>
         obj[key] = value
         let koTwo = parseInt(resData[i].a.slice(1, 2)) + 1 + ':00'
         obj.lppd = <div  style={{ color: '#F5A623' }}>{resData[i].a}<br />{resData[i].a.slice(3, resData[i].a.length) === '00' ? resData[i].a.slice(0, 2) + ':30' : koTwo === '10:00' && resData[i].a !== '19:30' ? '10:00' : resData[i].a === '19:30' ? '20:00' : resData[i].a.slice(0, 1) + koTwo}</div>
@@ -891,7 +891,7 @@ class orderPh extends React.Component {
                 extra='选择'
                 title='选择日期'
                 value={this.state.start}
-                onChange={start => this.setState({ start })}
+                onChange={start => this.setState({ start,end:''})}
               >
                 <List.Item arrow="horizontal">开始日期</List.Item>
               </DatePicker>
@@ -987,7 +987,7 @@ class orderPh extends React.Component {
             </div>
             <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
               <span>时长：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].PlayTime/2 : ''}小时</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].PlayTime : ''}小时</span>
             </div>
             <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
               <span>应到人数：</span>
@@ -995,7 +995,7 @@ class orderPh extends React.Component {
             </div>
             <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
               <span>场地费金额：</span>
-              <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoney : ''}</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoney+'元' : ''}</span>
             </div>
             <div className="informDrawer" style={{ fontSize: '0.75rem' }}>
               <span>场地费状态：</span>

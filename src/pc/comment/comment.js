@@ -210,7 +210,7 @@ class comment extends React.Component {
           visible={this.state.visible}
           onOk={this.handleOk}
           width="300px"
-          className="mode"
+          className="mode modeGo"
           onCancel={this.handleCancel}
         >
           <img style={{ width: '100%' }} src={this.state.url} alt="img" />
