@@ -197,12 +197,16 @@ class stadiums extends React.Component {
     if (res.data.code === 2000) {
       let corporate = res.data.data
       let cardImg = corporate.legalFilesURL.replace('|', ',').split(',')
+      if(res.data.data.ProvinceBank!=''){
+        this.getVenueOpenBankCity({ province_id:res.data.data.ProvinceBank })
+      }
       this.setState({
         imageUrlTwo: corporate.legalBaseURL + '/' + cardImg[0], imageUrlThree: corporate.legalBaseURL + '/' + cardImg[1],
         baseImg: corporate.legalBaseURL,
         imgFile: cardImg[0], imgFileTwo: cardImg[1],
         corporateName: corporate.legalname, corporateId: corporate.legalcard, corporatePhone: corporate.legalphone, CorporateName: corporate.CorporateName,
-        numRadio: corporate.Settlement, corporateCardId: corporate.Bankaccount, corporateOpen: corporate.OpeningBank, lisenceURL: corporate.lisenceURL
+        numRadio: corporate.Settlement, corporateCardId: corporate.Bankaccount, corporateOpen: corporate.OpeningBank, lisenceURL: corporate.lisenceURL,
+        bank_id:res.data.data.Banktype,province_id:res.data.data.ProvinceBank,city_id:res.data.data.CityBank,
       })
     }
   }
@@ -440,7 +444,7 @@ class stadiums extends React.Component {
   }
 
   ziSubmit = () => {
-    let { zuo, imgHoodTwo, imgHood, baseImg, lisenceURL, corporateName, corporateId, corporatePhone, numRadio, corporateCardId, corporateOpen, imgFile, imgFileTwo,CorporateName } = this.state
+    let { zuo, imgHoodTwo, imgHood, baseImg, lisenceURL, corporateName, corporateId, corporatePhone, numRadio, corporateCardId, corporateOpen, imgFile, imgFileTwo,CorporateName,bank_id,province_id,city_id } = this.state
     let data = {
       legalname: corporateName,
       legalcard: corporateId,
@@ -452,6 +456,9 @@ class stadiums extends React.Component {
       legalBaseURL: baseImg,
       legalFilesURL: imgFile + '|' + imgFileTwo,
       CorporateName: CorporateName,
+      Banktype:bank_id,
+      ProvinceBank:province_id,
+      CityBank:city_id,
       type: 2
     }
     if (zuo === 1) {
@@ -756,21 +763,21 @@ class stadiums extends React.Component {
 
           <div className="listing" style={this.state.upData === true ? { display: 'none' } : { display: 'block' }}>
             <span>开户所在地</span>
-            <Select placeholder="银行类型" style={{ width: 120, height: '35px', marginLeft: '18px' }} loading={this.state.flagOne} onChange={this.typeChange}>
+            <Select placeholder="银行类型" style={{ width: 120, height: '35px', marginLeft: '18px' }} value={Number(this.state.bank_id)} loading={this.state.flagOne} onChange={this.typeChange}>
               {
                 this.state.type.map((item, i) => (
                   <Option key={i} value={item.bank_id}>{item.bank_name}</Option>
                 ))
               }
             </Select>
-            <Select placeholder="所在省" style={{ width: 120, height: '35px', marginLeft: '18px' }} loading={this.state.flagTwo} onChange={this.provinceChange}>
+            <Select placeholder="所在省" style={{ width: 120, height: '35px', marginLeft: '18px' }} value={Number(this.state.province_id)} loading={this.state.flagTwo} onChange={this.provinceChange}>
               {
                 this.state.backProvince.map((item, i) => (
                   <Option key={i} value={item.province_id}>{item.province}</Option>
                 ))
               }
             </Select>
-            <Select placeholder="所在市" style={{ width: 120, height: '35px', marginLeft: '18px' }} loading={this.state.flagThree} onChange={this.cityChange}>
+            <Select placeholder="所在市" style={{ width: 120, height: '35px', marginLeft: '18px' }} value={Number(this.state.city_id)} loading={this.state.flagThree} onChange={this.cityChange}>
               {
                 this.state.backCity.map((item, i) => (
                   <Option key={i} value={item.city_id}>{item.city}</Option>

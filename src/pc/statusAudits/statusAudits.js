@@ -87,7 +87,7 @@ class statusAudits extends React.Component {
             <div><span>1.填写注册信息</span><img src={require("../../assets/oneline.png")} alt="5" /></div>
             <div><span>2.完善场馆信息</span><img src={require("../../assets/lineThree.png")} alt="5" /></div>
             <div><span>3.等待审核</span><img src={require("../../assets/lineThree.png")} alt="5" /></div>
-            <div><span style={this.state.islegal === 1?{color:'#fff'}:{}}>4.审核成功</span><img src={require("../../assets/lineThree.png")} alt="5" /></div>
+            <div><span style={{color:'#fff'}}>4.审核结果</span><img src={require("../../assets/lineThree.png")} alt="5" /></div>
           </div>
           <div className="imgtitle">
             <img className="img" src={require("../../assets/icon_pc_statusR.png")} alt="" />

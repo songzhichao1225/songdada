@@ -227,6 +227,35 @@ class register extends React.Component {
   textTwoTwo=()=>{
     this.setState({BlurOneTwo:'password'})
   }
+  FOne=()=>{
+      console.log(this.state.code)
+      if(this.state.code===''){
+        this.setState({code:''})
+      }else{
+        this.setState({code:this.state.code})
+      }
+  }
+  FTwo=()=>{
+    if(this.state.password===''){
+         this.setState({password:''})
+    }else{
+      this.setState({password:this.state.password})
+    }
+  }
+  FTree=()=>{
+    if(this.state.passwordT===''){
+         this.setState({passwordT:''})
+    }else{
+      this.setState({passwordT:this.state.passwordT})
+    }
+  }
+  componentDidMount(){
+    this.setState({code:'',password:'',passwordT:''})
+  }
+  paste=()=>{
+    return false
+  }
+
   render() {
     return (
       <div className="register">
@@ -242,7 +271,7 @@ class register extends React.Component {
               <div><span>3.等待审核</span><img src={require("../../assets/twoline.png")} alt='5' /></div>
               <div><span>4.审核成功</span><img src={require("../../assets/twoline.png")} alt='5' /></div>
             </div>
-
+           <form action="return:false" novalidate="novalidate">
             <div className="authentication">
               <span className="title">用户注册</span>
               <div className="son">
@@ -266,17 +295,29 @@ class register extends React.Component {
               <div className="son">
                 <span className="xing">*</span> <span>验</span><span style={{paddingLeft:'6px'}}>证</span><span style={{paddingLeft:'6px'}}>码:</span>
                 <Button className="huoBtn" onClick={this.naCode}>{this.state.textT}</Button>
-                <Input maxLength={6} type="text"  onChange={this.changeCode} className="phone code" />
+                <Input maxLength={6} type="text" autoComplete="off" onPaste={(e) => e.preventDefault()} onFocus={this.FOne} defaultValue={this.state.code}  value={this.state.code} onChange={this.changeCode} className="phone code" />
               </div>
 
+              <div className="son" style={{opacity:0,position:'absolute'}}>
+              <span className="xing">*</span> <span>验</span><span style={{paddingLeft:'6px'}}>证</span><span style={{paddingLeft:'6px'}}>码:</span>
+                <Input maxLength={6} type="text" className="phone code" />
+              </div>
+
+              <div className="son" style={{opacity:0,position:'absolute'}}>
+              <span className="xing">*</span> <span>验</span><span style={{paddingLeft:'6px'}}>证</span><span style={{paddingLeft:'6px'}}>码:</span>
+                <Input maxLength={6} type="password" className="phone code" />
+              </div>
+             
+
+              
               <div className="son">
                 <span className="xing" style={{marginLeft:"2px"}}>*</span> <span>密</span><span style={{paddingLeft:'25px'}}>码:</span>
-                <Input type={this.state.BlurOne}  suffix={<div><EyeInvisibleOutlined style={this.state.BlurOne==='text'?{display:'none'}:{}} onClick={this.textOne} /> <EyeOutlined  style={this.state.BlurOne==='text'?{}:{display:'none'}} onClick={this.textOneTwo}/></div>} onFocus={this.BlurOne}  maxLength={8} onChange={this.changePassword}  className="phone" />
+                <Input.Password  maxLength={8} onChange={this.changePassword}  className="phone" />
               </div>
 
               <div className="son" >
                 <span className="xing">*</span> <span>确认密码:</span>
-                <Input type={this.state.BlurOneTwo} maxLength={8} suffix={<div><EyeInvisibleOutlined style={this.state.BlurOneTwo==='text'?{display:'none'}:{}}  onClick={this.textTwo}/><EyeOutlined  style={this.state.BlurOneTwo==='text'?{}:{display:'none'}} onClick={this.textTwoTwo}/></div>} onFocus={this.BlurOneTwo} style={{height:'41px'}}  onChange={this.changePasswordT}   className="phone" />
+                <Input.Password maxLength={8}   style={{height:'41px'}}  onChange={this.changePasswordT}   className="phone" />
               </div>
 
               <div className="agreement"><Radio onChange={this.changeRadio} checked={this.state.changeRadio}></Radio><span>我已阅读并同意</span><span className="color">《用户协议》</span></div>
@@ -309,7 +350,9 @@ class register extends React.Component {
                 <Button className="remodelBtn"><a href="#/perfect">下一步</a></Button>
               </Modal>
             </div>
+            </form>
           </div>
+        
         </div>
       </div>
     )

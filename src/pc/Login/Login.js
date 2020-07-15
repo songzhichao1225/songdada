@@ -2,8 +2,9 @@ import React from 'react';
 import './Login.css';
 import 'antd/dist/antd.css';
 import { _code, _login, VenueSelectSiteName } from '../../api';
-import { Form, Input, Button, message, Popover, Radio } from 'antd';
-import Icon from '@ant-design/icons';
+import { Form, Input, Button, message, Select } from 'antd';
+import { } from '@ant-design/icons';
+const { Option } = Select;
 class Login extends React.Component {
 
   state = {
@@ -17,6 +18,7 @@ class Login extends React.Component {
     visiblePhone: false,
     selectVeun: [],
     value: '',
+    BlurOne: 'text'
   };
 
   componentDidMount() {
@@ -33,25 +35,25 @@ class Login extends React.Component {
   }
 
   phone = (e) => {
-    if (e.target.value.indexOf('①')!== -1) {
+    if (e.target.value.indexOf('①') !== -1) {
       this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
-    }else if (e.target.value.indexOf('②')!== -1) {
+    } else if (e.target.value.indexOf('②') !== -1) {
       this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
-    }else if (e.target.value.indexOf('③')!== -1) {
+    } else if (e.target.value.indexOf('③') !== -1) {
       this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
-    }else if (e.target.value.indexOf('④')!== -1) {
+    } else if (e.target.value.indexOf('④') !== -1) {
       this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
-    }else if (e.target.value.indexOf('⑤')!== -1) {
+    } else if (e.target.value.indexOf('⑤') !== -1) {
       this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
-    }else if (e.target.value.indexOf('⑥')!== -1) {
+    } else if (e.target.value.indexOf('⑥') !== -1) {
       this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
-    }else if (e.target.value.indexOf('⑦')!== -1) {
+    } else if (e.target.value.indexOf('⑦') !== -1) {
       this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
-    }else if (e.target.value.indexOf('⑧')!== -1) {
+    } else if (e.target.value.indexOf('⑧') !== -1) {
       this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
-    }else if (e.target.value.indexOf('⑨')!== -1) {
+    } else if (e.target.value.indexOf('⑨') !== -1) {
       this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
-    }else {
+    } else {
       this.setState({ phone: e.target.value })
       if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(e.target.value))) {
         this.setState({ visiblePhone: true })
@@ -140,7 +142,8 @@ class Login extends React.Component {
     }
   }
   onChange = e => {
-    this.setState({ value: e.target.value })
+    console.log(e)
+    this.setState({ value: e })
   }
 
   onSubmit = () => {
@@ -156,7 +159,13 @@ class Login extends React.Component {
     let data = {
       username: this.state.phone, usercode: this.state.code, userpass: this.state.pass, type: 1, Logintype: 'pc', venueloginuuid: ''
     }
-    this.login(data)
+    if (data.username === '') {
+      message.error('请输入用户名')
+    } else if (data.userpass === '') {
+      message.error('请输入密码')
+    } else {
+      this.login(data)
+    }
   }
   phoneLogin = () => {
     this.setState({ navNum: true })
@@ -171,6 +180,15 @@ class Login extends React.Component {
     if (e.target.value === '') {
       this.setState({ selectVeun: [] })
     }
+  }
+  textOne = () => {
+    this.setState({ BlurOne: 'text' })
+  }
+  textOneTwo = () => {
+    this.setState({ BlurOne: 'password' })
+  }
+  FOne = () => {
+    this.setState({ BlurOne: 'password' })
   }
 
   render() {
@@ -193,17 +211,14 @@ class Login extends React.Component {
                 <div onClick={this.phoneLogin} style={this.state.navNum === true ? { color: '#F5A623' } : { color: '#000' }}>法人登录</div>
               </div>
               <div className={this.state.navNum ? 'phoneLoginT' : 'phoneLogin'}>
-                <Form layout="inline" onSubmit={this.handleSubmit} className="form">
+                <Form layout="inline" autoComplete="on" noValidate="novalidate" className="form">
                   <Form.Item className="input">
-                    <Popover
-                      content='请输入正确的手机号'
-                      visible={this.state.visiblePhone}
-                    >
-                      <Input onBlur={this.phone} autoComplete="off" readonly maxLength={11} onInput={this.iphoneInput} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="法人手机号" />
-                    </Popover>
+
+                    <Input onBlur={this.phone} autoComplete="off" maxLength={11} onInput={this.iphoneInput} placeholder="法人手机号" />
+
                   </Form.Item>
                   <Form.Item className="code">
-                    <Input onChange={this.code} autoComplete="off" readonly prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="手机验证码" />
+                    <Input onChange={this.code} autoComplete="off" placeholder="手机验证码" />
                   </Form.Item>
                   <Form.Item className="bind">
                     <div className={this.state.textT === '获取验证码' ? 'codeBtn' : 'koohidden'} onClick={this.naCode}>
@@ -213,16 +228,14 @@ class Login extends React.Component {
                       {this.state.textT}
                     </div>
                   </Form.Item>
-                  <Radio.Group className="radio" className={this.state.selectVeun.length > 0 ? 'input' : 'selectVeunNone'} onChange={this.onChange} value={this.state.value}>
+                  <Select className="radio" className={this.state.selectVeun.length > 0 ? 'input' : 'selectVeunNone'} onChange={this.onChange} value={this.state.value}>
                     {
                       this.state.selectVeun.map((item, i) => (
-                        <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
+                        <Option key={i} value={item.venueloginuuid}>{item.name}</Option>
                       ))
                     }
-                  </Radio.Group>
-                  <Form.Item className="input" style={{ marginTop: '20px' }}>
-                    <Input.Password maxLength={8} onChange={this.onPassword} autoComplete="new-password" readonly onPressEnter={this.onSubmit} prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="密码" />
-                  </Form.Item>
+                  </Select>
+
                   <Form.Item className="bind">
                     <Button className="btnSubmit" onClick={this.onSubmit} htmlType="submit">
                       登录
@@ -234,16 +247,20 @@ class Login extends React.Component {
 
 
               <div className={this.state.navNum ? 'nameLogin' : 'nameLoginT'}  >
-                <Form layout="inline" onSubmit={this.handleSubmit} className="form">
+                <Form layout="inline" autoComplete="off" className="form">
                   <Form.Item className="input">
-                    <Input onChange={this.phone} autoComplete="off" readonly  value={this.state.phone === undefined ? '' : this.state.phone} prefix={<Icon type="user" className="inputIcon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名/操作员手机号" />
+                    <Input onChange={this.phone} value={this.state.phone === undefined ? '' : this.state.phone} placeholder="用户名/操作员手机号" />
                   </Form.Item>
-                  <Form.Item className="input" style={{display:'none'}}>
-                    <Input  />
+                  <Form.Item className="input" style={{ opacity: 0 }}>
+                    <Input type="text" />
                   </Form.Item>
-                  <Form.Item className="input" style={{ marginTop: 20 }}>
-                    <Input.Password  readonly  style={{ paddingLeft: '5px' }} autoComplete="new-password" readonly maxLength={8} onChange={this.onPassword} onPressEnter={this.onSubmitT} placeholder="密码" />
+                  <Form.Item className="input" style={{ opacity: 0 }}>
+                    <Input type="password" />
                   </Form.Item>
+                  <Form.Item className="input" style={{ marginTop: -80 }}>
+                    <Input.Password  maxLength={8} onChange={this.onPassword} onPressEnter={this.onSubmitT} placeholder="密码" />
+                  </Form.Item>
+
                   <Form.Item className="bind">
                     <Button className="btnSubmit" onClick={this.onSubmitT}>
                       登录

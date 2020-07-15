@@ -40,6 +40,9 @@ class news extends React.Component {
         res.data.data[i].cheched = false
       }
       this.setState({ newsList: res.data.data, sum: res.data.other.sum, isredcount: res.data.other.isredcount })
+    }else if(res.data.code===4002){
+      this.getVenueNewsList({ page: 1 })
+      this.setState({current:1})
     }else{
       this.setState({ newsList: res.data.data,sum:0, isredcount: 0})
     }
@@ -199,6 +202,9 @@ class news extends React.Component {
     const res = await VenueNewsSendMessage(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success(res.data.msg)
+      this.setState({ visibleTwo: false,textArea:'' })
+    }else{
+      message.error(res.data.msg)
       this.setState({ visibleTwo: false,textArea:'' })
     }
   }

@@ -1,8 +1,8 @@
 import React from 'react';
 import './qualification.css';
 import 'antd/dist/antd.css';
-import { getIsStatus, VenueQualifications, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity,TemporaryQualificationInformation, getVenueOpenBankList, getVenueQualificationInformation, VenueQualificationInformationSave } from '../../api';
-import { Input, Radio, Button, Upload, message, Select, Tooltip } from 'antd';
+import { getIsStatus, VenueQualifications, getVenueOpenBank, getVenueOpenBankProvince,_code,getVenueQualified, getVenueOpenBankCity, getVenueQualifiedCompany, TemporaryQualificationInformation, getVenueOpenBankList, getVenueQualificationInformation, VenueQualificationInformationSave } from '../../api';
+import { Input, Radio, Button, Upload, message, Select, Tooltip, Modal } from 'antd';
 import Icon from '@ant-design/icons';
 const { Option } = Select;
 
@@ -73,6 +73,9 @@ class qualification extends React.Component {
     city_id: '',//市id
     backList: [],//获取的银行
     CorporateName: '',
+    textT:'获取验证码',
+    codeNum:'',
+    flagDis:false,
   };
 
   async getIsStatus(data) {
@@ -129,18 +132,26 @@ class qualification extends React.Component {
       message.error('登录超时请重新登录!')
     } else if (res.data.code === 2000) {
       if (res.data.data.legalFilesURL !== '') {
+        if(res.data.data.ProvinceBank!=''){
+          this.getVenueOpenBankCity({ province_id:res.data.data.ProvinceBank })
+        }
         this.setState({
           imageUrl: res.data.data.lisenceURL, handleName: res.data.data.legalname, handleCardId: res.data.data.legalcard, imageRes: res.data.data.lisenceURL,
           handlePhone: res.data.data.legalphone, Radiovalue: res.data.data.Settlement, handleBankNum: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, legalBaseURL: res.data.data.legalBaseURL,
-           imageResT:res.data.data.legalBaseURL===''?'':res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0],
-          imageReST:res.data.data.legalBaseURL===''?'': res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1], CorporateName: res.data.data.CorporateName
+          imageResT: res.data.data.legalBaseURL === '' ? '' : res.data.data.legalFilesURL.split('|')[0],
+          imageReST: res.data.data.legalBaseURL === '' ? '' : res.data.data.legalFilesURL.split('|')[1], CorporateName: res.data.data.CorporateName,
+          bank_id:res.data.data.Banktype,province_id:res.data.data.ProvinceBank,city_id:res.data.data.CityBank
         })
       } else {
+        if(res.data.data.ProvinceBank!=''){
+          this.getVenueOpenBankCity({ province_id:res.data.data.ProvinceBank })
+        }
         this.setState({
           imageUrl: res.data.data.lisenceURL, handleName: res.data.data.legalname, handleCardId: res.data.data.legalcard, imageRes: res.data.data.lisenceURL,
           handlePhone: res.data.data.legalphone, Radiovalue: res.data.data.Settlement, handleBankNum: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, legalBaseURL: res.data.data.legalBaseURL,
-           imageResT:res.data.data.legalBaseURL===''?'':res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0],
-          imageReST:res.data.data.legalBaseURL===''?'': res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1], CorporateName: res.data.data.CorporateName
+          imageResT: res.data.data.legalBaseURL === '' ? '' : res.data.data.legalFilesURL.split('|')[0],
+          imageReST: res.data.data.legalBaseURL === '' ? '' : res.data.data.legalFilesURL.split('|')[1], CorporateName: res.data.data.CorporateName,
+          bank_id:res.data.data.Banktype,province_id:res.data.data.ProvinceBank,city_id:res.data.data.CityBank
         })
       }
 
@@ -195,6 +206,7 @@ class qualification extends React.Component {
 
   CorporateName = e => {
     this.setState({ CorporateName: e.target.value })
+
   }
 
 
@@ -209,18 +221,18 @@ class qualification extends React.Component {
       } else {
         this.setState({ imageRes: 1 })
       }
-      
+
     }
-    if(info.file.response.code===4004){
-       message.error(info.file.response.msg)
-    }else if(info.file.response.code===4002){
+    if (info.file.response.code === 4004) {
+      message.error(info.file.response.msg)
+    } else if (info.file.response.code === 4002) {
       message.error('上传失败')
     }
   }
 
 
 
- 
+
 
   handleChangeT = info => {
     if (info.file.status === 'uploading') {
@@ -229,15 +241,15 @@ class qualification extends React.Component {
     }
     if (info.file.status === 'done') {
       if (info.file.response.data.baseURL !== undefined) {
-        this.setState({ imageResT: info.file.response.data.baseURL + info.file.response.data.filesURL })
+        this.setState({ imageResT: info.file.response.data.filesURL, legalBaseURL: info.file.response.data.baseURL })
       } else {
         this.setState({ imageResT: 1 })
       }
-      
+
     }
-    if(info.file.response.code===4004){
-       message.error(info.file.response.msg)
-    }else if(info.file.response.code===4002){
+    if (info.file.response.code === 4004) {
+      message.error(info.file.response.msg)
+    } else if (info.file.response.code === 4002) {
       message.error('上传失败')
     }
   }
@@ -252,15 +264,15 @@ class qualification extends React.Component {
     }
     if (info.file.status === 'done') {
       if (info.file.response.data.baseURL !== undefined) {
-        this.setState({ imageReST: info.file.response.data.baseURL + info.file.response.data.filesURL })
+        this.setState({ imageReST: info.file.response.data.filesURL })
       } else {
         this.setState({ imageReST: 1 })
       }
-      
+
     }
-    if(info.file.response.code===4004){
-       message.error(info.file.response.msg)
-    }else if(info.file.response.code===4002){
+    if (info.file.response.code === 4004) {
+      message.error(info.file.response.msg)
+    } else if (info.file.response.code === 4002) {
       message.error('上传失败')
     }
   }
@@ -299,49 +311,9 @@ class qualification extends React.Component {
 
 
   submit = () => {
-    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageResT, imageReST, CorporateName } = this.state
-   
-     
-        let data = {
-          siteUUID: siteUUID,
-          lisenceURL: imageRes,
-          legalname: handleName,
-          legalcard: handleCardId,
-          legalphone: handlePhone,
-          legalBaseURL: legalBaseURL,
-          legalFilesURL: imageResT + '|' + imageReST,
-          Settlement: Radiovalue,
-          Bankaccount: handleBankNum,
-          OpeningBank: openingLine,
-          CorporateName: CorporateName
-        }
-        if (data.lisenceURL === 1) {
-          message.error('营业执照违规请重新上传');
-        }else if(imageResT===1){
-          message.error('身份证正面照违规请重新上传');
-        }else if(imageReST===1){
-          message.error('身份证反面照违规请重新上传');
-        }else{
-          this.VenueQualifications(data)
-        }
-        
-      
-    
+    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageResT, imageReST, CorporateName,bank_id,province_id,city_id} = this.state
 
-  }
-  stepBack=()=>{
-    this.props.history.push('perfect')
-  }
 
-  
-  async TemporaryQualificationInformation(data) {
-    const res = await TemporaryQualificationInformation(data, sessionStorage.getItem('venue_token'))
-    if (res.data.code === 2000) {
-      message.success(res.data.msg)
-    }
-  }
-  save=()=>{
-    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageResT, imageReST, CorporateName } = this.state
     let data = {
       siteUUID: siteUUID,
       lisenceURL: imageRes,
@@ -353,20 +325,133 @@ class qualification extends React.Component {
       Settlement: Radiovalue,
       Bankaccount: handleBankNum,
       OpeningBank: openingLine,
-      CorporateName: CorporateName
+      CorporateName: CorporateName,
+      Banktype:bank_id,
+      ProvinceBank:province_id,
+      CityBank:city_id
     }
     if (data.lisenceURL === 1) {
       message.error('营业执照违规请重新上传');
-    }else if(imageResT===1){
+    } else if (imageResT === 1) {
       message.error('身份证正面照违规请重新上传');
-    }else if(imageReST===1){
+    } else if (imageReST === 1) {
       message.error('身份证反面照违规请重新上传');
-    }else{
-    this.TemporaryQualificationInformation(data)
+    } else {
+      this.VenueQualifications(data)
     }
-    
+
+
+
+
+  }
+  stepBack = () => {
+    this.props.history.push('perfect')
   }
 
+
+  async TemporaryQualificationInformation(data) {
+    const res = await TemporaryQualificationInformation(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      message.success(res.data.msg)
+    }
+  }
+  save = () => {
+    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageResT, imageReST, CorporateName,bank_id,province_id,city_id } = this.state
+    let data = {
+      siteUUID: siteUUID,
+      lisenceURL: imageRes,
+      legalname: handleName,
+      legalcard: handleCardId,
+      legalphone: handlePhone,
+      legalBaseURL: legalBaseURL,
+      legalFilesURL: imageResT + '|' + imageReST,
+      Settlement: Radiovalue,
+      Bankaccount: handleBankNum,
+      OpeningBank: openingLine,
+      CorporateName: CorporateName,
+      Banktype:bank_id,
+      ProvinceBank:province_id,
+      CityBank:city_id
+    }
+    if (data.lisenceURL === 1) {
+      message.error('营业执照违规请重新上传');
+    } else if (imageResT === 1) {
+      message.error('身份证正面照违规请重新上传');
+    } else if (imageReST === 1) {
+      message.error('身份证反面照违规请重新上传');
+    } else {
+      this.TemporaryQualificationInformation(data)
+    }
+
+  }
+
+
+
+
+  async getVenueQualifiedCompany(data) {
+    const res = await getVenueQualifiedCompany(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ visible: true, legePhone: res.data.data.phone })
+    }else{
+      message.warning(res.data.msg)
+    }
+  }
+
+  search = () => {
+    this.getVenueQualifiedCompany({ CorporateName: this.state.CorporateName })
+  }
+
+
+  async nacode(data) {
+    const res = await _code(data)
+    if (res.data.code === 4007) {
+      this.setState({ visiblePhone: true, textTwo: res.data.msg })
+    } else if (res.data.code === 2000) {
+      let num = 60
+      const timer = setInterval(() => {
+        this.setState({ textT: num-- })
+        if (num === -1) {
+          clearInterval(timer)
+          this.setState({ textT: '获取验证码' })
+        }
+      }, 1000)
+    } else {
+      message.error(res.data.msg)
+    }
+  }
+
+  code=()=>{
+      this.nacode({mobile:this.state.legePhone,type:'venuequalifiedcompany',uuid:''})
+  }
+  codeNum=(e)=>{
+    this.setState({codeNum:e.target.value})
+  }
+
+  async getVenueQualified(data) {
+    const res = await getVenueQualified(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code !== 2000) {
+      message.error(res.data.msg)
+    } else {
+      if(res.data.data.ProvinceBank!=''){
+        this.getVenueOpenBankCity({ province_id:res.data.data.ProvinceBank })
+      }
+      this.setState({
+        imageUrl: res.data.data.lisenceURL, handleName: res.data.data.legalname, handleCardId: res.data.data.legalcard, imageRes: res.data.data.lisenceURL,
+        handlePhone: res.data.data.legalphone, Radiovalue: res.data.data.Settlement, handleBankNum: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, legalBaseURL: res.data.data.legalBaseURL,
+        imageResT: res.data.data.legalBaseURL === '' ? '' : res.data.data.legalFilesURL.split('|')[0],
+        imageReST: res.data.data.legalBaseURL === '' ? '' : res.data.data.legalFilesURL.split('|')[1], CorporateName: res.data.data.CorporateName,
+        bank_id:res.data.data.Banktype,province_id:res.data.data.ProvinceBank,city_id:res.data.data.CityBank,
+        flagDis:true,visible:false
+      })
+    }
+  }
+
+  get=()=>{
+    this.getVenueQualified({CorporateName:this.state.CorporateName,code:this.state.codeNum,phone:this.state.legePhone})
+  }
+  handleCancel=()=>{
+    this.setState({visible:false})
+  }
   render() {
     const uploadButton = (
       <div>
@@ -389,7 +474,7 @@ class qualification extends React.Component {
       </div>
     );
     const { imageReST } = this.state;
- 
+
     return (
       <div className="qualification">
         <div className="header">
@@ -407,40 +492,56 @@ class qualification extends React.Component {
             <div className="contentSon">
               <span className="titile">场馆资质信息</span>
 
+              <div className="name" style={this.state.Radiovalue === 0 ? { display: 'block' } : { display: 'none' }}>
+                <div className="nameSonTle">
+                  <span className="boTitle">公司名称</span><span className="symbol">*</span>
+                </div>
+                <Input className="nameINput" value={this.state.CorporateName} onChange={this.CorporateName} placeholder="请输入公司名称" />
+                <span className="sreach" onClick={this.search}>查询</span>
+              </div>
               <div className="name">
-                <span className="symbol">*</span><span className="boTitle">营业执照</span>
-                
-                  <Upload
-                    name="files"
-                    listType="picture-card"
-                    className="avatar-uploader addImg"
-                    showUploadList={false}
-                    action="/api/UploadVenueImgs?type=Venuelisence"
-                    beforeUpload={beforeUpload}
-                    onChange={this.handleChange}
-                  >
-                    {imageRes!==1&&imageRes!=='' ? <img src={'https://app.tiaozhanmeiyitian.com/'+imageRes} alt="avatar" style={{ maxWidth: '4.5rem', maxHeight: '4.5rem' }} /> : uploadButton}
-                  </Upload>
-               
+                <div className="nameSonTle">
+                  <span className="boTitle">营业执照</span><span className="symbol">*</span>
+                </div>
+                <Upload
+                  name="files"
+                  listType="picture-card"
+                  className="avatar-uploader addImg"
+                  showUploadList={false}
+                  action="/api/UploadVenueImgs?type=Venuelisence"
+                  beforeUpload={beforeUpload}
+                  onChange={this.handleChange}
+                  disabled={this.state.flagDis}
+                >
+                  {imageRes !== 1 && imageRes !== '' ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageRes} alt="avatar" style={{ maxWidth: '4.5rem', maxHeight: '4.5rem' }} /> : uploadButton}
+                </Upload>
+
 
               </div>
               <div className="name">
-                <span className="symbol">*</span><span className="boTitle">法人姓名</span>
-                <Input className="nameINput" onChange={this.handleName} value={this.state.handleName} placeholder="请输入法人姓名" />
+                <div className="nameSonTle">
+                  <span className="boTitle">法人姓名</span><span className="symbol">*</span>
+                </div>
+                <Input className="nameINput" disabled={this.state.flagDis} onChange={this.handleName} value={this.state.handleName} placeholder="请输入法人姓名" />
               </div>
               <div className="name">
-                <span className="symbol">*</span><span className="boTitle">法人身份证号</span>
-                <Input className="nameINput cardId" maxLength={18} value={this.state.handleCardId} onChange={this.handleCardId} placeholder="请输入法人身份证号" />
+                <div className="nameSonTle">
+                  <span className="boTitle">法人身份证号</span><span className="symbol">*</span>
+                </div>
+                <Input className="nameINput cardId" disabled={this.state.flagDis} maxLength={18} value={this.state.handleCardId} onChange={this.handleCardId} placeholder="请输入法人身份证号" />
               </div>
 
               <div className="name">
-                <span className="symbol">*</span><span className="boTitle">法人手机号</span>
-                <Input className="nameINput phone" maxLength={11} value={this.state.handlePhone} onChange={this.handlePhone} style={{ fontSize: '14px' }} placeholder="请输入11位手机号" />
+                <div className="nameSonTle">
+                  <span className="boTitle">法人手机号</span><span className="symbol">*</span>
+                </div>
+                <Input className="nameINput phone" maxLength={11} disabled={this.state.flagDis} value={this.state.handlePhone} onChange={this.handlePhone} style={{ fontSize: '14px' }} placeholder="请输入11位手机号" />
               </div>
 
               <div className="name">
-                <span className="symbol">*</span><span className="boTitle">法人身份证</span>
-              
+                <div className="nameSonTle">
+                  <span className="boTitle">法人身份证</span><span className="symbol">*</span>
+                </div>
                 <Upload
                   name="files"
                   listType="picture-card"
@@ -449,10 +550,11 @@ class qualification extends React.Component {
                   action="/api/UploadVenueImgs?type=Venuelisence"
                   beforeUpload={beforeUploadT}
                   onChange={this.handleChangeT}
+                  disabled={this.state.flagDis}
                 >
-                  {imageResT!==1&&imageResT!=='' ? <img src={'https://app.tiaozhanmeiyitian.com/'+imageResT} alt="avatar" style={{maxWidth: '4.5rem', maxHeight: '4.5rem'  }} /> : uploadButtonT}
+                  {imageResT !== 1 && imageResT !== '' ? <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.legalBaseURL + imageResT} alt="avatar" style={{ maxWidth: '4.5rem', maxHeight: '4.5rem' }} /> : uploadButtonT}
                 </Upload>
-             
+
                 <Upload
                   name="files"
                   listType="picture-card"
@@ -461,49 +563,53 @@ class qualification extends React.Component {
                   action="/api/UploadVenueImgs?type=Venuelisence"
                   beforeUpload={beforeUploadTS}
                   onChange={this.handleChangeTS}
+                  disabled={this.state.flagDis}
                 >
-                  {imageReST!==1&&imageReST!=='' ? <img src={'https://app.tiaozhanmeiyitian.com/'+imageReST} alt="avatar" style={{ maxWidth: '4.5rem', maxHeight: '4.5rem'  }} /> : uploadButtonS}
+                  {imageReST !== 1 && imageReST !== '' ? <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.legalBaseURL + imageReST} alt="avatar" style={{ maxWidth: '4.5rem', maxHeight: '4.5rem' }} /> : uploadButtonS}
                 </Upload>
-              
+
               </div>
 
               <div className="name">
-                <span className="symbol">*</span><span className="boTitle">结算账号</span><span className="kong"></span>
-                <Radio.Group onChange={this.onChangeRadio} value={this.state.Radiovalue}>
-                  <Radio value={0}>公司银行账号<span style={{fontSize:'12px',paddingLeft:'5px'}}>(法人不是股东或有多个股东时只能选择公司银行账户结算)</span></Radio><br/>
+                <div className="nameSonTle">
+                  <span className="boTitle">结算账号</span> <span className="symbol">*</span>
+                </div>
+                <Radio.Group onChange={this.onChangeRadio} disabled={this.state.flagDis} value={this.state.Radiovalue}>
+                  <Radio value={0}>公司银行账号<span style={{ fontSize: '12px', paddingLeft: '5px' }}>(法人不是股东或有多个股东时只能选择公司银行账户结算)</span></Radio><br />
                   <Radio value={1}>法人账号</Radio>
                 </Radio.Group>
               </div>
 
-              <div className="name" style={this.state.Radiovalue === 0 ? { display: 'block' } : { display: 'none' }}>
-                <span className="symbol">*</span><span className="boTitle">公司名称</span>
-                <Input className="nameINput" value={this.state.CorporateName} onChange={this.CorporateName} placeholder="请输入公司名称" />
-              </div>
-
-              <div className="name">
-                <span className="symbol">*</span><span className="boTitle">银行账号</span>
-                <Input className="nameINput" maxLength={19} onChange={this.handleBankNum} value={this.state.handleBankNum} placeholder="请输入银行卡号" />
-              </div>
-
 
 
               <div className="name">
-                <span className="symbol">*</span><span className="boTitle">开户行及所在地</span>
-                <Select placeholder="银行类型" style={{ width: 120, height: '35px', marginLeft: '12px' }} loading={this.state.flag} onChange={this.typeChange}>
+                <div className="nameSonTle">
+                  <span className="boTitle">银行账号</span><span className="symbol">*</span>
+                </div>
+                <Input className="nameINput" disabled={this.state.flagDis} maxLength={19} onChange={this.handleBankNum} value={this.state.handleBankNum} placeholder="请输入银行卡号" />
+              </div>
+
+
+
+              <div className="name">
+                <div className="nameSonTle">
+                  <span className="boTitle">开户行及所在地</span><span className="symbol">*</span>
+                </div>
+                <Select placeholder="银行类型" disabled={this.state.flagDis} style={{ width: 120, height: '35px' }} value={Number(this.state.bank_id)} loading={this.state.flag}  onChange={this.typeChange}>
                   {
                     this.state.type.map((item, i) => (
                       <Option key={i} value={item.bank_id}>{item.bank_name}</Option>
                     ))
                   }
                 </Select>
-                <Select placeholder="所在省" style={{ width: 120, height: '35px', marginLeft: '27px' }} loading={this.state.flagTwo} onChange={this.provinceChange}>
+                <Select placeholder="所在省" disabled={this.state.flagDis} style={{ width: 120, height: '35px', marginLeft: '27px' }} loading={this.state.flagTwo} value={Number(this.state.province_id)} onChange={this.provinceChange}>
                   {
                     this.state.backProvince.map((item, i) => (
                       <Option key={i} value={item.province_id}>{item.province}</Option>
                     ))
                   }
                 </Select>
-                <Select placeholder="所在市" style={{ width: 120, height: '35px', marginLeft: '27px' }} loading={this.state.flagThree} onChange={this.cityChange}>
+                <Select placeholder="所在市" disabled={this.state.flagDis} style={{ width: 120, height: '35px', marginLeft: '27px' }} value={Number(this.state.city_id)} loading={this.state.flagThree} onChange={this.cityChange}>
                   {
                     this.state.backCity.map((item, i) => (
                       <Option key={i} value={item.city_id}>{item.city}</Option>
@@ -513,16 +619,19 @@ class qualification extends React.Component {
               </div>
 
               <div className="name">
-                <span className="symbol">*</span><span className="boTitle">支行名称</span>
+                <div className="nameSonTle">
+                  <span className="boTitle">支行名称</span><span className="symbol">*</span>
+                </div>
                 <Select
                   showSearch
-                  style={{ width: 273, height: '36px', marginLeft: '60px' }}
+                  style={{ width: 273, height: '36px' }}
                   onSearch={this.handleSearch}
                   onChange={this.openingLine}
                   defaultActiveFirstOption={false}
                   showArrow={false}
                   notFoundContent={null}
                   value={this.state.openingLine}
+                  disabled={this.state.flagDis}
                 >
                   {
                     this.state.backList.map((item, i) => (
@@ -537,10 +646,25 @@ class qualification extends React.Component {
 
               </div>
               <div className="prompt">请注意<span>*</span>为必填项</div>
-              <Button className="next" onClick={this.stepBack}>上一步</Button><Button className="next" style={{marginLeft:20}} onClick={this.save}>保存</Button><Button className="next" style={{marginLeft:20}} onClick={this.submit}>提交</Button>
+              <Button className="next" onClick={this.stepBack}>上一步</Button><Button className="next" style={this.state.flagDis===true?{display:'none'}:{ marginLeft: 20 }} onClick={this.save}>保存</Button><Button className="next" style={{ marginLeft: 20 }} onClick={this.submit}>提交</Button>
             </div>
           </div>
         </div>
+        <Modal
+          title="获取该公司详细资质信息"
+          visible={this.state.visible}
+          onOk={this.handleOk}
+          className="mode"
+          onCancel={this.handleCancel}
+        >
+          <div><span style={{ float: 'left', lineHeight: '42px', width: '70px' }}>法人手机号</span><Input value={this.state.legePhone} disabled={true} style={{ width: '270px', float: 'left', marginLeft: '20px' }} /></div>
+          <div style={{ float: 'left',marginTop:"10px" }}>
+            <span style={{ float: 'left', lineHeight: '42px', width: '70px' }} >验证码</span>
+            <Input  style={{ width: '190px', float: 'left', marginLeft: '20px' }} onChange={this.codeNum} />
+                <span style={{width:'80px',height:'47px',color:'#fff',background:'#F5A623',textAlign:'center',lineHeight:'47px',float:'left',cursor:'pointer'}} onClick={this.code}>{this.state.textT}</span>
+          </div>
+          <div style={{width:'80px',height:'30px',color:'#fff',background:'#F5A623',cursor:'pointer',clear:'both',textAlign:'center',lineHeight:'30px',marginLeft:'90px',marginTop:'120px'}} onClick={this.get}>获取</div>
+        </Modal>
       </div>
     )
   }

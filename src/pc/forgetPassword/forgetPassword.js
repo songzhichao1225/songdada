@@ -1,7 +1,7 @@
 import React from 'react';
 import './forgetPassword.css';
 import 'antd/dist/antd.css';
-import { _code, VenueSelectSiteName,VenueForgetPass } from '../../api';
+import { _code,VenueForgetPass } from '../../api';
 import { Form, Input, Button, message,Radio } from 'antd';
 
 class forgetPassword extends React.Component {
@@ -16,10 +16,10 @@ class forgetPassword extends React.Component {
     passTwo:'',
   };
 
-  async VenueSelectSiteName(data) {
-    const res = await VenueSelectSiteName(data)
+  async _code(data) {
+    const res = await _code(data)
     if (res.data.code === 2000) {
-      this.setState({selectVeun:res.data.data,value:res.data.data[0].venueloginuuid})
+    
       let num = 60
       const timer = setInterval(() => {
         this.setState({ textT: num-- })
@@ -28,7 +28,7 @@ class forgetPassword extends React.Component {
           this.setState({ textT: '获取验证码' })
         }
       }, 1000)
-      this.nacode({ "mobile": this.state.phone, "type": 'venueforgetpass' })
+      
     }else{
       message.error(res.data.msg)
     }
@@ -44,18 +44,10 @@ class forgetPassword extends React.Component {
   phoneChange = e => {
     this.setState({ phone: e.target.value })
   }
-  async nacode(data) {
-    const res = await _code(data)
-     if(res.data.code===2000){
-      message.success(res.data.msg)
-     }else{
-       message.warning(res.data.msg)
-     }
-
-  }
+ 
   naCode = () => {
     if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
-      this.VenueSelectSiteName({ phone: this.state.phone })
+      this._code({ mobile: this.state.phone,type:'venueforgetpass' })
     } else {
       message.error('请输入手机号')
     }
@@ -109,8 +101,16 @@ class forgetPassword extends React.Component {
             <Form>
               <Form.Item >
                 <div className="son">
-                  <span style={{ float: 'left', marginLeft: 17,lineHeight:'30px' }}>手机号码</span>
-                  <Input style={{ float: 'left' }} placeholder="请输入法人手机号" maxLength={11} className="phone" onChange={this.phoneChange} />
+                  <span style={{ float: 'left', marginLeft: 17,lineHeight:'45px' }}>手机号码</span>
+                  <Input style={{ float: 'left' }} placeholder="请输入操作员手机号" maxLength={11} className="phone" onChange={this.phoneChange} />
+                 
+                </div>
+                </Form.Item>
+
+                <Form.Item>
+                <div className="son">
+                  <span style={{float:'left',marginLeft: 17,}}>验证码</span>
+                  <Input onChange={this.code} style={{float:'left',width:'176px'}} maxLength={6} className="phone code" />
                   <div className={this.state.textT === '获取验证码' ? 'huoBtn' : 'koohidden'} onClick={this.naCode} >
                     {this.state.textT}
                   </div>
@@ -118,37 +118,26 @@ class forgetPassword extends React.Component {
                     {this.state.textT}
                   </div>
                 </div>
-                </Form.Item>
-
-                <Form.Item className={this.state.selectVeun.length>0?'selectVeun':'selectVeunNone'}>
-                <div > 
-                  <Radio.Group className="radio" onChange={this.onChange} value={this.state.value} style={{width:'400px',marginLeft:'10px'}}>
-                    {
-                      this.state.selectVeun.map((item,i)=>(
-                        <Radio key={i}  style={{float:'left'}} value={item.venueloginuuid}>{item.name}</Radio>
-                      ))
-                    }
-                  </Radio.Group>
-
-
-                </div>
-                </Form.Item>
-                <Form.Item>
-                <div className="son">
+                <div className="son" style={{opacity:0,position:'absolute'}}>
                   <span>验证码</span>
                   <Input onChange={this.code} maxLength={6} className="phone code" />
                 </div>
                 </Form.Item>
                 <Form.Item>
+                <div className="son" style={{opacity:0,position:'absolute'}}>
+                  <span>验证码</span>
+                  <Input.Password onChange={this.code} maxLength={6} className="phone code" />
+                </div>
                 <div className="son">
                   <span>新密码</span>
-                  <Input onChange={this.pass} maxLength={8} className="phone code" />
+                  <Input.Password onChange={this.pass} maxLength={8} className="phone code" />
                 </div>
+                
                 </Form.Item>
                 <Form.Item>
                 <div className="son">
                   <span>确认密码</span>
-                  <Input onChange={this.passTwo} maxLength={8} className="phone confirm" />
+                  <Input.Password onChange={this.passTwo} maxLength={8} className="phone confirm" />
                 </div>
                 </Form.Item>
               <Form.Item>

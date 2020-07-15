@@ -204,6 +204,7 @@ class perfect extends React.Component {
     const res = await VenueInformationSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.props.history.push('/qualification')
+      message.error('提交成功')
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登录超时请重新登录')
@@ -233,13 +234,14 @@ class perfect extends React.Component {
         message.warning("至少上传两张场地照片")
 
       } else {
+        console.log(this.props.location.query)
         let data = {
           venuename: localStorage.getItem('handleName'),
           lat: this.props.location.query === undefined ? this.state.lat : this.props.location.query.lat,
           lng: this.props.location.query === undefined ? this.state.lng : this.props.location.query.lng,
           province: this.props.location.query === undefined ? this.state.province : this.props.location.query.province,
           city: this.props.location.query === undefined ? this.state.city : this.props.location.query.city,
-          area: this.props.location.district === undefined ? this.state.area : this.props.location.query.district,
+          area: this.props.location.query === undefined ? this.state.area : this.props.location.query.district,
           address: handleAddress,
           filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
           firstURL: imageRes,
@@ -264,9 +266,9 @@ class perfect extends React.Component {
         }else if(/^[a-zA-Z\u4e00-\u9fa5]+$/.test(handelPerson)===false){
           message.error('联系人只允许输入文字/字母')
        } else if (data.firstURL === '') {
-        message.error('门脸照违规请重新上传');
+        message.error('门脸照违规请重新上传')
       } else if (data.filesURL.split('|').indexOf('无')!==-1) {
-        message.error('场地照有违规图片请重新上传');
+        message.error('场地照有违规图片请重新上传')
       } else {
           this.VenueInformationSave(data)
         }
@@ -355,7 +357,7 @@ class perfect extends React.Component {
     if (res.data.code === 2000) {
       message.success(res.data.msg)
     } else {
-      message.success(res.data.msg)
+      message.error(res.data.msg)
     }
   }
 
@@ -406,8 +408,7 @@ class perfect extends React.Component {
       message.error('场地照有违规图片请重新上传');
     }else {
       console.log(data)
-      // this.TemporaryVenueInformation(data)
-
+      this.TemporaryVenueInformation(data)
     }
 
   }
@@ -427,7 +428,6 @@ class perfect extends React.Component {
     const { previewVisible, previewImage, fileList } = this.state
     const uploadButtonT = (
       <div>
-        <Icon type="plus" />
         <div className="ant-upload-text">场地照</div>
       </div>
     )
@@ -505,7 +505,7 @@ class perfect extends React.Component {
                     onChange={this.handleChange}
                     accept=".jpg, .jpeg, .png"
                   >
-                    {imageRes!==1&&imageRes!=='' ? <img src={'https://app.tiaozhanmeiyitian.com/'+imageRes} alt="avatar" style={{ width: '100%', height: '100%' }} /> : uploadButton}
+                    {imageRes!==1&&imageRes!==''&&imageRes!==null ? <img src={'https://app.tiaozhanmeiyitian.com/'+imageRes} alt="avatar" style={{ width: '100%', height: '100%' }} /> : uploadButton}
                   </Upload>
                 </ImgCrop>
                 <span className="rightText">上传图片小于3M</span>

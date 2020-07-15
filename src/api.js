@@ -397,6 +397,13 @@ export function TemporaryQualificationInformation(data,headers){    //临时添�
     return axios.post('/api/TemporaryQualificationInformation',data,{headers: {'token': headers}})
 }
 
+export function getVenueQualifiedCompany(data,headers){    //填写资质信息时，查询公司名称是否存在 
+    return axios.post('/api/getVenueQualifiedCompany',data,{headers: {'token': headers}})
+}
+
+export function getVenueQualified(data,headers){    //填写资质信息时，查询公司名称是否存在 
+    return axios.post('/api/getVenueQualified',data,{headers: {'token': headers}})
+}
 
 
 

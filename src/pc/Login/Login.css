@@ -98,8 +98,8 @@
 }
 .login .content  .right  .bind{
 	margin-top: 20px;
+} 
 
-}
 .login .content  .right .codeBtn{
 	width: 89px;
 	height: 45px;
@@ -110,7 +110,7 @@
 	position: absolute;  
 	cursor: pointer;
 	margin-left: -16px;
-	margin-top: -4px;
+	margin-top: -14px;
 	line-height: 45px;
 }
 
@@ -120,10 +120,14 @@
 }
 .login .ant-input{
 	height: 45px;
-	width: 90%;
+	width: 100%;
 }
 .login .ant-input-affix-wrapper > input.ant-input{
 	height: 42px;
+}
+
+.login .ant-input-suffix{
+	padding-right: 20px;
 }
 
 .koohidden{
@@ -147,7 +151,7 @@
 }
 .login .content  .right .checke{
 	width: 300px;
-	margin-left: 30px;
+	margin-left: 25px;
 }
 .login .content  .right .checke a:first-child span{
 	float: left;
@@ -230,4 +234,7 @@
 }
 .ant-input-affix-wrapper{
 	padding: 0;
+}
+.login .ant-select-arrow{
+	top:30%;
 }

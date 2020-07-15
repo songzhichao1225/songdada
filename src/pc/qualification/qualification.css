@@ -87,14 +87,14 @@
 .qualification .symbol{
 	color: #F64A0C ;
 	display: block;
-	float: left
+	float: right;
 }
 .qualification .boTitle{
 	font-size: 16px;
 	color: #4A4A4A;
-	margin-left: 5px;
+	margin-right: 5px;
 	display: block;
-	float: left
+	float: right
 }
 .qualification .one{
 	margin-left: 26.8px;
@@ -107,7 +107,6 @@
 .qualification .nameINput{
 	width: 273px;
 	height: 35px;
-	margin-left: 60px;
 }
 .qualification .dingImg{
 	margin-left: 9px
@@ -116,7 +115,6 @@
 width: 132px;
 height: 132px;
 display: inline-block;
-margin-left: 60px;
 }
 .qualification .rightText{
 	font-size: 12px;
@@ -154,18 +152,8 @@ margin-left: 60px;
 	font-size: 16px;
 	color: #FFFFFF;
 }
-.qualification .cardId{
-	margin-left: 29px
-}
-.qualification .phone{
-	margin-left: 45px;
-}
-.qualification .opening{
-	margin-left: 75px;
-}
-.qualification .addimgT{
-	margin-left: 45px;
-}
+
+
 .qualification .ant-select-selection--single{
 	height: 33px;
 	
@@ -175,4 +163,16 @@ margin-left: 60px;
 }
 .qualification .ant-input{
 	height: 33px;
+}
+.qualification .nameSonTle{
+	width: 130px;
+	float: left;
+	margin-right: 20px;
+}
+.qualification .sreach{
+	padding: 8px 8px;
+	color: #fff;
+	border-radius: 2px;
+	background-color: #F5A623;
+	cursor: pointer;
 }
