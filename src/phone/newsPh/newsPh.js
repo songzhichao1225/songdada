@@ -229,6 +229,7 @@ class newsPh extends React.Component {
     this.setState({ getVenueNewsReceivedList: items })
   }
   locad=e=>{
+    sessionStorage.setItem('modl',null)
     this.props.history.push({pathname:'/homePh/orderPhT',query:{uuid:e.currentTarget.dataset.uuid}})
   }
   inforsite=()=>{

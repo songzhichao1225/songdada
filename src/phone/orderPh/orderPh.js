@@ -47,7 +47,6 @@ class orderPh extends React.Component {
       { name: '足球', id: 5 },
       { name: '排球', id: 6 },
       { name: '网球', id: 7 },
-      { name: '高尔夫', id: 8 }
     ],
     status: [
       { name: '全部', id: 0 },
@@ -535,7 +534,7 @@ class orderPh extends React.Component {
 
 
   menu = () => {
-    let lp=0
+    
     if (this.state.evet === '1') {
       this.setState({ otherObj: '', menu: 2 })
       if (this.state.lotime.length !== 0) {

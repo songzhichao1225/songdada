@@ -299,7 +299,7 @@ class closeYu extends React.Component {
           }
         </div>
 
-        <Pagination className={this.state.closeList.length > 1 ? 'fenye' : 'hidden'} defaultCurrent={1} hideOnSinglePage={true}   showSizeChanger={false}  total={parseInt(this.state.other)} onChange={this.current} />
+        <Pagination className={this.state.closeList.length > 1 ? 'fenye' : 'hidden'} defaultCurrent={1} hideOnSinglePage={true}  current={this.state.page}  showSizeChanger={false}  total={parseInt(this.state.other)} onChange={this.current} />
         <div style={this.state.closeList.length < 1 ?{width:'100%'}:{display:'none'}}><img style={{width:84,height:84,display:'block',margin:'84px auto 0'}} src={require('../../assets/xifen (4).png')} alt="icon"/><span style={{display:'block',textAlign:'center'}}>您还没有添加临时关闭预约!</span></div>
 
 

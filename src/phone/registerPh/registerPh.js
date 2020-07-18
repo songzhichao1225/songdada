@@ -54,6 +54,8 @@ class registerPh extends React.Component {
         Toast.fail('用户名只包含数字/字母', 2);
       }else if( /[^u4e00-u9fa5w]/g.test(e)){
         Toast.fail('用户名只包含数字/字母', 2);
+      }else if(e.length<4){
+        Toast.fail('用户名至少输入4位', 2);
       }else{this.getIsUserName({ name: e })}
     }
   }
@@ -240,6 +242,7 @@ eyesTwo=()=>{
               clear={false}
               style={{ fontSize: '0.8rem' }}
               onBlur={this.changeName}
+              maxLength={15}
             >
             </InputItem>
           </div>

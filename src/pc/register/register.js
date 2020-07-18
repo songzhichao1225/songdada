@@ -3,7 +3,7 @@ import './register.css';
 import 'antd/dist/antd.css';
 import { _register, _code, getPromoteName, getIsUserName } from '../../api';
 
-import { CloseCircleOutlined,EyeInvisibleOutlined,EyeOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined } from '@ant-design/icons';
 import {
   message,
   Input,
@@ -62,9 +62,10 @@ class register extends React.Component {
   }
 
 
-  changeName = (e) => {
-
-    if (/[\u4E00-\u9FA5]/g.test(e.target.value)) {
+  changeName = e => {
+   if(e.target.value.length<4){
+    this.setState({ kodTwo: '用户名至少输入4位' })
+   }else if (/[\u4E00-\u9FA5]/g.test(e.target.value)) {
       this.setState({ kodTwo: '用户名只能包含数字、字母、数字+字母' })
     }else if( /[^a-zA-Z0-9]/g.test(e.target.value)){
       this.setState({ kodTwo: '用户名只能包含数字、字母、数字+字母' })
@@ -249,9 +250,7 @@ class register extends React.Component {
       this.setState({passwordT:this.state.passwordT})
     }
   }
-  componentDidMount(){
-    this.setState({code:'',password:'',passwordT:''})
-  }
+ 
   paste=()=>{
     return false
   }
@@ -271,7 +270,7 @@ class register extends React.Component {
               <div><span>3.等待审核</span><img src={require("../../assets/twoline.png")} alt='5' /></div>
               <div><span>4.审核成功</span><img src={require("../../assets/twoline.png")} alt='5' /></div>
             </div>
-           <form action="return:false" novalidate="novalidate">
+           <form>
             <div className="authentication">
               <span className="title">用户注册</span>
               <div className="son">
@@ -282,7 +281,7 @@ class register extends React.Component {
 
               <div className="son">
                 <span className="xing">*</span> <span>用</span><span style={{paddingLeft:'6px'}}>户</span><span style={{paddingLeft:'6px'}}>名:</span>
-                <Input type="text" onBlur={this.changeName} onChange={this.cahngkoopd} placeholder="用户名只能包含数字、字母、数字+字母" className="phone" />
+                <Input type="text" onBlur={this.changeName} onChange={this.cahngkoopd} maxLength={15} placeholder="用户名只能包含数字、字母、数字+字母" className="phone" />
                 <span className="rightWaning" style={this.state.kodTwo !== '' ? {} : { display: 'none' }}><CloseCircleOutlined />{this.state.kodTwo}</span>
               </div>
 

@@ -87,6 +87,7 @@ class temporaryPh extends React.Component {
 
 
   onEndChange = (date, dateString) => {
+
     this.setState({ EndValue: dateString })
   };
 
@@ -224,8 +225,8 @@ class temporaryPh extends React.Component {
     const res = await VenueTemporarilyClosedDel(data, localStorage.getItem('venue_token'))
 
     Toast.success(res.data.msg, 1);
-
-    this.VenueTemporarilyClosedList()
+    this.setState({temPage:this.state.temPage})
+    this.VenueTemporarilyClosedList({page: this.state.temPage})
 
   }
   temDelet = () => {
@@ -302,7 +303,7 @@ class temporaryPh extends React.Component {
 
 
         <Drawer
-          title="添加关闭预约信息"
+          title="添加临时关闭预约信息"
           placement="right"
           closable={true}
           width={'100%'}
@@ -335,6 +336,7 @@ class temporaryPh extends React.Component {
             <DatePicker
               value={this.state.startValue}
               minuteStep={30}
+              format='YYYY-MM-DD HH:mm'
               onChange={startValue => this.setState({ startValue })}
             >
               <List.Item className="startTime">开始时间</List.Item>
@@ -350,6 +352,7 @@ class temporaryPh extends React.Component {
             <DatePicker
               value={this.state.EndValue}
               minDate={this.state.startValue}
+              format='YYYY-MM-DD HH:mm'
               minuteStep={30}
               onChange={EndValue => this.setState({ EndValue })}
             >

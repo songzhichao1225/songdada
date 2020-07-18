@@ -2,8 +2,8 @@ import React from 'react';
 import './appointmentList.css';
 import 'antd/dist/antd.css';
 import { Input, Row, Col, Select, Pagination, Spin, message, DatePicker, Modal, Radio, Drawer, InputNumber, Popover } from 'antd';
-import {  SyncOutlined, CloseCircleOutlined } from '@ant-design/icons';
-import { getReservationActivitieslist, getVenueReservation, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
+import { SyncOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { getReservationActivitieslist, getVenueReservation, getVenueSport, VenueSendMessage, VenueClickCancelPlace, getVenueComplainList, VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import 'moment/locale/zh-cn';
 const { Option } = Select;
@@ -74,7 +74,9 @@ class appointmentList extends React.Component {
     tilValue: '',
     activityNavTwo: [],
     otherType: [],
-    sportName: ''
+    sportName: '',
+    Complaints: false,
+    listComplain: []
   };
 
   async getVenueSport(data) {
@@ -123,19 +125,19 @@ class appointmentList extends React.Component {
 
 
   componentDidMount() {
-    console.log(this.props.location.query )
+    console.log(this.props.location.query)
     this.getVenueSport()
-    if(this.props.location.query!==undefined){
-      this.getReservationActivitieslist({ page: 1,publicuid:this.props.location.query.uuid, sport: '', status: '' })
-    }else{
+    if (this.props.location.query !== undefined) {
+      this.getReservationActivitieslist({ page: 1, publicuid: this.props.location.query.uuid, sport: '', status: '' })
+    } else {
       this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
     }
 
 
     this.setState({ dateString: new Date().toLocaleDateString().replace(/\//g, "-") })
-    
-     
-    
+
+
+
 
     setInterval(() => {
       window.addEventListener('storage', sessionStorage.getItem('kood') === '2' ? this.getVenueNumberTitleList({ sportid: this.state.liNum }) : this);
@@ -145,7 +147,7 @@ class appointmentList extends React.Component {
 
   dateonChangeS = (date, dateString) => {
     this.setState({ start: dateString[0], end: dateString[1] })
-    this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: '', startdate: dateString[0], enddate: dateString[1] })
+    this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: this.state.status, startdate: dateString[0], enddate: dateString[1] })
   }
 
   current = (page, pageSize) => {
@@ -219,7 +221,7 @@ class appointmentList extends React.Component {
   }
   activityChang = (e) => {
     this.setState({ status: e })
-    this.setState({page:1})
+    this.setState({ page: 1 })
     if (this.state.start === '开始日期') {
       this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e, startdate: '', enddate: '' })
     } else {
@@ -479,6 +481,22 @@ class appointmentList extends React.Component {
     this.DelVenueNumberTitle({ uuid: e.currentTarget.dataset.uuid })
 
   }
+  Complaints = e => {
+    this.setState({ Complaints: true })
+    this.getVenueComplainList({ publicuuid: e.currentTarget.dataset.id })
+  }
+  ComplaintsTwo = () => {
+    this.setState({ Complaints: false })
+  }
+
+  async getVenueComplainList(data) {
+    const res = await getVenueComplainList(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ listComplain: res.data.data })
+
+    }
+  }
+
 
 
   render() {
@@ -498,7 +516,7 @@ class appointmentList extends React.Component {
                 <Col xs={{ span: 2 }}>{item.PlayTime}小时</Col>
                 <Col xs={{ span: 2 }}>{item.Shouldarrive}</Col>
                 <Col xs={{ span: 2 }}>{item.TrueTo}</Col>
-                <Col xs={{ span: 3 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.PublicStatus}</Col>
+                <Col xs={{ span: 3 }} onClick={this.Complaints} data-id={item.uuid} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.PublicStatus}<span style={item.iscomplain === 1 ? { color: '#F6410C', fontSize: '12px' } : { display: 'none' }}>(有投诉)</span></Col>
                 <Col xs={{ span: 2 }}>￥{item.SiteMoney}</Col>
                 <Col xs={{ span: 2 }}>{item.SiteMoneyStatus}</Col>
                 <Col xs={{ span: 2 }}>
@@ -554,7 +572,7 @@ class appointmentList extends React.Component {
             <Col xs={{ span: 2 }}>应到人数</Col>
             <Col xs={{ span: 2 }}>已报名人数</Col>
             <Col xs={{ span: 3 }}>
-              <Select className="selectName" defaultValue="活动状态" bordered={false} listHeight={300} dropdownStyle={{height:'300px',textAlign:'center'}} style={{ width: '100%' }} onChange={this.activityChang} >
+              <Select className="selectName" defaultValue="活动状态" bordered={false} listHeight={300} dropdownStyle={{ height: '300px', textAlign: 'center' }} style={{ width: '100%' }} onChange={this.activityChang} >
                 <Option value="0">全部</Option>
                 <Option value="1">匹配中</Option>
                 <Option value="2">待出发</Option>
@@ -573,7 +591,7 @@ class appointmentList extends React.Component {
           <div className={this.state.hidden === true ? '' : 'hidden'} style={{ height: '90%', overflowY: 'auto' }}>
             {userMessage}
           </div>
-        <div style={this.state.hidden === true ?{display:'none'}:{width:'100%'}}><img style={{width:84,height:84,display:'block',margin:'84px auto 0'}} src={require('../../assets/xifen (5).png')} alt="icon"/><span style={{display:'block',textAlign:'center'}}>您的场馆没有相关活动!</span></div>
+          <div style={this.state.hidden === true ? { display: 'none' } : { width: '100%' }}><img style={{ width: 84, height: 84, display: 'block', margin: '84px auto 0' }} src={require('../../assets/xifen (5).png')} alt="icon" /><span style={{ display: 'block', textAlign: 'center' }}>您的场馆没有相关活动!</span></div>
 
 
         </div>
@@ -582,6 +600,7 @@ class appointmentList extends React.Component {
           title="给参与人员发送消息"
           visible={this.state.visible}
           onCancel={this.handleCancel}
+          className="mode"
           closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
         >
           <Radio.Group onChange={this.sendCheck} value={this.state.sendCheck}>
@@ -589,7 +608,7 @@ class appointmentList extends React.Component {
           </Radio.Group>
           <div style={this.state.sendCheck === 1 ? {} : { display: 'none' }}>
             <span>场馆号</span>
-            <Select className='changName' value={this.state.changName} onChange={this.changName}  style={{ width: 100, height: 30 }}>
+            <Select className='changName' value={this.state.changName} onChange={this.changName} style={{ width: 100, height: 30 }}>
               <Option value="0">0</Option>
               <Option value="1">1</Option>
               <Option value="2">2</Option>
@@ -689,6 +708,7 @@ class appointmentList extends React.Component {
           title="请输入线下预订人的相关信息"
           visible={this.state.info}
           onOk={this.handleOk}
+          className='mode'
           onCancel={this.handleCancel}
           closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
         >
@@ -710,6 +730,26 @@ class appointmentList extends React.Component {
           </div>
           <span onClick={this.placeSubmit} style={{ cursor: 'pointer', padding: '4px 8px', background: '#F5A623', color: '#fff', float: 'right', marginRight: '125px', marginTop: '20px' }}>提交</span>
         </Modal>
+
+        <Drawer
+          title='投诉详情'
+          placement="right"
+          closable={false}
+          width='400px'
+          onClose={this.ComplaintsTwo}
+          visible={this.state.Complaints}
+        >
+          {
+            this.state.listComplain.map((item, i) => (
+              <div key={i} style={{marginTop:'15px'}}>
+                <div><span style={{fontSize:'16px',fontWeight:'blod'}}>投诉类型:</span>{item.name}</div>
+                <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>投诉详情:</span>{item.comment}</div>
+              </div>
+            ))
+          }
+
+
+        </Drawer>
 
 
       </div>

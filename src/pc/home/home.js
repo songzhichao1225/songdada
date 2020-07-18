@@ -239,21 +239,26 @@ class home extends React.Component {
     } else {
       this.setState({ gerVenueNameName: res.data.data.name, gerVenueNameRate: res.data.data.rate })
       sessionStorage.setItem('mess', res.data.data.mess)
+      sessionStorage.setItem('siteuid',res.data.data.siteuid)
     }
   }
 
 
   income = () => {
     this.props.history.push({ pathname: '/home/myWallet', query: { time: 1 } })
+    sessionStorage.setItem('incomtime',1)
   }
   daysIncome = () => {
     this.props.history.push({ pathname: '/home/myWallet', query: { time: 2 } })
+    sessionStorage.setItem('incomtime',2)
   }
   mounthOrder = () => {
     this.props.history.push({ pathname: '/home/information', query: { time: 1 } })
+    sessionStorage.setItem('iconmInfor',1)
   }
   mounthOrderTwo = () => {
     this.props.history.push({ pathname: '/home/information', query: { time: 2 } })
+    sessionStorage.setItem('iconmInfor',2)
   }
   news = () => {
     this.gerVenueName()
@@ -264,6 +269,7 @@ class home extends React.Component {
   }
   wallet=()=>{
     sessionStorage.setItem('wallet',false)
+    sessionStorage.setItem('incomtime',null)
     this.props.history.push('/home/myWallet')
   }
   render() {

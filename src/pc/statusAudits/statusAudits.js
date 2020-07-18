@@ -59,8 +59,8 @@ class statusAudits extends React.Component {
             <span className="titleText">信息完善成功！等待审核</span>
             <div className="footer">
               <span>我们会在3个工作日完成审核。</span>
-              <span>审核成功后会发送短信到您绑定的手机，请注意查收。</span>
-              <span>联系电话：010-89781234</span>
+              <span>审核成功后会发送短信到您绑定的手机号，请注意查收。</span>
+              <span>联系电话：010-80895077</span>
 
             </div>
           </div>
@@ -95,7 +95,7 @@ class statusAudits extends React.Component {
             <div className="footer">
               <span>审核未通过原因如下：</span>
               <span>您的<span style={{ color: '#F5A623' }}>{this.state.content}</span>未通过审核，请返回修改</span>
-              <span>联系电话：010-89781234</span>
+              <span>联系电话：010-80895077</span>
               <span style={{ fontSize: '14px', color: '#F5A623', cursor: 'pointer' }} onClick={this.perfect}> 返回修改信息 </span>
               <span style={{ fontSize: '14px', color: '#F5A623', cursor: 'pointer' }} onClick={this.login}>返回重新登录</span>
             </div>

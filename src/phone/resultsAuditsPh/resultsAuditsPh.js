@@ -102,12 +102,12 @@ class resultsAuditsPh extends React.Component {
            <div className="boss" style={this.state.islegal===0?{display:'block'}:{display:'none'}}>
               <img className="icon" src={require("../../assets/icon_pc.png")} alt="图标"/>
               <span className="text">信息完善成功！等待审核</span>
-               <span className="content">我们会在3个工作日完成审核。<br/> 审核成功后会发送短信到您绑定的手机，请注意查收。<br/>联系电话：010-88777777 </span>
+               <span className="content">我们会在3个工作日完成审核。<br/> 审核成功后会发送短信到您绑定的手机，请注意查收。<br/>联系电话：010-80895077 </span>
          </div>
          <div className="boss" style={this.state.islegal===2?{display:'block'}:{display:'none'}}>
               <img className="icon" src={require("../../assets/no.png")} alt="图标"/>
               <span className="text">抱歉！未通过审核</span>
-               <span className="content">审核未通过原因如下:<span style={{color:'#D85D27'}}>{this.state.content}</span><br/>联系电话：010-88777777 </span>
+               <span className="content">审核未通过原因如下:<span style={{color:'#D85D27'}}>{this.state.content}</span><br/>联系电话：010-80895077 </span>
                 <span onClick={this.goback} style={{color:'#D85D27',marginLeft:'1rem',fontSize:'0.75rem'}}> 返回修改信息 </span>
                 <span onClick={this.login} style={{marginLeft:'1rem',color:'#D85D27',display:'block',fontSize:'0.75rem'}}> 返回重新登录 </span>
 

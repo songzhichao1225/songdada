@@ -211,14 +211,14 @@ class Login extends React.Component {
                 <div onClick={this.phoneLogin} style={this.state.navNum === true ? { color: '#F5A623' } : { color: '#000' }}>法人登录</div>
               </div>
               <div className={this.state.navNum ? 'phoneLoginT' : 'phoneLogin'}>
-                <Form layout="inline" autoComplete="on" noValidate="novalidate" className="form">
+                <Form layout="inline"  className="form">
                   <Form.Item className="input">
 
-                    <Input onBlur={this.phone} autoComplete="off" maxLength={11} onInput={this.iphoneInput} placeholder="法人手机号" />
+                    <Input onBlur={this.phoneOne}  maxLength={11} onInput={this.iphoneInput} placeholder="法人手机号" />
 
                   </Form.Item>
                   <Form.Item className="code">
-                    <Input onChange={this.code} autoComplete="off" placeholder="手机验证码" />
+                    <Input onChange={this.code} placeholder="手机验证码" />
                   </Form.Item>
                   <Form.Item className="bind">
                     <div className={this.state.textT === '获取验证码' ? 'codeBtn' : 'koohidden'} onClick={this.naCode}>
@@ -228,7 +228,7 @@ class Login extends React.Component {
                       {this.state.textT}
                     </div>
                   </Form.Item>
-                  <Select className="radio" className={this.state.selectVeun.length > 0 ? 'input' : 'selectVeunNone'} onChange={this.onChange} value={this.state.value}>
+                  <Select className={this.state.selectVeun.length > 0 ? 'input' : 'selectVeunNone'} onChange={this.onChange} value={this.state.value}>
                     {
                       this.state.selectVeun.map((item, i) => (
                         <Option key={i} value={item.venueloginuuid}>{item.name}</Option>
@@ -249,7 +249,7 @@ class Login extends React.Component {
               <div className={this.state.navNum ? 'nameLogin' : 'nameLoginT'}  >
                 <Form layout="inline" autoComplete="off" className="form">
                   <Form.Item className="input">
-                    <Input onChange={this.phone} value={this.state.phone === undefined ? '' : this.state.phone} placeholder="用户名/操作员手机号" />
+                    <Input onChange={this.phone}  placeholder="用户名/操作员手机号" />
                   </Form.Item>
                   <Form.Item className="input" style={{ opacity: 0 }}>
                     <Input type="text" />

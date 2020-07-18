@@ -36,6 +36,8 @@ class myWallet extends React.Component {
     recordListOther: '',
     pageOne:1,
     kod:0,
+    maxmoney:'0.00',
+    koL:true
   }
 
   dateChange = (data, dateString) => {
@@ -73,32 +75,31 @@ class myWallet extends React.Component {
   }
 
   componentDidMount() {
-    console.log(666)
     setInterval(() => {
       if(sessionStorage.getItem('wallet')==='false'){
         this.setState({flag:1})
         sessionStorage.setItem('wallet',true)
       }
     }, 50);
-    
-    if (this.props.location.query !== undefined) {
-      if (this.props.location.query.time === 1) {
+    console.log(sessionStorage.getItem('incomtime'))
+    if (sessionStorage.getItem('incomtime') !== 'null'&&sessionStorage.getItem('incomtime') !== null) {
+      if (sessionStorage.getItem('incomtime')=== '1') {
         let myDate = new Date()
         let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-        this.setState({ start: start, end: end,dateString:[start,end] })
+        this.setState({ start: start, end: end,dateString:[start,end],koL:false })
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
-      } else if (this.props.location.query.time === 2) {
+      } else if (sessionStorage.getItem('incomtime') === '2') {
         let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-        this.setState({ start: start, end: end,dateString:[start,end] })
+        this.setState({ start: start, end: end,dateString:[start,end],koL:false }) 
 
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
       }
-    } else if (this.props.location.query === undefined) {
+    } else if (sessionStorage.getItem('incomtime') === 'null') {
       let start = moment().startOf('day').subtract(6, 'days')._d.toLocaleDateString().replace(/\//g, "-")
       let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-      this.setState({ start: start, end: end,dateString:[start,end] })
+      this.setState({ start: start, end: end,dateString:[start,end],koL:true })
       this.getVenueMoneyList({ start: start, end: end, page: 1 })
     }
 
@@ -168,7 +169,7 @@ class myWallet extends React.Component {
             <span className="select"></span>
             <RangePicker
               placeholder={[this.state.start, this.state.end]}
-              style={{marginTop:'8px',float:'left',marginLeft:'10px'}}
+              style={this.state.koL===false?{display:'none'}:{marginTop:'8px',float:'left',marginLeft:'10px'}}
               locale={locale}
               allowClear={false}
               onChange={this.dateChange}

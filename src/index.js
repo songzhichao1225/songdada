@@ -6,6 +6,8 @@ import Router from './Router';
 import RouterPh from './RouterPh';
 import * as serviceWorker from './serviceWorker';
 import { message } from 'antd';
+import { ConfigProvider } from 'antd';
+import zhCN from 'antd/es/locale/zh_CN';
 message.config({
   top: 100,
   duration:1,
@@ -22,7 +24,10 @@ for (let index = 0; index < mobileAgents.length; index++) {
   }
 }
 if (goUrl === 0) {
-  ReactDOM.render(<Router />, document.getElementById('root'));
+  ReactDOM.render(
+    <ConfigProvider locale={zhCN}>
+    <Router />
+  </ConfigProvider>, document.getElementById('root'));
 } else if (goUrl === 1) {
   ReactDOM.render(<RouterPh />, document.getElementById('root'));
 }

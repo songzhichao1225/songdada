@@ -3,7 +3,6 @@ import './qualification.css';
 import 'antd/dist/antd.css';
 import { getIsStatus, VenueQualifications, getVenueOpenBank, getVenueOpenBankProvince,_code,getVenueQualified, getVenueOpenBankCity, getVenueQualifiedCompany, TemporaryQualificationInformation, getVenueOpenBankList, getVenueQualificationInformation, VenueQualificationInformationSave } from '../../api';
 import { Input, Radio, Button, Upload, message, Select, Tooltip, Modal } from 'antd';
-import Icon from '@ant-design/icons';
 const { Option } = Select;
 
 
@@ -132,18 +131,19 @@ class qualification extends React.Component {
       message.error('登录超时请重新登录!')
     } else if (res.data.code === 2000) {
       if (res.data.data.legalFilesURL !== '') {
-        if(res.data.data.ProvinceBank!=''){
+        if(res.data.data.ProvinceBank!==''){
           this.getVenueOpenBankCity({ province_id:res.data.data.ProvinceBank })
         }
         this.setState({
           imageUrl: res.data.data.lisenceURL, handleName: res.data.data.legalname, handleCardId: res.data.data.legalcard, imageRes: res.data.data.lisenceURL,
-          handlePhone: res.data.data.legalphone, Radiovalue: res.data.data.Settlement, handleBankNum: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, legalBaseURL: res.data.data.legalBaseURL,
+          handlePhone: res.data.data.legalphone, Radiovalue: res.data.data.Settlement, handleBankNum: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, 
+          legalBaseURL: res.data.data.legalBaseURL,
           imageResT: res.data.data.legalBaseURL === '' ? '' : res.data.data.legalFilesURL.split('|')[0],
           imageReST: res.data.data.legalBaseURL === '' ? '' : res.data.data.legalFilesURL.split('|')[1], CorporateName: res.data.data.CorporateName,
           bank_id:res.data.data.Banktype,province_id:res.data.data.ProvinceBank,city_id:res.data.data.CityBank
         })
       } else {
-        if(res.data.data.ProvinceBank!=''){
+        if(res.data.data.ProvinceBank!==''){
           this.getVenueOpenBankCity({ province_id:res.data.data.ProvinceBank })
         }
         this.setState({
@@ -170,12 +170,18 @@ class qualification extends React.Component {
   provinceChange = e => {
 
     this.setState({ province_id: e })
+    if(e!==this.state.province_id){
+    this.setState({city_id:'',openingLine:''})
+    }
     this.getVenueOpenBankCity({ province_id: e })
 
   }
 
   typeChange = e => {
     this.setState({ bank_id: e })
+    if(e!==this.state.bank_id){
+    this.setState({province_id:'',city_id:'',openingLine:''})
+    }
   }
 
   cityChange = e => {
@@ -199,6 +205,9 @@ class qualification extends React.Component {
   }
   handleBankNum = e => {
     this.setState({ handleBankNum: e.target.value })
+    if(e.target.value===''){
+     this.setState({bank_id:'',province_id:'',city_id:'',openingLine:''})
+    }
   }
   openingLine = e => {
     this.setState({ openingLine: e })
@@ -241,9 +250,12 @@ class qualification extends React.Component {
     }
     if (info.file.status === 'done') {
       if (info.file.response.data.baseURL !== undefined) {
+        if(this.state.legalBaseURL.split('/')[2].indexOf(new Date().getDate())===-1){
+          this.setState({imageReST:1})
+       }
         this.setState({ imageResT: info.file.response.data.filesURL, legalBaseURL: info.file.response.data.baseURL })
       } else {
-        this.setState({ imageResT: 1 })
+        this.setState({ imageReST: 1 })
       }
 
     }
@@ -264,7 +276,10 @@ class qualification extends React.Component {
     }
     if (info.file.status === 'done') {
       if (info.file.response.data.baseURL !== undefined) {
-        this.setState({ imageReST: info.file.response.data.filesURL })
+        if(this.state.legalBaseURL.split('/')[2].indexOf(new Date().getDate())===-1){
+          this.setState({imageResT:1})
+       }
+        this.setState({ imageReST: info.file.response.data.filesURL,legalBaseURL: info.file.response.data.baseURL })
       } else {
         this.setState({ imageReST: 1 })
       }
@@ -284,6 +299,7 @@ class qualification extends React.Component {
   onChangeRadio = e => {
     this.setState({
       Radiovalue: e.target.value,
+      handleBankNum:'',bank_id:'',province_id:'',city_id:'',openingLine:''
     });
 
   }
@@ -432,7 +448,7 @@ class qualification extends React.Component {
     if (res.data.code !== 2000) {
       message.error(res.data.msg)
     } else {
-      if(res.data.data.ProvinceBank!=''){
+      if(res.data.data.ProvinceBank!==''){
         this.getVenueOpenBankCity({ province_id:res.data.data.ProvinceBank })
       }
       this.setState({
@@ -469,7 +485,6 @@ class qualification extends React.Component {
 
     const uploadButtonS = (
       <div>
-        <Icon type={this.state.loading ? 'loading' : 'plus'} />
         <div className="ant-upload-text">( 反面 )</div>
       </div>
     );
@@ -559,7 +574,7 @@ class qualification extends React.Component {
                   name="files"
                   listType="picture-card"
                   className="avatar-uploader addImg addimgT"
-                  showUploadList={false}
+                  showUploadList={false} 
                   action="/api/UploadVenueImgs?type=Venuelisence"
                   beforeUpload={beforeUploadTS}
                   onChange={this.handleChangeTS}
@@ -595,21 +610,21 @@ class qualification extends React.Component {
                 <div className="nameSonTle">
                   <span className="boTitle">开户行及所在地</span><span className="symbol">*</span>
                 </div>
-                <Select placeholder="银行类型" disabled={this.state.flagDis} style={{ width: 120, height: '35px' }} value={Number(this.state.bank_id)} loading={this.state.flag}  onChange={this.typeChange}>
+                <Select placeholder="银行类型" disabled={this.state.flagDis} style={{ width: 120, height: '35px' }} value={this.state.bank_id===''?null:Number(this.state.bank_id)} loading={this.state.flag}  onChange={this.typeChange}>
                   {
                     this.state.type.map((item, i) => (
                       <Option key={i} value={item.bank_id}>{item.bank_name}</Option>
                     ))
                   }
                 </Select>
-                <Select placeholder="所在省" disabled={this.state.flagDis} style={{ width: 120, height: '35px', marginLeft: '27px' }} loading={this.state.flagTwo} value={Number(this.state.province_id)} onChange={this.provinceChange}>
+                <Select placeholder="所在省" disabled={this.state.flagDis} style={{ width: 120, height: '35px', marginLeft: '27px' }} loading={this.state.flagTwo} value={this.state.province_id===''?null:Number(this.state.province_id)} onChange={this.provinceChange}>
                   {
                     this.state.backProvince.map((item, i) => (
                       <Option key={i} value={item.province_id}>{item.province}</Option>
                     ))
                   }
                 </Select>
-                <Select placeholder="所在市" disabled={this.state.flagDis} style={{ width: 120, height: '35px', marginLeft: '27px' }} value={Number(this.state.city_id)} loading={this.state.flagThree} onChange={this.cityChange}>
+                <Select placeholder="所在市" disabled={this.state.flagDis} style={{ width: 120, height: '35px', marginLeft: '27px' }} value={this.state.city_id===''?null:Number(this.state.city_id)} loading={this.state.flagThree} onChange={this.cityChange}>
                   {
                     this.state.backCity.map((item, i) => (
                       <Option key={i} value={item.city_id}>{item.city}</Option>

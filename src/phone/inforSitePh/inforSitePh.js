@@ -2,12 +2,12 @@ import React from 'react';
 import './inforSitePh.css';
 import { Toast, Modal, TextareaItem } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Input, Checkbox, Upload, Popconfirm, Button, Radio, Select, Tooltip, Spin } from 'antd';
+import { Input, Checkbox, Upload, Button, Radio, Select, Tooltip, Spin } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 import { getVenueInformation, getVenueQualificationInformation, VenueInformationSave, VenueQualificationInformationSave, getVenueIssecondaudit, getVenueOpenBank, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
 import ImgCrop from 'antd-img-crop';
 const { Option } = Select
-
+const alert = Modal.alert;
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -80,7 +80,7 @@ class inforSitePh extends React.Component {
     spin: true,
     onChangeCheckTwo: [],
     CorporateName: '',
-    other:false
+    other: false
 
   };
 
@@ -133,7 +133,8 @@ class inforSitePh extends React.Component {
         baseImg: corporate.legalBaseURL,
         imgFile: cardImg[0], imgFileTwo: cardImg[1],
         corporateName: corporate.legalname, corporateId: corporate.legalcard, corporatePhone: corporate.legalphone,
-        numRadio: corporate.Settlement, corporateCardId: corporate.Bankaccount, CorporateName: corporate.CorporateName, corporateOpen: corporate.OpeningBank, lisenceURL: corporate.lisenceURL
+        numRadio: corporate.Settlement, corporateCardId: corporate.Bankaccount, CorporateName: corporate.CorporateName, corporateOpen: corporate.OpeningBank, lisenceURL: corporate.lisenceURL,
+        Banktype: corporate.Banktype, CityBank: corporate.CityBank, ProvinceBank: corporate.ProvinceBank
       })
     }
   }
@@ -247,7 +248,7 @@ class inforSitePh extends React.Component {
     if (res.data.code === 2000) {
       Toast.success('提交成功', 1);
 
-      this.setState({ issecondaudit: 0,other:res.data.other })
+      this.setState({ issecondaudit: 0, other: res.data.other })
       this.getVenueInformation()
     } else {
       Toast.fail(res.data.msg, 1);
@@ -294,7 +295,7 @@ class inforSitePh extends React.Component {
       }
       if (data.firstURL === '') {
         Toast.fail('门脸照违规请重新上传', 2);
-      } else if (data.filesURL.split('|').indexOf('无')!==-1) {
+      } else if (data.filesURL.split('|').indexOf('无') !== -1) {
         Toast.fail('场地照有违规图片请重新上传', 2);
       } else {
         this.VenueInformationSave(data)
@@ -429,7 +430,7 @@ class inforSitePh extends React.Component {
   }
 
   ziSubmit = () => {
-    let { zuo, imgHoodTwo, imgHood, baseImg, lisenceURL, corporateName, corporateId, corporatePhone, numRadio, corporateCardId, corporateOpen, imgFile, imgFileTwo } = this.state
+    let { zuo, imgHoodTwo, imgHood, baseImg, lisenceURL, corporateName, corporateId, corporatePhone, numRadio, corporateCardId, corporateOpen, imgFile, CorporateName, imgFileTwo, Banktype, CityBank, ProvinceBank } = this.state
     let data = {
       legalname: corporateName,
       legalcard: corporateId,
@@ -439,7 +440,12 @@ class inforSitePh extends React.Component {
       OpeningBank: corporateOpen,
       lisenceURL: lisenceURL,
       legalBaseURL: baseImg,
-      legalFilesURL: imgFile + '|' + imgFileTwo
+      legalFilesURL: imgFile + '|' + imgFileTwo,
+      Banktype: Banktype,
+      CityBank: CityBank,
+      ProvinceBank: ProvinceBank,
+      CorporateName: CorporateName
+
     }
     if (zuo === 1) {
       if (imgHood === '') {
@@ -490,7 +496,7 @@ class inforSitePh extends React.Component {
     const optionsTwo = [{ label: '停车场', value: '1' }, { label: 'WiFi', value: '2' }, { label: '淋浴', value: '3' }, { label: '室内摄像头', value: '4' },]
     const uploadButton = (
       <div>
-        <svg t="1594106057548" class="icon" viewBox="64 64 896 896" width="1.5em" height="1.5em" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6269"><path d="M864 800a32 32 0 0 0 32-32V256a32 32 0 0 0-32-32H160a32 32 0 0 0-32 32v512a32 32 0 0 0 32 32z m0 64H160a96 96 0 0 1-96-96V256a96 96 0 0 1 96-96h704a96 96 0 0 1 96 96v512a96 96 0 0 1-96 96z" p-id="6270" fill="#1890ff"></path><path d="M384 432a48 48 0 1 0-48 48 48 48 0 0 0 48-48z m64 0a112 112 0 1 1-112-112 112 112 0 0 1 112 112zM503.68 757.44a32 32 0 1 1-47.36-42.88l175.04-192a32 32 0 0 1 47.36 0l112.96 124.16a32 32 0 1 1-47.36 42.88l-89.28-98.24zM277.76 759.36a32 32 0 0 1-43.52-46.72l138.56-128a32 32 0 0 1 43.2 0l53.76 49.28a32 32 0 1 1-43.52 47.04l-32-29.12z" p-id="6271" fill="#1890ff"></path></svg>
+        <svg t="1594106057548" className="icon" viewBox="64 64 896 896" width="1.5em" height="1.5em" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6269"><path d="M864 800a32 32 0 0 0 32-32V256a32 32 0 0 0-32-32H160a32 32 0 0 0-32 32v512a32 32 0 0 0 32 32z m0 64H160a96 96 0 0 1-96-96V256a96 96 0 0 1 96-96h704a96 96 0 0 1 96 96v512a96 96 0 0 1-96 96z" p-id="6270" fill="#1890ff"></path><path d="M384 432a48 48 0 1 0-48 48 48 48 0 0 0 48-48z m64 0a112 112 0 1 1-112-112 112 112 0 0 1 112 112zM503.68 757.44a32 32 0 1 1-47.36-42.88l175.04-192a32 32 0 0 1 47.36 0l112.96 124.16a32 32 0 1 1-47.36 42.88l-89.28-98.24zM277.76 759.36a32 32 0 0 1-43.52-46.72l138.56-128a32 32 0 0 1 43.2 0l53.76 49.28a32 32 0 1 1-43.52 47.04l-32-29.12z" p-id="6271" fill="#1890ff"></path></svg>
         <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}>图片违规</div>
       </div>
     )
@@ -619,15 +625,18 @@ class inforSitePh extends React.Component {
           </div>
 
 
-          <Popconfirm
-            title="您确定本次修改吗?"
-            onConfirm={this.confirm}
-            onCancel={this.cancel}
-            okText="确定"
-            cancelText="返回"
-          >
-            <Button className="submit" style={this.state.other ===false  ? { display: 'block' } : { display: 'none' }}>提交修改</Button>
-          </Popconfirm>
+         
+            <Button className="submit" onClick={() =>
+              alert('提示', '您确定本次修改吗?', [
+                { text: '取消', onPress: () => console.log('cancel') },
+                {
+                  text: '确定',
+                  onPress: () =>
+                  this.confirm()
+                },
+              ])
+            } style={this.state.other === false ? { display: 'block' } : { display: 'none' }}>提交修改</Button>
+          
           <Button className="submit" style={this.state.other === true ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
         </div>
 
@@ -764,16 +773,19 @@ class inforSitePh extends React.Component {
             </Select>
           </div>
 
-          <Popconfirm
-            title="您确定本次修改吗?"
-            onConfirm={this.ziSubmit}
-            onCancel={this.cancel}
-            okText="确定"
-            cancelText="返回"
-          >
-            <Button className="submit" style={this.state.issecondaudit !== 0 ? { display: 'block' } : { display: 'none' }}>提交修改</Button>
-          </Popconfirm>
-          <Button className="submit" style={this.state.issecondaudit === 0 ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
+          
+            <Button className="submit" onClick={() =>
+              alert('提示', '您确定本次修改吗?', [
+                { text: '取消', onPress: () => console.log('cancel') },
+                {
+                  text: '确定',
+                  onPress: () =>
+                  this.ziSubmit()
+                },
+              ])
+            } style={this.state.other === false ? { display: 'block' } : { display: 'none' }}>提交修改</Button>
+         
+          <Button className="submit" style={this.state.other === true ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
         </div>
 
         <Modal

@@ -125,23 +125,22 @@ class information extends React.Component {
   componentDidMount() {
     this.getVenueSport()
     this.setState({ dateString: new Date().toLocaleDateString().replace(/\//g, "-") })
-    if (this.props.location.query !== undefined) {
-      if (this.props.location.query.time === 1) {
+    if (sessionStorage.getItem('iconmInfor') !== null&&sessionStorage.getItem('iconmInfor') !== 'null') {
+      if (sessionStorage.getItem('iconmInfor') === '1') {
         let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         this.setState({ start: start, end: end,kop:1 })
         this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: start, enddate: end })
 
-      } else if (this.props.location.query.time === 2) {
+      } else if (sessionStorage.getItem('iconmInfor')=== '2') {
        
         let myDate = new Date()
         let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-        this.setState({ start: start, end: end })
+        this.setState({ start: start, end: end,kop:1 })
         this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: start, enddate: end })
 
       } else if (this.props.location.query.uuid) {
-        
         let myDate = new Date()
         let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
@@ -233,8 +232,10 @@ class information extends React.Component {
     this.setState({ sport: e })
     if (this.state.start === '开始日期') {
       this.getReservationActivitieslist({ page:1, sport: e, status: this.state.status, startdate: '', enddate: '' })
+      this.setState({page:1})
     } else {
       this.getReservationActivitieslist({ page:1, sport: e, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
+      this.setState({page:1})
     }
   }
   activityChang = (e) => {

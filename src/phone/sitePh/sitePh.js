@@ -237,8 +237,11 @@ class sitePh extends React.Component {
     if (res.data.code === 2000) {
       this.setState({ titleDetle: false })
       this.getVenueSportidTitle({ sportid: this.state.pickerValue[0] })
+      Toast.success(res.data.msg, 1);
+    }else{
+      Toast.fail(res.data.msg, 1);
     }
-    Toast.fail(res.data.msg, 1);
+    
   }
   delVenueTitle = e => {
 
@@ -399,7 +402,8 @@ class sitePh extends React.Component {
   async DelVenueNumberTitle(data) {
     const res = await DelVenueNumberTitle(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.getVenueNumberTitleList({ page: 1, sportid: this.state.asyncValue })
+      this.getVenueNumberTitleList({ page: this.state.page, sportid: this.state.asyncValue })
+      this.setState({page:this.state.page})
     } else {
       Toast.fail(res.data.msg, 1);
     }
@@ -497,8 +501,8 @@ class sitePh extends React.Component {
     const res = await DelSiteSetting(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       Toast.success('删除成功', 1);
-      this.setState({ pageTwo: 1 })
-      this.getSiteSettingList({ page: 1, sportid: this.state.asyncValueTwo })
+      this.setState({ pageTwo: this.state.pageTwo })
+      this.getSiteSettingList({ page: this.state.pageTwo , sportid: this.state.asyncValueTwo })
     } else {
       Toast.fail(res.data.msg, 1);
     }
@@ -571,6 +575,7 @@ class sitePh extends React.Component {
     if (Liturgyche.length === 0) {
       Toast.success('请选择星期', 1);
     } else {
+      console.log(LiturgycheNum)
       this.setState({ Liturgyche: Liturgyche.join(','), LiturgycheNum: LiturgycheNum.join(','), Liturgy: false })
     }
   }
@@ -587,7 +592,7 @@ class sitePh extends React.Component {
     const res = await AddSiteSetting(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ Price: false, jiageUUid: '' })
-      this.getSiteSettingList({ page: 1, sportid: '' })
+      this.getSiteSettingList({ page: this.state.pageTwo, sportid: this.state.asyncValueTwo })
     } else {
       Toast.fail(res.data.msg, 2);
     }

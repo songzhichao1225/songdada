@@ -46,8 +46,7 @@ class orderPhT extends React.Component {
       { name: '篮球', id: 4 },
       { name: '足球', id: 5 },
       { name: '排球', id: 6 },
-      { name: '网球', id: 7 },
-      { name: '高尔夫', id: 8 }
+      { name: '网球', id: 7 }
     ],
     status: [
       { name: '全部', id: 10 },

@@ -2,7 +2,7 @@ import React from 'react';
 import './forgetPassword.css';
 import 'antd/dist/antd.css';
 import { _code,VenueForgetPass } from '../../api';
-import { Form, Input, Button, message,Radio } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 
 class forgetPassword extends React.Component {
 
@@ -46,10 +46,14 @@ class forgetPassword extends React.Component {
   }
  
   naCode = () => {
-    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
-      this._code({ mobile: this.state.phone,type:'venueforgetpass' })
-    } else {
+    if (this.state.phone === '') {
+     
       message.error('请输入手机号')
+    }else if((/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))===false){
+
+      message.error('请输入正确手机号')
+    } else {
+      this._code({ mobile: this.state.phone,type:'venueforgetpass' })
     }
   }
   onChange=e=>{
@@ -101,16 +105,16 @@ class forgetPassword extends React.Component {
             <Form>
               <Form.Item >
                 <div className="son">
-                  <span style={{ float: 'left', marginLeft: 17,lineHeight:'45px' }}>手机号码</span>
-                  <Input style={{ float: 'left' }} placeholder="请输入操作员手机号" maxLength={11} className="phone" onChange={this.phoneChange} />
+                  <span style={{ float: 'left',lineHeight:'45px' }}>手机号码</span>
+                  <Input style={{ float: 'left' }}  placeholder="请输入操作员手机号" maxLength={11} className="phone" onChange={this.phoneChange} />
                  
                 </div>
                 </Form.Item>
 
                 <Form.Item>
                 <div className="son">
-                  <span style={{float:'left',marginLeft: 17,}}>验证码</span>
-                  <Input onChange={this.code} style={{float:'left',width:'176px'}} maxLength={6} className="phone code" />
+                  <span style={{float:'left'}}>验证码</span>
+                  <Input onChange={this.code} style={{float:'left',width:'176px',marginLeft:'50px'}} maxLength={6} className="phone code" />
                   <div className={this.state.textT === '获取验证码' ? 'huoBtn' : 'koohidden'} onClick={this.naCode} >
                     {this.state.textT}
                   </div>
@@ -129,14 +133,14 @@ class forgetPassword extends React.Component {
                   <Input.Password onChange={this.code} maxLength={6} className="phone code" />
                 </div>
                 <div className="son">
-                  <span>新密码</span>
+                  <span style={{float:'left',lineHeight:'60px'}}>新密码</span>
                   <Input.Password onChange={this.pass} maxLength={8} className="phone code" />
                 </div>
                 
                 </Form.Item>
                 <Form.Item>
                 <div className="son">
-                  <span>确认密码</span>
+                  <span style={{float:'left',lineHeight:'60px'}}>确认密码</span>
                   <Input.Password onChange={this.passTwo} maxLength={8} className="phone confirm" />
                 </div>
                 </Form.Item>

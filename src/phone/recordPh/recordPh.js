@@ -29,7 +29,7 @@ class recordPh extends React.Component {
   async getVenueWithdrawalList(data) {
     const res = await getVenueWithdrawalList(data, localStorage.getItem('venue_token'))
     
-      this.setState({ recordPhList: res.data.data, other: res.data.other, spin: false,refreshing:false })
+      this.setState({ recordPhList: res.data.data, other: res.data.other.maxcount,maxmoney:res.data.other.maxmoney, spin: false,refreshing:false })
     
   }
 
@@ -66,7 +66,7 @@ class recordPh extends React.Component {
 
         <div className="headTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} /> 提现记录</div>
         <div style={this.state.recordPhList.length>0?{}:{display:'none'}}>
-
+    <div style={{width:'100%',textAlign:'right',paddingRight:'1rem'}}>总计:{this.state.maxmoney}</div>
         
         <PullToRefresh
           damping={60}

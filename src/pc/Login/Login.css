@@ -124,6 +124,7 @@
 }
 .login .ant-input-affix-wrapper > input.ant-input{
 	height: 42px;
+	padding-left: 11px;
 }
 
 .login .ant-input-suffix{

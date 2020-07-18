@@ -1,17 +1,16 @@
 import React from 'react';
 import './stadiumInformationPh.css';
 
-import { Toast, Picker, List, InputItem, NavBar, Popover } from 'antd-mobile';
+import { Toast, InputItem, NavBar, Popover, TextareaItem } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Input, Upload, Checkbox, Modal, Button } from 'antd';
-import {LeftOutlined,EllipsisOutlined} from '@ant-design/icons';
-import { PerfectingVenueInformation, getVenueInformation, VenueInformationSave,getVenueSportList } from '../../api';
+import { Input, Upload, Checkbox, Modal } from 'antd';
+import { LeftOutlined, EllipsisOutlined } from '@ant-design/icons';
+import { PerfectingVenueInformation, getVenueInformation, VenueInformationSave, getVenueSportList, TemporaryVenueInformation } from '../../api';
 import ImgCrop from 'antd-img-crop';
-let arr = require('./address.json');
 const { TextArea } = Input;
 const Item = Popover.Item;
 
-const options = [ { label: '停车场', value: '1' },{ label: 'WiFi', value: '2' }, { label: '淋浴', value: '3' }, { label: '室内摄像头', value: '4' }]
+const options = [{ label: '停车场', value: '1' }, { label: 'WiFi', value: '2' }, { label: '淋浴', value: '3' }, { label: '室内摄像头', value: '4' }]
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -47,15 +46,12 @@ class stadiumInformationPh extends React.Component {
     lng: '',
     addressId: '', //选择省市区id
     addressArr: '',//选择省市区名称
-    addressXian: this.props.location.query !== undefined ? this.props.location.query.adddress:'',
+    addressXian: this.props.location.query !== undefined ? this.props.location.query.adddress : '',
     previewVisible: false,
     fileList: [],
     imageRes: '',
     stadiumName: '',//场馆名称
     onChangeRun: [],//运动项目
-    onChangeRunTai: [],//台球类型
-    onChangeRunZu: [],//足球类型
-    onChangeRunGao: [],//高尔夫类型
     onChangeCheck: [],//设施
     textKo: '',//介绍场馆
     beforeList: [],
@@ -68,27 +64,54 @@ class stadiumInformationPh extends React.Component {
     arrProNum: [],
     linkMan: '',
     telephone: '',
-    plainOptions:[]
+    plainOptions: [],
+    siteUid: ''
   };
 
 
 
   async getVenueInformation(data) {
     const res = await getVenueInformation(data, localStorage.getItem('venue_token'))
-     if (res.data.code === 2000) {
+    if (res.data.code === 2000) {
       let imgS = (res.data.data.filesURL).split('|')
       let arrImg = []
       for (let i in imgS) {
         arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: imgS[i] })
       }
-      this.setState({
-        address: res.data.data.position, addressXian: res.data.data.address, stadiumName: res.data.data.name,
-        telephone: res.data.data.telephone.replace(/\s*/g,""), linkMan: res.data.data.linkMan,
-        imageUrl: res.data.data.firstURL, fileList: arrImg, onChangeRun: res.data.data.sport, onChangeRunTai: '',
-        onChangeRunZu: '', onChangeRunGao:'',
-        onChangeCheck: res.data.data.facilities, textKo: res.data.data.siteInfo,
-        lat: res.data.data.lat, lng: res.data.data.lng
-      })
+      if (this.props.location.query !== undefined) {
+        let arrjo = []
+        for (let i in res.data.data.sport.split(',')) {
+          arrjo.push(Number(res.data.data.sport.split(',')[i]))
+        }
+        this.setState({
+          addressXian: this.props.location.query.adddress,
+          address: this.props.location.query.title,
+          lat: this.props.location.query.lat,
+          lng: this.props.location.query.lng,
+          handleAreaTwo: sessionStorage.getItem('handleAreaTwo'),
+          handleCityTwo: sessionStorage.getItem('handleCityTwo'),
+          handleDistrictTwo: sessionStorage.getItem('handleDistrictTwo'), stadiumName: res.data.data.name,
+          telephone: res.data.data.telephone.replace(/\s*/g, ""), linkMan: res.data.data.linkMan,
+          imageRes: res.data.data.firstURL, fileList: arrImg, onChangeRun: arrjo,
+          onChangeCheck: res.data.data.facilities, textKo: res.data.data.siteInfo, siteUid: res.data.data.uid,
+        })
+      } else {
+        let arrjo = []
+        for (let i in res.data.data.sport.split(',')) {
+          arrjo.push(Number(res.data.data.sport.split(',')[i]))
+        }
+        this.setState({
+          address: res.data.data.address, addressXian: res.data.data.position, stadiumName: res.data.data.name,
+          telephone: res.data.data.telephone.replace(/\s*/g, ""), linkMan: res.data.data.linkMan,
+          imageRes: res.data.data.firstURL, fileList: arrImg, onChangeRun: arrjo,
+          onChangeCheck: res.data.data.facilities, textKo: res.data.data.siteInfo,
+          lat: res.data.data.lat, lng: res.data.data.lng,
+          handleAreaTwo: res.data.data.province, handleCityTwo: res.data.data.city, handleDistrictTwo: res.data.data.area, siteUid: res.data.data.uid,
+        })
+      }
+
+    } else if (res.data.code === 4001) {
+      this.props.history.push('/login')
     }
 
 
@@ -102,71 +125,28 @@ class stadiumInformationPh extends React.Component {
   }
 
 
+
   componentDidMount() {
     this.getVenueSportList()
-      this.setState({
-        stadiumName:sessionStorage.getItem('stadiumName')
-      })
+    this.setState({
+      stadiumName: sessionStorage.getItem('stadiumName')
+    })
     if (sessionStorage.getItem('notType') === '1') {
       this.getVenueInformation()
-    } else if (this.props.location.query !== undefined) {
-      this.setState({
-        addressXian: this.props.location.query.adddress,
-        address: this.props.location.query.adddress,
-        lat: this.props.location.query.lat,
-        lng: this.props.location.query.lng
-      })
     }
-    let arrCity = []
-    let arrCityNum = []
-    for (let i in arr) {
-      for (let j in arr[i].children) {
-        arrCity.push(arr[i].children[j].label)
-        arrCityNum.push(arr[i].children[j].value)
-      }
-    }  //市
-
-    let arrCouty = []
-    let arrCoutyNum = []
-    for (let i in arr) {
-      arrCouty.push(arr[i].label)
-      arrCoutyNum.push(arr[i].value)
-    }  //省
 
 
-    let arrPro = []
-    let arrProNum = []
-    for (let i in arr) {
-      for (let j in arr[i].children) {
-        for (let k in arr[i].children[j].children) {
-          arrPro.push(arr[i].children[j].children[k].label)
-          arrProNum.push(arr[i].children[j].children[k].value)
-        }
-      }
-    }  //区县
-    let arrBack = []
-    if (sessionStorage.getItem('addressId') !== null) {
-      let se = sessionStorage.getItem('addressId').split(',')
 
-      for (let i in se) {
-        arrBack.push(Number(se[i]))
-      }
-    } else {
-      arrBack = []
-    }
-    this.setState({ arrCity: arrCity, arrCityNum: arrCityNum, arrCouty: arrCouty, arrCoutyNum: arrCoutyNum, arrProNum: arrProNum, arrPro: arrPro, addressId: arrBack })
   }
 
 
   mapPh = () => {
-    if (sessionStorage.getItem('addressId') !== null) {
-      this.props.history.push('/mapPh')
-    } else {
-      Toast.fail('请选择省市区', 1);
-    }
+
+    this.props.history.push('/mapPh')
+    sessionStorage.setItem('inforMap', 1)
+
   }
   xaingxi = e => {
-    console.log(e)
     this.setState({ addressXian: e })
   }
 
@@ -179,7 +159,7 @@ class stadiumInformationPh extends React.Component {
       if (info.file.response.data.baseURL !== undefined) {
         this.setState({ imageRes: info.file.response.data.baseURL + info.file.response.data.filesURL })
       } else {
-        this.setState({ imageRes: '' })
+        this.setState({ imageRes: 1 })
       }
       getBase64(info.file.originFileObj, imageUrl =>
         this.setState({
@@ -230,38 +210,24 @@ class stadiumInformationPh extends React.Component {
       Toast.success(res.data.msg, 1);
       sessionStorage.setItem('siteId', res.data.data.siteUUID)
       this.props.history.push('/qualificationPh')
-    } else if(res.data.code===4000) {
+    } else if (res.data.code === 4000) {
       Toast.fail(res.data.msg, 1);
       this.props.history.push('/login')
-    }else{
+    } else {
       Toast.fail(res.data.msg, 1);
     }
   }
   stadiumName = e => {
     this.setState({ stadiumName: e })
-    sessionStorage.setItem('stadiumName',e)
+    sessionStorage.setItem('stadiumName', e)
   }
   onChangeRun = e => {
 
     this.setState({ onChangeRun: e })
-    if (e.indexOf('3') === -1) {
-      this.setState({ onChangeRunTai: '' })
-    } else if (e.indexOf('5') === -1) {
-      this.setState({ onChangeRunZu: '' })
-    } else if (e.indexOf('8') === -1) {
-      this.setState({ onChangeRunGao: '' })
-    }
+
   }
 
-  onChangeRunTai = e => {
-    this.setState({ onChangeRunTai: e })
-  }
-  onChangeRunZu = e => {
-    this.setState({ onChangeRunZu: e })
-  }
-  onChangeRunGao = e => {
-    this.setState({ onChangeRunGao: e })
-  }
+
   onChangeCheck = e => {
     this.setState({ onChangeCheck: e })
   }
@@ -281,105 +247,139 @@ class stadiumInformationPh extends React.Component {
 
   async VenueInformationSave(data) {
     const res = await VenueInformationSave(data, localStorage.getItem('venue_token'))
-     if (res.data.code === 2000) {
+    if (res.data.code === 2000) {
       Toast.success(res.data.msg, 1)
       sessionStorage.setItem('siteId', res.data.data.siteUUID)
       this.props.history.push('/qualificationPh')
+    } else {
+      Toast.fail(res.data.msg, 1)
     }
   }
 
 
   next = () => {
-    let { stadiumName, lat, lng, linkMan, telephone, imageUrl, addressXian, address, fileList, imageRes, onChangeRun, onChangeRunTai, onChangeRunZu, onChangeRunGao, onChangeCheck, textKo } = this.state
+    let { stadiumName, lat, lng, linkMan, telephone, imageRes, addressXian, address, fileList, onChangeRun, onChangeCheck, textKo, handleAreaTwo, handleCityTwo, handleDistrictTwo } = this.state
     if (sessionStorage.getItem('notType') === '1') {
-      let arrimg = []
-      for (let i in fileList.slice(0,9)) {
-        if (fileList[i].response === undefined) {
-          arrimg.push(fileList[i].url)
-        } else {
-          arrimg.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
+      let fileListT = fileList.slice(0, 9)
+      let filesURLarr = []
+      for (let i in fileListT) {
+        if (fileListT[i].response !== undefined) {
+          if (fileListT[i].response.data.length === 0) {
+            filesURLarr.push('无')
+          } else {
+            filesURLarr.push(fileListT[i].response.data.baseURL + fileListT[i].response.data.filesURL)
+          }
+
+        } else if (fileListT[i].response === undefined) {
+          filesURLarr.push(fileListT[i].url)
         }
       }
-
-      let data = {
-        venuename: stadiumName,
-        lat: lat,
-        lng: lng,
-        address: address,
-        filesURL: arrimg.join('|'),
-        firstURL: imageUrl,
-        siteInfo: textKo,
-        comment: '',
-        linkMan: linkMan,
-        telephone: telephone.replace(/\s*/g,""),
-        position: addressXian,
-        sporttype: onChangeRunTai + '|' + onChangeRunZu + '|' + onChangeRunGao,
-        type: 1
-      }
-      if (typeof (onChangeRun) === 'string') {
-        data.sport = onChangeRun
-      } else {
-        data.sport = onChangeRun.join(',')
-      }
-
-      if (typeof (onChangeCheck) === 'string') {
-        data.facilities = onChangeCheck
-      } else {
-        data.facilities = onChangeCheck.join(',')
-      }
-      this.VenueInformationSave(data)
-
-    } else {
-      console.log(onChangeRun)
-      let arrimg = []
-      for (let i in fileList.slice(0,9)) {
-        arrimg.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
-      }
-      if (sessionStorage.getItem('province')=== null) {
-        Toast.fail('请先选择地区', 1)
-      } else if (stadiumName=== null) {
+      if (stadiumName === null) {
         Toast.fail('请输入场馆名称', 1)
       } else if (lat === '') {
         Toast.fail('请选择场馆位置', 1)
-      }else if(imageRes===''){
+      } else if (imageRes === '') {
         Toast.fail('请选择场馆门脸照', 1)
-      } else if (arrimg.length < 3) {
-        Toast.fail('最少上传三张场地照', 1)
-      }else if(onChangeRun.length===0){
+      } else if (filesURLarr.length < 2) {
+        Toast.fail('最少上传两张场地照', 1)
+      } else if (onChangeRun.length === 0) {
         Toast.fail('请选择场地类型', 1)
-      }else if(onChangeCheck.length===0){
+      } else if (onChangeCheck.length === 0) {
         Toast.fail('请选择场地设施', 1)
-      }else if(textKo===''){
+      } else if (textKo === '') {
         Toast.fail('请输入场地介绍', 1)
+      } else if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(linkMan) === false) {
+        Toast.fail('联系人只允许输入文字/字母', 1)
+      } else if (imageRes === 1) {
+        Toast.fail('门脸照违规请重新上传', 1)
+      } else if (filesURLarr.indexOf('无') !== -1) {
+        Toast.fail('场地照违规请重新上传', 1)
       } else {
+
         let data = {
-          venueloginuuid: localStorage.getItem('uuid'), 
-          province: sessionStorage.getItem('province'),
-          city: sessionStorage.getItem('city'),
-          area: sessionStorage.getItem('county'),
+          venueloginuuid: localStorage.getItem('uuid'),
           venuename: stadiumName,
           lat: lat,
           lng: lng,
           address: address,
-          filesURL: arrimg.join('|'),
+          filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
           firstURL: imageRes,
-          sport: onChangeRun === '' ? '' : onChangeRun.join(','),
-          sporttype: onChangeRunTai + '|' + onChangeRunZu + '|' + onChangeRunGao,
-          facilities: onChangeCheck === '' ? '' : onChangeCheck.join(','),
+          sport: onChangeRun === '' ? [] : typeof (onChangeRun) !== 'string' ? onChangeRun.join(',') : onChangeRun,
+          facilities: onChangeCheck === '' ? [] : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
           siteInfo: textKo,
           linkMan: linkMan,
-          telephone: telephone.replace(/\s*/g,""),
+          telephone: telephone.replace(/\s*/g, ""),
           position: addressXian,
-        }
-        if (data.firstURL === '') {
-          Toast.fail('门脸照违规请重新上传', 2);
-        } else if (data.filesURL.split('|').indexOf('无')!==-1) {
-          Toast.fail('场地照有违规图片请重新上传', 2);
-        } else {
-         this.PerfectingVenueInformation(data)
+          province: handleAreaTwo,
+          city: handleCityTwo,
+          area: handleDistrictTwo,
+          type: 1
         }
 
-        
+        this.VenueInformationSave(data)
+      }
+
+
+    } else {
+
+      let fileListT = fileList.slice(0, 9)
+      let filesURLarr = []
+      for (let i in fileListT) {
+        if (fileListT[i].response !== undefined) {
+          if (fileListT[i].response.data.length === 0) {
+            filesURLarr.push('无')
+          } else {
+            filesURLarr.push(fileListT[i].response.data.baseURL + fileListT[i].response.data.filesURL)
+          }
+
+        } else if (fileListT[i].response === undefined) {
+          filesURLarr.push(fileListT[i].url)
+        }
+      }
+      if (stadiumName === null) {
+        Toast.fail('请输入场馆名称', 1)
+      } else if (lat === '') {
+        Toast.fail('请选择场馆位置', 1)
+      } else if (imageRes === '') {
+        Toast.fail('请选择场馆门脸照', 1)
+      } else if (filesURLarr.length < 2) {
+        Toast.fail('最少上传两张场地照', 1)
+      } else if (onChangeRun.length === 0) {
+        Toast.fail('请选择场地类型', 1)
+      } else if (onChangeCheck.length === 0) {
+        Toast.fail('请选择场地设施', 1)
+      } else if (textKo === '') {
+        Toast.fail('请输入场地介绍', 1)
+      } else if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(linkMan) === false) {
+        Toast.fail('联系人只允许输入文字/字母', 1)
+      } else if (imageRes === 1) {
+        Toast.fail('门脸照违规请重新上传', 1)
+      } else if (filesURLarr.indexOf('无') !== -1) {
+        Toast.fail('场地照违规请重新上传', 1)
+      } else {
+        let data = {
+          venueloginuuid: localStorage.getItem('uuid'),
+          venuename: stadiumName,
+          lat: lat,
+          lng: lng,
+          address: address,
+          filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
+          firstURL: imageRes,
+          sport: onChangeRun === '' ? [] : typeof (onChangeRun) !== 'string' ? onChangeRun.join(',') : onChangeRun,
+          facilities: onChangeCheck === '' ? [] : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
+          siteInfo: textKo,
+          linkMan: linkMan,
+          telephone: telephone.replace(/\s*/g, ""),
+          position: addressXian,
+          province: handleAreaTwo,
+          city: handleCityTwo,
+          area: handleDistrictTwo,
+        }
+
+        this.PerfectingVenueInformation(data)
+
+
+
       }
     }
   }
@@ -406,20 +406,75 @@ class stadiumInformationPh extends React.Component {
   }
 
   closeWeb = () => {
-    if (window.location.href.indexOf('flag=1')===-1) {
+    if (window.location.href.indexOf('flag=1') === -1) {
       this.props.history.push('/phone')
     } else {
       this.close()
     }
   }
 
-  onOk = (e) => {
-    sessionStorage.setItem('province', this.state.arrCouty[this.state.arrCoutyNum.indexOf(e[0])])
-    sessionStorage.setItem('city', this.state.arrCity[this.state.arrCityNum.indexOf(e[1])])
-    sessionStorage.setItem('county', this.state.arrPro[this.state.arrProNum.indexOf(e[2])])
-    sessionStorage.setItem('addressId', e)
-    this.setState({ addressId: e, addressArr: [this.state.arrCouty[this.state.arrCoutyNum.indexOf(e[0])], this.state.arrCity[this.state.arrCityNum.indexOf(e[1])], this.state.arrPro[this.state.arrProNum.indexOf(e[2])]] })
+  SaveInfor = () => {
+    let { stadiumName, lat, lng, linkMan, telephone, imageRes, addressXian, address, fileList, onChangeRun, onChangeCheck, textKo, handleAreaTwo, handleCityTwo, handleDistrictTwo } = this.state
+    let fileListT = fileList.slice(0, 9)
+    let filesURLarr = []
+    for (let i in fileListT) {
+      if (fileListT[i].response !== undefined) {
+        if (fileListT[i].response.data.length === 0) {
+          filesURLarr.push('无')
+        } else {
+          filesURLarr.push(fileListT[i].response.data.baseURL + fileListT[i].response.data.filesURL)
+        }
+
+      } else if (fileListT[i].response === undefined) {
+        filesURLarr.push(fileListT[i].url)
+      }
+    }
+
+    let data = {
+      siteuuid: this.state.siteUid,
+      venueloginuuid: localStorage.getItem('uuid'),
+      venuename: stadiumName,
+      lat: lat,
+      lng: lng,
+      address: address,
+      filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
+      firstURL: imageRes,
+      sport: onChangeRun === '' ? [] : typeof (onChangeRun) !== 'string' ? onChangeRun.join(',') : onChangeRun,
+      facilities: onChangeCheck === '' ? [] : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
+      siteInfo: textKo,
+      linkMan: linkMan,
+      telephone: telephone.replace(/\s*/g, ""),
+      position: addressXian,
+      province: handleAreaTwo,
+      city: handleCityTwo,
+      area: handleDistrictTwo,
+    }
+    if (stadiumName === '') {
+      Toast.fail('请填写场馆名称', 1)
+    } else if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(linkMan) === false) {
+      Toast.fail('联系人只允许输入文字/字母', 1)
+    } else if (data.firstURL === 1) {
+      Toast.fail('门脸照违规请重新上传', 1)
+    } else if (data.filesURL.split('|').indexOf('无') !== -1) {
+      Toast.fail('场地照违规请重新上传', 1)
+    } else {
+      console.log(data)
+      this.TemporaryVenueInformation(data)
+    }
+
+
   }
+
+  async TemporaryVenueInformation(data) {
+    const res = await TemporaryVenueInformation(data)
+    if (res.data.code === 2000) {
+      Toast.success(res.data.msg, 1)
+      this.getVenueInformation()
+    } else {
+      Toast.fail(res.data.msg, 1)
+    }
+  }
+
 
 
   render() {
@@ -434,7 +489,7 @@ class stadiumInformationPh extends React.Component {
     const { previewVisible, previewImage, fileList } = this.state
     const uploadButtonT = (
       <div>
-        
+
         <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}>场地照</div>
       </div>
     )
@@ -449,19 +504,19 @@ class stadiumInformationPh extends React.Component {
       modalCancel: "取消"
     }
 
-  
+
     return (
       <div className="stadiumInformationPh">
         <NavBar
           mode="dark"
-          icon={ <LeftOutlined  onClick={this.reture} />}
+          icon={<LeftOutlined onClick={this.reture} />}
           rightContent={<Popover mask
             overlayClassName="fortest"
             overlayStyle={{ color: 'currentColor' }}
             visible={this.state.visible}
             onSelect={this.closeWeb}
             overlay={[
-              (<Item key="1" value="scan" style={{ fontSize: '0.7rem' }} data-seed="logId">{window.location.href.indexOf('flag=1')===-1? '返回官网' : '关闭'}</Item>),
+              (<Item key="1" value="scan" style={{ fontSize: '0.7rem' }} data-seed="logId">{window.location.href.indexOf('flag=1') === -1 ? '返回官网' : '关闭'}</Item>),
             ]}
             align={{
               overflow: { adjustY: 0, adjustX: 0 },
@@ -479,24 +534,42 @@ class stadiumInformationPh extends React.Component {
               alignItems: 'center',
             }}
             >
-               <EllipsisOutlined />
+              <EllipsisOutlined />
             </div>
           </Popover>}
         ><span style={{ fontSize: '1rem' }}>完善信息</span></NavBar>
         <div className="boss">
-          <div className="input">
 
-            <Picker
-              data={arr}
-              title="选择地区"
-              value={this.state.addressId}
-              onOk={this.onOk}
-              extra="选择省份   选择市   选择区/县"
+
+
+
+          <div className="input" onClick={this.mapPh}>
+            <span>场馆位置</span>
+            <img className="imgAddress" onClick={this.mapPh} src={require("../../assets/icon_pc_dingwei.png")} alt="地址" />
+            <InputItem
+              placeholder="点击图标选择地址"
+              value={this.props.location.query !== undefined ? this.props.location.query.title : this.state.address}
+              style={{ fontSize: '0.8rem', color: '#333' }}
+              className="select selectOne"
+              disabled={true}
+              onClick={this.mapPh}
             >
-              <List.Item arrow="horizontal" style={{fontSize:'16px'}}>选择地区</List.Item>
-            </Picker>
+            </InputItem>
+
           </div>
 
+          <div className="input">
+
+            <TextareaItem
+              title="详细地址"
+              placeholder="请输入详细地址  "
+              value={this.state.addressXian}
+              style={{ fontSize: '0.8rem', width: '89%', float: 'right' }}
+              onChange={this.xaingxi}
+              autoHeight
+            />
+
+          </div>
           <div className="input">
             <span>场馆名称</span>
             <InputItem
@@ -509,41 +582,13 @@ class stadiumInformationPh extends React.Component {
             </InputItem>
           </div>
 
-          <div className="input">
-            <span>场馆位置</span>
-            <img className="imgAddress" onClick={this.mapPh} src={require("../../assets/icon_pc_dingwei.png")} alt="地址" />
-            <InputItem
-              placeholder="点击图标选择地址"
-              value={this.props.location.query !== undefined ? this.props.location.query.title : this.state.address}
-              style={{ fontSize: '0.8rem' }}
-              className="select selectOne"
-              disabled={true}
-              onClick={this.mapPh}
-            >
-            </InputItem>
-           
-          </div>
-
-          <div className="input">
-            <span>详细地址</span>
-            <InputItem
-              placeholder="请输入详细地址"
-              value={this.state.addressXian}
-              style={{ fontSize: '0.8rem' }}
-              className="select"
-              onChange={this.xaingxi}
-            >
-            </InputItem>
-          </div>
-
-
 
           <div className="input">
             <span>联&nbsp;&nbsp;系&nbsp;&nbsp;人</span>
             <InputItem
               placeholder="请输入场馆联系人"
               value={this.state.linkMan}
-              style={{ fontSize: '0.8rem'}}
+              style={{ fontSize: '0.8rem' }}
               className="select"
               onChange={this.linkMan}
             >
@@ -566,31 +611,31 @@ class stadiumInformationPh extends React.Component {
 
 
           <div className="input">
-            <span style={{lineHeight:'5rem'}}>门脸照</span>
+            <span style={{ lineHeight: '5rem', paddingRight: '0.8rem' }}>门脸照</span>
             <ImgCrop scale {...propsOne}>
-            <Upload
-              name="files"
-              listType="picture-card"
-              className="avatar-uploader addImg"
-              showUploadList={false}
-              action="/api/UploadVenueImgs?type=Venue"
-              beforeUpload={beforeUpload}
-              onChange={this.handleChange}
-              accept="image/*"
-              multiple={false}
-            >
-              {imageRes ? <div className="avatar"><img src={'https://app.tiaozhanmeiyitian.com/'+imageRes} alt="avatar" style={{ width: '100%',height:'100%',position:'absolute',left:'50%',marginLeft:'-2rem',top:'0' }} /></div> : uploadButton}
-            </Upload>
+              <Upload
+                name="files"
+                listType="picture-card"
+                className="avatar-uploader addImg"
+                showUploadList={false}
+                action="/api/UploadVenueImgs?type=Venue"
+                beforeUpload={beforeUpload}
+                onChange={this.handleChange}
+                accept="image/*"
+                multiple={false}
+              >
+                {imageRes !== 1 && imageRes !== '' && imageRes !== null ? <div className="avatar"><img src={'https://app.tiaozhanmeiyitian.com/' + imageRes} alt="avatar" style={{ width: '100%', height: '100%', position: 'absolute', left: '50%', marginLeft: '-2rem', top: '0' }} /></div> : uploadButton}
+              </Upload>
             </ImgCrop>
           </div>
 
           <div className="input">
-            <span>场地照片 (请上传2-8张)</span>
+            <span style={{ lineHeight: '20px' }}>场地照片<br />(2-8张)</span>
             <Upload
               name="files"
               action="/api/UploadVenueImgs?type=Venue"
               listType="picture-card"
-              fileList={fileList.slice(0,8)}
+              fileList={fileList.slice(0, 8)}
               onPreview={this.handlePreview}
               onChange={this.handleChangeT}
               accept="image/*"
@@ -608,17 +653,6 @@ class stadiumInformationPh extends React.Component {
             <Checkbox.Group options={this.state.plainOptions} value={this.state.onChangeRun} onChange={this.onChangeRun} /><br /><span className="kong"></span>
           </div>
 
-
-          
-
-
-
-
-
-
-
-
-
           <div className="input">
             <span>场地设施</span>
             <Checkbox.Group options={options} style={{ fontSize: '0.75rem' }} value={this.state.onChangeCheck} onChange={this.onChangeCheck} /><br /><span className="kong"></span>
@@ -628,7 +662,11 @@ class stadiumInformationPh extends React.Component {
             <span>场地介绍</span>
             <TextArea rows={3} maxLength={200} onChange={this.textKo} style={{ padding: '0' }} value={this.state.textKo} placeholder="请输入场地介绍，如场地规模、特色等。" />
           </div>
-          <Button className="btn" onClick={this.next}>下一步</Button>
+          <div className="footerBtn">
+            <div onClick={this.SaveInfor}>保存</div>
+            <div onClick={this.next}>下一步</div>
+
+          </div>
 
 
 

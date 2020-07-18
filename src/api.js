@@ -406,6 +406,12 @@ export function getVenueQualified(data,headers){    //填写资质信息时，�
 }
 
 
+export function getVenueComplainList(data,headers){    //在活动列表，查看某一个活动的投诉结论
+    return axios.post('/api/getVenueComplainList',data,{headers: {'token': headers}})
+}
+
+
+
 
 
 

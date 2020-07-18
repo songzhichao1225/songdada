@@ -35,7 +35,6 @@ class commentPh extends React.Component {
     other:0,
     modal1:false,
     src:'',
-    Illegality:['妈','逼','狗','日','共产党','法轮功','解放军','暴动','煞笔','沙比']
   }
   async getCommentList(data) {
     const res = await getCommentList(data, localStorage.getItem('venue_token'))
@@ -103,7 +102,7 @@ class commentPh extends React.Component {
     const res = await VenueCommentReply(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ visible: false })
-      this.getCommentList({ page: 1 })
+      this.getCommentList({ page: this.state.current })
     }  else {
       Toast.fail(res.data.msg, 1);
     }

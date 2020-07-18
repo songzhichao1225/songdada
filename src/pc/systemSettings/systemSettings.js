@@ -1,7 +1,7 @@
 import React from 'react';
 import './systemSettings.css';
 import 'antd/dist/antd.css';
-import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport, VenueTemporarilyClosed, VenueIsClose, getVenueIsClose, VenueFeedback, getVenueHelpCenter } from '../../api';
+import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport, VenueTemporarilyClosed, gerVenueName, VenueIsClose, getVenueIsClose, VenueFeedback, getVenueHelpCenter } from '../../api';
 import { Input, message, Checkbox, Drawer, Pagination, Popconfirm } from 'antd';
 import Icon from '@ant-design/icons';
 import 'moment/locale/zh-cn';
@@ -54,7 +54,8 @@ class systemSettings extends React.Component {
   onClose = () => {
     this.setState({
       Drawervisible: false,
-      help: false
+      help: false,
+      page:1
     });
   }
 
@@ -86,10 +87,19 @@ class systemSettings extends React.Component {
         sessionStorage.setItem('sitew', true)
       }
     }, 50)
-
+    this.gerVenueName()
 
   }
 
+  async gerVenueName(data) {
+    const res = await gerVenueName(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 4001) {
+      this.props.history.push('/')
+      message.error('登录超时请重新登录!')
+    } else {
+      sessionStorage.setItem('phone', res.data.data.phone)
+    }
+  }
 
 
 
@@ -188,6 +198,15 @@ class systemSettings extends React.Component {
 
   naCodeOutie = () => {
     if (this.state.corporatePhone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.corporatePhone)) && this.state.corporatePhone.length === 11) {
+      this.nacodeOned({ "mobile": this.state.corporatePhone, "type": 'venuebindingfr', "uuid": sessionStorage.getItem('uuid') })
+    } else {
+      message.error('请输入正确手机号')
+    }
+  }
+
+  async nacodeOned(data) {
+    const res = await _code(data)
+    if (res.data.code === 2000) {
       let num = 60
       const timer = setInterval(() => {
         this.setState({ textOne: num-- })
@@ -196,9 +215,9 @@ class systemSettings extends React.Component {
           this.setState({ textOne: '获取验证码' })
         }
       }, 1000)
-      this.nacode({ "mobile": this.state.corporatePhone, "type": 'venuebindingfr', "uuid": sessionStorage.getItem('uuid') })
+      message.success(res.data.msg)
     } else {
-      message.error('请输入正确手机号')
+      message.error(res.data.msg)
     }
   }
 
@@ -264,6 +283,7 @@ class systemSettings extends React.Component {
       message.error('登录超时请重新登录!')
     } else {
       message.success('修改成功')
+      this.gerVenueName()
       this.setState({ flagListOne: true, flagList: true, flagUntie: true })
     }
   }
@@ -437,11 +457,11 @@ class systemSettings extends React.Component {
               <span className={this.state.flag === true ? 'block' : 'none'}>挑战约球的创始团队来自阿里巴巴、GOOGLE、舒适堡、格力，及全球连锁酒店顶级管理人士。一群狂热的健身&互联网信徒，乐刻运动是一个充满极客精神以追求极致的态度为都市年轻人提供健身服务的创业公司。致力于成为混乱的国内健身行业的颠覆者。</span>
             </li>
             <li onClick={this.showDrawer}>关于我们</li>
-            <li>客服电话 （010-120101021）</li>
+            <li>客服电话 （010-80895077</li>
             <li onClick={this.help}>帮助中心</li>
             <li><span style={{ marginTop: 0 }} onClick={this.feedBack}>意见反馈</span>
               <div className='feedback' style={this.state.bot === true ? { display: 'block' } : { display: 'none' }}>
-                <TextArea style={{ width: '300px', minHeight: '60px' }} maxLength={200} autosize={true} placeholder='输入意见反馈' onChange={this.text} />
+                <TextArea style={{ width: '300px', minHeight: '60px' }} maxLength={200}  placeholder='输入意见反馈' onChange={this.text} />
                 <span style={{ marginLeft: '10px', padding: '4px 20px', background: '#F5A623', color: '#fff', fontSize: '16px' }} onClick={this.subfeed}>提交</span>
                 <div>{this.state.textNum}/200</div>
               </div>
@@ -463,14 +483,26 @@ class systemSettings extends React.Component {
               <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textT}</div>
             </div>
 
-            <div className="inputSon">
+            <div className="inputSonT inputSon" style={{ opacity: 0, position: 'absolute' }}>
+              <span>验证码</span>
+              <Input maxLength={6} style={{ width: 150, marginLeft: 28, padding: '0 5px', height: '43px' }} onChange={this.code} placeholder="请输入验证码" />
+              <div className={this.state.textT === '获取验证码' ? 'obtainCode' : 'koohidden'} style={{ marginRight: 32 }} onClick={this.naCode}>{this.state.textT}</div>
+              <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textT}</div>
+            </div>
+
+            <div className="inputSon" style={{ opacity: 0, position: 'absolute' }}>
               <span>重置密码</span>
-              <Input.Password maxLength={8} autocomplete="new-password" onChange={this.passWord} placeholder="请输入重置密码" />
+              <Input.Password maxLength={8}  onChange={this.passWord} placeholder="请输入重置密码" />
+            </div>
+
+            <div className="inputSon" >
+              <span>重置密码</span>
+              <Input.Password maxLength={8}  onChange={this.passWord} placeholder="请输入重置密码" />
             </div>
 
             <div className="inputSon">
               <span>确认密码</span>
-              <Input.Password maxLength={8} autocomplete="new-password" onChange={this.passWordT} placeholder="请输入确认密码" />
+              <Input.Password maxLength={8}  onChange={this.passWordT} placeholder="请输入确认密码" />
             </div>
             <div className="submit" style={{ marginLeft: 72 }} onClick={this.submit}>确定</div>
           </div>

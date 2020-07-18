@@ -5,7 +5,7 @@ import { Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Input } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
-import { _code, VenueBindingPhone } from '../../api';
+import { _code, VenueBindingPhone, gerVenueName } from '../../api';
 
 
 class untiePhonePh extends React.Component {
@@ -19,9 +19,16 @@ class untiePhonePh extends React.Component {
     codeTwo: '',
   };
 
+  async gerVenueName(data) {
+    const res = await gerVenueName(data, sessionStorage.getItem('venue_token'))
+    if(res.data.code===2000) {
+      localStorage.setItem('phone', res.data.data.phone)
+    }
+  }
+
 
   componentDidMount() {
-
+    this.gerVenueName()
   }
 
   phone = (e) => {

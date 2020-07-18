@@ -197,7 +197,7 @@ class stadiums extends React.Component {
     if (res.data.code === 2000) {
       let corporate = res.data.data
       let cardImg = corporate.legalFilesURL.replace('|', ',').split(',')
-      if(res.data.data.ProvinceBank!=''){
+      if(res.data.data.ProvinceBank!==''){
         this.getVenueOpenBankCity({ province_id:res.data.data.ProvinceBank })
       }
       this.setState({
@@ -538,15 +538,7 @@ class stadiums extends React.Component {
       modalOk: "确定",
       modalCancel: "取消"
     }
-    const props = {
-      aspect: 1.64 / 1,
-      resize: false, //裁剪是否可以调整大小
-      resizeAndDrag: true, //裁剪是否可以调整大小、可拖动
-      modalTitle: "编辑图片", //弹窗标题
-      modalWidth: 600, //弹窗宽度
-      modalOk: "确定",
-      modalCancel: "取消"
-    }
+  
     const propsLo={
       aspect: 1 / 1.41,
       resize: false, //裁剪是否可以调整大小
@@ -819,9 +811,9 @@ class stadiums extends React.Component {
             okText="确定"
             cancelText="返回"
           >
-            <Button className="submit" style={this.state.issecondaudit !== 0 ? { display: 'block' } : { display: 'none' }}>提交修改</Button>
+            <Button className="submit" style={this.state.other === false ? { display: 'block' } : { display: 'none' }}>提交修改</Button>
           </Popconfirm>
-          <Button className="submit" style={this.state.issecondaudit === 0 ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
+          <Button className="submit" style={this.state.other === true ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
         </div>
         </Spin>
       </div>

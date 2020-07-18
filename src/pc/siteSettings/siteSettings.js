@@ -1236,7 +1236,7 @@ class siteSettings extends React.Component {
                       <Col xs={{ span: 2 }}>{item.sportname}</Col>
                       <Col xs={{ span: 2 }}>{item.tags}</Col>
                       <Popover content={(<div className="titleVenid">{item.venueid}</div>)} title='详情' trigger="click">
-                        <Col xs={{ span: 2 }}>{item.venueid}</Col>
+                        <Col xs={{ span: 2 }} style={{cursor:'pointer'}}>{item.venueid}</Col>
                       </Popover>
                       <Col xs={{ span: 2 }}>{item.sitenumber}</Col>
                       <Popover content={(<span>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</span>)} title='详情' trigger="click">
@@ -1247,7 +1247,7 @@ class siteSettings extends React.Component {
                       <Col xs={{ span: 2 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
                       <Col xs={{ span: 2 }}>{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</Col>
                       <Popover content={(<span>{item.comment === '' ? '无' : item.comment}</span>)} title='详情' trigger="click">
-                        <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.comment === '' ? '无' : item.comment}</Col>
+                        <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',cursor:'pointer' }}>{item.comment === '' ? '无' : item.comment}</Col>
                       </Popover>
                       <Col xs={{ span: 2 }} ><span style={{ cursor: 'pointer',padding:'3px 6px' }} data-uid={item.uuid} data-type={item.discount_edate} onClick={this.preferential}>{item.discount_edate === null ? '添加' : '查看'}</span></Col>
                       <Col xs={{ span: 2 }}>
@@ -1287,7 +1287,7 @@ class siteSettings extends React.Component {
                   <Col xs={{ span: 5 }}>{item.sportid}</Col>
                   <Col xs={{ span: 5 }}>{item.title}</Col>
                   <Popover content={(<div className="titleVenid">{item.venueid}</div>)} title='详情' trigger="click">
-                    <Col xs={{ span: 5 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} onClick={this.tooltip}>{item.venueid}</Col>
+                    <Col xs={{ span: 5 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',cursor:'pointer' }} onClick={this.tooltip}>{item.venueid}</Col>
                   </Popover>
 
                   <Col xs={{ span: 5 }}>{item.number}</Col>
@@ -1393,7 +1393,7 @@ class siteSettings extends React.Component {
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>价格</span><span>（元/小时）</span>
-              <InputNumber className="startTime" value={this.state.costperhour} defaultValue={0} min={0} style={{ paddingLeft: '10px', height: 32, width: 269 }} placeholder="请输入" onChange={this.money} />
+              <InputNumber className="startTime" value={this.state.costperhour} defaultValue={0} min={0} style={{ height: 32, width: 269 }} placeholder="请输入" onChange={this.money} />
             </div>
             <div className="modelList" style={{ height: 32 }}>
               <span>最长提前预定时间</span>
@@ -1529,11 +1529,13 @@ class siteSettings extends React.Component {
             closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
           >
             <div className="serialNumberTop"><span>请选择您要设置的场地编号</span><div onClick={this.reverseElection}>反选</div><div onClick={this.allOfThem} style={{ marginRight: '10px' }}>全选</div></div>
+            <div style={{clear:'both'}}>
             {
               this.state.arrNum.map((item, i) => (
                 <div key={i} className="serialSon" onClick={this.seriaSon} data-id={item.id} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', transition: '0.3s', opacity: '0.2' } : {}}>{item.id}</div>
               ))
             }
+            </div>
             <div className="footerSerial">
               <div className="seriaComfir" onClick={this.serialComfir}>提交</div>
             </div>
@@ -1697,11 +1699,13 @@ class siteSettings extends React.Component {
           >
             <div className="serialNumberTop"><span>请选择您要设置的场地编号</span></div>
             <div className="serialNumberTop" style={{float:'right',marginTop:'-8px'}}><span onClick={this.allChed}>全选</span><span onClick={this.allChedTwo}>反选</span></div>
+          <div style={{clear:'both'}}>
             {
               this.state.arrNumTwo.map((item, i) => (
                 <div key={i} className="serialSon" onClick={this.seriaSonTwo} data-id={i} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {}}>{item.idIdx}</div>
               ))
             }
+            </div>
             <div className="footerSerial" style={{ marginTop: '60px' }}>
               <div className="seriaComfir" onClick={this.serialComfirTwo}>确定</div>
             </div>

@@ -67,18 +67,7 @@ class corporatePh extends React.Component {
           this.setState({ textT: '获取验证码' })
         }
       }, 1000)
-      alert('提示',
-        (<Radio.Group onChange={this.onChange} defaultValue={this.state.value}>
-          {
-            this.state.selectVeun.map((item,i)=>(
-            <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
-            ))
-          }
-        </Radio.Group>),
-        [
-          { text: '取消', onPress: () => console.log('cancel'), style: 'default' },
-          { text: '确定', onPress: () => console.log('cancel') }
-        ])
+      
     } else {
       Toast.fail(res.data.msg, 1)
     }
@@ -123,6 +112,18 @@ class corporatePh extends React.Component {
 
     if (res.data.code === 2000) {
       this.setState({ selectVeun: res.data.data, value: res.data.data[0].venueloginuuid })
+      alert('提示',
+        (<Radio.Group onChange={this.onChange} defaultValue={this.state.value}>
+          {
+            this.state.selectVeun.map((item,i)=>(
+            <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
+            ))
+          }
+        </Radio.Group>),
+        [
+          { text: '取消', onPress: () => console.log('cancel'), style: 'default' },
+          { text: '确定', onPress: () => console.log('cancel') }
+        ])
       this.nacode({ "mobile": this.state.phone, "type": 'venuelogin' })
     } else {
       Toast.fail(res.data.msg, 1);
@@ -154,7 +155,7 @@ class corporatePh extends React.Component {
 
   onSubmit = () => {
     let data = {
-      username: this.state.phone, usercode: this.state.code, userpass: this.state.pass, type: 2, Logintype: 'mobile', venueloginuuid: this.state.value
+      username: this.state.phone, usercode: this.state.code, userpass:'', type: 2, Logintype: 'mobile', venueloginuuid: this.state.value
     }
 
     this.login(data)
@@ -254,22 +255,8 @@ class corporatePh extends React.Component {
             </div>
           </div>
 
-          <div className="name">
-            <InputItem
-              type={this.state.eyes === true ? 'text' : 'password'}
-              placeholder="请输入密码"
-              clear={true}
-              style={{ fontSize: '0.8rem' }}
-              onChange={this.password}
-              className="phone"
-              maxLength={8}
-            >
-            </InputItem>
 
-            <span onClick={this.forgetPassword}>忘记密码</span>
-            <span style={{ display: 'block', width: '15%' }} onClick={this.eyes}><img src={require('../../assets/eyes.png')} style={this.state.eyes === true ? { width: '1.13rem', height: '0.81rem', marginLeft: '1rem' } : { display: 'none' }} alt="eyes" /> <img src={require('../../assets/eyesTwo.png')} style={this.state.eyes === true ? { display: 'none' } : { width: '1.13rem', height: '0.81rem', marginLeft: '1rem' }} alt="eyes" /></span>
-
-          </div>
+            
 
           <div className="loginBtn" onClick={this.onSubmit}>登录</div>
           <div className="footer" style={{ marginTop: '1rem' }}>

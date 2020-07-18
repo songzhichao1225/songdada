@@ -3,9 +3,7 @@ import './perfect.css';
 import 'antd/dist/antd.css';
 import { PerfectingVenueInformation, getVenueInformation, getVenueSportList, VenueInformationSave, TemporaryVenueInformation } from '../../api';
 import { Input, Checkbox, Button, Upload, message, Modal } from 'antd';
-import Icon from '@ant-design/icons';
 import ImgCrop from 'antd-img-crop';
-
 const { TextArea } = Input;
 
 
@@ -15,11 +13,6 @@ const options = [{ label: '停车场', value: '1' }, { label: 'WiFi', value: '2'
 
 
 
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
 
 function getBase64T(file) {
   return new Promise((resolve, reject) => {
@@ -29,7 +22,6 @@ function getBase64T(file) {
     reader.onerror = error => reject(error);
   });
 }
-
 function beforeUpload(file) {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
   if (!isJpgOrPng) {
@@ -88,9 +80,14 @@ class perfect extends React.Component {
       }
 
       localStorage.setItem('handleName', res.data.data.name)
+      let arrjo=[]
+      for(let i in res.data.data.sport.split(',')){
+        
+        arrjo.push(Number(res.data.data.sport.split(',')[i]))
+      }
       this.setState({
         position: res.data.data.position, handleAddress: this.props.location.query === undefined ? res.data.data.address : this.props.location.query.adddress, handleName: res.data.data.name, imageUrl: res.data.data.firstURL, fileList: arrImg,
-        onChangeCheck: res.data.data.sport, onChangeSite: res.data.data.facilities === ',,,' ? '' : res.data.data.facilities, onChangeText: res.data.data.siteInfo, lat: res.data.data.lat, lng: res.data.data.lng,
+        onChangeCheck:arrjo, onChangeSite: res.data.data.facilities === ',,,' ? '' : res.data.data.facilities, onChangeText: res.data.data.siteInfo, lat: res.data.data.lat, lng: res.data.data.lng,
         province: res.data.data.province, city: res.data.data.city, area: res.data.data.area, siteUid: res.data.data.uid,
         imageRes: res.data.data.firstURL, handelPerson: res.data.data.linkMan, handleTelephone: res.data.data.telephone
       })
@@ -204,7 +201,7 @@ class perfect extends React.Component {
     const res = await VenueInformationSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.props.history.push('/qualification')
-      message.error('提交成功')
+      message.success('提交成功')
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登录超时请重新登录')
@@ -308,7 +305,7 @@ class perfect extends React.Component {
           sport: onChangeCheck === '' ? [] : typeof (onChangeCheck) === 'array' ? onChangeCheck.join(',') : onChangeCheck,
           facilities: onChangeSite === '' ? [] : typeof (onChangeSite) === 'array' ? onChangeSite.join(',') : onChangeSite,
           siteInfo: this.state.onChangeText,
-          position: this.props.location.query === undefined ? this.state.position : this.props.location.query.title,
+          positiion: this.props.location.query === undefined ? this.state.position : this.props.location.query.title,
           linkMan: handelPerson,
           telephone: handleTelephone,
         }
@@ -356,6 +353,7 @@ class perfect extends React.Component {
     const res = await TemporaryVenueInformation(data)
     if (res.data.code === 2000) {
       message.success(res.data.msg)
+      this.getVenueInformation()
     } else {
       message.error(res.data.msg)
     }
@@ -378,7 +376,6 @@ class perfect extends React.Component {
       }
     }
     
-    console.log(typeof (onChangeCheck))
     let data = {
       siteuuid: this.state.siteUid,
       venueloginuuid: sessionStorage.getItem('uuid'),
@@ -516,7 +513,6 @@ class perfect extends React.Component {
                 <div className="clearfix">
 
                   <Upload
-                    multiple={false}
                     fileNumLimit='5'
                     name="files"
                     action="/api/UploadVenueImgs?type=Venue"
@@ -551,7 +547,7 @@ class perfect extends React.Component {
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">场地介绍</span><span className="kong"></span>
-                <TextArea className="textarea" placeholder="请输入场地介绍，如场地规模、特色等。" onChange={this.onChangeText} value={this.state.onChangeText} rows={4} />
+                <TextArea className="textarea" placeholder="请输入场地介绍，如场地规模、特色等。" onChange={this.onChangeText} maxLength={200} value={this.state.onChangeText} rows={4} />
               </div>
 
               <div className="prompt">请注意<span>*</span>为必填项</div>
