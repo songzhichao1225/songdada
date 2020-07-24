@@ -96,7 +96,8 @@ class appointmentList extends React.Component {
     calesRed: 0,
     arrTimeuid: [],
     lppding: true,
-    textNuma:'您还没有进行场地设置,请前往设置！'
+    textNuma:'您还没有进行场地设置,请前往设置！',
+    paied:'2'
   };
 
   async getVenueSport(data) {
@@ -226,7 +227,7 @@ class appointmentList extends React.Component {
 
   lookDeta = e => {
     if (e.currentTarget.dataset.type === "3") {
-      this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: '' })
+      this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: '',paied:this.state.paied })
       this.setState({ informVisible: true })
     } else if (e.currentTarget.dataset.type === '4' && this.state.Cancels === 0) {
       this.VenueRemarksLabel({ uuid: e.currentTarget.dataset.uuid })

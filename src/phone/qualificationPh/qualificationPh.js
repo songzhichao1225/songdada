@@ -197,6 +197,7 @@ class qualificationPh extends React.Component {
       this.setState({ backList: res.data.data, flagThree: false })
     }
   }
+
   provinceChange = e => {
     if (this.state.bank_id !== '') {
       this.setState({ province_id: e,city_id:'', kai: false,openingLine:'' })
@@ -206,7 +207,7 @@ class qualificationPh extends React.Component {
 
       this.getVenueOpenBankCity({ province_id: e })
     }
-
+ 
   }
 
   typeChange = e => {

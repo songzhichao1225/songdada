@@ -29,7 +29,9 @@ if (goUrl === 0) {
     <Router />
   </ConfigProvider>, document.getElementById('root'));
 } else if (goUrl === 1) {
-  ReactDOM.render(<RouterPh />, document.getElementById('root'));
+  ReactDOM.render(
+    <ConfigProvider locale={zhCN}>
+  <RouterPh /> </ConfigProvider>, document.getElementById('root'));
 }
 
 

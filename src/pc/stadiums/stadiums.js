@@ -320,7 +320,12 @@ class stadiums extends React.Component {
     const res = await VenueInformationSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success('提交成功')
-      this.setState({ issecondaudit: 0,other:res.data.other })
+      if(res.data.other===false){
+        this.setState({issecondaudit: 1})
+      }else{
+        this.setState({issecondaudit: 0})
+      }
+      this.setState({other:res.data.other })
       this.getVenueInformation()
     } else {
       message.error(res.data.msg)
@@ -662,9 +667,9 @@ class stadiums extends React.Component {
             okText="确定"
             cancelText="返回"
           >
-            <Button className="submit" style={this.state.other === false ? { display: 'block' } : { display: 'none' }}>提交修改</Button>
+            <Button className="submit" style={this.state.issecondaudit===1||this.state.issecondaudit===2 ? { display: 'block' } : { display: 'none' }}>提交修改</Button>
           </Popconfirm>
-          <Button className="submit" style={this.state.other === true ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
+          <Button className="submit" style={this.state.issecondaudit===0 ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
         </div>
 
 
@@ -811,14 +816,14 @@ class stadiums extends React.Component {
             okText="确定"
             cancelText="返回"
           >
-            <Button className="submit" style={this.state.other === false ? { display: 'block' } : { display: 'none' }}>提交修改</Button>
+            <Button className="submit" style={this.state.issecondaudit===1||this.state.issecondaudit===2 ? { display: 'block' } : { display: 'none' }}>提交修改</Button>
           </Popconfirm>
-          <Button className="submit" style={this.state.other === true ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
+          <Button className="submit" style={this.state.issecondaudit===0? { display: 'block' } : { display: 'none' }}>审核中~</Button>
         </div>
         </Spin>
       </div>
-    );
+    )
   }
-}
+} 
 
 export default stadiums;

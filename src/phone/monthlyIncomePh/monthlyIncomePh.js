@@ -70,7 +70,7 @@ class monthlyIncomePh extends React.Component {
     this.getVenueMoneyList({ start: date.toLocaleDateString().replace(/\//g, "-"), end: this.state.end, page: this.state.current })
   }
 
-  endDate = (date) => {
+  endDate = (date) => { 
     this.setState({ end: date,qiEnd: date  })
     this.getVenueMoneyList({ start: this.state.start, end: date.toLocaleDateString().replace(/\//g, "-"), page: this.state.current })
   }

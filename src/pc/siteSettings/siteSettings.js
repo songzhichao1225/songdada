@@ -452,9 +452,9 @@ class siteSettings extends React.Component {
     } else if (costperhour === '') {
       message.warning('请填写价格')
     } else if (maxScheduledDate === '') {
-      message.warning('请选择最长可预定日期')
+      message.warning('请选择最长可预订日期')
     } else if (appointmenttime === '') {
-      message.warning('请选择最短提前预定时间')
+      message.warning('请选择最短提前预订时间')
     } else {
       let obj = {
         uuid: e.currentTarget.dataset.uuid,
@@ -614,7 +614,9 @@ class siteSettings extends React.Component {
     const res = await getVenueTitleSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.getVenueSportidTitle({ sportid: this.state.runId })
-    } else {
+    } else if(res.data.code===4002) {
+      message.warning('请选择场地类型')
+    }else{
       message.warning(res.data.msg)
     }
   }
@@ -1219,11 +1221,11 @@ class siteSettings extends React.Component {
                 <Col xs={{ span: 2 }}>星期</Col>
                 <Col xs={{ span: 2 }}>时间范围</Col>
                 <Col xs={{ span: 2 }}>价格<span className="fontColor">(元/时)</span></Col>
-                <Popover content={(<span>最长提前预定时间</span>)} title='详情' trigger="click">
-                  <Col xs={{ span: 2 }}>最长提前预定时间</Col>
+                <Popover content={(<span>最长提前预订时间</span>)} title='详情' trigger="click">
+                  <Col xs={{ span: 2 }}>最长提前预订时间</Col>
                 </Popover>
-                <Popover content={(<span>最短提前预定时间</span>)} title='详情' trigger="click">
-                  <Col xs={{ span: 2 }}>最短提前预定时间</Col>
+                <Popover content={(<span>最短提前预订时间</span>)} title='详情' trigger="click">
+                  <Col xs={{ span: 2 }}>最短提前预订时间</Col>
                 </Popover>
                 <Col xs={{ span: 2 }}>备注</Col>
                 <Col xs={{ span: 2 }}>打折优惠</Col>
@@ -1253,7 +1255,7 @@ class siteSettings extends React.Component {
                       <Col xs={{ span: 2 }}>
                         <img onClick={this.update} style={{ cursor: 'pointer' }}  data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;
                       <Popconfirm
-                          title={"你确定要删除该条价格设置么?删除后用户将无法预定" + item.sportname + '的' + item.tags + '场地'}
+                          title={"你确定要删除该条价格设置么?删除后用户将无法预订" + item.sportname + '的' + item.tags + '场地'}
                           onConfirm={this.confirmMoney}
                           onCancel={this.cancel}
                           okText="确定"
@@ -1294,7 +1296,7 @@ class siteSettings extends React.Component {
                   <Col xs={{ span: 3 }}>
                     <img onClick={this.modification}  data-uuid={item.uuid} style={{ marginRight: '5px',cursor: 'pointer' }} src={require("../../assets/icon_pc_updata.png")} alt="修改" />
                     <Popconfirm
-                      title={'您确定要删除该条场地细分么?删除后用户将无法预定' + item.sportid + '的' + item.title + '场地'}
+                      title={'您确定要删除该条场地细分么?删除后用户将无法预订' + item.sportid + '的' + item.title + '场地'}
                       onConfirm={this.confirmserisa}
                       onCancel={this.cancel}
                       okText="确定"
@@ -1396,7 +1398,7 @@ class siteSettings extends React.Component {
               <InputNumber className="startTime" value={this.state.costperhour} defaultValue={0} min={0} style={{ height: 32, width: 269 }} placeholder="请输入" onChange={this.money} />
             </div>
             <div className="modelList" style={{ height: 32 }}>
-              <span>最长提前预定时间</span>
+              <span>最长提前预订时间</span>
               <Select placeholder="请选择" className="selectModel" value={this.state.maxScheduledDateName} style={{ width: 269, height: 32 }} onChange={this.handleChangeFour}>
                 <Option value="0.1">一周</Option>
                 <Option value="0.2">两周</Option>
@@ -1406,7 +1408,7 @@ class siteSettings extends React.Component {
               </Select>
             </div>
             <div className="modelList" style={{ height: 32 }}>
-              <span>最短提前预定时间</span>
+              <span>最短提前预订时间</span>
               <Select placeholder="请选择" className="selectModel"
                 defaultActiveFirstOption={false}
                 value={

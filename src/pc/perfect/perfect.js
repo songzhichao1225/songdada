@@ -213,7 +213,9 @@ class perfect extends React.Component {
   onClickNex = () => {
     let { imageRes, fileList, handleAddress, handelPerson, handleTelephone, onChangeSite, onChangeCheck } = this.state
     let fileListT = fileList.slice(0, 9)
-    if (this.state.siteUid!== '') {
+    console.log(this.state.siteUid)
+    if (this.state.siteUid!== ''&&this.state.siteUid!== null) {
+
       let filesURLarr = []
       for (let i in fileListT) {
         if (fileListT[i].response !== undefined) {
@@ -231,7 +233,6 @@ class perfect extends React.Component {
         message.warning("至少上传两张场地照片")
 
       } else {
-        console.log(this.props.location.query)
         let data = {
           venuename: localStorage.getItem('handleName'),
           lat: this.props.location.query === undefined ? this.state.lat : this.props.location.query.lat,
@@ -242,8 +243,8 @@ class perfect extends React.Component {
           address: handleAddress,
           filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
           firstURL: imageRes,
-          sport: onChangeCheck === '' ? [] : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
-          facilities: onChangeSite === '' ? [] : typeof (onChangeSite) !== 'string' ? onChangeSite.join(',') : onChangeSite,
+          sport: onChangeCheck === '' ? '' : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
+          facilities: onChangeSite === '' ? '' : typeof (onChangeSite) !== 'string' ? onChangeSite.join(',') : onChangeSite,
           siteInfo: this.state.onChangeText,
           position: this.props.location.query === undefined ? this.state.position : this.props.location.query.title,
           type: 1,
@@ -262,7 +263,7 @@ class perfect extends React.Component {
           message.error('请选择场地类型')
         }else if(/^[a-zA-Z\u4e00-\u9fa5]+$/.test(handelPerson)===false){
           message.error('联系人只允许输入文字/字母')
-       } else if (data.firstURL === '') {
+       } else if (data.firstURL === 1) {
         message.error('门脸照违规请重新上传')
       } else if (data.filesURL.split('|').indexOf('无')!==-1) {
         message.error('场地照有违规图片请重新上传')
@@ -302,10 +303,10 @@ class perfect extends React.Component {
           address: handleAddress,
           filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
           firstURL: imageRes,
-          sport: onChangeCheck === '' ? [] : typeof (onChangeCheck) === 'array' ? onChangeCheck.join(',') : onChangeCheck,
-          facilities: onChangeSite === '' ? [] : typeof (onChangeSite) === 'array' ? onChangeSite.join(',') : onChangeSite,
+          sport: onChangeCheck === '' ? '': typeof(onChangeCheck)!=='string' ? onChangeCheck.join(',') : onChangeCheck,
+          facilities: onChangeSite === '' ? '' : typeof(onChangeSite)!=='string' ? onChangeSite.join(',') : onChangeSite,
           siteInfo: this.state.onChangeText,
-          positiion: this.props.location.query === undefined ? this.state.position : this.props.location.query.title,
+          position: this.props.location.query === undefined ? this.state.position : this.props.location.query.title,
           linkMan: handelPerson,
           telephone: handleTelephone,
         }
@@ -321,7 +322,7 @@ class perfect extends React.Component {
           message.error('请选择场地类型')
         }else if(/^[a-zA-Z\u4e00-\u9fa5]+$/.test(handelPerson)===false){
           message.error('联系人只允许输入文字/字母')
-       }else if (data.firstURL === '') {
+       }else if (data.firstURL === 1) {
         message.error('门脸照违规请重新上传');
       } else if (data.filesURL.split('|').indexOf('无')!==-1) {
         message.error('场地照有违规图片请重新上传');
@@ -388,8 +389,8 @@ class perfect extends React.Component {
       address: handleAddress,
       filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
       firstURL: imageRes,
-      sport: onChangeCheck === '' ? [] : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
-      facilities: onChangeSite === '' ? [] : typeof (onChangeSite) !== 'string' ? onChangeSite.join(',') : onChangeSite,
+      sport: onChangeCheck === '' ? '' : typeof (onChangeCheck) !== 'string' ?  onChangeCheck.join(',') : onChangeCheck,
+      facilities: onChangeSite === '' ? '' : typeof (onChangeSite) !== 'string' ? onChangeSite.join(',') : onChangeSite,               
       siteInfo: this.state.onChangeText,
       position: this.props.location.query === undefined ? this.state.position : this.props.location.query.title,
       linkMan: handelPerson,
@@ -404,10 +405,8 @@ class perfect extends React.Component {
     } else if (data.filesURL.split('|').indexOf('无')!==-1) {
       message.error('场地照有违规图片请重新上传');
     }else {
-      console.log(data)
       this.TemporaryVenueInformation(data)
     }
-
   }
 
   render() {

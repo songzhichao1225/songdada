@@ -3,7 +3,7 @@ import './information.css';
 import 'antd/dist/antd.css';
 import { Input,Row, Col, Select, Pagination, Spin, message,DatePicker, Modal, Radio, Drawer, InputNumber,Popover } from 'antd';
 import {SyncOutlined,CloseCircleOutlined} from '@ant-design/icons';
-import { getReservationActivitieslist, getVenueReservation, getVenueSport, VenueSendMessage, VenueClickCancelPlace, VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
+import { getReservationActivitieslist, getVenueReservation, getVenueSport, VenueSendMessage, VenueClickCancelPlace, getVenueComplainList,VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -76,6 +76,9 @@ class information extends React.Component {
     otherType: [],
     sportName: '',
     kop:0,
+    Complaints: false,
+    listComplain:[],
+    paied:2,
   }
 
   async getVenueSport(data) {
@@ -130,7 +133,7 @@ class information extends React.Component {
         let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         this.setState({ start: start, end: end,kop:1 })
-        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: start, enddate: end })
+        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: start, enddate: end,paied:this.state.paied })
 
       } else if (sessionStorage.getItem('iconmInfor')=== '2') {
        
@@ -138,18 +141,18 @@ class information extends React.Component {
         let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         this.setState({ start: start, end: end,kop:1 })
-        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: start, enddate: end })
+        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: start, enddate: end,paied:this.state.paied })
 
       } else if (this.props.location.query.uuid) {
         let myDate = new Date()
         let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         this.setState({ start: start, end: end })
-        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: start, enddate: end })
+        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: start, enddate: end,paied:this.state.paied })
         this.setState({ visible: true, publicUUID: this.props.location.query.uuid })
       }
     } else {
-      this.getReservationActivitieslist({ page: 1, sport: '', status: 10 })
+      this.getReservationActivitieslist({ page: 1, sport: '', status: 10,paied:this.state.paied })
     }
     
     setInterval(()=>{
@@ -159,15 +162,15 @@ class information extends React.Component {
 
   dateonChangeS = (date, dateString) => {
     this.setState({ start: dateString[0], end: dateString[1],page:1 })
-    this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: dateString[0], enddate: dateString[1] })
+    this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: dateString[0], enddate: dateString[1],paied:this.state.paied })
   }
 
   current = (page, pageSize) => {
     this.setState({ page: page })
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '' })
+      this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '',paied:this.state.paied })
     } else {
-      this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
+      this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end,paied:this.state.paied })
     }
   }
 
@@ -175,7 +178,7 @@ class information extends React.Component {
   handelClick = (e) => {
     this.setState({ number: e.target.dataset.num })
     if (e.target.dataset.num === '1') {
-      this.getReservationActivitieslist({ page: 1, sport: '', status: 10 })
+      this.getReservationActivitieslist({ page: 1, sport: '', status: 10,paied:this.state.paied })
     }
   }
 
@@ -231,19 +234,19 @@ class information extends React.Component {
   nameChang = (e) => {
     this.setState({ sport: e })
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page:1, sport: e, status: this.state.status, startdate: '', enddate: '' })
+      this.getReservationActivitieslist({ page:1, sport: e, status: this.state.status, startdate: '', enddate: '',paied:this.state.paied })
       this.setState({page:1})
     } else {
-      this.getReservationActivitieslist({ page:1, sport: e, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
+      this.getReservationActivitieslist({ page:1, sport: e, status: this.state.status, startdate: this.state.start, enddate: this.state.end,paied:this.state.paied })
       this.setState({page:1})
     }
   }
   activityChang = (e) => {
     this.setState({ status: e,page:1 })
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page:1, sport: this.state.sport, status: e, startdate: '', enddate: '' })
+      this.getReservationActivitieslist({ page:1, sport: this.state.sport, status: e, startdate: '', enddate: '',paied:this.state.paied })
     } else {
-      this.getReservationActivitieslist({ page:1, sport: this.state.sport, status: e, startdate: this.state.start, enddate: this.state.end })
+      this.getReservationActivitieslist({ page:1, sport: this.state.sport, status: e, startdate: this.state.start, enddate: this.state.end,paied:this.state.paied })
     }
   }
   clickLi = (e) => {
@@ -258,9 +261,9 @@ class information extends React.Component {
   Oneloading = () => {
     this.setState({ Oneloading: true })
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '' })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '',paied:this.state.paied })
     } else {
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end,paied:this.state.paied })
     }
   }
   handleCancel = () => {
@@ -273,9 +276,9 @@ class information extends React.Component {
       message.success(res.data.msg)
       this.setState({ visible: false })
       if (this.state.start === '开始日期') {
-        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '' })
+        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '',paied:this.state.paied })
       } else {
-        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
+        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end,paied:this.state.paied })
       }
     } else {
       message.error(res.data.msg)
@@ -341,7 +344,7 @@ class information extends React.Component {
         this.VenueRemarksLabel({ uuid: e.currentTarget.dataset.uuid })
       }
     } else if (e.currentTarget.dataset.type === "3") {
-      this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: 10 })
+      this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: 10,paied:this.state.paied })
       this.setState({ informVisible: true })
     }
   }
@@ -482,6 +485,20 @@ class information extends React.Component {
     this.VenueClickCancelPlace({ uuid: '', date: this.state.dateString, venueid: num.slice(0, num.length - 1), other: JSON.stringify(obj), time: time.slice(0, time.length - 1), sportid: this.state.liNum, type: 1 })
   }
 
+  Complaints = e => {
+    this.setState({ Complaints: true })
+    this.getVenueComplainList({ publicuuid: e.currentTarget.dataset.id })
+  }
+  ComplaintsTwo = () => {
+    this.setState({ Complaints: false })
+  }
+  async getVenueComplainList(data) {
+    const res = await getVenueComplainList(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ listComplain: res.data.data })
+
+    }
+  }
   
 
   handleVisibleChange = visible => {
@@ -517,7 +534,7 @@ class information extends React.Component {
                 <Col xs={{ span: 2 }}>{item.PlayTime}小时</Col>
                 <Col xs={{ span: 2 }}>{item.Shouldarrive}</Col>
                 <Col xs={{ span: 2 }}>{item.TrueTo}</Col>
-                <Col xs={{ span: 3 }} style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{item.PublicStatus}</Col>
+                <Col xs={{ span: 3 }} onClick={this.Complaints} data-id={item.uuid} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.PublicStatus}<span style={item.iscomplain === 1 ? { color: '#F6410C', fontSize: '12px' } : { display: 'none' }}>(有投诉)</span></Col>
                 <Col xs={{ span: 2 }}>￥{item.SiteMoney}</Col>
                 <Col xs={{ span: 2 }}>{item.SiteMoneyStatus}</Col>
                 <Col xs={{ span: 2 }}>
@@ -725,6 +742,25 @@ class information extends React.Component {
           </div>
           <span onClick={this.placeSubmit} style={{ cursor: 'pointer', padding: '4px 8px', background: '#F5A623', color: '#fff', float: 'right', marginRight: '125px', marginTop: '20px' }}>提交</span>
         </Modal>
+
+        
+        <Drawer
+          title='投诉详情'
+          placement="right"
+          closable={false}
+          width='400px'
+          onClose={this.ComplaintsTwo}
+          visible={this.state.Complaints}
+        >
+          {
+            this.state.listComplain.map((item, i) => (
+              <div key={i} style={{marginTop:'15px'}}>
+                <div><span style={{fontSize:'16px',fontWeight:'blod'}}>投诉类型:</span>{item.name}</div>
+                <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>投诉详情:</span>{item.comment}</div>
+              </div>
+            ))
+          } 
+        </Drawer>
 
 
       </div>

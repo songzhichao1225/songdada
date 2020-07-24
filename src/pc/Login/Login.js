@@ -18,7 +18,8 @@ class Login extends React.Component {
     visiblePhone: false,
     selectVeun: [],
     value: '',
-    BlurOne: 'text'
+    BlurOne: 'text',
+    phoneTwo:''
   };
 
   componentDidMount() {
@@ -128,15 +129,16 @@ class Login extends React.Component {
     const res = await VenueSelectSiteName(data)
     if (res.data.code === 2000) {
       this.setState({ selectVeun: res.data.data, value: res.data.data[0].venueloginuuid })
-      this.nacode({ "mobile": this.state.phone, "type": 'venuelogin' })
+      this.nacode({ "mobile": this.state.phoneTwo, "type": 'venuelogin' })
     } else {
-      this.nacode({ "mobile": this.state.phone, "type": 'venuelogin' })
+      this.nacode({ "mobile": this.state.phoneTwo, "type": 'venuelogin' })
     }
   }
 
   naCode = () => {
-    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone)) && this.state.phone.length === 11) {
-      this.VenueSelectSiteName({ phone: this.state.phone })
+    console.log(this.state.phoneTwo)
+    if (this.state.phoneTwo!== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phoneTwo)) && this.state.phoneTwo.length === 11) {
+      this.VenueSelectSiteName({ phone: this.state.phoneTwo })
     } else {
       message.error('请输入正确手机号')
     }
@@ -148,9 +150,13 @@ class Login extends React.Component {
 
   onSubmit = () => {
     let data = {
-      username: this.state.phone, usercode: this.state.code, userpass: this.state.pass, type: 2, Logintype: 'pc', venueloginuuid: this.state.value
+      username: this.state.phoneTwo, usercode: this.state.code, userpass: this.state.pass, type: 2, Logintype: 'pc', venueloginuuid: this.state.value
     }
-    this.login(data)
+    if(this.state.phoneTwo===''){
+    message.error('请输入手机号')
+    }else{
+      this.login(data)
+    }
   }
 
 
@@ -159,6 +165,7 @@ class Login extends React.Component {
     let data = {
       username: this.state.phone, usercode: this.state.code, userpass: this.state.pass, type: 1, Logintype: 'pc', venueloginuuid: ''
     }
+    console.log(data.username)
     if (data.username === '') {
       message.error('请输入用户名')
     } else if (data.userpass === '') {
@@ -173,13 +180,11 @@ class Login extends React.Component {
   nameLogin = () => {
     this.setState({ navNum: false })
   }
-  guan = () => {
-
-  }
-  iphoneInput = e => {
+  iphoneInput = e => { 
     if (e.target.value === '') {
       this.setState({ selectVeun: [] })
     }
+    this.setState({phoneTwo:e.target.value})
   }
   textOne = () => {
     this.setState({ BlurOne: 'text' })
@@ -249,7 +254,7 @@ class Login extends React.Component {
               <div className={this.state.navNum ? 'nameLogin' : 'nameLoginT'}  >
                 <Form layout="inline" autoComplete="off" className="form">
                   <Form.Item className="input">
-                    <Input onChange={this.phone}  placeholder="用户名/操作员手机号" />
+                    <Input onChange={this.phone} value={this.state.phone}  placeholder="用户名/操作员手机号" />
                   </Form.Item>
                   <Form.Item className="input" style={{ opacity: 0 }}>
                     <Input type="text" />

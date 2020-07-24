@@ -76,7 +76,8 @@ class appointmentList extends React.Component {
     otherType: [],
     sportName: '',
     Complaints: false,
-    listComplain: []
+    listComplain: [],
+    paied:'2'
   };
 
   async getVenueSport(data) {
@@ -128,9 +129,9 @@ class appointmentList extends React.Component {
     console.log(this.props.location.query)
     this.getVenueSport()
     if (this.props.location.query !== undefined) {
-      this.getReservationActivitieslist({ page: 1, publicuid: this.props.location.query.uuid, sport: '', status: '' })
+      this.getReservationActivitieslist({ page: 1, publicuid: this.props.location.query.uuid, sport: '', status: '',paied:this.state.paied })
     } else {
-      this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
+      this.getReservationActivitieslist({ page: 1, sport: '', status: '',paied:this.state.paied })
     }
 
 
@@ -147,15 +148,15 @@ class appointmentList extends React.Component {
 
   dateonChangeS = (date, dateString) => {
     this.setState({ start: dateString[0], end: dateString[1] })
-    this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: this.state.status, startdate: dateString[0], enddate: dateString[1] })
+    this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: this.state.status, startdate: dateString[0], enddate: dateString[1],paied:this.state.paied })
   }
 
   current = (page, pageSize) => {
     this.setState({ page: page })
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '' })
+      this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '',paied:this.state.paied })
     } else {
-      this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
+      this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end,paied:this.state.paied })
     }
   }
 
@@ -214,20 +215,34 @@ class appointmentList extends React.Component {
     this.setState({ sport: e })
     this.setState({ page: 1 })
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page: 1, sport: e, status: this.state.status, startdate: '', enddate: '' })
+      this.getReservationActivitieslist({ page: 1, sport: e, status: this.state.status, startdate: '', enddate: '',paied:this.state.paied })
     } else {
-      this.getReservationActivitieslist({ page: 1, sport: e, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
+      this.getReservationActivitieslist({ page: 1, sport: e, status: this.state.status, startdate: this.state.start, enddate: this.state.end,paied:this.state.paied })
     }
   }
   activityChang = (e) => {
     this.setState({ status: e })
     this.setState({ page: 1 })
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e, startdate: '', enddate: '' })
+      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e, startdate: '', enddate: '',paied:this.state.paied })
     } else {
-      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e, startdate: this.state.start, enddate: this.state.end })
+      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e, startdate: this.state.start, enddate: this.state.end,paied:this.state.paied })
     }
   }
+
+  paied=e=>{
+    this.setState({paied: e})
+    if (this.state.start === '开始日期') {
+      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e, startdate:'', enddate: '',paied: e })
+    } else {
+      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e, startdate: this.state.start, enddate: this.state.end,paied: e })
+    }
+ 
+  }
+
+
+
+
   clickLi = (e) => {
     this.getVenueNumberTitleList({ sportid: e.target.dataset.num })
     this.setState({ dianIndex: e.target.dataset.index, liNum: e.target.dataset.num, spinningTwo: true })
@@ -240,9 +255,9 @@ class appointmentList extends React.Component {
   Oneloading = () => {
     this.setState({ Oneloading: true })
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '' })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '',paied:this.state.paied })
     } else {
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end,paied:this.state.paied })
     }
   }
   handleCancel = () => {
@@ -255,9 +270,9 @@ class appointmentList extends React.Component {
       message.success(res.data.msg)
       this.setState({ visible: false })
       if (this.state.start === '开始日期') {
-        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '' })
+        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '',paied:this.state.paied })
       } else {
-        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end })
+        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end,paied:this.state.paied })
       }
     } else {
       message.error(res.data.msg)
@@ -323,7 +338,7 @@ class appointmentList extends React.Component {
         this.VenueRemarksLabel({ uuid: e.currentTarget.dataset.uuid })
       }
     } else if (e.currentTarget.dataset.type === "3") {
-      this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: '' })
+      this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: '',paied:this.state.paied })
       this.setState({ informVisible: true })
     }
   }
@@ -585,7 +600,14 @@ class appointmentList extends React.Component {
               </Select>
             </Col>
             <Col xs={{ span: 2 }}>场地费用</Col>
-            <Col xs={{ span: 2 }}>支付状态</Col>
+            <Col xs={{ span: 2 }}>
+            <Select className="selectName" defaultValue="支付状态" bordered={false} dropdownStyle={{textAlign: 'center' }} style={{ width: '100%' }} onChange={this.paied} >
+                <Option value="2">全部</Option>
+                <Option value="0">未到账</Option>
+                <Option value="1">已支付</Option>
+               
+              </Select>
+            </Col>
             <Col xs={{ span: 2 }}>发消息</Col>
           </Row>
           <div className={this.state.hidden === true ? '' : 'hidden'} style={{ height: '90%', overflowY: 'auto' }}>
@@ -746,9 +768,7 @@ class appointmentList extends React.Component {
                 <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>投诉详情:</span>{item.comment}</div>
               </div>
             ))
-          }
-
-
+          } 
         </Drawer>
 
 

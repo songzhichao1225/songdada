@@ -50,13 +50,15 @@ class registerPh extends React.Component {
   changeName = (e) => {
     this.setState({ qipao: false })
     if(e!==''){
-      if(/[\u4E00-\u9FA5]/g.test(e)){
-        Toast.fail('用户名只包含数字/字母', 2);
-      }else if( /[^u4e00-u9fa5w]/g.test(e)){
-        Toast.fail('用户名只包含数字/字母', 2);
+      if (/[\u4E00-\u9FA5]/g.test(e)) {
+        Toast.fail('用户名只能包含数字、字母、数字+字母', 2);
+      }else if( /[^a-zA-Z0-9]/g.test(e)){
+        Toast.fail('用户名只能包含数字、字母、数字+字母', 2);
       }else if(e.length<4){
         Toast.fail('用户名至少输入4位', 2);
       }else{this.getIsUserName({ name: e })}
+    }else{
+      Toast.fail('请输入用户名', 2);
     }
   }
   changePhone = (e) => {

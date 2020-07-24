@@ -73,15 +73,25 @@ class stadiumInformationPh extends React.Component {
   async getVenueInformation(data) {
     const res = await getVenueInformation(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      let imgS = (res.data.data.filesURL).split('|')
       let arrImg = []
-      for (let i in imgS) {
-        arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: imgS[i] })
+      if(res.data.data.filesURL!==null){
+        let imgS = (res.data.data.filesURL).split('|')
+        for (let i in imgS) {
+          arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: imgS[i] })
+        }
+      }else{
+        arrImg=''
       }
+     
       if (this.props.location.query !== undefined) {
         let arrjo = []
-        for (let i in res.data.data.sport.split(',')) {
-          arrjo.push(Number(res.data.data.sport.split(',')[i]))
+        if(res.data.data.sport!==null){
+         
+          for (let i in res.data.data.sport.split(',')) {
+            arrjo.push(Number(res.data.data.sport.split(',')[i]))
+          }
+        }else{
+          arrjo=''
         }
         this.setState({
           addressXian: this.props.location.query.adddress,
@@ -91,18 +101,24 @@ class stadiumInformationPh extends React.Component {
           handleAreaTwo: sessionStorage.getItem('handleAreaTwo'),
           handleCityTwo: sessionStorage.getItem('handleCityTwo'),
           handleDistrictTwo: sessionStorage.getItem('handleDistrictTwo'), stadiumName: res.data.data.name,
-          telephone: res.data.data.telephone.replace(/\s*/g, ""), linkMan: res.data.data.linkMan,
+          telephone: res.data.data.telephone===null?res.data.data.telephone:res.data.data.telephone.replace(/\s*/g, ""), linkMan: res.data.data.linkMan,
           imageRes: res.data.data.firstURL, fileList: arrImg, onChangeRun: arrjo,
           onChangeCheck: res.data.data.facilities, textKo: res.data.data.siteInfo, siteUid: res.data.data.uid,
         })
       } else {
         let arrjo = []
-        for (let i in res.data.data.sport.split(',')) {
-          arrjo.push(Number(res.data.data.sport.split(',')[i]))
+        if(res.data.data.sport!==null){
+          
+          for (let i in res.data.data.sport.split(',')) {
+            arrjo.push(Number(res.data.data.sport.split(',')[i]))
+          }
+        }else{
+          arrjo=''
         }
+        
         this.setState({
           address: res.data.data.address, addressXian: res.data.data.position, stadiumName: res.data.data.name,
-          telephone: res.data.data.telephone.replace(/\s*/g, ""), linkMan: res.data.data.linkMan,
+          telephone: res.data.data.telephone===null?res.data.data.telephone:res.data.data.telephone.replace(/\s*/g, ""), linkMan: res.data.data.linkMan,
           imageRes: res.data.data.firstURL, fileList: arrImg, onChangeRun: arrjo,
           onChangeCheck: res.data.data.facilities, textKo: res.data.data.siteInfo,
           lat: res.data.data.lat, lng: res.data.data.lng,
@@ -208,7 +224,7 @@ class stadiumInformationPh extends React.Component {
     const res = await PerfectingVenueInformation(data)
     if (res.data.code === 2000) {
       Toast.success(res.data.msg, 1);
-      sessionStorage.setItem('siteId', res.data.data.siteUUID)
+     
       this.props.history.push('/qualificationPh')
     } else if (res.data.code === 4000) {
       Toast.fail(res.data.msg, 1);
@@ -249,7 +265,7 @@ class stadiumInformationPh extends React.Component {
     const res = await VenueInformationSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       Toast.success(res.data.msg, 1)
-      sessionStorage.setItem('siteId', res.data.data.siteUUID)
+      
       this.props.history.push('/qualificationPh')
     } else {
       Toast.fail(res.data.msg, 1)
@@ -259,7 +275,7 @@ class stadiumInformationPh extends React.Component {
 
   next = () => {
     let { stadiumName, lat, lng, linkMan, telephone, imageRes, addressXian, address, fileList, onChangeRun, onChangeCheck, textKo, handleAreaTwo, handleCityTwo, handleDistrictTwo } = this.state
-    if (sessionStorage.getItem('notType') === '1') {
+    if (this.state.siteUid!== null) {
       let fileListT = fileList.slice(0, 9)
       let filesURLarr = []
       for (let i in fileListT) {
@@ -274,7 +290,7 @@ class stadiumInformationPh extends React.Component {
           filesURLarr.push(fileListT[i].url)
         }
       }
-      if (stadiumName === null) {
+      if (stadiumName === '') {
         Toast.fail('请输入场馆名称', 1)
       } else if (lat === '') {
         Toast.fail('请选择场馆位置', 1)
@@ -369,7 +385,7 @@ class stadiumInformationPh extends React.Component {
           facilities: onChangeCheck === '' ? [] : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
           siteInfo: textKo,
           linkMan: linkMan,
-          telephone: telephone.replace(/\s*/g, ""),
+          telephone: telephone===null?telephone:telephone.replace(/\s*/g, ""),
           position: addressXian,
           province: handleAreaTwo,
           city: handleCityTwo,
@@ -439,11 +455,11 @@ class stadiumInformationPh extends React.Component {
       address: address,
       filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
       firstURL: imageRes,
-      sport: onChangeRun === '' ? [] : typeof (onChangeRun) !== 'string' ? onChangeRun.join(',') : onChangeRun,
-      facilities: onChangeCheck === '' ? [] : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
+      sport: onChangeRun === '' ? '' : typeof (onChangeRun) !== 'string' ? onChangeRun.join(',') : onChangeRun,
+      facilities: onChangeCheck === '' ? '' : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
       siteInfo: textKo,
       linkMan: linkMan,
-      telephone: telephone.replace(/\s*/g, ""),
+      telephone:telephone===null?telephone:telephone.replace(/\s*/g, ""),
       position: addressXian,
       province: handleAreaTwo,
       city: handleCityTwo,
@@ -660,7 +676,7 @@ class stadiumInformationPh extends React.Component {
 
           <div className="input">
             <span>场地介绍</span>
-            <TextArea rows={3} maxLength={200} onChange={this.textKo} style={{ padding: '0' }} value={this.state.textKo} placeholder="请输入场地介绍，如场地规模、特色等。" />
+            <TextArea rows={3} maxLength={200} onChange={this.textKo} style={{ padding: '0',width:'63%',marginLeft:'18%' }} value={this.state.textKo} placeholder="请输入场地介绍，如场地规模、特色等。" />
           </div>
           <div className="footerBtn">
             <div onClick={this.SaveInfor}>保存</div>

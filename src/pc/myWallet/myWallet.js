@@ -209,7 +209,7 @@ class myWallet extends React.Component {
           
           <div className="header">
             <span className="previousStep" onClick={this.returnN}>我的钱包 ></span><span style={{color:'#F5A623'}}>提现记录</span>
-            <div style={{float:'right',fontSize:'16px',marginRight:'130px',lineHeight:'46px'}}>总计:{this.state.maxmoney}</div>
+            <div style={{float:'right',fontSize:'16px',marginRight:'130px',lineHeight:'46px'}}>总计:￥{this.state.maxmoney}</div>
           </div>
           <div className="xiange"></div>
           <div className={this.state.hiddenTwo === true ? '' : 'hidden'} >
