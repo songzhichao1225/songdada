@@ -25,15 +25,7 @@ class corporatePh extends React.Component {
 
 
   componentDidMount() {
-    if (localStorage.getItem('venue_token')) {
-      if (localStorage.getItem('issite') === '0') {
-        this.props.history.push('/stadiumInformationPh')
-      } else if (localStorage.getItem('isqult') === '0') {
-        this.props.history.push('/qualification')
-      } else if (localStorage.getItem('isqult') === '1') {
-        this.props.history.push('/resultsAuditsPh')
-      }
-    }
+   
 
   }
 
@@ -79,6 +71,7 @@ class corporatePh extends React.Component {
     if (res.data.code !== 2000) {
       Toast.fail(res.data.msg, 1);
     } else {
+      localStorage.clear()
       localStorage.setItem('uuid', res.data.data.uuid);
       localStorage.setItem('name', res.data.data.name);
       localStorage.setItem('islegal', res.data.data.islegal);

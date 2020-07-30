@@ -147,20 +147,15 @@ class stadiumInformationPh extends React.Component {
     this.setState({
       stadiumName: sessionStorage.getItem('stadiumName')
     })
-    if (sessionStorage.getItem('notType') === '1') {
+   
       this.getVenueInformation()
-    }
-
-
-
+    
   }
 
 
   mapPh = () => {
-
     this.props.history.push('/mapPh')
     sessionStorage.setItem('inforMap', 1)
-
   }
   xaingxi = e => {
     this.setState({ addressXian: e })
@@ -474,7 +469,6 @@ class stadiumInformationPh extends React.Component {
     } else if (data.filesURL.split('|').indexOf('无') !== -1) {
       Toast.fail('场地照违规请重新上传', 1)
     } else {
-      console.log(data)
       this.TemporaryVenueInformation(data)
     }
 

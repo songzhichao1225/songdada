@@ -125,27 +125,24 @@ class registerPh extends React.Component {
       this.Ko(data)
     }
   }
-  blurId = e => {
-    if(e!==''){
-      this.getPromoteName({ promotid: e })
-    }
-  }
+
   async getPromoteName(data) {
     const res = await getPromoteName(data)
     if (res.data.code === 2000) {
-      this.setState({ idName: '请确认推广员姓名：' + res.data.data.promotname, qipao: false })
+      alert('提示', '请确认推广员姓名：' + res.data.data.promotname , [
+        { text: '否', onPress: () => console.log('cancel'), style: 'default' },
+        { text: '是', onPress: () => this.showModal() },
+      ]);
     } else {
-      Toast.fail('推广员不存在', 2);
-      this.setState({ idName: '您没有推广员？', })
+      alert('提示',  '您没有推广员？', [
+        { text: '否', onPress: () => console.log('cancel'), style: 'default' },
+        { text: '是', onPress: () => this.showModal() },
+      ]);
     }
   }
 
   alertTwo = () => {
-    console.log(444)
-    alert('提示', this.state.idName, [
-      { text: '否', onPress: () => console.log('cancel'), style: 'default' },
-      { text: '是', onPress: () => this.showModal() },
-    ]);
+   this.getPromoteName({promotid:this.state.Id})
   }
 
 
@@ -171,7 +168,6 @@ class registerPh extends React.Component {
   }
 
   closeWeb=()=>{
-    console.log(111)
   if(window.location.href.indexOf('flag=1')===-1){
     this.props.history.push('/phone')
      this.setState({visible:false})
@@ -230,7 +226,6 @@ eyesTwo=()=>{
               style={{ fontSize: '0.8rem' }}
               maxLength={6} 
               onChange={this.changID}
-              onBlur={this.blurId}
               autoFocus
             >
               {/* <CreditCardOutlined style={{ color: 'rgba(0,0,0,.25)' }} /> */}
@@ -275,15 +270,22 @@ eyesTwo=()=>{
             <div className="codeBtn" onClick={this.state.textT === '获取验证码' ? this.naCode : ''} >{this.state.textT}</div>
           </div>
 
+          <div className="input" style={{opacity:'0',position:'absolute',zIndex:'-1'}}>
+            <InputItem type='text'></InputItem>
+          </div>
+          <div className="input" style={{opacity:'0',position:'absolute',zIndex:'-1'}}>
+            <InputItem type='password'></InputItem>
+          </div>
 
-          <div className="input">
+
+          <div className="input" >
             <InputItem
               type={this.state.eyes===true?'text':'password'}
               placeholder="密码"
               clear={true}
               style={{ fontSize: '0.8rem' }}
               onChange={this.changePassword}
-              maxLength={8}
+              maxLength={15}
             >
                
             </InputItem>
@@ -296,7 +298,7 @@ eyesTwo=()=>{
               clear={true}
               style={{ fontSize: '0.8rem' }}
               onChange={this.changePasswordT}
-              maxLength={8}
+              maxLength={15}
             >
             </InputItem>
             <span style={{display:'block',width:'15%',float:'right',marginTop:'0.7rem'}} onClick={this.eyesTwo}><img src={require('../../assets/eyes.png')} style={this.state.eyesTwo===true?{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}:{display:'none'}} alt="eyes"/> <img src={require('../../assets/eyesTwo.png')} style={this.state.eyesTwo===true?{display:'none'}:{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}} alt="eyes"/></span>

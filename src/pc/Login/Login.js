@@ -108,7 +108,7 @@ class Login extends React.Component {
       sessionStorage.setItem('legalphone', res.data.data.legalphone);
       sessionStorage.setItem('phone', res.data.data.phone);
       localStorage.setItem('nickName', res.data.data.name)
-
+      sessionStorage.removeItem('qualifData')
       setTimeout(() => {
         if (res.data.data.venue_token) {
           if (res.data.data.issite === 0) {
@@ -263,7 +263,7 @@ class Login extends React.Component {
                     <Input type="password" />
                   </Form.Item>
                   <Form.Item className="input" style={{ marginTop: -80 }}>
-                    <Input.Password  maxLength={8} onChange={this.onPassword} onPressEnter={this.onSubmitT} placeholder="密码" />
+                    <Input.Password  maxLength={15} onChange={this.onPassword} onPressEnter={this.onSubmitT} placeholder="密码" />
                   </Form.Item>
 
                   <Form.Item className="bind">

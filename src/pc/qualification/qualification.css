@@ -113,7 +113,7 @@
 }
 .qualification .addImg{
 width: 132px;
-height: 132px;
+height: 100px;
 display: inline-block;
 }
 .qualification .rightText{
@@ -134,7 +134,7 @@ display: inline-block;
 	height: 114px;
 }
 .qualification .prompt{
-	margin-left: 135px;
+	margin-left: 150px;
 	font-size: 14px;
 	color: #4A4A4A;
 	margin-top: 20px;
@@ -147,7 +147,7 @@ display: inline-block;
 	border-radius: 2px;
 	width: 150px;
 	height: 45px;
-	margin-left: 135px;
+	margin-left: 150px;
 	margin-top: 20px;
 	font-size: 16px;
 	color: #FFFFFF;
@@ -175,4 +175,7 @@ display: inline-block;
 	border-radius: 2px;
 	background-color: #F5A623;
 	cursor: pointer;
+}
+.qualification .ant-select-single .ant-select-selector .ant-select-selection-item, .ant-select-single .ant-select-selector .ant-select-selection-placeholder{
+	line-height: 35px;
 }

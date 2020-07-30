@@ -27,9 +27,9 @@ function beforeUpload(file) {
   if (!isJpgOrPng) {
     message.error('只能上传PNG/JPG格式图片');
   }
-  const isLt2M = file.size / 1024 / 1024 < 3;
+  const isLt2M = file.size / 1024 / 1024 < 5;
   if (!isLt2M) {
-    message.error('上传图片必须小于3MB');
+    message.error('上传图片必须小于5MB');
   }
   return isJpgOrPng && isLt2M;
 }
@@ -80,14 +80,14 @@ class perfect extends React.Component {
       }
 
       localStorage.setItem('handleName', res.data.data.name)
-      let arrjo=[]
-      for(let i in res.data.data.sport.split(',')){
-        
+      let arrjo = []
+      for (let i in res.data.data.sport.split(',')) {
+
         arrjo.push(Number(res.data.data.sport.split(',')[i]))
       }
       this.setState({
         position: res.data.data.position, handleAddress: this.props.location.query === undefined ? res.data.data.address : this.props.location.query.adddress, handleName: res.data.data.name, imageUrl: res.data.data.firstURL, fileList: arrImg,
-        onChangeCheck:arrjo, onChangeSite: res.data.data.facilities === ',,,' ? '' : res.data.data.facilities, onChangeText: res.data.data.siteInfo, lat: res.data.data.lat, lng: res.data.data.lng,
+        onChangeCheck: arrjo, onChangeSite: res.data.data.facilities === ',,,' ? '' : res.data.data.facilities, onChangeText: res.data.data.siteInfo, lat: res.data.data.lat, lng: res.data.data.lng,
         province: res.data.data.province, city: res.data.data.city, area: res.data.data.area, siteUid: res.data.data.uid,
         imageRes: res.data.data.firstURL, handelPerson: res.data.data.linkMan, handleTelephone: res.data.data.telephone
       })
@@ -138,8 +138,8 @@ class perfect extends React.Component {
 
 
 
- 
-  
+
+
   handleChange = info => {
     if (info.file.status === 'uploading') {
       this.setState({ loading: true })
@@ -151,11 +151,11 @@ class perfect extends React.Component {
       } else {
         this.setState({ imageRes: 1 })
       }
-      
+
     }
-    if(info.file.response.code===4004){
-       message.error(info.file.response.msg)
-    }else if(info.file.response.code===4002){
+    if (info.file.response.code === 4004) {
+      message.error(info.file.response.msg)
+    } else if (info.file.response.code === 4002) {
       message.error('上传失败')
     }
   }
@@ -174,18 +174,18 @@ class perfect extends React.Component {
     })
   }
 
-  handleChangeT=({fileList})=>{
-    this.setState({ fileList:fileList })
-    for(let i in fileList){
-      if(fileList[i].response!==undefined&&fileList[i].response.code===4004){
-        fileList[i].thumbUrl=''
-        fileList[i].name='图片违规'
+  handleChangeT = ({ fileList }) => {
+    this.setState({ fileList: fileList })
+    for (let i in fileList) {
+      if (fileList[i].response !== undefined && fileList[i].response.code === 4004) {
+        fileList[i].thumbUrl = ''
+        fileList[i].name = '图片违规'
         message.error('有图片违规请重新上传')
-        this.setState({ fileList:fileList })
+        this.setState({ fileList: fileList })
       }
-      
+
     }
-    
+
   }
 
   onChangeText = e => {
@@ -213,8 +213,7 @@ class perfect extends React.Component {
   onClickNex = () => {
     let { imageRes, fileList, handleAddress, handelPerson, handleTelephone, onChangeSite, onChangeCheck } = this.state
     let fileListT = fileList.slice(0, 9)
-    console.log(this.state.siteUid)
-    if (this.state.siteUid!== ''&&this.state.siteUid!== null) {
+    if (this.state.siteUid !== '' && this.state.siteUid !== null) {
 
       let filesURLarr = []
       for (let i in fileListT) {
@@ -224,53 +223,54 @@ class perfect extends React.Component {
           } else {
             filesURLarr.push(fileListT[i].response.data.baseURL + fileListT[i].response.data.filesURL)
           }
-         
+
         } else if (fileListT[i].response === undefined) {
           filesURLarr.push(fileListT[i].url)
         }
       }
-      if (filesURLarr.length < 2) {
-        message.warning("至少上传两张场地照片")
 
-      } else {
-        let data = {
-          venuename: localStorage.getItem('handleName'),
-          lat: this.props.location.query === undefined ? this.state.lat : this.props.location.query.lat,
-          lng: this.props.location.query === undefined ? this.state.lng : this.props.location.query.lng,
-          province: this.props.location.query === undefined ? this.state.province : this.props.location.query.province,
-          city: this.props.location.query === undefined ? this.state.city : this.props.location.query.city,
-          area: this.props.location.query === undefined ? this.state.area : this.props.location.query.district,
-          address: handleAddress,
-          filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
-          firstURL: imageRes,
-          sport: onChangeCheck === '' ? '' : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
-          facilities: onChangeSite === '' ? '' : typeof (onChangeSite) !== 'string' ? onChangeSite.join(',') : onChangeSite,
-          siteInfo: this.state.onChangeText,
-          position: this.props.location.query === undefined ? this.state.position : this.props.location.query.title,
-          type: 1,
-          linkMan: handelPerson,
-          telephone: handleTelephone,
-        }
-        if (data.facilities === '') {
-          message.error('请选择至少一项运动设施')
-        } else if (data.venuename === '') {
-          message.error('请填写场馆名称')
-        } else if (data.linkMan === '') {
-          message.error('请填写联系人')
-        } else if (data.telephone === '') {
-          message.error('请输入联系人电话')
-        } else if (data.sport === '') {
-          message.error('请选择场地类型')
-        }else if(/^[a-zA-Z\u4e00-\u9fa5]+$/.test(handelPerson)===false){
-          message.error('联系人只允许输入文字/字母')
-       } else if (data.firstURL === 1) {
-        message.error('门脸照违规请重新上传')
-      } else if (data.filesURL.split('|').indexOf('无')!==-1) {
-        message.error('场地照有违规图片请重新上传')
-      } else {
-          this.VenueInformationSave(data)
-        }
+      let data = {
+        venuename: localStorage.getItem('handleName'),
+        lat: this.props.location.query === undefined ? this.state.lat : this.props.location.query.lat,
+        lng: this.props.location.query === undefined ? this.state.lng : this.props.location.query.lng,
+        province: this.props.location.query === undefined ? this.state.province : this.props.location.query.province,
+        city: this.props.location.query === undefined ? this.state.city : this.props.location.query.city,
+        area: this.props.location.query === undefined ? this.state.area : this.props.location.query.district,
+        address: handleAddress,
+        filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
+        firstURL: imageRes,
+        sport: onChangeCheck === '' ? '' : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
+        facilities: onChangeSite === '' ? '' : typeof (onChangeSite) !== 'string' ? onChangeSite.join(',') : onChangeSite,
+        siteInfo: this.state.onChangeText,
+        position: this.props.location.query === undefined ? this.state.position : this.props.location.query.title,
+        type: 1,
+        linkMan: handelPerson,
+        telephone: handleTelephone,
       }
+      if (data.venuename === '') {
+        message.error('请填写场馆名称')
+      } else if (handelPerson === '') {
+        message.error('请填写联系人')
+      } else if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(handelPerson) === false) {
+        message.error('联系人只允许输入文字/字母')
+      } else if (data.telephone === '') {
+        message.error('请输入联系人电话')
+      } else if (imageRes === '') {
+        message.warning("请上传门脸照")
+      } else if (data.firstURL === 1) {
+        message.error('门脸照违规请重新上传')
+      } else if (filesURLarr.length < 2) {
+        message.warning("至少上传两张场地照片")
+      } else if (data.filesURL.split('|').indexOf('无') !== -1) {
+        message.error('场地照有违规图片请重新上传')
+      } else if (data.sport === '') {
+        message.error('请选择场地类型')
+      } else if (data.facilities === '') {
+        message.error('请选择至少一项运动设施')
+      } else {
+        this.VenueInformationSave(data)
+      }
+
 
     } else {
       let filesURLarr = []
@@ -281,54 +281,53 @@ class perfect extends React.Component {
           } else {
             filesURLarr.push(fileListT[i].response.data.baseURL + fileListT[i].response.data.filesURL)
           }
-         
+
         } else if (fileListT[i].response === undefined) {
           filesURLarr.push(fileListT[i].url)
         }
       }
-      if (filesURLarr.length < 2) {
-        message.warning("至少上传两张场地照片")
 
-      } else if (handleAddress === '') {
-        message.warning('请选择场馆位置')
+      let data = {
+        venueloginuuid: sessionStorage.getItem('uuid'),
+        province: this.props.location.query === undefined ? this.state.province : this.props.location.query.province,
+        city: this.props.location.query === undefined ? this.state.city : this.props.location.query.city,
+        area: this.props.location.query === undefined ? this.state.area : this.props.location.query.district,
+        venuename: localStorage.getItem('handleName'),
+        lat: this.props.location.query === undefined ? this.state.lat : this.props.location.query.lat,
+        lng: this.props.location.query === undefined ? this.state.lng : this.props.location.query.lng,
+        address: handleAddress,
+        filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
+        firstURL: imageRes,
+        sport: onChangeCheck === '' ? '' : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
+        facilities: onChangeSite === '' ? '' : typeof (onChangeSite) !== 'string' ? onChangeSite.join(',') : onChangeSite,
+        siteInfo: this.state.onChangeText,
+        position: this.props.location.query === undefined ? this.state.position : this.props.location.query.title,
+        linkMan: handelPerson,
+        telephone: handleTelephone,
+      }
+      
+      if (data.venuename === '') {
+        message.error('请填写场馆名称')
+      } else if (handelPerson === '') {
+        message.error('请填写联系人')
+      } else if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(handelPerson) === false) {
+        message.error('联系人只允许输入文字/字母')
+      } else if (data.telephone === '') {
+        message.error('请输入联系人电话')
+      } else if (imageRes === '') {
+        message.warning("请上传门脸照")
+      } else if (data.firstURL === 1) {
+        message.error('门脸照违规请重新上传')
+      } else if (filesURLarr.length < 2) {
+        message.warning("至少上传两张场地照片")
+      } else if (data.filesURL.split('|').indexOf('无') !== -1) {
+        message.error('场地照有违规图片请重新上传')
+      } else if (data.sport === '') {
+        message.error('请选择场地类型')
+      } else if (data.facilities === '') {
+        message.error('请选择至少一项运动设施')
       } else {
-        let data = {
-          venueloginuuid: sessionStorage.getItem('uuid'),
-          province: localStorage.getItem('handleArea'),
-          city: localStorage.getItem('handleCity'),
-          area: localStorage.getItem('handleDistrict'),
-          venuename: localStorage.getItem('handleName'),
-          lat: this.props.location.query === undefined ? this.state.lat : this.props.location.query.lat,
-          lng: this.props.location.query === undefined ? this.state.lng : this.props.location.query.lng,
-          address: handleAddress,
-          filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
-          firstURL: imageRes,
-          sport: onChangeCheck === '' ? '': typeof(onChangeCheck)!=='string' ? onChangeCheck.join(',') : onChangeCheck,
-          facilities: onChangeSite === '' ? '' : typeof(onChangeSite)!=='string' ? onChangeSite.join(',') : onChangeSite,
-          siteInfo: this.state.onChangeText,
-          position: this.props.location.query === undefined ? this.state.position : this.props.location.query.title,
-          linkMan: handelPerson,
-          telephone: handleTelephone,
-        }
-        if (data.facilities === '') {
-          message.error('请选择至少一项运动设施')
-        } else if (data.venuename === '') {
-          message.error('请填写场馆名称')
-        } else if (data.linkMan === '') {
-          message.error('请填写联系人')
-        } else if (data.telephone === '') {
-          message.error('请输入联系人电话')
-        } else if (data.sport === '') {
-          message.error('请选择场地类型')
-        }else if(/^[a-zA-Z\u4e00-\u9fa5]+$/.test(handelPerson)===false){
-          message.error('联系人只允许输入文字/字母')
-       }else if (data.firstURL === 1) {
-        message.error('门脸照违规请重新上传');
-      } else if (data.filesURL.split('|').indexOf('无')!==-1) {
-        message.error('场地照有违规图片请重新上传');
-      }  else {
-          this.PerfectingVenueInformation(data)
-        }
+        this.PerfectingVenueInformation(data)
       }
     }
   }
@@ -371,26 +370,26 @@ class perfect extends React.Component {
         } else {
           filesURLarr.push(fileListT[i].response.data.baseURL + fileListT[i].response.data.filesURL)
         }
-       
+
       } else if (fileListT[i].response === undefined) {
         filesURLarr.push(fileListT[i].url)
       }
     }
-    
+
     let data = {
       siteuuid: this.state.siteUid,
       venueloginuuid: sessionStorage.getItem('uuid'),
-      province: localStorage.getItem('handleArea'),
-      city: localStorage.getItem('handleCity'),
-      area: localStorage.getItem('handleDistrict'),
+      province: this.props.location.query === undefined ? this.state.province : this.props.location.query.province,
+      city: this.props.location.query === undefined ? this.state.city : this.props.location.query.city,
+      area: this.props.location.query === undefined ? this.state.area : this.props.location.query.district,
       venuename: localStorage.getItem('handleName'),
       lat: this.props.location.query === undefined ? this.state.lat : this.props.location.query.lat,
       lng: this.props.location.query === undefined ? this.state.lng : this.props.location.query.lng,
       address: handleAddress,
       filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
       firstURL: imageRes,
-      sport: onChangeCheck === '' ? '' : typeof (onChangeCheck) !== 'string' ?  onChangeCheck.join(',') : onChangeCheck,
-      facilities: onChangeSite === '' ? '' : typeof (onChangeSite) !== 'string' ? onChangeSite.join(',') : onChangeSite,               
+      sport: onChangeCheck === '' ? '' : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
+      facilities: onChangeSite === '' ? '' : typeof (onChangeSite) !== 'string' ? onChangeSite.join(',') : onChangeSite,
       siteInfo: this.state.onChangeText,
       position: this.props.location.query === undefined ? this.state.position : this.props.location.query.title,
       linkMan: handelPerson,
@@ -398,13 +397,15 @@ class perfect extends React.Component {
     }
     if (localStorage.getItem('handleName') === 'null') {
       message.error('请填写场馆名称')
-    }else if(/^[a-zA-Z\u4e00-\u9fa5]+$/.test(handelPerson)===false){
-       message.error('联系人只允许输入文字/字母')
-    }else if (data.firstURL === 1) {
+    } else if (handelPerson === '') {
+      message.error('请填写联系人')
+    } else if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(handelPerson) === false) {
+      message.error('联系人只允许输入文字/字母')
+    } else if (data.firstURL === 1) {
       message.error('门脸照违规请重新上传');
-    } else if (data.filesURL.split('|').indexOf('无')!==-1) {
+    } else if (data.filesURL.split('|').indexOf('无') !== -1) {
       message.error('场地照有违规图片请重新上传');
-    }else {
+    } else {
       this.TemporaryVenueInformation(data)
     }
   }
@@ -415,7 +416,7 @@ class perfect extends React.Component {
 
     const uploadButton = (
       <div>
-        
+
         <div className="ant-upload-text">门脸照</div>
       </div>
     )
@@ -453,7 +454,7 @@ class perfect extends React.Component {
               <div><span>1.填写注册信息</span><img src={require("../../assets/oneline.png")} alt="5" /></div>
               <div><span>2.完善基本信息</span><img src={require("../../assets/lineThree.png")} alt="5" /></div>
               <div><span>3.等待审核</span><img src={require("../../assets/twoline.png")} alt="5" /></div>
-              <div><span>4.审核成功</span><img src={require("../../assets/twoline.png")} alt="5" /></div>
+              <div><span>4.审核结果</span><img src={require("../../assets/twoline.png")} alt="5" /></div>
             </div>
             <div className="contentSon">
               <span className="titile">场馆基本信息</span>
@@ -501,7 +502,7 @@ class perfect extends React.Component {
                     onChange={this.handleChange}
                     accept=".jpg, .jpeg, .png"
                   >
-                    {imageRes!==1&&imageRes!==''&&imageRes!==null ? <img src={'https://app.tiaozhanmeiyitian.com/'+imageRes} alt="avatar" style={{ width: '100%', height: '100%' }} /> : uploadButton}
+                    {imageRes !== 1 && imageRes !== '' && imageRes !== null ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageRes} alt="avatar" style={{ width: '100%', height: '100%' }} /> : uploadButton}
                   </Upload>
                 </ImgCrop>
                 <span className="rightText">上传图片小于3M</span>

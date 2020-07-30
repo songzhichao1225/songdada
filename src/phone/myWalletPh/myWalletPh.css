@@ -69,3 +69,97 @@
     float: right;
     margin-top: 1.3rem;
 }
+
+.koh .listSon{
+    width: 95%;
+    min-height: 3rem;
+    margin:0 auto 0;
+    overflow: hidden;
+    border-bottom: 0.06rem solid #f5f5f5;
+    line-height: 3rem;
+}
+.koh .listSon .right{
+    width: 80%;
+    height: 3rem;
+    float: right;
+    border:none;
+    box-shadow: none;
+    line-height: 3rem;
+    font-size: 0.75rem;
+    color: #333;
+}
+.koh .listSon .rightLi{
+    width: 80%;
+    padding-bottom: 0.5rem;
+    float: right;
+    padding-left: 11px;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+}
+.koh .listSon .rightLi .ant-checkbox-wrapper{
+    float: left;
+}
+
+.koh .listSon .kop .ant-checkbox-wrapper{
+    width: 40%;
+}
+.koh .listSon>span{
+    font-size: 0.75rem;
+    color: #333;
+}
+.kood {
+    width: 350px;
+    z-index: 9;
+}
+.koh .am-list-item{
+    padding-left: 5px;
+}
+.koh .am-list-item .am-list-line .am-list-content{
+    font-size: 0.75rem;
+    
+}
+.koh .am-list-item .am-list-line .am-list-extra{
+    font-size: 0.75rem;
+    color: #333;
+    flex-basis:70%;
+    text-align: left;
+}
+.koh .ant-upload-picture-card-wrapper{
+    width: 50%;
+}
+.koh .loodpos{
+    margin-left: 38px;
+}
+.koh .ant-select-single:not(.ant-select-customize-input) .ant-select-selector{
+    border: none;
+    box-shadow: none;
+    margin-top: 0.4rem;
+}
+
+.am-modal-wrap{
+    z-index: 999;
+}
+ .am-modal-mask{
+    z-index: 999;
+}
+.koh .ant-select-single .ant-select-selector .ant-select-selection-item, .ant-select-single .ant-select-selector .ant-select-selection-placeholder{
+    line-height: 35px;
+    padding: 0;
+}
+
+.koh .submit{
+	width: 80%;
+	height: 3rem;
+	background: #D85D27;
+	border-radius: 3rem;
+	float: left;
+	 margin-left: 10%;
+	line-height: 28px;
+    margin-bottom: 40px;
+    color: #fff;
+    line-height: 3rem;
+    font-size: 1rem;
+}
+.koh .ant-select-selection-item{
+    flex-basis:60%
+}

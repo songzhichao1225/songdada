@@ -60,6 +60,7 @@ class loginPhTeo extends React.Component {
     if (res.data.code !== 2000) {
       Toast.fail(res.data.msg, 1);
     } else {
+      localStorage.clear()
       localStorage.setItem('uuid', res.data.data.uuid);
       localStorage.setItem('name', res.data.data.name);
       localStorage.setItem('islegal', res.data.data.islegal);
@@ -88,13 +89,12 @@ class loginPhTeo extends React.Component {
   submit = () => {
     let { phone, password } = this.state
     if(phone===''){
-      Toast.fail('请输入手机号', 1);
+      Toast.info('请输入手机号', 1);
     }else if(password===''){
       Toast.fail('请输入密码', 1);
     }else{
       this.login({ username: phone, userpass: password, usercode: '', type: '1', Logintype: 'mobile', venueloginuuid: '', })
     }
-    
   }
 
 
@@ -180,15 +180,23 @@ eyes=()=>{
             >
             </InputItem>
           </div>
-          <div className="name">
+          <div className="name" style={{opacity:'0',position:'absolute',zIndex:-9}}>
+            <InputItem type='text'></InputItem>
+          </div>
 
+          <div className="name" style={{opacity:'0',position:'absolute',zIndex:-9}}>
+            <InputItem type='password'></InputItem>
+          </div>
+
+
+          <div className="name">
             <InputItem
               type={this.state.eyes===true?'text':'password'}
               placeholder="请输入密码"
               clear={false}   
               style={{ fontSize: '0.88rem' }}
               onChange={this.pssword}  
-              maxLength={8}
+              maxLength={15}
               className="phone"  
             >
             </InputItem>

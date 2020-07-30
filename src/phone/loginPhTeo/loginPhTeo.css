@@ -10,6 +10,7 @@
 .loginPhTeo .loginInput {
     width: 20rem;
     margin: 2rem auto 0;
+    position: relative;
 }
 .loginPhTeo .loginInput .name{
     width: 100%;

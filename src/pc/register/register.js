@@ -64,7 +64,7 @@ class register extends React.Component {
 
   changeName = e => {
    if(e.target.value.length<4){
-    this.setState({ kodTwo: '用户名至少输入4位' })
+    this.setState({ kodTwo: '用户名至少输入4位',name:'' })
    }else if (/[\u4E00-\u9FA5]/g.test(e.target.value)) {
       this.setState({ kodTwo: '用户名只能包含数字、字母、数字+字母' })
     }else if( /[^a-zA-Z0-9]/g.test(e.target.value)){
@@ -141,7 +141,7 @@ class register extends React.Component {
 
   showModal = e => {
     if (this.state.name === '') {
-      message.error('请重新输入用户名')
+      message.error('请输入用户名')
     } else if (this.state.code === '') {
       message.error('请输入验证码')
     } else if (this.state.password === '') {
@@ -293,8 +293,8 @@ class register extends React.Component {
 
               <div className="son">
                 <span className="xing">*</span> <span>验</span><span style={{paddingLeft:'6px'}}>证</span><span style={{paddingLeft:'6px'}}>码:</span>
-                <Button className="huoBtn" onClick={this.naCode}>{this.state.textT}</Button>
-                <Input maxLength={6} type="text" autoComplete="off" onPaste={(e) => e.preventDefault()} onFocus={this.FOne} defaultValue={this.state.code}  value={this.state.code} onChange={this.changeCode} className="phone code" />
+                <Button className="huoBtn" onClick={this.state.textT==='获取验证码'?this.naCode:''}>{this.state.textT}</Button>
+                <Input maxLength={6} type="text"  onFocus={this.FOne} defaultValue={this.state.code}  value={this.state.code} onChange={this.changeCode} className="phone code" />
               </div>
 
               <div className="son" style={{opacity:0,position:'absolute'}}>
@@ -311,12 +311,12 @@ class register extends React.Component {
               
               <div className="son">
                 <span className="xing" style={{marginLeft:"2px"}}>*</span> <span>密</span><span style={{paddingLeft:'25px'}}>码:</span>
-                <Input.Password  maxLength={8} onChange={this.changePassword}  className="phone" />
+                <Input.Password  maxLength={15} onChange={this.changePassword}  className="phone" />
               </div>
 
               <div className="son" >
                 <span className="xing">*</span> <span>确认密码:</span>
-                <Input.Password maxLength={8}   style={{height:'41px'}}  onChange={this.changePasswordT}   className="phone" />
+                <Input.Password maxLength={15} style={{height:'41px'}}  onChange={this.changePasswordT}   className="phone" />
               </div>
 
               <div className="agreement"><Radio onChange={this.changeRadio} checked={this.state.changeRadio}></Radio><span>我已阅读并同意</span><span className="color">《用户协议》</span></div>

@@ -23,6 +23,7 @@
 .registerPh .bossInput{
     background: #fff;
     height: 100%;
+    position: relative;
 }
 .registerPh .input{
     width: 20rem;

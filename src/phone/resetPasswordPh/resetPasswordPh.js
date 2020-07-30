@@ -39,7 +39,6 @@ class resetPasswordPh extends React.Component {
           this.setState({ textT: '获取验证码' })
         }
       }, 1000)
-      Toast.success(res.data.msg, 1);
     }else{
       Toast.fail(res.data.msg, 2);
     }

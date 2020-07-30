@@ -34,6 +34,10 @@
     cursor: pointer;
 }
 
+.stadiums .navTap>div:nth-child(2){
+    margin-left: 27px;
+}
+
 .stadiums .navTap>div:last-child{
     margin-left: 27px;
 }
@@ -189,7 +193,6 @@ float: left;
 .stadiums .qualification .listing .listingInput{
 	width: 273px;
 	height: 38px;
-	border: 1px solid #E1E0E1;
 	margin-left: 18px;
 	float: left;
 }
@@ -215,4 +218,7 @@ float: left;
 .chekkoh .ant-checkbox-group-item {
 	width: 120px;
 
+}
+.stadiums .ant-select-single:not(.ant-select-customize-input) .ant-select-selector{
+    height: 38px;
 }

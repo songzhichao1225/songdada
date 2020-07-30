@@ -231,11 +231,12 @@ class appointmentList extends React.Component {
   }
 
   paied=e=>{
-    this.setState({paied: e})
+    this.setState({paied: e,page:1})
+     
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e, startdate:'', enddate: '',paied: e })
+      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: this.state.status, startdate:'', enddate: '',paied: e })
     } else {
-      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e, startdate: this.state.start, enddate: this.state.end,paied: e })
+      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end,paied: e })
     }
  
   }

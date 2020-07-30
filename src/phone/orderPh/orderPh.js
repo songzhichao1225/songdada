@@ -59,6 +59,12 @@ class orderPh extends React.Component {
       { name: '已完成', id: 5 },
       { name: '已取消', id: 7 },
     ],
+    paiedArr: [
+      { name: '全部', id: 0 },
+      { name: '未到账', id: 2 },
+      { name: '已支付', id: 1 },
+     
+    ],
     page: 1,
     clenTop: 0,
     clickY: 0,
@@ -108,7 +114,8 @@ class orderPh extends React.Component {
     info:false,
     venueidids:[],
     lood:false,
-    calesRed:0
+    calesRed:0,
+    paied:0
   };
 
 
@@ -228,7 +235,7 @@ class orderPh extends React.Component {
 
   lookDeta = e => {
     if (e.currentTarget.dataset.type === "3") {
-      this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: '' })
+      this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: '',paied:0 })
       this.setState({ informVisible: true })
     } else if (e.currentTarget.dataset.type === '4' && this.state.Cancels === 0) {
        if(this.state.lood===false){
@@ -281,7 +288,7 @@ class orderPh extends React.Component {
     this.setState({ qiDate: new Date(), nowDate: new Date().toLocaleDateString().replace(/\//g, "-") })
     this.getVenueReservation({ sportid: 1, date: new Date().toLocaleDateString().replace(/\//g, "-") })
     this.getVenueSport()
-      this.getReservationActivitieslist({ page: 1, sport: '', status: '' })
+      this.getReservationActivitieslist({ page: 1, sport: '', status: '',paied:0 })
     
 
 
@@ -308,7 +315,7 @@ class orderPh extends React.Component {
   activityList = () => {
     this.setState({ activityList: true })
     this.setState({ page: 1 })
-    this.getReservationActivitieslist({ page: 1, sport: '', status: '', publicuid: '' })
+    this.getReservationActivitieslist({ page: 1, sport: '', status: '', publicuid: '',paied:0 })
   }
   bookingKanban = () => {
     this.setState({ activityList: false })
@@ -338,7 +345,7 @@ class orderPh extends React.Component {
    
     this.getReservationActivitieslist({
       page: page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '',
-      startdate: this.state.start === '' ? '' : startT, enddate: this.state.end === '' ? '' : endT
+      startdate: this.state.start === '' ? '' : startT, enddate: this.state.end === '' ? '' : endT,paied:this.state.paied
     })
   }
 
@@ -367,7 +374,7 @@ class orderPh extends React.Component {
     if (res.data.code === 2000) {
       Toast.success(res.data.msg, 1);
       this.setState({ visible: false })
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end,paied:this.state.paied })
     }
   }
 
@@ -413,6 +420,9 @@ class orderPh extends React.Component {
   status = e => {
     this.setState({ statusIdVal: e.currentTarget.dataset.id })
   }
+  paiedArr=e=>{
+    this.setState({paied:e.currentTarget.dataset.id})
+  }
 
   drawerInputOrderDate = (date) => {
 
@@ -445,7 +455,7 @@ class orderPh extends React.Component {
       }
       this.getReservationActivitieslist({
         page: 1, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '' ? '' :startT,
-        enddate: this.state.end === '' ? '' : endT
+        enddate: this.state.end === '' ? '' : endT,paied:this.state.paied
       })
       this.setState({
         Drawervisible: false,page:1
@@ -623,7 +633,7 @@ class orderPh extends React.Component {
   refResh = () => {
     this.setState({ refreshing: true })
     setTimeout(() => {
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end,paied:this.state.paied })
     }, 1000)
   }
 
@@ -882,6 +892,16 @@ class orderPh extends React.Component {
               ))
             }
           </div>
+
+          <span style={{ clear: 'both', display: 'block', marginTop: '1rem' }}>支付状态</span>
+          <div className="drawerBossTwo">
+            {
+              this.state.paiedArr.map((item, i) => (
+                <div key={i} data-id={item.id} onClick={this.paiedArr} style={parseInt(this.state.paied) === item.id ? { background: '#D85D27', color: '#fff' } : {}}>{item.name}</div>
+              ))
+            }
+          </div>
+
           <div className='drawerInputOrder'>
             <span style={{ clear: 'both', display: 'block', marginTop: '1rem' }}>选择日期</span>
             <div style={{ width: '100%', height: '3rem'}}>

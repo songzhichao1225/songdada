@@ -1,6 +1,6 @@
 import React from 'react';
 import './resultsAuditsPh.css';
-import Icon from '@ant-design/icons';
+import {EllipsisOutlined} from '@ant-design/icons';
 import { getIsStatus } from '../../api';
 import {NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
@@ -16,6 +16,8 @@ class resultsAuditsPh extends React.Component {
     const res = await getIsStatus(data,localStorage.getItem('venue_token'))
    if(res.data.code===2000){
      this.setState({islegal:res.data.data.islegal,content:res.data.data.content})
+   }else if(res.data.code===4001){
+    this.props.history.push('/login')
    }
   }
 
@@ -26,6 +28,7 @@ class resultsAuditsPh extends React.Component {
   goback=()=>{
     this.props.history.replace({pathname:'./stadiumInformationPh'})
     sessionStorage.setItem('notType',1)
+    localStorage.removeItem('qualifData')
   }
   homePh=()=>{
     this.props.history.push('./homePh')
@@ -95,7 +98,7 @@ class resultsAuditsPh extends React.Component {
                 alignItems: 'center',
               }}
               >
-                <Icon type="ellipsis" />
+                <EllipsisOutlined />
               </div>
             </Popover>}
           ><span style={{ fontSize: '1rem' }}>审核信息</span></NavBar>

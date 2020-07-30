@@ -52,7 +52,6 @@ class forgetPasswordPh extends React.Component {
   async nacode(data) {
     const res = await _code(data)
     if (res.data.code === 2000) {
-      Toast.success(res.data.msg, 1);
     } else {
       Toast.fail(res.data.msg, 1);
     }
@@ -189,6 +188,15 @@ class forgetPasswordPh extends React.Component {
 
             </Radio.Group>
           </div>
+
+          <div className="name" style={{opacity:'0',position:'absolute',zIndex:-9}}>
+            <InputItem type='text'></InputItem>
+          </div>
+
+          <div className="name" style={{opacity:'0',position:'absolute',zIndex:-9}}>
+            <InputItem type='password'></InputItem>
+          </div>
+
 
 
           <div className="name">

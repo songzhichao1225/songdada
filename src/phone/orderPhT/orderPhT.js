@@ -98,6 +98,7 @@ class orderPhT extends React.Component {
 
     modalTwo: false,
     timeOutEvent: 0,
+    paied:0
   }
 
 
@@ -173,7 +174,7 @@ class orderPhT extends React.Component {
           endT = end[2] + '-' + end[0] + '-' + end[1]
         }
         this.setState({ start: startT, end: endT })
-        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: startT, enddate: endT })
+        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: startT, enddate: endT,paied:0 })
 
       } else if (sessionStorage.getItem('modl') === '2') {
         let myDate = new Date()
@@ -189,9 +190,9 @@ class orderPhT extends React.Component {
           endT = end[2] + '-' + end[0] + '-' + end[1]
         }
         this.setState({ start: startT, end: endT })
-        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: startT, enddate: endT })
+        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: startT, enddate: endT,paied:0 })
       }else if(this.props.history.location.query!==undefined){
-        this.getReservationActivitieslist({ page: 1, publicuid:this.props.history.location.query.uuid })
+        this.getReservationActivitieslist({ page: 1, publicuid:this.props.history.location.query.uuid,paied:0 })
       }else{
         this.setState({ activeSon: [], informList:[], total:[], flag: false, spin: false })
       }
@@ -212,7 +213,7 @@ class orderPhT extends React.Component {
 
   activityList = () => {
     this.setState({ activityList: true })
-    this.getReservationActivitieslist({ page: 1, sport: '', status: 10, publicuid: '' })
+    this.getReservationActivitieslist({ page: 1, sport: '', status: 10, publicuid: '',paied:0 })
   }
   bookingKanban = () => {
     this.setState({ activityList: false })
@@ -228,7 +229,7 @@ class orderPhT extends React.Component {
     this.setState({ page: page })
     this.getReservationActivitieslist({
       page: page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '',
-      startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end
+      startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end,paied:this.state.paied
     })
   }
 
@@ -257,7 +258,7 @@ class orderPhT extends React.Component {
     if (res.data.code === 2000) {
       Toast.success(res.data.msg, 1)
       this.setState({ visible: false })
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end,paied:this.state.paied })
     }
   }
 
@@ -317,7 +318,7 @@ class orderPhT extends React.Component {
 
     this.getReservationActivitieslist({
       page: 1, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '' ? '' : this.state.start,
-      enddate: this.state.end === '' ? '' : this.state.end
+      enddate: this.state.end === '' ? '' : this.state.end,paied:this.state.paied
     })
     this.setState({
       Drawervisible: false, page: 1
@@ -454,7 +455,7 @@ class orderPhT extends React.Component {
   refResh = () => {
     this.setState({ refreshing: true })
     setTimeout(() => {
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end,paied:this.state.paied })
     }, 1000)
   }
 

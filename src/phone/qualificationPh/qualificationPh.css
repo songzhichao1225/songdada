@@ -41,6 +41,7 @@
     font-size:0.88rem;
     line-height: 3rem;
     float: left;
+    color: #333;
 }
 .qualificationPh .boss .input .select{
     width:67%;
@@ -78,7 +79,6 @@
 }
 .qualificationPh .addImg{
     width: 4rem;
-    height: 4rem;
     margin-left: 2.6rem;
 }
 .qualificationPh .left{
@@ -86,12 +86,15 @@
 }
 .qualificationPh .addImg .ant-upload.ant-upload-select-picture-card{
     width: 4rem;
-    height: 4rem;
+    height: 0rem;
     border:none;
     margin:0;
 }
 .qualificationPh .addImg .ant-upload.ant-upload-select-picture-card > .ant-upload{
- margin-left: 3rem;
+ max-height: 3.8rem;
+ overflow: hidden;
+ display: block;
+ margin-top: 0.4rem;
 }
 .qualificationPh .ant-upload.ant-upload-select-picture-card{
     border:none;
@@ -149,6 +152,9 @@
 }
 .qualificationPh .am-list-item .am-list-line .am-list-extra{
     font-size: 0.88rem;
+    flex-basis:62%;
+    text-align: left;
+    color: #333;
 }
 .qualificationPh .am-list-item .am-list-line{
     padding-right: 0;
@@ -170,7 +176,10 @@
 }
 .qualificationPh .footerBtn{
     clear: both;
-   
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+
 }
 
 .qualificationPh .footerBtn>div{
@@ -184,4 +193,25 @@
     line-height: 3rem;
     float: left;
     margin-left: 0.3%;
+}
+.qualificationPh .ant-select:not(.ant-select-disabled):hover .ant-select-selector{
+    border: none;
+    box-shadow: none;
+    margin-top: 0.6rem;
+    padding: 0;
+}
+.qualificationPh .ant-select-show-search.ant-select-single:not(.ant-select-customize-input) .ant-select-selector{
+    border: none;
+    box-shadow: none;
+    margin-top: 0.6rem;
+    padding: 0;
+}
+.ant-select-disabled.ant-select-single:not(.ant-select-customize-input) .ant-select-selector{
+    background-color: #fff;
+}
+.qualificationPh .am-list-item .am-list-line .am-list-content{
+    color: #333;
+}
+.qualificationPh .ant-input{
+    color: #333;
 }

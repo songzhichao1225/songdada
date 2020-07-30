@@ -282,10 +282,14 @@ class appOrder extends React.Component {
   onSubmit = () => {
     let time = ''
     let num = ''
-    for (let i in this.state.lotime) {
+    for (let i in this.state.lotime.sort()) {
       num += this.state.lotime[i].split('-')[1] + ','
       time += this.state.lotime[i].split('-')[0] + ','
     }
+   
+
+
+
     if (this.state.lotime.length > 0) {
       let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[this.state.lotime.length - 1])
       let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[0])
@@ -303,9 +307,11 @@ class appOrder extends React.Component {
         this.setState({ obj: obj })
         if (this.state.date.split('/')[0].length === 4) {
           let mood = this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2]
+          
           this.getAPPVenueSelectSite({ startTime: mood + ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5, siteUid: this.state.siteid })
         } else {
           let mood = this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1]
+        
           this.getAPPVenueSelectSite({ startTime: mood + ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5, siteUid: this.state.siteid })
         }
       }
@@ -372,7 +378,7 @@ class appOrder extends React.Component {
                 type='one'
                 infiniteOpt={true}
                 minDate={new Date()}
-                defaultValue={[now]}
+                defaultValue={[new Date(this.state.date)]}
                 maxDate={new Date(+now + 31536000000)}
               />
             </div>

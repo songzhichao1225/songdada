@@ -21,11 +21,11 @@
 }
 .inforSitePh .nav .left{
     float: left;
-    width: 50%;
+    width: 100%;
     text-align: center;
     line-height: 3rem;
     font-size: 1rem;
-    color: #9B9B9B;
+    color: #fff;
 }
 .inforSitePh .ant-upload-list-picture-card-container{
     width: 4.5rem;
@@ -60,7 +60,6 @@
     border:none;
     box-shadow: none;
     line-height: 3rem;
-    padding-left: 0.8rem;
     font-size: 0.75rem;
     color: #333;
 }
@@ -79,6 +78,10 @@
 .inforSitePh .listSon .kop .ant-checkbox-wrapper{
     width: 40%;
 }
+.inforSitePh .listSon>span{
+    font-size: 0.75rem;
+    color: #333;
+}
 .inforSitePh .ant-select-disabled.ant-select-single:not(.ant-select-customize-input) .ant-select-selector{
     width: 100%;
     margin-top: 0.6rem;
@@ -86,6 +89,8 @@
 .inforSitePh .ant-select-show-search.ant-select-single:not(.ant-select-customize-input) .ant-select-selector{
     width: 100%;
     margin-top: 0.6rem;
+    border: none;
+    box-shadow: none;
 }
 .ant-radio-checked::after{
     border:1pxsolid #D85D27;
@@ -180,4 +185,31 @@
 .textItem .am-textarea-label{
     color: rgba(0, 0, 0, 0.65);
     font-size: 0.75rem;
+}
+.inforSitePh .topDiv{
+    width: 111px;
+    height: 27px;
+    background: #F5F5F5;
+    border: 1px solid #E1E0E1;
+    text-align: center;
+    line-height: 27px;
+    display: inline-block;
+    margin-top: 9px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+.inforSitePh .line{
+    width: 100%;
+    border-bottom: 0.06rem solid #f3f3f3;
+    margin-top: 10px;
+}
+.inforSitePh .am-list-item .am-list-line .am-list-content{
+    font-size: 0.75rem;
+    
+}
+.inforSitePh .am-list-item .am-list-line .am-list-extra{
+    font-size: 0.75rem;
+    color: #333;
+    flex-basis:70%;
+    text-align: left;
 }

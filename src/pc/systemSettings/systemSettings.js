@@ -98,6 +98,7 @@ class systemSettings extends React.Component {
       message.error('登录超时请重新登录!')
     } else {
       sessionStorage.setItem('phone', res.data.data.phone)
+      sessionStorage.setItem('legalphone',res.data.data.legalphone)
     }
   }
 
@@ -150,7 +151,6 @@ class systemSettings extends React.Component {
           this.setState({ textT: '获取验证码' })
         }
       }, 1000)
-      message.success(res.data.msg)
     } else {
       message.error(res.data.msg)
     }
@@ -215,7 +215,6 @@ class systemSettings extends React.Component {
           this.setState({ textOne: '获取验证码' })
         }
       }, 1000)
-      message.success(res.data.msg)
     } else {
       message.error(res.data.msg)
     }
@@ -233,7 +232,6 @@ class systemSettings extends React.Component {
           this.setState({ textTwo: '获取验证码' })
         }
       }, 1000)
-      message.success(res.data.msg)
     } else {
       message.error(res.data.msg)
     }
@@ -433,7 +431,7 @@ class systemSettings extends React.Component {
         <div className={this.state.flagListOne === true ? 'list' : 'listNone'}>
           <ul className="ul">
             <Popconfirm
-              title={this.state.isClose === 0 ? '您确定要关闭预约么，关闭后场馆的所有时间段将不能被提前预约!' : '您确定取消关闭预约么，取消后场馆的所有时间段可以被提前预约!'}
+              title={this.state.isClose === 0 ? '您确定要关闭预约么?关闭后场馆的所有时间段将不能被提前预约!' : '您确定取消关闭预约么?取消后场馆的所有时间段可以被提前预约!'}
               onConfirm={this.confirm}
               placement="topLeft"
               onCancel={this.cancel}

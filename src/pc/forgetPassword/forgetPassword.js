@@ -19,7 +19,6 @@ class forgetPassword extends React.Component {
   async _code(data) {
     const res = await _code(data)
     if (res.data.code === 2000) {
-    
       let num = 60
       const timer = setInterval(() => {
         this.setState({ textT: num-- })

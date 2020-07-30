@@ -67,6 +67,7 @@ class sitePh extends React.Component {
       { label: '排球', value: 11 },
       { label: '网球', value: 12 }
     ],
+    timeRtArr:[{label:'00:00',value:'00:00'},{label:'00:30',value:'00:30'},{label:'01:00',value:'01:00'},{label:'01:30',value:'01:30'},{label:'02:00',value:'02:00'},{label:'02:30',value:'02:30'},{label:'03:00',value:'03:00'},{label:'03:30',value:'03:30'},{label:'04:00',value:'04:00'},{label:'04:30',value:'04:30'},{label:'05:00',value:'05:00'},{label:'05:30',value:'05:30'},{label:'06:00',value:'06:00'},{label:'06:30',value:'06:30'},{label:'07:00',value:'07:00'},{label:'07:30',value:'07:30'},{label:'08:00',value:'08:00'},{label:'08:30',value:'08:30'},{label:'09:00',value:'09:00'},{label:'09:30',value:'09:30'},{label:'10:00',value:'10:00'},{label:'10:30',value:'10:30'},{label:'11:00',value:'11:00'},{label:'11:30',value:'11:30'},{label:'12:00',value:'12:00'},{label:'12:30',value:'12:30'},{label:'13:00',value:'13:00'},{label:'13:30',value:'13:30'},{label:'14:00',value:'14:00'},{label:'14:30',value:'14:30'},{label:'15:00',value:'15:00'},{label:'15:30',value:'15:30'},{label:'16:00',value:'16:00'},{label:'16:30',value:'16:30'},{label:'17:00',value:'17:00'},{label:'17:30',value:'17:30'},{label:'18:00',value:'18:00'},{label:'18:30',value:'18:30'},{label:'19:00',value:'19:00'},{label:'19:30',value:'19:30'},{label:'20:00',value:'20:00'},{label:'20:30',value:'20:30'},{label:'21:00',value:'21:00'},{label:'21:30',value:'21:30'},{label:'22:00',value:'22:00'},{label:'22:30',value:'22:30'},{label:'23:00',value:'23:00'},{label:'23:30',value:'23:30'},{label:'24:00',value:'24:00'}],
     Longest: [{ label: '一周', value: 0.1 }, { label: '两周', value: 0.2 }, { label: '三周', value: 0.3 }, { label: '一个月', value: 1 }, { label: '两个月', value: 2 },],
     Shortest: [{ label: '0分钟', value: 0 }, { label: '30分钟', value: 30 }, { label: '60分钟', value: 60 }, { label: '120分钟', value: 120 }, { label: '180分钟', value: 180 }, { label: '240分钟', value: 240 }, { label: '360分钟', value: 360 }, { label: '1140分钟', value: 1140 }, { label: '2280分钟', value: 2280 }, { label: '4320分钟', value: 4320 },],
     LiturgyArr: [{ name: "周一", idx: 1, cheked: false }, { name: "周二", idx: 2, cheked: false }, { name: "周三", idx: 3, cheked: false }, { name: "周四", idx: 4, cheked: false }, { name: "周五", idx: 5, cheked: false }, { name: "周六", idx: 6, cheked: false, }, { name: "周日", idx: 7, cheked: false }],
@@ -99,8 +100,8 @@ class sitePh extends React.Component {
     titleArrFoterNum: 0,
     Liturgy: false,
     Liturgyche: '请选择',
-    starttime: '',
-    endtime: '',
+    starttime: [],
+    endtime: [],
     money: '',
     pickerValueFour: [],
     pickerValueFive: [],
@@ -410,7 +411,7 @@ class sitePh extends React.Component {
   }
 
   asyncValue = e => {
-    this.setState({ asyncValue: e[0] })
+    this.setState({ asyncValue: e[0],page:1 })
     this.getVenueNumberTitleList({ page: 1, sportid: e[0] })
   }
 
@@ -605,7 +606,6 @@ class sitePh extends React.Component {
   jiageSub = () => {
 
     let { pickerValueTwo, pickerValueThree, Liturgyche, starttime, endtime, money, cheStr, titleArrFoterNum, pickerValueFour, pickerValueFive, comment, tagId, titleArr, sportArrTwo, LiturgycheNum, jiageUUid } = this.state
-
     if (pickerValueTwo === '') {
       Toast.fail('请选择场地类型', 1);
     } else if (pickerValueThree === '') {
@@ -630,8 +630,8 @@ class sitePh extends React.Component {
         tags: titleArr[pickerValueThree].label,
         openday: LiturgycheNum,
         opendayname: Liturgyche,
-        starttime: dateFormat("HH:MM", starttime),
-        endtime: dateFormat("HH:MM", endtime) === '00:00' ? '24:00' : dateFormat("HH:MM", endtime),
+        starttime:starttime[0],
+        endtime:endtime[0],
         costperhour: money,
         venueid: cheStr,
         sitenumber: titleArrFoterNum,
@@ -640,7 +640,8 @@ class sitePh extends React.Component {
         comment: comment,
         tags_id: tagId
       }
-      this.AddSiteSetting(obj)
+      console.log(obj)
+      // this.AddSiteSetting(obj)
 
     }
 
@@ -695,7 +696,7 @@ class sitePh extends React.Component {
         this.setState({
           Price: true, pickerValueTwo: res.data.data[0].sportid,
           cheStr: res.data.data[0].venueid, titleArrFoterNum: res.data.data[0].sitenumber,
-          LiturgycheNum: res.data.data[0].openday, Liturgyche: p.join(','), starttime: new Date('2019-10-12 ' + res.data.data[0].starttime + ''), endtime: new Date('2019-10-12 ' + res.data.data[0].endtime + ''),
+          LiturgycheNum: res.data.data[0].openday, Liturgyche: p.join(','), starttime: [res.data.data[0].starttime], endtime: [res.data.data[0].endtime],
           money: res.data.data[0].costperhour, pickerValueFour: [Number(res.data.data[0].maxScheduledDate)], pickerValueFive: [res.data.data[0].appointmenttime],
           tagId: res.data.data[0].tags_id,
           comment: res.data.data[0].comment
@@ -864,6 +865,13 @@ class sitePh extends React.Component {
     this.setState({
       venDuo: false
     })
+  }
+  starttime=e=>{
+    console.log(e[0])
+    this.setState({starttime:e})
+  }
+  endtime=e=>{
+    this.setState({endtime:e})
   }
 
   render() {
@@ -1056,26 +1064,28 @@ class sitePh extends React.Component {
           <List.Item arrow={this.state.jiageUUid !== '' ? 'empty' : 'horizontal'} extra={<span className="bianhao">{this.state.cheStr === '' ? '无' : this.state.cheStr}</span>} style={{ borderBottom: '1px solid #E9E9E9' }}>场地编号</List.Item>
           <List.Item arrow="empty" extra={this.state.titleArrFoterNum} style={{ borderBottom: '1px solid #E9E9E9' }} >场地数量</List.Item>
           <List.Item arrow="horizontal" extra={this.state.Liturgyche} className="lpko" onClick={this.Liturgy} style={{ borderBottom: '1px solid #E9E9E9' }} >星期</List.Item>
-          <DatePicker
-            mode="time"
-            extra="请选择"
-            minuteStep={30}
-            format="HH:mm"
-            value={this.state.starttime}
-            onChange={starttime => this.setState({ starttime })}
-          >
-            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>开始时间</List.Item>
-          </DatePicker>
+         
 
-          <DatePicker
-            mode="time"
-            extra="请选择"
-            minuteStep={30}
-            value={this.state.endtime}
-            onChange={endtime => this.setState({ endtime })}
-          >
-            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>结束时间</List.Item>
-          </DatePicker>
+          <Picker
+          data={this.state.timeRtArr}
+          onOk={this.starttime}
+          value={this.state.starttime}
+          cols={1}
+        >
+          <List.Item arrow="horizontal">开始时间</List.Item>
+        </Picker>
+
+            
+          <Picker
+          data={this.state.timeRtArr}
+          onOk={this.endtime}
+          value={this.state.endtime}
+          cols={1}
+        >
+          <List.Item arrow="horizontal">结束时间</List.Item>
+        </Picker>
+
+
           <List.Item arrow="empty">
             <InputItem
               type='money'

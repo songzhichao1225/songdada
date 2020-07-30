@@ -206,3 +206,66 @@
     right: 65px;
     bottom: -30px;
 }
+
+.mode .listing{
+	overflow: hidden;
+	margin-top: 20px;
+}
+.mode.listing>span{
+	display: block;
+	float: left;
+}
+.mode .listing>span:nth-child(1){
+	width: 120px;
+	text-align: left;
+	font-size: 16px;
+    line-height: 38px;
+    float: left;
+}
+.mode .listing>span:nth-child(2){
+	margin-left: 18px;
+}
+.mode .listing>span:nth-child(3){
+	margin-left: 12px;
+	color: #F5A623;
+	cursor: pointer;
+	display: inline-block;
+	line-height: 38px;
+}
+.mode .listing .listingInput{
+	width: 273px;
+	height: 38px;
+	margin-left: 18px;
+	float: left;
+}
+.mode .listing .accountNum{
+	margin-left: 18px;
+	margin-top: 10px;
+}
+.mode .addImg{
+    width: 132px;
+    height: 132px;
+    margin-left: 26.8px;
+    float: left;
+}
+.mode .ant-upload-picture-card-wrapper{
+    width: 300px;
+    margin-left: 26.8px;
+}
+.mode .ko{
+	margin-left: 138px;
+}
+.mode .submit{
+	width: 89px;
+	height: 28px;
+	background: #F5A623;
+	border-radius: 2px;
+	float: left;
+	margin-left: 150px;
+	line-height: 20px;
+	margin-bottom: 40px;
+
+}
+.mode .ant-select-single:not(.ant-select-customize-input) .ant-select-selector{
+    height: 38px;
+}

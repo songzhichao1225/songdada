@@ -561,7 +561,7 @@ class information extends React.Component {
             locale={locale}
             placeholder={[this.state.start, this.state.end]}
           />
-          <div className="sping"> <SyncOutlined className={this.state.Oneloading === true || this.state.number === '2' ? 'hidden' : 'block'} onClick={this.Oneloading} style={{ fontSize: 24, marginTop: 15 }} /><Spin indicator={antIcon} spinning={this.state.Oneloading} /></div>
+          <div className="sping"> <SyncOutlined className={this.state.Oneloading === true || this.state.number=== '2' ? 'hidden' : 'block'} onClick={this.Oneloading} style={{ fontSize: 24, marginTop: 15 }} /><Spin indicator={antIcon} spinning={this.state.Oneloading} /></div>
         </div>
         
         <div className={this.state.number === '1' ? 'listName' : 'listNameT'}  style={{height:'90%'}}>
@@ -570,10 +570,10 @@ class information extends React.Component {
           <div className="xiange"></div>
 
             <Row className="rowConten" style={{background:'#FCF7EE',marginTop:0}}>
-              <Col xs={{ span: 3 }}>活动编号</Col>
+              <Col xs={{ span: 3 }}>活动编号</Col> 
               <Col xs={{ span: 2 }}>
-                <Select className="selectName" defaultValue="项目名称" bordered={false} style={{ width:'100%',padding:0 }} onChange={this.nameChang}>
-                  <Option value="0">全部</Option>
+                <Select className="selectName" defaultValue="项目名称" bordered={false} style={{width:'100%',padding:0 }} onChange={this.nameChang}>
+                  <Option value="0">全部</Option> 
                   <Option value="1">羽毛球</Option>
                   <Option value="2">乒乓球</Option>
                   <Option value="3">台球</Option>

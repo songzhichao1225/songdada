@@ -411,6 +411,16 @@ export function getVenueComplainList(data,headers){    //在活动列表，查�
 }
 
 
+export function VenueReceivingBankInformation(data,headers){    //修改场馆银行收款信息 
+    return axios.post('/api/VenueReceivingBankInformation',data,{headers: {'token': headers}})
+}
+
+export function getReceivingBankQualifications(data,headers){    //是否具备提现资格（判断当前场馆的银行收款信息是否填写完整并且通过审核）
+    return axios.post('/api/getReceivingBankQualifications',data,{headers: {'token': headers}})
+}
+
+
+
 
 
 

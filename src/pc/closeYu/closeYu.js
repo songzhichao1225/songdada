@@ -27,8 +27,8 @@ class closeYu extends React.Component {
 
   state = {
     visible: false,
-    start: '',
-    end: '',
+    start: null,
+    end: null,
     ListSport: [],
     runName: [],
     runId: '',
@@ -78,10 +78,8 @@ class closeYu extends React.Component {
   }
   componentDidMount() {
     this.VenueTemporarilyClosedList()
-    let start = moment().startOf('day').add(1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
-    let end = moment().endOf('day').add(1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
-    console.log(end)
-    this.setState({ start: start+' 00:00', end: end+' 23:00' })
+   
+   
     this.getSetPriceVenueSport()
   }
 
@@ -94,9 +92,19 @@ class closeYu extends React.Component {
   }
 
   dateSelect = (e) => {
-    let start = this.timer(e[0]._d)
-    let end = this.timer(e[1]._d)
-    console.log(start,end)
+
+    let start=""
+    let end=""
+    if(e[0]!==''){
+      start = this.timer(e[0]._d)
+    }else{
+      start=null
+    }
+     if(e[1]!==''){
+       end = this.timer(e[1]._d)
+    }else{
+      end=null
+    }
     this.setState({ start: start, end: end })
   }
 
@@ -326,12 +334,11 @@ class closeYu extends React.Component {
             <RangePicker
               style={{ width: 350, marginLeft: 15 }}
               // disabledDate={disabledDate}
-              
               onOk={this.dateSelect}
               locale={locale}
               allowClear={false}
               minuteStep={30}
-              value={[moment(this.state.start, 'YYYY-MM-DD HH:mm'), moment(this.state.end, 'YYYY-MM-DD HH:mm')]}
+              value={[this.state.start===null?'':moment(this.state.start, 'YYYY-MM-DD HH:mm'), this.state.end===null?'':moment(this.state.end, 'YYYY-MM-DD HH:mm')]}
               showTime={{
                 hideDisabledOptions: true,
                 defaultValue: [moment('00:00', 'HH:mm'), moment('23:00', 'HH:mm')],
@@ -352,7 +359,7 @@ class closeYu extends React.Component {
             okText="确定"
             cancelText="取消"
           >
-            <div className="submit" onClick={this.modelSubmit}>确认</div>
+            <div className="submit" style={{lineHeight:'28px'}} onClick={this.modelSubmit}>确认</div>
           </Popconfirm>
         </Modal>
       </div>
