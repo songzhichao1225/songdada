@@ -1,0 +1,29 @@
+
+.Agreement{
+    background: #fff;
+    font-size: 0.75rem;
+    height: 100%;
+}
+
+.Agreement .am-navbar{
+    background: #374D66;
+}
+.Agreement .boss{
+    width: 90%;
+    height: 94%;
+    overflow-y: auto;
+    margin: 0 auto ;
+    padding-top: 2rem;
+}
+
+.Agreement .block{
+    display: block;
+    line-height: 1.5rem;
+}
+.Agreement .block .weight{
+    font-weight: bold;
+}
+
+.Agreement .block .big{
+    font-size: 1rem;
+}

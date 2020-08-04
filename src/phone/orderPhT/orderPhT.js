@@ -98,7 +98,7 @@ class orderPhT extends React.Component {
 
     modalTwo: false,
     timeOutEvent: 0,
-    paied:0
+    paied:2
   }
 
 
@@ -174,7 +174,7 @@ class orderPhT extends React.Component {
           endT = end[2] + '-' + end[0] + '-' + end[1]
         }
         this.setState({ start: startT, end: endT })
-        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: startT, enddate: endT,paied:0 })
+        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: startT, enddate: endT,paied:2 })
 
       } else if (sessionStorage.getItem('modl') === '2') {
         let myDate = new Date()
@@ -190,9 +190,9 @@ class orderPhT extends React.Component {
           endT = end[2] + '-' + end[0] + '-' + end[1]
         }
         this.setState({ start: startT, end: endT })
-        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: startT, enddate: endT,paied:0 })
+        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: startT, enddate: endT,paied:2 })
       }else if(this.props.history.location.query!==undefined){
-        this.getReservationActivitieslist({ page: 1, publicuid:this.props.history.location.query.uuid,paied:0 })
+        this.getReservationActivitieslist({ page: 1, publicuid:this.props.history.location.query.uuid,paied:2 })
       }else{
         this.setState({ activeSon: [], informList:[], total:[], flag: false, spin: false })
       }
@@ -213,7 +213,7 @@ class orderPhT extends React.Component {
 
   activityList = () => {
     this.setState({ activityList: true })
-    this.getReservationActivitieslist({ page: 1, sport: '', status: 10, publicuid: '',paied:0 })
+    this.getReservationActivitieslist({ page: 1, sport: '', status: 10, publicuid: '',paied:2 })
   }
   bookingKanban = () => {
     this.setState({ activityList: false })

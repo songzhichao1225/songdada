@@ -497,8 +497,8 @@ html:not([data-scale]) .am-card-body::before{
     height: 100%;
 }
 .orderPh .ant-spin-nested-loading{
-    height: 94%;
+    height: 93%;
 }
 .orderPh .ant-table-wrapper{
-    height: 96%;
+    height: 90%;
 }

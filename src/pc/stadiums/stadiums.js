@@ -485,10 +485,10 @@ class stadiums extends React.Component {
   }
 
   ziSubmit = () => {
-    let { zuo, imgHoodTwo, imgHood, lisenceURL, corporateName, corporateId, corporatePhone, CorporateName } = this.state
+    let { zuo, imgHoodTwo, imgHood, lisenceURL, corporateName, corporatePhone, CorporateName } = this.state
     let data = {
       legalname: corporateName,
-      legalcard: corporateId,
+      legalcard: '',
       legalphone: corporatePhone,
       Settlement: 0,
       Bankaccount: '',
@@ -551,10 +551,11 @@ class stadiums extends React.Component {
   }
 
   ziSubmitTwo=()=>{
-    let {numRadio,baseImg,imageUrlTwo,imageUrlThree,corporateCardId,corporateOpen,bank_id,province_id,city_id}=this.state
+    let {numRadio,baseImg,imageUrlTwo,corporateId,imageUrlThree,corporateCardId,corporateOpen,bank_id,province_id,city_id}=this.state
     let data={
       legalBaseURL:numRadio===0?'':baseImg,
       legalFilesURL: numRadio===0?'':imageUrlTwo + '|' + imageUrlThree,
+      legalcard:numRadio===0?'':corporateId,
       Settlement:numRadio,
       Bankaccount: corporateCardId,
       OpeningBank: corporateOpen,
@@ -745,7 +746,7 @@ class stadiums extends React.Component {
                   listType="picture-card"
                   className="avatar-uploader addImg"
                   showUploadList={false}
-                  action="/api/UploadVenueImgs?type=Venue"
+                  action="/api/UploadVenueImgs?type=Venuelisence"
                   beforeUpload={beforeUpload}
                   onChange={this.handleChangeOneY}
                   accept=".jpg, .jpeg, .png"
@@ -759,10 +760,6 @@ class stadiums extends React.Component {
             <div className="listing">
               <span>法人姓名:</span>
               <Input className="listingInput" value={this.state.corporateName} onChange={this.corporateName} />
-            </div>
-            <div className="listing">
-              <span>法人身份证号:</span>
-              <Input className="listingInput" value={this.state.corporateId} onChange={this.corporateId} />
             </div>
 
             <div className="listing">
@@ -794,6 +791,10 @@ class stadiums extends React.Component {
                 <Radio value={1}>法人账号</Radio>
               </Radio.Group>
             </div>
+            <div className="listing" style={this.state.numRadio===0?{display:'none'}:{}}>
+              <span>法人身份证号:</span>
+              <Input className="listingInput" value={this.state.corporateId} onChange={this.corporateId} />
+            </div>
 
             <div className="listing" style={this.state.numRadio===0?{display:'none'}:{}}>
               <span>身份证照:</span>
@@ -802,7 +803,7 @@ class stadiums extends React.Component {
                   listType="picture-card"
                   className="avatar-uploader addImg"
                   showUploadList={false}
-                  action="/api/UploadVenueImgs?type=Venue"
+                  action="/api/UploadVenueImgs?type=VenueIdCardImgs"
                   beforeUpload={beforeUpload}
                   onChange={this.handleChangeTwo}
                   accept=".jpg, .jpeg, .png"
@@ -815,7 +816,7 @@ class stadiums extends React.Component {
                   listType="picture-card"
                   className="avatar-uploader addImg ko"
                   showUploadList={false}
-                  action="/api/UploadVenueImgs?type=Venue"
+                  action="/api/UploadVenueImgs?type=VenueIdCardImgs"
                   beforeUpload={beforeUpload}
                   onChange={this.handleChangeThree}
                   accept=".jpg, .jpeg, .png"

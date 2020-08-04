@@ -25,10 +25,10 @@
 }
 .qualificationPh .boss{
     width: 100%;
-    height: 92%;
+    float: left;
     margin: 1rem auto 0;
     background: #fff;
-    overflow-y: auto;
+    padding-bottom: 10rem;
 }
 .qualificationPh .boss .input{
     width: 92%;
@@ -36,6 +36,7 @@
     margin: 0 0 0 2.5%;
     border-bottom: 0.06rem solid #f3f3f3;
     float: left;
+    padding: 0.2rem 0;
 }
 .qualificationPh .boss .input>span{
     font-size:0.88rem;
@@ -44,11 +45,12 @@
     color: #333;
 }
 .qualificationPh .boss .input .select{
-    width:67%;
+    width:68%;
     height: 2.9rem;
     float: right;
     background: #fff;
     margin-right: 1rem;
+    font-size: 0.75rem;
 }
 .qualificationPh  .arow{
     width: 0.44rem;
@@ -79,34 +81,43 @@
 }
 .qualificationPh .addImg{
     width: 4rem;
-    margin-left: 2.6rem;
+    height: 4rem;
+    margin-left: 2rem;
 }
 .qualificationPh .left{
-    margin-left: 3rem;
+    margin-left: 2rem;
 }
-.qualificationPh .addImg .ant-upload.ant-upload-select-picture-card{
-    width: 4rem;
-    height: 0rem;
-    border:none;
-    margin:0;
-}
+
 .qualificationPh .addImg .ant-upload.ant-upload-select-picture-card > .ant-upload{
- max-height: 3.8rem;
+ width: 100%;
+ height: 100%;
  overflow: hidden;
  display: block;
- margin-top: 0.4rem;
+ position: relative;
 }
-.qualificationPh .ant-upload.ant-upload-select-picture-card{
-    border:none;
-    width: 5rem;
-    height: 5rem;
+.qualificationPh .left .ant-upload.ant-upload-select-picture-card{
+    width: 4rem;
+    height: 4rem;
+    margin:0;
+    padding: 8px;
+    border: 0.06rem dotted #ccc;
+    background-color: #fff;
+}
+
+.qualificationPh .addimgT .ant-upload.ant-upload-select-picture-card{
+    width: 4rem;
+    height: 4rem;
+    margin:0;
+    padding: 8px;
+    border: 0.06rem dotted #ccc;
+    background-color: #fff;
 }
 .qualificationPh .ant-checkbox-wrapper{
     width: 6rem;
     margin-top: 8px;
 }
 .qualificationPh .radio{
-    width: 67%;
+    width: 68%;
     float: right;
     margin:0.88rem 0 0 0;
 }
@@ -151,7 +162,7 @@
     font-size: 0.88rem;
 }
 .qualificationPh .am-list-item .am-list-line .am-list-extra{
-    font-size: 0.88rem;
+    font-size: 0.75rem;
     flex-basis:62%;
     text-align: left;
     color: #333;

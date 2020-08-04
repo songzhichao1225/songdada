@@ -23,15 +23,7 @@ class Login extends React.Component {
   };
 
   componentDidMount() {
-    if (sessionStorage.getItem('venue_token')) {
-      if (sessionStorage.getItem('issite') === '0') {
-        this.props.history.push('/perfect')
-      } else if (sessionStorage.getItem('isqult') === '0') {
-        this.props.history.push('/qualification')
-      } else if (sessionStorage.getItem('isqult') === '1') {
-        this.props.history.push('/statusAudits')
-      }
-    }
+   
     this.setState({ phone: localStorage.getItem('nickName') })
   }
 

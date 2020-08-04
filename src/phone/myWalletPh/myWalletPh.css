@@ -79,7 +79,7 @@
     line-height: 3rem;
 }
 .koh .listSon .right{
-    width: 80%;
+    width: 70%;
     height: 3rem;
     float: right;
     border:none;
@@ -106,6 +106,10 @@
 .koh .listSon>span{
     font-size: 0.75rem;
     color: #333;
+    display: block;
+    width: 25%;
+    float: left;
+    text-align: left;
 }
 .kood {
     width: 350px;
@@ -121,11 +125,12 @@
 .koh .am-list-item .am-list-line .am-list-extra{
     font-size: 0.75rem;
     color: #333;
-    flex-basis:70%;
+    flex-basis:60%;
     text-align: left;
 }
 .koh .ant-upload-picture-card-wrapper{
-    width: 50%;
+    width: 30%;
+    float: left;
 }
 .koh .loodpos{
     margin-left: 38px;
@@ -162,4 +167,12 @@
 }
 .koh .ant-select-selection-item{
     flex-basis:60%
+}
+.koh .ant-upload.ant-upload-select-picture-card{
+    width: 4rem;
+    height: 4rem;
+    float: left;
+}
+.koh .ant-upload-picture-card-wrapper{
+    margin-left: 1.5rem;
 }

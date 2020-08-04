@@ -117,7 +117,6 @@ class perfect extends React.Component {
 
     this.props.history.push({ pathname: '/map', query: { type: localStorage.getItem('handleDistrict'), city: localStorage.getItem('handleCity') } })
     sessionStorage.setItem('hanclick', 1)
-
   }
   handleName = e => {
     this.setState({ handleName: e.target.value })
@@ -305,7 +304,7 @@ class perfect extends React.Component {
         linkMan: handelPerson,
         telephone: handleTelephone,
       }
-      
+
       if (data.venuename === '') {
         message.error('请填写场馆名称')
       } else if (handelPerson === '') {
@@ -360,6 +359,7 @@ class perfect extends React.Component {
   }
 
   onClickSave = () => {
+    console.log(666)
     let { imageRes, fileList, handleAddress, handelPerson, handleTelephone, onChangeCheck, onChangeSite } = this.state
     let fileListT = fileList.slice(0, 9)
     let filesURLarr = []
@@ -416,8 +416,7 @@ class perfect extends React.Component {
 
     const uploadButton = (
       <div>
-
-        <div className="ant-upload-text">门脸照</div>
+        <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
       </div>
     )
     const { imageRes } = this.state
@@ -425,7 +424,7 @@ class perfect extends React.Component {
     const { previewVisible, previewImage, fileList } = this.state
     const uploadButtonT = (
       <div>
-        <div className="ant-upload-text">场地照</div>
+        <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
       </div>
     )
 
@@ -449,6 +448,8 @@ class perfect extends React.Component {
             <img className="logo" src={require("../../assets/tiaozhanicon.png")} style={{ width: 53, height: 53, marginLeft: 45, marginTop: 13.5 }} alt="6666" />
             <span className="title">北京甲乙电子商务有限公司</span>
           </div>
+          
+      </div>
           <div className="content">
             <div className="nav">
               <div><span>1.填写注册信息</span><img src={require("../../assets/oneline.png")} alt="5" /></div>
@@ -490,7 +491,7 @@ class perfect extends React.Component {
               </div>
 
               <div className="name">
-                <span className="symbol negative">*</span><span className="boTitle negativeT">门脸照(1张)</span>
+                <span className="symbol negative">*</span><span className="boTitle negativeT">门脸照</span>
                 <ImgCrop scale {...propsOne}>
                   <Upload
                     name="files"
@@ -509,7 +510,7 @@ class perfect extends React.Component {
               </div>
 
               <div className="name">
-                <span className="symbol negativeTwo">*</span><span className="boTitle negativeTwoT">场地照片(2-8张)</span>
+                <span className="symbol negativeTwo">*</span><span className="boTitle negativeTwoT">场地照(2-8张)</span>
                 <div className="clearfix">
 
                   <Upload
@@ -556,7 +557,6 @@ class perfect extends React.Component {
             </div>
           </div>
         </div>
-      </div>
     )
   }
 }

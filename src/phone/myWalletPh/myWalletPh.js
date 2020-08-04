@@ -37,7 +37,8 @@ class myWalletPh extends React.Component {
     backList: [],//获取的银行
     numRadio:0,
     corporateCardId: '',
-    corporateOpen: ''
+    corporateOpen: '',
+    legalBaseURL:''
   };
 
   async getVenueMoney(data) {
@@ -212,14 +213,19 @@ class myWalletPh extends React.Component {
   
 
   handleSearch = e => {
+   
+      this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
+    
+  }
+  modLine=e=>{
     if (this.state.bank_id === '') {
       Toast.fail('请选择银行类型', 1.5)
     } else if (this.state.province_id === '') {
       Toast.fail('请选择银行所在省', 1.5)
     } else if (this.state.city_id === '') {
       Toast.fail('请选择银行所在市', 1.5)
-    } else {
-      this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
+    }else{
+      this.setState({corporateOpen:''})
     }
   }
 
@@ -237,13 +243,15 @@ class myWalletPh extends React.Component {
       Toast.fail(res.data.msg, 1)
     }
   }
-
+  corporateId=e=>{
+    this.setState({corporateId:e.target.value})
+  }
 
 
   ziSubmitTwo=()=>{
-    let {numRadio,baseImg,imgFile,imgFileTwo,corporateCardId,corporateOpen,bank_id,province_id,city_id}=this.state
+    let {numRadio,legalBaseURL,imgFile,corporateId,imgFileTwo,corporateCardId,corporateOpen,bank_id,province_id,city_id}=this.state
     let data={
-      legalBaseURL:numRadio===0?'':baseImg,
+      legalBaseURL:numRadio===0?'':legalBaseURL,
       legalFilesURL: numRadio===0?'':imgFile + '|' + imgFileTwo,
       Settlement:numRadio,
       Bankaccount: corporateCardId,
@@ -251,6 +259,7 @@ class myWalletPh extends React.Component {
       Banktype:bank_id,
       ProvinceBank:province_id,
       CityBank:city_id,
+      legalcard:numRadio===0?'':corporateId
     }
     console.log(data)
     if(numRadio&&imgFile===undefined){
@@ -267,13 +276,13 @@ class myWalletPh extends React.Component {
     const { imgFile, imgFileTwo } = this.state
     const uploadButtonTwo = (
       <div>
-        <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}>正面照</div>
+        <svg t="1596268702646" className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3225" width="38" height="38"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
       </div>
     )
     const uploadButtonThree = (
       <div>
-        <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}>反面照</div>
-      </div>
+      <svg t="1596268702646" className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3225" width="38" height="38"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
+    </div>
     )
     return (
       <div className="myWalletPh">
@@ -352,7 +361,10 @@ class myWalletPh extends React.Component {
                 <Radio value={1}>法人账号</Radio>
               </Radio.Group>
             </div>
-
+            <div className="listSon" style={this.state.numRadio===0?{display:'none'}:{}}>
+            <span style={{float:'left'}}>法人身份证号</span>
+            <Input className="right" style={{ width: '70%', paddingLeft: '0.5rem' }} placeholder="请输入法人身份证号" value={this.state.corporateId} onChange={this.corporateId} />
+          </div>
             <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {paddingTop:'15px'}}>
               <span style={{float:'left'}}>身份证</span>
               <Upload
@@ -364,9 +376,8 @@ class myWalletPh extends React.Component {
                 beforeUpload={beforeUpload}
                 onChange={this.handleChangeTwo}
               >
-                {imgFile !== '' && imgFile !== 1 ? <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.legalBaseURL + imgFile} alt="avatar" style={{ width: '4.8rem', height: '3rem' }} /> : uploadButtonTwo}
+                {imgFile !== '' && imgFile !== 1 ? <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.legalBaseURL + imgFile} alt="avatar" style={{ width: '3.8rem', height: '2.5rem' }} /> : uploadButtonTwo}
               </Upload>
-              <div style={{ clear: 'both' }}></div>
               <Upload
                 name="files"
                 listType="picture-card"
@@ -376,7 +387,7 @@ class myWalletPh extends React.Component {
                 beforeUpload={beforeUpload}
                 onChange={this.handleChangeThree}
               >
-                {imgFileTwo !== '' && imgFileTwo !== 1 ? <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.legalBaseURL + imgFileTwo} alt="avatar" style={{ width: '4.8rem', height: '3rem' }} /> : uploadButtonThree}
+                {imgFileTwo !== '' && imgFileTwo !== 1 ? <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.legalBaseURL + imgFileTwo} alt="avatar" style={{ width: '3.8rem', height: '2.5rem' }} /> : uploadButtonThree}
               </Upload>
             </div>
 
@@ -413,10 +424,11 @@ class myWalletPh extends React.Component {
               <Select
                 showSearch
                 className="right"
-                style={{ height: '32px', lineHeight: '32px', width: '79%', float: 'right',textAlign:'left' }}
+                style={{ height: '32px', lineHeight: '32px', width: '70%', float: 'right',textAlign:'left' }}
                 onSearch={this.handleSearch}
                 onChange={this.corporateOpen}
                 defaultActiveFirstOption={false}
+                onFocus={this.modLine}
                 showArrow={false}
                 notFoundContent={null}
                 placeholder="请输入银行关键字"

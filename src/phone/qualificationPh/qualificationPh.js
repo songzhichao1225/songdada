@@ -3,9 +3,9 @@ import './qualificationPh.css';
 
 import { Toast, Picker, List, NavBar, Popover, Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Upload, Input, Radio, Select, Tooltip } from 'antd';
+import { Upload, Input, Radio, Select } from 'antd';
 import { LeftOutlined, EllipsisOutlined } from '@ant-design/icons';
-import { getIsStatus, getVenueOpenBankList, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity, _code, getVenueQualified, TemporaryQualificationInformation, VenueQualifications, getVenueQualificationInformation, VenueQualificationInformationSave, getVenueQualifiedCompany } from '../../api';
+import { getIsStatus, getVenueOpenBankList, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity,getIsSignOut, _code, getVenueQualified, TemporaryQualificationInformation, VenueQualifications, getVenueQualificationInformation, VenueQualificationInformationSave, getVenueQualifiedCompany } from '../../api';
 const alert = Modal.alert;
 const prompt = Modal.prompt;
 const { Option } = Select;
@@ -43,6 +43,7 @@ class qualificationPh extends React.Component {
     imageReST: '',//反面
     value: 0,
     siteUUID: '',//场馆Id
+    imageUrl: '',
     imageUrlBaseT: '',//公共路径
     faName: '',//法人姓名
     faIdcard: '',//法人身份证号
@@ -58,8 +59,8 @@ class qualificationPh extends React.Component {
     openingLine: '',
     kaiText: '请选择银行所在地',
     flagDis: false,
-    visibleTwo:false,
-    src:''
+    visibleTwo: false,
+    src: ''
   };
 
 
@@ -154,12 +155,12 @@ class qualificationPh extends React.Component {
           legalBaseURL: lpk.legalBaseURL,
           imageUrl: lpk.lisenceURL, imageResT: lpk.legalBaseURL === '' ? '' : lpk.legalFilesURL.split('|')[0],
           imageReST: lpk.legalBaseURL === '' ? '' : lpk.legalFilesURL.split('|')[1],
-          flagDis:lpk.flagDis!==null?lpk.flagDis:false
+          flagDis: lpk.flagDis !== null ? lpk.flagDis : false
         })
       } else {
         let lpk = JSON.parse(localStorage.getItem('qualifData'))
         if (lpk.ProvinceBank !== '') {
-          this.getVenueOpenBankCity({ province_id:lpk.ProvinceBank })
+          this.getVenueOpenBankCity({ province_id: lpk.ProvinceBank })
         }
         this.setState({
           CorporateName: lpk.CorporateName, bank_id: lpk.Banktype, province_id: lpk.ProvinceBank, city_id: lpk.CityBank,
@@ -168,7 +169,7 @@ class qualificationPh extends React.Component {
           legalBaseURL: lpk.legalBaseURL,
           imageUrl: lpk.lisenceURL, imageResT: lpk.legalBaseURL === '' ? '' : lpk.legalFilesURL.split('|')[0],
           imageReST: lpk.legalBaseURL === '' ? '' : lpk.legalFilesURL.split('|')[1],
-          flagDis:lpk.flagDis
+          flagDis: lpk.flagDis
         })
       }
     }
@@ -176,12 +177,29 @@ class qualificationPh extends React.Component {
   }
 
 
+  async getIsSignOut(data) {
+    const res = await getIsSignOut(data, localStorage.getItem('venue_token'))
+    if(res.data.code!==2000){
+      this.props.history.push('/login')
+      Toast.fail('您的账号已在别处登录', 2)
+    }
+  }
+
 
   componentDidMount() {
     this.getIsStatus()
     this.getVenueOpenBank()
     this.getVenueOpenBankProvince()
     this.getVenueQualificationInformation()
+
+    var timer=setInterval(() => {
+      if(this.props.history.location.pathname.split('/')[1]!=='qualificationPh'){
+        clearInterval(timer)
+      }else{
+        this.getIsSignOut()
+      }
+      
+     }, 500);
   }
 
   handleChange = info => {
@@ -309,10 +327,10 @@ class qualificationPh extends React.Component {
       let data = {
         lisenceURL: imageUrl,
         legalname: faName,
-        legalcard: faIdcard,
+        legalcard: value === 0 ? '' : faIdcard,
         legalphone: faPhone,
-        legalBaseURL: legalBaseURL,
-        legalFilesURL: imageResT + '|' + imageReST,
+        legalBaseURL: value === 0 ? '' : legalBaseURL,
+        legalFilesURL: value === 0 ? '' : imageResT + '|' + imageReST,
         CorporateName: CorporateName,
         Settlement: value,
         Bankaccount: cardId,
@@ -328,7 +346,7 @@ class qualificationPh extends React.Component {
         siteUUID: siteUUID,
         lisenceURL: imageUrl,
         legalname: faName,
-        legalcard: faIdcard,
+        legalcard:value === 0 ? '' :  faIdcard,
         legalphone: faPhone,
         legalBaseURL: value === 0 ? '' : legalBaseURL,
         legalFilesURL: value === 0 ? '' : imageResT + '|' + imageReST,
@@ -362,7 +380,7 @@ class qualificationPh extends React.Component {
   }
 
   reture = () => {
-    
+
     let { siteUUID, imageUrl, legalBaseURL, CorporateName, imageResT, imageReST, faIdcard, faName, bank_id, province_id, city_id, faPhone, value, cardId, openingLine } = this.state
     let data = {
       siteUUID: siteUUID,
@@ -379,7 +397,7 @@ class qualificationPh extends React.Component {
       Banktype: bank_id,
       ProvinceBank: province_id,
       CityBank: city_id,
-      flagDis:this.state.flagDis
+      flagDis: this.state.flagDis
     }
     console.log(data)
 
@@ -397,6 +415,10 @@ class qualificationPh extends React.Component {
     }
   }
   CorporateName = (e) => {
+    if(this.state.flagDis===true&&e.target.value===''){
+      sessionStorage.removeItem('qualifData')
+     this.getVenueQualificationInformation()
+    }
     this.setState({ CorporateName: e.target.value })
   }
 
@@ -471,13 +493,13 @@ class qualificationPh extends React.Component {
         value: res.data.data.Settlement, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
         legalBaseURL: res.data.data.legalBaseURL,
         imageUrl: res.data.data.lisenceURL,
-        imageResT: res.data.data.legalBaseURL === ''||res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[0],
-        imageReST: res.data.data.legalBaseURL === ''||res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[1],
+        imageResT: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[0],
+        imageReST: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[1],
         flagDis: true
       })
     }
   }
-  lok=(code)=>{
+  lok = (code) => {
     this.getVenueQualified({ CorporateName: this.state.CorporateName, code: code, phone: this.state.legePhone })
   }
 
@@ -524,11 +546,11 @@ class qualificationPh extends React.Component {
       siteUUID: siteUUID,
       lisenceURL: imageUrl,
       legalname: faName,
-      legalcard: faIdcard,
+      legalcard:  value === 0 ? '' :faIdcard,
       legalphone: faPhone,
-      legalBaseURL: legalBaseURL,
-      legalFilesURL: imageResT + '|' + imageReST,
-      CorporateName: value === 0 ? CorporateName : '',
+      legalBaseURL: value === 0 ? '' : legalBaseURL,
+      legalFilesURL: value === 0 ? '' : imageResT + '|' + imageReST,
+      CorporateName: CorporateName,
       Settlement: value,
       Bankaccount: cardId,
       OpeningBank: openingLine,
@@ -548,11 +570,20 @@ class qualificationPh extends React.Component {
 
   }
 
-  imgScale=(e)=>{
-    this.setState({visibleTwo:true,src:e.target.src})
+  imgScale = (e) => {
+    this.setState({ visibleTwo: true, src: e.target.src })
   }
-  onClose=()=>{
-    this.setState({visibleTwo:false})
+  onClose = () => {
+    this.setState({ visibleTwo: false })
+  }
+  modLine=()=>{
+    if(this.state.bank_id===''){
+      Toast.fail('请选择银行类型', 1);
+    }else if(this.state.province_id===''){
+      Toast.fail('请选择银行所在省', 1);
+    }else if(this.state.city_id===''){
+      Toast.fail('请选择银行所在市', 1);
+    }
   }
 
 
@@ -561,17 +592,17 @@ class qualificationPh extends React.Component {
 
     const uploadButton = (
       <div>
-        <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}>营业执照</div>
+        <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="2rem" height="2rem"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
       </div>
     )
     const uploadButtonT = (
       <div>
-        <div className="ant-upload-text" style={{lineHeight:'4rem'}}>( 正面 )</div>
+        <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="2rem" height="2rem"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
       </div>
     );
     const uploadButtonS = (
       <div>
-        <div className="ant-upload-text" style={{lineHeight:'4rem'}}>( 反面 )</div>
+        <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="2rem" height="2rem"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
       </div>
     );
     const { imageUrl, imageResT, imageReST } = this.state;
@@ -615,35 +646,31 @@ class qualificationPh extends React.Component {
 
           <div className="input">
             <span>公司名称</span>
-            <span className="lkpoji" style={{ float: 'right',color:'#fff' }} onClick={this.search}>查询</span>
+            <span className="lkpoji" style={{ float: 'right', color: '#fff' }} onClick={this.search}>查询</span>
             <Input className="select" onChange={this.CorporateName} style={{ width: '55%', float: 'right' }} value={this.state.CorporateName} placeholder="请输入公司名称" />
 
           </div>
-          <div className="input" style={{padding:'0.4rem 0'}}>
+          <div className="input" style={{ padding: '0.4rem 0' }}>
             <span style={{ lineHeight: '4rem', paddingRight: '0.5rem' }}>营业执照</span>
             <Upload
               name="files"
               listType="picture-card"
               className="avatar-uploader addImg left"
               showUploadList={false}
-              action="/api/UploadVenueImgs?type=Venue"
+              action="/api/UploadVenueImgs?type=Venuelisence"
               beforeUpload={beforeUpload}
               onChange={this.handleChange}
               disabled={this.state.flagDis}
-              
+              accept="image/*"
             >
-              {imageUrl !== 1 && imageUrl !== '' ? <img onClick={this.state.flagDis===true?this.imgScale:this.kojgh} data-scr={'https://app.tiaozhanmeiyitian.com/' + imageUrl}  src={'https://app.tiaozhanmeiyitian.com/' + imageUrl} alt="avatar" style={{ width: '100%'}} /> : uploadButton}
+              {imageUrl !== 1 && imageUrl !== '' ? <img onClick={this.state.flagDis === true ? this.imgScale : this.kojgh} data-scr={'https://app.tiaozhanmeiyitian.com/' + imageUrl} src={'https://app.tiaozhanmeiyitian.com/' + imageUrl} alt="avatar" style={{ maxHeight: '4rem', minWidth: '4rem', position: 'absolute', top: 0, left: 0 }} /> : uploadButton}
             </Upload>
           </div>
           <div className="input">
             <span>法人姓名</span>
-            <Input className="select" disabled={this.state.flagDis} onChange={this.faName} value={this.state.faName} placeholder="请输入姓名" />
+            <Input className="select"  disabled={this.state.flagDis} onChange={this.faName} value={this.state.faName} placeholder="请输入姓名" />
           </div>
 
-          <div className="input">
-            <span>法人身份证号</span>
-            <Input className="select" disabled={this.state.flagDis} onChange={this.faIdcard} value={this.state.faIdcard} maxLength={18} placeholder="请输入身份证号" />
-          </div>
 
           <div className="input">
             <span>法人手机号</span>
@@ -655,7 +682,7 @@ class qualificationPh extends React.Component {
 
 
 
-          <div style={{ fontSize: '1.2rem', fontWeight: 'bold', float: 'left', padding: '0.4rem 0' }}>场馆收款银行信息<span style={{ fontSize: '0.9rem', fontWeight: '500', color: '#9B9B9B' }}>(也可在提现前填写)</span></div>
+          <div style={{ fontSize: '1.2rem', fontWeight: 'bold', float: 'left', padding: '2rem 0 0' }}>场馆收款银行信息<span style={{ fontSize: '0.9rem', fontWeight: '500', color: '#9B9B9B' }}>(也可在提现前填写)</span></div>
           <div className="input" style={{ borderTop: '0.06rem solid #f3f3f3' }}>
             <span style={{ lineHeight: '6rem' }}>结算账号</span>
             <Radio.Group className="radio" onChange={this.radioChange} disabled={this.state.flagDis} value={this.state.value}>
@@ -664,36 +691,43 @@ class qualificationPh extends React.Component {
             </Radio.Group>
           </div>
 
-          <div className="input" style={this.state.value === 0 ? { display: 'none' } : { marginTop: '0.2rem' }}  >
-            <span style={{ lineHeight: '2rem' }}>(正面照)<br />法人身份证</span>
+          <div className="input" style={this.state.value === 0 ? { display: 'none' } : {}}>
+            <span>法人身份证号</span>
+            <Input className="select" style={{width:'60%',float:'left',marginLeft:'2%'}} disabled={this.state.flagDis} onChange={this.faIdcard} value={this.state.faIdcard} maxLength={18} placeholder="请输入身份证号" />
+          </div>
+
+          <div className="input" style={this.state.value === 0 ? { display: 'none' } : {}}  >
+            <span style={{ lineHeight: '2rem' }}>法人身份证<br />(正面照)</span>
             <Upload
               name="files"
               listType="picture-card"
               className="avatar-uploader addImg addimgT"
               showUploadList={false}
-              action="/api/UploadVenueImgs?type=Venuelisence"
+              action="/api/UploadVenueImgs?type=VenueIdCardImgs"
               beforeUpload={beforeUploadT}
               onChange={this.handleChangeT}
               disabled={this.state.flagDis}
+              accept="image/*"
             >
-              {imageResT !== 1 && imageResT !== '' ? <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.legalBaseURL + imageResT} alt="avatar" style={{ maxWidth: '4rem', maxHeight: '4rem' }} /> : uploadButtonT}
+              {imageResT !== 1 && imageResT !== '' ? <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.legalBaseURL + imageResT} alt="avatar" style={{ maxHeight: '4rem', minWidth: '4rem', position: 'absolute', top: 0, left: 0 }} /> : uploadButtonT}
             </Upload>
 
           </div>
 
-          <div className="input" style={this.state.value === 0 ? { display: 'none' } : { marginTop: '0.2rem' }}  >
-            <span style={{ lineHeight: '2rem' }}>(反面照)<br />法人身份证</span>
+          <div className="input" style={this.state.value === 0 ? { display: 'none' } : {}}  >
+            <span style={{ lineHeight: '2rem' }}>法人身份证<br />(反面照)</span>
             <Upload
               name="files"
               listType="picture-card"
               className="avatar-uploader addImg addimgT"
               showUploadList={false}
-              action="/api/UploadVenueImgs?type=Venuelisence"
+              action="/api/UploadVenueImgs?type=VenueIdCardImgs"
               beforeUpload={beforeUploadT}
               onChange={this.handleChangeTS}
               disabled={this.state.flagDis}
+              accept="image/*"
             >
-              {imageReST !== 1 && imageReST !== '' ? <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.legalBaseURL + imageReST} alt="avatar" style={{ maxWidth: '4rem', maxHeight: '4rem' }} /> : uploadButtonS}
+              {imageReST !== 1 && imageReST !== '' ? <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.legalBaseURL + imageReST} alt="avatar" style={{ maxHeight: '4rem', minWidth: '4rem', position: 'absolute', top: 0, left: 0 }} /> : uploadButtonS}
             </Upload>
 
           </div>
@@ -711,7 +745,7 @@ class qualificationPh extends React.Component {
           </div>
 
           <div className="input" style={{ marginTop: '0.2rem' }}>
-            <Picker data={this.state.backProvince} cols={1} onChange={this.provinceChange} indicatorStyle={{color:'#c0c0c0'}} disabled={this.state.flagDis} value={[Number(this.state.province_id)]} className="forss">
+            <Picker data={this.state.backProvince} cols={1} onChange={this.provinceChange} indicatorStyle={{ color: '#c0c0c0' }} disabled={this.state.flagDis} value={[Number(this.state.province_id)]} className="forss">
               <List.Item arrow="horizontal" style={{ borderBottom: 'none' }}>开户所在省</List.Item>
             </Picker>
 
@@ -730,49 +764,55 @@ class qualificationPh extends React.Component {
             <span>开户行</span>
             <Select
               showSearch
-              style={{ width: '68%', height: '2.9rem', float: 'right',background:'#fff' }}
+              style={{ width: '68%', height: '2.9rem', float: 'right', background: '#fff',fontSize:'0.75rem' }}
               onSearch={this.handleSearch}
               onChange={this.openingLine}
+              onFocus={this.modLine}
               defaultActiveFirstOption={false}
               showArrow={false}
               notFoundContent={null}
               placeholder='请选择开户行'
               disabled={this.state.flagDis}
-              value={this.state.openingLine===''?null:this.state.openingLine}
+              value={this.state.openingLine === '' ? null : this.state.openingLine}
             >
               {
                 this.state.backList.map((item, i) => (
                   <Option key={i} value={item.sub_branch_name} alt={item.sub_branch_name}>
-                    <Tooltip title={item.sub_branch_name}>
-                      <span>{item.sub_branch_name}</span>
-                    </Tooltip></Option>
+                      <span style={{fontSize:'0.75rem'}}>{item.sub_branch_name}</span>
+                   </Option>
                 ))
               }
             </Select>
           </div>
 
+          
+          {/* <div className="input">
+            <span>开户行</span>
+            <Input className="select" maxLength={21} disabled={this.state.flagDis} onChange={this.cardId} value={this.state.cardId} placeholder="请输入银行卡号" />
+          </div> */}
+
 
           <div className="footerBtn">
-            <div style={this.state.flagDis===true?{width:'49.5%'}:{}} onClick={this.reture}>上一步</div>
-            <div style={this.state.flagDis===true?{display:'none'}:{}} onClick={this.save}>保存</div>
-            <div style={this.state.flagDis===true?{width:'49.5%'}:{}} onClick={this.submit}>提交</div>
+            <div style={this.state.flagDis === true ? { width: '49.5%' } : {}} onClick={this.reture}>上一步</div>
+            <div style={this.state.flagDis === true ? { display: 'none' } : {}} onClick={this.save}>保存</div>
+            <div style={this.state.flagDis === true ? { width: '49.5%' } : {}} onClick={this.submit}>提交</div>
           </div>
 
 
 
           <Modal
-          visible={this.state.visibleTwo}
-          transparent
-          maskClosable={true}
-          onClose={this.onClose}
-          wrapProps={{ onTouchStart: this.onWrapTouchStart }}
-          
-        >
-          <img style={{width:'100%'}} src={this.state.src} alt="img" />
-        </Modal>
+            visible={this.state.visibleTwo}
+            transparent
+            maskClosable={true}
+            onClose={this.onClose}
+            wrapProps={{ onTouchStart: this.onWrapTouchStart }}
+
+          >
+            <img style={{ width: '100%' }} src={this.state.src} alt="img" />
+          </Modal>
         </div>
 
-       
+
 
 
       </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import './loginPh.css';
 import 'antd/dist/antd.css';
-import Icon from '@ant-design/icons';
+import {CloseOutlined} from '@ant-design/icons';
 class loginPh extends React.Component {
 
   state = {
@@ -54,7 +54,7 @@ class loginPh extends React.Component {
   render() {
     return (
       <div className="loginPh">
-        <Icon type="close" onClick={this.close} style={{ position: 'absolute', left: '5%', top: '1.5%', zIndex: '99' }} />
+        <CloseOutlined  onClick={this.close} style={{ position: 'absolute', left: '5%', top: '1.5%', zIndex: '99',color:'#fff' }}/>
         <div className="banner">
           <div className="title">成为合作场馆</div>
           <div className="titleBottom">免费引流到店，大幅提高场馆收入</div>

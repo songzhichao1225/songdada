@@ -8,6 +8,8 @@ import qualification from './pc/qualification/qualification';
 import map from './pc/map/map';
 import statusAudits from './pc/statusAudits/statusAudits';
 import home from './pc/home/home';
+import Agreement from './pc/Agreement/Agreement';
+
 
 
 
@@ -25,6 +27,7 @@ const BasicRoute = () => (
             <Route exact path="/map" component={map}/>
             <Route exact path="/statusAudits" component={statusAudits}/>
             <Route  path="/home" component={home}/>
+            <Route  path="/Agreement" component={Agreement}/>
         </Switch>
     </HashRouter>
 )

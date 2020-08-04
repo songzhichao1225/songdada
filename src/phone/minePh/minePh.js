@@ -90,6 +90,9 @@ class minePh extends React.Component {
     this.getVenueHelpCenter({ page: page })
     this.setState({ page: page })
   }
+  Agreement=()=>{
+    this.props.history.push('/Agreement')
+  }
 
   render() {
     return (
@@ -152,7 +155,7 @@ class minePh extends React.Component {
               </g>
             </svg>
             <span>场馆钱包</span><img src={require("../../assets/right.png")} alt="arrow" /></li>
-          <li>
+          <li onClick={this.Agreement}>
             <svg width="14px" height="16px" viewBox="0 0 14 16" style={{ float: 'left', marginTop: '1rem' }} version="1.1" xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/设置</title>
               <desc>Created with Sketch.</desc>

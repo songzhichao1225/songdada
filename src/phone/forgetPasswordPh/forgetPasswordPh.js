@@ -3,7 +3,7 @@ import './forgetPasswordPh.css';
 
 import { Toast, InputItem, NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { _code, VenueSelectSiteName, VenueForgetPass } from '../../api';
+import { _code, VenueForgetPass } from '../../api';
 import { Radio } from 'antd';
 import {LeftOutlined,EllipsisOutlined} from '@ant-design/icons';
 const Item = Popover.Item;
@@ -23,23 +23,6 @@ class forgetPasswordPh extends React.Component {
   componentDidMount() {
 
   }
-  async VenueSelectSiteName(data) {
-    const res = await VenueSelectSiteName(data)
-    if (res.data.code === 2000) {
-      this.setState({ selectVeun: res.data.data, value: res.data.data[0].venueloginuuid })
-      let num = 60
-      const timer = setInterval(() => {
-        this.setState({ textT: num-- })
-        if (num === -1) {
-          clearInterval(timer)
-          this.setState({ textT: '获取验证码' })
-        }
-      }, 1000)
-      this.nacode({ "mobile": this.state.phone, "type": 'venueforgetpass' })
-    } else {
-      Toast.fail(res.data.msg, 1)
-    }
-  }
 
 
 
@@ -58,7 +41,15 @@ class forgetPasswordPh extends React.Component {
   }
   naCode = () => {
     if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
-      this.VenueSelectSiteName({ phone: this.state.phone })
+      let num = 60
+      const timer = setInterval(() => {
+        this.setState({ textT: num-- })
+        if (num === -1) {
+          clearInterval(timer)
+          this.setState({ textT: '获取验证码' })
+        }
+      }, 1000)
+      this.nacode({ "mobile": this.state.phone, "type": 'venueforgetpass' })
     } else {
       Toast.fail('请输入手机号', 1)
     }
@@ -147,7 +138,7 @@ class forgetPasswordPh extends React.Component {
 
             <InputItem
               type='phone'
-              placeholder="法人手机号"
+              placeholder="操作员手机号"
               clear={true}
               style={{ fontSize: '0.8rem' }}
               onChange={this.phoneChange}

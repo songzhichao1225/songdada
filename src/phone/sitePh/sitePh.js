@@ -621,7 +621,8 @@ class sitePh extends React.Component {
     } else if (pickerValueFour.length === 0) {
       Toast.fail('请选择最长提前预定时间', 1);
     } if (pickerValueFive.length === 0) {
-      Toast.fail('请选择最短提前预定时间', 1);
+      Toast.fail('请选择最短提前预定时间', 1)
+      
     } else {
       let obj = {
         uuid: jiageUUid,
@@ -640,8 +641,7 @@ class sitePh extends React.Component {
         comment: comment,
         tags_id: tagId
       }
-      console.log(obj)
-      // this.AddSiteSetting(obj)
+      this.AddSiteSetting(obj)
 
     }
 

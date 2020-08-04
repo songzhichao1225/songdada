@@ -128,7 +128,7 @@ class systemSettings extends React.Component {
 
 
   agreement = () => {
-    this.setState({ flag: !this.state.flag })
+    this.props.history.push('/Agreement')
   }
   reset = () => {
     this.setState({ text: '>重置密码', flagList: false, flagListOne: false })
@@ -452,7 +452,6 @@ class systemSettings extends React.Component {
           <ul className="ul">
             <li>
               <span onClick={this.agreement}>用户协议</span>
-              <span className={this.state.flag === true ? 'block' : 'none'}>挑战约球的创始团队来自阿里巴巴、GOOGLE、舒适堡、格力，及全球连锁酒店顶级管理人士。一群狂热的健身&互联网信徒，乐刻运动是一个充满极客精神以追求极致的态度为都市年轻人提供健身服务的创业公司。致力于成为混乱的国内健身行业的颠覆者。</span>
             </li>
             <li onClick={this.showDrawer}>关于我们</li>
             <li>客服电话 （010-80895077</li>

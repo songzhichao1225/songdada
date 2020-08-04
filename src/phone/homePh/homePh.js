@@ -3,7 +3,7 @@ import './homePh.css';
 import 'antd/dist/antd.css';
 import ReactDOM from 'react-dom';
 import { Route, Link } from 'react-router-dom';
-import { gerVenueName, getVenueIndex,getIsSignOut } from '../../api';
+import { gerVenueName, getVenueIndex,getIsSignOut,getIsStatus } from '../../api';
 
 import { NavBar, Popover, PullToRefresh,Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
@@ -73,6 +73,24 @@ class homePh extends React.Component {
       sessionStorage.setItem('score', res.data.data.score)
     }
   }
+
+
+  async getIsStatus(data) {
+    const res = await getIsStatus(data, localStorage.getItem('venue_token'))
+    if(res.data.code===2000){
+     
+        if (res.data.data.issite ===0) {
+          this.props.history.push('/stadiumInformationPh')
+        } else if (res.data.data.isqult === 0) {
+          this.props.history.push('/qualificationPh')
+        } else if (res.data.data.islegal === 0|| res.data.data.islegal=== 2) {
+          this.props.history.push('/resultsAuditsPh')
+        }
+      
+    }
+  }
+
+
   async gerVenueName(data) {
     const res = await gerVenueName(data, localStorage.getItem('venue_token'))
   
@@ -124,22 +142,17 @@ class homePh extends React.Component {
 
 
   componentDidMount() {
-     
-
     sessionStorage.setItem('kood', 1)
     this.getVenueIndex()
     this.gerVenueName()
-    if (localStorage.getItem('venue_token')) {
-      if (localStorage.getItem('issite') === '0') {
-        this.props.history.push('/stadiumInformationPh')
-      } else if (localStorage.getItem('isqult') === '0') {
-        this.props.history.push('/qualificationPh')
-      } else if (localStorage.getItem('islegal') === '0' || localStorage.getItem('islegal') === '2') {
-        this.props.history.push('/resultsAuditsPh')
-      }
-    }
+    this.getIsStatus()
   
-   
+  
+    if(this.props.history.location.pathname.split('/')[1]!=='homePh'){
+      clearInterval(timer)
+    }else{
+      this.getIsSignOut()
+    }
      
     var timer=setInterval(() => {
       if(this.props.history.location.pathname.split('/')[1]!=='homePh'){
@@ -148,7 +161,7 @@ class homePh extends React.Component {
         this.getIsSignOut()
       }
       
-     }, 5000);
+     }, 1500);
      
 
      

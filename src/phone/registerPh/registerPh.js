@@ -3,7 +3,6 @@ import './registerPh.css';
 
 import { Toast, InputItem, Modal, Button, NavBar, Popover,Checkbox } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import {  } from 'antd';
 import {EllipsisOutlined,LeftOutlined} from '@ant-design/icons';
 import { _register, _code, getPromoteName, getIsUserName } from '../../api';
 const Item = Popover.Item;
@@ -46,16 +45,42 @@ class registerPh extends React.Component {
     }
   }
 
+  changeNameKo=e=>{
+    if (e.indexOf('①') !== -1) {
+      this.setState({ name: e.slice(0, e.length - 1) })
+    } else if (e.indexOf('②') !== -1) {
+      this.setState({ name: e.slice(0, e.length - 1) })
+    } else if (e.indexOf('③') !== -1) {
+      this.setState({ name: e.slice(0, e.length - 1) })
+    } else if (e.indexOf('④') !== -1) {
+      this.setState({ name: e.slice(0, e.length - 1) })
+    } else if (e.indexOf('⑤') !== -1) {
+      this.setState({ name: e.slice(0, e.length - 1) })
+    } else if (e.indexOf('⑥') !== -1) {
+      this.setState({ name: e.slice(0, e.length - 1) })
+    } else if (e.indexOf('⑦') !== -1) {
+      this.setState({ name: e.slice(0, e.length - 1) })
+    } else if (e.indexOf('⑧') !== -1) {
+      this.setState({ name: e.slice(0, e.length - 1) })
+    } else if (e.indexOf('⑨') !== -1) {
+      this.setState({ name: e.slice(0, e.length - 1) })
+    }else{
+      this.setState({name:e})
+    }
+  }
 
   changeName = (e) => {
     this.setState({ qipao: false })
     if(e!==''){
       if (/[\u4E00-\u9FA5]/g.test(e)) {
         Toast.fail('用户名只能包含数字、字母、数字+字母', 2);
+        this.setState({ name: '' })
       }else if( /[^a-zA-Z0-9]/g.test(e)){
         Toast.fail('用户名只能包含数字、字母、数字+字母', 2);
+        this.setState({ name:'' })
       }else if(e.length<4){
         Toast.fail('用户名至少输入4位', 2);
+        this.setState({ name: '' })
       }else{this.getIsUserName({ name: e })}
     }else{
       Toast.fail('请输入用户名', 2);
@@ -181,7 +206,9 @@ eyes=()=>{
 eyesTwo=()=>{
   this.setState({eyesTwo:!this.state.eyesTwo})
 }
-
+Agreement=()=>{
+  this.props.history.push('/Agreement')
+}
 
   render() {
     return (
@@ -238,6 +265,8 @@ eyesTwo=()=>{
               placeholder="用户名只能包含数字、字母、数字+字母"
               clear={false}
               style={{ fontSize: '0.8rem' }}
+              value={this.state.name}
+              onChange={this.changeNameKo}
               onBlur={this.changeName}
               maxLength={15}
             >
@@ -304,7 +333,7 @@ eyesTwo=()=>{
             <span style={{display:'block',width:'15%',float:'right',marginTop:'0.7rem'}} onClick={this.eyesTwo}><img src={require('../../assets/eyes.png')} style={this.state.eyesTwo===true?{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}:{display:'none'}} alt="eyes"/> <img src={require('../../assets/eyesTwo.png')} style={this.state.eyesTwo===true?{display:'none'}:{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}} alt="eyes"/></span>
           </div>
           <div className="input line">
-            <Checkbox onChange={this.changeRadio}><span style={{ fontSize: '0.9rem',paddingLeft:'1rem', }}>已阅读并同意</span></Checkbox><span style={{ color: '#D85D27', paddingLeft: '0.5rem', fontSize: '0.9rem' }}>《用户协议》</span>
+            <Checkbox onChange={this.changeRadio}><span style={{ fontSize: '0.9rem',paddingLeft:'1rem', }}>已阅读并同意</span></Checkbox><span onClick={this.Agreement} style={{ color: '#D85D27', paddingLeft: '0.5rem', fontSize: '0.9rem' }}>《场馆入驻协议》</span>
           </div>
           <div className="input line">
             <Button

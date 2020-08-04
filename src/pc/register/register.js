@@ -8,7 +8,7 @@ import {
   message,
   Input,
   Button,
-  Radio,
+  Checkbox,
   Modal,
   Popconfirm
 } from 'antd';
@@ -41,7 +41,7 @@ class register extends React.Component {
     cahngkoopd: '',
     chaphong: '',
     ko:false,
-    koTwo:false
+    koTwo:false,
   };
 
   changID = (e) => {
@@ -66,19 +66,22 @@ class register extends React.Component {
    if(e.target.value.length<4){
     this.setState({ kodTwo: '用户名至少输入4位',name:'' })
    }else if (/[\u4E00-\u9FA5]/g.test(e.target.value)) {
-      this.setState({ kodTwo: '用户名只能包含数字、字母、数字+字母' })
+      this.setState({ kodTwo: '用户名只能包含数字、字母、数字+字母',name:'' })
     }else if( /[^a-zA-Z0-9]/g.test(e.target.value)){
-      this.setState({ kodTwo: '用户名只能包含数字、字母、数字+字母' })
-    } else if (this.state.cahngkoopd !== '') {
+      this.setState({ kodTwo: '用户名只能包含数字、字母、数字+字母',name:'' })
+    } else if (this.state.name !== '') {
       this.getIsUserName({ name: e.target.value })
-      this.setState({ name: e, kodTwo: '' })
+      this.setState({ name: e.target.value, kodTwo: '' })
     }
   }
   changePhone = (e) => {
     if ((/^1[3|4|5|8][0-9]\d{4,8}$/.test(e.target.value)) !== false && e.target.value.length === 11) {
       this.setState({ visiblePhone: false, phone: e.target.value, kodThree: '' })
-    } else if (this.state.chaphong !== '') {
+    } else if (this.state.phone !== '') {
       this.setState({ kodThree: '请输入正确手机号' })
+      this.setState({ visiblePhone: true })
+    }else if(this.state.phone===''){
+      this.setState({ kodThree: '请输入手机号' })
       this.setState({ visiblePhone: true })
     }
   }
@@ -106,6 +109,7 @@ class register extends React.Component {
       sessionStorage.setItem('uuid', res.data.data.venueloginuuid);
       sessionStorage.setItem('venue_token', res.data.data.token);
       sessionStorage.setItem('name', res.data.data.name);
+      sessionStorage.removeItem('register')
     } else {
       message.error(res.data.msg)
     }
@@ -185,20 +189,43 @@ class register extends React.Component {
     }
   }
   visiblePhone = e => {
-    this.setState({ chaphong: e.target.value })
-    if ((/^1[3|4|5|8][0-9]\d{4,8}$/.test(e.target.value)) !== false && e.target.value.length === 11) {
-      this.setState({ phone: e.target.value, kodThree: '' })
-    } else if(e.target.value===''){
-      this.setState({ phone: e.target.value, kodThree: '' })
-    }else if (this.state.chaphong === '') {
-      this.setState({ kodThree: '' })
+    if(e.target.value===''){
+      this.setState({ phone:'',visiblePhone:false })
+
     }
+    this.setState({ phone: e.target.value })
+ 
   }
   cahngkoopd = e => {
-    this.setState({ cahngkoopd: e.target.value })
-    if (e.target.value === '') {
-      this.setState({ kodTwo: '' })
+    if (e.target.value.indexOf('①') !== -1) {
+      this.setState({ name: e.target.value.slice(0, e.target.value.length - 1) })
+    } else if (e.target.value.indexOf('②') !== -1) {
+      this.setState({ name: e.target.value.slice(0, e.target.value.length - 1) })
+    } else if (e.target.value.indexOf('③') !== -1) {
+      this.setState({ name: e.target.value.slice(0, e.target.value.length - 1) })
+    } else if (e.target.value.indexOf('④') !== -1) {
+      this.setState({ name: e.target.value.slice(0, e.target.value.length - 1) })
+    } else if (e.target.value.indexOf('⑤') !== -1) {
+      this.setState({ name: e.target.value.slice(0, e.target.value.length - 1) })
+    } else if (e.target.value.indexOf('⑥') !== -1) {
+      this.setState({ name: e.target.value.slice(0, e.target.value.length - 1) })
+    } else if (e.target.value.indexOf('⑦') !== -1) {
+      this.setState({ name: e.target.value.slice(0, e.target.value.length - 1) })
+    } else if (e.target.value.indexOf('⑧') !== -1) {
+      this.setState({ name: e.target.value.slice(0, e.target.value.length - 1) })
+    } else if (e.target.value.indexOf('⑨') !== -1) {
+      this.setState({ name: e.target.value.slice(0, e.target.value.length - 1) })
+    } else {
+      this.setState({ name: e.target.value })
+      if (e.target.value === '') {
+        this.setState({ kodTwo: '' })
+      }
     }
+
+
+
+
+    
   }
   onfoucs=()=>{
     this.setState({ko:true})
@@ -207,6 +234,22 @@ class register extends React.Component {
     this.setState({koTwo:true})
   }
   componentDidMount(){
+    if(sessionStorage.getItem('register')!==null){
+      let h=JSON.parse(sessionStorage.getItem('register'))
+      this.setState({
+        Id:h.Id,
+        name:h.name,
+        phone:h.phone,
+        code:h.code,
+        password:h.password,
+        passwordT:h.passwordT,
+        changeRadio:h.changeRadio,
+        idName:h.idName
+      })
+    }
+    
+    
+    
     this.setState({BlurOne:'text',BlurOneTwo:'text'})
   }
   
@@ -254,6 +297,26 @@ class register extends React.Component {
   paste=()=>{
     return false
   }
+  Agreement=()=>{
+    this.getPromoteName({ promotid: this.state.Id })
+    setTimeout(()=>{
+      let {Id,name,phone,code,password,passwordT,changeRadio,idName}=this.state
+      let data={
+        Id:Id,
+        name:name,
+        phone:phone,
+        code:code,
+        password:password,
+        passwordT:passwordT,
+        changeRadio:changeRadio,
+        idName:idName
+      }
+      let h=JSON.stringify(data)
+      sessionStorage.setItem('register',h)
+      this.props.history.push('/Agreement')
+    },1000)
+    
+  }
 
   render() {
     return (
@@ -281,45 +344,45 @@ class register extends React.Component {
 
               <div className="son">
                 <span className="xing">*</span> <span>用</span><span style={{paddingLeft:'6px'}}>户</span><span style={{paddingLeft:'6px'}}>名:</span>
-                <Input type="text" onBlur={this.changeName} onChange={this.cahngkoopd} maxLength={15} placeholder="用户名只能包含数字、字母、数字+字母" className="phone" />
+                <Input type="text" onBlur={this.changeName} onChange={this.cahngkoopd} maxLength={15} value={this.state.name} placeholder="用户名只能包含数字、字母、数字+字母" className="phone" />
                 <span className="rightWaning" style={this.state.kodTwo !== '' ? {} : { display: 'none' }}><CloseCircleOutlined />{this.state.kodTwo}</span>
               </div>
 
               <div className="son">
                 <span className="xing">*</span> <span>手</span><span style={{paddingLeft:'6px'}}>机</span><span style={{paddingLeft:'6px'}}>号:</span>
-                <Input maxLength={11} onBlur={this.changePhone} onChange={this.visiblePhone} placeholder="操作员手机号" className="phone" />
+                <Input maxLength={11} onBlur={this.changePhone} onChange={this.visiblePhone} value={this.state.phone} placeholder="操作员手机号" className="phone" />
                 <span className="rightWaning" style={this.state.kodThree !== '' ? {} : { display: 'none' }}><CloseCircleOutlined />{this.state.kodThree}</span>
               </div>
 
               <div className="son">
                 <span className="xing">*</span> <span>验</span><span style={{paddingLeft:'6px'}}>证</span><span style={{paddingLeft:'6px'}}>码:</span>
                 <Button className="huoBtn" onClick={this.state.textT==='获取验证码'?this.naCode:''}>{this.state.textT}</Button>
-                <Input maxLength={6} type="text"  onFocus={this.FOne} defaultValue={this.state.code}  value={this.state.code} onChange={this.changeCode} className="phone code" />
+                <Input maxLength={6} type="text"  placeholder="请输入验证码" onFocus={this.FOne} defaultValue={this.state.code}  value={this.state.code} onChange={this.changeCode} className="phone code" />
               </div>
 
               <div className="son" style={{opacity:0,position:'absolute'}}>
               <span className="xing">*</span> <span>验</span><span style={{paddingLeft:'6px'}}>证</span><span style={{paddingLeft:'6px'}}>码:</span>
-                <Input maxLength={6} type="text" className="phone code" />
+                <Input maxLength={6} type="text"  className="phone code" />
               </div>
 
               <div className="son" style={{opacity:0,position:'absolute'}}>
               <span className="xing">*</span> <span>验</span><span style={{paddingLeft:'6px'}}>证</span><span style={{paddingLeft:'6px'}}>码:</span>
-                <Input maxLength={6} type="password" className="phone code" />
+                <Input maxLength={6} type="password"  className="phone code" />
               </div>
              
 
               
               <div className="son">
                 <span className="xing" style={{marginLeft:"2px"}}>*</span> <span>密</span><span style={{paddingLeft:'25px'}}>码:</span>
-                <Input.Password  maxLength={15} onChange={this.changePassword}  className="phone" />
+                <Input.Password  maxLength={15} onChange={this.changePassword} value={this.state.password} placeholder="请输入密码"  className="phone" />
               </div>
 
               <div className="son" >
                 <span className="xing">*</span> <span>确认密码:</span>
-                <Input.Password maxLength={15} style={{height:'41px'}}  onChange={this.changePasswordT}   className="phone" />
+                <Input.Password maxLength={15} style={{height:'41px'}} placeholder="请确认密码" value={this.state.passwordT} onChange={this.changePasswordT}   className="phone" />
               </div>
 
-              <div className="agreement"><Radio onChange={this.changeRadio} checked={this.state.changeRadio}></Radio><span>我已阅读并同意</span><span className="color">《用户协议》</span></div>
+              <div className="agreement"><Checkbox onChange={this.changeRadio} checked={this.state.changeRadio}></Checkbox><span>我已阅读并同意</span><span className="color" onClick={this.Agreement}>《场馆入驻协议》</span></div>
 
               <Popconfirm
                 title={this.state.idName === "" ? '没有推广员？' : "推广员姓名：" + this.state.idName && this.state.idName === '推广员不存在' ? '推广员不存在' : "推广员姓名：" + this.state.idName}

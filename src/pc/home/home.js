@@ -100,6 +100,16 @@ class home extends React.Component {
     }
     jo()
 
+    if (sessionStorage.getItem('islegal') === '0'||sessionStorage.getItem('islegal') === '2') {
+      this.props.history.push('/statusAudits')
+    }
+    if(sessionStorage.getItem('issite') === '0'){
+      this.props.history.push('/perfect')
+    }
+     if(sessionStorage.getItem('isqult') === '0'){
+       console.log(666)
+      this.props.history.push('/qualification')
+    }
 
 
 
@@ -134,10 +144,7 @@ class home extends React.Component {
       sessionStorage.setItem('path', '8');
     }
 
-    if (sessionStorage.getItem('islegal') === 0) {
-      this.props.history.push('/')
-      message.error('未通过审核!')
-    }
+  
   }
 
   lppd = () => {
@@ -368,10 +375,7 @@ class home extends React.Component {
               </Link>
             </Menu.Item>
           </Menu>
-          <div className="footerC">
-            <div>Copyright ©2020</div>
-            <div>北京甲乙电子商务有限公司</div>
-          </div>
+         
         </Sider>
         <Layout>
           <Header className="headerTor">

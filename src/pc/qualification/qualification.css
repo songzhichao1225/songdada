@@ -1,4 +1,6 @@
-
+.qualification{
+	height: 100%;
+}
 .qualification .header{
 	width: 100%;
 	height: 80px;
@@ -31,7 +33,8 @@
 	-moz-box-shadow:0 2px 2px  2px #DDDDDD; 
 	-webkit-box-shadow:0 2px 2px  2px #DDDDDD;
 	box-shadow:0 2px 2px  2px #DDDDDD;
-	overflow: hidden;
+	height: 85%;
+	overflow-y: auto;
 }
 .qualification .nav{
 	width: 95%;

@@ -14,11 +14,12 @@ class loginPhTeo extends React.Component {
     phone: '',
     password: '',
     eyes:false,
+    flagGH:false,
   };
 
   componentDidMount() {
     
-    
+    this.setState({phone:localStorage.getItem('nickName')})
                 
   }
   corporatePh = () => {
@@ -70,6 +71,7 @@ class loginPhTeo extends React.Component {
       localStorage.setItem('ismethod', res.data.data.ismethod);
       localStorage.setItem('phone', res.data.data.phone);
       localStorage.setItem('legalphone', res.data.data.legalphone);
+      localStorage.setItem('nickName',data.username)
       setTimeout(() => {
         if (res.data.data.venue_token) {
           if (res.data.data.issite === 0) {
@@ -132,6 +134,9 @@ eyes=()=>{
     eyes:!this.state.eyes
   })
 }
+passFocus=(e)=>{
+   console.log(e)
+}
   render() {
     return (
       <div className="loginPhTeo">
@@ -180,6 +185,7 @@ eyes=()=>{
             >
             </InputItem>
           </div>
+          
           <div className="name" style={{opacity:'0',position:'absolute',zIndex:-9}}>
             <InputItem type='text'></InputItem>
           </div>
@@ -187,6 +193,7 @@ eyes=()=>{
           <div className="name" style={{opacity:'0',position:'absolute',zIndex:-9}}>
             <InputItem type='password'></InputItem>
           </div>
+         
 
 
           <div className="name">
@@ -197,12 +204,14 @@ eyes=()=>{
               style={{ fontSize: '0.88rem' }}
               onChange={this.pssword}  
               maxLength={15}
-              className="phone"  
+              className="phone"
+              autoComplete="new-password"
             >
             </InputItem>
             <span style={{display:'block',width:'15%'}} onClick={this.eyes}><img src={require('../../assets/eyes.png')} style={this.state.eyes===true?{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}:{display:'none'}} alt="eyes"/> <img src={require('../../assets/eyesTwo.png')} style={this.state.eyes===true?{display:'none'}:{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}} alt="eyes"/></span>
             <span onClick={this.forgetPassword}>忘记密码</span>
           </div>
+          
           <div className="loginBtn" onClick={this.submit}>登录</div>
           <div className="footer" style={{ marginTop: '1rem' }}>  
             <span onClick={this.corporatePh}>法人手机号登录</span>

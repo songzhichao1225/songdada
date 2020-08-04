@@ -113,7 +113,7 @@ class forgetPassword extends React.Component {
                 <Form.Item>
                 <div className="son">
                   <span style={{float:'left'}}>验证码</span>
-                  <Input onChange={this.code} style={{float:'left',width:'176px',marginLeft:'50px'}} maxLength={6} className="phone code" />
+                  <Input onChange={this.code} style={{float:'left',width:'176px',marginLeft:'50px'}} placeholder="请输入验证码" maxLength={6} className="phone code" />
                   <div className={this.state.textT === '获取验证码' ? 'huoBtn' : 'koohidden'} onClick={this.naCode} >
                     {this.state.textT}
                   </div>
@@ -123,7 +123,7 @@ class forgetPassword extends React.Component {
                 </div>
                 <div className="son" style={{opacity:0,position:'absolute'}}>
                   <span>验证码</span>
-                  <Input onChange={this.code} maxLength={6} className="phone code" />
+                  <Input onChange={this.code}  maxLength={6} className="phone code" />
                 </div>
                 </Form.Item>
                 <Form.Item>
@@ -133,14 +133,14 @@ class forgetPassword extends React.Component {
                 </div>
                 <div className="son">
                   <span style={{float:'left',lineHeight:'60px'}}>新密码</span>
-                  <Input.Password onChange={this.pass} maxLength={8} className="phone code" />
+                  <Input.Password onChange={this.pass} maxLength={8} placeholder="请输入新密码" className="phone code" />
                 </div>
                 
                 </Form.Item>
                 <Form.Item>
                 <div className="son">
                   <span style={{float:'left',lineHeight:'60px'}}>确认密码</span>
-                  <Input.Password onChange={this.passTwo} maxLength={8} className="phone confirm" />
+                  <Input.Password onChange={this.passTwo} maxLength={8} placeholder="请确认密码" className="phone confirm" />
                 </div>
                 </Form.Item>
               <Form.Item>

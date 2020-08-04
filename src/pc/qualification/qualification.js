@@ -157,15 +157,14 @@ class qualification extends React.Component {
         }
         sessionStorage.setItem('qualifData', JSON.stringify(data))
         let lpk = JSON.parse(sessionStorage.getItem('qualifData'))
-        
         this.setState({
           imageUrl: lpk.lisenceURL, handleName: lpk.legalname, handleCardId: lpk.legalcard, imageRes: lpk.lisenceURL,
           handlePhone: lpk.legalphone, Radiovalue: lpk.Settlement, handleBankNum: lpk.Bankaccount, openingLine: lpk.OpeningBank,
           legalBaseURL: lpk.legalBaseURL,
-          imageResT: lpk.legalBaseURL === '' ? '' : lpk.legalFilesURL.split('|')[0],
-          imageReST: lpk.legalBaseURL === '' ? '' : lpk.legalFilesURL.split('|')[1], CorporateName: lpk.CorporateName,
+          imageResT: lpk.legalBaseURL === ''|| lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[0],
+          imageReST: lpk.legalBaseURL === ''||lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[1], CorporateName: lpk.CorporateName,
           bank_id: lpk.Banktype, province_id: lpk.ProvinceBank, city_id: lpk.CityBank,
-          flagDis:lpk.flagDis!==null?lpk.flagDis:false
+          flagDis:lpk.flagDis!==undefined?lpk.flagDis:false
         })
       }else{
         let lpk = JSON.parse(sessionStorage.getItem('qualifData'))
@@ -176,8 +175,8 @@ class qualification extends React.Component {
           imageUrl: lpk.lisenceURL, handleName: lpk.legalname, handleCardId: lpk.legalcard, imageRes: lpk.lisenceURL,
           handlePhone: lpk.legalphone, Radiovalue: lpk.Settlement, handleBankNum: lpk.Bankaccount, openingLine: lpk.OpeningBank,
           legalBaseURL: lpk.legalBaseURL,
-          imageResT: lpk.legalBaseURL === '' ? '' : lpk.legalFilesURL.split('|')[0],
-          imageReST: lpk.legalBaseURL === '' ? '' : lpk.legalFilesURL.split('|')[1], CorporateName: lpk.CorporateName,
+          imageResT: lpk.legalBaseURL === ''||lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[0],
+          imageReST: lpk.legalBaseURL === ''||lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[1], CorporateName: lpk.CorporateName,
           bank_id: lpk.Banktype, province_id: lpk.ProvinceBank, city_id: lpk.CityBank,
           flagDis:lpk.flagDis
         })
@@ -245,8 +244,12 @@ class qualification extends React.Component {
   }
 
   CorporateName = e => {
+     if(this.state.flagDis===true&&e.target.value===''){
+       sessionStorage.removeItem('qualifData')
+      this.getVenueQualificationInformation()
+     }
     this.setState({ CorporateName: e.target.value })
-
+    
   }
 
 
@@ -343,6 +346,9 @@ class qualification extends React.Component {
     const res = await VenueQualifications(data)
     if (res.data.code !== 2000) {
       message.error(res.data.msg)
+    }else if(res.data.code===4001){
+      this.props.history.push('/')
+      sessionStorage.clear()
     } else {
       this.props.history.push('/statusAudits')
     }
@@ -355,6 +361,9 @@ class qualification extends React.Component {
     const res = await VenueQualificationInformationSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code !== 2000) {
       message.error(res.data.msg)
+    }else if(res.data.code===4001){
+      this.props.history.push('/')
+      sessionStorage.clear()
     } else {
       this.props.history.push('/statusAudits')
     }
@@ -369,7 +378,7 @@ class qualification extends React.Component {
         siteUUID: siteUUID,
         lisenceURL: imageRes,
         legalname: handleName,
-        legalcard: handleCardId,
+        legalcard: Radiovalue === 0 ? '' : handleCardId,
         legalphone: handlePhone,
         legalBaseURL: Radiovalue === 0 ? '' : legalBaseURL,
         legalFilesURL: Radiovalue === 0 ? '' : imageResT + '|' + imageReST,
@@ -394,7 +403,7 @@ class qualification extends React.Component {
       let data = {
         lisenceURL: imageRes,
         legalname: handleName,
-        legalcard: handleCardId,
+        legalcard:  Radiovalue === 0 ? '' :handleCardId,
         legalphone: handlePhone,
         legalBaseURL: Radiovalue === 0 ? '' : legalBaseURL,
         legalFilesURL: Radiovalue === 0 ? '' : imageResT + '|' + imageReST,
@@ -431,7 +440,7 @@ class qualification extends React.Component {
       siteUUID: siteUUID,
       lisenceURL: imageRes,
       legalname: handleName,
-      legalcard: handleCardId,
+      legalcard:Radiovalue === 0 ? '' : handleCardId,
       legalphone: handlePhone,
       legalBaseURL: Radiovalue === 0 ? '' : legalBaseURL,
       legalFilesURL: Radiovalue === 0 ? '' : imageResT + '|' + imageReST,
@@ -463,10 +472,10 @@ class qualification extends React.Component {
       siteUUID: siteUUID,
       lisenceURL: imageRes,
       legalname: handleName,
-      legalcard: handleCardId,
+      legalcard: Radiovalue === 0 ? '' :handleCardId,
       legalphone: handlePhone,
-      legalBaseURL: legalBaseURL,
-      legalFilesURL: imageResT + '|' + imageReST,
+      legalBaseURL: Radiovalue === 0 ? '' : legalBaseURL,
+      legalFilesURL: Radiovalue === 0 ? '' : imageResT + '|' + imageReST,
       Settlement: Radiovalue,
       Bankaccount: handleBankNum,
       OpeningBank: openingLine,
@@ -540,8 +549,8 @@ class qualification extends React.Component {
       this.setState({
         imageUrl: res.data.data.lisenceURL, handleName: res.data.data.legalname, handleCardId: res.data.data.legalcard, imageRes: res.data.data.lisenceURL,
         handlePhone: res.data.data.legalphone, Radiovalue: res.data.data.Settlement, handleBankNum: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, legalBaseURL: res.data.data.legalBaseURL,
-        imageResT: res.data.data.legalBaseURL === '' ? '' : res.data.data.legalFilesURL.split('|')[0],
-        imageReST: res.data.data.legalBaseURL === '' ? '' : res.data.data.legalFilesURL.split('|')[1], CorporateName: res.data.data.CorporateName,
+        imageResT: res.data.data.legalBaseURL === ''|| res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[0],
+        imageReST: res.data.data.legalBaseURL === ''||res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[1], CorporateName: res.data.data.CorporateName,
         bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
         flagDis: true, visible: false
       })
@@ -561,23 +570,23 @@ class qualification extends React.Component {
   render() {
     const uploadButton = (
       <div>
-        <div className="ant-upload-text">营业执照</div>
-      </div>
+      <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
+ </div>
     )
     const { imageRes } = this.state;
 
     const uploadButtonT = (
       <div>
-        <div className="ant-upload-text">( 正面 )</div>
+           <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
       </div>
     );
     const { imageResT } = this.state;
 
     const uploadButtonS = (
       <div>
-        <div className="ant-upload-text">( 反面 )</div>
-      </div>
-    );
+      <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
+ </div>
+    )
     const { imageReST } = this.state;
 
     return (
@@ -587,6 +596,8 @@ class qualification extends React.Component {
             <img className="logo" src={require("../../assets/tiaozhanicon.png")} style={{ width: 53, height: 53, marginLeft: 45, marginTop: 13.5 }} alt="6666" />
             <span className="title">北京甲乙电子商务有限公司</span>
           </div>
+           
+        </div>
           <div className="content">
             <div className="nav">
               <div><span>1.填写注册信息</span><img src={require("../../assets/oneline.png")} alt="5" /></div>
@@ -617,6 +628,7 @@ class qualification extends React.Component {
                   beforeUpload={beforeUpload}
                   onChange={this.handleChange}
                   disabled={this.state.flagDis}
+                  accept=".jpg, .jpeg, .png"
                 >
                   {imageRes !== 1 && imageRes !== '' ? <img onClick={this.state.flagDis===true?this.srcScale:this.lpsdgfj} src={'https://app.tiaozhanmeiyitian.com/' + imageRes} alt="avatar" style={{ maxWidth: '4.5rem', maxHeight: '4.5rem' }} /> : uploadButton}
                 </Upload>
@@ -629,12 +641,7 @@ class qualification extends React.Component {
                 </div>
                 <Input className="nameINput" disabled={this.state.flagDis} onChange={this.handleName} value={this.state.handleName} placeholder="请输入法人姓名" />
               </div>
-              <div className="name">
-                <div className="nameSonTle">
-                  <span className="boTitle">法人身份证号</span><span className="symbol">*</span>
-                </div>
-                <Input className="nameINput cardId" disabled={this.state.flagDis} maxLength={18} value={this.state.handleCardId} onChange={this.handleCardId} placeholder="请输入法人身份证号" />
-              </div>
+             
 
               <div className="name">
                 <div className="nameSonTle">
@@ -657,6 +664,13 @@ class qualification extends React.Component {
 
               <div className="name" style={this.state.Radiovalue === 1 ? {} : { display: 'none' }}>
                 <div className="nameSonTle">
+                  <span className="boTitle">法人身份证号</span>
+                </div>
+                <Input className="nameINput cardId" disabled={this.state.flagDis} maxLength={18} value={this.state.handleCardId} onChange={this.handleCardId} placeholder="请输入法人身份证号" />
+              </div>
+
+              <div className="name" style={this.state.Radiovalue === 1 ? {} : { display: 'none' }}>
+                <div className="nameSonTle">
                   <span className="boTitle">法人身份证照</span>
                 </div>
                 <Upload
@@ -664,10 +678,11 @@ class qualification extends React.Component {
                   listType="picture-card"
                   className="avatar-uploader addImg addimgT"
                   showUploadList={false}
-                  action="/api/UploadVenueImgs?type=Venuelisence"
+                  action="/api/UploadVenueImgs?type=VenueIdCardImgs"
                   beforeUpload={beforeUploadT}
                   onChange={this.handleChangeT}
                   disabled={this.state.flagDis}
+                  accept=".jpg, .jpeg, .png"
                 >
                   {imageResT !== 1 && imageResT !== '' ? <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.legalBaseURL + imageResT} alt="avatar" style={{ maxWidth: '4.5rem', maxHeight: '4.5rem' }} /> : uploadButtonT}
                 </Upload>
@@ -677,10 +692,11 @@ class qualification extends React.Component {
                   listType="picture-card"
                   className="avatar-uploader addImg addimgT"
                   showUploadList={false}
-                  action="/api/UploadVenueImgs?type=Venuelisence"
+                  action="/api/UploadVenueImgs?type=VenueIdCardImgs"
                   beforeUpload={beforeUploadTS}
                   onChange={this.handleChangeTS}
                   disabled={this.state.flagDis}
+                  accept=".jpg, .jpeg, .png"
                 >
                   {imageReST !== 1 && imageReST !== '' ? <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.legalBaseURL + imageReST} alt="avatar" style={{ maxWidth: '4.5rem', maxHeight: '4.5rem' }} /> : uploadButtonS}
                 </Upload>
@@ -760,7 +776,6 @@ class qualification extends React.Component {
               <Button className="next" onClick={this.stepBack}>上一步</Button><Button className="next" style={this.state.flagDis === true ? { display: 'none' } : { marginLeft: 20 }} onClick={this.save}>保存</Button><Button className="next" style={{ marginLeft: 20 }} onClick={this.submit}>提交</Button>
             </div>
           </div>
-        </div>
         <Modal
           title="获取该公司详细资质信息"
           visible={this.state.visible}

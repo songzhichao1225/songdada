@@ -63,7 +63,10 @@ class myWallet extends React.Component {
     backList: [],//获取的银行
     corporateCardId: '',
     imgFile:'',
-    imgFileTwo:''
+    imgFileTwo:'',
+    corporateId:'',
+    imgHood:'',
+    corporateOpen:'',
   }
 
   dateChange = (data, dateString) => {
@@ -319,8 +322,9 @@ class myWallet extends React.Component {
 
 
   ziSubmitTwo = () => {
-    let { numRadio, imgHood, imgFile, imgFileTwo, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
+    let { numRadio, imgHood, imgFile,corporateId, imgFileTwo, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
     let data = {
+      legalcard:numRadio === 0 ? '' :corporateId,
       legalBaseURL: numRadio === 0 ? '' : imgHood,
       legalFilesURL: numRadio === 0 ? '' : imgFile + '|' + imgFileTwo,
       Settlement: numRadio,
@@ -330,6 +334,7 @@ class myWallet extends React.Component {
       ProvinceBank: province_id,
       CityBank: city_id,
     }
+    
     if (numRadio && imgFile === undefined) {
       message.error('图片违规请重新上传')
     } else if (numRadio && imgFileTwo === undefined) {
@@ -338,17 +343,20 @@ class myWallet extends React.Component {
       this.VenueReceivingBankInformation(data)
     }
   }
+  corporateId=e=>{
+    this.setState({corporateId:e.target.value})
+  }
 
   render() {
     const uploadButtonTwo = (
       <div>
-        <div className="ant-upload-text">正面照</div>
+        <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
       </div>
     );
     const uploadButtonThree = (
       <div>
-        <div className="ant-upload-text">反面照</div>
-      </div>
+      <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
+    </div>
     )
     const { imageUrlTwo, imageUrlThree } = this.state;
     return (
@@ -469,6 +477,11 @@ class myWallet extends React.Component {
               <Radio value={1}>法人账号</Radio>
             </Radio.Group>
           </div>
+           
+          <div className="listing" style={this.state.numRadio===0?{display:'none'}:{}}>
+              <span>法人身份证号:</span>
+              <Input className="listingInput" value={this.state.corporateId} placeholder="请输入法人身份证号" onChange={this.corporateId} />
+            </div>
 
           <div className="listing" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
             <span>身份证照:</span>
@@ -484,7 +497,6 @@ class myWallet extends React.Component {
             >
               {imageUrlTwo ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrlTwo} alt="avatar" style={{ width: '128px', height: '70px' }} /> : uploadButtonTwo}
             </Upload>
-            <div style={{ clear: 'both' }}></div>
             <Upload
               name="files"
               listType="picture-card"

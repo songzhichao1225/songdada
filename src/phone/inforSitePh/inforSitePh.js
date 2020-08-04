@@ -498,10 +498,10 @@ class inforSitePh extends React.Component {
   }
 
   ziSubmit = () => {
-    let { zuo, imgHoodTwo, imgHood, lisenceURL, corporateName, corporateId, corporatePhone, CorporateName } = this.state
+    let { zuo, imgHoodTwo, imgHood, lisenceURL, corporateName, corporatePhone, CorporateName } = this.state
     let data = {
       legalname: corporateName,
-      legalcard: corporateId,
+      legalcard: '',
       legalphone: corporatePhone,
       Settlement: 0,
       Bankaccount: '',
@@ -555,8 +555,9 @@ class inforSitePh extends React.Component {
 
 
   ziSubmitTwo=()=>{
-    let {numRadio,baseImg,imgFile,imgFileTwo,corporateCardId,corporateOpen,bank_id,province_id,city_id}=this.state
+    let {numRadio,baseImg,imgFile,corporateId,imgFileTwo,corporateCardId,corporateOpen,bank_id,province_id,city_id}=this.state
     let data={
+      legalcard:numRadio===0?'':corporateId,
       legalBaseURL:numRadio===0?'':baseImg,
       legalFilesURL: numRadio===0?'':imgFile + '|' + imgFileTwo,
       Settlement:numRadio,
@@ -760,7 +761,7 @@ class inforSitePh extends React.Component {
               listType="picture-card"
               className="avatar-uploader ko"
               showUploadList={false}
-              action="/api/UploadVenueImgs?type=Venue"
+              action="/api/UploadVenueImgs?type=Venuelisence"
               beforeUpload={beforeUpload}
               onChange={this.handleChangeOne}
               style={{ width: '3rem', height: '4.8rem' }}
@@ -775,10 +776,7 @@ class inforSitePh extends React.Component {
             <Input className="right" value={this.state.corporateName} placeholder="请输入法人姓名" onChange={this.corporateName} />
           </div>
 
-          <div className="listSon">
-            <span>法人身份证号</span>
-            <Input className="right" style={{ width: '60%', paddingLeft: '0.5rem', marginRight: '19%' }} placeholder="请输入法人身份证号" value={this.state.corporateId} onChange={this.corporateId} />
-          </div>
+         
 
           <div className="listSon">
             <span>法人手机号</span>
@@ -809,7 +807,10 @@ class inforSitePh extends React.Component {
               <Radio value={1}>法人账号</Radio>
             </Radio.Group>
           </div>
-
+          <div className="listSon" style={this.state.numRadio===0?{display:'none'}:{}}>
+            <span>法人身份证号</span>
+            <Input className="right" style={{ width: '60%', paddingLeft: '0.5rem', marginRight: '19%' }} placeholder="请输入法人身份证号" value={this.state.corporateId} onChange={this.corporateId} />
+          </div>
           <div className="listSon" style={this.state.numRadio===0?{display:'none'}:{}}>
             <span>身份证</span>
             <Upload
@@ -817,7 +818,7 @@ class inforSitePh extends React.Component {
               listType="picture-card" 
               className="avatar-uploader ko" 
               showUploadList={false}
-              action="/api/UploadVenueImgs?type=Venue"
+              action="/api/UploadVenueImgs?type=VenueIdCardImgs"
               beforeUpload={beforeUpload}
               onChange={this.handleChangeTwo}
             >
@@ -829,7 +830,7 @@ class inforSitePh extends React.Component {
               listType="picture-card"
               className="avatar-uploader ko"
               showUploadList={false}
-              action="/api/UploadVenueImgs?type=Venue"
+              action="/api/UploadVenueImgs?type=VenueIdCardImgs"
               beforeUpload={beforeUpload}
               onChange={this.handleChangeThree}
             >

@@ -16,13 +16,22 @@ class statusAudits extends React.Component {
     const res = await getIsStatus(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/')
+      sessionStorage.clear()
       message.error('登录超时请重新登录!')
+    }else if(res.data.code===2000){
+      this.setState({ content: res.data.data.content, islegal: res.data.data.islegal })
+      sessionStorage.setItem('islegal',res.data.data.islegal)
+      sessionStorage.setItem('isqult',res.data.data.isqult)
+      sessionStorage.setItem('issite',res.data.data.issite)
     }
-    this.setState({ content: res.data.data.content, islegal: res.data.data.islegal })
+  
   }
   componentDidMount() {
     this.getIsStatus()
-
+    let that=this
+    window.addEventListener("popstate", function(e) { 
+      that.props.history.replace('/#')
+      }, false);
   }
 
   login = () => {
@@ -34,6 +43,7 @@ class statusAudits extends React.Component {
     this.props.history.replace('/perfect')
     sessionStorage.setItem('notType', 1)
   }
+
 
 
 

@@ -60,8 +60,8 @@ class orderPh extends React.Component {
       { name: '已取消', id: 7 },
     ],
     paiedArr: [
-      { name: '全部', id: 0 },
-      { name: '未到账', id: 2 },
+      { name: '全部', id: 2 },
+      { name: '未到账', id: 0 },
       { name: '已支付', id: 1 },
      
     ],
@@ -115,7 +115,7 @@ class orderPh extends React.Component {
     venueidids:[],
     lood:false,
     calesRed:0,
-    paied:0
+    paied:2
   };
 
 

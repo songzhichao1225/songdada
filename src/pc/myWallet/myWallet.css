@@ -226,7 +226,7 @@
 	margin-left: 18px;
 }
 .mode .listing>span:nth-child(3){
-	margin-left: 12px;
+	margin-left: 28px;
 	color: #F5A623;
 	cursor: pointer;
 	display: inline-block;
@@ -244,12 +244,11 @@
 }
 .mode .addImg{
     width: 132px;
-    height: 132px;
     margin-left: 26.8px;
     float: left;
 }
 .mode .ant-upload-picture-card-wrapper{
-    width: 300px;
+    float: left;
     margin-left: 26.8px;
 }
 .mode .ko{

@@ -24,6 +24,7 @@ import untiePhonePh from './phone/untiePhonePh/untiePhonePh';
 import resetPasswordPh from './phone/resetPasswordPh/resetPasswordPh';
 import inforSitePh from './phone/inforSitePh/inforSitePh';
 import appOrder from './phone/appOrder/appOrder';
+import Agreement from './phone/Agreement/Agreement';
 
 import phone from './phone/phone/phone';
 const BasicRoute = () => (
@@ -54,6 +55,7 @@ const BasicRoute = () => (
             <Route  path="/homePh" component={homePh}/>
             <Route exact path="/appOrder" component={appOrder}/>
             <Route exact path="/phone" component={phone}/>
+            <Route exact path="/Agreement" component={Agreement}/>
         </Switch>
     </HashRouter>
 );
