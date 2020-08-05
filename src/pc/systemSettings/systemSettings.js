@@ -449,12 +449,12 @@ class systemSettings extends React.Component {
             <li onClick={this.reset}>重置密码</li>
           </ul>
 
-          <ul className="ul">
+          <ul className="ul"> 
             <li>
               <span onClick={this.agreement}>用户协议</span>
             </li>
             <li onClick={this.showDrawer}>关于我们</li>
-            <li>客服电话 （010-80895077</li>
+            <li>客服电话 （010-80895077)</li>
             <li onClick={this.help}>帮助中心</li>
             <li><span style={{ marginTop: 0 }} onClick={this.feedBack}>意见反馈</span>
               <div className='feedback' style={this.state.bot === true ? { display: 'block' } : { display: 'none' }}>
@@ -489,17 +489,17 @@ class systemSettings extends React.Component {
 
             <div className="inputSon" style={{ opacity: 0, position: 'absolute' }}>
               <span>重置密码</span>
-              <Input.Password maxLength={8}  onChange={this.passWord} placeholder="请输入重置密码" />
+              <Input.Password maxLength={15}  onChange={this.passWord} placeholder="请输入重置密码" />
             </div>
 
             <div className="inputSon" >
               <span>重置密码</span>
-              <Input.Password maxLength={8}  onChange={this.passWord} placeholder="请输入重置密码" />
+              <Input.Password maxLength={15}  onChange={this.passWord} placeholder="请输入重置密码" />
             </div>
 
             <div className="inputSon">
               <span>确认密码</span>
-              <Input.Password maxLength={8}  onChange={this.passWordT} placeholder="请输入确认密码" />
+              <Input.Password maxLength={15}  onChange={this.passWordT} placeholder="请输入确认密码" />
             </div>
             <div className="submit" style={{ marginLeft: 72 }} onClick={this.submit}>确定</div>
           </div>

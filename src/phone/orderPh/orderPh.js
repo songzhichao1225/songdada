@@ -133,6 +133,7 @@ class orderPh extends React.Component {
   async getVenueReservation(data) {
     const res = await getVenueReservation(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
+      this.setState({calesRed:0})
       if (this.state.topNumList.length > 0) {
         for (let j = 0; j < this.state.topNumList.length; j++) {
           if (res.data.data[0].c[this.state.topNumList[j].venueid - 1] !== undefined) {
@@ -142,9 +143,9 @@ class orderPh extends React.Component {
         }
       }
       for (let i in res.data.data) {
-        
         for (let j in res.data.data[i].c) {
           res.data.data[i].c[j].checked = false
+       
           if (res.data.data[i].c[j].type === 4) {
             this.setState({ calesRed: 1 })
           }

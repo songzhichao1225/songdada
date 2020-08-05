@@ -115,11 +115,20 @@ class resetPasswordPh extends React.Component {
           </div>
         </div>
 
+
+        <div className="listSon" style={{position:'absolute',zIndex:'-9',opacity:'0'}}>
+          <Input maxLength={11} placeholder="请输入法人/操作员手机号"  onChange={this.phone} />
+        </div>
+
+        <div className="listSon" style={{position:'absolute',zIndex:'-9',opacity:'0'}}>
+          <Input.Password style={{border:'none',boxShadow:'none'}} maxLength={15} placeholder="请输入新密码" onChange={this.pass} />
+        </div>
+
         <div className="listSon">
-          <Input.Password style={{border:'none',boxShadow:'none'}} maxLength={8} placeholder="请输入新密码" onChange={this.pass} />
+          <Input.Password style={{border:'none',boxShadow:'none'}} maxLength={15} placeholder="请输入新密码" onChange={this.pass} />
         </div>
         <div className="listSon">
-          <Input.Password style={{border:'none',boxShadow:'none'}} maxLength={8}  placeholder="请确认密码" onChange={this.passTwo} />
+          <Input.Password style={{border:'none',boxShadow:'none'}} maxLength={15}  placeholder="请确认密码" onChange={this.passTwo} />
         </div>
         <div className='restSubmit' onClick={this.submit}>确认</div>
 

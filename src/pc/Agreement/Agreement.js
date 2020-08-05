@@ -24,7 +24,7 @@ class Agreement extends React.Component {
         <div className="content">
           <h3>场馆入驻协议</h3>
           <span className="block"><span className="weight">场馆方</span><span className="join">:提供场地方(注册方)</span></span>
-          <span className="block"><span className="weight">平台方</span><span className="join">:"找对手"平台(北京甲乙电子甲乙商务有限公司)</span></span>
+          <span className="block"><span className="weight">平台方</span><span className="join">:"找对手"平台(北京甲乙电子商务有限公司)</span></span>
           <span className="block">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>"找对手"是帮用户找到运动对手、运动伙伴的平台。大量运动需求因没有运动伙伴而无法进行；
           通过"找对手"平台，大量运动需求发布至平台，其他用户可进行精确筛选和报名。</span><span className="weight">用户找运动对手、运动伙伴的范围由原来有限的朋友熟人扩大至整个网络平台，匹配成功的概率大幅提高，大量的运动需求得到满足释放;</span><span>就像滴滴顺风车之于传统熟人拼车。</span></span>
           <span className="block"><span className="weight">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;因此，平台能为场馆带来大量的新增用户、流量。</span><span>场馆方、“找对手”平台双方基于互惠共赢，自愿遵守以下协议：</span></span>

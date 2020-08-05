@@ -56,13 +56,13 @@ class myWalletPh extends React.Component {
 
   async getReceivingBankQualifications(data) {
     const res = await getReceivingBankQualifications(data, localStorage.getItem('venue_token'))
-    if (res.data.code !== 2000) {
+    if(res.data.code===4004){
+      Toast.fail(res.data.msg, 1);
+    }if (res.data.code !== 2000&&res.data.code!==4004) {
       this.setState({ visible: true })
     } else {
       this.props.history.push({ pathname: '/homePh/withdrawalPh', query: { money: this.state.money } })
     }
-
-
   }
 
   withdrawalPh = () => {

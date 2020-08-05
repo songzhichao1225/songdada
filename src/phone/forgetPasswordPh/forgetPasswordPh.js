@@ -198,13 +198,12 @@ class forgetPasswordPh extends React.Component {
               style={{ fontSize: '0.8rem' }}
               onChange={this.pass}
               className="phone"
-              maxLength={8}
+              maxLength={15}
             >
             </InputItem>
           </div>
 
           <div className="name">
-
             <InputItem
               type='password'
               placeholder="请确认密码"
@@ -212,11 +211,12 @@ class forgetPasswordPh extends React.Component {
               style={{ fontSize: '0.8rem' }}
               onChange={this.passTwo}
               className="phone"
-              maxLength={8}
+              maxLength={15}
             >
             </InputItem>
           </div>
           <div className="btn" onClick={this.comfir}>确定</div>
+
 
 
         </div>

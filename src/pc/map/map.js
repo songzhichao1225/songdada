@@ -32,6 +32,7 @@ class map extends React.Component {
       }
     }) 
         
+  
         
   }
 

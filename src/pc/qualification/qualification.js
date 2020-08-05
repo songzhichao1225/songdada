@@ -87,6 +87,8 @@ class qualification extends React.Component {
     if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登录超时请重新登录!')
+    }else if(res.data.data.islegal===0||res.data.data.islegal===1){
+      this.props.history.push('/')
     }
     this.setState({ siteUUID: res.data.data.siteUid, issite: res.data.data.issite, isqult: res.data.data.isqult })
   }
@@ -169,7 +171,7 @@ class qualification extends React.Component {
       }else{
         let lpk = JSON.parse(sessionStorage.getItem('qualifData'))
         if (lpk.ProvinceBank !== '') {
-          this.getVenueOpenBankCity({ province_id: res.data.data.ProvinceBank })
+          this.getVenueOpenBankCity({ province_id: lpk.ProvinceBank })
         }
         this.setState({
           imageUrl: lpk.lisenceURL, handleName: lpk.legalname, handleCardId: lpk.legalcard, imageRes: lpk.lisenceURL,
@@ -493,7 +495,6 @@ class qualification extends React.Component {
     } else {
       this.TemporaryQualificationInformation(data)
     }
-
   }
 
 

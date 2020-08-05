@@ -133,14 +133,14 @@ class forgetPassword extends React.Component {
                 </div>
                 <div className="son">
                   <span style={{float:'left',lineHeight:'60px'}}>新密码</span>
-                  <Input.Password onChange={this.pass} maxLength={8} placeholder="请输入新密码" className="phone code" />
+                  <Input.Password onChange={this.pass} maxLength={15} placeholder="请输入新密码" className="phone code" />
                 </div>
                 
                 </Form.Item>
                 <Form.Item>
                 <div className="son">
                   <span style={{float:'left',lineHeight:'60px'}}>确认密码</span>
-                  <Input.Password onChange={this.passTwo} maxLength={8} placeholder="请确认密码" className="phone confirm" />
+                  <Input.Password onChange={this.passTwo} maxLength={15} placeholder="请确认密码" className="phone confirm" />
                 </div>
                 </Form.Item>
               <Form.Item>

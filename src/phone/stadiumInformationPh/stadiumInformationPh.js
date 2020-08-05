@@ -340,7 +340,6 @@ class stadiumInformationPh extends React.Component {
           area: handleDistrictTwo,
           type: 1
         }
-
         this.VenueInformationSave(data)
       }
 
@@ -476,7 +475,7 @@ class stadiumInformationPh extends React.Component {
       city: handleCityTwo,
       area: handleDistrictTwo,
     }
-    if (stadiumName === '') {
+   if (stadiumName === '') {
       Toast.fail('请填写场馆名称', 1)
     } else if (linkMan === '') {
       Toast.fail('请填写联系人', 1)

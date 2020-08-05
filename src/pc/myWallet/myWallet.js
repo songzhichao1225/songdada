@@ -196,6 +196,8 @@ class myWallet extends React.Component {
     } else if (res.data.code === 2000) {
       this.setState({ flag: 3 })
     this.getVenueWithdrawalOneList()
+    }else if(res.data.code===4004){
+      message.error(res.data.msg)
     } else {
       this.setState({ visible: true })
     }

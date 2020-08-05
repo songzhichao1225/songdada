@@ -28,10 +28,7 @@ class statusAudits extends React.Component {
   }
   componentDidMount() {
     this.getIsStatus()
-    let that=this
-    window.addEventListener("popstate", function(e) { 
-      that.props.history.replace('/#')
-      }, false);
+   
   }
 
   login = () => {

@@ -128,7 +128,6 @@ class Login extends React.Component {
   }
 
   naCode = () => {
-    console.log(this.state.phoneTwo)
     if (this.state.phoneTwo!== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phoneTwo)) && this.state.phoneTwo.length === 11) {
       this.VenueSelectSiteName({ phone: this.state.phoneTwo })
     } else {
@@ -136,7 +135,6 @@ class Login extends React.Component {
     }
   }
   onChange = e => {
-    console.log(e)
     this.setState({ value: e })
   }
 
@@ -265,7 +263,7 @@ class Login extends React.Component {
                   </Form.Item>
                 </Form>
               </div>
-              <div className="checke">
+              <div className={this.state.navNum ? 'nameLogin' : 'checke'}>
                 <a href='#/forgetPassword'><span>忘记密码</span></a>
                 <a href='#/register'><span>注册</span></a>
               </div>

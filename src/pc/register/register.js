@@ -64,11 +64,11 @@ class register extends React.Component {
 
   changeName = e => {
    if(e.target.value.length<4){
-    this.setState({ kodTwo: '用户名至少输入4位',name:'' })
+    this.setState({ kodTwo: '用户名至少输入4位', })
    }else if (/[\u4E00-\u9FA5]/g.test(e.target.value)) {
-      this.setState({ kodTwo: '用户名只能包含数字、字母、数字+字母',name:'' })
+      this.setState({ kodTwo: '用户名只能包含数字、字母、数字+字母' })
     }else if( /[^a-zA-Z0-9]/g.test(e.target.value)){
-      this.setState({ kodTwo: '用户名只能包含数字、字母、数字+字母',name:'' })
+      this.setState({ kodTwo: '用户名只能包含数字、字母、数字+字母' })
     } else if (this.state.name !== '') {
       this.getIsUserName({ name: e.target.value })
       this.setState({ name: e.target.value, kodTwo: '' })
@@ -272,7 +272,6 @@ class register extends React.Component {
     this.setState({BlurOneTwo:'password'})
   }
   FOne=()=>{
-      console.log(this.state.code)
       if(this.state.code===''){
         this.setState({code:''})
       }else{

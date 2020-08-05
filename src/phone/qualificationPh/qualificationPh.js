@@ -185,6 +185,8 @@ class qualificationPh extends React.Component {
     }
   }
 
+  
+
 
   componentDidMount() {
     this.getIsStatus()

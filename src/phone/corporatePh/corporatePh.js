@@ -69,7 +69,7 @@ class corporatePh extends React.Component {
   async login(data) {
     const res = await _login(data)
     if (res.data.code !== 2000) {
-      Toast.fail(res.data.msg, 1);
+      Toast.fail(res.data.msg, 1)
     } else {
       localStorage.clear()
       localStorage.setItem('uuid', res.data.data.uuid);

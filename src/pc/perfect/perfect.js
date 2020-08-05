@@ -57,7 +57,8 @@ class perfect extends React.Component {
     handelPerson: '',
     handleTelephone: '',
     plainOptions: [],
-    siteUid: ''
+    siteUid: '',
+    click:true
   };
 
 
@@ -82,15 +83,15 @@ class perfect extends React.Component {
       localStorage.setItem('handleName', res.data.data.name)
       let arrjo = []
       for (let i in res.data.data.sport.split(',')) {
-
         arrjo.push(Number(res.data.data.sport.split(',')[i]))
       }
       this.setState({
         position: res.data.data.position, handleAddress: this.props.location.query === undefined ? res.data.data.address : this.props.location.query.adddress, handleName: res.data.data.name, imageUrl: res.data.data.firstURL, fileList: arrImg,
         onChangeCheck: arrjo, onChangeSite: res.data.data.facilities === ',,,' ? '' : res.data.data.facilities, onChangeText: res.data.data.siteInfo, lat: res.data.data.lat, lng: res.data.data.lng,
         province: res.data.data.province, city: res.data.data.city, area: res.data.data.area, siteUid: res.data.data.uid,
-        imageRes: res.data.data.firstURL, handelPerson: res.data.data.linkMan, handleTelephone: res.data.data.telephone
+        imageRes: res.data.data.firstURL, handelPerson: res.data.data.linkMan, handleTelephone: res.data.data.telephone,click:true
       })
+
     }
   }
 
@@ -212,6 +213,7 @@ class perfect extends React.Component {
   onClickNex = () => {
     let { imageRes, fileList, handleAddress, handelPerson, handleTelephone, onChangeSite, onChangeCheck } = this.state
     let fileListT = fileList.slice(0, 9)
+    console.log(this.state.siteUid)
     if (this.state.siteUid !== '' && this.state.siteUid !== null) {
 
       let filesURLarr = []
@@ -246,7 +248,9 @@ class perfect extends React.Component {
         linkMan: handelPerson,
         telephone: handleTelephone,
       }
-      if (data.venuename === '') {
+      if (data.lat === '') {
+        message.error('请选择场馆位置')
+      }else if (data.venuename === '') {
         message.error('请填写场馆名称')
       } else if (handelPerson === '') {
         message.error('请填写联系人')
@@ -265,7 +269,7 @@ class perfect extends React.Component {
       } else if (data.sport === '') {
         message.error('请选择场地类型')
       } else if (data.facilities === '') {
-        message.error('请选择至少一项运动设施')
+        message.error('请选择至少一项场地设施')
       } else {
         this.VenueInformationSave(data)
       }
@@ -305,7 +309,9 @@ class perfect extends React.Component {
         telephone: handleTelephone,
       }
 
-      if (data.venuename === '') {
+      if (data.lat === '') {
+        message.error('请选择场馆位置')
+      }else if (data.venuename === '') {
         message.error('请填写场馆名称')
       } else if (handelPerson === '') {
         message.error('请填写联系人')
@@ -324,7 +330,7 @@ class perfect extends React.Component {
       } else if (data.sport === '') {
         message.error('请选择场地类型')
       } else if (data.facilities === '') {
-        message.error('请选择至少一项运动设施')
+        message.error('请选择至少一项场地设施')
       } else {
         this.PerfectingVenueInformation(data)
       }
@@ -352,6 +358,7 @@ class perfect extends React.Component {
     const res = await TemporaryVenueInformation(data)
     if (res.data.code === 2000) {
       message.success(res.data.msg)
+      this.setState({click:false})
       this.getVenueInformation()
     } else {
       message.error(res.data.msg)
@@ -359,7 +366,9 @@ class perfect extends React.Component {
   }
 
   onClickSave = () => {
-    console.log(666)
+    if(this.state.click===true){
+
+    
     let { imageRes, fileList, handleAddress, handelPerson, handleTelephone, onChangeCheck, onChangeSite } = this.state
     let fileListT = fileList.slice(0, 9)
     let filesURLarr = []
@@ -370,7 +379,6 @@ class perfect extends React.Component {
         } else {
           filesURLarr.push(fileListT[i].response.data.baseURL + fileListT[i].response.data.filesURL)
         }
-
       } else if (fileListT[i].response === undefined) {
         filesURLarr.push(fileListT[i].url)
       }
@@ -408,6 +416,7 @@ class perfect extends React.Component {
     } else {
       this.TemporaryVenueInformation(data)
     }
+  }
   }
 
   render() {
@@ -506,7 +515,7 @@ class perfect extends React.Component {
                     {imageRes !== 1 && imageRes !== '' && imageRes !== null ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageRes} alt="avatar" style={{ width: '100%', height: '100%' }} /> : uploadButton}
                   </Upload>
                 </ImgCrop>
-                <span className="rightText">上传图片小于3M</span>
+                <span className="rightText">上传图片小于5M</span>
               </div>
 
               <div className="name">
@@ -527,7 +536,7 @@ class perfect extends React.Component {
                     {fileList.length >= 8 ? null : uploadButtonT}
                   </Upload>
 
-                  <span className="rightText">上传图片小于3M</span>
+                  <span className="rightText">上传图片小于5M</span>
                   <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
                     <img alt="example" style={{ width: '100%' }} src={previewImage} />
                   </Modal>
@@ -547,12 +556,11 @@ class perfect extends React.Component {
               </div>
 
               <div className="name">
-                <span className="symbol">*</span><span className="boTitle">场地介绍</span><span className="kong"></span>
+                <span className="symbol">*</span><span className="boTitle">场馆介绍</span><span className="kong"></span>
                 <TextArea className="textarea" placeholder="请输入场地介绍，如场地规模、特色等。" onChange={this.onChangeText} maxLength={200} value={this.state.onChangeText} rows={4} />
               </div>
 
               <div className="prompt">请注意<span>*</span>为必填项</div>
-
               <Button className="next" onClick={this.onClickNex}>下一步</Button><Button className="next" style={{ marginLeft: '20px' }} onClick={this.onClickSave}>保存</Button>
             </div>
           </div>

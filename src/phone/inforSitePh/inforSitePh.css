@@ -185,9 +185,11 @@
 .textItem .am-textarea-label{
     color: rgba(0, 0, 0, 0.65);
     font-size: 0.75rem;
+    margin-right: 0;
+    width: 83px;
 }
 .inforSitePh .topDiv{
-    width: 111px;
+    width: 30%;
     height: 27px;
     background: #F5F5F5;
     border: 1px solid #E1E0E1;
@@ -196,7 +198,7 @@
     display: inline-block;
     margin-top: 9px;
     cursor: pointer;
-    margin-left: 10px;
+    margin-left: 2.5%;
 }
 .inforSitePh .line{
     width: 100%;
