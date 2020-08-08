@@ -140,7 +140,11 @@ class registerPh extends React.Component {
     this.nacode({ "mobile": this.state.phone.replace(/\s*/g,""), "type": 'venueregister' })
   }
   showModal = e => {
-    if (this.state.changeRadio !== true) {
+    if(/^[^\s]*$/.test(this.state.password)===false){
+      Toast.fail('密码输入有误', 1);
+    }else  if(/^[^\s]*$/.test(this.state.passwordT)===false){
+      Toast.fail('密码输入有误', 1);
+    }else if (this.state.changeRadio !== true) {
       Toast.fail('请勾选阅读协议', 1);
     } else if (this.state.password !== this.state.passwordT) {
       Toast.fail('两次密码输入不一致', 1);

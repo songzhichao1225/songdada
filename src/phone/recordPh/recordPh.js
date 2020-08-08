@@ -65,8 +65,8 @@ class recordPh extends React.Component {
 
 
         <div className="headTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} /> 提现记录</div>
-        <div style={this.state.recordPhList.length>0?{}:{display:'none'}}>
-    <div style={{width:'100%',textAlign:'right',paddingRight:'1rem'}}>总计:{this.state.maxmoney}</div>
+        <div style={this.state.recordPhList.length>0?{height:'94%',overflowY:'auto'}:{display:'none'}}>
+    <div style={{width:'100%',textAlign:'right',paddingRight:'1rem'}}>总计:￥{this.state.maxmoney}</div>
         
         <PullToRefresh
           damping={60}
@@ -95,10 +95,11 @@ class recordPh extends React.Component {
             ))
           }
         </PullToRefresh>
+        <Pagination className={this.state.recordPhList.length === 0 ? 'hidden' : 'fenye'} hideOnSinglePage={true} showSizeChanger={false} current={this.state.page} onChange={this.current} size='small' defaultCurrent={1} total={this.state.other} />
         </div>
 
         <Spin spinning={this.state.spin} style={{ width: '100%', marginTop: '45%' }} />
-        <Pagination className={this.state.recordPhList.length === 0 ? 'hidden' : 'fenye'} hideOnSinglePage={true} showSizeChanger={false} current={this.state.page} onChange={this.current} size='small' defaultCurrent={1} total={this.state.other} />
+       
        <div style={this.state.spin === false && this.state.recordPhList.length === 0?{width:'100%'}:{display:'none'}}><img style={{width:'4rem',height:"4rem",display:'block',margin:'4rem auto 0'}} src={require('../../assets/xifen (8).png')}  alt="555"/><span style={{display:'block',textAlign:'center'}}>没有提现记录!</span></div>
       </div>
     )

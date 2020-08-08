@@ -332,9 +332,9 @@ class myWallet extends React.Component {
       Settlement: numRadio,
       Bankaccount: corporateCardId,
       OpeningBank: corporateOpen,
-      Banktype: bank_id,
-      ProvinceBank: province_id,
-      CityBank: city_id,
+      Banktype:typeof(bank_id)!=='string'?bank_id.join():bank_id,
+      ProvinceBank:typeof(province_id)!=='string'?province_id.join():province_id,
+      CityBank:typeof(city_id)!=='string'?city_id.join():city_id,
     }
     
     if (numRadio && imgFile === undefined) {
@@ -354,7 +354,7 @@ class myWallet extends React.Component {
       <div>
         <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
       </div>
-    );
+    )
     const uploadButtonThree = (
       <div>
       <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
@@ -368,7 +368,7 @@ class myWallet extends React.Component {
             <span className="select"></span>
             <RangePicker
               placeholder={[this.state.start, this.state.end]}
-              style={this.state.koL === false ? { display: 'none' } : { marginTop: '8px', float: 'left', marginLeft: '10px' }}
+              style={{ marginTop: '8px', float: 'left', marginLeft: '10px' }}
               locale={locale}
               allowClear={false}
               onChange={this.dateChange}
@@ -482,7 +482,7 @@ class myWallet extends React.Component {
            
           <div className="listing" style={this.state.numRadio===0?{display:'none'}:{}}>
               <span>法人身份证号:</span>
-              <Input className="listingInput" value={this.state.corporateId} placeholder="请输入法人身份证号" onChange={this.corporateId} />
+              <Input className="listingInput" value={this.state.corporateId} placeholder="请输入法人身份证号" maxLength={18} onChange={this.corporateId} />
             </div>
 
           <div className="listing" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>

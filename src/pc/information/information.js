@@ -556,7 +556,6 @@ class information extends React.Component {
       <div className="orderList">
         <div className="navTab">
           <RangePicker
-            style={this.state.kop===1?{display:'none'}:{ float: 'left', marginTop: '7px', marginRight: '40px' }}
             onChange={this.dateonChangeS}
             locale={locale}
             placeholder={[this.state.start, this.state.end]}

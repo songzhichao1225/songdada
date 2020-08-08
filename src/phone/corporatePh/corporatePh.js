@@ -115,9 +115,8 @@ class corporatePh extends React.Component {
         </Radio.Group>),
         [
           { text: '取消', onPress: () => console.log('cancel'), style: 'default' },
-          { text: '确定', onPress: () => console.log('cancel') }
+          { text: '确定', onPress: () => this.ploo() }
         ])
-      this.nacode({ "mobile": this.state.phone, "type": 'venuelogin' })
     } else {
       Toast.fail(res.data.msg, 1);
     }
@@ -136,7 +135,7 @@ class corporatePh extends React.Component {
 
   naCode = () => {
     if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
-      this.VenueSelectSiteName({ phone: this.state.phone })
+      this.nacode({ "mobile": this.state.phone, "type": 'venuelogin' })
     } else {
       Toast.fail('请输入手机号', 1);
     }
@@ -145,18 +144,21 @@ class corporatePh extends React.Component {
   onChange = e => {
     this.setState({ value: e.target.value })
   }
-
-  onSubmit = () => {
+  ploo=()=>{
     let data = {
       username: this.state.phone, usercode: this.state.code, userpass:'', type: 2, Logintype: 'mobile', venueloginuuid: this.state.value
     }
-
+ 
     this.login(data)
+  }
+
+  onSubmit = () => {
+    this.VenueSelectSiteName({ phone: this.state.phone })
   }
 
   close = () => {
     var sUserAgent = navigator.userAgent;
-    var mobileAgents = ['Android', 'iPhone'];
+    var mobileAgents = ['Android', 'iPhone']; 
     for (let index = 0; index < mobileAgents.length; index++) {
       if (sUserAgent.indexOf('Android') > -1) {
         window.JsAndroid.goBack();
@@ -167,7 +169,6 @@ class corporatePh extends React.Component {
   }
 
   closeWeb = () => {
-    console.log(111)
     if (window.location.href.indexOf('flag=1') === -1) {
       this.props.history.push('/phone')
       this.setState({ visible: false })

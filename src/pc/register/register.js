@@ -89,6 +89,7 @@ class register extends React.Component {
     this.setState({ code: e.target.value })
   }
   changePassword = (e) => {
+    
     this.setState({ password: e.target.value })
   }
   changePasswordT = (e) => {
@@ -150,9 +151,13 @@ class register extends React.Component {
       message.error('请输入验证码')
     } else if (this.state.password === '') {
       message.error('请输入密码')
-    } else if (this.state.passwordT === '') {
+    } else if( /^[^\s]*$/.test(this.state.password)===false){
+        message.error('密码输入有误')
+    }else if (this.state.passwordT === '') {
       message.error('请再次输入密码')
-    } else if (this.state.password !== this.state.passwordT) {
+    }else if( /^[^\s]*$/.test(this.state.passwordT)===false){
+      message.error('密码输入有误')
+  } else if (this.state.password !== this.state.passwordT) {
       message.error('两次密码输入不一致')
     } else if (this.state.changeRadio !== true) {
       message.error('请勾选阅读协议')
@@ -160,6 +165,7 @@ class register extends React.Component {
       let { Id, name, phone, code, password } = this.state
       if (this.state.idName === '推广员不存在') {
         let data = { name: name, phone: phone, pass: password, promoteid: '', code: code, Logintype: 'pc' }
+       
         this.Ko(data)
       } else {
         let data = { name: name, phone: phone, pass: password, promoteid: Id, code: code, Logintype: 'pc' }

@@ -80,7 +80,19 @@ class forgetPassword extends React.Component {
   }
   comfir=()=>{
     let {phone,value,code,pass,passTwo}=this.state
-    if(pass===passTwo){
+    if(phone===''){
+      message.error('请输入操作员手机号')
+    }else if(code===''){
+      message.error('请输入验证码')
+    }else if(pass===''){
+      message.error('请输入密码')
+    }else if(passTwo===''){
+     message.error('请再次输入密码')
+    }else if(/^[^\s]*$/.test(this.state.pass)===false){
+      message.error('密码输入有误')
+    }else if(/^[^\s]*$/.test(this.state.passTwo)===false){
+      message.error('密码输入有误')
+    }else  if(pass===passTwo){
       this.VenueForgetPass({phone:phone,pass:passTwo,code:code,venueloginuuid:value})
     }else{
       message.error('两次密码输入不一致')

@@ -429,7 +429,7 @@ class sitePh extends React.Component {
   async getVenueNumberTitleSave(data) {
     const res = await getVenueNumberTitleSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ visibleXi: false, firstUUid: '', upData: 0, page: 1 })
+      this.setState({ visibleXi: false, firstUUid: '', upData: 0, page: this.state.page })
       this.getVenueNumberTitleList({ page: this.state.page, sportid: this.state.asyncValue })
     } else {
       Toast.fail(res.data.msg, 1);
@@ -978,7 +978,7 @@ class sitePh extends React.Component {
 
 
         <Drawer
-          title="添加场地细分"
+          title="添加/修改场地细分"
           placement="bottom"
           height='100%'
           onClose={this.onClose}

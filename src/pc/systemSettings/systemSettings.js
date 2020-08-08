@@ -249,7 +249,19 @@ class systemSettings extends React.Component {
 
   submit = () => {
     let { phone, code, passWord, passWordT, } = this.state
-    if (passWord === passWordT) {
+    if(phone===''){
+      message.error('请输入操作员手机号')
+    }else if(code===''){
+      message.error('请输入验证码')
+    }else if(passWord===''){
+      message.error('请输入密码')
+    }else if(passWordT===''){
+     message.error('请再次输入密码')
+    }else if(/^[^\s]*$/.test(this.state.passWord)===false){
+      message.error('密码输入有误')
+    }else if(/^[^\s]*$/.test(this.state.passWordT)===false){
+      message.error('密码输入有误')
+    }else if (passWord === passWordT) {
       this.VenueChangePassword({ phone: phone, code: code, pass: passWordT })
     } else {
       message.error('两次密码输入不一致')

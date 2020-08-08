@@ -256,9 +256,9 @@ class myWalletPh extends React.Component {
       Settlement:numRadio,
       Bankaccount: corporateCardId,
       OpeningBank: corporateOpen,
-      Banktype:bank_id,
-      ProvinceBank:province_id,
-      CityBank:city_id,
+      Banktype:typeof(bank_id)!=='string'?bank_id.join():bank_id,
+      ProvinceBank:typeof(province_id)!=='string'?province_id.join():province_id,
+      CityBank:typeof(city_id)!=='string'?city_id.join():city_id,
       legalcard:numRadio===0?'':corporateId
     }
     console.log(data)
@@ -363,7 +363,7 @@ class myWalletPh extends React.Component {
             </div>
             <div className="listSon" style={this.state.numRadio===0?{display:'none'}:{}}>
             <span style={{float:'left'}}>法人身份证号</span>
-            <Input className="right" style={{ width: '70%', paddingLeft: '0.5rem' }} placeholder="请输入法人身份证号" value={this.state.corporateId} onChange={this.corporateId} />
+            <Input className="right" style={{ width: '70%', paddingLeft: '0.5rem' }} placeholder="请输入法人身份证号" maxLength={18} value={this.state.corporateId} onChange={this.corporateId} />
           </div>
             <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {paddingTop:'15px'}}>
               <span style={{float:'left'}}>身份证</span>
@@ -395,7 +395,7 @@ class myWalletPh extends React.Component {
 
 
             <div className="listSon">
-              <span>银行账号</span>
+              <span style={{paddingLeft:'5px'}}>银行账号</span>
               <Input className="right" value={this.state.corporateCardId} placeholder="请输入银行账号" onChange={this.corporateCardId} />
             </div>
 

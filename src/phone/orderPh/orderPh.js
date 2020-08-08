@@ -289,7 +289,7 @@ class orderPh extends React.Component {
     this.setState({ qiDate: new Date(), nowDate: new Date().toLocaleDateString().replace(/\//g, "-") })
     this.getVenueReservation({ sportid: 1, date: new Date().toLocaleDateString().replace(/\//g, "-") })
     this.getVenueSport()
-      this.getReservationActivitieslist({ page: 1, sport: '', status: '',paied:0 })
+      this.getReservationActivitieslist({ page: 1, sport: 0, status: 0,paied:2 })
     
 
 
@@ -314,9 +314,9 @@ class orderPh extends React.Component {
 
 
   activityList = () => {
-    this.setState({ activityList: true })
+    this.setState({ activityList: true,sportIdVal:0,statusIdVal:0,paied:2,start:'',end:'' })
     this.setState({ page: 1 })
-    this.getReservationActivitieslist({ page: 1, sport: '', status: '', publicuid: '',paied:0 })
+    this.getReservationActivitieslist({ page: 1, sport: '', status: '', publicuid: '',paied:2 })
   }
   bookingKanban = () => {
     this.setState({ activityList: false })

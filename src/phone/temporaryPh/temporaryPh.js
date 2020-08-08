@@ -147,10 +147,10 @@ class temporaryPh extends React.Component {
     if (res.data.code === 2000) {
       this.setState({ visible: false })
       Toast.success(res.data.msg, 2);
-      this.VenueTemporarilyClosedList()
+      this.VenueTemporarilyClosedList({page:this.state.temPage})
     } else {
       Toast.fail(res.data.msg, 1);
-      this.VenueTemporarilyClosedList()
+      this.VenueTemporarilyClosedList({page:this.state.temPage})
     }
   }
 
@@ -160,7 +160,7 @@ class temporaryPh extends React.Component {
 
       Toast.success(res.data.msg, 2);
       this.setState({ visible: false })
-      this.VenueTemporarilyClosedList()
+      this.VenueTemporarilyClosedList({page:this.state.temPage})
     }else{
       Toast.fail(res.data.msg, 2);
     }
@@ -211,9 +211,7 @@ class temporaryPh extends React.Component {
 
   subCilck = () => {
     let { sportId, startValue, EndValue } = this.state
-
        this.getIsClosedPublic({sportid:sportId,starttime:startValue,endtime:EndValue})
-    
   }
 
   mood = (e) => {
@@ -221,12 +219,11 @@ class temporaryPh extends React.Component {
   }
 
 
+
   async VenueTemporarilyClosedDel(data) {
     const res = await VenueTemporarilyClosedDel(data, localStorage.getItem('venue_token'))
-
     Toast.success(res.data.msg, 1);
-    this.setState({temPage:this.state.temPage})
-    this.VenueTemporarilyClosedList({page: this.state.temPage})
+    this.VenueTemporarilyClosedList({page:1})
 
   }
   temDelet = () => {
@@ -291,8 +288,6 @@ class temporaryPh extends React.Component {
                   </Popconfirm>
                 </Col>
               </Row>
-
-
             )
             )
           }
@@ -342,8 +337,6 @@ class temporaryPh extends React.Component {
               <List.Item className="startTime">开始时间</List.Item>
             </DatePicker>
 
-
-
           </div>
 
           <div className='drawerInput' style={{ border: 'none' }}>
@@ -359,19 +352,16 @@ class temporaryPh extends React.Component {
               <List.Item className="startTime">结束时间</List.Item>
             </DatePicker>
           </div>
-
+ 
           <div className='drawerInput' style={{paddingTop:'1rem'}} >
             <span style={{ display: 'block', float: 'left' }}>备注</span>
-            <textarea rows={3} style={{ marginLeft: '2.5rem' }} maxLength={200} placeholder="请输入备注" onChange={this.textArea}></textarea>
+            <textarea rows={3} style={{marginLeft: '2.5rem' }} maxLength={200} placeholder="请输入备注" onChange={this.textArea}></textarea>
           </div>
 
           <div className='drawerInput' style={{ border: 'none' }}>
             <div className="confirm" onClick={this.subCilck}>确认</div>
           </div>
-
-
         </Drawer>
-
       </div>
     )
   }

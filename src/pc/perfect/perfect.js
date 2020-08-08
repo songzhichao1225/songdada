@@ -116,6 +116,7 @@ class perfect extends React.Component {
 
   routerMap = () => {
 
+    console.log()
     this.props.history.push({ pathname: '/map', query: { type: localStorage.getItem('handleDistrict'), city: localStorage.getItem('handleCity') } })
     sessionStorage.setItem('hanclick', 1)
   }
@@ -142,10 +143,11 @@ class perfect extends React.Component {
 
   handleChange = info => {
     if (info.file.status === 'uploading') {
-      this.setState({ loading: true })
+      this.setState({ loading: false })
       return
     }
     if (info.file.status === 'done') {
+        this.setState({loading:true})
       if (info.file.response.data.baseURL !== undefined) {
         this.setState({ imageRes: info.file.response.data.baseURL + info.file.response.data.filesURL })
       } else {
@@ -175,15 +177,22 @@ class perfect extends React.Component {
   }
 
   handleChangeT = ({ fileList }) => {
+    this.setState({loading:false})
+    let arrt=[]
     this.setState({ fileList: fileList })
     for (let i in fileList) {
+      if(fileList[i].url===undefined){
+        arrt.push(fileList[i].response===undefined?1:fileList[i].response)
+      }
       if (fileList[i].response !== undefined && fileList[i].response.code === 4004) {
         fileList[i].thumbUrl = ''
         fileList[i].name = '图片违规'
         message.error('有图片违规请重新上传')
         this.setState({ fileList: fileList })
       }
-
+    }
+    if(arrt.indexOf(1)===-1){
+      this.setState({loading:true})
     }
 
   }
@@ -213,7 +222,6 @@ class perfect extends React.Component {
   onClickNex = () => {
     let { imageRes, fileList, handleAddress, handelPerson, handleTelephone, onChangeSite, onChangeCheck } = this.state
     let fileListT = fileList.slice(0, 9)
-    console.log(this.state.siteUid)
     if (this.state.siteUid !== '' && this.state.siteUid !== null) {
 
       let filesURLarr = []
@@ -249,29 +257,33 @@ class perfect extends React.Component {
         telephone: handleTelephone,
       }
       if (data.lat === '') {
-        message.error('请选择场馆位置')
+        message.warning('请选择场馆位置')
       }else if (data.venuename === '') {
-        message.error('请填写场馆名称')
+        message.warning('请填写场馆名称')
       } else if (handelPerson === '') {
-        message.error('请填写联系人')
+        message.warning('请填写联系人')
       } else if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(handelPerson) === false) {
-        message.error('联系人只允许输入文字/字母')
+        message.warning('联系人只允许输入文字/字母')
       } else if (data.telephone === '') {
-        message.error('请输入联系人电话')
+        message.warning('请输入联系人电话')
       } else if (imageRes === '') {
         message.warning("请上传门脸照")
       } else if (data.firstURL === 1) {
-        message.error('门脸照违规请重新上传')
+        message.warning('门脸照违规请重新上传')
       } else if (filesURLarr.length < 2) {
         message.warning("至少上传两张场地照片")
       } else if (data.filesURL.split('|').indexOf('无') !== -1) {
-        message.error('场地照有违规图片请重新上传')
+        message.warning('场地照有违规图片请重新上传')
       } else if (data.sport === '') {
-        message.error('请选择场地类型')
-      } else if (data.facilities === '') {
-        message.error('请选择至少一项场地设施')
+        message.warning('请选择场地类型')
+      } else if (data.facilities === ''||data.facilities === ',,,') {
+        message.warning('请选择至少一项场地设施')
       } else {
-        this.VenueInformationSave(data)
+        if(this.state.loading===false){
+          message.warning('图片上传中...')
+        }else{
+          this.VenueInformationSave(data)
+        }
       }
 
 
@@ -308,31 +320,35 @@ class perfect extends React.Component {
         linkMan: handelPerson,
         telephone: handleTelephone,
       }
-
-      if (data.lat === '') {
-        message.error('请选择场馆位置')
-      }else if (data.venuename === '') {
-        message.error('请填写场馆名称')
-      } else if (handelPerson === '') {
-        message.error('请填写联系人')
+      
+      if (data.lat === null||data.lat==='') {
+        message.warning('请选择场馆位置')
+      }else if (data.venuename=== 'null'||data.venuename=== '') {
+        message.warning('请填写场馆名称')
+      } else if (handelPerson === null||handelPerson === '') {
+        message.warning('请填写联系人')
       } else if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(handelPerson) === false) {
-        message.error('联系人只允许输入文字/字母')
-      } else if (data.telephone === '') {
-        message.error('请输入联系人电话')
-      } else if (imageRes === '') {
+        message.warning('联系人只允许输入文字/字母')
+      } else if (data.telephone === null||data.telephone === '') {
+        message.warning('请输入联系人电话')
+      } else if (imageRes === null||imageRes === '') {
         message.warning("请上传门脸照")
       } else if (data.firstURL === 1) {
-        message.error('门脸照违规请重新上传')
+        message.warning('门脸照违规请重新上传')
       } else if (filesURLarr.length < 2) {
         message.warning("至少上传两张场地照片")
       } else if (data.filesURL.split('|').indexOf('无') !== -1) {
-        message.error('场地照有违规图片请重新上传')
+        message.warning('场地照有违规图片请重新上传')
       } else if (data.sport === '') {
-        message.error('请选择场地类型')
-      } else if (data.facilities === '') {
-        message.error('请选择至少一项场地设施')
+        message.warning('请选择场地类型')
+      } else if (data.facilities === ''||data.facilities === ',,,') {
+        message.warning('请选择至少一项场地设施')
       } else {
+        if(this.state.loading===false){
+          message.warning('图片上传中...')
+        }else{
         this.PerfectingVenueInformation(data)
+        }
       }
     }
   }
@@ -414,7 +430,11 @@ class perfect extends React.Component {
     } else if (data.filesURL.split('|').indexOf('无') !== -1) {
       message.error('场地照有违规图片请重新上传');
     } else {
+      if(this.state.loading===false){
+        message.warning('图片上传中...')
+      }else{
       this.TemporaryVenueInformation(data)
+      }
     }
   }
   }

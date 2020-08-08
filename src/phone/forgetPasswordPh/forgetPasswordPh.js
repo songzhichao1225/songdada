@@ -78,7 +78,19 @@ class forgetPasswordPh extends React.Component {
   }
   comfir = () => {
     let { phone, value, code, pass, passTwo } = this.state
-    if (pass === passTwo) {
+    if(phone===''){
+      Toast.fail('请输入操作员手机号', 1)
+    }else if(code===''){
+      Toast.fail('请输入验证码', 1)
+    }else if(pass===''){
+      Toast.fail('请输入密码', 1)
+    }else if(passTwo===''){
+      Toast.fail('请确认密码', 1)
+    }else if(/^[^\s]*$/.test(this.state.pass)===false){
+      Toast.fail('密码输入有误', 1)
+      }else if(/^[^\s]*$/.test(this.state.passTwo)===false){
+        Toast.fail('密码输入有误', 1)
+      }else if (pass === passTwo) {
       this.VenueForgetPass({ phone: phone, pass: passTwo, code: code, venueloginuuid: value })
     }
   }

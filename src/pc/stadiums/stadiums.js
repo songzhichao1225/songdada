@@ -518,7 +518,7 @@ class stadiums extends React.Component {
   }
 
   typeChange = e => {
-    this.setState({ bank_id: e, province_id:'',city_id:'',corporateOpen:''})
+    this.setState({ bank_id: e,corporateOpen:''})
   }
   provinceChange = e => {
     this.setState({ province_id: e,city_id:'',corporateOpen:'' })
@@ -559,11 +559,10 @@ class stadiums extends React.Component {
       Settlement:numRadio,
       Bankaccount: corporateCardId,
       OpeningBank: corporateOpen,
-      Banktype:bank_id,
-      ProvinceBank:province_id,
-      CityBank:city_id,
+      Banktype:typeof(bank_id)!=='string'?bank_id.join():bank_id,
+      ProvinceBank:typeof(province_id)!=='string'?province_id.join():province_id,
+      CityBank:typeof(city_id)!=='string'?city_id.join():city_id,
     }
-    console.log(data)
     if(numRadio&&imageUrlTwo===1){
        message.error('图片违规请重新上传')
     }else if(numRadio&&imageUrlThree===1){
@@ -793,7 +792,7 @@ class stadiums extends React.Component {
             </div>
             <div className="listing" style={this.state.numRadio===0?{display:'none'}:{}}>
               <span>法人身份证号:</span>
-              <Input className="listingInput" value={this.state.corporateId} onChange={this.corporateId} />
+              <Input className="listingInput" value={this.state.corporateId} maxLength={18} onChange={this.corporateId} />
             </div>
 
             <div className="listing" style={this.state.numRadio===0?{display:'none'}:{}}>

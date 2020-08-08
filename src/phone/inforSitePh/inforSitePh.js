@@ -19,9 +19,9 @@ function beforeUpload(file) {
   if (!isJpgOrPng) {
     Toast.fail('只能使用JPG/PNG格式！', 1);
   }
-  const isLt2M = file.size / 1024 / 1024 < 2;
+  const isLt2M = file.size / 1024 / 1024 < 6;
   if (!isLt2M) {
-    Toast.fail('图片不能超过2MB', 1);
+    Toast.fail('图片不能超过5MB', 1);
   }
   return isJpgOrPng && isLt2M;
 }
@@ -116,7 +116,7 @@ class inforSitePh extends React.Component {
 
   async getVenueIssecondaudit(data) {
     const res = await getVenueIssecondaudit(data, localStorage.getItem('venue_token'))
-    this.setState({ issecondaudit: parseInt(res.data.data.issecondaudit) })
+    this.setState({ issecondaudit: parseInt(res.data.data.issecondaudit),isbankcard:parseInt(res.data.data.isbankcard) })
   }
 
   async getVenueQualificationInformation(data) {
@@ -250,8 +250,8 @@ class inforSitePh extends React.Component {
     const res = await VenueInformationSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       Toast.success('提交成功', 1);
-
-      this.setState({ issecondaudit: 0, other: res.data.other })
+      this.getVenueIssecondaudit()
+      this.setState({other: res.data.other })
       this.getVenueInformation()
     } else {
       Toast.fail(res.data.msg, 1);
@@ -461,7 +461,7 @@ class inforSitePh extends React.Component {
 
 
   typeChange = e => {
-    this.setState({ bank_id: e })
+    this.setState({ bank_id: e,corporateOpen:'' })
   }
   cityChange = e => {
     this.setState({ city_id: e })
@@ -491,7 +491,7 @@ class inforSitePh extends React.Component {
     const res = await VenueQualificationInformationSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       Toast.success('提交成功', 1)
-      this.setState({ issecondaudit: 0 })
+      this.getVenueIssecondaudit()
     } else {
       Toast.fail(res.data.msg, 1)
     }
@@ -546,8 +546,8 @@ class inforSitePh extends React.Component {
   async VenueReceivingBankInformation(data) {
     const res = await VenueReceivingBankInformation(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      Toast.fail('提交成功', 1)
-      this.setState({ isbankcard: 0 })
+      Toast.success('提交成功', 1)
+      this.getVenueIssecondaudit()
     } else {
       Toast.fail(res.data.msg, 1)
     }
@@ -563,9 +563,9 @@ class inforSitePh extends React.Component {
       Settlement: numRadio,
       Bankaccount: corporateCardId,
       OpeningBank: corporateOpen,
-      Banktype: bank_id,
-      ProvinceBank: province_id,
-      CityBank: city_id,
+      Banktype:typeof(bank_id)!=='string'?bank_id.join():bank_id,
+      ProvinceBank:typeof(province_id)!=='string'?province_id.join():province_id,
+      CityBank:typeof(city_id)!=='string'?city_id.join():city_id,
     }
     if (numRadio && imgFile === undefined) {
       Toast.fail('图片违规请重新上传', 1);
@@ -606,19 +606,18 @@ class inforSitePh extends React.Component {
     const { imageUrlS, fileList, imgFile, imageUrlOne, imgFileTwo } = this.state
     const uploadButtonT = (
       <div>
-        <span>场地照</span>
-        <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}></div>
-      </div>
+      <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="2rem" height="2rem"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
+    </div>
     )
     const uploadButtonTwo = (
       <div>
-        <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}>正面照</div>
-      </div>
+      <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="2rem" height="2rem"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
+    </div>
     )
     const uploadButtonThree = (
       <div>
-        <div className="ant-upload-text" style={{ fontSize: '0.75rem' }}>反面照</div>
-      </div>
+      <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="2rem" height="2rem"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
+    </div>
     )
     const propsOne = {
       aspect: 1.295 / 1,
@@ -778,6 +777,7 @@ class inforSitePh extends React.Component {
           </div>
 
 
+
           <div className="listSon">
             <span>法人姓名</span>
             <Input className="right" value={this.state.corporateName} placeholder="请输入法人姓名" onChange={this.corporateName} />
@@ -816,7 +816,7 @@ class inforSitePh extends React.Component {
           </div>
           <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
             <span>法人身份证号</span>
-            <Input className="right" style={{ width: '60%', paddingLeft: '0.5rem', marginRight: '19%' }} placeholder="请输入法人身份证号" value={this.state.corporateId} onChange={this.corporateId} />
+            <Input className="right" style={{ width: '60%', paddingLeft: '0.5rem', marginRight: '19%' }} maxLength={18} placeholder="请输入法人身份证号" value={this.state.corporateId} onChange={this.corporateId} />
           </div>
           <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
             <span>身份证</span>
@@ -909,9 +909,9 @@ class inforSitePh extends React.Component {
                   this.ziSubmitTwo()
               }
             ])
-          } style={this.state.other === false ? { display: 'block' } : { display: 'none' }}>提交修改</Button>
+          } style={this.state.isbankcard === 1 ||this.state.isbankcard === 2? { display: 'block' } : { display: 'none' }}>提交修改</Button>
 
-          <Button className="submit" style={this.state.other === true ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
+          <Button className="submit" style={this.state.isbankcard === 0? { display: 'block' } : { display: 'none' }}>审核中~</Button>
         </div>
 
 

@@ -94,6 +94,8 @@ class loginPhTeo extends React.Component {
       Toast.info('请输入手机号', 1);
     }else if(password===''){
       Toast.fail('请输入密码', 1);
+    }if(/^[^\s]*$/.test(this.state.password)===false){
+      Toast.fail('密码输入有误', 1);
     }else{
       this.login({ username: phone, userpass: password, usercode: '', type: '1', Logintype: 'mobile', venueloginuuid: '', })
     }
@@ -167,7 +169,7 @@ passFocus=(e)=>{
                 alignItems: 'center',
               }}
               >
-                
+            
               <EllipsisOutlined />
               </div>
             </Popover>}

@@ -25,9 +25,9 @@ function beforeUploadT(file) {
   if (!isJpgOrPng) {
     Toast.fail('图片格式只能是JPG/PNG!', 1);
   }
-  const isLt2M = file.size / 1024 / 1024 < 3;
+  const isLt2M = file.size / 1024 / 1024 < 5;
   if (!isLt2M) {
-    Toast.fail('请上传小于3MB的图片!', 1);
+    Toast.fail('请上传小于5MB的图片!', 1);
   }
   return isJpgOrPng && isLt2M;
 }
@@ -264,7 +264,7 @@ class qualificationPh extends React.Component {
 
   provinceChange = e => {
     if (this.state.bank_id !== '') {
-      this.setState({ province_id: e, city_id: '', openingLine: '' })
+      this.setState({ province_id: e, city_id: '', openingLine: '',backCity:[] })
       this.getVenueOpenBankCity({ province_id: e })
     } else {
       Toast.fail('请选择银行类型', 1);
@@ -275,7 +275,7 @@ class qualificationPh extends React.Component {
 
   typeChange = e => {
     if (this.state.city_id !== '') {
-      this.setState({ bank_id: e, province_id: '', city_id: '', openingLine: '' })
+      this.setState({ bank_id: e, openingLine: '' })
     } else {
       this.setState({ bank_id: e })
     }
@@ -290,7 +290,9 @@ class qualificationPh extends React.Component {
 
   }
   handleSearch = e => {
-    this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
+    if(e!==''){
+      this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
+    }
   }
   openingLine = e => {
     this.setState({ openingLine: e })
@@ -300,8 +302,7 @@ class qualificationPh extends React.Component {
     const res = await VenueQualifications(data)
     if (res.data.code === 2000) {
       this.props.history.push('/resultsAuditsPh')
-      Toast.success(res.data.msg, 1);
-
+      Toast.success('提交成功', 1);
     } else {
       Toast.fail(res.data.msg, 1);
 
@@ -314,7 +315,7 @@ class qualificationPh extends React.Component {
     const res = await VenueQualificationInformationSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.props.history.push('/resultsAuditsPh')
-      Toast.success(res.data.msg, 1);
+      Toast.success('提交成功', 1);
 
     } else {
       Toast.fail(res.data.msg, 1);
@@ -337,9 +338,9 @@ class qualificationPh extends React.Component {
         Settlement: value,
         Bankaccount: cardId,
         OpeningBank: openingLine,
-        Banktype: bank_id,
-        ProvinceBank: province_id,
-        CityBank: city_id,
+        Banktype: typeof(bank_id)!=='string'?bank_id.join():bank_id,
+        ProvinceBank: typeof(province_id)!=='string'?province_id.join():province_id,
+        CityBank: typeof(city_id)!=='string'?city_id.join():city_id,
         type: 1
       }
       this.VenueQualificationInformationSave(data)
@@ -356,9 +357,9 @@ class qualificationPh extends React.Component {
         Settlement: value,
         Bankaccount: cardId,
         OpeningBank: openingLine,
-        Banktype: bank_id,
-        ProvinceBank: province_id,
-        CityBank: city_id,
+        Banktype: typeof(bank_id)!=='string'?bank_id.join():bank_id,
+        ProvinceBank: typeof(province_id)!=='string'?province_id.join():province_id,
+        CityBank: typeof(city_id)!=='string'?city_id.join():city_id,
       }
       this.VenueQualifications(data)
     }
@@ -396,12 +397,11 @@ class qualificationPh extends React.Component {
       Settlement: value,
       Bankaccount: cardId,
       OpeningBank: openingLine,
-      Banktype: bank_id,
-      ProvinceBank: province_id,
-      CityBank: city_id,
+      Banktype: typeof(bank_id)!=='string'?bank_id.join():bank_id,
+      ProvinceBank: typeof(province_id)!=='string'?province_id.join():province_id,
+      CityBank: typeof(city_id)!=='string'?city_id.join():city_id,
       flagDis: this.state.flagDis
     }
-    console.log(data)
 
     localStorage.setItem('qualifData', JSON.stringify(data))
     this.props.history.push('/stadiumInformationPh')
@@ -556,9 +556,9 @@ class qualificationPh extends React.Component {
       Settlement: value,
       Bankaccount: cardId,
       OpeningBank: openingLine,
-      Banktype: bank_id,
-      ProvinceBank: province_id,
-      CityBank: city_id,
+      Banktype: typeof(bank_id)!=='string'?bank_id.join():bank_id,
+      ProvinceBank: typeof(province_id)!=='string'?province_id.join():province_id,
+      CityBank: typeof(city_id)!=='string'?city_id.join():city_id,
     }
     if (data.lisenceURL === 1) {
       Toast.fail('营业执照违规请重新上传', 1);
@@ -678,11 +678,6 @@ class qualificationPh extends React.Component {
             <span>法人手机号</span>
             <Input className="select" disabled={this.state.flagDis} maxLength={11} onChange={this.faPhone} value={this.state.faPhone} placeholder="请输入11位手机号码" />
           </div>
-
-
-
-
-
 
           <div style={{ fontSize: '1.2rem', fontWeight: 'bold', float: 'left', padding: '2rem 0 0' }}>场馆收款银行信息<span style={{ fontSize: '0.9rem', fontWeight: '500', color: '#9B9B9B' }}>(也可在提现前填写)</span></div>
           <div className="input" style={{ borderTop: '0.06rem solid #f3f3f3' }}>

@@ -115,7 +115,7 @@ class monthlyIncomePh extends React.Component {
           {sessionStorage.getItem('income') === 'all'?'钱包明细':'' || sessionStorage.getItem('income')  === 'month' ? '本月收入' : '钱包明细' || sessionStorage.getItem('income')  === 'day' ? '今日收入' : '钱包明细'}
         </div>
         <div className="timer">
-        <div style={sessionStorage.getItem('income')=== 'all' ?{}:{display:'none'}}>
+        <div>
           <DatePicker
           mode="date"
           title="选择日期"
@@ -125,10 +125,7 @@ class monthlyIncomePh extends React.Component {
         >
           <List.Item  className="start" ></List.Item>
         </DatePicker>
-
-         
              <span style={{float:'left',lineHeight:'3rem',marginLeft:'0.5rem',display:'block'}}>至</span>
-
           <DatePicker
           mode="date"
           title="选择日期"

@@ -41,7 +41,7 @@ class appOrder extends React.Component {
 
 
   async getAppVenueReservations(data) {
-    const res = await getAppVenueReservations(data)
+    const res = await getAppVenueReservations(data,this.state.token)
 
 
     if (res.data.code === 2000) {
@@ -144,7 +144,7 @@ class appOrder extends React.Component {
 
   componentDidMount() {
     //测试数据
-    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=r704gxb7rhkDMmT0H2g6jz3hMt2rssHwNgd7wrX3sBoCcsuRL3FHxI2Sj0KE62Do&sporttype=5'
+    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=EDuOP5RZXuKAUsC7IZWYE1DaJEmLfKuUGkSfxcepah9LmzFOEcifqjoVOXlG5zay&sporttype=5'
     let query = this.props.location.search  
 
     let arr = query.split('&') 
@@ -152,8 +152,10 @@ class appOrder extends React.Component {
     let sportid = arr[1].slice(8, arr[1].length)
     let token = arr[2].slice(6, arr[2].length)
     let sporttype = arr[3].slice(10, arr[3].length)
-    this.setState({ sportidQuery: sportid })
-    this.getAppVenueReservations({ date: '', siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
+    this.setState({ sportidQuery: sportid,token:token })
+     setTimeout(()=>{
+      this.getAppVenueReservations({ date: '', siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
+     },500)
     let start = new Date().toLocaleDateString()
     if (start.split('/')[0].length === 4) {
       let yoo = start.split('/')[0] + '/' + start.split('/')[1] + '/' + start.split('/')[2]
@@ -161,6 +163,7 @@ class appOrder extends React.Component {
     } else {
       let yoo = start.split('/')[2] + '/' + start.split('/')[0] + '/' + start.split('/')[1]
       this.setState({ date: yoo, token: token, siteid: siteuid, sportid: sportid, sporttypeTwo: sporttype, start: yoo })
+
     }
   }
 

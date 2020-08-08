@@ -63,7 +63,11 @@ class Login extends React.Component {
     this.setState({ code: e.target.value })
   }
   onPassword = e => {
-    this.setState({ pass: e.target.value })
+   
+  
+  
+      this.setState({ pass: e.target.value })
+    
   }
   async nacode(data) {
     const res = await _code(data)
@@ -155,11 +159,12 @@ class Login extends React.Component {
     let data = {
       username: this.state.phone, usercode: this.state.code, userpass: this.state.pass, type: 1, Logintype: 'pc', venueloginuuid: ''
     }
-    console.log(data.username)
     if (data.username === '') {
       message.error('请输入用户名')
     } else if (data.userpass === '') {
       message.error('请输入密码')
+    }else if(/^[^\s]*$/.test(this.state.pass)===false){
+      message.error('密码输入有误')
     } else {
       this.login(data)
     }
@@ -253,7 +258,7 @@ class Login extends React.Component {
                     <Input type="password" />
                   </Form.Item>
                   <Form.Item className="input" style={{ marginTop: -80 }}>
-                    <Input.Password  maxLength={15} onChange={this.onPassword} onPressEnter={this.onSubmitT} placeholder="密码" />
+                    <Input.Password  maxLength={15} onChange={this.onPassword} value={this.state.pass} onPressEnter={this.onSubmitT} placeholder="密码" />
                   </Form.Item>
 
                   <Form.Item className="bind">
