@@ -64,7 +64,7 @@ export function VenueSendMessage(data,headers){    //预约活动列表发送消
 }
 
 export function getVenueReservation(data,headers){    //场地预约情况
-    return axios.post('/api/getVenueReservation',data, {headers: {'token': headers}})
+    return axios.post('/api/getVenueReservations',data, {headers: {'token': headers}})
 }
 
 export function getSiteSettingList(data,headers){    //场地设置列表
@@ -123,6 +123,7 @@ export function VenueTemporarilyClosed(data,headers){    //临时关闭预约
 export function getVenueMoneyList(data,headers){    //我的钱包列表页
     return axios.post('/api/getVenueMoneyList',data, {headers: {'token': headers}})
 }
+
 export function getVenueMoney(data,headers){    //我的钱包余额
     return axios.post('/api/getVenueMoney',data, {headers: {'token': headers}})
 }
@@ -405,11 +406,9 @@ export function getVenueQualified(data,headers){    //填写资质信息时，�
     return axios.post('/api/getVenueQualified',data,{headers: {'token': headers}})
 }
 
-
 export function getVenueComplainList(data,headers){    //在活动列表，查看某一个活动的投诉结论
     return axios.post('/api/getVenueComplainList',data,{headers: {'token': headers}})
 }
-
 
 export function VenueReceivingBankInformation(data,headers){    //修改场馆银行收款信息 
     return axios.post('/api/VenueReceivingBankInformation',data,{headers: {'token': headers}})
@@ -418,6 +417,12 @@ export function VenueReceivingBankInformation(data,headers){    //修改场馆�
 export function getReceivingBankQualifications(data,headers){    //是否具备提现资格（判断当前场馆的银行收款信息是否填写完整并且通过审核）
     return axios.post('/api/getReceivingBankQualifications',data,{headers: {'token': headers}})
 }
+
+export function getSiteSettingHistoryList(data,headers){    //获取历史设置记录列表 
+    return axios.post('/api/getSiteSettingHistoryList',data,{headers: {'token': headers}})
+}
+
+
 
 
 

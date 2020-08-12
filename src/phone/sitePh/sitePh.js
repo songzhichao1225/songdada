@@ -4,7 +4,7 @@ import { Card, Picker, List, Toast, InputItem, Modal, DatePicker, TextareaItem }
 import 'antd-mobile/dist/antd-mobile.css';
 import { Pagination, Drawer, Spin } from 'antd';
 import { } from '@ant-design/icons';
-import { getVenueNumberTitleList, getVenueSportidTitle, DelVenueTitle, getVenueTitleSave, getSiteSelectedVenueid, DelVenueNumberTitle, DelSiteSetting, AddSiteSetting, getVenueNumberTitleSave, getVenueNumberTitleFirst, getSiteSettingList, getSiteSelectedTitle, getSiteSettingFirst, DelSiteSettingDiscount, SiteSettingDiscountSave } from '../../api';
+import { getVenueNumberTitleList, getVenueSportidTitle, DelVenueTitle, getVenueTitleSave, getSiteSelectedVenueid, DelVenueNumberTitle, getSiteSettingHistoryList, DelSiteSetting, AddSiteSetting, getVenueNumberTitleSave, getVenueNumberTitleFirst, getSiteSettingList, getSiteSelectedTitle, getSiteSettingFirst, DelSiteSettingDiscount, SiteSettingDiscountSave } from '../../api';
 
 const alert = Modal.alert;
 
@@ -89,6 +89,7 @@ class sitePh extends React.Component {
     otherTwo: 0,
     pageTwo: 1,
     asyncValueTwo: 0,
+    asyncValueThree: 0,
     spin: true,
     Price: false,
     pickerValueTwo: '',
@@ -117,7 +118,11 @@ class sitePh extends React.Component {
     venDuo: false,
     venueidDuo: '',
     koArr: [],
-    visibleTitleTwo: false
+    visibleTitleTwo: false,
+    historList: [],
+    pageThree: 1,
+    detail: false,
+    details: []
   }
 
   header = e => {
@@ -125,11 +130,14 @@ class sitePh extends React.Component {
       index: e.currentTarget.dataset.index
     })
     if (e.currentTarget.dataset.index === '1') {
-      this.getVenueNumberTitleList({ page: 1, sportid: this.state.asyncValueTwo })
+      this.getVenueNumberTitleList({ page: 1, sportid: this.state.asyncValue })
       this.setState({ asyncValue: this.state.asyncValueTwo, page: 1 })
-    } else {
+    } else if (e.currentTarget.dataset.index === '2') {
       this.getSiteSettingList({ page: 1, sportid: this.state.asyncValue })
       this.setState({ asyncValueTwo: this.state.asyncValue, pageTwo: 1 })
+    } else if (e.currentTarget.dataset.index === '3') {
+      this.getSiteSettingHistoryList({ page: 1, sportid: this.state.asyncValue })
+      this.setState({ asyncValueThree: this.state.asyncValue, pageThree: 1 })
     }
   }
 
@@ -140,6 +148,7 @@ class sitePh extends React.Component {
 
     this.getVenueNumberTitleList({ page: 1, sportid: '' })
     this.getSiteSettingList({ page: 1, sportid: '' })
+    this.getSiteSettingHistoryList({ page: 1, sportid: '' })
     let numArr = []
     for (let i = 1; i <= 100; i++) {
       let obj = { num: i, cheked: false }
@@ -196,11 +205,18 @@ class sitePh extends React.Component {
     })
     this.getSiteSettingList({ page: page, sportid: this.state.asyncValueTwo })
   }
+
+  currentThree = (page, pageSize) => {
+    this.setState({
+      pageThree: page
+    })
+    this.getSiteSettingHistoryList({ page: page, sportid: this.state.asyncValueThree })
+  }
   visibleXi = () => {
     this.setState({ visibleXi: true, chekedArr: [] })
   }
   onClose = () => {
-    this.setState({ visibleXi: false, upData: 0, firstUUid: '' })
+    this.setState({ visibleXi: false, upData: 0, firstUUid: '', detail: false })
   }
 
   onCloseTitle = () => {
@@ -228,7 +244,7 @@ class sitePh extends React.Component {
     }
   }
 
-  
+
 
 
   async DelVenueTitle(data) {
@@ -248,10 +264,10 @@ class sitePh extends React.Component {
     } else {
       window.event.cancelBubble = true
     }
-    if(this.state.idxTitleTwo===e.currentTarget.dataset.title){
-    
+    if (this.state.idxTitleTwo === e.currentTarget.dataset.title) {
+
       console.log(e.currentTarget.dataset.title)
-      this.setState({ idxTitle: '',idxTitleTwo:'请选择/添加' })
+      this.setState({ idxTitle: '', idxTitleTwo: '请选择/添加' })
     }
     this.DelVenueTitle({ uuid: e.currentTarget.dataset.uuid })
 
@@ -289,9 +305,9 @@ class sitePh extends React.Component {
   }
 
   sonClik = e => {
- 
-      this.setState({ idxTitle: e.currentTarget.dataset.title })
-    
+
+    this.setState({ idxTitle: e.currentTarget.dataset.title })
+
   }
   btnComfir = () => {
     console.log(this.state.idxTitle)
@@ -503,9 +519,54 @@ class sitePh extends React.Component {
     })
   }
 
+
+
+  async getSiteSettingHistoryList(data) {
+    const res = await getSiteSettingHistoryList(data, localStorage.getItem('venue_token'))
+    for (let i in res.data.data) {
+      if (res.data.data[i].maxScheduledDate === '0.1') {
+        res.data.data[i].maxScheduledDateTwo = '1周'
+      } else if (res.data.data[i].maxScheduledDate === '0.2') {
+        res.data.data[i].maxScheduledDateTwo = '2周'
+      } else if (res.data.data[i].maxScheduledDate === '0.3') {
+        res.data.data[i].maxScheduledDateTwo = '3周'
+      } else if (res.data.data[i].maxScheduledDate === '1') {
+        res.data.data[i].maxScheduledDateTwo = '1个月'
+      } else if (res.data.data[i].maxScheduledDate === '2') {
+        res.data.data[i].maxScheduledDateTwo = '2个月'
+      }
+    }
+    for (let i in res.data.data) {
+      res.data.data[i].opendaynameTwo = ''
+      if (res.data.data[i].openday.split(',').indexOf('1') !== -1) {
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周一'
+      } if (res.data.data[i].openday.split(',').indexOf('2') !== -1) {
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周二'
+      } if (res.data.data[i].openday.split(',').indexOf('3') !== -1) {
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周三'
+      } if (res.data.data[i].openday.split(',').indexOf('4') !== -1) {
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周四'
+      } if (res.data.data[i].openday.split(',').indexOf('5') !== -1) {
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周五'
+      } if (res.data.data[i].openday.split(',').indexOf('6') !== -1) {
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周六'
+      } if (res.data.data[i].openday.split(',').indexOf('7') !== -1) {
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周日'
+      }
+    }
+    this.setState({
+      historList: res.data.data,
+      otherThree: res.data.other
+    })
+  }
+
   asyncValueTwo = e => {
-    this.setState({ asyncValueTwo: e[0] })
+    this.setState({ asyncValue: e[0], asyncValueTwo: e[0],pageTwo:1 })
     this.getSiteSettingList({ page: 1, sportid: e[0] })
+  }
+  asyncValueThree = e => {
+    this.setState({ asyncValue: e[0], asyncValueThree: e[0],pageThree:1 })
+    this.getSiteSettingHistoryList({ page: 1, sportid: e[0] })
   }
 
 
@@ -749,10 +810,7 @@ class sitePh extends React.Component {
         }
         if (kol.length !== 0) {
           for (let i in g) {
-            if (g[i] === kol[i].num) {
-              kol[i].cheked = true
-            }
-
+              kol[h.indexOf(g[i])].cheked = true
           }
         }
 
@@ -888,12 +946,16 @@ class sitePh extends React.Component {
   onCloseTitleTwo = () => {
     this.setState({ visibleTitleTwo: false })
   }
+  detail = e => {
+    this.setState({ detail: true, details: e.currentTarget.dataset })
+  }
   render() {
     return (
       <div className="sitePh">
         <div className="header">
           <div onClick={this.header} data-index='1' style={this.state.index === '1' ? { color: '#D85D27' } : {}}>场地细分<div style={this.state.index === '1' ? { width: '10%', height: '2px', background: '#D85D27', margin: '-3px auto 0' } : { display: 'none' }}></div></div>
           <div onClick={this.header} data-index='2' style={this.state.index === '2' ? { color: '#D85D27' } : {}}>价格设置<div style={this.state.index === '2' ? { width: '10%', height: '2px', background: '#D85D27', margin: '-3px auto 0' } : { display: 'none' }}></div></div>
+          <div onClick={this.header} data-index='3' style={this.state.index === '3' ? { color: '#D85D27' } : {}}>历史设置<div style={this.state.index === '3' ? { width: '10%', height: '2px', background: '#D85D27', margin: '-3px auto 0' } : { display: 'none' }}></div></div>
         </div>
         <div className="wsMa4" style={this.state.index === '1' ? {} : { display: 'none' }}>
           <div className="Subdivide">
@@ -973,6 +1035,51 @@ class sitePh extends React.Component {
             </Picker>
             <div style={{ marginLeft: '4%' }} onClick={this.Price}>+添加价格设置</div>
           </div>
+        </div>
+
+        <div className="siting69" style={this.state.index === '3' ? {} : { display: 'none' }}>
+          <div className="Subdivide">
+            {
+              this.state.historList.map((item, i) => (
+                <Card className="card" key={i}>
+                  <Card.Header
+                    title={<span className="titleLeft">{item.sportname}</span>}
+                    extra={<span className="titleRight">细分标签：{item.tags}</span>}
+                  />
+                  <Card.Body>
+                    <div className="bossname">
+                      <div onClick={this.venDuo} data-venueid={item.venueid}>场地编号：{item.venueid}</div>
+                      <div>场地数量：{item.sitenumber}</div>
+                      <div onClick={this.venDuo} data-venueid={item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}>星期：{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</div>
+                      <div>时间范围：{item.starttime}~{item.endtime}</div>
+                      <div>价格：{item.costperhour}元/时</div>
+                      <div>最长提前预定时间：{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</div>
+                      <div onClick={this.venDuo} data-venueid={item.appointmenttime / 60 + '小时'}>最短提前预定时间：{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</div>
+                      <div onClick={item.comment === null ? '' : this.venDuo} data-venueid={item.comment === '' ? '无' : item.comment}>备注：{item.comment === '' ? '无' : item.comment}</div>
+                      <div>打折优惠:{item.discount_edate === '' ? '无' : <span style={{ color: '#D85D27', cursor: 'pointer' }} data-sd={item.discount_sdate} data-ed={item.discount_edate} data-st={item.discount_start} data-et={item.discount_end} data-ve={item.discount_venueid} data-cos={item.discount_costperhour} onClick={this.detail}>查看</span>}</div>
+                      <div>操作:{item.operation === 1 ? '添加' : item.operation === 2 ? '修改' : item.operation === 3 ? '删除' : '无'}</div>
+                      <div style={{ width: '100%' }}>操作时间:{item.intime}</div>
+                    </div>
+                  </Card.Body>
+
+                </Card>
+              ))
+            }
+            <div style={this.state.siteList.length !== 0 ? { display: 'none' } : { width: '100%' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (6).png')} alt="666" /><span style={{ display: 'block', textAlign: 'center' }}>您还没有历史设置!</span></div>
+            <Pagination style={{ marginBottom: '15px' }} size="small" hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.pageThree} total={this.state.otherThree} onChange={this.currentThree} />
+          </div>
+          <div className="footerSite">
+            <Picker
+              data={this.state.sportArr}
+              cols={1}
+              onOk={this.asyncValueThree}
+              style={{ width: '100%' }}
+            >
+              <div><img src={require('../../assets/shai.png')} alt="img" />筛选：<span style={{ color: '#000' }}>{this.state.sportArr[this.state.asyncValueThree].label}</span></div>
+            </Picker>
+
+          </div>
+
         </div>
 
 
@@ -1185,6 +1292,7 @@ class sitePh extends React.Component {
           title={'添加/修改' + this.state.sportSiscount + '优惠设置'}
           placement="bottom"
           height='100%'
+          className="kopd"
           onClose={this.specialOfferClose}
           visible={this.state.specialOffer}
         >
@@ -1261,9 +1369,27 @@ class sitePh extends React.Component {
           onClose={this.venDuoTwo}
           title="详情"
         >
-          <div style={{ width: '100%', height: '50px' }}>
+          <div style={{ width: '100%', height: '50px', wordBreak: 'break-all ' }}>
             {this.state.venueidDuo}
           </div>
+        </Modal>
+
+        <Modal
+          visible={this.state.detail}
+          transparent
+          onClose={this.onClose}
+          title="折扣优惠详情"
+
+        >
+          <div style={{ textAlign: 'left' }}>
+            <p>开始日期:{this.state.details.sd}</p>
+            <p>结束日期:{this.state.details.ed}</p>
+            <p>开始时间:{this.state.details.st}</p>
+            <p>结束时间:{this.state.details.et}</p>
+            <p style={{ wordBreak: 'break-all' }}>场&nbsp;&nbsp;地&nbsp;&nbsp;号:{this.state.details.ve}</p>
+            <p>优惠价格:￥{this.state.details.cos}</p>
+          </div>
+
         </Modal>
 
 

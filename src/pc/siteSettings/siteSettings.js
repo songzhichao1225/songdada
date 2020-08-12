@@ -1,8 +1,8 @@
 import React from 'react';
 import './siteSettings.css';
 import 'antd/dist/antd.css';
-import { getSiteSettingList, addVenueField, getVenueSport, AddSiteSetting, DelSiteSetting, getVenueSportidTitle, DelVenueTitle, SiteSettingDiscountSave, getVenueNumberTitleFirst, getSiteSettingFirst, getSiteSelectedTitle, DelVenueNumberTitle, getSiteSelectedVenueid, getVenueTitleSave, getVenueNumberTitleSave, getVenueNumberTitleList, DelSiteSettingDiscount } from '../../api';
-import { Select, Row, Col, Modal, DatePicker, InputNumber, Input, message, Pagination, Popconfirm, Divider, Popover, Spin } from 'antd';
+import { getSiteSettingList, addVenueField, getVenueSport, AddSiteSetting, DelSiteSetting, getVenueSportidTitle, DelVenueTitle, SiteSettingDiscountSave, getSiteSettingHistoryList, getVenueNumberTitleFirst, getSiteSettingFirst, getSiteSelectedTitle, DelVenueNumberTitle, getSiteSelectedVenueid, getVenueTitleSave, getVenueNumberTitleSave, getVenueNumberTitleList, DelSiteSettingDiscount } from '../../api';
+import { Select, Row, Col, Modal, DatePicker, InputNumber, Input, message, Pagination, Popconfirm, Divider, Popover, Spin, Drawer } from 'antd';
 import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/zh_CN';
@@ -83,9 +83,13 @@ class siteSettings extends React.Component {
     chekedFour: [],
     lppd: 0,
     lppding: true,
-    titleDel:'',
+    titleDel: '',
     timer: [{ name: '00:00' }, { name: '00:30' }, { name: '01:00' }, { name: '01:30' }, { name: '02:00' }, { name: '02:30' }, { name: '03:00' }, { name: '03:30' }, { name: '04:00' }, { name: '04:30' }, { name: '05:00' }, { name: '05:30' }, { name: '06:00' }, { name: '06:30' }, { name: '07:00' }, { name: '07:30' }, { name: '08:00' }, { name: '08:30' }, { name: '09:00' }, { name: '09:30' }, { name: '10:00' }, { name: '10:30' }, { name: '11:00' }, { name: '11:30' }, { name: '12:00' }, { name: '12:30' }, { name: '13:00' }, { name: '13:30' }, { name: '14:00' }, { name: '14:30' }, { name: '15:00' }, { name: '15:30' }, { name: '16:00' }, { name: '16:30' }, { name: '17:00' }, { name: '17:30' }, { name: '18:00' }, { name: '18:30' }, { name: '19:00' }, { name: '19:30' }, { name: '20:00' }, { name: '20:30' }, { name: '21:00' }, { name: '21:30' }, { name: '22:00' }, { name: '22:30' }, { name: '23:00' }, { name: '23:30' }, { name: '24:00' }],
-    open:false
+    open: false,
+    historyArr: [],
+    pageThree: 1,
+    detail: false,
+    deData: [],
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -118,7 +122,7 @@ class siteSettings extends React.Component {
       }
 
       for (let i in res.data.data) {
-        res.data.data[i].opendaynameTwo=''
+        res.data.data[i].opendaynameTwo = ''
         if (res.data.data[i].openday.split(',').indexOf('1') !== -1) {
           res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周一'
         } if (res.data.data[i].openday.split(',').indexOf('2') !== -1) {
@@ -147,14 +151,14 @@ class siteSettings extends React.Component {
 
   componentDidMount() {
 
-
     this.getVenueSport()
     this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
+    this.getSiteSettingHistoryList({ sportid: this.state.nameChang, page: 1 })
     sessionStorage.setItem('siteSettings', '')
     if (this.state.runId !== '') {
       this.setState({
         joinB: false
-      }) 
+      })
     }
     let arrNum = []
     for (let i = 1; i <= 100; i++) {
@@ -164,8 +168,10 @@ class siteSettings extends React.Component {
       arrNum.push(p)
     }
     this.setState({
-      arrNum: arrNum
+      arrNum: arrNum,
+      headerData: sessionStorage.getItem('headerData')
     })
+
 
     this.getVenueNumberTitleList({ sportid: this.state.nameChang })
 
@@ -176,11 +182,14 @@ class siteSettings extends React.Component {
       nameChang: e
     })
     if (this.state.headerData === '1') {
-      this.setState({pageOne:1})
+      this.setState({ pageOne: 1 })
       this.getVenueNumberTitleList({ sportid: e, page: 1 })
-    } else {
-      this.setState({page:1})
+    } else if (this.state.headerData === '2') {
+      this.setState({ page: 1 })
       this.getSiteSettingList({ sportid: e, page: 1 })
+    } else if (this.state.headerData === '3') {
+      this.setState({pageThree:1})
+      this.getSiteSettingHistoryList({ sportid: e, page: 1 })
     }
   }
 
@@ -340,27 +349,28 @@ class siteSettings extends React.Component {
       endtime: timeString[1]
     })
   }
-  starttime=e=>{
+  starttime = e => {
     this.setState({
-      starttime:e
+      starttime: e
     })
   }
-  endtime=e=>{
+  endtime = e => {
     console.log(this.state.starttime)
-    if(this.state.starttime===e){
-     message.error('开始时间不能等于结束时间')
-     this.setState({endtime:''})
-    }else{
-      this.setState({endtime:e})
+    if (this.state.starttime === e) {
+      message.error('开始时间不能等于结束时间')
+      this.setState({ endtime: '' })
+    } else {
+      this.setState({ endtime: e })
     }
   }
 
-  
+
   money = e => {
-    this.setState({ costperhour: e })
+    console.log(e.target.value)
+    this.setState({ costperhour: e.target.value })
   }
   moneyTwo = e => {
-    this.setState({ costperhourTwo: e })
+    this.setState({ costperhourTwo: e.target.value })
   }
   handleChangeFour = e => {
     this.setState({ maxScheduledDate: e })
@@ -432,6 +442,9 @@ class siteSettings extends React.Component {
       this.setState({
         visible: false, update: 0, Disid: '',
       })
+    } else if (res.data.code === 4001) {
+      this.props.history.push('/')
+      message.error('登录超时请重新登录!')
     } else {
       message.error(res.data.msg)
     }
@@ -449,7 +462,7 @@ class siteSettings extends React.Component {
       message.warning('请选择时间范围（开始时间）')
     } else if (endtime === '') {
       message.warning('请选择时间范围（结束时间）')
-    } else if (costperhour === '') {
+    } else if (costperhour === '' || costperhour === null) {
       message.warning('请填写价格')
     } else if (maxScheduledDate === '') {
       message.warning('请选择最长可预订日期')
@@ -493,56 +506,63 @@ class siteSettings extends React.Component {
 
   async getSiteSettingFirst(data) {
     const res = await getSiteSettingFirst(data, sessionStorage.getItem('venue_token'))
-    let attop = []
-    if (res.data.data[0].openday.split(',').indexOf('1') !== -1) {
-      attop.push('周一')
-    } if (res.data.data[0].openday.split(',').indexOf('2') !== -1) {
-      attop.push('周二')
-    } if (res.data.data[0].openday.split(',').indexOf('3') !== -1) {
-      attop.push('周三')
-    } if (res.data.data[0].openday.split(',').indexOf('4') !== -1) {
-      attop.push('周四')
-    } if (res.data.data[0].openday.split(',').indexOf('5') !== -1) {
-      attop.push('周五')
-    } if (res.data.data[0].openday.split(',').indexOf('6') !== -1) {
-      attop.push('周六')
-    } if (res.data.data[0].openday.split(',').indexOf('7') !== -1) {
-      attop.push('周日')
-    }
-    let dayTwo = ''
-    switch (res.data.data[0].maxScheduledDate) {
-      case '0.1':
-        dayTwo = "一周";
-        break;
-      case '0.2':
-        dayTwo = "两周";
-        break;
-      case '0.3':
-        dayTwo = "三周";
-        break;
-      case '1':
-        dayTwo = "一个月";
-        break;
-      case '2':
-        dayTwo = "两个月";
-        break;
-      default:
+    if (res.data.code === 2000) {
+      let attop = []
+      if (res.data.data[0].openday.split(',').indexOf('1') !== -1) {
+        attop.push('周一')
+      } if (res.data.data[0].openday.split(',').indexOf('2') !== -1) {
+        attop.push('周二')
+      } if (res.data.data[0].openday.split(',').indexOf('3') !== -1) {
+        attop.push('周三')
+      } if (res.data.data[0].openday.split(',').indexOf('4') !== -1) {
+        attop.push('周四')
+      } if (res.data.data[0].openday.split(',').indexOf('5') !== -1) {
+        attop.push('周五')
+      } if (res.data.data[0].openday.split(',').indexOf('6') !== -1) {
+        attop.push('周六')
+      } if (res.data.data[0].openday.split(',').indexOf('7') !== -1) {
+        attop.push('周日')
+      }
+      let dayTwo = ''
+      switch (res.data.data[0].maxScheduledDate) {
+        case '0.1':
+          dayTwo = "一周";
+          break;
+        case '0.2':
+          dayTwo = "两周";
+          break;
+        case '0.3':
+          dayTwo = "三周";
+          break;
+        case '1':
+          dayTwo = "一个月";
+          break;
+        case '2':
+          dayTwo = "两个月";
+          break;
+        default:
 
-        dayTwo = "请选择";
+          dayTwo = "请选择";
+      }
+      console.log()
+      this.setState({ maxScheduledDateName: dayTwo })
+      this.setState({
+        runId: res.data.data[0].sportid, tags: res.data.data[0].tags,
+        discount_sdate: res.data.data[0].discount_sdate, discount_edate: res.data.data[0].discount_edate, discount_start: res.data.data[0].discount_start,
+        discount_end: res.data.data[0].discount_end, costperhourTwo: res.data.data[0].discount_costperhour === null ? res.data.data[0].costperhour.slice(0,res.data.data[0].costperhour.indexOf('.')) : res.data.data[0].discount_costperhour.slice(0,res.data.data[0].discount_costperhour.indexOf('.')),
+        runIdTwo: res.data.data[0].sportid, tagsTwo: res.data.data[0].tags, opendayname: attop, openday: res.data.data[0].openday.split(','), starttime: res.data.data[0].starttime,
+        endtime: res.data.data[0].endtime, costperhour: res.data.data[0].costperhour.slice(0,res.data.data[0].costperhour.indexOf('.')), chekedTwo: res.data.data[0].venueid, chekedFour: res.data.data[0].venueid, chekedThree: res.data.data[0].discount_venueid !== null ? res.data.data[0].discount_venueid : res.data.data[0].venueid, chekedTwoLen: res.data.data[0].sitenumber, appointmenttime: res.data.data[0].appointmenttime,
+        tagsTwoId: res.data.data[0].tags_id, comment: res.data.data[0].comment, maxScheduledDate: res.data.data[0].maxScheduledDate, runNameTwo: res.data.data[0].sportname, Disid: res.data.data[0].uuid
+      })
+      if (this.state.runIdTwo !== '') {
+        this.getVenueSportidTitle({ sportid: this.state.runIdTwo })
+        this.getSiteSelectedTitle({ sportid: this.state.runIdTwo })
+      }
+    } else if (res.data.code === 4001) {
+      this.props.history.push('/')
+      message.error('登录超时请重新登录!')
     }
-    this.setState({ maxScheduledDateName: dayTwo })
-    this.setState({
-      runId: res.data.data[0].sportid, tags: res.data.data[0].tags,
-      discount_sdate: res.data.data[0].discount_sdate, discount_edate: res.data.data[0].discount_edate, discount_start: res.data.data[0].discount_start,
-      discount_end: res.data.data[0].discount_end, costperhourTwo: res.data.data[0].discount_costperhour === null ? res.data.data[0].costperhour : res.data.data[0].discount_costperhour,
-      runIdTwo: res.data.data[0].sportid, tagsTwo: res.data.data[0].tags, opendayname: attop, openday: res.data.data[0].openday.split(','), starttime: res.data.data[0].starttime,
-      endtime: res.data.data[0].endtime, costperhour: res.data.data[0].costperhour, chekedTwo: res.data.data[0].venueid, chekedFour: res.data.data[0].venueid, chekedThree: res.data.data[0].discount_venueid !== null ? res.data.data[0].discount_venueid : res.data.data[0].venueid, chekedTwoLen: res.data.data[0].sitenumber, appointmenttime: res.data.data[0].appointmenttime,
-      tagsTwoId: res.data.data[0].tags_id, comment: res.data.data[0].comment, maxScheduledDate: res.data.data[0].maxScheduledDate, runNameTwo: res.data.data[0].sportname, Disid: res.data.data[0].uuid
-    })
-    if (this.state.runIdTwo !== '') {
-      this.getVenueSportidTitle({ sportid: this.state.runIdTwo })
-      this.getSiteSelectedTitle({ sportid: this.state.runIdTwo })
-    }
+
   }
 
   delet = e => {
@@ -562,17 +582,50 @@ class siteSettings extends React.Component {
     this.setState({ pageOne: page })
     this.getVenueNumberTitleList({ sportid: this.state.nameChang, page: page })
   }
+
+
+  async getSiteSettingHistoryList(data) {
+    const res = await getSiteSettingHistoryList(data, sessionStorage.getItem('venue_token'))
+
+    if (res.data.code === 2000) {
+      for (let i in res.data.data) {
+        if (res.data.data[i].maxScheduledDate === '0.1') {
+          res.data.data[i].maxScheduledDateTwo = '1周'
+        } else if (res.data.data[i].maxScheduledDate === '0.2') {
+          res.data.data[i].maxScheduledDateTwo = '2周'
+        } else if (res.data.data[i].maxScheduledDate === '0.3') {
+          res.data.data[i].maxScheduledDateTwo = '3周'
+        } else if (res.data.data[i].maxScheduledDate === '1') {
+          res.data.data[i].maxScheduledDateTwo = '1个月'
+        } else if (res.data.data[i].maxScheduledDate === '2') {
+          res.data.data[i].maxScheduledDateTwo = '2个月'
+        }
+      }
+    }
+    this.setState({ historyArr: res.data.data, otherThree: res.data.other })
+  }
+
+  pageThree = (page, pageSize) => {
+    this.setState({ pageThree: page })
+    this.getSiteSettingHistoryList({ sportid: this.state.nameChang, page: page })
+  }
+
+
   headerCli = e => {
-    if(e.currentTarget.dataset.id==='2'){
+    if (e.currentTarget.dataset.id === '2') {
       this.getSiteSettingList({ sportid: this.state.nameChang, page: 1 })
-      this.setState({page:1})
-    }else if(e.currentTarget.dataset.id==='1'){
-      this.getVenueNumberTitleList({ sportid: this.state.nameChang, page:1 })
-      this.setState({pageOne:1})
+      this.setState({ page: 1 })
+    } else if (e.currentTarget.dataset.id === '1') {
+      this.getVenueNumberTitleList({ sportid: this.state.nameChang, page: 1 })
+      this.setState({ pageOne: 1 })
+    } else if (e.currentTarget.dataset.id === '3') {
+      this.setState({ pageThree: 1 })
+      this.getSiteSettingHistoryList({ sportid: this.state.nameChang, page: 1 })
     }
     this.setState({
       headerData: e.currentTarget.dataset.id,
     })
+    sessionStorage.setItem('headerData', e.currentTarget.dataset.id)
   }
   handlejoinXi = () => {
     this.setState({
@@ -614,9 +667,9 @@ class siteSettings extends React.Component {
     const res = await getVenueTitleSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.getVenueSportidTitle({ sportid: this.state.runId })
-    } else if(res.data.code===4002) {
+    } else if (res.data.code === 4002) {
       message.warning('请选择场地类型')
-    }else{
+    } else {
       message.warning(res.data.msg)
     }
   }
@@ -626,9 +679,9 @@ class siteSettings extends React.Component {
     const { name } = this.state;
     if (name === '') {
       message.warning('请输入标签')
-    } else if (name.replace(/\s*/g,"") === '普通') {
+    } else if (name.replace(/\s*/g, "") === '普通') {
       message.warning('该标签已存在')
-    } else if (name.replace(/\s*/g,"").toUpperCase() === 'VIP') {
+    } else if (name.replace(/\s*/g, "").toUpperCase() === 'VIP') {
       message.warning('该标签已存在')
     } else {
       this.getVenueTitleSave({ sportid: this.state.runId, title: name })
@@ -872,7 +925,14 @@ class siteSettings extends React.Component {
     const res = await DelVenueNumberTitle(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success('删除成功')
-      this.getVenueNumberTitleList({ sportid: this.state.nameChang, page: this.state.pageOne })
+      if (this.state.otherseris % 10 === 1) {
+        this.setState({pageOne:Number(this.state.pageOne) - 1})
+        this.getVenueNumberTitleList({ sportid: this.state.nameChang, page: Number(this.state.pageOne) - 1 })
+      } else {
+        this.setState({pageOne:this.state.pageOne})
+        this.getVenueNumberTitleList({ sportid: this.state.nameChang, page: this.state.pageOne })
+      }
+
     } else {
       message.error(res.data.msg)
     }
@@ -904,12 +964,12 @@ class siteSettings extends React.Component {
       // starttime: '',
       // endtime: '',
       typeDetel: 1,
-      runIdTwo:'',
+      runIdTwo: '',
     })
   }
   async getSiteSelectedTitle(data) {
     const res = await getSiteSelectedTitle(data, sessionStorage.getItem('venue_token'))
-    if (res.data.data.length === 0 && this.state.headerData === '2'&&this.state.runIdTwo!=='') {
+    if (res.data.data.length === 0 && this.state.headerData === '2' && this.state.runIdTwo !== '') {
       this.setState({
         nosubdivisions: true,
         runId: data.sportid
@@ -945,8 +1005,14 @@ class siteSettings extends React.Component {
     const res = await DelSiteSetting(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success('删除成功')
-      this.getVenueNumberTitleList({ sportid: this.state.nameChang, page: this.state.pageOne })
-      this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
+      if (this.state.other % 10 === 1) {
+         this.setState({page:Number(this.state.page) - 1 })
+        this.getSiteSettingList({ sportid: this.state.nameChang, page: Number(this.state.page) - 1 })
+      } else {
+        this.setState({page:Number(this.state.page) })
+        this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
+      }
+
     } else {
       message.error(res.data.msg)
     }
@@ -1113,8 +1179,8 @@ class siteSettings extends React.Component {
     const res = await DelVenueTitle(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success('删除成功')
-      if(this.state.titleDel===this.state.tags){
-        this.setState({tags:''})
+      if (this.state.titleDel === this.state.tags) {
+        this.setState({ tags: '' })
       }
       this.getVenueSportidTitle({ sportid: this.state.runId })
     } else {
@@ -1122,11 +1188,11 @@ class siteSettings extends React.Component {
     }
   }
   deletSelect = (e) => {
-    if(e.currentTarget.dataset.id!=='1'){
-      this.setState({titleDel:e.currentTarget.dataset.title})
+    if (e.currentTarget.dataset.id !== '1') {
+      this.setState({ titleDel: e.currentTarget.dataset.title })
       this.DelVenueTitle({ uuid: e.currentTarget.dataset.id })
     }
-  
+
   }
   getPosition = e => {
     const titleDom = e.target
@@ -1166,24 +1232,30 @@ class siteSettings extends React.Component {
       }
     }
   }
-  openSelect=(open)=>{
-    this.setState({open:open})
+  openSelect = (open) => {
+    this.setState({ open: open })
   }
-  allChed=()=>{
-    let items=this.state.arrNumTwo
-    for(let i in items){
-      items[i].cheked=true
+  allChed = () => {
+    let items = this.state.arrNumTwo
+    for (let i in items) {
+      items[i].cheked = true
     }
-    this.setState({arrNumTwo:items})
+    this.setState({ arrNumTwo: items })
   }
-  allChedTwo=()=>{
-    let items=this.state.arrNumTwo
-    for(let i in items){
-      items[i].cheked=!items[i].cheked
+  allChedTwo = () => {
+    let items = this.state.arrNumTwo
+    for (let i in items) {
+      items[i].cheked = !items[i].cheked
     }
-    this.setState({arrNumTwo:items})
+    this.setState({ arrNumTwo: items })
   }
+  details = (e) => {
+    this.setState({ detail: true, deData: e.currentTarget.dataset })
 
+  }
+  onClose = () => {
+    this.setState({ detail: false })
+  }
   render() {
     const { name } = this.state;
     return (
@@ -1192,6 +1264,7 @@ class siteSettings extends React.Component {
           <div className="header">
             <div className="left" style={this.state.headerData === '1' ? { color: '#fff', background: '#F5A623', border: '1px solid #F5A623' } : {}} onClick={this.headerCli} data-id='1'>场地细分</div>
             <div className="left" style={this.state.headerData === '2' ? { color: '#fff', background: '#F5A623', border: '1px solid #F5A623' } : {}} onClick={this.headerCli} data-id='2'>价格设置</div>
+            <div className="left" style={this.state.headerData === '3' ? { color: '#fff', background: '#F5A623', border: '1px solid #F5A623' } : {}} onClick={this.headerCli} data-id='3'>历史设置</div>
             <div className="right"><span>场地类型</span>
               <Select className="selectName" defaultValue="类型名称" value={this.state.nameChang === '' ? '全部' : this.state.nameChang} style={{ width: 130, padding: 0, textAlign: 'center' }} onChange={this.nameChang}>
                 <Option value="0">全部</Option>
@@ -1237,23 +1310,23 @@ class siteSettings extends React.Component {
                     <Row key={i} className="rowList">
                       <Col xs={{ span: 2 }}>{item.sportname}</Col>
                       <Col xs={{ span: 2 }}>{item.tags}</Col>
-                      <Popover content={(<div className="titleVenid">{item.venueid}</div>)} title='详情' trigger="click">
-                        <Col xs={{ span: 2 }} style={{cursor:'pointer'}}>{item.venueid}</Col>
+                      <Popover content={(<div style={{maxWidth:'200px',wordBreak:'break-all'}}>{item.venueid}</div>)} title='详情' trigger="click">
+                        <Col xs={{ span: 2 }} style={{ cursor: 'pointer' }}>{item.venueid}</Col>
                       </Popover>
                       <Col xs={{ span: 2 }}>{item.sitenumber}</Col>
                       <Popover content={(<span>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</span>)} title='详情' trigger="click">
-                        <Col style={{cursor:'pointer'}} xs={{ span: 2 }}>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</Col>
+                        <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</Col>
                       </Popover>
                       <Col xs={{ span: 2 }} style={{ lineHeight: '24px' }}>{item.starttime}<br />{item.endtime}</Col>
                       <Col xs={{ span: 2 }}>{item.costperhour}</Col>
                       <Col xs={{ span: 2 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
                       <Col xs={{ span: 2 }}>{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</Col>
                       <Popover content={(<span>{item.comment === '' ? '无' : item.comment}</span>)} title='详情' trigger="click">
-                        <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',cursor:'pointer' }}>{item.comment === '' ? '无' : item.comment}</Col>
+                        <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer' }}>{item.comment === '' ? '无' : item.comment}</Col>
                       </Popover>
-                      <Col xs={{ span: 2 }} ><span style={{ cursor: 'pointer',padding:'3px 6px' }} data-uid={item.uuid} data-type={item.discount_edate} onClick={this.preferential}>{item.discount_edate === null ? '添加' : '查看'}</span></Col>
+                      <Col xs={{ span: 2 }} ><span style={{ cursor: 'pointer', padding: '3px 6px' }} data-uid={item.uuid} data-type={item.discount_edate} onClick={this.preferential}>{item.discount_edate === null ? '添加' : '查看'}</span></Col>
                       <Col xs={{ span: 2 }}>
-                        <img onClick={this.update} style={{ cursor: 'pointer' }}  data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;
+                        <img onClick={this.update} style={{ cursor: 'pointer' }} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;
                       <Popconfirm
                           title={"你确定要删除该条价格设置么?删除后用户将无法预订" + item.sportname + '的' + item.tags + '场地'}
                           onConfirm={this.confirmMoney}
@@ -1261,7 +1334,7 @@ class siteSettings extends React.Component {
                           okText="确定"
                           cancelText="取消"
                         >
-                          <img onClick={this.deletTwoMoney} style={{ cursor: 'pointer' }}  data-uuid={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
+                          <img onClick={this.deletTwoMoney} style={{ cursor: 'pointer' }} data-uuid={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
                         </Popconfirm>
                       </Col>
                     </Row>
@@ -1269,9 +1342,9 @@ class siteSettings extends React.Component {
                 }
               </div>
             </div>
-            
-             <div style={this.state.list.length === 0?{width:'100%'}:{display:'none'}}><img style={{width:'84px',height:'84px',display:'block',margin:'64px auto 0'}} src={require('../../assets/xifen (6).png')} alt='icon'/><span style={{display:'block',textAlign:'center'}}>您还没有设置场地价格!</span></div>
-            <Pagination style={{ marginBottom: '15px' }}  hideOnSinglePage={true} showSizeChanger={false}  className={this.state.hidden === true ? 'fenye' : 'hidden'} current={this.state.page} total={this.state.other} onChange={this.current} />
+
+            <div style={this.state.list.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '84px', height: '84px', display: 'block', margin: '64px auto 0' }} src={require('../../assets/xifen (6).png')} alt='icon' /><span style={{ display: 'block', textAlign: 'center' }}>您还没有设置场地价格!</span></div>
+            <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} showSizeChanger={false} className={this.state.hidden === true ? 'fenye' : 'hidden'} current={this.state.page} total={this.state.other} onChange={this.current} />
           </div>
 
           <div className="join" style={this.state.headerData === '2' ? {} : { display: 'none' }} onClick={this.showModalTwo}><div id="join" style={{ textAlign: 'center', width: '150px', margin: '0 auto' }}>+添加价格设置</div></div>
@@ -1288,13 +1361,13 @@ class siteSettings extends React.Component {
                 <Row key={i} style={{ borderBottom: '1px solid #E1E0E1' }}>
                   <Col xs={{ span: 5 }}>{item.sportid}</Col>
                   <Col xs={{ span: 5 }}>{item.title}</Col>
-                  <Popover content={(<div className="titleVenid">{item.venueid}</div>)} title='详情' trigger="click">
-                    <Col xs={{ span: 5 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',cursor:'pointer' }} onClick={this.tooltip}>{item.venueid}</Col>
+                  <Popover content={(<div style={{maxWidth:'200px',wordBreak:'break-all'}}>{item.venueid}</div>)} title='详情' trigger="click">
+                    <Col xs={{ span: 5 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer' }} onClick={this.tooltip}>{item.venueid}</Col>
                   </Popover>
 
                   <Col xs={{ span: 5 }}>{item.number}</Col>
                   <Col xs={{ span: 3 }}>
-                    <img onClick={this.modification}  data-uuid={item.uuid} style={{ marginRight: '5px',cursor: 'pointer' }} src={require("../../assets/icon_pc_updata.png")} alt="修改" />
+                    <img onClick={this.modification} data-uuid={item.uuid} style={{ marginRight: '5px', cursor: 'pointer' }} src={require("../../assets/icon_pc_updata.png")} alt="修改" />
                     <Popconfirm
                       title={'您确定要删除该条场地细分么?删除后用户将无法预订' + item.sportid + '的' + item.title + '场地'}
                       onConfirm={this.confirmserisa}
@@ -1302,17 +1375,94 @@ class siteSettings extends React.Component {
                       okText="确定"
                       cancelText="取消"
                     >
-                      <img style={{ marginLeft: '5px',cursor:'pointer' }} onClick={this.deletserisa} data-id={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
+                      <img style={{ marginLeft: '5px', cursor: 'pointer' }} onClick={this.deletserisa} data-id={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
                     </Popconfirm>
                   </Col>
                 </Row>
               ))
             }
-           
-            <div style={this.state.joinXiList.length === 0?{width:'100%'}:{display:'none'}}><img style={{width:'84px',height:'84px',display:'block',margin:'64px auto 0'}} src={require('../../assets/xifen (1).png')} alt='icon'/><span style={{display:'block',textAlign:'center'}}>您还没有设置场地细分!</span></div>
+
+            <div style={this.state.joinXiList.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '84px', height: '84px', display: 'block', margin: '64px auto 0' }} src={require('../../assets/xifen (1).png')} alt='icon' /><span style={{ display: 'block', textAlign: 'center' }}>您还没有设置场地细分!</span></div>
             <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.pageOne} onChange={this.recordListOther} total={this.state.otherseris} />
           </div>
           <div className="join" style={this.state.headerData === '1' ? {} : { display: 'none' }} onClick={this.showModal}><div style={{ textAlign: 'center', width: '150px', margin: '0 auto' }}>+添加场地细分</div></div>
+          <div style={this.state.headerData === '3' ? { overflowY: 'auto', height: '89%' } : { display: 'none' }}>
+
+            <Row className="rowConten" style={{ background: '#FCF7EE', borderBottom: '1px solid #E1E0E1' }}>
+              <Col xs={{ span: 2 }}>场地类型</Col>
+              <Col xs={{ span: 2 }}>细分标签</Col>
+              <Col xs={{ span: 2 }}>场地编号</Col>
+              <Col xs={{ span: 2 }}>场地数量</Col>
+              <Col xs={{ span: 2 }}>时间范围</Col>
+              <Col xs={{ span: 2 }}>价格(元/时)</Col>
+              <Popover content={(<span>最长提前预订时间</span>)} title='详情' trigger="click">
+                <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>最长提前预订时间</Col>
+              </Popover>
+              <Popover content={(<span>最短提前预订时间</span>)} title='详情' trigger="click">
+                <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>最短提前预订时间</Col>
+              </Popover>
+              <Col xs={{ span: 2 }}>备注</Col>
+              <Col xs={{ span: 2 }}>打折优惠</Col>
+              <Col xs={{ span: 2 }}>操作</Col>
+              <Col xs={{ span: 2 }}>操作时间</Col>
+            </Row>
+            {
+              this.state.historyArr.map((item, i) => (
+                <Row className="rowConten" key={i}>
+                  <Popover content={(<span>{item.sportname}</span>)} title='详情' trigger="click">
+                    <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.sportname}</Col>
+                  </Popover>
+                  <Col xs={{ span: 2 }}>{item.tags}</Col>
+                  <Popover content={(<div style={{maxWidth:'200px',wordBreak:'break-all'}}>{item.venueid}</div>)} title='详情' trigger="click">
+                    <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.venueid}</Col>
+                  </Popover>
+                  <Col xs={{ span: 2 }}>{item.sitenumber}</Col>
+                  <Popover content={(<span>{item.starttime}-{item.endtime}</span>)} title='详情' trigger="click">
+                    <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.starttime}-{item.endtime}</Col>
+                  </Popover>
+                  <Col xs={{ span: 2 }}>{item.costperhour}</Col>
+                  <Col xs={{ span: 2 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
+                  <Col xs={{ span: 2 }}>{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</Col>
+                  <Popover content={(<span>{item.comment === '' ? '无' : item.comment}</span>)} title='详情' trigger="click">
+                    <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.comment === '' ? '无' : item.comment}</Col>
+                  </Popover>
+                  <Col xs={{ span: 2 }}>{item.discount_edate === '' ? '无' : <span style={{ cursor: 'pointer' }} data-sd={item.discount_sdate} data-ed={item.discount_edate} data-st={item.discount_start} data-et={item.discount_end} data-ve={item.discount_venueid} data-cos={item.discount_costperhour} onClick={this.details}>查看</span>}</Col>
+                  <Col xs={{ span: 2 }}>{item.operation === 1 ? '添加' : item.operation === 2 ? '修改' : item.operation === 3 ? '删除' : '无操作'}</Col>
+                  <Popover content={(<span>{item.intime}</span>)} title='详情' trigger="click">
+                    <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.intime}</Col>
+                  </Popover>
+                </Row>
+              ))
+            }
+            <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.pageThree} onChange={this.pageThree} total={this.state.otherThree} />
+
+
+
+
+
+
+          </div>
+
+
+          <Drawer
+            title="打折优惠"
+            placement="right"
+            closable={false}
+            onClose={this.onClose}
+            visible={this.state.detail}
+          >
+            <p>开始日期:{this.state.deData.sd}</p>
+            <p>结束日期:{this.state.deData.ed}</p>
+            <p>开始时间:{this.state.deData.st}</p>
+            <p>结束时间:{this.state.deData.et}</p>
+            <p>场&nbsp;&nbsp;地&nbsp;&nbsp;号:{this.state.deData.ve}</p>
+            <p>优惠价格:￥{this.state.deData.cos}</p>
+          </Drawer>
+
+
+
+
+
           <Modal
             title="添加/修改价格设置"
             visible={this.state.visible}
@@ -1378,24 +1528,24 @@ class siteSettings extends React.Component {
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>时间范围</span>
-              <Select style={{ width: 128, height: 'auto',marginLeft:88 }} value={this.state.starttime===''?undefined:this.state.starttime} onChange={this.starttime} placeholder="开始时间">
-              {this.state.timer.map((item,i)=>(
-                <Option key={i} value={item.name}>{item.name}</Option>
-              ))}
-            </Select>
+              <Select style={{ width: 128, height: 'auto', marginLeft: 88, float: 'left' }} value={this.state.starttime === '' ? undefined : this.state.starttime} onChange={this.starttime} placeholder="开始时间">
+                {this.state.timer.map((item, i) => (
+                  <Option key={i} value={item.name}>{item.name}</Option>
+                ))}
+              </Select>
             ~
-            <Select style={{ width: 130, height: 'auto' }} value={this.state.endtime===''?undefined:this.state.endtime} onChange={this.endtime} placeholder="结束时间">
-              {this.state.timer.map((item,i)=>(
-                <Option key={i} value={item.name}>{item.name}</Option>
-              ))}
-            </Select>
+            <Select style={{ width: 130, height: 'auto' }} value={this.state.endtime === '' ? undefined : this.state.endtime} onChange={this.endtime} placeholder="结束时间">
+                {this.state.timer.map((item, i) => (
+                  <Option key={i} value={item.name}>{item.name}</Option>
+                ))}
+              </Select>
 
               {/* <RangePicker showTime order={false} dropdownClassName="timeRange" placeholder={['开始时间', '结束时间']} style={{ float: 'right', marginRight: 150, width: 269 }} value={this.state.starttime === '' ? '' : [moment(this.state.starttime === '' ? '' : this.state.starttime, 'HH:mm:'), moment(this.state.endtime === '' ? '' : this.state.endtime, 'HH:mm:')]} minuteStep={30} format='HH:mm' locale={locale} onChange={this.handleChangThree} /> */}
             </div>
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>价格</span><span>（元/小时）</span>
-              <InputNumber className="startTime" value={this.state.costperhour} defaultValue={0} min={0} style={{ height: 32, width: 269 }} placeholder="请输入" onChange={this.money} />
+              <Input type="number" className="startTime" value={this.state.costperhour.replace('.', '')} defaultValue={0} min={0} style={{ height: 32, width: 269, paddingLeft: '11px' }} placeholder="请输入" onChange={this.money} />
             </div>
             <div className="modelList" style={{ height: 32 }}>
               <span>最长提前预订时间</span>
@@ -1460,10 +1610,10 @@ class siteSettings extends React.Component {
             className='model'
             closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
           >
-<span style={{ position: 'absolute', bottom: 70, left: 45, color: '#F5A623', cursor: 'pointer' }} onClick={this.interpretation}>什么是细分标签?</span>
+            <span style={{ position: 'absolute', bottom: 70, left: 45, color: '#F5A623', cursor: 'pointer' }} onClick={this.interpretation}>什么是细分标签?</span>
             <div className="modelList" style={{ height: '32px' }}>
               <span>场地类型</span>
-              <Select placeholder="请选择" className="selectModel" showArrow={this.state.typeDetel === 0 ? false : true} disabled={this.state.typeDetel === 0 ? true : false} value={this.state.runId === '' ? [] : this.state.runId} style={{ width: 249, height: 32,marginRight:100 }} onChange={this.handleChangeOne}>
+              <Select placeholder="请选择" className="selectModel" showArrow={this.state.typeDetel === 0 ? false : true} disabled={this.state.typeDetel === 0 ? true : false} value={this.state.runId === '' ? [] : this.state.runId} style={{ width: 249, height: 32, marginRight: 100 }} onChange={this.handleChangeOne}>
                 {
                   this.state.ListSport.map((item, i) => (
                     <Option key={i} value={item.id}>{item.name}</Option>
@@ -1477,7 +1627,7 @@ class siteSettings extends React.Component {
             <div className="modelList" style={{ height: '32px' }}>
               <span>细分标签</span>
               <Select
-                style={{ width: 249, height: 32,marginRight:100 , background: '#fff' }}
+                style={{ width: 249, height: 32, marginRight: 100, background: '#fff' }}
                 placeholder="请选择/添加后选择"
                 className="selectModel"
                 onChange={this.title}
@@ -1499,22 +1649,22 @@ class siteSettings extends React.Component {
                 )}
               >
                 {this.state.joinTil.map((item, i) => (
-                  <Option key={i} onContextMenu={this.deletSelect} data-id={item.uuid} data-title={item.title} value={item.title}><div><span>{item.title}</span><span style={item.uuid === 1||this.state.open===false ? { display: 'none' } : { float: 'right', fontSize: '12px', color: '#ccc' }}>(右键删除)</span></div></Option>
+                  <Option key={i} onContextMenu={this.deletSelect} data-id={item.uuid} data-title={item.title} value={item.title}><div><span>{item.title}</span><span style={item.uuid === 1 || this.state.open === false ? { display: 'none' } : { float: 'right', fontSize: '12px', color: '#ccc' }}>(右键删除)</span></div></Option>
                 ))}
               </Select>
             </div>
 
             <div className="modelList" style={{ height: '32px' }} onClick={this.serial}>
               <span>场地编号</span>
-              <Input className="startTime" value={this.state.arrCheked.length !== 0 ? this.state.arrCheked : []} style={{ paddingLeft: '10px', height: 32, background: '#fff',color:'#333', cursor: 'pointer',marginRight:100  }} disabled={true} placeholder="点击进行添加" />
+              <Input className="startTime" value={this.state.arrCheked.length !== 0 ? this.state.arrCheked : []} style={{ paddingLeft: '10px', height: 32, background: '#fff', color: '#333', cursor: 'pointer', marginRight: 100 }} disabled={true} placeholder="点击进行添加" />
             </div>
 
             <div className="modelList" style={{ height: '32px' }} >
               <span>场地数量</span>
-              <div className="startTime" style={{marginRight:100 }}>{this.state.arrCheked.length}</div>
+              <div className="startTime" style={{ marginRight: 100 }}>{this.state.arrCheked.length}</div>
             </div>
             <div className="footerLok">
-            <div className="submit" data-id={this.state.venNumid} onClick={this.subSiteSubdivision}>提交</div>
+              <div className="submit" data-id={this.state.venNumid} onClick={this.subSiteSubdivision}>提交</div>
             </div>
           </Modal>
 
@@ -1531,12 +1681,12 @@ class siteSettings extends React.Component {
             closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
           >
             <div className="serialNumberTop"><span>请选择您要设置的场地编号</span><div onClick={this.reverseElection}>反选</div><div onClick={this.allOfThem} style={{ marginRight: '10px' }}>全选</div></div>
-            <div style={{clear:'both'}}>
-            {
-              this.state.arrNum.map((item, i) => (
-                <div key={i} className="serialSon" onClick={this.seriaSon} data-id={item.id} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', transition: '0.3s', opacity: '0.2' } : {}}>{item.id}</div>
-              ))
-            }
+            <div style={{ clear: 'both' }}>
+              {
+                this.state.arrNum.map((item, i) => (
+                  <div key={i} className="serialSon" onClick={this.seriaSon} data-id={item.id} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', transition: '0.3s', opacity: '0.2' } : {}}>{item.id}</div>
+                ))
+              }
             </div>
             <div className="footerSerial">
               <div className="seriaComfir" onClick={this.serialComfir}>提交</div>
@@ -1583,7 +1733,7 @@ class siteSettings extends React.Component {
           >
             <div className="modelList" style={{ height: '32px' }}>
               <span>场地类型</span>
-              <Select placeholder="请选择" disabled={true} showArrow={false}  value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 330, height: 32, marginRight: 100, cursor: 'pointer' }} onChange={this.handleChangeOneTwo}>
+              <Select placeholder="请选择" disabled={true} showArrow={false} value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 330, height: 32, marginRight: 100, cursor: 'pointer' }} onChange={this.handleChangeOneTwo}>
                 {
                   this.state.ListSport.map((item, i) => (
                     <Option key={i} value={item.id}>{item.name}</Option>
@@ -1657,7 +1807,7 @@ class siteSettings extends React.Component {
             />
           */}
               <RangePicker
-                showTime={{ defaultValue:  [moment('00:00', 'HH:mm'), moment('00:00', 'HH:mm')] }}
+                showTime={{ defaultValue: [moment('00:00', 'HH:mm'), moment('00:00', 'HH:mm')] }}
                 locale={locale}
                 style={{ float: 'left', marginLeft: 78, width: 330 }}
                 format="YYYY-MM-DD HH:mm"
@@ -1669,7 +1819,7 @@ class siteSettings extends React.Component {
             </div>
             <div className="modelList" style={{ height: '32px' }}>
               <span>优惠后价格</span><span style={{ marginLeft: 0 }}>(元/小时)</span>
-              <InputNumber className="startTime" value={this.state.costperhourTwo} min={0} style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 100 }} placeholder="请输入" onChange={this.moneyTwo} />
+              <Input type="number"  className="startTime" value={String(this.state.costperhourTwo).replace('.', '')} min={0} style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 100 }} placeholder="请输入" onChange={this.moneyTwo} />
             </div>
 
 
@@ -1700,13 +1850,13 @@ class siteSettings extends React.Component {
             closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
           >
             <div className="serialNumberTop"><span>请选择您要设置的场地编号</span></div>
-            <div className="serialNumberTop" style={{float:'right',marginTop:'-8px'}}><span onClick={this.allChed}>全选</span><span onClick={this.allChedTwo}>反选</span></div>
-          <div style={{clear:'both'}}>
-            {
-              this.state.arrNumTwo.map((item, i) => (
-                <div key={i} className="serialSon" onClick={this.seriaSonTwo} data-id={i} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {}}>{item.idIdx}</div>
-              ))
-            }
+            <div className="serialNumberTop" style={{ float: 'right', marginTop: '-8px' }}><span onClick={this.allChed}>全选</span><span onClick={this.allChedTwo}>反选</span></div>
+            <div style={{ clear: 'both' }}>
+              {
+                this.state.arrNumTwo.map((item, i) => (
+                  <div key={i} className="serialSon" onClick={this.seriaSonTwo} data-id={i} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {}}>{item.idIdx}</div>
+                ))
+              }
             </div>
             <div className="footerSerial" style={{ marginTop: '60px' }}>
               <div className="seriaComfir" onClick={this.serialComfirTwo}>确定</div>

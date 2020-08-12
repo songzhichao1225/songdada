@@ -27,6 +27,19 @@ class registerPh extends React.Component {
   };
 
   componentDidMount() {
+    if(sessionStorage.getItem('register')!==null){
+      let h=JSON.parse(sessionStorage.getItem('register'))
+      this.setState({
+        Id:h.Id,
+        name:h.name,
+        phone:h.phone,
+        code:h.code,
+        password:h.password,
+        passwordT:h.passwordT,
+        changeRadio:h.changeRadio,
+        idName:h.idName
+      })
+    }
   }
 
   changID = (e) => {
@@ -113,6 +126,7 @@ class registerPh extends React.Component {
       localStorage.setItem('uuid', res.data.data.venueloginuuid);
       localStorage.setItem('venue_token', res.data.data.token);
       localStorage.setItem('name', res.data.data.name);
+      sessionStorage.removeItem('register')
     } else {
       Toast.fail(res.data.msg, 1);
     }
@@ -158,20 +172,20 @@ class registerPh extends React.Component {
   async getPromoteName(data) {
     const res = await getPromoteName(data)
     if (res.data.code === 2000) {
-      alert('提示', '请确认推广员姓名：' + res.data.data.promotname , [
-        { text: '否', onPress: () => console.log('cancel'), style: 'default' },
-        { text: '是', onPress: () => this.showModal() },
-      ]);
     } else {
-      alert('提示',  '您没有推广员？', [
-        { text: '否', onPress: () => console.log('cancel'), style: 'default' },
-        { text: '是', onPress: () => this.showModal() },
-      ]);
+      this.setState({Id:''})
+      Toast.fail(res.data.msg, 1);
     }
   }
 
   alertTwo = () => {
-   this.getPromoteName({promotid:this.state.Id})
+  
+  }
+
+  IdBuler=()=>{
+    if(this.state.Id!==''){
+      this.getPromoteName({promotid:this.state.Id})
+    }
   }
 
 
@@ -211,7 +225,22 @@ eyesTwo=()=>{
   this.setState({eyesTwo:!this.state.eyesTwo})
 }
 Agreement=()=>{
-  this.props.history.push('/Agreement')
+  setTimeout(()=>{
+    let {Id,name,phone,code,password,passwordT,changeRadio,idName}=this.state
+    let data={
+      Id:Id,
+      name:name,
+      phone:phone,
+      code:code,
+      password:password,
+      passwordT:passwordT,
+      changeRadio:changeRadio,
+      idName:idName
+    }
+    let h=JSON.stringify(data)
+    sessionStorage.setItem('register',h)
+    this.props.history.push('/Agreement')
+  },1000)
 }
 
   render() {
@@ -256,7 +285,9 @@ Agreement=()=>{
               clear={false}
               style={{ fontSize: '0.8rem' }}
               maxLength={6} 
+              value={this.state.Id}
               onChange={this.changID}
+              onBlur={this.IdBuler}
               autoFocus
             >
               {/* <CreditCardOutlined style={{ color: 'rgba(0,0,0,.25)' }} /> */}
@@ -284,6 +315,7 @@ Agreement=()=>{
               clear={false}
               style={{ fontSize: '0.8rem' }}
               onChange={this.changePhone}
+              value={this.state.phone}
             >
             </InputItem>
           </div>
@@ -297,6 +329,7 @@ Agreement=()=>{
               className="codeInput"
               maxLength={6}
               onChange={this.changeCode}
+              value={this.state.code}
             >
               {/* <Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} /> */}
             </InputItem>
@@ -318,6 +351,7 @@ Agreement=()=>{
               clear={true}
               style={{ fontSize: '0.8rem' }}
               onChange={this.changePassword}
+              value={this.state.password}
               maxLength={15}
             >
                
@@ -331,18 +365,19 @@ Agreement=()=>{
               clear={true}
               style={{ fontSize: '0.8rem' }}
               onChange={this.changePasswordT}
+              value={this.state.passwordT}
               maxLength={15}
             >
             </InputItem>
             <span style={{display:'block',width:'15%',float:'right',marginTop:'0.7rem'}} onClick={this.eyesTwo}><img src={require('../../assets/eyes.png')} style={this.state.eyesTwo===true?{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}:{display:'none'}} alt="eyes"/> <img src={require('../../assets/eyesTwo.png')} style={this.state.eyesTwo===true?{display:'none'}:{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}} alt="eyes"/></span>
           </div>
           <div className="input line">
-            <Checkbox onChange={this.changeRadio}><span style={{ fontSize: '0.9rem',paddingLeft:'1rem', }}>已阅读并同意</span></Checkbox><span onClick={this.Agreement} style={{ color: '#D85D27', paddingLeft: '0.5rem', fontSize: '0.9rem' }}>《场馆入驻协议》</span>
+            <Checkbox onChange={this.changeRadio} value={this.state.changeRadio}><span style={{ fontSize: '0.9rem',paddingLeft:'1rem', }}>已阅读并同意</span></Checkbox><span onClick={this.Agreement} style={{ color: '#D85D27', paddingLeft: '0.5rem', fontSize: '0.9rem' }}>《场馆入驻协议》</span>
           </div>
           <div className="input line">
             <Button
               className="btn"
-              onClick={this.alertTwo}
+              onClick={this.showModal}
             >
               注册
              </Button>

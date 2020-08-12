@@ -125,15 +125,21 @@ class Login extends React.Component {
     const res = await VenueSelectSiteName(data)
     if (res.data.code === 2000) {
       this.setState({ selectVeun: res.data.data, value: res.data.data[0].venueloginuuid })
-      this.nacode({ "mobile": this.state.phoneTwo, "type": 'venuelogin' })
-    } else {
-      this.nacode({ "mobile": this.state.phoneTwo, "type": 'venuelogin' })
+    }else{
+      message.error(res.data.msg)
+      this.setState({ selectVeun:[], value:'' })
     }
+  }
+  phoneOne=(e)=>{
+      if(e.target.value!==''){
+        this.VenueSelectSiteName({ phone: this.state.phoneTwo })
+      }
   }
 
   naCode = () => {
     if (this.state.phoneTwo!== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phoneTwo)) && this.state.phoneTwo.length === 11) {
       this.VenueSelectSiteName({ phone: this.state.phoneTwo })
+      this.nacode({ "mobile": this.state.phoneTwo, "type": 'venuelogin' })
     } else {
       message.error('请输入正确手机号')
     }

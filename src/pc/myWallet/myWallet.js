@@ -325,6 +325,7 @@ class myWallet extends React.Component {
 
   ziSubmitTwo = () => {
     let { numRadio, imgHood, imgFile,corporateId, imgFileTwo, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
+    console.log(bank_id)
     let data = {
       legalcard:numRadio === 0 ? '' :corporateId,
       legalBaseURL: numRadio === 0 ? '' : imgHood,
@@ -332,9 +333,9 @@ class myWallet extends React.Component {
       Settlement: numRadio,
       Bankaccount: corporateCardId,
       OpeningBank: corporateOpen,
-      Banktype:typeof(bank_id)!=='string'?bank_id.join():bank_id,
-      ProvinceBank:typeof(province_id)!=='string'?province_id.join():province_id,
-      CityBank:typeof(city_id)!=='string'?city_id.join():city_id,
+      Banktype:bank_id,
+      ProvinceBank:province_id,
+      CityBank:city_id,
     }
     
     if (numRadio && imgFile === undefined) {

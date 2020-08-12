@@ -245,7 +245,6 @@ class stadiumInformationPh extends React.Component {
     const res = await PerfectingVenueInformation(data)
     if (res.data.code === 2000) {
       Toast.success(res.data.msg, 1);
-
       this.props.history.push('/qualificationPh')
     } else if (res.data.code === 4000) {
       Toast.fail(res.data.msg, 1);
@@ -310,7 +309,7 @@ class stadiumInformationPh extends React.Component {
           filesURLarr.push(fileListT[i].url)
         }
       }
-      console.log(onChangeCheck)
+      console.log(telephone)
       if (lat === '') {
         Toast.fail('请选择场馆位置', 1)
       } if (stadiumName === '') {
@@ -319,6 +318,8 @@ class stadiumInformationPh extends React.Component {
         Toast.fail('请填写联系人', 1)
       } else if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(linkMan) === false) {
         Toast.fail('联系人只允许输入文字/字母', 1)
+      }else if(telephone===''){
+        Toast.fail('请输入联系电话', 1)
       } else if (imageRes === '') {
         Toast.fail('请选择场馆门脸照', 1)
       } else if (imageRes === 1) {
@@ -332,9 +333,8 @@ class stadiumInformationPh extends React.Component {
       } else if (onChangeCheck.length === 0||onChangeCheck===',,,') {
         Toast.fail('请选择场地设施', 1)
       } else if (textKo === '') {
-        Toast.fail('请输入场地介绍', 1)
+        Toast.fail('请输入场馆介绍', 1)
       } else {
-
         let data = {
           venueloginuuid: localStorage.getItem('uuid'),
           venuename: stadiumName,
@@ -392,7 +392,9 @@ class stadiumInformationPh extends React.Component {
         Toast.fail('请填写联系人', 1)
       } else if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(linkMan) === false) {
         Toast.fail('联系人只允许输入文字/字母', 1)
-      } else if (imageRes === '' || imageRes === null) {
+      }else if(telephone===''){
+        Toast.fail('请输入联系电话', 1)
+      }  else if (imageRes === '' || imageRes === null) {
         Toast.fail('请选择场馆门脸照', 1)
       } else if (imageRes === 1) {
         Toast.fail('门脸照违规请重新上传', 1)
@@ -405,7 +407,7 @@ class stadiumInformationPh extends React.Component {
       } else if (onChangeCheck.length === 0||onChangeCheck===',,,') {
         Toast.fail('请选择场地设施', 1)
       } else if (textKo === '') {
-        Toast.fail('请输入场地介绍', 1)
+        Toast.fail('请输入场馆介绍', 1)
       } else {
         let data = {
           venueloginuuid: localStorage.getItem('uuid'),
@@ -724,7 +726,7 @@ class stadiumInformationPh extends React.Component {
 
           <div className="input">
             <span style={{ lineHeight: '1.3rem' }}>场馆介绍</span>
-            <TextArea rows={3} maxLength={200} onChange={this.textKo} style={{ padding: '0', width: '63%', marginLeft: '10%', fontSize: '0.75rem' }} value={this.state.textKo} placeholder="请输入场地介绍，如场地规模、特色等。" />
+            <TextArea rows={3} maxLength={200} onChange={this.textKo} style={{ padding: '0', width: '63%', marginLeft: '10%', fontSize: '0.75rem' }} value={this.state.textKo} placeholder="请输入场馆介绍，如场馆规模、特色等。" />
           </div>
           <div className="footerBtn">
             <div onClick={this.SaveInfor}>保存</div>

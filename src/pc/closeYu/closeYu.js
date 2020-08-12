@@ -241,7 +241,11 @@ class closeYu extends React.Component {
     } else {
       this.setState({ visible: false, update: 0 })
       message.success(res.data.msg)
-      this.VenueTemporarilyClosedList({ page: this.state.page })
+      if(this.state.other%10===1){
+      this.VenueTemporarilyClosedList({ page:Number(this.state.page)-1})
+      }else{
+        this.VenueTemporarilyClosedList({ page:this.state.page})
+      }
     }
   }
   handleCancel = () => {
@@ -292,7 +296,7 @@ class closeYu extends React.Component {
                 <Col xs={{ span: 5 }}>
                   {/* <img onClick={this.update} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp; */}
                   <Popconfirm
-                    title={"您确定要解除"+item.sportname+"临时关闭预约么?"}
+                    title={"您确定要解除"+item.sportname+"临时关闭预约吗?"}
                     onConfirm={this.confirm}
                     onCancel={this.cancel}
                     okText="确定"
@@ -312,7 +316,7 @@ class closeYu extends React.Component {
 
 
         <Modal
-          title="添加/修改临时关闭预约时间"
+          title="添加临时关闭预约时间"
           visible={this.state.visible}
           onOk={this.handleOk}
           className="mode"

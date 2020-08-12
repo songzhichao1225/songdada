@@ -356,6 +356,7 @@ class stadiums extends React.Component {
     if (filesURLarr.length < 2) {
       message.error('至少上传两张室内照')
     } else {
+      
       let data = {
         venuename: name,
         lat: this.state.lat !== undefined ? this.state.lat : informationList.lat,
@@ -379,6 +380,8 @@ class stadiums extends React.Component {
         message.error('门脸照违规请重新上传');
       } else if (data.filesURL.split('|').indexOf('无') !== -1) {
         message.error('场地照有违规图片请重新上传');
+      }else if(facilities.length===0){
+        message.error('请至少选择一项场地设施');
       } else {
         this.VenueInformationSave(data)
       }
@@ -410,7 +413,7 @@ class stadiums extends React.Component {
         if (this.state.imageUrlTwo !== '') {
           this.setState({imageUrlTwo:info.file.response.data.filesURL,baseImg: info.file.response.data.baseURL,imageUrlThree:'' })
         } else {
-          this.setState({ imageUrlTwo: info.file.response.data.filesURL, legalBaseURL:info.file.response.data.baseURL })
+          this.setState({ imageUrlTwo: info.file.response.data.filesURL,baseImg: info.file.response.data.baseURL, legalBaseURL:info.file.response.data.baseURL })
         }
       } else {
         this.setState({ imageUrlTwo: 1 })
@@ -436,7 +439,7 @@ class stadiums extends React.Component {
         if (this.state.imageUrlThree !== '') {
           this.setState({imageUrlThree:info.file.response.data.filesURL,baseImg: info.file.response.data.baseURL,imageUrlTwo:'' })
         } else {
-          this.setState({ imageUrlThree: info.file.response.data.filesURL, legalBaseURL:info.file.response.data.baseURL })
+          this.setState({ imageUrlThree: info.file.response.data.filesURL,baseImg: info.file.response.data.baseURL, legalBaseURL:info.file.response.data.baseURL })
         }
       } else {
         this.setState({ imageUrlThree: 1 })
@@ -531,7 +534,9 @@ class stadiums extends React.Component {
   
 
   handleSearch = e => {
-    this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
+    if(e!==''){
+      this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
+    }
   }
 
   CorporateName = e => {
@@ -559,9 +564,9 @@ class stadiums extends React.Component {
       Settlement:numRadio,
       Bankaccount: corporateCardId,
       OpeningBank: corporateOpen,
-      Banktype:typeof(bank_id)!=='string'?bank_id.join():bank_id,
-      ProvinceBank:typeof(province_id)!=='string'?province_id.join():province_id,
-      CityBank:typeof(city_id)!=='string'?city_id.join():city_id,
+      Banktype:bank_id,
+      ProvinceBank:province_id,
+      CityBank:city_id,
     }
     if(numRadio&&imageUrlTwo===1){
        message.error('图片违规请重新上传')
@@ -710,8 +715,8 @@ class stadiums extends React.Component {
             </div>
 
             <div className="name">
-              <span className="boTitle">场地介绍:</span><span className="kong"></span>
-              <TextArea className="textarea" maxLength={200} value={this.state.siteInfo} placeholder="请输入场地介绍，如场地规模、特色等。" onChange={this.onChangeText} rows={3} />
+              <span className="boTitle">场馆介绍:</span><span className="kong"></span>
+              <TextArea className="textarea" maxLength={200} value={this.state.siteInfo} placeholder="请输入场馆介绍，如场馆规模、特色等。" onChange={this.onChangeText} rows={3} />
             </div>
 
 

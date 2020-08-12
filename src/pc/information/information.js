@@ -98,6 +98,9 @@ class information extends React.Component {
     const res = await getVenueSporttypelist(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ activityNavTwo: res.data.data })
+    }else if(res.data.code===4001){
+      this.props.history.push('/')
+      message.error('登录超时请重新登录!')
     }
   }
 
@@ -107,6 +110,9 @@ class information extends React.Component {
     if (res.data.code === 2000) {
       message.success('删除成功')
       this.getVenueNumberTitleList({ sportid: this.state.liNum })
+    }else if(res.data.code===4001){
+      this.props.history.push('/')
+      message.error('登录超时请重新登录!')
     }
   }
 
@@ -121,6 +127,9 @@ class information extends React.Component {
     if (res.data.code === 2000) {
       this.setState({ topNumList: res.data.data })
       this.getVenueReservation({ sportid: this.state.liNum, date: this.state.dateString, types: 1 })
+    }else if(res.data.code===4001){
+      this.props.history.push('/')
+      message.error('登录超时请重新登录!')
     }
   }
  
@@ -186,6 +195,9 @@ class information extends React.Component {
     const res = await getReservationActivitieslist(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ list: res.data.data.data, informList: res.data.data.data, other: res.data.other, loading: false, hidden: true, Oneloading: false })
+    }else if(res.data.code===4001){
+      this.props.history.push('/')
+      message.error('登录超时请重新登录!')
     } else {
       this.setState({ loading: false, hidden: false, Oneloading: false })
     }
@@ -496,6 +508,7 @@ class information extends React.Component {
     const res = await getVenueComplainList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ listComplain: res.data.data })
+    }else if(res.data.code===4001){
 
     }
   }
@@ -543,7 +556,7 @@ class information extends React.Component {
               </Row>
             ))
           }
-          <Pagination className="fenye" defaultCurrent={1} current={this.state.page}  hideOnSinglePage={true} showSizeChanger={false} total={this.state.other} onChange={this.current} />
+          <Pagination className="fenye" defaultCurrent={1} current={this.state.page}  showTotal={total => `总计: ${total} `} hideOnSinglePage={true} showSizeChanger={false} total={this.state.other} onChange={this.current} />
         </div>
       )
     } else {
@@ -755,7 +768,8 @@ class information extends React.Component {
             this.state.listComplain.map((item, i) => (
               <div key={i} style={{marginTop:'15px'}}>
                 <div><span style={{fontSize:'16px',fontWeight:'blod'}}>投诉类型:</span>{item.name}</div>
-                <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>投诉详情:</span>{item.comment}</div>
+                <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>处理结果:</span>{item.comment}</div>
+                <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>处理时间:</span>{item.date}</div>
               </div>
             ))
           } 

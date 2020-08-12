@@ -40,9 +40,6 @@ class news extends React.Component {
         res.data.data[i].cheched = false
       }
       this.setState({ newsList: res.data.data, sum: res.data.other.sum, isredcount: res.data.other.isredcount })
-    }else if(res.data.code===4002){
-      this.getVenueNewsList({ page: 1 })
-      this.setState({current:1})
     }else{
       this.setState({ newsList: res.data.data,sum:0, isredcount: 0})
     }
@@ -83,7 +80,7 @@ class news extends React.Component {
       this.setState({ oneChecked: false })
       if(this.state.kod===1){
         this.getVenueNewsList({ page: 1 })
-        this.setState({oneChecked:false})
+        this.setState({oneChecked:false,current:1})
         this.getVenueIndex()
         this.gerVenueName()
       }else{

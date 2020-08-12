@@ -1,11 +1,11 @@
 import React from 'react';
 import './temporaryPh.css';
 
-import { Toast, DatePicker, List,Modal } from 'antd-mobile';
+import { Toast, DatePicker, List, Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Select, Row, Col, Drawer, Pagination, Popconfirm } from 'antd';
-import {  LeftOutlined, LoadingOutlined } from '@ant-design/icons';
-import { getVenueSport, VenueTemporarilyClosedList, VenueTemporarilyClosedSave, VenueTemporarilyClosedDel, VenueTemporarilyClosed,getIsClosedPublic } from '../../api';
+import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
+import { getVenueSport, VenueTemporarilyClosedList, VenueTemporarilyClosedSave, VenueTemporarilyClosedDel, VenueTemporarilyClosed, getIsClosedPublic } from '../../api';
 const { Option } = Select;
 
 
@@ -56,10 +56,10 @@ class temporaryPh extends React.Component {
   componentDidMount() {
     this.getVenueSport()
     this.VenueTemporarilyClosedList({ page: 1 })
-    let now = new Date()   
-    let kpo=now.setMinutes (now.getMinutes () - now.getMinutes() );
-    let kpotWO=now.setMinutes (now.getMinutes () - now.getMinutes()+30 );
-    this.setState({ startValue:new Date(kpo), EndValue: new Date(kpotWO) })
+    let now = new Date()
+    let kpo = now.setMinutes(now.getMinutes() - now.getMinutes());
+    let kpotWO = now.setMinutes(now.getMinutes() - now.getMinutes() + 30);
+    this.setState({ startValue: new Date(kpo), EndValue: new Date(kpotWO) })
   }
 
   current = (page, pageSize) => {
@@ -147,21 +147,21 @@ class temporaryPh extends React.Component {
     if (res.data.code === 2000) {
       this.setState({ visible: false })
       Toast.success(res.data.msg, 2);
-      this.VenueTemporarilyClosedList({page:this.state.temPage})
+      this.VenueTemporarilyClosedList({ page: this.state.temPage })
     } else {
       Toast.fail(res.data.msg, 1);
-      this.VenueTemporarilyClosedList({page:this.state.temPage})
+      this.VenueTemporarilyClosedList({ page: this.state.temPage })
     }
   }
 
   async VenueTemporarilyClosedSave(data) {
     const res = await VenueTemporarilyClosedSave(data, localStorage.getItem('venue_token'))
-    if(res.data.code===2000){
+    if (res.data.code === 2000) {
 
       Toast.success(res.data.msg, 2);
       this.setState({ visible: false })
-      this.VenueTemporarilyClosedList({page:this.state.temPage})
-    }else{
+      this.VenueTemporarilyClosedList({ page: this.state.temPage })
+    } else {
       Toast.fail(res.data.msg, 2);
     }
 
@@ -170,21 +170,21 @@ class temporaryPh extends React.Component {
 
   async getIsClosedPublic(data) {
     const res = await getIsClosedPublic(data, localStorage.getItem('venue_token'))
-    if(res.data.code===2000){
+    if (res.data.code === 2000) {
 
       alert('提示', '您选择的时间段内有活动，继续添加么?', [
         { text: '取消', onPress: () => console.log('cancel') },
-        { text: '确定', onPress: () => this.sublok()},
+        { text: '确定', onPress: () => this.sublok() },
       ])
-    }else if(res.data.code!==2000&&res.data.code!==2001){
+    } else if (res.data.code !== 2000 && res.data.code !== 2001) {
       Toast.fail(res.data.msg, 2);
-    }else{
+    } else {
       this.sublok()
     }
 
   }
 
-  sublok=()=>{
+  sublok = () => {
     let { sportId, sportName, startValue, EndValue, textarea, upUUid } = this.state
     if (upUUid === '') {
       let data = {
@@ -211,7 +211,7 @@ class temporaryPh extends React.Component {
 
   subCilck = () => {
     let { sportId, startValue, EndValue } = this.state
-       this.getIsClosedPublic({sportid:sportId,starttime:startValue,endtime:EndValue})
+    this.getIsClosedPublic({ sportid: sportId, starttime: startValue, endtime: EndValue })
   }
 
   mood = (e) => {
@@ -223,7 +223,7 @@ class temporaryPh extends React.Component {
   async VenueTemporarilyClosedDel(data) {
     const res = await VenueTemporarilyClosedDel(data, localStorage.getItem('venue_token'))
     Toast.success(res.data.msg, 1);
-    this.VenueTemporarilyClosedList({page:1})
+    this.VenueTemporarilyClosedList({ page: 1 })
 
   }
   temDelet = () => {
@@ -307,8 +307,8 @@ class temporaryPh extends React.Component {
           bodyStyle={{ padding: '5%' }}
         >
           <div className='drawerInput'>
-            <span style={{color:'#333'}}>场地类型</span>
-            <Select placeholder='请选择'  bordered={false} style={{ width: '52%', border: 'none', boxShadow: 'none', float: 'right', textAlign: 'center' }} value={this.state.sportName} onChange={this.sportChange}>
+            <span style={{ color: '#333' }}>场地类型</span>
+            <Select placeholder='请选择' bordered={false} style={{ width: '52%', border: 'none', boxShadow: 'none', float: 'right', textAlign: 'center' }} value={this.state.sportName} onChange={this.sportChange}>
               {
                 this.state.sportList.map((item, i) => (
                   <Option key={i} value={item.id}>{item.name}</Option>
@@ -352,10 +352,10 @@ class temporaryPh extends React.Component {
               <List.Item className="startTime">结束时间</List.Item>
             </DatePicker>
           </div>
- 
-          <div className='drawerInput' style={{paddingTop:'1rem'}} >
+
+          <div className='drawerInput' style={{ paddingTop: '1rem' }} >
             <span style={{ display: 'block', float: 'left' }}>备注</span>
-            <textarea rows={3} style={{marginLeft: '2.5rem' }} maxLength={200} placeholder="请输入备注" onChange={this.textArea}></textarea>
+            <textarea rows={3} style={{ marginLeft: '2.5rem' }} maxLength={200} placeholder="请输入备注" onChange={this.textArea}></textarea>
           </div>
 
           <div className='drawerInput' style={{ border: 'none' }}>

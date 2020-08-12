@@ -145,8 +145,13 @@ class register extends React.Component {
   }
 
   showModal = e => {
+    console.log(this.state.kod)
     if (this.state.name === '') {
       message.error('请输入用户名')
+    }else if (/[\u4E00-\u9FA5]/g.test(this.state.name)) {
+      message.error('用户名只能包含数字、字母、数字+字母')
+    }else if( /[^a-zA-Z0-9]/g.test(this.state.name)){
+      message.error('用户名只能包含数字、字母、数字+字母')
     } else if (this.state.code === '') {
       message.error('请输入验证码')
     } else if (this.state.password === '') {
@@ -163,9 +168,8 @@ class register extends React.Component {
       message.error('请勾选阅读协议')
     } else {
       let { Id, name, phone, code, password } = this.state
-      if (this.state.idName === '推广员不存在') {
+      if (this.state.kod !== '') {
         let data = { name: name, phone: phone, pass: password, promoteid: '', code: code, Logintype: 'pc' }
-       
         this.Ko(data)
       } else {
         let data = { name: name, phone: phone, pass: password, promoteid: Id, code: code, Logintype: 'pc' }
@@ -174,14 +178,17 @@ class register extends React.Component {
     }
   }
   blurId = e => {
-    this.getPromoteName({ promotid: e.target.value })
+    if(e.target.value!==''){
+      this.getPromoteName({ promotid: e.target.value })
+    }
   }
   async getPromoteName(data) {
     const res = await getPromoteName(data)
     if (res.data.code === 2000) {
       this.setState({ idName: res.data.data.promotname, kod: '' })
     } else if (res.data.code !== 4001) {
-      this.setState({ kod: res.data.msg })
+
+      this.setState({ kod: res.data.msg,Id:'' })
     } else {
       this.setState({ idName: '没有推广员？', kod: '' })
     }
@@ -389,16 +396,9 @@ class register extends React.Component {
 
               <div className="agreement"><Checkbox onChange={this.changeRadio} checked={this.state.changeRadio}></Checkbox><span>我已阅读并同意</span><span className="color" onClick={this.Agreement}>《场馆入驻协议》</span></div>
 
-              <Popconfirm
-                title={this.state.idName === "" ? '没有推广员？' : "推广员姓名：" + this.state.idName && this.state.idName === '推广员不存在' ? '推广员不存在' : "推广员姓名：" + this.state.idName}
-                onConfirm={this.showModal}
-                onCancel={this.onCancel}
-                okText="是"
-                cancelText="否"
-                disabled={false}
-              >
-                <div className="submint">注册</div>
-              </Popconfirm>
+            
+                <div className="submint" onClick={this.showModal}>注册</div>
+            
 
               <div className="Existing"> 已有账号 <a href='#/'><span>请登录</span></a></div>
               <Modal

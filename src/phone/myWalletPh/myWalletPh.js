@@ -349,7 +349,7 @@ class myWalletPh extends React.Component {
           visible={this.state.visible}
           transparent
           onClose={this.onClose}
-          title="添加场馆收款信息"
+          title="添加场馆收款信息" 
           closable={true}
           className="kood"
         >

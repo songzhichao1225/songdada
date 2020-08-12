@@ -284,20 +284,13 @@ class appointmentList extends React.Component {
     this.setState({ visible: true, publicUUID: e.currentTarget.dataset.uid, changNum: e.currentTarget.dataset.siteid, changName: e.currentTarget.dataset.sitenum })
   }
 
-  sendCheck = e => {
-    this.setState({ sendCheck: e.target.value })
-    if (e.target.value === 2) {
-      this.setState({ placeholder: '请说明未预留场地原因' })
-    } else {
-      this.setState({ placeholder: '其他说明（选填）' })
-    }
-  }
+ 
   textArea = e => {
     this.setState({ textArea: e.target.value })
   }
   sendingMessage = e => {
-    let { publicUUID, sendCheck, textArea, changNum, changName } = this.state
-    this.VenueSendMessage({ type: sendCheck, publicUUID: publicUUID, content: textArea, venueid: changNum, venuenumber: changName })
+    let { publicUUID, textArea, changNum, changName } = this.state
+    this.VenueSendMessage({ type: 2, publicUUID: publicUUID, content: textArea, venueid: changNum, venuenumber: changName })
   }
 
   async VenueClickCancelPlace(data) {
@@ -541,7 +534,7 @@ class appointmentList extends React.Component {
               </Row>
             ))
           }
-          <Pagination className="fenye" hideOnSinglePage={true} showSizeChanger={false} current={this.state.page} total={this.state.other} onChange={this.current} />
+          <Pagination className="fenye" hideOnSinglePage={true} showTotal={total => `总计: ${total} `} showSizeChanger={false} current={this.state.page} total={this.state.other} onChange={this.current} />
         </div>
       )
     } else {
@@ -645,7 +638,7 @@ class appointmentList extends React.Component {
             </Select>
             <span style={{ paddingLeft: 20 }}>场地号</span> <InputNumber style={{ height: '30px' }} max={999} value={this.state.changNum} placeholder="场地号" onChange={this.changNum} className="changNum" />
           </div>
-          <TextArea style={{ marginTop: '20px' }} className="sending" maxLength={50} placeholder={this.state.placeholder} onChange={this.textArea} rows={4} />
+          <TextArea style={{ marginTop: '20px' }} className="sending" maxLength={50} placeholder="请说明未预留场地原因" onChange={this.textArea} rows={4} />
           <div style={{ clear: 'both', height: '30px', marginTop: '10px' }}><span style={{ float: 'left' }}>还可以输入{50 - this.state.textArea.length}字</span>  </div>
           <div className="sending">
             <div onClick={this.handleCancel}>取消</div>
@@ -766,7 +759,8 @@ class appointmentList extends React.Component {
             this.state.listComplain.map((item, i) => (
               <div key={i} style={{marginTop:'15px'}}>
                 <div><span style={{fontSize:'16px',fontWeight:'blod'}}>投诉类型:</span>{item.name}</div>
-                <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>投诉详情:</span>{item.comment}</div>
+                <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>处理结果:</span>{item.comment}</div>
+                <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>处理时间:</span>{item.date}</div>
               </div>
             ))
           } 

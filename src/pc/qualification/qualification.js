@@ -478,6 +478,26 @@ class qualification extends React.Component {
     const res = await TemporaryQualificationInformation(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success(res.data.msg)
+      let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageResT, imageReST, CorporateName, bank_id, province_id, city_id } = this.state
+      let data = { 
+        siteUUID: siteUUID,
+        lisenceURL: imageRes,
+        legalname: handleName,
+        legalcard: Radiovalue === 0 ? '' : handleCardId,
+        legalphone: handlePhone,
+        legalBaseURL: Radiovalue === 0 ? '' : legalBaseURL,
+        legalFilesURL: Radiovalue === 0 ? '' : imageResT + '|' + imageReST,
+        Settlement: Radiovalue,
+        Bankaccount: handleBankNum,
+        OpeningBank: openingLine,
+        CorporateName: CorporateName,
+        Banktype: bank_id,
+        ProvinceBank: province_id,
+        CityBank: city_id,
+        flagDis: this.state.flagDis
+      }
+      sessionStorage.setItem('qualifData', JSON.stringify(data))
+      this.getVenueQualificationInformation()
     }
   }
   save = () => {

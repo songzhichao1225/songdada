@@ -215,7 +215,7 @@ class perfect extends React.Component {
       this.props.history.push('/')
       message.error('登录超时请重新登录')
     } else {
-      message.error(res.data.msg)
+      message.warning(res.data.msg)
     }
   }
 
@@ -274,7 +274,7 @@ class perfect extends React.Component {
         message.warning("至少上传两张场地照片")
       } else if (data.filesURL.split('|').indexOf('无') !== -1) {
         message.warning('场地照有违规图片请重新上传')
-      } else if (data.sport === '') {
+      } else if (data.sport === ''||data.sport === '0') {
         message.warning('请选择场地类型')
       } else if (data.facilities === ''||data.facilities === ',,,') {
         message.warning('请选择至少一项场地设施')
@@ -339,7 +339,7 @@ class perfect extends React.Component {
         message.warning("至少上传两张场地照片")
       } else if (data.filesURL.split('|').indexOf('无') !== -1) {
         message.warning('场地照有违规图片请重新上传')
-      } else if (data.sport === '') {
+      } else if (data.sport === ''||data.sport === '0') {
         message.warning('请选择场地类型')
       } else if (data.facilities === ''||data.facilities === ',,,') {
         message.warning('请选择至少一项场地设施')
@@ -358,7 +358,7 @@ class perfect extends React.Component {
     if (res.data.code === 2000) {
       this.props.history.push('/qualification')
     } else {
-      message.error(res.data.msg)
+      message.warning(res.data.msg)
     }
   }
 
@@ -516,7 +516,7 @@ class perfect extends React.Component {
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">联系电话</span>
-                <Input className="nameINput" maxLength={11} onChange={this.handleTelephone} value={this.state.handleTelephone} placeholder="请输入联系人电话" />
+                <Input className="nameINput"  onChange={this.handleTelephone} value={this.state.handleTelephone} placeholder="请输入联系人电话" />
               </div>
 
               <div className="name">
@@ -577,7 +577,7 @@ class perfect extends React.Component {
 
               <div className="name">
                 <span className="symbol">*</span><span className="boTitle">场馆介绍</span><span className="kong"></span>
-                <TextArea className="textarea" placeholder="请输入场地介绍，如场地规模、特色等。" onChange={this.onChangeText} maxLength={200} value={this.state.onChangeText} rows={4} />
+                <TextArea className="textarea" placeholder="请输入场馆介绍，如场馆规模、特色等。" onChange={this.onChangeText} maxLength={200} value={this.state.onChangeText} rows={4} />
               </div>
 
               <div className="prompt">请注意<span>*</span>为必填项</div>

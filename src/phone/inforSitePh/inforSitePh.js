@@ -91,19 +91,18 @@ class inforSitePh extends React.Component {
         arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: imgS[i] })
       }
       if (this.props.history.location.query !== undefined) {
-        console.log(this.props.history.location.query)
         this.setState({
           listSon: res.data.data, sport: res.data.data.sport.split(','), facilities: res.data.data.facilities.split(','), imageUrlS: res.data.data.firstURL,
           province: this.props.history.location.query.province, city: this.props.history.location.query.city, area: this.props.history.location.query.district,
           cgName: res.data.data.name, address: this.props.history.location.query.adddress, linkMan: res.data.data.linkMan, telephone: res.data.data.telephone, siteInfo: res.data.data.siteInfo,
-          fileList: arrImg, comment: res.data.data.comment, lat: this.props.history.location.query.lat, lng: this.props.history.location.query.lng, position: this.props.history.location.query.adddress, spin: false
+          fileList: arrImg, comment: res.data.data.siteInfo, lat: this.props.history.location.query.lat, lng: this.props.history.location.query.lng, position: this.props.history.location.query.adddress, spin: false
         })
       } else {
         this.setState({
           listSon: res.data.data, sport: res.data.data.sport.split(','), facilities: res.data.data.facilities.split(','), imageUrlS: res.data.data.firstURL,
           province: res.data.data.province, city: res.data.data.city, area: res.data.data.area,
           cgName: res.data.data.name, address: res.data.data.address, linkMan: res.data.data.linkMan, telephone: res.data.data.telephone, siteInfo: res.data.data.siteInfo,
-          fileList: arrImg, comment: res.data.data.comment, lat: res.data.data.lat, lng: res.data.data.lng, position: res.data.data.position, spin: false
+          fileList: arrImg, comment: res.data.data.siteInfo, lat: res.data.data.lat, lng: res.data.data.lng, position: res.data.data.position, spin: false
         })
       }
 
@@ -290,7 +289,7 @@ class inforSitePh extends React.Component {
         filesURL: filesURLarr.join('|'),
         facilities: facilities.join(','),
         sport: sport.join(','),
-        siteInfo: siteInfo,
+        siteInfo: comment,
         position: position,
         comment: comment,
         sporttype: '',

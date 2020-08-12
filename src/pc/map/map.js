@@ -16,6 +16,8 @@ class map extends React.Component {
     pointLat:''
   };
 
+ 
+
   componentDidMount() {
     let map = new BMap.Map("allmap")
     let myGeo = new BMap.Geocoder()
@@ -25,7 +27,9 @@ class map extends React.Component {
     }, 2000);  //2秒后放大到14级
     map.enableScrollWheelZoom(true);
     myGeo.getPoint("北京市", function (point) {
+      console.log(point)
       if (point) {
+        console.log(point)
         that.setState({pointLng:point.lng,pointLat:point.lat})
         map.centerAndZoom(new BMap.Point(point.lng,point.lat ), 13)
       
