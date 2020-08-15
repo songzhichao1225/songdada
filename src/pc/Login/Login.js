@@ -24,7 +24,7 @@ class Login extends React.Component {
 
   componentDidMount() {
    
-    this.setState({ phone: localStorage.getItem('nickName') })
+   
   }
 
   phone = (e) => {
@@ -63,9 +63,7 @@ class Login extends React.Component {
     this.setState({ code: e.target.value })
   }
   onPassword = e => {
-   
-  
-  
+
       this.setState({ pass: e.target.value })
     
   }
@@ -105,6 +103,7 @@ class Login extends React.Component {
       sessionStorage.setItem('phone', res.data.data.phone);
       localStorage.setItem('nickName', res.data.data.name)
       sessionStorage.removeItem('qualifData')
+      sessionStorage.setItem('headerData',1)
       setTimeout(() => {
         if (res.data.data.venue_token) {
           if (res.data.data.issite === 0) {
@@ -253,20 +252,14 @@ class Login extends React.Component {
 
 
               <div className={this.state.navNum ? 'nameLogin' : 'nameLoginT'}  >
-                <Form layout="inline" autoComplete="off" className="form">
+                <Form layout="inline" className="form">
                   <Form.Item className="input">
-                    <Input onChange={this.phone} value={this.state.phone}  placeholder="用户名/操作员手机号" />
+                    <Input   onChange={this.phone} value={this.state.phone}  placeholder="用户名/操作员手机号" />
                   </Form.Item>
-                  <Form.Item className="input" style={{ opacity: 0 }}>
-                    <Input type="text" />
+                  
+                  <Form.Item className="input" style={{marginTop:'20px'}}>
+                    <Input type='password'  maxLength={15}  onChange={this.onPassword} value={this.state.pass} onPressEnter={this.onSubmitT} placeholder="密码" />
                   </Form.Item>
-                  <Form.Item className="input" style={{ opacity: 0 }}>
-                    <Input type="password" />
-                  </Form.Item>
-                  <Form.Item className="input" style={{ marginTop: -80 }}>
-                    <Input.Password  maxLength={15} onChange={this.onPassword} value={this.state.pass} onPressEnter={this.onSubmitT} placeholder="密码" />
-                  </Form.Item>
-
                   <Form.Item className="bind">
                     <Button className="btnSubmit" onClick={this.onSubmitT}>
                       登录

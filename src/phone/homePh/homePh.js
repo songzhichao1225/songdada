@@ -129,10 +129,10 @@ class homePh extends React.Component {
 
   async getIsSignOut(data) {
     const res = await getIsSignOut(data, localStorage.getItem('venue_token'))
-    if(res.data.code!==2000){
+    if(res.data.code===4001){
       this.props.history.push('/login')
       this.setState({flagK:true})
-    alert('强制下线', <div>{res.data.msg}</div>, [
+      alert('强制下线', <div>{res.data.msg}</div>, [
         { text: '确定', onPress: () => this.setState({flagK:true})},
       ])
     }

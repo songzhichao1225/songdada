@@ -233,7 +233,11 @@ class newsPh extends React.Component {
     this.props.history.push({pathname:'/homePh/orderPhT',query:{uuid:e.currentTarget.dataset.uuid}})
   }
   inforsite=()=>{
-    this.props.history.push('/homePh/inforSitePh')
+    if(localStorage.getItem('ismethod')==='1'){
+      this.props.history.push('/homePh/inforSitePh')
+    }else{
+     Toast.fail('请使用法人手机号登录后前往修改', 1);
+    }
   }
 
   render() {
@@ -303,6 +307,7 @@ class newsPh extends React.Component {
           <span style={this.state.newsDetails.intime_chk !== undefined ? { display: 'block', fontSize: '0.6rem', color: '#888' } : { display: 'none' }}>{this.state.newsDetails.intime_chk}</span>
           <span style={{ display: 'block' }}>{this.state.newsDetails.comment}</span>
           <span style={{ display: 'block', fontSize: '0.6rem', color: '#888' }}>{this.state.newsDetails.intime}</span>
+          <div style={this.state.newsDetails.type===6?{color:'#9b9b9b'}:{display:'none'}}>请使用法人手机号登录修改</div>
           <div onClick={this.inforsite} style={this.state.newsDetails.type===6?{color:'#F5A623',cursor:'pointer'}:{display:'none'}}>再次前往修改</div>
           <div onClick={this.locad} style={this.state.newsDetails.publicuuid===''?{display:'none'}:{color:'#F5A623',cursor:'pointer'}} data-uuid={this.state.newsDetails.publicuuid}>前往活动列表</div>
         </Drawer>

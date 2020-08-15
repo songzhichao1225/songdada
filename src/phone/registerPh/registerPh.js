@@ -6,7 +6,6 @@ import 'antd-mobile/dist/antd-mobile.css';
 import {EllipsisOutlined,LeftOutlined} from '@ant-design/icons';
 import { _register, _code, getPromoteName, getIsUserName } from '../../api';
 const Item = Popover.Item;
-const alert = Modal.alert;
 class registerPh extends React.Component {
 
   state = {
@@ -54,7 +53,6 @@ class registerPh extends React.Component {
       this.setState({ name: data.name })
     } else {
       Toast.fail(res.data.msg, 2);
-      this.setState({ name: '' })
     }
   }
 
@@ -87,13 +85,10 @@ class registerPh extends React.Component {
     if(e!==''){
       if (/[\u4E00-\u9FA5]/g.test(e)) {
         Toast.fail('用户名只能包含数字、字母、数字+字母', 2);
-        this.setState({ name: '' })
       }else if( /[^a-zA-Z0-9]/g.test(e)){
         Toast.fail('用户名只能包含数字、字母、数字+字母', 2);
-        this.setState({ name:'' })
       }else if(e.length<4){
         Toast.fail('用户名至少输入4位', 2);
-        this.setState({ name: '' })
       }else{this.getIsUserName({ name: e })}
     }else{
       Toast.fail('请输入用户名', 2);
@@ -299,7 +294,7 @@ Agreement=()=>{
               type='text'
               placeholder="用户名只能包含数字、字母、数字+字母"
               clear={false}
-              style={{ fontSize: '0.8rem' }}
+              style={{ fontSize: '0.8rem'}}
               value={this.state.name}
               onChange={this.changeNameKo}
               onBlur={this.changeName}

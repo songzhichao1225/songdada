@@ -200,7 +200,7 @@ class qualification extends React.Component {
 
   provinceChange = e => {
 
-    this.setState({ province_id: e })
+    this.setState({ province_id: e,backList:[] })
     if (e !== this.state.province_id) {
       this.setState({ city_id: '', openingLine: '' })
     }
@@ -209,7 +209,7 @@ class qualification extends React.Component {
   }
 
   typeChange = e => {
-    this.setState({ bank_id: e })
+    this.setState({ bank_id: e,backList:[] })
     this.getVenueOpenBankProvince()
     if (e !== this.state.bank_id) {
       this.setState({  openingLine: '' })
@@ -217,11 +217,13 @@ class qualification extends React.Component {
   }
 
   cityChange = e => {
-    this.setState({ city_id: e })
+    this.setState({ city_id: e,backList:[] })
   }
 
   handleSearch = e => {
-    this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
+    if(e!==''){
+      this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
+    }
   }
 
 

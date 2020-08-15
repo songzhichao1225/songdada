@@ -129,6 +129,7 @@ class sitePh extends React.Component {
     this.setState({
       index: e.currentTarget.dataset.index
     })
+    console.log(e.currentTarget.dataset.index)
     if (e.currentTarget.dataset.index === '1') {
       this.getVenueNumberTitleList({ page: 1, sportid: this.state.asyncValue })
       this.setState({ asyncValue: this.state.asyncValueTwo, page: 1 })
@@ -136,6 +137,7 @@ class sitePh extends React.Component {
       this.getSiteSettingList({ page: 1, sportid: this.state.asyncValue })
       this.setState({ asyncValueTwo: this.state.asyncValue, pageTwo: 1 })
     } else if (e.currentTarget.dataset.index === '3') {
+      console.log(666)
       this.getSiteSettingHistoryList({ page: 1, sportid: this.state.asyncValue })
       this.setState({ asyncValueThree: this.state.asyncValue, pageThree: 1 })
     }
@@ -155,7 +157,7 @@ class sitePh extends React.Component {
       numArr.push(obj)
     }
     this.setState({ numArr: numArr, starttime: new Date(kpo), endtime: new Date(kpotWO), startDate: new Date(kpo), endDate: new Date(kpotWO) })
-
+   
 
 
   }
@@ -204,6 +206,7 @@ class sitePh extends React.Component {
       pageTwo: page
     })
     this.getSiteSettingList({ page: page, sportid: this.state.asyncValueTwo })
+    
   }
 
   currentThree = (page, pageSize) => {
@@ -646,7 +649,7 @@ class sitePh extends React.Component {
       }
     }
     if (Liturgyche.length === 0) {
-      Toast.success('请选择星期', 1);
+      Toast.fail('请选择星期', 1);
     } else {
       console.log(LiturgycheNum)
       this.setState({ Liturgyche: Liturgyche.join(','), LiturgycheNum: LiturgycheNum.join(','), Liturgy: false })
@@ -678,21 +681,22 @@ class sitePh extends React.Component {
   jiageSub = () => {
 
     let { pickerValueTwo, pickerValueThree, Liturgyche, starttime, endtime, money, cheStr, titleArrFoterNum, pickerValueFour, pickerValueFive, comment, tagId, titleArr, sportArrTwo, LiturgycheNum, jiageUUid } = this.state
+    console.log(Liturgyche)
     if (pickerValueTwo === '') {
       Toast.fail('请选择场地类型', 1);
-    } else if (pickerValueThree === '') {
+    } else if (pickerValueThree.length === 0) {
       Toast.fail('请选择细分标签', 1);
-    } else if (Liturgyche.length === 0) {
+    } else if (Liturgyche === '请选择') {
       Toast.fail('请选择星期', 1);
-    } else if (starttime === '') {
+    } else if (starttime.length === undefined) {
       Toast.fail('请选择开始时间', 1);
-    } else if (endtime === '') {
+    } else if (endtime.length === undefined) {
       Toast.fail('请选择结束时间', 1);
     } else if (money === '') {
       Toast.fail('请输入价格', 1);
     } else if (pickerValueFour.length === 0) {
       Toast.fail('请选择最长提前预定时间', 1);
-    } if (pickerValueFive.length === 0) {
+    }else if (pickerValueFive.length === 0) {
       Toast.fail('请选择最短提前预定时间', 1)
 
     } else {
@@ -736,6 +740,7 @@ class sitePh extends React.Component {
             }
           }
         }, 1000)
+       
 
         let open = res.data.data[0].openday.split(',')
         let p = []
@@ -829,6 +834,7 @@ class sitePh extends React.Component {
   }
 
   jiaUpdata = e => {
+    console.log(this.state.specialOfferH)
     this.setState({ jiageUUid: e.currentTarget.dataset.uuid })
     this.getSiteSettingFirst({ uuid: e.currentTarget.dataset.uuid })
   }
@@ -894,7 +900,7 @@ class sitePh extends React.Component {
   async DelSiteSettingDiscount(data) {
     const res = await DelSiteSettingDiscount(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ specialOffer: false })
+      this.setState({ specialOffer: false,specialOfferH:0 })
       this.getSiteSettingList({ page: this.state.pageTwo, sportid: this.state.asyncValueTwo })
     } else {
       Toast.fail(res.data.msg, 2);
@@ -904,7 +910,7 @@ class sitePh extends React.Component {
   async SiteSettingDiscountSave(data) {
     const res = await SiteSettingDiscountSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ specialOffer: false })
+      this.setState({ specialOffer: false,specialOfferH:0 })
       this.getSiteSettingList({ page: this.state.pageTwo, sportid: this.state.asyncValueTwo })
       Toast.success('提交成功', 2);
     } else {
@@ -970,7 +976,7 @@ class sitePh extends React.Component {
                     <div className="idxNum" onClick={this.venDuo} data-venueid={item.venueid}>场地编号：{item.venueid}</div>
                   </Card.Body>
                   <Card.Footer content={<span className="number">场地数量：{item.number}</span>} extra={<div className="capzuo"><img style={{ marginRight: '10px' }} onClick={this.upData} data-uuid={item.uuid} src={require('../../assets/upLoad.png')} alt="img" /><img onClick={() =>
-                    alert('提示', '您确定要删除该条场地细分么？删除后用户将无法预订' + item.sportid + '的' + item.title + '场地。', [
+                    alert('提示', '您确定要删除该条场地细分么？删除后用户将无法预订该时间段' + item.sportid + '的' + item.title + '场地。', [
                       { text: '取消', onPress: () => console.log('cancel') },
                       { text: '确定', onPress: () => this.DelVenueNumberTitle({ uuid: item.uuid }) },
                     ])} data-uuid={item.uuid} data-title={item.title} src={require('../../assets/delet.png')} alt="img" /></div>} />
@@ -1015,7 +1021,7 @@ class sitePh extends React.Component {
                     </div>
                   </Card.Body>
                   <Card.Footer content={<div className="lookYou" onClick={this.specialOffer} data-uuid={item.uuid}>{item.discount_venueid !== null ? '查看优惠' : '添加优惠'}</div>} extra={<div className="capzuo"><img style={{ marginRight: '10px' }} onClick={this.jiaUpdata} data-uuid={item.uuid} src={require('../../assets/upLoad.png')} alt="img" /><img onClick={() =>
-                    alert('提示', '您确定要删除该条价格设置么？删除后用户将无法预订' + item.sportname + '的' + item.tags + '场地。', [
+                    alert('提示', '您确定要删除该条价格设置么？删除后用户将无法预订该时间段' + item.sportname + '的' + item.tags + '场地。', [
                       { text: '取消', onPress: () => console.log('cancel') },
                       { text: '确定', onPress: () => this.DelSiteSetting({ uuid: item.uuid }) },
                     ])} src={require('../../assets/delet.png')} alt="img" /></div>} />
@@ -1065,7 +1071,7 @@ class sitePh extends React.Component {
                 </Card>
               ))
             }
-            <div style={this.state.siteList.length !== 0 ? { display: 'none' } : { width: '100%' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (6).png')} alt="666" /><span style={{ display: 'block', textAlign: 'center' }}>您还没有历史设置!</span></div>
+            <div style={this.state.historList.length !== 0 ? { display: 'none' } : { width: '100%' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (6).png')} alt="666" /><span style={{ display: 'block', textAlign: 'center' }}>您还没有历史设置!</span></div>
             <Pagination style={{ marginBottom: '15px' }} size="small" hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.pageThree} total={this.state.otherThree} onChange={this.currentThree} />
           </div>
           <div className="footerSite">
@@ -1334,7 +1340,7 @@ class sitePh extends React.Component {
             ><span style={{ fontSize: '0.75rem' }}>价格(元/时)</span></InputItem></List.Item>
 
           <div className="Siscount"><div style={this.state.kop === null ? { display: 'none' } : {}} onClick={() =>
-            alert('提示', '您确定要删除该条优惠设置么？删除后用户将无法预订' + this.state.sportSiscount + '的优惠场地', [
+            alert('提示', '您确定要删除该条优惠设置么？删除后用户将无法预订该时间段' + this.state.sportSiscount + '的优惠场地', [
               { text: '取消', onPress: () => console.log('cancel') },
               { text: '确定', onPress: () => this.DelSiteSettingDiscount({ uuid: this.state.SiscountUUid }) },
             ])} className="leftSiscount">删除</div><div className="leftSiscount" onClick={this.joinSiscount} style={this.state.kop === null ? { width: '100%', borderRadius: '2.5rem' } : { marginLeft: '1%' }}>提交</div></div>

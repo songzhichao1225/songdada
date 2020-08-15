@@ -19,7 +19,6 @@ class loginPhTeo extends React.Component {
 
   componentDidMount() {
     
-    this.setState({phone:localStorage.getItem('nickName')})
                 
   }
   corporatePh = () => {
@@ -180,7 +179,7 @@ passFocus=(e)=>{
               type='text'
               placeholder="用户名/手机号"
               clear={true}
-              style={{ fontSize: '0.88rem' }}
+              style={{ fontSize: '0.88rem',border:'none'  }}
               onChange={this.phone}
               className="phone"
               value={this.state.phone}
@@ -188,29 +187,20 @@ passFocus=(e)=>{
             </InputItem>
           </div>
           
-          <div className="name" style={{opacity:'0',position:'absolute',zIndex:-9}}>
-            <InputItem type='text'></InputItem>
-          </div>
-
-          <div className="name" style={{opacity:'0',position:'absolute',zIndex:-9}}>
-            <InputItem type='password'></InputItem>
-          </div>
-         
-        
 
           <div className="name">
             <InputItem
-              type={this.state.eyes===true?'text':'password'}
+              type='password'
               placeholder="请输入密码"
               clear={false}   
-              style={{ fontSize: '0.88rem' }}
+              style={{ fontSize: '0.88rem',border:'none' }}
               onChange={this.pssword}  
               maxLength={15}
               className="phone"
-              autoComplete="new-password"
+              
             >
             </InputItem>
-            <span style={{display:'block',width:'15%'}} onClick={this.eyes}><img src={require('../../assets/eyes.png')} style={this.state.eyes===true?{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}:{display:'none'}} alt="eyes"/> <img src={require('../../assets/eyesTwo.png')} style={this.state.eyes===true?{display:'none'}:{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}} alt="eyes"/></span>
+            {/* <span style={{display:'block',width:'15%'}} onClick={this.eyes}><img src={require('../../assets/eyes.png')} style={this.state.eyes===true?{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}:{display:'none'}} alt="eyes"/> <img src={require('../../assets/eyesTwo.png')} style={this.state.eyes===true?{display:'none'}:{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}} alt="eyes"/></span> */}
             <span onClick={this.forgetPassword}>忘记密码</span>
           </div>
           

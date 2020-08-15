@@ -86,7 +86,7 @@ class news extends React.Component {
       }else{
         this.getVenueIndex()
         this.gerVenueName()
-        this.setState({oneChecked:false})
+        this.setState({oneChecked:false,current:this.state.current})
         this.getVenueNewsList({ page: this.state.current })
       }
     }
@@ -248,7 +248,11 @@ class news extends React.Component {
     this.props.history.push({pathname:'/home/appointmentList',query:{uuid:e.currentTarget.dataset.uuid}})
   }
   stamic=()=>{
-    this.props.history.push('/home/stadiums')
+    if(sessionStorage.getItem('ismethod')==='1'){
+      this.props.history.push('/home/stadiums')
+    }else{
+     message.warning('请使用法人手机号登录后前往修改')
+    }
   }
 
   render() {
@@ -304,6 +308,7 @@ class news extends React.Component {
             <div>{this.state.newsDetail.comment}</div>
             <div>{this.state.newsDetail.intime}</div>
             <div onClick={this.locad} style={this.state.newsDetail.publicuuid===''?{display:'none'}:{color:'#F5A623',cursor:'pointer'}} data-uuid={this.state.newsDetail.publicuuid}>前往活动列表</div>
+            <div style={this.state.newsDetail.type===6?{color:'#9b9b9b'}:{display:'none'}} >请使用法人手机号登录修改</div>
             <div onClick={this.stamic} style={this.state.newsDetail.type===6?{color:'#F5A623',cursor:'pointer'}:{display:'none'}} data-uuid={this.state.newsDetail.publicuuid}>前往修改</div>
           </Drawer>
         </div> 

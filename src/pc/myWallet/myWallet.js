@@ -14,12 +14,12 @@ function beforeUpload(file) {
   if (!isJpgOrPng) {
     message.error('只能使用JPG/PNG格式！');
   }
-  const isLt2M = file.size / 1024 / 1024 < 2;
+  const isLt2M = file.size / 1024 / 1024 < 6;
   if (!isLt2M) {
-    message.error('图片不能超过2MB!');
+    message.error('图片不能超过5MB!');
   }
   return isJpgOrPng && isLt2M;
-}
+} 
 
 
 
@@ -86,7 +86,7 @@ class myWallet extends React.Component {
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登录超时请重新登录!')
-    } else {
+    } else { 
       this.setState({ moneyList: res.data.data.data, sumMoney: res.data.data.sumMoney, whereMoney: res.data.data.whereMoney, other: parseInt(res.data.data.count), loading: false, hidden: true })
     }
   }
@@ -125,7 +125,7 @@ class myWallet extends React.Component {
         let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         this.setState({ start: start, end: end, dateString: [start, end], koL: false })
-
+ 
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
       }
     } else if (sessionStorage.getItem('incomtime') === 'null') {
@@ -293,14 +293,14 @@ class myWallet extends React.Component {
   }
 
   typeChange = e => {
-    this.setState({ bank_id: e, province_id: '', city_id: '', corporateOpen: '' })
+    this.setState({ bank_id: e, province_id: '', city_id: '', corporateOpen: '',backList:[] })
   }
   provinceChange = e => {
-    this.setState({ province_id: e, city_id: '', corporateOpen: '' })
+    this.setState({ province_id: e, city_id: '', corporateOpen: '',backList:[] })
     this.getVenueOpenBankCity({ province_id: e })
   }
   cityChange = e => {
-    this.setState({ city_id: e, corporateOpen: '' })
+    this.setState({ city_id: e, corporateOpen: '',backList:[] })
   }
 
   handleSearch = e => {
@@ -521,21 +521,21 @@ class myWallet extends React.Component {
 
           <div className="listing" >
             <span>开户所在地</span>
-            <Select placeholder="银行类型" style={{ width: 120, height: '35px', marginLeft: '18px' }} value={this.state.bank_id === '' ? null : Number(this.state.bank_id)} loading={this.state.flagOne} onChange={this.typeChange}>
+            <Select placeholder="银行类型" style={{ width: 120, marginLeft: '18px' }} value={this.state.bank_id === '' ? null : Number(this.state.bank_id)} loading={this.state.flagOne} onChange={this.typeChange}>
               {
                 this.state.type.map((item, i) => (
                   <Option key={i} value={item.bank_id}>{item.bank_name}</Option>
                 ))
               }
             </Select>
-            <Select placeholder="所在省" style={{ width: 120, height: '35px', marginLeft: '18px' }} value={this.state.province_id === '' ? null : Number(this.state.province_id)} loading={this.state.flagTwo} onChange={this.provinceChange}>
+            <Select placeholder="所在省" style={{ width: 120, marginLeft: '18px' }} value={this.state.province_id === '' ? null : Number(this.state.province_id)} loading={this.state.flagTwo} onChange={this.provinceChange}>
               {
                 this.state.backProvince.map((item, i) => (
                   <Option key={i} value={item.province_id}>{item.province}</Option>
                 ))
               }
             </Select>
-            <Select placeholder="所在市" style={{ width: 120, height: '35px', marginLeft: '18px' }} value={this.state.city_id === '' ? null : Number(this.state.city_id)} loading={this.state.flagThree} onChange={this.cityChange}>
+            <Select placeholder="所在市" style={{ width: 120, marginLeft: '18px' }} value={this.state.city_id === '' ? null : Number(this.state.city_id)} loading={this.state.flagThree} onChange={this.cityChange}>
               {
                 this.state.backCity.map((item, i) => (
                   <Option key={i} value={item.city_id}>{item.city}</Option>

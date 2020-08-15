@@ -5,7 +5,7 @@ import { Toast, DatePicker, List, Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Select, Row, Col, Drawer, Pagination, Popconfirm } from 'antd';
 import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
-import { getVenueSport, VenueTemporarilyClosedList, VenueTemporarilyClosedSave, VenueTemporarilyClosedDel, VenueTemporarilyClosed, getIsClosedPublic } from '../../api';
+import { getSetPriceVenueSport, VenueTemporarilyClosedList, VenueTemporarilyClosedSave, VenueTemporarilyClosedDel, VenueTemporarilyClosed, getIsClosedPublic } from '../../api';
 const { Option } = Select;
 
 
@@ -32,8 +32,8 @@ class temporaryPh extends React.Component {
     moveY: 0,
     spinFlag: false,
   };
-  async getVenueSport(data) {
-    const res = await getVenueSport(data, localStorage.getItem('venue_token'))
+  async getSetPriceVenueSport(data) {
+    const res = await getSetPriceVenueSport(data, localStorage.getItem('venue_token'))
 
     this.setState({ sportList: res.data.data })
 
@@ -54,7 +54,7 @@ class temporaryPh extends React.Component {
 
 
   componentDidMount() {
-    this.getVenueSport()
+    this.getSetPriceVenueSport()
     this.VenueTemporarilyClosedList({ page: 1 })
     let now = new Date()
     let kpo = now.setMinutes(now.getMinutes() - now.getMinutes());

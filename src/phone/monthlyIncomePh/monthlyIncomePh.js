@@ -112,7 +112,7 @@ class monthlyIncomePh extends React.Component {
       <div className="monthlyIncomePh">
         <div className="headerTitle">
           <LeftOutlined  onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }}/>
-          {sessionStorage.getItem('income') === 'all'?'钱包明细':'' || sessionStorage.getItem('income')  === 'month' ? '本月收入' : '钱包明细' || sessionStorage.getItem('income')  === 'day' ? '今日收入' : '钱包明细'}
+        钱包明细
         </div>
         <div className="timer">
         <div>

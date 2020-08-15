@@ -179,7 +179,7 @@ class qualificationPh extends React.Component {
 
   async getIsSignOut(data) {
     const res = await getIsSignOut(data, localStorage.getItem('venue_token'))
-    if(res.data.code!==2000){
+    if(res.data.code===4001){
       this.props.history.push('/login')
       Toast.fail('您的账号已在别处登录', 2)
     }

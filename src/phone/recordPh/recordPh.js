@@ -66,7 +66,7 @@ class recordPh extends React.Component {
 
         <div className="headTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} /> 提现记录</div>
         <div style={this.state.recordPhList.length>0?{height:'94%',overflowY:'auto'}:{display:'none'}}>
-    <div style={{width:'100%',textAlign:'right',paddingRight:'1rem'}}>总计:￥{this.state.maxmoney}</div>
+    <div style={{width:'100%',textAlign:'right',paddingRight:'1rem',height:'3rem',lineHeight:'3rem',background:'rgba(245,245,245,1)'}}>总计:￥{this.state.maxmoney}</div>
         
         <PullToRefresh
           damping={60}

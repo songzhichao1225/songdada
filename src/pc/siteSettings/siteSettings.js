@@ -2,7 +2,7 @@ import React from 'react';
 import './siteSettings.css';
 import 'antd/dist/antd.css';
 import { getSiteSettingList, addVenueField, getVenueSport, AddSiteSetting, DelSiteSetting, getVenueSportidTitle, DelVenueTitle, SiteSettingDiscountSave, getSiteSettingHistoryList, getVenueNumberTitleFirst, getSiteSettingFirst, getSiteSelectedTitle, DelVenueNumberTitle, getSiteSelectedVenueid, getVenueTitleSave, getVenueNumberTitleSave, getVenueNumberTitleList, DelSiteSettingDiscount } from '../../api';
-import { Select, Row, Col, Modal, DatePicker, InputNumber, Input, message, Pagination, Popconfirm, Divider, Popover, Spin, Drawer } from 'antd';
+import { Select, Row, Col, Modal, DatePicker, Input, message, Pagination, Popconfirm, Divider, Popover, Spin, Drawer } from 'antd';
 import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/zh_CN';
@@ -544,7 +544,6 @@ class siteSettings extends React.Component {
 
           dayTwo = "请选择";
       }
-      console.log()
       this.setState({ maxScheduledDateName: dayTwo })
       this.setState({
         runId: res.data.data[0].sportid, tags: res.data.data[0].tags,
@@ -602,6 +601,25 @@ class siteSettings extends React.Component {
         }
       }
     }
+    for (let i in res.data.data) {
+      res.data.data[i].opendaynameTwo = ''
+      if (res.data.data[i].openday.split(',').indexOf('1') !== -1) {
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周一'
+      } if (res.data.data[i].openday.split(',').indexOf('2') !== -1) {
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周二'
+      } if (res.data.data[i].openday.split(',').indexOf('3') !== -1) {
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周三'
+      } if (res.data.data[i].openday.split(',').indexOf('4') !== -1) {
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周四'
+      } if (res.data.data[i].openday.split(',').indexOf('5') !== -1) {
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周五'
+      } if (res.data.data[i].openday.split(',').indexOf('6') !== -1) {
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周六'
+      } if (res.data.data[i].openday.split(',').indexOf('7') !== -1) {
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周日'
+      }
+    }
+  
     this.setState({ historyArr: res.data.data, otherThree: res.data.other })
   }
 
@@ -1328,7 +1346,7 @@ class siteSettings extends React.Component {
                       <Col xs={{ span: 2 }}>
                         <img onClick={this.update} style={{ cursor: 'pointer' }} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;
                       <Popconfirm
-                          title={"你确定要删除该条价格设置么?删除后用户将无法预订" + item.sportname + '的' + item.tags + '场地'}
+                          title={"你确定要删除该条价格设置么?删除后用户将无法预订该时间段" + item.sportname + '的' + item.tags + '场地'}
                           onConfirm={this.confirmMoney}
                           onCancel={this.cancel}
                           okText="确定"
@@ -1369,13 +1387,13 @@ class siteSettings extends React.Component {
                   <Col xs={{ span: 3 }}>
                     <img onClick={this.modification} data-uuid={item.uuid} style={{ marginRight: '5px', cursor: 'pointer' }} src={require("../../assets/icon_pc_updata.png")} alt="修改" />
                     <Popconfirm
-                      title={'您确定要删除该条场地细分么?删除后用户将无法预订' + item.sportid + '的' + item.title + '场地'}
+                      title={'您确定要删除该条场地细分么?删除后用户将无法预订该时间段' + item.sportid + '的' + item.title + '场地'}
                       onConfirm={this.confirmserisa}
                       onCancel={this.cancel}
                       okText="确定"
                       cancelText="取消"
                     >
-                      <img style={{ marginLeft: '5px', cursor: 'pointer' }} onClick={this.deletserisa} data-id={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
+                      <img style={{ marginLeft: '5px', cursor: 'pointer'}} onClick={this.deletserisa} data-id={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
                     </Popconfirm>
                   </Col>
                 </Row>
@@ -1393,17 +1411,18 @@ class siteSettings extends React.Component {
               <Col xs={{ span: 2 }}>细分标签</Col>
               <Col xs={{ span: 2 }}>场地编号</Col>
               <Col xs={{ span: 2 }}>场地数量</Col>
+              <Col xs={{ span: 2 }}>星期</Col>
               <Col xs={{ span: 2 }}>时间范围</Col>
-              <Col xs={{ span: 2 }}>价格(元/时)</Col>
+              <Col xs={{ span: 2 }}>价格<span style={{fontSize:'12px',color:'#9b9b9b'}}>(元/时)</span></Col>
               <Popover content={(<span>最长提前预订时间</span>)} title='详情' trigger="click">
                 <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>最长提前预订时间</Col>
               </Popover>
               <Popover content={(<span>最短提前预订时间</span>)} title='详情' trigger="click">
                 <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>最短提前预订时间</Col>
               </Popover>
-              <Col xs={{ span: 2 }}>备注</Col>
-              <Col xs={{ span: 2 }}>打折优惠</Col>
-              <Col xs={{ span: 2 }}>操作</Col>
+              <Col xs={{ span: 1 }}>备注</Col>
+              <Col xs={{ span: 1 }}>打折优惠</Col>
+              <Col xs={{ span: 1 }}>操作</Col>
               <Col xs={{ span: 2 }}>操作时间</Col>
             </Row>
             {
@@ -1417,6 +1436,9 @@ class siteSettings extends React.Component {
                     <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.venueid}</Col>
                   </Popover>
                   <Col xs={{ span: 2 }}>{item.sitenumber}</Col>
+                  <Popover content={(<span>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</span>)} title='详情' trigger="click">
+                        <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</Col>
+                      </Popover>
                   <Popover content={(<span>{item.starttime}-{item.endtime}</span>)} title='详情' trigger="click">
                     <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.starttime}-{item.endtime}</Col>
                   </Popover>
@@ -1424,10 +1446,10 @@ class siteSettings extends React.Component {
                   <Col xs={{ span: 2 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
                   <Col xs={{ span: 2 }}>{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</Col>
                   <Popover content={(<span>{item.comment === '' ? '无' : item.comment}</span>)} title='详情' trigger="click">
-                    <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.comment === '' ? '无' : item.comment}</Col>
+                    <Col style={{ cursor: 'pointer' }} xs={{ span: 1 }}>{item.comment === '' ? '无' : item.comment}</Col>
                   </Popover>
-                  <Col xs={{ span: 2 }}>{item.discount_edate === '' ? '无' : <span style={{ cursor: 'pointer' }} data-sd={item.discount_sdate} data-ed={item.discount_edate} data-st={item.discount_start} data-et={item.discount_end} data-ve={item.discount_venueid} data-cos={item.discount_costperhour} onClick={this.details}>查看</span>}</Col>
-                  <Col xs={{ span: 2 }}>{item.operation === 1 ? '添加' : item.operation === 2 ? '修改' : item.operation === 3 ? '删除' : '无操作'}</Col>
+                  <Col xs={{ span: 1 }}>{item.discount_edate === '' ? '无' : <span style={{ cursor: 'pointer' }} data-sd={item.discount_sdate} data-ed={item.discount_edate} data-st={item.discount_start} data-et={item.discount_end} data-ve={item.discount_venueid} data-cos={item.discount_costperhour} onClick={this.details}>查看</span>}</Col>
+                  <Col xs={{ span: 1 }}>{item.operation === 1 ? '添加' : item.operation === 2 ? '修改' : item.operation === 3 ? '删除' : '无操作'}</Col>
                   <Popover content={(<span>{item.intime}</span>)} title='详情' trigger="click">
                     <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.intime}</Col>
                   </Popover>
@@ -1451,10 +1473,8 @@ class siteSettings extends React.Component {
             onClose={this.onClose}
             visible={this.state.detail}
           >
-            <p>开始日期:{this.state.deData.sd}</p>
-            <p>结束日期:{this.state.deData.ed}</p>
-            <p>开始时间:{this.state.deData.st}</p>
-            <p>结束时间:{this.state.deData.et}</p>
+            <p>开始日期:{this.state.deData.sd}&nbsp;&nbsp;{this.state.deData.st}</p>
+            <p>结束日期:{this.state.deData.ed}&nbsp;&nbsp;{this.state.deData.et}</p>
             <p>场&nbsp;&nbsp;地&nbsp;&nbsp;号:{this.state.deData.ve}</p>
             <p>优惠价格:￥{this.state.deData.cos}</p>
           </Drawer>

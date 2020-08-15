@@ -2,7 +2,7 @@ import React from 'react';
 import './inforSitePh.css';
 import { Toast, Modal, TextareaItem, Picker, List } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Input, Checkbox, Upload, Button, Radio, Select, Tooltip, Spin } from 'antd';
+import { Input, Checkbox, Upload, Button, Radio, Select, Spin } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 import { getVenueInformation, getVenueQualificationInformation, VenueInformationSave, VenueQualificationInformationSave, getVenueIssecondaudit, getVenueOpenBank, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity, VenueReceivingBankInformation } from '../../api';
 import ImgCrop from 'antd-img-crop';
@@ -78,7 +78,8 @@ class inforSitePh extends React.Component {
     spin: true,
     onChangeCheckTwo: [],
     CorporateName: '',
-    other: false
+    other: false,
+    loading: true,
 
   };
 
@@ -115,7 +116,7 @@ class inforSitePh extends React.Component {
 
   async getVenueIssecondaudit(data) {
     const res = await getVenueIssecondaudit(data, localStorage.getItem('venue_token'))
-    this.setState({ issecondaudit: parseInt(res.data.data.issecondaudit),isbankcard:parseInt(res.data.data.isbankcard) })
+    this.setState({ issecondaudit: parseInt(res.data.data.issecondaudit), isbankcard: parseInt(res.data.data.isbankcard) })
   }
 
   async getVenueQualificationInformation(data) {
@@ -159,10 +160,11 @@ class inforSitePh extends React.Component {
   }
   handleChange = info => {
     if (info.file.status === 'uploading') {
-      this.setState({ loading: true });
+      this.setState({ loading: false });
       return;
     }
     if (info.file.status === 'done') {
+      this.setState({ loading: true })
       if (info.file.response.data.baseURL !== undefined) {
         this.setState({ imageUrlS: info.file.response.data.baseURL + info.file.response.data.filesURL })
       } else {
@@ -172,7 +174,7 @@ class inforSitePh extends React.Component {
       getBase64(info.file.originFileObj, imageUrl =>
         this.setState({
           imageUrl,
-          loading: false,
+        
         })
       )
     }
@@ -211,8 +213,12 @@ class inforSitePh extends React.Component {
     });
   };
   handleChangeT = ({ fileList }) => {
-    this.setState({ fileList: fileList })
+    this.setState({ fileList: fileList, loading: false })
+    let arrt = []
     for (let i in fileList) {
+      if (fileList[i].url === undefined) {
+        arrt.push(fileList[i].response === undefined ? 1 : fileList[i].response)
+      }
       if (fileList[i].response !== undefined && fileList[i].response.code === 4004) {
         fileList[i].thumbUrl = ''
         fileList[i].name = '图片违规'
@@ -220,6 +226,9 @@ class inforSitePh extends React.Component {
         this.setState({ fileList: fileList })
       }
 
+    }
+    if (arrt.indexOf(1) === -1) {
+      this.setState({ loading: true })
     }
 
   }
@@ -248,18 +257,17 @@ class inforSitePh extends React.Component {
   async VenueInformationSave(data) {
     const res = await VenueInformationSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      Toast.success('提交成功', 1);
+      Toast.success('提交成功', 1)
       this.getVenueIssecondaudit()
-      this.setState({other: res.data.other })
+      this.setState({ other: res.data.other })
       this.getVenueInformation()
     } else {
       Toast.fail(res.data.msg, 1);
-
     }
   }
 
   confirm = () => {
-    let { cgName, address, linkMan, telephone, fileList, imageUrlS, sport, facilities, siteInfo, comment, lat, lng, position, province, city, area } = this.state
+    let { cgName, address, linkMan, telephone, fileList, imageUrlS, sport, facilities, comment, lat, lng, position, province, city, area } = this.state
     let filesURLarr = []
     for (let i in fileList) {
       if (fileList[i].response !== undefined) {
@@ -268,7 +276,6 @@ class inforSitePh extends React.Component {
         } else {
           filesURLarr.push(fileList[i].response.data.baseURL + fileList[i].response.data.filesURL)
         }
-
       } else if (fileList[i].response === undefined) {
         filesURLarr.push(fileList[i].url)
       }
@@ -300,10 +307,14 @@ class inforSitePh extends React.Component {
       } else if (data.filesURL.split('|').indexOf('无') !== -1) {
         Toast.fail('场地照有违规图片请重新上传', 2);
       } else {
+        if(this.state.loading===false){
+          Toast.loading('图片上传中', 1);
+        }else{
         this.VenueInformationSave(data)
+        }
       }
     } else {
-      Toast.fail('至少上传两张室内照', 1);
+      Toast.fail('至少上传两张场地照', 1);
     }
   }
 
@@ -311,11 +322,12 @@ class inforSitePh extends React.Component {
   handleChangeTwo = info => {
 
     if (info.file.status === 'uploading') {
-      this.setState({ loading: true })
+      this.setState({ loading: false })
       return
     }
 
     if (info.file.status === 'done') {
+      this.setState({ loading: true })
       if (info.file.response.data.baseURL !== undefined) {
         if (this.state.imgFile !== '') {
           this.setState({ imgFile: info.file.response.data.filesURL, legalBaseURL: info.file.response.data.baseURL, imgFileTwo: '' })
@@ -338,10 +350,11 @@ class inforSitePh extends React.Component {
 
   handleChangeOne = info => {
     if (info.file.status === 'uploading') {
-      this.setState({ loading: true })
+      this.setState({ loading: false })
       return
     }
     if (info.file.status === 'done') {
+      this.setState({ loading: 'true' })
       this.setState({ imageUrlOne: info.file.response.data.baseURL + info.file.response.data.filesURL })
     }
     if (info.file.response.code === 4004) {
@@ -354,10 +367,11 @@ class inforSitePh extends React.Component {
 
   handleChangeThree = info => {
     if (info.file.status === 'uploading') {
-      this.setState({ loading: true })
+      this.setState({ loading: false })
       return;
     }
     if (info.file.status === 'done') {
+      this.setState({ loading: true })
       if (info.file.response.data.baseURL !== undefined) {
         if (this.state.imgFileTwo !== '') {
           this.setState({ imgFileTwo: info.file.response.data.filesURL, legalBaseURL: info.file.response.data.baseURL, imgFile: '' })
@@ -460,13 +474,13 @@ class inforSitePh extends React.Component {
 
 
   typeChange = e => {
-    this.setState({ bank_id: e,corporateOpen:'' })
+    this.setState({ bank_id: e, corporateOpen: '',backList:[] })
   }
   cityChange = e => {
-    this.setState({ city_id: e })
+    this.setState({ city_id: e,corporateOpen: '',backList:[] })
   }
   provinceChange = e => {
-    this.setState({ province_id: e })
+    this.setState({ province_id: e,corporateOpen: '',backList:[] })
     this.getVenueOpenBankCity({ province_id: e })
   }
 
@@ -478,7 +492,7 @@ class inforSitePh extends React.Component {
     } else if (this.state.city_id === '') {
       Toast.fail('请选择银行所在市', 1.5)
     } else {
-      this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
+      this.getVenueOpenBankList({ bank_id: this.state.bank_id.join(), province_id: this.state.province_id.join(), city_id: this.state.city_id.join(), search_name: e })
     }
   }
 
@@ -523,10 +537,18 @@ class inforSitePh extends React.Component {
         Toast.fail('请更换身份证反面照', 1);
       } else {
         data.legalBaseURL = imgHood
-        this.VenueQualificationInformationSave(data)
+        if (this.state.loading === false) {
+          Toast.loading('图片上传中', 1);
+        } else {
+          this.VenueQualificationInformationSave(data)
+        }
       }
     } else {
+      if(this.state.loading===false){
+        Toast.loading('图片上传中', 1);
+      }else{
       this.VenueQualificationInformationSave(data)
+      }
     }
   }
   reture = () => {
@@ -562,16 +584,20 @@ class inforSitePh extends React.Component {
       Settlement: numRadio,
       Bankaccount: corporateCardId,
       OpeningBank: corporateOpen,
-      Banktype:typeof(bank_id)!=='string'?bank_id.join():bank_id,
-      ProvinceBank:typeof(province_id)!=='string'?province_id.join():province_id,
-      CityBank:typeof(city_id)!=='string'?city_id.join():city_id,
+      Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
+      ProvinceBank: typeof (province_id) !== 'string' ? province_id.join() : province_id,
+      CityBank: typeof (city_id) !== 'string' ? city_id.join() : city_id,
     }
     if (numRadio && imgFile === undefined) {
       Toast.fail('图片违规请重新上传', 1);
     } else if (numRadio && imgFileTwo === undefined) {
       Toast.fail('图片违规请重新上传', 1);
     } else {
+      if(this.state.loading===false){
+        Toast.loading('图片上传中', 1);
+      }else{
       this.VenueReceivingBankInformation(data)
+      }
     }
   }
 
@@ -590,7 +616,6 @@ class inforSitePh extends React.Component {
       { label: '足球5人制', value: '10' },
       { label: '排球', value: '11' },
       { label: '网球', value: '12' }
-
     ]
 
 
@@ -605,18 +630,18 @@ class inforSitePh extends React.Component {
     const { imageUrlS, fileList, imgFile, imageUrlOne, imgFileTwo } = this.state
     const uploadButtonT = (
       <div>
-      <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="2rem" height="2rem"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
-    </div>
+        <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="2rem" height="2rem"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
+      </div>
     )
     const uploadButtonTwo = (
       <div>
-      <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="2rem" height="2rem"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
-    </div>
+        <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="2rem" height="2rem"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
+      </div>
     )
     const uploadButtonThree = (
       <div>
-      <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="2rem" height="2rem"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
-    </div>
+        <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="2rem" height="2rem"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
+      </div>
     )
     const propsOne = {
       aspect: 1.295 / 1,
@@ -633,12 +658,12 @@ class inforSitePh extends React.Component {
           <LeftOutlined onClick={this.reture} style={{ position: 'absolute', left: '0', width: '48px', height: '48px', lineHeight: '48px', fontSize: '1rem' }} />
           <div className="left">场馆信息</div>
         </div>
-        <div style={localStorage.getItem('ismethod')==='0'?{}:{display:'none'}}>
+        <div style={localStorage.getItem('ismethod') === '0' ? {} : { display: 'none' }}>
           <div className="topDiv" style={this.state.flag === 1 ? { color: '#fff', background: '#F5A623' } : {}} onClick={this.left}>基本信息</div>
-       
+
         </div>
 
-        <div style={localStorage.getItem('ismethod')==='1'?{}:{display:'none'}}>
+        <div style={localStorage.getItem('ismethod') === '1' ? {} : { display: 'none' }}>
           <div className="topDiv" style={this.state.flag === 1 ? { color: '#fff', background: '#F5A623' } : {}} onClick={this.left}>基本信息</div>
           <div className="topDiv" style={this.state.flag === 2 ? { color: '#fff', background: '#F5A623' } : {}} onClick={this.right}>资质信息</div>
           <div className="topDiv" style={this.state.flag === 3 ? { color: '#fff', background: '#F5A623' } : {}} onClick={this.rightTwo}>收款银行信息</div>
@@ -648,7 +673,7 @@ class inforSitePh extends React.Component {
         <div className="basic" style={this.state.spin === false && this.state.flag === 1 ? { display: 'block', overflow: 'scroll', height: '92%' } : { display: 'none' }}>
           <div className="listSon">
             <span>推广员</span>
-            <span className="right" style={{ paddingLeft: '11px' }}>{listSon.promote}</span>
+            <span className="right" style={{ paddingLeft: '11px' }}>{listSon.promote === '' ? '无' : listSon.promote}</span>
           </div>
           <div className="listSon">
             <span>场馆名称</span>
@@ -890,9 +915,8 @@ class inforSitePh extends React.Component {
               {
                 this.state.backList.map((item, i) => (
                   <Option key={i} value={item.sub_branch_name} alt={item.sub_branch_name}>
-                    <Tooltip title={item.sub_branch_name}>
                       <span>{item.sub_branch_name}</span>
-                    </Tooltip></Option>
+                    </Option>
                 ))
               }
             </Select>
@@ -908,9 +932,9 @@ class inforSitePh extends React.Component {
                   this.ziSubmitTwo()
               }
             ])
-          } style={this.state.isbankcard === 1 ||this.state.isbankcard === 2? { display: 'block' } : { display: 'none' }}>提交修改</Button>
+          } style={this.state.isbankcard === 1 || this.state.isbankcard === 2 ? { display: 'block' } : { display: 'none' }}>提交修改</Button>
 
-          <Button className="submit" style={this.state.isbankcard === 0? { display: 'block' } : { display: 'none' }}>审核中~</Button>
+          <Button className="submit" style={this.state.isbankcard === 0 ? { display: 'block' } : { display: 'none' }}>审核中~</Button>
         </div>
 
 

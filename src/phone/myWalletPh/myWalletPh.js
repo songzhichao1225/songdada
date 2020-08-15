@@ -2,7 +2,7 @@ import React from 'react';
 import './myWalletPh.css';
 
 import { Modal, Toast, Picker, List,Button } from 'antd-mobile';
-import { Input, Upload, Select, Tooltip, Radio } from 'antd';
+import { Input, Upload, Select, Radio } from 'antd';
 import 'antd-mobile/dist/antd-mobile.css';
 import { LeftOutlined } from '@ant-design/icons';
 import { getVenueMoney, getReceivingBankQualifications, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity, getVenueOpenBankList,VenueReceivingBankInformation } from '../../api';
@@ -201,13 +201,13 @@ class myWalletPh extends React.Component {
     this.setState({ CorporateName: e.target.value })
   }
   typeChange = e => {
-    this.setState({ bank_id: e })
+    this.setState({ bank_id: e,backList:[] })
   }
   cityChange = e => {
-    this.setState({ city_id: e })
+    this.setState({ city_id: e,backList:[],corporateOpen:'' })
   }
   provinceChange = e => {
-    this.setState({ province_id: e })
+    this.setState({ province_id: e,corporateOpen:'',backList:[] })
     this.getVenueOpenBankCity({ province_id: e })
   }
   
@@ -437,9 +437,9 @@ class myWalletPh extends React.Component {
                 {
                   this.state.backList.map((item, i) => (
                     <Option key={i} value={item.sub_branch_name} alt={item.sub_branch_name}>
-                      <Tooltip title={item.sub_branch_name}>
+                     
                         <span>{item.sub_branch_name}</span>
-                      </Tooltip></Option>
+                   </Option>
                   ))
                 }
               </Select>
