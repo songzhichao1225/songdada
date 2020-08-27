@@ -123,7 +123,6 @@ class closeYu extends React.Component {
     return time;
   }
   handleChangeSelect = e => {
-    console.log(e)
     this.setState({ runId: e })
     let day = ''
     switch (parseInt(e)) {

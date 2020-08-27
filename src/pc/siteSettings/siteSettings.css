@@ -306,3 +306,6 @@ img{
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.ant-input-number-input{
+    padding: 0;
+}

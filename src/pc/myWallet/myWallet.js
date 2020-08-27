@@ -239,7 +239,6 @@ class myWallet extends React.Component {
       return;
     }
     if (info.file.status === 'done') {
-      console.log(this.state.imageUrlThree)
       if(this.state.imageUrlThree!==''){
         this.setState({ imageUrlThree: info.file.response.data.baseURL + info.file.response.data.filesURL,imageUrlTwo:'', imgHood: info.file.response.data.baseURL, imgFileTwo: info.file.response.data.filesURL,imgFile:'' })
       }else{
@@ -325,7 +324,6 @@ class myWallet extends React.Component {
 
   ziSubmitTwo = () => {
     let { numRadio, imgHood, imgFile,corporateId, imgFileTwo, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
-    console.log(bank_id)
     let data = {
       legalcard:numRadio === 0 ? '' :corporateId,
       legalBaseURL: numRadio === 0 ? '' : imgHood,

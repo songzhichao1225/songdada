@@ -72,7 +72,6 @@ class systemSettings extends React.Component {
 
 
 
-
   componentDidMount() {
     this.getVenueIsClose()
     this.setState({ corporatePhone: sessionStorage.getItem('legalphone') })
@@ -135,6 +134,7 @@ class systemSettings extends React.Component {
   }
   Untie = () => {
     this.setState({ text: '>解除/更换绑定手机号', flagUntie: false, flagListOne: false })
+    this.gerVenueName()
   }
   resetNot = () => {
     this.setState({ flagListOne: true, flagList: true, flagUntie: true })
@@ -298,6 +298,7 @@ class systemSettings extends React.Component {
     }
   }
 
+  
 
   UoiteSubimt = () => {
     let { corporatePhone, corporateCode, operationPhone, operationCode } = this.state
@@ -406,7 +407,7 @@ class systemSettings extends React.Component {
     if (res.data.code === 2000) {
       message.success(res.data.msg)
     } else {
-      message.success(res.data.msg)
+      message.error(res.data.msg)
     }
     this.setState({ bot: false })
   }

@@ -118,7 +118,6 @@ class appointmentList extends React.Component {
     const res = await getVenueNumberTitleList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ topNumList: res.data.data })
-      console.log(this.state.liNum)
       this.getVenueReservationss({ sportid: this.state.liNum, date: this.state.dateString, types: 1 })
     }
   }
@@ -462,9 +461,6 @@ class appointmentList extends React.Component {
     }
   }
 
-  tilFocus = e => {
-    console.log(e.currentTarget.dataset, this.state.liNum)
-  }
 
   tilBlur = e => {
     this.getVenueNumberTitleSave({ sportid: this.state.liNum, veneuid: e.currentTarget.dataset.num, title: e.target.value, uuid: e.currentTarget.dataset.uuid })

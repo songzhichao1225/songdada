@@ -472,7 +472,6 @@ class orderPhT extends React.Component {
 
 
   totitle = e => {
-    console.log(e.currentTarget.dataset.type)
     if (e.currentTarget.dataset.type === '1') {
       Toast.info('请为各场地选择对应的场地类型，如1号场地为11人制足球场地；2号场地为5人制足球场地等', 5);
     } else {
@@ -487,7 +486,7 @@ class orderPhT extends React.Component {
     return (
       <div className="orderPh">
         <div className="headerNav">
-          <div onClick={this.activityList} style={this.state.activityList === true ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>预约活动列表</div>
+          <div style={this.state.activityList === true ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>预约活动列表</div>
         </div>
         <div className='headSelect' style={this.state.spinFlag === false ? { display: 'none' } : { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' }} ><LoadingOutlined className='loadingY' style={{ top: this.state.clenTop / 4 }} /></div>
         <div style={{ height: '0.5rem', background: '#f5f5f5' }}></div>

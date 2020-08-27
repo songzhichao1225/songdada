@@ -126,7 +126,6 @@ class appointmentList extends React.Component {
 
 
   componentDidMount() {
-    console.log(this.props.location.query)
     this.getVenueSport()
     if (this.props.location.query !== undefined) {
       this.getReservationActivitieslist({ page: 1, publicuid: this.props.location.query.uuid, sport: '', status: '',paied:this.state.paied })
@@ -147,7 +146,7 @@ class appointmentList extends React.Component {
   }
 
   dateonChangeS = (date, dateString) => {
-    this.setState({ start: dateString[0], end: dateString[1] })
+    this.setState({ start: dateString[0], end: dateString[1],page:1 })
     this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: this.state.status, startdate: dateString[0], enddate: dateString[1],paied:this.state.paied })
   }
 
@@ -443,9 +442,7 @@ class appointmentList extends React.Component {
     }
   }
 
-  tilFocus = e => {
-    console.log(e.currentTarget.dataset, this.state.liNum)
-  }
+ 
 
   tilBlur = e => {
     this.getVenueNumberTitleSave({ sportid: this.state.liNum, veneuid: e.currentTarget.dataset.num, title: e.target.value, uuid: e.currentTarget.dataset.uuid })
@@ -759,7 +756,7 @@ class appointmentList extends React.Component {
             this.state.listComplain.map((item, i) => (
               <div key={i} style={{marginTop:'15px'}}>
                 <div><span style={{fontSize:'16px',fontWeight:'blod'}}>投诉类型:</span>{item.name}</div>
-                <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>处理结果:</span>{item.comment}</div>
+                <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>处理结果:</span>{item.comment}({item.handle})</div>
                 <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>处理时间:</span>{item.date}</div>
               </div>
             ))

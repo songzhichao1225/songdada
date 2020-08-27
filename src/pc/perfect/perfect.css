@@ -197,3 +197,10 @@ float: left;
 	width: 120px;
 
 }
+.perfect .ant-upload.ant-upload-select-picture-card > .ant-upload{
+	position: relative;
+	overflow: hidden;
+}
+.perfect .ant-upload.ant-upload-select-picture-card{
+	padding: 8px;
+}

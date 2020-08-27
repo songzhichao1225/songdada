@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { Toast, Card, PullToRefresh } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import {  Pagination, Drawer, Spin, Checkbox } from 'antd';
-import { getVenueNewsList, getVenueNewsReceivedList, getVenueNewsFirst, VenueNewsSaveIsRead, delVenueNews } from '../../api';
+import { getVenueNewsList, getVenueNewsReceivedList, getVenueNewsFirst,gerVenueName, delVenueNews } from '../../api';
 import {  LoadingOutlined, UnorderedListOutlined, DeleteOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 function genData() {
@@ -71,22 +71,19 @@ class newsPh extends React.Component {
     const res = await getVenueNewsFirst(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ newsDetails: res.data.data })
+    this.getVenueNewsList({ page: this.state.newsPage })
     }
   }
 
 
-
-
-  async VenueNewsSaveIsRead(data) {
-    const res = await VenueNewsSaveIsRead(data, localStorage.getItem('venue_token'))
-    if (res.data.code === 2000) {
-      this.getVenueNewsList({ page: this.state.newsPage })
-    }
+  async gerVenueName(data) {
+    const res = await gerVenueName(data, localStorage.getItem('venue_token'))
+    localStorage.setItem('avatar', "https://app.tiaozhanmeiyitian.com/" + res.data.data.siteimg)
   }
 
   componentDidMount() {
     this.getVenueNewsList({ page: 1 })
-    this.getVenueNewsReceivedList({ page: 1 })
+    this.gerVenueName()
 
     const hei = this.state.height - ReactDOM.findDOMNode(this.ptr).offsetTop;;
     setTimeout(() => this.setState({
@@ -107,11 +104,11 @@ class newsPh extends React.Component {
     this.setState({ flag: 1 })
   }
   publish = () => {
+    this.getVenueNewsReceivedList({ page: 1 })
     this.setState({ flag: 2 })
   }
   details = e => {
     if (this.state.visibleDrawerNum !== 1 && this.state.visibleDrawerNumTwo !== 1) {
-      this.VenueNewsSaveIsRead({ newsuuid: e.currentTarget.dataset.uid })
       this.getVenueNewsFirst({ newsuuid: e.currentTarget.dataset.uid })
       this.setState({ visibleDrawer: true })
     }
@@ -125,10 +122,6 @@ class newsPh extends React.Component {
       visibleTwo: false
     });
   };
-
-
-
-
   refResh = () => {
     this.setState({ refreshing: true })
     setTimeout(() => {
@@ -216,7 +209,7 @@ class newsPh extends React.Component {
   allThem = () => {
     let items = this.state.getVenueNewsList
     for (let i in items) {
-      items[i].Checkbox = !items[i].Checkbox
+      items[i].Checkbox = true
     }
     this.setState({ getVenueNewsList: items })
   }
@@ -224,7 +217,7 @@ class newsPh extends React.Component {
   allThemTwo = () => {
     let items = this.state.getVenueNewsReceivedList
     for (let i in items) {
-      items[i].Checkbox = !items[i].Checkbox
+      items[i].Checkbox = true
     }
     this.setState({ getVenueNewsReceivedList: items })
   }
@@ -249,7 +242,7 @@ class newsPh extends React.Component {
         </div>
         <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' } : { display: 'none' }} > <LoadingOutlined className='loadingY' style={{ top: this.state.clenTop / 7 }} /></div>
         <div className="receive" style={this.state.flag === 1 ? { display: 'block' } : { display: 'none' }} >
-          {/* onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd} */}
+
 
           <PullToRefresh
             damping={60}
@@ -295,7 +288,6 @@ class newsPh extends React.Component {
             </div>
           </PullToRefresh>
         </div>
-
         <Drawer
           title={<span style={{ fontSize: '14px' }}>消息详情</span>}
           placement="right"
@@ -311,18 +303,12 @@ class newsPh extends React.Component {
           <div onClick={this.inforsite} style={this.state.newsDetails.type===6?{color:'#F5A623',cursor:'pointer'}:{display:'none'}}>再次前往修改</div>
           <div onClick={this.locad} style={this.state.newsDetails.publicuuid===''?{display:'none'}:{color:'#F5A623',cursor:'pointer'}} data-uuid={this.state.newsDetails.publicuuid}>前往活动列表</div>
         </Drawer>
-
-
-
-
         <div className="publish" style={this.state.flag === 2 ? { display: 'block' } : { display: 'none' }} onTouchMove={this.touMoveTwo} onTouchStart={this.touClickTwo} onTouchEnd={this.touEndTwo}>
-
-
-
           <PullToRefresh
             damping={60}
             ref={el => this.ptr = el}
             style={{
+             
               height: this.state.height,
               overflow: 'auto',
             }}
@@ -339,7 +325,7 @@ class newsPh extends React.Component {
                       <Card.Header
                         title={<span style={{ fontSize: '12px' }}>{item.comment.length > 15 ? item.comment.slice(0, 15) + '...' : item.comment}</span>}
                         thumb={localStorage.getItem('avatar')}
-                        thumbStyle={{ width: '2rem', height: '2rem', marginTop: '-0.3rem' }}
+                        thumbStyle={{ minHeight: '2rem',maxHeight:'2rem',minWidth:'2rem',maxWidth:'2.5rem', marginTop: '-0.3rem' }}
                         extra={<div><span style={{ fontSize: '12px' }}>{item.intime.slice(0, 10) === moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-") ? item.intime.slice(10, item.intime.length) : item.intime.slice(0, 10)}</span><Checkbox style={this.state.visibleDrawerNumTwo === 1 ? {} : { display: 'none' }} onClick={this.CheckboxTwo} data-idx={i} checked={item.Checkbox}></Checkbox></div>}
                       />
                     </Card>
@@ -358,14 +344,6 @@ class newsPh extends React.Component {
             </div>
           </PullToRefresh>
         </div>
-
-
-
-
-
-
-
-
       </div>
     )
   }

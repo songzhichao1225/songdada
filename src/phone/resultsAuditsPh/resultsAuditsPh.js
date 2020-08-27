@@ -33,7 +33,7 @@ class resultsAuditsPh extends React.Component {
     localStorage.removeItem('qualifData')
   }
   homePh = () => {
-    this.props.history.push('./homePh')
+    this.props.history.push('./homePh/homePh')
     localStorage.setItem('isqult', undefined)
     localStorage.setItem('islegal', 1)
   }
@@ -60,7 +60,6 @@ class resultsAuditsPh extends React.Component {
   }
 
   closeWeb = () => {
-
     if (window.location.href.indexOf('flag=1') === -1) {
       this.props.history.push('/phone')
       this.setState({ visible: false })
@@ -69,6 +68,10 @@ class resultsAuditsPh extends React.Component {
     }
   }
 
+  retrun=()=>{
+    this.props.history.replace('/login')
+    localStorage.clear()
+  }
 
   render() {
     return (
@@ -108,6 +111,7 @@ class resultsAuditsPh extends React.Component {
           <img className="icon" src={require("../../assets/icon_pc.png")} alt="图标" />
           <span className="text">信息完善成功！等待审核</span>
           <span className="content">我们会在3个工作日完成审核。<br /> 审核成功后会发送短信到您绑定的手机号上，请注意查收。<br />联系电话：010-80895077 </span>
+          <span style={{ color: '#D85D27', paddingLeft: '1rem' }} onClick={this.retrun}>返回登录</span>
         </div>
         <div className="boss" style={this.state.islegal === 2 ? { display: 'block' } : { display: 'none' }}>
           <img className="icon" src={require("../../assets/no.png")} alt="图标" />

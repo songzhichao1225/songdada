@@ -12,7 +12,6 @@ class loginPh extends React.Component {
     localStorage.setItem('now',false)
     let query = window.location.href
     let arr = query.split('&')
-    console.log(arr[1])
     if (arr[1] !== undefined) {
       if (localStorage.getItem('phone') === arr[1].slice(6, 17) || localStorage.getItem('legalphone') === arr[1].slice(6, 17)) {
 
@@ -25,7 +24,7 @@ class loginPh extends React.Component {
     }
     
     if (localStorage.getItem('venue_token')) {
-      this.props.history.push('/homePh')
+      this.props.history.push('/homePh/homePh')
     }
   }
 

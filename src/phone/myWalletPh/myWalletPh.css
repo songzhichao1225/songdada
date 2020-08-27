@@ -176,3 +176,9 @@
 .koh .ant-upload-picture-card-wrapper{
     margin-left: 1.5rem;
 }
+.am-picker-popup-mask{
+    z-index: 1005;
+}
+.am-picker-popup-wrap{
+    z-index: 1005;
+}

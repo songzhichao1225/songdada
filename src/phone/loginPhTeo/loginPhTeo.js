@@ -76,11 +76,12 @@ class loginPhTeo extends React.Component {
           if (res.data.data.issite === 0) {
             this.props.history.push('/stadiumInformationPh')
           } else if (res.data.data.isqult === 0) {
+            console.log(666)
             this.props.history.push('/qualificationPh')
           } else if (res.data.data.islegal === 0 || res.data.data.islegal === 2) {
             this.props.history.push('/resultsAuditsPh')
           } else {
-            this.props.history.push('/homePh')
+            this.props.history.push('/homePh/homePh')
           }
         }
       }, 1000)
@@ -134,9 +135,6 @@ eyes=()=>{
   this.setState({
     eyes:!this.state.eyes
   })
-}
-passFocus=(e)=>{
-   console.log(e)
 }
   render() {
     return (
@@ -200,7 +198,6 @@ passFocus=(e)=>{
               
             >
             </InputItem>
-            {/* <span style={{display:'block',width:'15%'}} onClick={this.eyes}><img src={require('../../assets/eyes.png')} style={this.state.eyes===true?{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}:{display:'none'}} alt="eyes"/> <img src={require('../../assets/eyesTwo.png')} style={this.state.eyes===true?{display:'none'}:{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}} alt="eyes"/></span> */}
             <span onClick={this.forgetPassword}>忘记密码</span>
           </div>
           

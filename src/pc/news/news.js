@@ -1,7 +1,7 @@
 import React from 'react';
 import './news.css';
 import 'antd/dist/antd.css';
-import { getVenueNewsList, getVenueNewsFirst, VenueNewsSaveIsRead, delVenueNews, VenueNewsSendMessage, gerVenueName,VenueNewsOneKeyRead,getVenueIndex } from '../../api';
+import { getVenueNewsList, getVenueNewsFirst, delVenueNews, VenueNewsSendMessage, gerVenueName,VenueNewsOneKeyRead,getVenueIndex } from '../../api';
 import { Checkbox, Pagination, Drawer, message, Popconfirm, Modal, Input } from 'antd';
 import {CloseCircleOutlined} from '@ant-design/icons';
 const { TextArea } = Input
@@ -36,6 +36,7 @@ class news extends React.Component {
   async getVenueNewsList(data) {
     const res = await getVenueNewsList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
+      this.gerVenueName()
       for (let i in res.data.data) {
         res.data.data[i].cheched = false
       }
@@ -121,15 +122,7 @@ class news extends React.Component {
     }
   }
 
-  // bossDelet = () => {
-  //   let koArr = []
-  //   for (let i in this.state.newsList) {
-  //     if (this.state.newsList[i].cheched === true) {
-  //       koArr.push(this.state.newsList[i].uuid)
-  //     }
-  //   }
-  //   console.log(koArr)
-  // }
+
   current = (page,pageSize) => {
     this.setState({ current: page, oneChecked: false })
     this.getVenueNewsList({ page: page })
@@ -161,21 +154,13 @@ class news extends React.Component {
     }
   }
 
-  async VenueNewsSaveIsRead(data) {
-    const res = await VenueNewsSaveIsRead(data, sessionStorage.getItem('venue_token'))
-    if (res.data.code !== 2000) {
-      message.error(res.data.msg)
-    } else {
-      this.gerVenueName()
-    }
-  }
+ 
   
   consult = e => {
     this.setState({
       visible: true,
     });
     this.getVenueNewsFirst({ newsuuid: e.currentTarget.dataset.uuid })
-    this.VenueNewsSaveIsRead({ newsuuid: e.currentTarget.dataset.uuid })
   }
 
   onClose = () => {
@@ -218,7 +203,6 @@ class news extends React.Component {
     const res = await VenueNewsOneKeyRead(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success(res.data.msg)
-      this.gerVenueName()
       this.getVenueNewsList({ page: this.state.current })
       this.setState({oneChecked:false})
     }else{
@@ -239,7 +223,7 @@ class news extends React.Component {
     if(koArr.length===0){
      message.error('请选择未读消息')
     }else{
-      this.VenueNewsOneKeyRead({ uuid: koArr.join(',') })
+      this.VenueNewsOneKeyRead({uuid:koArr.join(',')})
       this.setState({kod:1 })
     }
   }

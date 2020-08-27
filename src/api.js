@@ -35,12 +35,12 @@ export function getArea(data){    //获取区县
 
 
 export function PerfectingVenueInformation(data,headers){    //完善场馆信息
-    return axios.post('/api/PerfectingVenueInformation',data,headers)
+    return axios.post('/api/PerfectingVenueInformation',data,{headers: {'token': headers}})
 }
 
 
-export function VenueQualifications(data){    //完善资质信息
-    return axios.post('/api/VenueQualifications',data)
+export function VenueQualifications(data,headers){    //完善资质信息
+    return axios.post('/api/VenueQualifications',data,{headers: {'token': headers}})
 }
 
 export function getIsStatus(data,headers){    //场馆端~获取场馆、资质信息的审核状态
@@ -186,9 +186,6 @@ export function getVenueNewsFirst(data,headers){    //查看消息中心的某�
     return axios.post('/api/getVenueNewsFirst',data, {headers: {'token': headers}})
 }
 
-export function VenueNewsSaveIsRead(data,headers){    //将消息中心的某条消息变成已阅读
-    return axios.post('/api/VenueNewsSaveIsRead',data, {headers: {'token': headers}})
-}
 
 
 export function getVenueIssecondaudit(data,headers){    // 获取该场馆二级审核状态
@@ -421,6 +418,20 @@ export function getReceivingBankQualifications(data,headers){    //是否具备�
 export function getSiteSettingHistoryList(data,headers){    //获取历史设置记录列表 
     return axios.post('/api/getSiteSettingHistoryList',data,{headers: {'token': headers}})
 }
+
+export function UploadVenueImgs(data){    //上传场馆端的图片
+    return axios.post('/api/UploadVenueImgs?type=Venue',data,{headers:{'Content-Type':'multipart/form-data'}})
+}
+
+export function UploadVenueImgsLisen(data){    //上传营业执照
+    return axios.post('/api/UploadVenueImgs?type=Venuelisence',data,{headers:{'Content-Type':'multipart/form-data'}})
+}
+
+export function UploadVenueImgsLisenTwo(data){    //上传身份证
+    return axios.post('/api/UploadVenueImgs?type=VenueIdCardImgs',data,{headers:{'Content-Type':'multipart/form-data'}})
+}
+
+
 
 
 

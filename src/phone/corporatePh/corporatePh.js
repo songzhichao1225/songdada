@@ -5,7 +5,7 @@ import { Toast, InputItem, NavBar, Popover, Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { _login, VenueSelectSiteName, _code } from '../../api';
 import { Radio } from 'antd';
-import Icon from '@ant-design/icons';
+import {EllipsisOutlined} from '@ant-design/icons';
 const Item = Popover.Item;
 const alert = Modal.alert;
 class corporatePh extends React.Component {
@@ -88,7 +88,7 @@ class corporatePh extends React.Component {
           } else if (res.data.data.islegal === 0 || res.data.data.islegal === 2) {
             this.props.history.push('/resultsAuditsPh')
           } else {
-            this.props.history.push('/homePh')
+            this.props.history.push('/homePh/homePh')
           }
         }
       }, 1000)
@@ -106,7 +106,7 @@ class corporatePh extends React.Component {
     if (res.data.code === 2000) {
       this.setState({ selectVeun: res.data.data, value: res.data.data[0].venueloginuuid })
       alert('提示',
-        (<Radio.Group onChange={this.onChange} defaultValue={this.state.value}>
+        (<Radio.Group onChange={this.onChange} className="ko" defaultValue={this.state.value}>
           {
             this.state.selectVeun.map((item,i)=>(
             <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
@@ -211,7 +211,7 @@ class corporatePh extends React.Component {
               alignItems: 'center',
             }}
             >
-              <Icon type="ellipsis" />
+               <EllipsisOutlined />
             </div>
           </Popover>}
         ><span style={{ fontSize: '1rem' }}>法人手机号登录</span></NavBar>
@@ -241,7 +241,7 @@ class corporatePh extends React.Component {
               maxLength={6}
             >
             </InputItem>
-            <div className={this.state.textT === '获取验证码' ? 'obtain' : 'koohidden'} onClick={this.naCode} >
+            <div className={this.state.textT === '获取验证码' ? 'obtain' : 'koohidden'} onTouchStart={this.naCode} >
               {this.state.textT}
             </div>
             <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'obtain'} >
@@ -252,7 +252,7 @@ class corporatePh extends React.Component {
 
             
 
-          <div className="loginBtn" onClick={this.onSubmit}>登录</div>
+          <div className="loginBtn" onTouchStart={this.onSubmit}>登录</div>
           <div className="footer" style={{ marginTop: '1rem' }}>
             <span onClick={this.loginPhTeo}>普通用户登录</span>
             <span onClick={this.registerPh}>新用户注册</span>

@@ -3,13 +3,15 @@ import './stadiums.css';
 import 'antd/dist/antd.css';
 import { getVenueInformation, VenueInformationSave, getVenueIssecondaudit, getVenueQualificationInformation, getVenueOpenBank, VenueReceivingBankInformation, getVenueSportList, VenueQualificationInformationSave, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
 import { Modal, Upload, Input, message, Checkbox, Button, Popconfirm, Radio, Select, Tooltip, Spin } from 'antd';
+
 import Icon from '@ant-design/icons';
-import ImgCrop from 'antd-img-crop';
 const { Option } = Select;
 const { TextArea } = Input;
 
 
-
+const isImageUrl = (file: UploadFile): boolean => {
+  return true;
+};
 
 
 const options = [{ label: '停车场', value: '1' }, { label: 'WiFi', value: '2' }, { label: '淋浴', value: '3' }, { label: '室内摄像头', value: '4' },]
@@ -29,9 +31,9 @@ function beforeUpload(file) {
   if (!isJpgOrPng) {
     message.error('只能使用JPG/PNG格式！');
   }
-  const isLt2M = file.size / 1024 / 1024 < 2;
+  const isLt2M = file.size / 1024 / 1024 < 5;
   if (!isLt2M) {
-    message.error('图片不能超过2MB!');
+    message.error('图片不能超过5MB!');
   }
   return isJpgOrPng && isLt2M;
 }
@@ -96,13 +98,14 @@ class stadiums extends React.Component {
     plainOptions: [],
     other: false,
     isbankcard: 0,
-    loading:true
+    loading: true,
+    empowerURL: '',
   };
 
   async getVenueInformation(data) {
     const res = await getVenueInformation(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      let imgS = (res.data.data.filesURL).split('|')
+      let imgS = (res.data.data.filesURL).slice(1, (res.data.data.filesURL).length).split('|')
       let arrImg = []
       for (let i in imgS) {
         arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: imgS[i] })
@@ -207,6 +210,7 @@ class stadiums extends React.Component {
         corporateName: corporate.legalname, corporateId: corporate.legalcard, corporatePhone: corporate.legalphone, CorporateName: corporate.CorporateName,
         numRadio: corporate.Settlement, corporateCardId: corporate.Bankaccount, corporateOpen: corporate.OpeningBank, lisenceURL: corporate.lisenceURL,
         bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
+        empowerURL: res.data.data.empowerURL
       })
     }
   }
@@ -242,13 +246,14 @@ class stadiums extends React.Component {
     }
     if (info.file.status === 'done') {
       this.setState({ loading: true })
-      this.setState({ lisenceURL: info.file.response.data.baseURL + info.file.response.data.filesURL, loading: false })
+      this.setState({ lisenceURL: info.file.response.data.baseURL + info.file.response.data.filesURL, })
+      if (info.file.response.code === 4004) {
+        message.error(info.file.response.msg)
+      } else if (info.file.response.code === 4002) {
+        message.error('上传失败')
+      }
     }
-    if (info.file.response.code === 4004) {
-      message.error(info.file.response.msg)
-    } else if (info.file.response.code === 4002) {
-      message.error('上传失败')
-    }
+
   }
 
 
@@ -259,7 +264,6 @@ class stadiums extends React.Component {
     if (!file.url && !file.preview) {
       file.preview = await getBase64T(file.originFileObj);
     }
-
 
     this.setState({
       previewImage: file.url || file.preview,
@@ -364,7 +368,7 @@ class stadiums extends React.Component {
 
 
     if (filesURLarr.length < 2) {
-      message.error('至少上传两张室内照')
+      message.error('至少上传两张场地照')
     } else {
 
       let data = {
@@ -378,7 +382,7 @@ class stadiums extends React.Component {
         linkMan: contacts,
         telephone: contactNumber,
         firstURL: imageUrl,
-        filesURL: filesURLarr.join('|'),
+        filesURL: '|' + filesURLarr.join('|'),
         facilities: facilities.join(','),
         sport: sport.join(','),
         siteInfo: siteInfo,
@@ -386,17 +390,19 @@ class stadiums extends React.Component {
         comment: comment,
         type: 2
       }
-      if (data.firstURL === '') {
+      if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(contacts) === false) {
+        message.error('联系人只允许输入文字/字母')
+      } else if (data.firstURL === '') {
         message.error('门脸照违规请重新上传');
       } else if (data.filesURL.split('|').indexOf('无') !== -1) {
         message.error('场地照有违规图片请重新上传');
       } else if (facilities.length === 0) {
         message.error('请至少选择一项场地设施');
       } else {
-        if(this.state.loading===false){
+        if (this.state.loading === false) {
           message.warning('图片上传中...')
-        }else{
-        this.VenueInformationSave(data)
+        } else {
+          this.VenueInformationSave(data)
         }
       }
     }
@@ -433,13 +439,14 @@ class stadiums extends React.Component {
       } else {
         this.setState({ imageUrlTwo: 1 })
       }
+      if (info.file.response.code === 4004) {
+        message.error(info.file.response.msg, 1);
+      } else if (info.file.response.code === 4002) {
+        message.error('上传失败', 1);
+      }
 
     }
-    if (info.file.response.code === 4004) {
-      message.error(info.file.response.msg, 1);
-    } else if (info.file.response.code === 4002) {
-      message.error('上传失败', 1);
-    }
+
   };
 
 
@@ -460,12 +467,28 @@ class stadiums extends React.Component {
       } else {
         this.setState({ imageUrlThree: 1 })
       }
-
+      if (info.file.response.code === 4004) {
+        message.error(info.file.response.msg, 1);
+      } else if (info.file.response.code === 4002) {
+        message.error('上传失败', 1);
+      }
     }
-    if (info.file.response.code === 4004) {
-      message.error(info.file.response.msg, 1);
-    } else if (info.file.response.code === 4002) {
-      message.error('上传失败', 1);
+  }
+
+
+  authorizations=info=>{
+    if (info.file.status === 'uploading') {
+      this.setState({ loading: false })
+      return
+    }
+    if (info.file.status === 'done') {
+      this.setState({ loading: true })
+      this.setState({ empowerURL: info.file.response.data.baseURL + info.file.response.data.filesURL, })
+      if (info.file.response.code === 4004) {
+        message.error(info.file.response.msg)
+      } else if (info.file.response.code === 4002) {
+        message.error('上传失败')
+      }
     }
 
   }
@@ -504,7 +527,7 @@ class stadiums extends React.Component {
   }
 
   ziSubmit = () => {
-    let { zuo, imgHoodTwo, imgHood, lisenceURL, corporateName, corporatePhone, CorporateName } = this.state
+    let { zuo, imgHoodTwo, imgHood, lisenceURL, empowerURL, corporateName, corporatePhone, CorporateName } = this.state
     let data = {
       legalname: corporateName,
       legalcard: '',
@@ -518,6 +541,7 @@ class stadiums extends React.Component {
       CorporateName: CorporateName,
       Banktype: '',
       ProvinceBank: '',
+      empowerURL: empowerURL,
       CityBank: '',
       type: 2
     }
@@ -604,8 +628,8 @@ class stadiums extends React.Component {
   render() {
     const uploadButton = (
       <div>
-      <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
-    </div>
+        <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
+      </div>
     );
     const uploadButtonTwo = (
       <div>
@@ -619,34 +643,17 @@ class stadiums extends React.Component {
         <div className="ant-upload-text">反面照</div>
       </div>
     );
-    const { imageUrl, imageUrlTwo, imageUrlThree, lisenceURL, baseImg } = this.state;
+    const { imageUrl, imageUrlTwo, imageUrlThree, lisenceURL, baseImg, empowerURL } = this.state;
     const { previewVisible, previewImage, fileList } = this.state;
     const uploadButtonT = (
       <div>
-      <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
-    </div>
+        <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
+      </div>
     );
 
-    const propsOne = {
-      aspect: 1.295 / 1,
-      resize: false, //裁剪是否可以调整大小
-      resizeAndDrag: true, //裁剪是否可以调整大小、可拖动
-      modalTitle: "编辑图片", //弹窗标题
-      modalWidth: 600, //弹窗宽度
-      modalOk: "确定",
-      modalCancel: "取消"
-    }
 
-    const propsLo = {
-      aspect: 1 / 1.41,
-      resize: false, //裁剪是否可以调整大小
-      resizeAndDrag: true, //裁剪是否可以调整大小、可拖动
-      modalTitle: "编辑图片", //弹窗标题
-      modalWidth: 600, //弹窗宽度
-      modalOk: "确定",
-      modalCancel: "取消"
-    }
-    
+
+
 
     return (
       <div className="stadiums">
@@ -688,20 +695,18 @@ class stadiums extends React.Component {
 
             <div className="name">
               <span className="boTitle">门脸照:</span>
-              <ImgCrop scale {...propsOne}>
-                <Upload
-                  name="files"
-                  listType="picture-card"
-                  className="avatar-uploader addImg"
-                  showUploadList={false}
-                  action="/api/UploadVenueImgs?type=Venue"
-                  beforeUpload={beforeUpload}
-                  onChange={this.handleChange}
-                  accept=".jpg, .jpeg, .png"
-                >
-                  {imageUrl ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
-                </Upload>
-              </ImgCrop>
+              <Upload
+                name="files"
+                listType="picture-card"
+                className="avatar-uploader addImg enha"
+                showUploadList={false}
+                action="/api/UploadVenueImgs?type=Venue"
+                beforeUpload={beforeUpload}
+                onChange={this.handleChange}
+                accept=".jpg, .jpeg, .png"
+              >
+                {imageUrl ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageUrl} width="286px" alt="avatar" style={{ position: 'absolute', top: -50, left: -100 }} /> : uploadButton}
+              </Upload>
             </div>
 
             <div className="name">
@@ -715,6 +720,7 @@ class stadiums extends React.Component {
                   onPreview={this.handlePreview}
                   onChange={this.handleChangeT}
                   accept=".jpg, .jpeg, .png"
+                  isImageUrl={isImageUrl}
                   multiple={true}
                 >
                   {fileList.length >= 8 ? null : uploadButtonT}
@@ -766,20 +772,34 @@ class stadiums extends React.Component {
             </div>
             <div className="listing">
               <span>营业执照:</span>
-              <ImgCrop rotate  {...propsLo}>
-                <Upload
-                  name="files"
-                  listType="picture-card"
-                  className="avatar-uploader addImg"
-                  showUploadList={false}
-                  action="/api/UploadVenueImgs?type=Venuelisence"
-                  beforeUpload={beforeUpload}
-                  onChange={this.handleChangeOneY}
-                  accept=".jpg, .jpeg, .png"
-                >
-                  {lisenceURL ? <img src={'https://app.tiaozhanmeiyitian.com/' + lisenceURL} alt="avatar" style={{ width: '80px', maxHeight: '121px' }} /> : uploadButtonTwo}
-                </Upload>
-              </ImgCrop>
+              <Upload
+                name="files"
+                listType="picture-card"
+                className="avatar-uploader addImg"
+                showUploadList={false}
+                action="/api/UploadVenueImgs?type=Venuelisence"
+                beforeUpload={beforeUpload}
+                onChange={this.handleChangeOneY}
+                accept=".jpg, .jpeg, .png"
+              >
+                {lisenceURL ? <img src={'https://app.tiaozhanmeiyitian.com/' + lisenceURL} width="185px" alt="avatar" style={{ position: 'absolute', top: '-20px', left: '-30px' }} /> : uploadButtonTwo}
+              </Upload>
+            </div>
+
+            <div className="listing">
+              <span>授权书照:</span>
+              <Upload
+                name="files"
+                listType="picture-card"
+                className="avatar-uploader addImg"
+                showUploadList={false}
+                action="/api/UploadVenueImgs?type=Venuelisence"
+                beforeUpload={beforeUpload}
+                onChange={this.authorizations}
+                accept=".jpg, .jpeg, .png"
+              >
+                {empowerURL ? <img src={'https://app.tiaozhanmeiyitian.com/' + empowerURL} width="185px" alt="avatar" style={{ position: 'absolute', top: '-20px', left: '-30px' }} /> : uploadButtonTwo}
+              </Upload>
             </div>
 
 

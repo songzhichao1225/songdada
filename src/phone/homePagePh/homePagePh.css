@@ -1,108 +1,148 @@
-.homePagePh{
-  height: 100%;
-}
-.homePagePh>div:first-child{
-  width: 90%;
-  height: 5rem;
-  margin: 0.5rem auto 0;
-  background-image: url('../../assets/one.png');
-  background-repeat: no-repeat;
-  background-size: 100%;
-}
-.homePagePh>div:nth-child(2){
-  width: 90%;
-  height: 5rem;
-  margin: 0.5rem auto 0;
-  background-image: url('../../assets/two.png');
-  background-repeat: no-repeat;
-  background-size: 100%;
-}
-.homePagePh>div:nth-child(3){
-  width: 90%;
-  height: 5rem;
-  margin: 0.5rem auto 0;
-  background-image: url('../../assets/three.png');
-  background-repeat: no-repeat;
-  background-size: 100%;
-}
-.homePagePh>div:nth-child(4){
-  width: 90%;
-  height: 5rem;
-  margin: 0.5rem auto 0;
-  background-image: url('../../assets/four.png');
-  background-repeat: no-repeat;
-  background-size: 100%;
-}
-.homePagePh>div:last-child{
-  width: 90%;
-  height: 5rem;
-  margin: 0.5rem auto 0;
-  background-image: url('../../assets/five.png');
-  background-repeat: no-repeat;
-  background-size: 100%;
-}
-.homePagePh>div>.title{
-  font-size:1rem;
-  color:rgba(255,255,255,1);
-  display: block;
-  padding:1rem 0 0 2rem;
-}
-.homePagePh>div>.content{
-  margin-left: 2rem;
-}
-.homePagePh>div>.content>span:first-child{
-  font-size:1.5rem;
-  font-weight:600;
-  color:rgba(255,255,255,1);
-}
-.homePagePh>div>.content>span:last-child{
-  font-size:1.13rem;
-  font-weight:500;
-  color:rgba(255,255,255,1);
-}
-.homePagePh>div>.content>img{
-  display: block;
-  float: left;
-  height: 1rem;
-  margin-top: 1rem;
-}
 
 
-
-
-.homePagePh .headerTitle{
-  height: 3rem;
-  border-bottom: 0.06rem solid #f5f5f5;
-  font-size: 1rem;
-  text-align: center;
-  line-height: 3rem;
+.homePagePh .am-navbar{
+  background: #374D66;
 }
 .homePagePh .footer{
   width: 100%;
   height: 4rem;
-  border-top: 0.06rem solid #f5f5f5;
+  border-top: 0.06rem solid #ccc;
   position: fixed;
   bottom: 0;
   z-index: 999;
   background: #fff;
- 
 }
 .homePagePh .footer .footerSon{
   width: 100%;
-  margin: 0 auto;
+  margin: 0.5rem auto 0;
   display: flex;
 }
-.homePagePh .footer .footerSon>div{
+.homePagePh .footer .footerSon> div{
   flex: 1;
 }
-.homePagePh .footer .footerSon>div>img{
-  width: 1.6rem;
-  height: 1.6rem;
+.homePagePh .footer .footerSon>div>a>img{
+  width: 30%;
   display: block;
   margin: 0.3rem auto 0;
 }
 .homePagePh .footer .footerSon>div>span{
   display: block;
   text-align: center;
-  font-size: 0.88rem;
+  font-size:12px;
+  color: #000;
+}
+.homePagePh{
+  height: 100%;
+  padding-bottom: 4rem;
+  white-space: nowrap;
+}
+
+
+
+
+.homePagePh .homeScroll>div:first-child{
+  width: 90%;
+  height: 5.8rem;
+  margin: 1rem auto 0;
+  background-image: url('../../assets/one.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.homePagePh .homeScroll>div:nth-child(2){
+  width: 90%;
+  height: 5.8rem;
+  margin: 0.5rem auto 0;
+  background-image: url('../../assets/two.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.homePagePh .homeScroll>div:nth-child(3){
+  width: 90%;
+  height: 5.8rem;
+  margin: 0.5rem auto 0;
+  background-image: url('../../assets/three.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.homePagePh .homeScroll>div:nth-child(4){
+  width: 90%;
+  height: 5.8rem;
+  margin: 0.5rem auto 0;
+  background-image: url('../../assets/four.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.homePagePh .homeScroll>div:nth-child(5){
+  width: 90%;
+  height: 5.8rem;
+  margin: 0.5rem auto 0;
+  background-image: url('../../assets/five.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.homePagePh .homeScroll>div>.title{
+  font-size:1rem;
+  color:rgba(255,255,255,1);
+  display: block;
+  padding:1.3rem 0 0 2rem;
+}
+.homePagePh .homeScroll>div>.content{
+  margin-left: 2rem;
+}
+.homePagePh .homeScroll>div>.content>span:first-child{
+  font-size:1.5rem;
+  font-weight:600;
+  color:rgba(255,255,255,1);
+}
+.homePagePh .homeScroll>div>.content>span:last-child{
+  font-size:1.13rem;
+  font-weight:500;
+  color:rgba(255,255,255,1);
+}
+.homePagePh .homeScroll>div>.content>.img{
+  display: block;
+  float: left;
+  width: 1rem;
+  height: 1rem;
+  margin-top: 1%;
+  background-image: url(../../assets/phonexingzi.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.homePagePh .homeScroll>div>.content>.img>img{
+  display: block;
+  height: 100%;
+}
+.none{
+  display: none;
+}
+ .loadingY{
+   position: absolute;
+   top: 4rem;
+   left: 50%;
+   display: block;
+   font-size: 1.5rem;
+   margin-left: -0.75rem;
+}
+.homePagePh .footer i>.icon{
+  margin: 0 auto;
+  display: block;
+  
+}
+.lpodf>span{
+  display: block;
+  font-size: 0.75rem;
+  text-align: left;
+}
+.lpodf>div{
+  width: 4rem;
+  height: 1.5rem;
+  font-size: 0.8rem;
+  text-align: center;
+  line-height: 1.5rem;
+  background: #108ee9;
+  color: #fff;
+  border-radius: 0.3rem;
+  margin: 0.5rem auto 0.5rem;
+  
 }

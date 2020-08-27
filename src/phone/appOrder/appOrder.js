@@ -35,13 +35,15 @@ class appOrder extends React.Component {
     otherType: [],
     sportName: '',
     lookBan: [],
-    resData: ''
+    resData: '',
+    touchMove: 1,
+    touchEnd: 1,
   };
 
 
 
   async getAppVenueReservations(data) {
-    const res = await getAppVenueReservations(data,this.state.token)
+    const res = await getAppVenueReservations(data, this.state.token)
 
 
     if (res.data.code === 2000) {
@@ -144,18 +146,19 @@ class appOrder extends React.Component {
 
   componentDidMount() {
     //测试数据
-    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=ihnowc1fvzJUB3RdSmBZgGjGRmg5YFr3hf6Kzffva0x4g6dvswmudZKSbRWpTDBg&sporttype=5'
-    let query = this.props.location.search  
-
-    let arr = query.split('&') 
+    let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=Tu7JLrn1fNLEriZVYAkfgX7ubnb5Eoxz4OFlXPPkHzzmffIgqgFwZdNMCv1cuxEg&sporttype=5'
+    // let query = this.props.location.search  
+  
+  
+    let arr = query.split('&')
     let siteuid = arr[0].slice(9, arr[0].length)
     let sportid = arr[1].slice(8, arr[1].length)
     let token = arr[2].slice(6, arr[2].length)
     let sporttype = arr[3].slice(10, arr[3].length)
-    this.setState({ sportidQuery: sportid,token:token })
-     setTimeout(()=>{
+    this.setState({ sportidQuery: sportid, token: token })
+    setTimeout(() => {
       this.getAppVenueReservations({ date: '', siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
-     },500)
+    }, 500)
     let start = new Date().toLocaleDateString()
     if (start.split('/')[0].length === 4) {
       let yoo = start.split('/')[0] + '/' + start.split('/')[1] + '/' + start.split('/')[2]
@@ -232,7 +235,6 @@ class appOrder extends React.Component {
           for (let i in this.state.lotime) {
             moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
           }
-
           this.setState({ moneyCall: moneyCall })
         } else {
           this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: Number(this.state.moneyCall) + Number(money) })
@@ -265,7 +267,6 @@ class appOrder extends React.Component {
           try {
             window.webkit.messageHandlers.ScanAction.postMessage(this.state.obj)
           } catch (error) {
-            console.log(error)
           }
 
         } else if (sUserAgent.indexOf('miniProgram') > -1) {
@@ -329,6 +330,7 @@ class appOrder extends React.Component {
   nextDay = e => {
     let myDate = new Date(this.state.date)
     myDate.setDate(myDate.getDate() + 1)
+    console.log(this.state.lotime)
     this.setState({
       date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(),
       lotime: [],
@@ -347,9 +349,9 @@ class appOrder extends React.Component {
           <div className="appOrder" onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
             <div className='bookingKanban'>
               <div className="titleDiv">
-                <div className="dayBefore" style={this.state.date === this.state.start ? { display: 'none' } : { display: 'block' }} onClick={this.dayBefore}>前一天</div>
-                <div className="nextDay" onClick={this.nextDay}>后一天</div>
-                <div className="titleDivTwo" onClick={this.date}>{this.state.date}</div>
+                <div className="dayBefore" style={this.state.date === this.state.start ? { display: 'none' } : { display: 'block' }} onTouchStart={this.dayBefore}>前一天</div>
+                <div className="nextDay" onTouchStart={this.nextDay}>后一天</div>
+                <div className="titleDivTwo" onTouchStart={this.date}>{this.state.date}</div>
               </div>
               <div className="modTitle">
 
@@ -380,10 +382,10 @@ class appOrder extends React.Component {
               />
             </div>
             <div className="footerKo">
-              <div style={{ float:'left',lineHeight:'3',marginLeft:'1rem' }}>场地费合计：{this.state.moneyCall.toString().indexOf('.') === -1 ? this.state.moneyCall + '.00' : this.state.moneyCall + '0'}</div>
+              <div style={{ float: 'left', lineHeight: '3', marginLeft: '1rem' }}>场地费合计：{this.state.moneyCall.toString().indexOf('.') === -1 ? this.state.moneyCall + '.00' : this.state.moneyCall + '0'}</div>
               <div
-                onClick={this.onSubmit}
-                style={{ width: '30%', height: '3rem', textAlign: 'center', float:'right',lineHeight: '2.5', fontSize: '1.2rem', color: '#fff',background:'rgba(216,93,39,1)' }}>
+                onTouchStart={this.onSubmit}
+                style={{ width: '30%', height: '3rem', textAlign: 'center', float: 'right', lineHeight: '2.5', fontSize: '1.2rem', color: '#fff', background: 'rgba(216,93,39,1)' }}>
                 确定
            </div>
             </div>

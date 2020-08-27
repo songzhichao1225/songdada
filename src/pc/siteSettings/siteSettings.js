@@ -2,7 +2,7 @@ import React from 'react';
 import './siteSettings.css';
 import 'antd/dist/antd.css';
 import { getSiteSettingList, addVenueField, getVenueSport, AddSiteSetting, DelSiteSetting, getVenueSportidTitle, DelVenueTitle, SiteSettingDiscountSave, getSiteSettingHistoryList, getVenueNumberTitleFirst, getSiteSettingFirst, getSiteSelectedTitle, DelVenueNumberTitle, getSiteSelectedVenueid, getVenueTitleSave, getVenueNumberTitleSave, getVenueNumberTitleList, DelSiteSettingDiscount } from '../../api';
-import { Select, Row, Col, Modal, DatePicker, Input, message, Pagination, Popconfirm, Divider, Popover, Spin, Drawer } from 'antd';
+import { Select, Row, Col, Modal, DatePicker, Input, message, Pagination, Popconfirm, Divider, Popover, Spin, Drawer,InputNumber } from 'antd';
 import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/zh_CN';
@@ -10,7 +10,15 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const { RangePicker } = DatePicker;
-
+const limitNumber = value => {
+  if (typeof value === 'string') {
+    return !isNaN(Number(value)) ? value.replace(/^(0+)|[^\d]/g, '') : ''
+  } else if (typeof value === 'number') {
+    return !isNaN(value) ? String(value).replace(/^(0+)|[^\d]/g, '') : ''
+  } else {
+    return ''
+  }
+}
 
 
 
@@ -355,7 +363,6 @@ class siteSettings extends React.Component {
     })
   }
   endtime = e => {
-    console.log(this.state.starttime)
     if (this.state.starttime === e) {
       message.error('开始时间不能等于结束时间')
       this.setState({ endtime: '' })
@@ -366,8 +373,8 @@ class siteSettings extends React.Component {
 
 
   money = e => {
-    console.log(e.target.value)
-    this.setState({ costperhour: e.target.value })
+    this.setState({ costperhour: e})
+    console.log( e)
   }
   moneyTwo = e => {
     this.setState({ costperhourTwo: e.target.value })
@@ -426,8 +433,6 @@ class siteSettings extends React.Component {
       this.setState({
         visible: false,
         update: 0,
-        // starttime: '',
-        // endtime: '',
       })
       this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
     }
@@ -706,9 +711,6 @@ class siteSettings extends React.Component {
     }
   }
 
-  closeDelet = e => {
-    console.log(e.currentTarget.dataset.id)
-  }
 
   title = e => {
     this.setState({
@@ -983,6 +985,7 @@ class siteSettings extends React.Component {
       // endtime: '',
       typeDetel: 1,
       runIdTwo: '',
+      tags:'',
     })
   }
   async getSiteSelectedTitle(data) {
@@ -1476,7 +1479,7 @@ class siteSettings extends React.Component {
             <p>开始日期:{this.state.deData.sd}&nbsp;&nbsp;{this.state.deData.st}</p>
             <p>结束日期:{this.state.deData.ed}&nbsp;&nbsp;{this.state.deData.et}</p>
             <p>场&nbsp;&nbsp;地&nbsp;&nbsp;号:{this.state.deData.ve}</p>
-            <p>优惠价格:￥{this.state.deData.cos}</p>
+            <p>优惠价格:{this.state.deData.cos}(元/小时)</p>
           </Drawer>
 
 
@@ -1541,11 +1544,7 @@ class siteSettings extends React.Component {
               </Select>
             </div>
 
-            {/* <div className="modelList" style={this.state.update === 0 ? { height: '32px' } : { display: 'none' }}>
-            <span>时间范围</span>
-            <RangePicker style={{ float: 'right', marginRight: 150, width: 269 }} minuteStep={30} format={format} locale={locale} onChange={this.handleChangThree} />
-          </div> */}
-
+         
             <div className="modelList" style={{ height: '32px' }}>
               <span>时间范围</span>
               <Select style={{ width: 128, height: 'auto', marginLeft: 88, float: 'left' }} value={this.state.starttime === '' ? undefined : this.state.starttime} onChange={this.starttime} placeholder="开始时间">
@@ -1559,13 +1558,11 @@ class siteSettings extends React.Component {
                   <Option key={i} value={item.name}>{item.name}</Option>
                 ))}
               </Select>
-
-              {/* <RangePicker showTime order={false} dropdownClassName="timeRange" placeholder={['开始时间', '结束时间']} style={{ float: 'right', marginRight: 150, width: 269 }} value={this.state.starttime === '' ? '' : [moment(this.state.starttime === '' ? '' : this.state.starttime, 'HH:mm:'), moment(this.state.endtime === '' ? '' : this.state.endtime, 'HH:mm:')]} minuteStep={30} format='HH:mm' locale={locale} onChange={this.handleChangThree} /> */}
-            </div>
+ </div>
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>价格</span><span>（元/小时）</span>
-              <Input type="number" className="startTime" value={this.state.costperhour.replace('.', '')} defaultValue={0} min={0} style={{ height: 32, width: 269, paddingLeft: '11px' }} placeholder="请输入" onChange={this.money} />
+              <InputNumber  className="startTime" value={this.state.costperhour} formatter={limitNumber} parser={limitNumber} defaultValue={1} min={1} style={{ height: 32, width: 269, paddingLeft: '11px' }} placeholder="请输入" onChange={this.money} />
             </div>
             <div className="modelList" style={{ height: 32 }}>
               <span>最长提前预订时间</span>
@@ -1798,34 +1795,6 @@ class siteSettings extends React.Component {
             </div>
             <div className="modelList" style={{ height: '32px' }}>
               <span>优惠期限</span>
-              {/* <DatePicker
-              showTime
-              format="YYYY-MM-DD HH:mm"
-              minuteStep={30}
-              locale={locale}
-              allowClear={false}
-              onChange={this.startDate}
-              disabledDate={disabledDate}
-              placeholder="开始日期"
-              value={this.state.discount_sdate === null?'':moment(this.state.discount_sdate + this.state.discount_start, 'YYYY-MM-DD HH:mm')}
-              style={{ float: 'left', marginLeft: 88, width: 170 }}
-            />
-
-
-            <div style={{ width: '25px', textAlign: 'center', float: 'left' }}>~</div>
-            <DatePicker
-              showTime={{ defaultValue: moment('00:00', 'HH:mm') }}
-              format="YYYY-MM-DD HH:mm"
-              minuteStep={30}
-              allowClear={false}
-              placeholder="结束日期"
-              locale={locale}
-              disabledDate={disabledDate}
-              value={this.state.discount_edate === null?'':moment(this.state.discount_edate + this.state.discount_end, 'YYYY-MM-DD HH:mm')}
-              onChange={this.endDate}
-              style={{ float: 'right', marginRight: 50, width: 170 }}
-            />
-          */}
               <RangePicker
                 showTime={{ defaultValue: [moment('00:00', 'HH:mm'), moment('00:00', 'HH:mm')] }}
                 locale={locale}
@@ -1839,7 +1808,7 @@ class siteSettings extends React.Component {
             </div>
             <div className="modelList" style={{ height: '32px' }}>
               <span>优惠后价格</span><span style={{ marginLeft: 0 }}>(元/小时)</span>
-              <Input type="number"  className="startTime" value={String(this.state.costperhourTwo).replace('.', '')} min={0} style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 100 }} placeholder="请输入" onChange={this.moneyTwo} />
+              <Input type="number"  className="startTime" formatter={limitNumber} parser={limitNumber} value={String(this.state.costperhourTwo).replace('.', '')} min={0} style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 100 }} placeholder="请输入" onChange={this.moneyTwo} />
             </div>
 
 

@@ -136,7 +136,7 @@ class commentPh extends React.Component {
     return (
       <div className="commentPh">
         <div className="headerTitle">
-          <LeftOutlined onClick={this.reture} style={{ position: 'absolute', left: '0', width: '48px', height: '48px', lineHeight: '48px' }} />
+          <LeftOutlined onTouchStart={this.reture} style={{ position: 'absolute', left: '0', width: '48px', height: '48px', lineHeight: '48px' }} />
           场馆评分
           </div>
         <div className="essence">
@@ -188,13 +188,13 @@ class commentPh extends React.Component {
                   <div style={item.imgnames.length===0?{display:'none'}:{ display: 'block', clear: 'both' }} className="commentImg">
                    {
                      item.imgnames.map((ko,j)=>(
-                       <img key={j} onClick={this.model1} data-src={"https://app.tiaozhanmeiyitian.com/"+item.imgbaseurl+ko+""} src={"https://app.tiaozhanmeiyitian.com/"+item.imgbaseurl+ko+""} alt="uimg"/>
+                       <img key={j} onTouchStart={this.model1} data-src={"https://app.tiaozhanmeiyitian.com/"+item.imgbaseurl+ko+""} src={"https://app.tiaozhanmeiyitian.com/"+item.imgbaseurl+ko+""} alt="uimg"/>
                      ))
                    }
 
                   </div>
                   
-                  <div className="reply" data-uid={item.uid} style={item.comment_reply!==null?{display:'none'}:{}} onClick={this.showModal}><img src={require("../../assets/icon_pc_comment.png")} alt="回复" /></div>
+                  <div className="reply" data-uid={item.uid} style={item.comment_reply!==null?{display:'none'}:{}} onTouchStart={this.showModal}><img src={require("../../assets/icon_pc_comment.png")} alt="回复" /></div>
                   <span style={{ display: 'block',float:'left',marginTop:'0.75rem' }}>{item.commentDate}</span>
                   <div className={item.comment_reply !== null ? 'Stadium' : 'stadiumNone'}>
                     <div className="logoImg"><img src={require("../../assets/kefu.png")} alt="场馆端" /></div>

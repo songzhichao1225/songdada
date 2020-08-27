@@ -57,7 +57,6 @@ class comment extends React.Component {
             res.data.data[i].imgnames = []
           }
         }
-        console.log(res.data.data)
         this.setState({ commentList: res.data.data, imgArr: imgArr, other: res.data.other, loading: false, hidden: false, Oneloading: false })
       }
     } else if (res.data.code === 4001) {
@@ -115,7 +114,6 @@ class comment extends React.Component {
     this.setState({ visible: false })
   }
   visible = e => {
-    console.log(e.currentTarget.dataset.url)
     this.setState({
       visible: true,
       url: e.currentTarget.dataset.url

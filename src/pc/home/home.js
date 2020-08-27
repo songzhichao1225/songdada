@@ -22,7 +22,7 @@ import special from '../special/special';
 const { Header, Sider, Content } = Layout;
 
 function jo() {
-  var ws = new WebSocket("wss://www.venue.zhaoduishou.com/socket");
+  var ws = new WebSocket("wss://www.cg.zhaoduishou.com/socket");
   ws.onopen = function () {
     ws.send(sessionStorage.getItem('siteuid'))
   }
@@ -107,7 +107,6 @@ class home extends React.Component {
       this.props.history.push('/perfect')
     }
      if(sessionStorage.getItem('isqult') === '0'){
-       console.log(666)
       this.props.history.push('/qualification')
     }
 

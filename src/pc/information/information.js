@@ -768,7 +768,7 @@ class information extends React.Component {
             this.state.listComplain.map((item, i) => (
               <div key={i} style={{marginTop:'15px'}}>
                 <div><span style={{fontSize:'16px',fontWeight:'blod'}}>投诉类型:</span>{item.name}</div>
-                <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>处理结果:</span>{item.comment}</div>
+                <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>处理结果:</span>{item.comment}({item.handle})</div>
                 <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>处理时间:</span>{item.date}</div>
               </div>
             ))

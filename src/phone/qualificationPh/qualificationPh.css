@@ -24,11 +24,12 @@
     border-bottom:0.06rem solid #f5f5f5;
 }
 .qualificationPh .boss{
-    width: 100%;
+    height: 88%;
     float: left;
     margin: 1rem auto 0;
     background: #fff;
     padding-bottom: 10rem;
+    overflow-y: auto;
 }
 .qualificationPh .boss .input{
     width: 92%;
@@ -85,7 +86,7 @@
     margin-left: 2rem;
 }
 .qualificationPh .left{
-    margin-left: 2rem;
+    margin-left: 2.3rem;
 }
 
 .qualificationPh .addImg .ant-upload.ant-upload-select-picture-card > .ant-upload{
@@ -181,7 +182,7 @@
    text-align: center;
 	color: #fff;
 	border-radius: 2px;
-	background-color: #F5A623;
+    background:rgba(216,93,39,1);
     cursor: pointer;
     float: right;
 }
@@ -225,4 +226,31 @@
 }
 .qualificationPh .ant-input{
     color: #333;
+}
+.am-flexbox{
+    overflow: visible;
+}
+.qualificationPh .am-image-picker-list .am-image-picker-upload-btn input{
+    width: 5rem;
+}
+.qualificationPh .masking{
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1001;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.qualificationPh .hidden{
+    display: none;
+}
+.qualificationPh .masking img{
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
 }

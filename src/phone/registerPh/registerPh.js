@@ -15,7 +15,7 @@ class registerPh extends React.Component {
     code: '',//验证码
     password: '',//密码
     passwordT: '',//确认密码
-    changeRadio: 'false',//是否选中协议
+    changeRadio: false,//是否选中协议
     visible: false,
     textT: '获取验证码',
     visibleName: false,
@@ -28,6 +28,7 @@ class registerPh extends React.Component {
   componentDidMount() {
     if(sessionStorage.getItem('register')!==null){
       let h=JSON.parse(sessionStorage.getItem('register'))
+      console.log(h.changeRadio)
       this.setState({
         Id:h.Id,
         name:h.name,
@@ -74,6 +75,8 @@ class registerPh extends React.Component {
     } else if (e.indexOf('⑧') !== -1) {
       this.setState({ name: e.slice(0, e.length - 1) })
     } else if (e.indexOf('⑨') !== -1) {
+      this.setState({ name: e.slice(0, e.length - 1) })
+    }else if (e.indexOf(' ') !== -1) {
       this.setState({ name: e.slice(0, e.length - 1) })
     }else{
       this.setState({name:e})
@@ -367,7 +370,7 @@ Agreement=()=>{
             <span style={{display:'block',width:'15%',float:'right',marginTop:'0.7rem'}} onClick={this.eyesTwo}><img src={require('../../assets/eyes.png')} style={this.state.eyesTwo===true?{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}:{display:'none'}} alt="eyes"/> <img src={require('../../assets/eyesTwo.png')} style={this.state.eyesTwo===true?{display:'none'}:{width:'1.13rem',height:'0.81rem',marginLeft:'1rem'}} alt="eyes"/></span>
           </div>
           <div className="input line">
-            <Checkbox onChange={this.changeRadio} value={this.state.changeRadio}><span style={{ fontSize: '0.9rem',paddingLeft:'1rem', }}>已阅读并同意</span></Checkbox><span onClick={this.Agreement} style={{ color: '#D85D27', paddingLeft: '0.5rem', fontSize: '0.9rem' }}>《场馆入驻协议》</span>
+            <Checkbox onChange={this.changeRadio} checked={this.state.changeRadio}><span style={{ fontSize: '0.9rem',paddingLeft:'1rem', }}>已阅读并同意</span></Checkbox><span onClick={this.Agreement} style={{ color: '#D85D27', paddingLeft: '0.5rem', fontSize: '0.9rem' }}>《场馆入驻协议》</span>
           </div>
           <div className="input line">
             <Button

@@ -10,7 +10,6 @@ import {
   Button,
   Checkbox,
   Modal,
-  Popconfirm
 } from 'antd';
 
 
@@ -145,7 +144,6 @@ class register extends React.Component {
   }
 
   showModal = e => {
-    console.log(this.state.kod)
     if (this.state.name === '') {
       message.error('请输入用户名')
     }else if (/[\u4E00-\u9FA5]/g.test(this.state.name)) {
@@ -228,18 +226,16 @@ class register extends React.Component {
       this.setState({ name: e.target.value.slice(0, e.target.value.length - 1) })
     } else if (e.target.value.indexOf('⑨') !== -1) {
       this.setState({ name: e.target.value.slice(0, e.target.value.length - 1) })
+    }else if (e.target.value.indexOf(' ') !== -1) {
+      this.setState({ name: e.target.value.slice(0, e.target.value.length - 1) })
     } else {
       this.setState({ name: e.target.value })
       if (e.target.value === '') {
         this.setState({ kodTwo: '' })
       }
     }
-
-
-
-
-    
   }
+  
   onfoucs=()=>{
     this.setState({ko:true})
   }
@@ -373,12 +369,12 @@ class register extends React.Component {
               </div>
 
               <div className="son" style={{opacity:0,position:'absolute'}}>
-              <span className="xing">*</span> <span>验</span><span style={{paddingLeft:'6px'}}>证</span><span style={{paddingLeft:'6px'}}>码:</span>
+             
                 <Input maxLength={6} type="text"  className="phone code" />
               </div>
 
               <div className="son" style={{opacity:0,position:'absolute'}}>
-              <span className="xing">*</span> <span>验</span><span style={{paddingLeft:'6px'}}>证</span><span style={{paddingLeft:'6px'}}>码:</span>
+            
                 <Input maxLength={6} type="password"  className="phone code" />
               </div>
              

@@ -12,7 +12,7 @@ function beforeUpload(file) {
   if (!isJpgOrPng) {
     message.error('您好图片格式只能是JPG/PNG');
   }
-  const isLt2M = file.size / 1024 / 1024 < 6;
+  const isLt2M = file.size / 1024 / 1024 < 5;
   if (!isLt2M) {
     message.error('请上传小于5MB的图片');
   }
@@ -25,7 +25,7 @@ function beforeUploadT(file) {
   if (!isJpgOrPng) {
     message.error('您好图片格式只能是JPG/PNG');
   }
-  const isLt2M = file.size / 1024 / 1024 < 6;
+  const isLt2M = file.size / 1024 / 1024 < 5;
   if (!isLt2M) {
     message.error('请上传小于5MB的图片');
   }
@@ -37,7 +37,7 @@ function beforeUploadTS(file) {
   if (!isJpgOrPng) {
     message.error('您好图片格式只能是JPG/PNG');
   }
-  const isLt2M = file.size / 1024 / 1024 < 6;
+  const isLt2M = file.size / 1024 / 1024 < 5;
   if (!isLt2M) {
     message.error('请上传小于5MB的图片');
   }
@@ -62,6 +62,7 @@ class qualification extends React.Component {
     legalBaseURL: '',//公共路径
     imageReT: '',//身份证正面
     imageResT: '',
+    imageResSix:'',
     imageReST: '',//反面
     flag: true,
     flagTwo: true,
@@ -145,6 +146,7 @@ class qualification extends React.Component {
         let data = {
           siteUUID: res.data.data.siteUid,
           lisenceURL: res.data.data.lisenceURL,
+          empowerURL:res.data.data.empowerURL,
           legalname: res.data.data.legalname,
           legalcard: res.data.data.legalcard,
           legalphone: res.data.data.legalphone,
@@ -161,13 +163,13 @@ class qualification extends React.Component {
         sessionStorage.setItem('qualifData', JSON.stringify(data))
         let lpk = JSON.parse(sessionStorage.getItem('qualifData'))
         this.setState({
-          imageUrl: lpk.lisenceURL, handleName: lpk.legalname, handleCardId: lpk.legalcard, imageRes: lpk.lisenceURL,
+          imageUrl: lpk.lisenceURL, handleName: lpk.legalname, handleCardId: lpk.legalcard, imageRes: lpk.lisenceURL,imageResSix:lpk.empowerURL,
           handlePhone: lpk.legalphone, Radiovalue: lpk.Settlement, handleBankNum: lpk.Bankaccount, openingLine: lpk.OpeningBank,
           legalBaseURL: lpk.legalBaseURL,
           imageResT: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[0],
           imageReST: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[1], CorporateName: lpk.CorporateName,
           bank_id: lpk.Banktype, province_id: lpk.ProvinceBank, city_id: lpk.CityBank,
-          flagDis: lpk.flagDis !== undefined ? lpk.flagDis : false
+          flagDis:false
         })
       } else {
         let lpk = JSON.parse(sessionStorage.getItem('qualifData'))
@@ -175,13 +177,13 @@ class qualification extends React.Component {
           this.getVenueOpenBankCity({ province_id: lpk.ProvinceBank })
         }
         this.setState({
-          imageUrl: lpk.lisenceURL, handleName: lpk.legalname, handleCardId: lpk.legalcard, imageRes: lpk.lisenceURL,
+          imageUrl: lpk.lisenceURL, handleName: lpk.legalname, handleCardId: lpk.legalcard, imageRes: lpk.lisenceURL,imageResSix:lpk.empowerURL,
           handlePhone: lpk.legalphone, Radiovalue: lpk.Settlement, handleBankNum: lpk.Bankaccount, openingLine: lpk.OpeningBank,
           legalBaseURL: lpk.legalBaseURL,
           imageResT: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[0],
           imageReST: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[1], CorporateName: lpk.CorporateName,
           bank_id: lpk.Banktype, province_id: lpk.ProvinceBank, city_id: lpk.CityBank,
-          flagDis: lpk.flagDis
+          flagDis: false
         })
       }
 
@@ -270,13 +272,36 @@ class qualification extends React.Component {
       } else {
         this.setState({ imageRes: 1 })
       }
+      if (info.file.response.code === 4004) {
+        message.error(info.file.response.msg)
+      } else if (info.file.response.code === 4002) {
+        message.error('上传失败')
+      }
 
     }
-    if (info.file.response.code === 4004) {
-      message.error(info.file.response.msg)
-    } else if (info.file.response.code === 4002) {
-      message.error('上传失败')
+    
+  }
+
+
+  handleChangeSix = info => {
+    if (info.file.status === 'uploading') {
+      this.setState({ loadingSix: false })
+      return
     }
+    if (info.file.status === 'done') {
+      this.setState({ loadingSix: true })
+      if (info.file.response.data.baseURL !== undefined) {
+        this.setState({ imageResSix: info.file.response.data.baseURL + info.file.response.data.filesURL })
+      } else {
+        this.setState({ imageResSix: 1 })
+      }
+      if (info.file.response.code === 4004) {
+        message.error(info.file.response.msg)
+      } else if (info.file.response.code === 4002) {
+        message.error('上传失败')
+      }
+    }
+   
   }
 
 
@@ -300,13 +325,14 @@ class qualification extends React.Component {
       } else {
         this.setState({ imageReST: 1 })
       }
+      if (info.file.response.code === 4004) {
+        message.error(info.file.response.msg)
+      } else if (info.file.response.code === 4002) {
+        message.error('上传失败')
+      }
 
     }
-    if (info.file.response.code === 4004) {
-      message.error(info.file.response.msg)
-    } else if (info.file.response.code === 4002) {
-      message.error('上传失败')
-    }
+   
   }
 
 
@@ -328,13 +354,13 @@ class qualification extends React.Component {
       } else {
         this.setState({ imageReST: 1 })
       }
-
+      if (info.file.response.code === 4004) {
+        message.error(info.file.response.msg)
+      } else if (info.file.response.code === 4002) {
+        message.error('上传失败')
+      }
     }
-    if (info.file.response.code === 4004) {
-      message.error(info.file.response.msg)
-    } else if (info.file.response.code === 4002) {
-      message.error('上传失败')
-    }
+    
   }
 
 
@@ -351,7 +377,7 @@ class qualification extends React.Component {
   }
 
   async VenueQualifications(data) {
-    const res = await VenueQualifications(data)
+    const res = await VenueQualifications(data,sessionStorage.getItem('venue_token'))
     if (res.data.code !== 2000) {
       message.error(res.data.msg)
     } else if (res.data.code === 4001) {
@@ -379,11 +405,12 @@ class qualification extends React.Component {
 
 
   submit = () => {
-    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageResT, imageReST, CorporateName, bank_id, province_id, city_id } = this.state
+    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes,imageResSix, legalBaseURL, imageResT, imageReST, CorporateName, bank_id, province_id, city_id } = this.state
 
     if (this.state.isqult === 0) {
       let data = {
         siteUUID: siteUUID,
+        empowerURL:imageResSix,
         lisenceURL: imageRes,
         legalname: handleName,
         legalcard: Radiovalue === 0 ? '' : handleCardId,
@@ -400,12 +427,14 @@ class qualification extends React.Component {
       }
       if (data.lisenceURL === 1) {
         message.error('营业执照违规请重新上传');
-      } else if (imageResT === 1 && Radiovalue === 1) {
+      } else if (imageResSix === 1) {
+        message.error('授权书照违规请重新上传');
+      }  else if (imageResT === 1 && Radiovalue === 1) {
         message.error('身份证正面照违规请重新上传');
       } else if (imageReST === 1 && Radiovalue === 1) {
         message.error('身份证反面照违规请重新上传');
       } else {
-        if (this.state.loading === false || this.state.loadingTwo === false || this.state.loadingThree === false) {
+        if (this.state.loading === false || this.state.loadingTwo === false || this.state.loadingThree === false||this.state.loadingSix === false) {
           message.warning('图片上传中...');
         } else {
           this.VenueQualifications(data)
@@ -414,6 +443,7 @@ class qualification extends React.Component {
     } else {
       let data = {
         lisenceURL: imageRes,
+        empowerURL:imageResSix,
         legalname: handleName,
         legalcard: Radiovalue === 0 ? '' : handleCardId,
         legalphone: handlePhone,
@@ -430,12 +460,14 @@ class qualification extends React.Component {
       }
       if (data.lisenceURL === 1) {
         message.error('营业执照违规请重新上传');
-      } else if (imageResT === 1) {
+      }else if (imageResSix === 1) {
+        message.error('授权书照违规请重新上传');
+      }  else if (imageResT === 1) {
         message.error('身份证正面照违规请重新上传');
       } else if (imageReST === 1) {
         message.error('身份证反面照违规请重新上传');
       } else {
-        if (this.state.loading === false || this.state.loadingTwo === false || this.state.loadingThree === false) {
+        if (this.state.loading === false || this.state.loadingTwo === false || this.state.loadingThree === false||this.state.loadingSix === false) {
           message.warning('图片上传中...');
         } else {
           this.VenueQualificationInformationSave(data)
@@ -451,10 +483,11 @@ class qualification extends React.Component {
   }
   stepBack = () => {
 
-    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageResT, imageReST, CorporateName, bank_id, province_id, city_id } = this.state
+    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes,imageResSix, legalBaseURL, imageResT, imageReST, CorporateName, bank_id, province_id, city_id } = this.state
     let data = {
       siteUUID: siteUUID,
       lisenceURL: imageRes,
+      empowerURL:imageResSix,
       legalname: handleName,
       legalcard: Radiovalue === 0 ? '' : handleCardId,
       legalphone: handlePhone,
@@ -480,10 +513,11 @@ class qualification extends React.Component {
     const res = await TemporaryQualificationInformation(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success(res.data.msg)
-      let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageResT, imageReST, CorporateName, bank_id, province_id, city_id } = this.state
+      let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes,imageResSix, legalBaseURL, imageResT, imageReST, CorporateName, bank_id, province_id, city_id } = this.state
       let data = { 
         siteUUID: siteUUID,
         lisenceURL: imageRes,
+        empowerURL:imageResSix,
         legalname: handleName,
         legalcard: Radiovalue === 0 ? '' : handleCardId,
         legalphone: handlePhone,
@@ -503,10 +537,11 @@ class qualification extends React.Component {
     }
   }
   save = () => {
-    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes, legalBaseURL, imageResT, imageReST, CorporateName, bank_id, province_id, city_id } = this.state
+    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes,imageResSix, legalBaseURL, imageResT, imageReST, CorporateName, bank_id, province_id, city_id } = this.state
     let data = {
       siteUUID: siteUUID,
       lisenceURL: imageRes,
+      empowerURL:imageResSix,
       legalname: handleName,
       legalcard: Radiovalue === 0 ? '' : handleCardId,
       legalphone: handlePhone,
@@ -522,12 +557,14 @@ class qualification extends React.Component {
     }
     if (data.lisenceURL === 1) {
       message.warning('营业执照违规请重新上传');
-    } else if (imageResT === 1) {
+    }else if (imageResSix === 1) {
+      message.error('授权书照违规请重新上传');
+    }  else if (imageResT === 1) {
       message.warning('身份证正面照违规请重新上传');
     } else if (imageReST === 1) {
       message.warning('身份证反面照违规请重新上传');
     } else {
-      if (this.state.loading === false || this.state.loadingTwo === false || this.state.loadingThree === false) {
+      if (this.state.loading === false || this.state.loadingTwo === false || this.state.loadingThree === false||this.state.loadingSix === false) {
         message.warning('图片上传中...');
       } else {
         this.TemporaryQualificationInformation(data)
@@ -587,11 +624,12 @@ class qualification extends React.Component {
       }
       this.setState({
         imageUrl: res.data.data.lisenceURL, handleName: res.data.data.legalname, handleCardId: res.data.data.legalcard, imageRes: res.data.data.lisenceURL,
+        imageResSix:res.data.data.empowerURL,
         handlePhone: res.data.data.legalphone, Radiovalue: res.data.data.Settlement, handleBankNum: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, legalBaseURL: res.data.data.legalBaseURL,
         imageResT: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[0],
         imageReST: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[1], CorporateName: res.data.data.CorporateName,
         bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
-        flagDis: true, visible: false
+        flagDis: false, visible: false
       })
     }
   }
@@ -612,8 +650,16 @@ class qualification extends React.Component {
         {this.state.loading === false ? < LoadingOutlined style={{ fontSize: '20px' }} /> : <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
         }
       </div>
+       
     )
-    const { imageRes } = this.state;
+    const uploadButtonSix = (
+      <div>
+        {this.state.loadingSix === false ? < LoadingOutlined style={{ fontSize: '20px' }} /> : <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
+        }
+      </div>
+       
+    )
+    const { imageRes,imageResSix } = this.state;
 
     const uploadButtonT = (
       <div>
@@ -674,11 +720,29 @@ class qualification extends React.Component {
                 disabled={this.state.flagDis}
                 accept=".jpg, .jpeg, .png"
               >
-                {imageRes !== 1 && imageRes !== '' ? <img onClick={this.state.flagDis === true ? this.srcScale : this.lpsdgfj} src={'https://app.tiaozhanmeiyitian.com/' + imageRes} alt="avatar" style={{ maxWidth: '4.5rem', maxHeight: '4.5rem' }} /> : uploadButton}
+                {imageRes !== 1 && imageRes !== '' ? <img onClick={this.state.flagDis === true ? this.srcScale : this.lpsdgfj} src={'https://app.tiaozhanmeiyitian.com/' + imageRes} width="185px" alt="avatar" style={{position:'absolute',top:-20,left:-30 }} /> : uploadButton}
               </Upload>
-
-
             </div>
+
+            <div className="name">
+              <div className="nameSonTle">
+                <span className="boTitle">授权书照</span><span className="symbol"></span>
+              </div>
+              <Upload
+                name="files"
+                listType="picture-card"
+                className="avatar-uploader addImg"
+                showUploadList={false}
+                action="/api/UploadVenueImgs?type=Venuelisence"
+                beforeUpload={beforeUpload}
+                onChange={this.handleChangeSix}
+                disabled={this.state.flagDis}
+                accept=".jpg, .jpeg, .png"
+              >
+                {imageResSix !== 1 && imageResSix !== '' ? <img onClick={this.state.flagDis === true ? this.srcScale : this.lpsdgfj} src={'https://app.tiaozhanmeiyitian.com/' + imageResSix} width="185px"  alt="avatar" style={{position:'absolute',top:-20,left:-30 }}/> : uploadButtonSix}
+              </Upload>
+            </div>
+
             <div className="name">
               <div className="nameSonTle">
                 <span className="boTitle">法人姓名</span><span className="symbol">*</span>

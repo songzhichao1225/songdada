@@ -31,6 +31,7 @@ class moneyDetailPh extends React.Component {
     this.props.history.goBack()
     sessionStorage.setItem('qiStart',this.state.datatring.qistart)
     sessionStorage.setItem('qiEnd',this.state.datatring.qiend)
+    sessionStorage.setItem('qiPage',this.state.datatring.page)
   }
 
   render() {

@@ -182,3 +182,14 @@ display: inline-block;
 .qualification .ant-select-single .ant-select-selector .ant-select-selection-item, .ant-select-single .ant-select-selector .ant-select-selection-placeholder{
 	line-height: 35px;
 }
+.qualification .ant-upload.ant-upload-select-picture-card > .ant-upload{
+	position: relative;
+	overflow: hidden;
+}
+.qualification .addImg .ant-upload.ant-upload-select-picture-card{
+	padding: 8px;
+}
+
+.qualification .addimgT .ant-upload.ant-upload-select-picture-card{
+	padding: 0;
+}

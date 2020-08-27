@@ -4,7 +4,7 @@ import './minePh.css';
 import { Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Drawer, Input, Pagination } from 'antd';
-import { VenueFeedback, getVenueHelpCenter } from '../../api';
+import { VenueFeedback, getVenueHelpCenter,gerVenueName } from '../../api';
 
 const { TextArea } = Input
 
@@ -23,8 +23,21 @@ class minePh extends React.Component {
     page: 1,
   }
 
-  componentDidMount() {
 
+  async gerVenueName(data) {
+    const res = await gerVenueName(data, localStorage.getItem('venue_token'))
+  
+    localStorage.setItem('name', res.data.data.name)
+    localStorage.setItem('avatar', "https://app.tiaozhanmeiyitian.com/" + res.data.data.siteimg)
+    localStorage.setItem('lyv', res.data.data.rate)
+    localStorage.setItem('siteUid', res.data.data.siteuid)
+    this.setState({ gerVenueName: res.data.data, refreshing: false })
+
+  }
+ 
+
+  componentDidMount() {
+     this.gerVenueName()
   }
 
   myWalletPh = () => {
@@ -154,7 +167,7 @@ class minePh extends React.Component {
                 </g>
               </g>
             </svg>
-            <span>场馆钱包</span><img src={require("../../assets/right.png")} alt="arrow" /></li>
+            <span>场馆钱包</span><img  src={require("../../assets/right.png")} alt="arrow" /></li>
           <li onClick={this.Agreement}>
             <svg width="14px" height="16px" viewBox="0 0 14 16" style={{ float: 'left', marginTop: '1rem' }} version="1.1" xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/设置</title>
@@ -193,7 +206,7 @@ class minePh extends React.Component {
                 <path d="M14.7454448,11.8793018 C14.7454448,14.3988484 13.5856535,14.3988484 7.9866612,14.3988484 C2.38766887,14.3988484 1.2278776,14.3988484 1.2278776,11.8793018 C1.2278776,9.11979847 4.26733058,3.60079174 7.9866612,3.60079174 C11.7459846,3.60079174 14.7454448,9.11979847 14.7454448,11.8793018 Z M8.026654,4.80057581 C6.42694191,4.80057581 5.14717223,6.08034549 5.14717223,7.68005758 C5.14717223,9.27976968 6.42694191,10.5595394 8.026654,10.5595394 C9.6263661,10.5595394 10.9061358,9.27976968 10.9061358,7.68005758 C10.9061358,6.08034549 9.6263661,4.80057581 8.026654,4.80057581 L8.026654,4.80057581 Z M2.02773365,6.92019434 C3.18752492,5.04053262 5.22715784,3.0008997 8.026654,3.0008997 C10.8261502,3.0008997 12.9457687,5.20050383 13.9455888,6.92019434 C14.4654952,7.76004319 15.4253224,7.68005758 15.8652433,6.92019434 C16.1052001,6.3602951 16.9450489,1.60115162 7.9866612,1.60115162 C-1.05171213,1.60115162 -0.13187768,6.52026631 0.188064739,6.92019434 C0.747963972,7.76004319 1.82776964,7.32012236 2.02773365,6.92019434 Z" id="icon_合作场馆_我的_客服电话" fill="#6FB2FF"></path>
               </g>
             </svg>
-            <span ><a href="tel:18567837551" style={{ color: 'rgba(0, 0, 0, 0.65)' }}>客服电话(010-80895077)</a></span><img src={require("../../assets/right.png")} alt="arrow" /></li>
+            <span >客服电话(010-80895077)</span><img src={require("../../assets/right.png")} alt="arrow" /></li>
           <li onClick={this.help}>
             <svg width="16px" height="16px" style={{ float: 'left', marginTop: '1rem' }} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/设置</title>

@@ -98,3 +98,9 @@
 .ant-radio-checked .ant-radio-inner{
     border-color: #D85D27;
 }
+.ko>label{
+    max-width: 100%;
+    min-width: 102px;
+    float: left;
+    text-align: left;
+}

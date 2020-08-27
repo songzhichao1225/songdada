@@ -220,5 +220,13 @@ float: left;
 
 }
 .stadiums .ant-select-single:not(.ant-select-customize-input) .ant-select-selector{
-    height: 38px;
+	height: 38px;
+	
+}
+.stadiums .ant-upload.ant-upload-select-picture-card > .ant-upload{
+	position: relative;
+	overflow: hidden;
+}
+.stadiums .ant-upload.ant-upload-select-picture-card{
+	padding: 8px;
 }

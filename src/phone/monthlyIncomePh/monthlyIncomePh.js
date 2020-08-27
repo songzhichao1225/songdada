@@ -21,8 +21,6 @@ class monthlyIncomePh extends React.Component {
   };
   async getVenueMoneyList(data) {
     const res = await getVenueMoneyList(data, localStorage.getItem('venue_token'))
-
-   
      if (res.data.data.data !== undefined) {
       this.setState({ getVenueMoneyList: res.data.data, spin: false })
       this.setState({ moneyList: res.data.data.data, flag: false,refreshing:false })
@@ -50,14 +48,12 @@ class monthlyIncomePh extends React.Component {
         this.setState({ qiStart: new Date(start), qiEnd: new Date(end) })
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
       }else if(sessionStorage.getItem('qiStart')!==null){
-        
-        this.setState({ qiStart:new Date(sessionStorage.getItem('qiStart')) , qiEnd: new Date(sessionStorage.getItem('qiEnd')) })
-        this.getVenueMoneyList({ start: new Date(sessionStorage.getItem('qiStart')), end: new Date(sessionStorage.getItem('qiEnd')), page: 1 })
+        this.setState({ qiStart:new Date(sessionStorage.getItem('qiStart')) , qiEnd: new Date(sessionStorage.getItem('qiEnd')),current:sessionStorage.getItem('qiPage') })
+        this.getVenueMoneyList({ start: new Date(sessionStorage.getItem('qiStart')), end: new Date(sessionStorage.getItem('qiEnd')), page: sessionStorage.getItem('qiPage') })
       } else {
         let myDate = new Date()
         let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d
         let end = moment().endOf('day')._d
-        console.log(start,end)
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
         this.setState({ qiStart: new Date(start), qiEnd: new Date(end)})
       }
@@ -102,7 +98,6 @@ class monthlyIncomePh extends React.Component {
 
   }
   qiStart=e=>{
-    console.log(e)
     this.setState({qiStart:e,current:1})
     this.getVenueMoneyList({ start:e, end: this.state.qiEnd, page: 1 })
   }
@@ -158,7 +153,7 @@ class monthlyIncomePh extends React.Component {
          <div className="moneyScroll">
             {
               this.state.moneyList.map((item, i) => (
-                <div className="contentSon" key={i} data-time={item.time} data-money={item.money} data-public={item.public} data-qiStart={this.state.qiStart} data-qiEnd={this.state.qiEnd} onClick={this.detail}>
+                <div className="contentSon" key={i} data-time={item.time} data-money={item.money} data-public={item.public} data-qiStart={this.state.qiStart} data-qiEnd={this.state.qiEnd} data-page={this.state.current} onClick={this.detail}>
                   <div className="left"><span>场地费</span><span>{item.time}</span></div>
                   <img className="image" src={require("../../assets/right.png")} alt="下一步" />
                   <span className="right">+{item.money}</span>

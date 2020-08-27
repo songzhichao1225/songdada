@@ -3,10 +3,14 @@ import './perfect.css';
 import 'antd/dist/antd.css';
 import { PerfectingVenueInformation, getVenueInformation, getVenueSportList, VenueInformationSave, TemporaryVenueInformation } from '../../api';
 import { Input, Checkbox, Button, Upload, message, Modal } from 'antd';
-import ImgCrop from 'antd-img-crop';
 const { TextArea } = Input;
 
 
+
+const isImageUrl = (file: UploadFile): boolean => {
+ 
+  return true;
+};
 
 
 const options = [{ label: '停车场', value: '1' }, { label: 'WiFi', value: '2' }, { label: '淋浴', value: '3' }, { label: '室内摄像头', value: '4' },]
@@ -71,8 +75,12 @@ class perfect extends React.Component {
       message.error('登录超时请重新登录')
     } else if (res.data.code === 2000) {
       let arrImg = []
-      if (res.data.data.filesURL !== null && res.data.data.filesURL !== '') {
-        let imgS = (res.data.data.filesURL).split('|')
+      if (res.data.data.filesURL !== null && res.data.data.filesURL !== ''&&res.data.data.filesURL !== '|') {
+        let imgS = (res.data.data.filesURL).slice(1,(res.data.data.filesURL).length).split('|')
+        let imgT=(res.data.data.filesURL).slice(1,(res.data.data.filesURL).length)
+        if(imgT===''){
+
+        }
         for (let i in imgS) {
           arrImg.push({ uid: -i, name: 'image.png', status: 'done', url: imgS[i] })
         }
@@ -115,8 +123,6 @@ class perfect extends React.Component {
 
 
   routerMap = () => {
-
-    console.log()
     this.props.history.push({ pathname: '/map', query: { type: localStorage.getItem('handleDistrict'), city: localStorage.getItem('handleCity') } })
     sessionStorage.setItem('hanclick', 1)
   }
@@ -153,13 +159,14 @@ class perfect extends React.Component {
       } else {
         this.setState({ imageRes: 1 })
       }
+      if (info.file.response.code === 4004) {
+        message.error(info.file.response.msg)
+      } else if (info.file.response.code === 4002) {
+        message.error('上传失败')
+      }
 
     }
-    if (info.file.response.code === 4004) {
-      message.error(info.file.response.msg)
-    } else if (info.file.response.code === 4002) {
-      message.error('上传失败')
-    }
+    
   }
 
 
@@ -202,15 +209,10 @@ class perfect extends React.Component {
   }
 
 
-
-
-
-
   async VenueInformationSave(data) {
     const res = await VenueInformationSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.props.history.push('/qualification')
-      message.success('提交成功')
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登录超时请重新登录')
@@ -246,7 +248,7 @@ class perfect extends React.Component {
         city: this.props.location.query === undefined ? this.state.city : this.props.location.query.city,
         area: this.props.location.query === undefined ? this.state.area : this.props.location.query.district,
         address: handleAddress,
-        filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
+        filesURL: filesURLarr === null ? '' :'|'+filesURLarr.join('|'),
         firstURL: imageRes,
         sport: onChangeCheck === '' ? '' : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
         facilities: onChangeSite === '' ? '' : typeof (onChangeSite) !== 'string' ? onChangeSite.join(',') : onChangeSite,
@@ -311,7 +313,7 @@ class perfect extends React.Component {
         lat: this.props.location.query === undefined ? this.state.lat : this.props.location.query.lat,
         lng: this.props.location.query === undefined ? this.state.lng : this.props.location.query.lng,
         address: handleAddress,
-        filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
+        filesURL: filesURLarr === null ? '' :'|'+filesURLarr.join('|'),
         firstURL: imageRes,
         sport: onChangeCheck === '' ? '' : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
         facilities: onChangeSite === '' ? '' : typeof (onChangeSite) !== 'string' ? onChangeSite.join(',') : onChangeSite,
@@ -354,7 +356,7 @@ class perfect extends React.Component {
   }
 
   async PerfectingVenueInformation(data) {
-    const res = await PerfectingVenueInformation(data)
+    const res = await PerfectingVenueInformation(data,sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.props.history.push('/qualification')
     } else {
@@ -371,10 +373,11 @@ class perfect extends React.Component {
 
 
   async TemporaryVenueInformation(data) {
-    const res = await TemporaryVenueInformation(data)
+    const res = await TemporaryVenueInformation(data,sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success(res.data.msg)
       this.setState({click:false})
+      this.props.location.query=undefined
       this.getVenueInformation()
     } else {
       message.error(res.data.msg)
@@ -410,7 +413,7 @@ class perfect extends React.Component {
       lat: this.props.location.query === undefined ? this.state.lat : this.props.location.query.lat,
       lng: this.props.location.query === undefined ? this.state.lng : this.props.location.query.lng,
       address: handleAddress,
-      filesURL: filesURLarr === null ? '' : filesURLarr.join('|'),
+      filesURL: filesURLarr === null||filesURLarr===[] ? '' :'|'+filesURLarr.join('|'),
       firstURL: imageRes,
       sport: onChangeCheck === '' ? '' : typeof (onChangeCheck) !== 'string' ? onChangeCheck.join(',') : onChangeCheck,
       facilities: onChangeSite === '' ? '' : typeof (onChangeSite) !== 'string' ? onChangeSite.join(',') : onChangeSite,
@@ -457,19 +460,7 @@ class perfect extends React.Component {
       </div>
     )
 
-    const propsOne = {
-      aspect: 1.295 / 1,
-      resize: false, //裁剪是否可以调整大小
-      resizeAndDrag: true, //裁剪是否可以调整大小、可拖动
-      modalTitle: "编辑图片", //弹窗标题
-      modalWidth: 600, //弹窗宽度
-      modalOk: "确定",
-      modalCancel: "取消"
-    }
-
-
-
-
+   
     return (
       <div className="perfect">
         <div className="header">
@@ -477,7 +468,6 @@ class perfect extends React.Component {
             <img className="logo" src={require("../../assets/tiaozhanicon.png")} style={{ width: 53, height: 53, marginLeft: 45, marginTop: 13.5 }} alt="6666" />
             <span className="title">北京甲乙电子商务有限公司</span>
           </div>
-          
       </div>
           <div className="content">
             <div className="nav">
@@ -521,7 +511,6 @@ class perfect extends React.Component {
 
               <div className="name">
                 <span className="symbol negative">*</span><span className="boTitle negativeT">门脸照</span>
-                <ImgCrop scale {...propsOne}>
                   <Upload
                     name="files"
                     listType="picture-card"
@@ -532,9 +521,8 @@ class perfect extends React.Component {
                     onChange={this.handleChange}
                     accept=".jpg, .jpeg, .png"
                   >
-                    {imageRes !== 1 && imageRes !== '' && imageRes !== null ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageRes} alt="avatar" style={{ width: '100%', height: '100%' }} /> : uploadButton}
+                    {imageRes !== 1 && imageRes !== '' && imageRes !== null ? <img src={'https://app.tiaozhanmeiyitian.com/' + imageRes} width="286px" alt="avatar" style={{position:'absolute',top:-50,left:-100 }} /> : uploadButton}
                   </Upload>
-                </ImgCrop>
                 <span className="rightText">上传图片小于5M</span>
               </div>
 
@@ -552,6 +540,7 @@ class perfect extends React.Component {
                     onChange={this.handleChangeT}
                     accept=".jpg, .jpeg, .png"
                     multiple={true}
+                    isImageUrl={isImageUrl}
                   >
                     {fileList.length >= 8 ? null : uploadButtonT}
                   </Upload>

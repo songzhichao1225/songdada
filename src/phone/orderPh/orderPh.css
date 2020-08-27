@@ -7,7 +7,7 @@
 
 .orderPh{
     font-size: 0.75rem;
-    height: 100%;
+    height: 95%;
     position: relative;
     background: #F5F5F5;
    
@@ -21,9 +21,9 @@
 }
 
 .orderPh .activityList {
-    height: 80%;
+    height: 100%;
     overflow: hidden;
-
+    padding-bottom: 2rem;
     
 }
 .orderPh .activityList .select{
@@ -491,14 +491,29 @@ html:not([data-scale]) .am-card-body::before{
     height: 100%;
 }
 .orderPh .ant-spin-container{
-    height: 93%;
+    height: 97%;
 }
 .orderPh .ant-table-container{
     height: 100%;
 }
 .orderPh .ant-spin-nested-loading{
-    height: 93%;
+    height: 100%;
 }
 .orderPh .ant-table-wrapper{
-    height: 90%;
+    height: 88%;
+}
+.orderPh .cardBody{
+    font-size: 12px;
+}
+.orderPh .cardHeader{
+    line-height: 13px;
+    padding-right: 0.5rem;
+    text-align: right;
+    font-size: 12px;
+}
+.orderPh .cardBody .footerOne{
+    display: block;
+    width: 90px;
+    float: left;
+    margin-left: 0.5rem;
 }

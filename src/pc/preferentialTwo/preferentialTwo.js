@@ -106,8 +106,8 @@ class appointmentList extends React.Component {
       this.props.history.push('/')
       message.error('登录超时请重新登录!')
     } else if (res.data.code === 2000) {
-      this.setState({ activityNav: res.data.data })
-      this.getVenueNumberTitleList({ sportid: this.state.liNum })
+      this.setState({ activityNav: res.data.data,liNum:res.data.data[0].id })
+      this.getVenueNumberTitleList({ sportid:res.data.data[0].id  })
     }
   }
 
@@ -183,15 +183,7 @@ class appointmentList extends React.Component {
       this.setState({
         resData: res.data.data
       })
-
-
-
       this.hoode(res.data.data)
-
-
-
-
-
       for (let i in res.data.other) {
         res.data.other[i].dataIndex = res.data.other[i].venueid
         res.data.other[i].title = <div>{res.data.other[i].venueid}<br />{res.data.other[i].title}</div>
@@ -288,11 +280,6 @@ class appointmentList extends React.Component {
     if (this.state.resData[e.target.idx].c[e.target.jdx].checked === false) {
       let item=this.state.resData
       item[e.target.idx].c[e.target.jdx].checked = true
-      // let lo='resData['+e.target.idx+'].c['+e.target.jdx+'].checked'
-      // console.log([lo])
-      // this.setState({
-      //   [lo]:true
-      // })
       this.hoode(item)
     } else {
       let item=this.state.resData

@@ -58,9 +58,9 @@ class myWalletPh extends React.Component {
     const res = await getReceivingBankQualifications(data, localStorage.getItem('venue_token'))
     if(res.data.code===4004){
       Toast.fail(res.data.msg, 1);
-    }if (res.data.code !== 2000&&res.data.code!==4004) {
+    }else if (res.data.code !== 2000&&res.data.code!==4004) {
       this.setState({ visible: true })
-    } else {
+    } else if(res.data.code===2000) {
       this.props.history.push({ pathname: '/homePh/withdrawalPh', query: { money: this.state.money } })
     }
   }
@@ -237,7 +237,7 @@ class myWalletPh extends React.Component {
   async VenueReceivingBankInformation(data) {
     const res = await VenueReceivingBankInformation(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      Toast.fail('提交成功', 1)
+      Toast.success('提交成功', 1)
         this.setState({ visible: false})
     } else {
       Toast.fail(res.data.msg, 1)
@@ -261,7 +261,6 @@ class myWalletPh extends React.Component {
       CityBank:typeof(city_id)!=='string'?city_id.join():city_id,
       legalcard:numRadio===0?'':corporateId
     }
-    console.log(data)
     if(numRadio&&imgFile===undefined){
        Toast.fail('图片违规请重新上传', 1);
     }else if(numRadio&&imgFileTwo===undefined){

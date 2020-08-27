@@ -25,6 +25,9 @@ class phone extends React.Component {
       visible,
     })
   }
+  retrun=()=>{
+    this.props.history.goBack()
+  }
 
 
 
@@ -42,7 +45,7 @@ class phone extends React.Component {
                   overlayStyle={{ color: 'currentColor' }}
                   visible={this.state.visible}
                   overlay={[
-                    (<Item key="8"><a rel="prerender" href='https://venue.tiaozhanmeiyitian.com' style={{ color: '#333' }}>场馆端登录</a></Item>),
+                    (<Item key="8"><div  onClick={this.retrun}>返回场馆端</div></Item>),
                   ]}
                   align={{
                     overflow: { adjustY: 0, adjustX: 0 },

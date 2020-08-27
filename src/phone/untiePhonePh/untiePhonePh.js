@@ -17,12 +17,13 @@ class untiePhonePh extends React.Component {
     phoneTwo: '',
     codeOne: '',
     codeTwo: '',
-  };
+  }
 
   async gerVenueName(data) {
-    const res = await gerVenueName(data, sessionStorage.getItem('venue_token'))
+    const res = await gerVenueName(data, localStorage.getItem('venue_token'))
     if(res.data.code===2000) {
       localStorage.setItem('phone', res.data.data.phone)
+      localStorage.setItem('legalphone',res.data.data.legalphone)
     }
   }
 

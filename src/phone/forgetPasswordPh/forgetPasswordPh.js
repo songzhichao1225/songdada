@@ -35,12 +35,6 @@ class forgetPasswordPh extends React.Component {
   async nacode(data) {
     const res = await _code(data)
     if (res.data.code === 2000) {
-    } else {
-      Toast.fail(res.data.msg, 1);
-    }
-  }
-  naCode = () => {
-    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
       let num = 60
       const timer = setInterval(() => {
         this.setState({ textT: num-- })
@@ -49,11 +43,18 @@ class forgetPasswordPh extends React.Component {
           this.setState({ textT: '获取验证码' })
         }
       }, 1000)
+    } else {
+      Toast.fail(res.data.msg, 1);
+    }
+  }
+  naCode = () => {
+    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
+     
       this.nacode({ "mobile": this.state.phone, "type": 'venueforgetpass' })
     } else {
       Toast.fail('请输入手机号', 1)
     }
-  }
+  } 
   onChange = e => {
     this.setState({ value: e })
   }
@@ -117,7 +118,7 @@ class forgetPasswordPh extends React.Component {
       <div className="forgetPasswordPh">
         <NavBar
           mode="dark"
-          icon={<LeftOutlined  onClick={this.reture} />}
+          icon={<LeftOutlined  onTouchStart={this.reture} />}
           rightContent={<Popover mask
             overlayClassName="fortest"
             overlayStyle={{ color: 'currentColor' }}
@@ -172,7 +173,7 @@ class forgetPasswordPh extends React.Component {
               maxLength={6}
             >
             </InputItem>
-            <div className={this.state.textT === '获取验证码' ? 'obtain' : 'koohidden'} onClick={this.naCode} >
+            <div className={this.state.textT === '获取验证码' ? 'obtain' : 'koohidden'} onTouchStart={this.naCode} >
               {this.state.textT}
             </div>
             <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'obtain'} >
@@ -227,7 +228,7 @@ class forgetPasswordPh extends React.Component {
             >
             </InputItem>
           </div>
-          <div className="btn" onClick={this.comfir}>确定</div>
+          <div className="btn" onTouchStart={this.comfir}>确定</div>
 
 
 

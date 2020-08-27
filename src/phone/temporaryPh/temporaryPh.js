@@ -223,6 +223,7 @@ class temporaryPh extends React.Component {
   async VenueTemporarilyClosedDel(data) {
     const res = await VenueTemporarilyClosedDel(data, localStorage.getItem('venue_token'))
     Toast.success(res.data.msg, 1);
+    this.setState({temPage:1})
     this.VenueTemporarilyClosedList({ page: 1 })
 
   }

@@ -46,6 +46,7 @@ background: #fff;
 .commentPh .commentList{
 	width: 90%;
 	margin: 0 auto;
+	min-height: 200px;
 }
 .commentPh .commentList .Son{
 	margin-top: 1rem;

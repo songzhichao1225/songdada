@@ -10,7 +10,6 @@ import qualificationPh from './phone/qualificationPh/qualificationPh';
 import idCardPh from './phone/idCardPh/idCardPh';
 import resultsAuditsPh from './phone/resultsAuditsPh/resultsAuditsPh';
 import forgetPasswordPh from './phone/forgetPasswordPh/forgetPasswordPh';
-import homePh from './phone/homePh/homePh';
 import monthlyIncomePh from './phone/monthlyIncomePh/monthlyIncomePh';
 import moneyDetailPh from './phone/moneyDetailPh/moneyDetailPh';
 import commentPh from './phone/commentPh/commentPh';
@@ -25,8 +24,8 @@ import resetPasswordPh from './phone/resetPasswordPh/resetPasswordPh';
 import inforSitePh from './phone/inforSitePh/inforSitePh';
 import appOrder from './phone/appOrder/appOrder';
 import Agreement from './phone/Agreement/Agreement';
-
 import phone from './phone/phone/phone';
+import homePagePh from './phone/homePagePh/homePagePh';
 const BasicRoute = () => (
     <HashRouter>
         <Switch>
@@ -52,7 +51,7 @@ const BasicRoute = () => (
             <Route exact path="/homePh/untiePhonePh" component={untiePhonePh}/>
             <Route exact path="/homePh/resetPasswordPh" component={resetPasswordPh}/>
             <Route exact path="/homePh/inforSitePh" component={inforSitePh}/>
-            <Route  path="/homePh" component={homePh}/>
+            <Route  path="/homePh" component={homePagePh}/>
             <Route exact path="/appOrder" component={appOrder}/>
             <Route exact path="/phone" component={phone}/>
             <Route exact path="/Agreement" component={Agreement}/>

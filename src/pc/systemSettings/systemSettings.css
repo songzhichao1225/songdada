@@ -64,8 +64,8 @@
 .systemSettings .reset{
     display: block;
     height: 100%;
-    overflow: hidden;
     background-color: #fff;
+    overflow: hidden;
 }
 .systemSettings .resetSon{
     width: 350px;
