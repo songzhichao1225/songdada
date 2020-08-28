@@ -176,7 +176,7 @@ class myWallet extends React.Component {
     } else if (res.data.code === 2000) {
       this.setState({ flag: 1 })
       message.success('提现申请成功')
-      this.getVenueMoneyList({ start: this.state.dateString[0], end: this.state.dateString[1], page: 1 })
+      this.getVenueMoneyList({ start: this.state.dateString[0], end: this.state.dateString[1], page: this.state.page })
     } else {
       message.error(res.data.msg)
     }

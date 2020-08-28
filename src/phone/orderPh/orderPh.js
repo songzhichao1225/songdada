@@ -193,16 +193,7 @@ class orderPh extends React.Component {
       this.setState({
         resData: res.data.data
       })
-
-
-
-
       this.hoode(res.data.data)
-
-
-
-
-
       for (let i in res.data.other) {
         res.data.other[i].dataIndex = res.data.other[i].venueid
         res.data.other[i].title = <div>{res.data.other[i].venueid}<br />{res.data.other[i].title}</div>
@@ -383,6 +374,7 @@ class orderPh extends React.Component {
       this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end, paied: this.state.paied })
     }
   }
+
 
 
   showModal = (e) => {

@@ -38,7 +38,8 @@ class myWalletPh extends React.Component {
     numRadio:0,
     corporateCardId: '',
     corporateOpen: '',
-    legalBaseURL:''
+    legalBaseURL:'',
+    corporateId:''
   };
 
   async getVenueMoney(data) {
@@ -252,7 +253,7 @@ class myWalletPh extends React.Component {
     let {numRadio,legalBaseURL,imgFile,corporateId,imgFileTwo,corporateCardId,corporateOpen,bank_id,province_id,city_id}=this.state
     let data={
       legalBaseURL:numRadio===0?'':legalBaseURL,
-      legalFilesURL: numRadio===0?'':imgFile + '|' + imgFileTwo,
+      legalFilesURL: numRadio===0?'':legalBaseURL===''?'':imgFile + '|' + imgFileTwo,
       Settlement:numRadio,
       Bankaccount: corporateCardId,
       OpeningBank: corporateOpen,

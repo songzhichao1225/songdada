@@ -18,7 +18,7 @@ class loginPhTeo extends React.Component {
   };
 
   componentDidMount() {
-    
+    localStorage.clear()
                 
   }
   corporatePh = () => {

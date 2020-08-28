@@ -2,7 +2,7 @@ import React from 'react';
 import './siteSettings.css';
 import 'antd/dist/antd.css';
 import { getSiteSettingList, addVenueField, getVenueSport, AddSiteSetting, DelSiteSetting, getVenueSportidTitle, DelVenueTitle, SiteSettingDiscountSave, getSiteSettingHistoryList, getVenueNumberTitleFirst, getSiteSettingFirst, getSiteSelectedTitle, DelVenueNumberTitle, getSiteSelectedVenueid, getVenueTitleSave, getVenueNumberTitleSave, getVenueNumberTitleList, DelSiteSettingDiscount } from '../../api';
-import { Select, Row, Col, Modal, DatePicker, Input, message, Pagination, Popconfirm, Divider, Popover, Spin, Drawer,InputNumber } from 'antd';
+import { Select, Row, Col, Modal, DatePicker, Input, message, Pagination, Popconfirm, Divider, Popover, Spin, Drawer, InputNumber } from 'antd';
 import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/zh_CN';
@@ -196,7 +196,7 @@ class siteSettings extends React.Component {
       this.setState({ page: 1 })
       this.getSiteSettingList({ sportid: e, page: 1 })
     } else if (this.state.headerData === '3') {
-      this.setState({pageThree:1})
+      this.setState({ pageThree: 1 })
       this.getSiteSettingHistoryList({ sportid: e, page: 1 })
     }
   }
@@ -373,8 +373,8 @@ class siteSettings extends React.Component {
 
 
   money = e => {
-    this.setState({ costperhour: e})
-    console.log( e)
+    this.setState({ costperhour: e })
+    console.log(e)
   }
   moneyTwo = e => {
     this.setState({ costperhourTwo: e.target.value })
@@ -553,9 +553,9 @@ class siteSettings extends React.Component {
       this.setState({
         runId: res.data.data[0].sportid, tags: res.data.data[0].tags,
         discount_sdate: res.data.data[0].discount_sdate, discount_edate: res.data.data[0].discount_edate, discount_start: res.data.data[0].discount_start,
-        discount_end: res.data.data[0].discount_end, costperhourTwo: res.data.data[0].discount_costperhour === null ? res.data.data[0].costperhour.slice(0,res.data.data[0].costperhour.indexOf('.')) : res.data.data[0].discount_costperhour.slice(0,res.data.data[0].discount_costperhour.indexOf('.')),
+        discount_end: res.data.data[0].discount_end, costperhourTwo: res.data.data[0].discount_costperhour === null ? res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')) : res.data.data[0].discount_costperhour.slice(0, res.data.data[0].discount_costperhour.indexOf('.')),
         runIdTwo: res.data.data[0].sportid, tagsTwo: res.data.data[0].tags, opendayname: attop, openday: res.data.data[0].openday.split(','), starttime: res.data.data[0].starttime,
-        endtime: res.data.data[0].endtime, costperhour: res.data.data[0].costperhour.slice(0,res.data.data[0].costperhour.indexOf('.')), chekedTwo: res.data.data[0].venueid, chekedFour: res.data.data[0].venueid, chekedThree: res.data.data[0].discount_venueid !== null ? res.data.data[0].discount_venueid : res.data.data[0].venueid, chekedTwoLen: res.data.data[0].sitenumber, appointmenttime: res.data.data[0].appointmenttime,
+        endtime: res.data.data[0].endtime, costperhour: res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')), chekedTwo: res.data.data[0].venueid, chekedFour: res.data.data[0].venueid, chekedThree: res.data.data[0].discount_venueid !== null ? res.data.data[0].discount_venueid : res.data.data[0].venueid, chekedTwoLen: res.data.data[0].sitenumber, appointmenttime: res.data.data[0].appointmenttime,
         tagsTwoId: res.data.data[0].tags_id, comment: res.data.data[0].comment, maxScheduledDate: res.data.data[0].maxScheduledDate, runNameTwo: res.data.data[0].sportname, Disid: res.data.data[0].uuid
       })
       if (this.state.runIdTwo !== '') {
@@ -624,7 +624,7 @@ class siteSettings extends React.Component {
         res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周日'
       }
     }
-  
+
     this.setState({ historyArr: res.data.data, otherThree: res.data.other })
   }
 
@@ -946,10 +946,10 @@ class siteSettings extends React.Component {
     if (res.data.code === 2000) {
       message.success('删除成功')
       if (this.state.otherseris % 10 === 1) {
-        this.setState({pageOne:Number(this.state.pageOne) - 1})
+        this.setState({ pageOne: Number(this.state.pageOne) - 1 })
         this.getVenueNumberTitleList({ sportid: this.state.nameChang, page: Number(this.state.pageOne) - 1 })
       } else {
-        this.setState({pageOne:this.state.pageOne})
+        this.setState({ pageOne: this.state.pageOne })
         this.getVenueNumberTitleList({ sportid: this.state.nameChang, page: this.state.pageOne })
       }
 
@@ -985,7 +985,7 @@ class siteSettings extends React.Component {
       // endtime: '',
       typeDetel: 1,
       runIdTwo: '',
-      tags:'',
+      tags: '',
     })
   }
   async getSiteSelectedTitle(data) {
@@ -1027,10 +1027,10 @@ class siteSettings extends React.Component {
     if (res.data.code === 2000) {
       message.success('删除成功')
       if (this.state.other % 10 === 1) {
-         this.setState({page:Number(this.state.page) - 1 })
+        this.setState({ page: Number(this.state.page) - 1 })
         this.getSiteSettingList({ sportid: this.state.nameChang, page: Number(this.state.page) - 1 })
       } else {
-        this.setState({page:Number(this.state.page) })
+        this.setState({ page: Number(this.state.page) })
         this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
       }
 
@@ -1183,7 +1183,13 @@ class siteSettings extends React.Component {
     const res = await DelSiteSettingDiscount(data, sessionStorage.getItem('venue_token'))
 
     if (res.data.code === 2000) {
-      this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
+      if (this.state.list % 10 === 1) {
+        this.setState({ page: Number(this.state.page) - 1 })
+        this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
+      } else {
+        this.setState({ page: this.state.page })
+        this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
+      }
       this.setState({
         Preferential: false
       })
@@ -1331,7 +1337,7 @@ class siteSettings extends React.Component {
                     <Row key={i} className="rowList">
                       <Col xs={{ span: 2 }}>{item.sportname}</Col>
                       <Col xs={{ span: 2 }}>{item.tags}</Col>
-                      <Popover content={(<div style={{maxWidth:'200px',wordBreak:'break-all'}}>{item.venueid}</div>)} title='详情' trigger="click">
+                      <Popover content={(<div style={{ maxWidth: '200px', wordBreak: 'break-all' }}>{item.venueid}</div>)} title='详情' trigger="click">
                         <Col xs={{ span: 2 }} style={{ cursor: 'pointer' }}>{item.venueid}</Col>
                       </Popover>
                       <Col xs={{ span: 2 }}>{item.sitenumber}</Col>
@@ -1382,7 +1388,7 @@ class siteSettings extends React.Component {
                 <Row key={i} style={{ borderBottom: '1px solid #E1E0E1' }}>
                   <Col xs={{ span: 5 }}>{item.sportid}</Col>
                   <Col xs={{ span: 5 }}>{item.title}</Col>
-                  <Popover content={(<div style={{maxWidth:'200px',wordBreak:'break-all'}}>{item.venueid}</div>)} title='详情' trigger="click">
+                  <Popover content={(<div style={{ maxWidth: '200px', wordBreak: 'break-all' }}>{item.venueid}</div>)} title='详情' trigger="click">
                     <Col xs={{ span: 5 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer' }} onClick={this.tooltip}>{item.venueid}</Col>
                   </Popover>
 
@@ -1396,7 +1402,7 @@ class siteSettings extends React.Component {
                       okText="确定"
                       cancelText="取消"
                     >
-                      <img style={{ marginLeft: '5px', cursor: 'pointer'}} onClick={this.deletserisa} data-id={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
+                      <img style={{ marginLeft: '5px', cursor: 'pointer' }} onClick={this.deletserisa} data-id={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
                     </Popconfirm>
                   </Col>
                 </Row>
@@ -1416,7 +1422,7 @@ class siteSettings extends React.Component {
               <Col xs={{ span: 2 }}>场地数量</Col>
               <Col xs={{ span: 2 }}>星期</Col>
               <Col xs={{ span: 2 }}>时间范围</Col>
-              <Col xs={{ span: 2 }}>价格<span style={{fontSize:'12px',color:'#9b9b9b'}}>(元/时)</span></Col>
+              <Col xs={{ span: 2 }}>价格<span style={{ fontSize: '12px', color: '#9b9b9b' }}>(元/时)</span></Col>
               <Popover content={(<span>最长提前预订时间</span>)} title='详情' trigger="click">
                 <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>最长提前预订时间</Col>
               </Popover>
@@ -1435,13 +1441,13 @@ class siteSettings extends React.Component {
                     <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.sportname}</Col>
                   </Popover>
                   <Col xs={{ span: 2 }}>{item.tags}</Col>
-                  <Popover content={(<div style={{maxWidth:'200px',wordBreak:'break-all'}}>{item.venueid}</div>)} title='详情' trigger="click">
+                  <Popover content={(<div style={{ maxWidth: '200px', wordBreak: 'break-all' }}>{item.venueid}</div>)} title='详情' trigger="click">
                     <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.venueid}</Col>
                   </Popover>
                   <Col xs={{ span: 2 }}>{item.sitenumber}</Col>
                   <Popover content={(<span>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</span>)} title='详情' trigger="click">
-                        <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</Col>
-                      </Popover>
+                    <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</Col>
+                  </Popover>
                   <Popover content={(<span>{item.starttime}-{item.endtime}</span>)} title='详情' trigger="click">
                     <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.starttime}-{item.endtime}</Col>
                   </Popover>
@@ -1544,7 +1550,7 @@ class siteSettings extends React.Component {
               </Select>
             </div>
 
-         
+
             <div className="modelList" style={{ height: '32px' }}>
               <span>时间范围</span>
               <Select style={{ width: 128, height: 'auto', marginLeft: 88, float: 'left' }} value={this.state.starttime === '' ? undefined : this.state.starttime} onChange={this.starttime} placeholder="开始时间">
@@ -1558,11 +1564,11 @@ class siteSettings extends React.Component {
                   <Option key={i} value={item.name}>{item.name}</Option>
                 ))}
               </Select>
- </div>
+            </div>
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>价格</span><span>（元/小时）</span>
-              <InputNumber  className="startTime" value={this.state.costperhour} formatter={limitNumber} parser={limitNumber} defaultValue={1} min={1} style={{ height: 32, width: 269, paddingLeft: '11px' }} placeholder="请输入" onChange={this.money} />
+              <InputNumber className="startTime" value={this.state.costperhour} formatter={limitNumber} parser={limitNumber} defaultValue={1} min={1} style={{ height: 32, width: 269, paddingLeft: '11px' }} placeholder="请输入" onChange={this.money} />
             </div>
             <div className="modelList" style={{ height: 32 }}>
               <span>最长提前预订时间</span>
@@ -1787,7 +1793,17 @@ class siteSettings extends React.Component {
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>时间范围</span>
-              <RangePicker disabled={true} style={{ float: 'right', marginRight: 100, width: 330 }} value={[moment(this.state.starttime === '' ? '00:00' : this.state.starttime, 'HH:mm:'), moment(this.state.endtime === '' ? '00:00' : this.state.endtime, 'HH:mm:')]} minuteStep={30} format='HH:mm' locale={locale} onChange={this.handleChangThree} />
+              <Select style={{ width: 159, height: 'auto', marginLeft: 77, float: 'left' }} disabled={true} value={this.state.starttime === '' ? undefined : this.state.starttime} onChange={this.starttime} placeholder="开始时间">
+                {this.state.timer.map((item, i) => (
+                  <Option key={i} value={item.name}>{item.name}</Option>
+                ))}
+              </Select>
+            ~
+            <Select style={{ width: 159, height: 'auto' }} disabled={true} value={this.state.endtime === '' ? undefined : this.state.endtime} onChange={this.endtime} placeholder="结束时间">
+                {this.state.timer.map((item, i) => (
+                  <Option key={i} value={item.name}>{item.name}</Option>
+                ))}
+              </Select>
             </div>
             <div className="modelList" style={{ height: '32px' }} onClick={this.serialTwo}>
               <span>参加优惠的场地号</span>
@@ -1808,7 +1824,7 @@ class siteSettings extends React.Component {
             </div>
             <div className="modelList" style={{ height: '32px' }}>
               <span>优惠后价格</span><span style={{ marginLeft: 0 }}>(元/小时)</span>
-              <Input type="number"  className="startTime" formatter={limitNumber} parser={limitNumber} value={String(this.state.costperhourTwo).replace('.', '')} min={0} style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 100 }} placeholder="请输入" onChange={this.moneyTwo} />
+              <Input type="number" className="startTime" formatter={limitNumber} parser={limitNumber} value={String(this.state.costperhourTwo).replace('.', '')} min={0} style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 100 }} placeholder="请输入" onChange={this.moneyTwo} />
             </div>
 
 

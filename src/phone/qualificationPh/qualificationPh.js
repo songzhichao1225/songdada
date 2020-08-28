@@ -6,7 +6,7 @@ import 'antd-mobile/dist/antd-mobile.css';
 import { Input, Radio, Select } from 'antd';
 import lrz from 'lrz';
 import { LeftOutlined, EllipsisOutlined } from '@ant-design/icons';
-import { getIsStatus, getVenueOpenBankList, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankCity, getIsSignOut, UploadVenueImgsLisenTwo, _code, UploadVenueImgsLisen, getVenueQualified, TemporaryQualificationInformation, VenueQualifications, getVenueQualificationInformation, VenueQualificationInformationSave, getVenueQualifiedCompany } from '../../api';
+import { getIsStatus, getVenueOpenBankList, getVenueOpenBank, getVenueOpenBankProvince,VenueVerifyThatAllAreFilledIn, getVenueOpenBankCity, getIsSignOut, UploadVenueImgsLisenTwo, _code, UploadVenueImgsLisen, getVenueQualified, TemporaryQualificationInformation, VenueQualifications, getVenueQualificationInformation, VenueQualificationInformationSave, getVenueQualifiedCompany } from '../../api';
 const alert = Modal.alert;
 const prompt = Modal.prompt;
 const { Option } = Select;
@@ -216,6 +216,7 @@ class qualificationPh extends React.Component {
       }
 
     }, 3000);
+
   }
 
   handleChange = info => {
@@ -336,56 +337,70 @@ class qualificationPh extends React.Component {
   }
 
 
-  submit = () => {
-    let { siteUUID, filesThreeSon, legalBaseURL, CorporateName,filesSixSon, filesFourSon, filesFiveSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, value, cardId, openingLine } = this.state
+  async VenueVerifyThatAllAreFilledIn(data) {
+    const res = await VenueVerifyThatAllAreFilledIn(data, localStorage.getItem('venue_token'))
+    if(res.data.code===2000){
+      let { siteUUID, filesThreeSon, legalBaseURL, CorporateName,filesSixSon, filesFourSon, filesFiveSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, value, cardId, openingLine } = this.state
 
-    if (sessionStorage.getItem('notType') === '1') {
-      let data = {
-        lisenceURL: filesThreeSon,
-        empowerURL:filesSixSon,
-        legalname: faName,
-        legalcard: value === 0 ? '' : faIdcard,
-        legalphone: faPhone,
-        legalBaseURL: value === 0 ? '' :filesFourSon===''?'':legalBaseURL,
-        legalFilesURL: value === 0 ? '' :filesFourSon===''?'':filesFourSon + '|' + filesFiveSon,
-        CorporateName: CorporateName,
-        Settlement: value,
-        Bankaccount: cardId,
-        OpeningBank: openingLine,
-        Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
-        ProvinceBank: typeof (province_id) !== 'string' ? province_id.join() : province_id,
-        CityBank: typeof (city_id) !== 'string' ? city_id.join() : city_id,
-        type: 1
-      }
-      if (this.state.loading === false) {
-        Toast.loading('图片上传中...', 1);
+      if (sessionStorage.getItem('notType') === '1') {
+        let data = {
+          lisenceURL: filesThreeSon,
+          empowerURL:filesSixSon,
+          legalname: faName,
+          legalcard: value === 0 ? '' : faIdcard,
+          legalphone: faPhone,
+          legalBaseURL: value === 0 ? '' :filesFourSon===''?'':legalBaseURL,
+          legalFilesURL: value === 0 ? '' :filesFourSon===''?'':filesFourSon + '|' + filesFiveSon,
+          CorporateName: CorporateName,
+          Settlement: value,
+          Bankaccount: cardId,
+          OpeningBank: openingLine,
+          Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
+          ProvinceBank: typeof (province_id) !== 'string' ? province_id.join() : province_id,
+          CityBank: typeof (city_id) !== 'string' ? city_id.join() : city_id,
+          type: 1
+        }
+        if (this.state.loading === false) {
+          Toast.loading('图片上传中...', 1);
+        } else {
+          this.VenueQualificationInformationSave(data)
+        }
       } else {
-        this.VenueQualificationInformationSave(data)
+        let data = {
+          siteUUID: siteUUID,
+          lisenceURL: filesThreeSon,
+          empowerURL:filesSixSon,
+          legalname: faName,
+          legalcard: value === 0 ? '' : faIdcard,
+          legalphone: faPhone,
+          legalBaseURL: value === 0 ? '' :filesFourSon===''?'':legalBaseURL,
+          legalFilesURL: value === 0 ? '' :filesFourSon===''?'':filesFourSon + '|' + filesFiveSon,
+          CorporateName: CorporateName,
+          Settlement: value,
+          Bankaccount: cardId,
+          OpeningBank: openingLine,
+          Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
+          ProvinceBank: typeof (province_id) !== 'string' ? province_id.join() : province_id,
+          CityBank: typeof (city_id) !== 'string' ? city_id.join() : city_id,
+        }
+        if (this.state.loading === false) {
+          Toast.loading('图片上传中...', 1);
+        } else {
+          this.VenueQualifications(data)
+        }
       }
-    } else {
-      let data = {
-        siteUUID: siteUUID,
-        lisenceURL: filesThreeSon,
-        empowerURL:filesSixSon,
-        legalname: faName,
-        legalcard: value === 0 ? '' : faIdcard,
-        legalphone: faPhone,
-        legalBaseURL: value === 0 ? '' :filesFourSon===''?'':legalBaseURL,
-        legalFilesURL: value === 0 ? '' :filesFourSon===''?'':filesFourSon + '|' + filesFiveSon,
-        CorporateName: CorporateName,
-        Settlement: value,
-        Bankaccount: cardId,
-        OpeningBank: openingLine,
-        Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
-        ProvinceBank: typeof (province_id) !== 'string' ? province_id.join() : province_id,
-        CityBank: typeof (city_id) !== 'string' ? city_id.join() : city_id,
-      }
-      if (this.state.loading === false) {
-        Toast.loading('图片上传中...', 1);
-      } else {
-        this.VenueQualifications(data)
-      }
+    }else{
+      Toast.fail('请完善基本信息', 1);
+      this.props.history.push('/stadiumInformationPh')
     }
+  }
+
+  
+
+
+  submit = () => {
+    this.VenueVerifyThatAllAreFilledIn()
+    
   }
 
 
@@ -429,8 +444,6 @@ class qualificationPh extends React.Component {
 
     localStorage.setItem('qualifData', JSON.stringify(data))
     this.props.history.push('/stadiumInformationPh')
-
-
   }
 
   closeWeb = () => {

@@ -199,7 +199,7 @@ class phone extends React.Component {
             <li><span>公司产品</span><span>电话：010-80895078</span></li>
             <li><span>公司介绍</span><span>邮编：101016</span></li>
             <li><span>联系我们</span><span>邮编：help@zhaoduishou.com</span></li>
-            <li><span>场馆端登录</span><span>网址：www.zhaoduishou.com</span></li>
+            <li><span>场馆端登录</span><span>网址：www.cg.zhaoduishou.com</span></li>
           </ul>
           <div className="atCop">
             <span>Copyright © 2018 北京甲乙电子商务有限公司  版权所有  </span>

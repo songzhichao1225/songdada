@@ -39,6 +39,9 @@ function beforeUpload(file) {
 }
 
 
+
+
+
 class perfect extends React.Component {
 
   state = {
@@ -384,6 +387,9 @@ class perfect extends React.Component {
     }
   }
 
+  
+
+
   onClickSave = () => {
     if(this.state.click===true){
 
@@ -459,6 +465,7 @@ class perfect extends React.Component {
         <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
       </div>
     )
+
 
    
     return (

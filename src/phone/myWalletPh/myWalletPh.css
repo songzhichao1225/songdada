@@ -107,7 +107,7 @@
     font-size: 0.75rem;
     color: #333;
     display: block;
-    width: 25%;
+    width: 30%;
     float: left;
     text-align: left;
 }
@@ -174,7 +174,7 @@
     float: left;
 }
 .koh .ant-upload-picture-card-wrapper{
-    margin-left: 1.5rem;
+    margin-left: 0.5rem;
 }
 .am-picker-popup-mask{
     z-index: 1005;

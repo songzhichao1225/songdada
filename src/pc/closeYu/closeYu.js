@@ -241,8 +241,10 @@ class closeYu extends React.Component {
       this.setState({ visible: false, update: 0 })
       message.success(res.data.msg)
       if(this.state.other%10===1){
+        this.setState({page:this.state.page-1})
       this.VenueTemporarilyClosedList({ page:Number(this.state.page)-1})
       }else{
+        this.setState({page:this.state.page})
         this.VenueTemporarilyClosedList({ page:this.state.page})
       }
     }

@@ -432,6 +432,9 @@ export function UploadVenueImgsLisenTwo(data){    //上传身份证
 }
 
 
+export function VenueVerifyThatAllAreFilledIn(data,headers){    //验证基本信息是否填写完整  
+    return axios.post('/api/VenueVerifyThatAllAreFilledIn',data,{headers: {'token': headers}})
+}
 
 
 

@@ -127,7 +127,7 @@ class minePh extends React.Component {
 
         <ul className="mineList">
           <li onClick={this.inforSitePh}>
-            <svg width="16px" height="16px" style={{ float: 'left', marginTop: '0.75rem' }} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <svg width="16px" height="16px" style={{ float: 'left', marginTop: '1rem' }} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/设置</title>
               <desc>Created with Sketch.</desc>
               <g id="合作场馆" stroke="none"  fill="none">

@@ -217,6 +217,7 @@ class appOrder extends React.Component {
     let time = e.currentTarget.dataset.time
     let num = e.currentTarget.dataset.num
     let lotime = e.currentTarget.dataset.lo
+
     if (e.currentTarget.dataset.type === '1') {
       if (this.state.lotime.length > 0) {
         if (this.state.lotime.indexOf(lotime) !== -1) {
@@ -227,10 +228,10 @@ class appOrder extends React.Component {
             moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
           }
           this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
-        } else if (this.state.time.indexOf(time) !== -1) {
+        } else if (this.state.time.sort().indexOf(time) !== -1) {
+      
           this.state.lotime.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money)
           this.setState({ lotime: this.state.lotime })
-
           let moneyCall = 0
           for (let i in this.state.lotime) {
             moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
@@ -246,7 +247,7 @@ class appOrder extends React.Component {
     }
     setTimeout(() => {
       this.loodp(this.state.resData)
-    }, 1)
+    }, 100)
   }
 
 
@@ -330,7 +331,6 @@ class appOrder extends React.Component {
   nextDay = e => {
     let myDate = new Date(this.state.date)
     myDate.setDate(myDate.getDate() + 1)
-    console.log(this.state.lotime)
     this.setState({
       date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(),
       lotime: [],

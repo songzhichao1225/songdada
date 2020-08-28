@@ -1,19 +1,11 @@
 import React from 'react';
 import './recordPh.css';
-import ReactDOM from 'react-dom';
-import {  PullToRefresh } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Pagination, Spin } from 'antd';
 import {LeftOutlined} from '@ant-design/icons';
 import { getVenueWithdrawalList } from '../../api';
 
-function genData() {
-  const dataArr = [];
-  for (let i = 0; i < 20; i++) {
-    dataArr.push(i);
-  }
-  return dataArr;
-}
+
 class recordPh extends React.Component {
 
   state = {
@@ -28,20 +20,14 @@ class recordPh extends React.Component {
   };
   async getVenueWithdrawalList(data) {
     const res = await getVenueWithdrawalList(data, localStorage.getItem('venue_token'))
-    
       this.setState({ recordPhList: res.data.data, other: res.data.other.maxcount,maxmoney:res.data.other.maxmoney, spin: false,refreshing:false })
-    
   }
 
 
-
+ 
   componentDidMount() {
     this.getVenueWithdrawalList({ page: 1 })
-    const hei = this.state.height - ReactDOM.findDOMNode(this.ptr).offsetTop;
-    setTimeout(() => this.setState({
-      height: hei,
-      data: genData(),
-    }), 0);
+   
   }
 
   current = (page, pageSize) => {
@@ -66,21 +52,10 @@ class recordPh extends React.Component {
 
         <div className="headTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} /> 提现记录</div>
         <div style={{width:'100%',textAlign:'right',paddingRight:'1rem',height:'3rem',lineHeight:'3rem',background:'rgba(245,245,245,1)'}}>总计:￥{this.state.maxmoney}</div>
-        <div style={this.state.recordPhList.length>0?{height:'85%',overflowY:'auto',paddingBottom:'3rem'}:{display:'none'}}>
+        <div style={this.state.recordPhList.length>0?{height:'83%',overflowY:'auto',paddingBottom:'3rem'}:{display:'none'}}>
    
         
-        <PullToRefresh
-          damping={60}
-          ref={el => this.ptr = el}
-          style={{
-            
-            overflow: 'auto',
-          }}
-          indicator={this.state.down ? {} : { deactivate: '上拉可以刷新' }}
-          direction={this.state.down ? 'down' : 'up'}
-          refreshing={this.state.refreshing}
-          onRefresh={this.refResh}
-        >
+       
           {
             this.state.recordPhList.map((item, i) => (
               <div className="recordSon" key={i}>
@@ -95,9 +70,9 @@ class recordPh extends React.Component {
               </div>
             ))
           }
-        </PullToRefresh>
-        <Pagination className={this.state.recordPhList.length === 0 ? 'hidden' : 'fenye'} hideOnSinglePage={true} showSizeChanger={false} current={this.state.page} onChange={this.current} size='small' defaultCurrent={1} total={this.state.other} />
-        </div>
+           <Pagination className={this.state.recordPhList.length === 0 ? 'hidden' : 'fenye'} hideOnSinglePage={true} showSizeChanger={false} current={this.state.page} onChange={this.current} size='small' defaultCurrent={1} total={this.state.other} />
+      
+       </div>
 
         <Spin spinning={this.state.spin} style={{ width: '100%', marginTop: '45%' }} />
        

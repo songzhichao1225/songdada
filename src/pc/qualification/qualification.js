@@ -1,7 +1,7 @@
 import React from 'react';
 import './qualification.css';
 import 'antd/dist/antd.css';
-import { getIsStatus, VenueQualifications, getVenueOpenBank, getVenueOpenBankProvince, _code, getVenueQualified, getVenueOpenBankCity, getVenueQualifiedCompany, TemporaryQualificationInformation, getVenueOpenBankList, getVenueQualificationInformation, VenueQualificationInformationSave } from '../../api';
+import { getIsStatus, VenueQualifications, getVenueOpenBank, getVenueOpenBankProvince, _code,VenueVerifyThatAllAreFilledIn, getVenueQualified, getVenueOpenBankCity, getVenueQualifiedCompany, TemporaryQualificationInformation, getVenueOpenBankList, getVenueQualificationInformation, VenueQualificationInformationSave } from '../../api';
 import { Input, Radio, Button, Upload, message, Select, Tooltip, Modal } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 const { Option } = Select;
@@ -44,9 +44,12 @@ function beforeUploadTS(file) {
   return isJpgOrPng && isLt2M;
 }
 
+
 message.config({
   top: 300
 })
+
+
 
 class qualification extends React.Component {
 
@@ -404,9 +407,10 @@ class qualification extends React.Component {
   }
 
 
-  submit = () => {
+  async VenueVerifyThatAllAreFilledIn(data) {
+    const res = await VenueVerifyThatAllAreFilledIn(data, sessionStorage.getItem('venue_token'))
+   if(res.data.code===2000){
     let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes,imageResSix, legalBaseURL, imageResT, imageReST, CorporateName, bank_id, province_id, city_id } = this.state
-
     if (this.state.isqult === 0) {
       let data = {
         siteUUID: siteUUID,
@@ -474,6 +478,18 @@ class qualification extends React.Component {
         }
       }
     }
+   }else{
+    message.warning('请完善基本信息');
+    this.props.history.push('/perfect')
+   }
+  }
+
+
+
+  submit = () => {
+    this.VenueVerifyThatAllAreFilledIn()
+
+   
 
 
 
@@ -503,9 +519,7 @@ class qualification extends React.Component {
       flagDis: this.state.flagDis
     }
     sessionStorage.setItem('qualifData', JSON.stringify(data))
-    this.props.history.push('perfect')
-
-
+    this.props.history.push('/perfect')
   }
 
 

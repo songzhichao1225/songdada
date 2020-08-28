@@ -12,6 +12,7 @@
     background-repeat: no-repeat;
 }
 .minePh .headerbanner .headContent{
+    width: 100%;
     margin-left: 0.5rem;
     float: left;
     margin-top: 3rem;
@@ -35,8 +36,10 @@
     margin-left: -3rem;
 }
 .minePh .headerbanner .headContent>.right{
+    width: 72%;
     float: left;
     margin-left: 1rem;
+    overflow: hidden;
 }
 .minePh .headerbanner .headContent>.right>span:first-child{
     font-size:1rem;

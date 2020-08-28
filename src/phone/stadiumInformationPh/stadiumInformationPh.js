@@ -173,6 +173,8 @@ class stadiumInformationPh extends React.Component {
         this.getIsSignOut()
       }
     }, 3000)
+    
+
   }
 
 
@@ -274,10 +276,10 @@ class stadiumInformationPh extends React.Component {
     if (res.data.code === 2000) {
       this.props.history.push('/qualificationPh')
     } else if (res.data.code === 4000) {
-      Toast.fail(res.data.msg, 1);
-      this.props.history.push('/login')
+      Toast.fail(res.data.msg, 1)
+      this.props.history.replace('/login')
     } else {
-      Toast.fail(res.data.msg, 1);
+      Toast.fail(res.data.msg, 1)
     }
   }
   stadiumName = e => {
@@ -448,7 +450,8 @@ class stadiumInformationPh extends React.Component {
 
 
   reture = () => {
-    this.props.history.push('/login')
+    this.props.history.replace('/login')
+    localStorage.clear()
   }
 
   closeWeb = () => {
