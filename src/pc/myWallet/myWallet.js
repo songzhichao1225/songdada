@@ -99,6 +99,10 @@ class myWallet extends React.Component {
     } else if (res.data.data.length < 1) {
       this.setState({ hiddenTwo: false })
     } else {
+       let opank=res.data.data
+       for(let i in opank){
+        opank[i].OpeningBank=opank[i].OpeningBank.slice(0,opank[i].OpeningBank.indexOf('公司')+2)
+       }
       this.setState({ recordList: res.data.data, recordListOther: res.data.other.maxcount, maxmoney: res.data.other.maxmoney, hiddenTwo: true })
     }
   }
@@ -271,7 +275,15 @@ class myWallet extends React.Component {
   async getVenueOpenBankList(data) {
     const res = await getVenueOpenBankList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ backList: res.data.data, flagThree: false })
+      let name=res.data.data
+      let arrName=[]
+      for(let i in name){
+        let obj={}
+        obj.name=name[i].sub_branch_name
+        obj.nameT=name[i].sub_branch_name.slice(name[i].sub_branch_name.indexOf('公司')+2,name[i].sub_branch_name.length)
+        arrName.push(obj)
+      }
+      this.setState({ backList: arrName, flagThree: false })
     }
   }
   async getVenueOpenBankCity(data) {
@@ -558,8 +570,8 @@ class myWallet extends React.Component {
             >
               {
                 this.state.backList.map((item, i) => (
-                  <Option key={i} value={item.sub_branch_name} alt={item.sub_branch_name}>
-                    <span>{item.sub_branch_name}</span>
+                  <Option key={i} value={item.name} alt={item.name}>
+                    <span>{item.nameT}</span>
                   </Option>
                 ))
               }
@@ -575,18 +587,9 @@ class myWallet extends React.Component {
           >
             <Button className="submit">提交</Button>
           </Popconfirm>
-
-
-
-
         </Modal>
-
-
-
-
-
       </div>
-    );
+    )
   }
 }
 

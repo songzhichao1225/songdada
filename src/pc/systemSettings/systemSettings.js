@@ -409,7 +409,7 @@ class systemSettings extends React.Component {
     } else {
       message.error(res.data.msg)
     }
-    this.setState({ bot: false })
+    
   }
 
   subfeed = () => {

@@ -146,10 +146,10 @@ class appOrder extends React.Component {
 
   componentDidMount() {
     //测试数据
-    let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=Tu7JLrn1fNLEriZVYAkfgX7ubnb5Eoxz4OFlXPPkHzzmffIgqgFwZdNMCv1cuxEg&sporttype=5'
-    // let query = this.props.location.search  
-  
-  
+    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=o7iJcobNa5otpb5UWidPn6uzaep7VEC604KLFWQFTWAlGoIbDANY9fWncyI2GkBB&sporttype=5'
+    let query = this.props.location.search  
+
+
     let arr = query.split('&')
     let siteuid = arr[0].slice(9, arr[0].length)
     let sportid = arr[1].slice(8, arr[1].length)
@@ -229,7 +229,7 @@ class appOrder extends React.Component {
           }
           this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
         } else if (this.state.time.sort().indexOf(time) !== -1) {
-      
+
           this.state.lotime.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money)
           this.setState({ lotime: this.state.lotime })
           let moneyCall = 0

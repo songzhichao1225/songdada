@@ -274,7 +274,15 @@ class qualificationPh extends React.Component {
   async getVenueOpenBankList(data) {
     const res = await getVenueOpenBankList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ backList: res.data.data, flagThree: false })
+      let name=res.data.data
+      let arrName=[]
+      for(let i in name){
+        let obj={}
+        obj.name=name[i].sub_branch_name
+        obj.nameT=name[i].sub_branch_name.slice(name[i].sub_branch_name.indexOf('公司')+2,name[i].sub_branch_name.length)
+        arrName.push(obj)
+      }
+      this.setState({ backList: arrName, flagThree: false })
     }
   }
 
@@ -453,12 +461,17 @@ class qualificationPh extends React.Component {
       this.close()
     }
   }
+  
   CorporateName = (e) => {
     if (this.state.flagDis === true && e.target.value === '') {
       localStorage.removeItem('qualifData')
       this.getVenueQualificationInformation()
     }
-    this.setState({ CorporateName: e.target.value })
+    if (e.target.value.indexOf(' ') !== -1) {
+      this.setState({ CorporateName: e.target.value.slice(0, e.target.value.length - 1) })
+    }else{
+      this.setState({ CorporateName: e.target.value })
+    }
   }
 
 
@@ -923,8 +936,8 @@ class qualificationPh extends React.Component {
             >
               {
                 this.state.backList.map((item, i) => (
-                  <Option key={i} value={item.sub_branch_name} alt={item.sub_branch_name}>
-                    <span style={{ fontSize: '0.75rem' }}>{item.sub_branch_name}</span>
+                  <Option key={i} value={item.name} alt={item.name}>
+                    <span style={{ fontSize: '0.75rem' }}>{item.nameT}</span>
                   </Option>
                 ))
               }

@@ -1430,7 +1430,9 @@ class siteSettings extends React.Component {
                 <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>最短提前预订时间</Col>
               </Popover>
               <Col xs={{ span: 1 }}>备注</Col>
-              <Col xs={{ span: 1 }}>打折优惠</Col>
+              <Popover content={(<span>打折优惠</span>)} title='详情' trigger="click">
+              <Col style={{ cursor: 'pointer' }} xs={{ span: 1 }}>打折优惠</Col>
+              </Popover>
               <Col xs={{ span: 1 }}>操作</Col>
               <Col xs={{ span: 2 }}>操作时间</Col>
             </Row>

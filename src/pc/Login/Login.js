@@ -112,7 +112,7 @@ class Login extends React.Component {
             this.props.history.push('/qualification')
           } else if (res.data.data.islegal === 0 || res.data.data.islegal === 2) {
             this.props.history.push('/statusAudits')
-          } else {
+          } else  {
             this.props.history.push('/home')
           }
         }

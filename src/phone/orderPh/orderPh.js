@@ -10,26 +10,26 @@ const prompt = Modal.prompt;
 const alert = Modal.alert;
 
 
-Date.prototype.format = function(fmt) { 
-  var o = { 
-     "M+" : this.getMonth()+1,                 //月份 
-     "d+" : this.getDate(),                    //日 
-     "h+" : this.getHours(),                   //小时 
-     "m+" : this.getMinutes(),                 //分 
-     "s+" : this.getSeconds(),                 //秒 
-     "q+" : Math.floor((this.getMonth()+3)/3), //季度 
-     "S"  : this.getMilliseconds()             //毫秒 
- }; 
- if(/(y+)/.test(fmt)) {
-         fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
- }
-  for(var k in o) {
-     if(new RegExp("("+ k +")").test(fmt)){
-          fmt = fmt.replace(RegExp.$1, (RegExp.$1.length===1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
-      }
+Date.prototype.format = function (fmt) {
+  var o = {
+    "M+": this.getMonth() + 1,                 //月份 
+    "d+": this.getDate(),                    //日 
+    "h+": this.getHours(),                   //小时 
+    "m+": this.getMinutes(),                 //分 
+    "s+": this.getSeconds(),                 //秒 
+    "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+    "S": this.getMilliseconds()             //毫秒 
+  };
+  if (/(y+)/.test(fmt)) {
+    fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
   }
- return fmt; 
-}  
+  for (var k in o) {
+    if (new RegExp("(" + k + ")").test(fmt)) {
+      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    }
+  }
+  return fmt;
+}
 
 
 
@@ -371,7 +371,22 @@ class orderPh extends React.Component {
     if (res.data.code === 2000) {
       Toast.success(res.data.msg, 1);
       this.setState({ visible: false })
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end, paied: this.state.paied })
+
+      let start = this.state.start.format("yyyy-MM-dd").split('-')
+      let end = this.state.end.format("yyyy-MM-dd").split('-')
+      let startT = ''
+      let endT = ''
+      if (start[0].length === 4) {
+        startT = start[0] + '-' + start[1] + '-' + start[2]
+        endT = end[0] + '-' + end[1] + '-' + end[2]
+      } else {
+        startT = start[2] + '-' + start[0] + '-' + start[1]
+        endT = end[2] + '-' + end[0] + '-' + end[1]
+      }
+      this.getReservationActivitieslist({
+        page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '' ? '' : startT,
+        enddate: this.state.end === '' ? '' : endT, paied: this.state.paied
+      })
     }
   }
 
@@ -430,14 +445,14 @@ class orderPh extends React.Component {
     } else if (this.state.end === '') {
       Toast.fail('请选择结束时间', 1)
     } else {
-      let start =this.state.start.format("yyyy-MM-dd").split('-')
+      let start = this.state.start.format("yyyy-MM-dd").split('-')
       let end = this.state.end.format("yyyy-MM-dd").split('-')
       let startT = ''
       let endT = ''
       if (start[0].length === 4) {
         startT = start[0] + '-' + start[1] + '-' + start[2]
         endT = end[0] + '-' + end[1] + '-' + end[2]
-      } else{
+      } else {
         startT = start[2] + '-' + start[0] + '-' + start[1]
         endT = end[2] + '-' + end[0] + '-' + end[1]
       }
@@ -808,17 +823,17 @@ class orderPh extends React.Component {
           <div style={this.state.spin === false && this.state.activeSon.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (5).png')} alt="444" /><span style={{ display: 'block', textAlign: 'center' }}>没有预约活动!</span></div>
         </div>
         <div className={this.state.activityList === false ? 'bookingKanban' : 'hidden'}>
-        <DatePicker
-          mode="date"
-          extra='选择日期'
-          title='选择日期'
-          value={this.state.qiDate}
-          onChange={qiDate => this.setState({ qiDate })}
-          onOk={this.dateChange}
+          <DatePicker
+            mode="date"
+            extra='选择日期'
+            title='选择日期'
+            value={this.state.qiDate}
+            onChange={qiDate => this.setState({ qiDate })}
+            onOk={this.dateChange}
 
-        >
-          <List.Item className="dateT" style={{ fontSize: '14px' }}></List.Item>
-        </DatePicker>
+          >
+            <List.Item className="dateT" style={{ fontSize: '14px' }}></List.Item>
+          </DatePicker>
           <div className="modTitle">
             <span className="blue"></span><span>空闲</span><span className="white"></span><span>不可选</span><span className="yellow"></span><span>线上占用</span><span className="red"></span><span>线下占用</span>
             <br />
@@ -942,7 +957,7 @@ class orderPh extends React.Component {
         </Modal>
 
 
-      
+
 
         <Drawer
           title="该场地详细信息"

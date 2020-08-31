@@ -86,7 +86,6 @@ class stadiumInformationPh extends React.Component {
         }
 
       }
-      console.log(this.props.location.query)
 
       if (this.props.location.query !== undefined) {
         let arrjo = []
@@ -652,13 +651,13 @@ class stadiumInformationPh extends React.Component {
           </div>
 
           <div className="input">
-            <span style={{ lineHeight: '20px' }}>场地照&nbsp;&nbsp;&nbsp;<br />(2-8张)</span>
+            <span style={{ lineHeight: '20px' }}>场地照&nbsp;&nbsp;&nbsp;<br />(2-20张)</span>
             <ImagePicker
               files={filesTwo}
               style={{ float: 'right', width: '75%' }}
               onChange={this.handleChangeT}
               onImageClick={this.previewing}
-              selectable={filesTwo.length < 8}
+              selectable={filesTwo.length < 20}
               length={3}
               multiple={false}
             />

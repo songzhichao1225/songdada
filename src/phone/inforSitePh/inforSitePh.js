@@ -92,7 +92,8 @@ class inforSitePh extends React.Component {
 
       if (this.props.history.location.query !== undefined) {
         this.setState({
-          listSon: res.data.data, sport: res.data.data.sport.split(','), facilities: res.data.data.facilities.split(','), files: [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
+          listSon: res.data.data, sport: res.data.data.sport.split(','), facilities: res.data.data.facilities.split(','),
+           files: [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
           province: this.props.history.location.query.province, city: this.props.history.location.query.city, area: this.props.history.location.query.district,
           cgName: res.data.data.name, address: this.props.history.location.query.adddress, linkMan: res.data.data.linkMan, telephone: res.data.data.telephone, siteInfo: res.data.data.siteInfo,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, comment: res.data.data.siteInfo, lat: this.props.history.location.query.lat, lng: this.props.history.location.query.lng, position: this.props.history.location.query.title, spin: false
@@ -522,7 +523,15 @@ class inforSitePh extends React.Component {
   async getVenueOpenBankList(data) {
     const res = await getVenueOpenBankList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ backList: res.data.data })
+      let name=res.data.data
+      let arrName=[]
+      for(let i in name){
+        let obj={}
+        obj.name=name[i].sub_branch_name
+        obj.nameT=name[i].sub_branch_name.slice(name[i].sub_branch_name.indexOf('公司')+2,name[i].sub_branch_name.length)
+        arrName.push(obj)
+      }
+      this.setState({ backList: arrName})
     }
   }
 
@@ -548,8 +557,8 @@ class inforSitePh extends React.Component {
     } else if (this.state.city_id === '') {
       Toast.fail('请选择银行所在市', 1.5)
     } else {
-      if(typeof(this.state.bank_id) !== 'string'){
-        this.getVenueOpenBankList({ bank_id: this.state.bank_id.join(), province_id: this.state.province_id.join(), city_id: this.state.city_id.join(), search_name: e })
+      if(typeof(this.state.bank_id)!== 'string'){
+        this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
       }else{
         this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
       }
@@ -751,7 +760,11 @@ class inforSitePh extends React.Component {
         <div className="line"></div>
         <div className="basic" style={this.state.spin === false && this.state.flag === 1 ? { display: 'block', overflow: 'scroll', height: '92%' } : { display: 'none' }}>
           <div className="listSon">
-            <span>推广员</span>
+            <span>推广专员</span>
+            <span className="right" style={{ paddingLeft: '11px' }}>{listSon.extenpromote === '' ? '无' : listSon.extenpromote}</span>
+          </div>
+          <div className="listSon">
+            <span>运营专员</span>
             <span className="right" style={{ paddingLeft: '11px' }}>{listSon.promote === '' ? '无' : listSon.promote}</span>
           </div>
           <div className="listSon">
@@ -761,7 +774,7 @@ class inforSitePh extends React.Component {
           <div className="listSon" onClick={this.mapPh} data-position={listSon.position}>
             <span style={{ float: 'left' }}>场馆位置</span>
             <img style={{ float: 'right', width: '0.85rem', marginTop: '0.9rem' }} src={require('../../assets/icon_pc_dingwei.png')} alt="icon" />
-            <Input className="right" style={{ width: '76%' }} value={this.state.position} disabled={true} />
+            <Input className="right" style={{ width: '76%' }} value={this.state.position} disabled={true}/>
           </div>
           <div className="listSon">
             <TextareaItem
@@ -785,7 +798,6 @@ class inforSitePh extends React.Component {
           </div>
           <div className="listSon">
             <span>门脸照</span>
-
             <ImagePicker
               files={files}
               style={{ float: 'right', width: '80%' }}
@@ -795,17 +807,15 @@ class inforSitePh extends React.Component {
               onImageClick={this.previewing}
               multiple={false}
             />
-
-
           </div>
           <div className="listSon">
             <span>场地照片</span>
             <ImagePicker
-              files={filesTwo.slice(0, 8)}
+              files={filesTwo}
               style={{ float: 'right', width: '80%' }}
               onChange={this.handleChangeT}
               onImageClick={this.previewing}
-              selectable={filesTwo.length < 8}
+              selectable={filesTwo.length < 20}
               length={3}
               multiple={false}
             />
@@ -816,24 +826,16 @@ class inforSitePh extends React.Component {
               <Checkbox.Group options={optionsTwo} value={this.state.facilities} onChange={this.onChangeSite} />
             </div>
           </div>
-
-
-
           <div className="listSon">
             <span>场地类型</span>
             <div className="rightLi kop">
               <Checkbox.Group options={options} value={this.state.sport} onChange={this.onChangeCheck} />
             </div>
           </div>
-
-
           <div className="listSon">
             <span>场馆介绍</span>
             <Input className="right" value={this.state.comment} placeholder='场馆介绍如：比赛等' onChange={this.comment} />
           </div>
-
-
-
           <Button className="submit" onClick={() =>
             alert('提示', '您确定本次修改吗?', [
               { text: '取消', onPress: () => console.log('cancel') },
@@ -851,7 +853,7 @@ class inforSitePh extends React.Component {
 
 
         <Spin spinning={this.state.spin} style={{ width: '100%', marginTop: '45%' }} />
-        <div className="qualification" style={this.state.flag === 2 ? { display: 'block' } : { display: 'none' }}>
+        <div className="qualification" style={this.state.flag === 2 ? { display: 'block',height:'90%' } : { display: 'none' }}>
           <div className="listSon">
             <span>公司名称</span>
             <Input className="right" value={this.state.CorporateName} placeholder="请输入公司名称" onChange={this.CorporateName} />
@@ -889,7 +891,7 @@ class inforSitePh extends React.Component {
             <Input className="right" value={this.state.corporateName} placeholder="请输入法人姓名" onChange={this.corporateName} />
           </div>
 
-
+ 
 
           <div className="listSon">
             <span>法人手机号</span>
@@ -912,7 +914,7 @@ class inforSitePh extends React.Component {
 
 
 
-        <div className="qualification" style={this.state.flag === 3 ? { display: 'block' } : { display: 'none' }}>
+        <div className="qualification" style={this.state.flag === 3 ? { display: 'block',height:'90%' } : { display: 'none' }}>
           <div className="listSon">
             <span style={{ float: 'left' }}>结算账号:</span>
             <Radio.Group style={{ float: 'left', fontSize: '0.75rem', marginLeft: '10%' }} onChange={this.numRadio} value={this.state.numRadio}>
@@ -921,37 +923,31 @@ class inforSitePh extends React.Component {
             </Radio.Group>
           </div>
           <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
-            <span>法人身份证号</span>
-            <Input className="right" style={{ width: '60%', paddingLeft: '0.5rem', marginRight: '19%' }} maxLength={18} placeholder="请输入法人身份证号" value={this.state.corporateId} onChange={this.corporateId} />
+            <span style={{float:'left'}}>法人身份证号</span>
+            <Input className="right" style={{ width: '60%', paddingLeft: '0.5rem',float:'left' }} maxLength={18} placeholder="请输入法人身份证号" value={this.state.corporateId} onChange={this.corporateId} />
           </div>
           <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
-            <span>身份证</span>
+            <span style={{float:'left'}}>身份证照</span>
             <ImagePicker
               files={filesFour}
-              style={{ float: 'right', width: '80%' }}
+              style={{ float: 'left', width: '30%',marginLeft:"8%" }}
               onChange={this.handleChangeTwo}
               onImageClick={this.previewing}
               selectable={filesFour.length < 1}
-              length={3}
+              length={1}
               multiple={false}
             />
 
             <ImagePicker
               files={filesFive}
-              style={{ float: 'right', width: '80%' }}
+              style={{ float: 'left', width: '30%' }}
               onChange={this.handleChangeThree}
               onImageClick={this.previewing}
               selectable={filesFive.length < 1}
-              length={3}
+              length={1}
               multiple={false}
             />
-
-
           </div>
-
-
-
-
           <div className="listSon">
             <span>银行账号</span>
             <Input className="right" value={this.state.corporateCardId} placeholder="请输入银行账号" onChange={this.corporateCardId} />
@@ -994,8 +990,8 @@ class inforSitePh extends React.Component {
             >
               {
                 this.state.backList.map((item, i) => (
-                  <Option key={i} value={item.sub_branch_name} alt={item.sub_branch_name}>
-                    <span>{item.sub_branch_name}</span>
+                  <Option key={i} value={item.name} alt={item.name}>
+                    <span style={{fontSize:'12px'}}>{item.nameT}</span>
                   </Option>
                 ))
               }

@@ -33,8 +33,8 @@ class commentPh extends React.Component {
     height: document.documentElement.clientHeight,
     data: [],
     other:0,
-    modal1:false,
-    src:'',
+    imgMasking:'',
+    masking:false,
   }
   async getCommentList(data) {
     const res = await getCommentList(data, localStorage.getItem('venue_token'))
@@ -125,11 +125,14 @@ class commentPh extends React.Component {
       this.getCommentList({ page: this.state.current })
     }, 1000)
   }
-  model1=e=>{
-    this.setState({modal1:true,src:e.currentTarget.dataset.src})
+
+
+  previewing = (e) => {
+    this.setState({imgMasking:e.currentTarget.dataset.src,masking:true})
+    
   }
-  modal1Close=()=>{
-    this.setState({modal1:false})
+  maskingF=()=>{
+    this.setState({masking:false})
   }
   render() {
 
@@ -188,10 +191,9 @@ class commentPh extends React.Component {
                   <div style={item.imgnames.length===0?{display:'none'}:{ display: 'block', clear: 'both' }} className="commentImg">
                    {
                      item.imgnames.map((ko,j)=>(
-                       <img key={j} onTouchStart={this.model1} data-src={"https://app.tiaozhanmeiyitian.com/"+item.imgbaseurl+ko+""} src={"https://app.tiaozhanmeiyitian.com/"+item.imgbaseurl+ko+""} alt="uimg"/>
+                       <img key={j} onClick={this.previewing} data-src={"https://app.tiaozhanmeiyitian.com/"+item.imgbaseurl+ko+""} src={"https://app.tiaozhanmeiyitian.com/"+item.imgbaseurl+ko+""} alt="uimg"/>
                      ))
                    }
-
                   </div>
                   
                   <div className="reply" data-uid={item.uid} style={item.comment_reply!==null?{display:'none'}:{}} onTouchStart={this.showModal}><img src={require("../../assets/icon_pc_comment.png")} alt="回复" /></div>
@@ -200,13 +202,11 @@ class commentPh extends React.Component {
                     <div className="logoImg"><img src={require("../../assets/kefu.png")} alt="场馆端" /></div>
                   <div className="stadiumText"><div style={{wordBreak:'break-all',wordWrap:'break-word'}}>{item.comment_reply}</div><div style={{paddingTop:'0.3rem',display:'block'}}>{item.comment_reply_time}</div></div>
                   </div>
-                  {/* <span className={item.comment_reply !== null ? 'StaiumDate' : 'stadiumNone'}>{item.comment_reply_time}</span> */}
                 </div>
               ))
-
             }
 
-           
+          
 
             <Modal
               visible={this.state.visible}
@@ -225,23 +225,11 @@ class commentPh extends React.Component {
           </div>
 
         </PullToRefresh>
- 
-        <Modal
-          visible={this.state.modal1}
-          transparent
-          onClose={this.modal1Close}
-         
-         
-        >
-        <img style={{width:'100%'}} src={this.state.src} alt="img"/>
-        </Modal>
-
-
-
-
-
+        <div className={this.state.masking===true?'masking':'hidden'} onClick={this.maskingF}>
+          <img src={this.state.imgMasking} alt="img"/>
+        </div>
       </div>
-    );
+    )
   }
 }
 

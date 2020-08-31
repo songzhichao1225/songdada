@@ -27,7 +27,7 @@ class news extends React.Component {
 
   componentDidMount() {
     this.getVenueNewsList({ page: 1 })
-   
+   console.log(666)
   }
 
 
@@ -87,8 +87,13 @@ class news extends React.Component {
       }else{
         this.getVenueIndex()
         this.gerVenueName()
-        this.setState({oneChecked:false,current:this.state.current})
-        this.getVenueNewsList({ page: this.state.current })
+        if(this.state.newsList.length===1){
+          this.setState({oneChecked:false,current:this.state.current-1})
+          this.getVenueNewsList({ page: this.state.current-1 })
+        }else{
+          this.setState({oneChecked:false,current:this.state.current})
+          this.getVenueNewsList({ page: this.state.current })
+        }
       }
     }
   }
@@ -242,7 +247,7 @@ class news extends React.Component {
   render() {
     return (
       <div className="news">
-        <div className="heade"><span>所有消息   </span><span>(共{this.state.sum}条，未读{this.state.isredcount}条)</span><div className="button" onClick={this.sendingMsg}>发消息</div></div>
+        <div className="heade"><span>所有消息   </span><span>(共{this.state.sum}条，未读{sessionStorage.getItem('mess')}条)</span><div className="button" onClick={this.sendingMsg}>发消息</div></div>
         <div className="xiange"></div>
         <div className="content">
           <div className="newsList">

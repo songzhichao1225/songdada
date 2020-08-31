@@ -126,7 +126,6 @@
     font-size: 0.75rem;
     color: #333;
     flex-basis:60%;
-    text-align: left;
 }
 .koh .ant-upload-picture-card-wrapper{
     width: 30%;
@@ -160,7 +159,6 @@
 	float: left;
 	 margin-left: 10%;
 	line-height: 28px;
-    margin-bottom: 40px;
     color: #fff;
     line-height: 3rem;
     font-size: 1rem;

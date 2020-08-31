@@ -1,48 +1,12 @@
 import React from 'react';
 import './qualification.css';
 import 'antd/dist/antd.css';
-import { getIsStatus, VenueQualifications, getVenueOpenBank, getVenueOpenBankProvince, _code,VenueVerifyThatAllAreFilledIn, getVenueQualified, getVenueOpenBankCity, getVenueQualifiedCompany, TemporaryQualificationInformation, getVenueOpenBankList, getVenueQualificationInformation, VenueQualificationInformationSave } from '../../api';
-import { Input, Radio, Button, Upload, message, Select, Tooltip, Modal } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+import {  ImagePicker } from 'antd-mobile';
+import { getIsStatus, VenueQualifications, getVenueOpenBank, getVenueOpenBankProvince, _code,VenueVerifyThatAllAreFilledIn,UploadVenueImgsLisen, getVenueQualified,UploadVenueImgsLisenTwo, getVenueOpenBankCity, getVenueQualifiedCompany, TemporaryQualificationInformation, getVenueOpenBankList, getVenueQualificationInformation, VenueQualificationInformationSave } from '../../api';
+import { Input, Radio, Button, message, Select, Modal } from 'antd';
+import lrz from 'lrz';
 const { Option } = Select;
 
-
-function beforeUpload(file) {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  if (!isJpgOrPng) {
-    message.error('您好图片格式只能是JPG/PNG');
-  }
-  const isLt2M = file.size / 1024 / 1024 < 5;
-  if (!isLt2M) {
-    message.error('请上传小于5MB的图片');
-  }
-  return isJpgOrPng && isLt2M;
-}
-
-
-function beforeUploadT(file) {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  if (!isJpgOrPng) {
-    message.error('您好图片格式只能是JPG/PNG');
-  }
-  const isLt2M = file.size / 1024 / 1024 < 5;
-  if (!isLt2M) {
-    message.error('请上传小于5MB的图片');
-  }
-  return isJpgOrPng && isLt2M;
-}
-
-function beforeUploadTS(file) {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  if (!isJpgOrPng) {
-    message.error('您好图片格式只能是JPG/PNG');
-  }
-  const isLt2M = file.size / 1024 / 1024 < 5;
-  if (!isLt2M) {
-    message.error('请上传小于5MB的图片');
-  }
-  return isJpgOrPng && isLt2M;
-}
 
 
 message.config({
@@ -63,9 +27,6 @@ class qualification extends React.Component {
     siteUUID: '',//场馆Id
     imageRes: '',//营业执照路径
     legalBaseURL: '',//公共路径
-    imageReT: '',//身份证正面
-    imageResT: '',
-    imageResSix:'',
     imageReST: '',//反面
     flag: true,
     flagTwo: true,
@@ -84,7 +45,17 @@ class qualification extends React.Component {
     issite: 0,
     isqult: 0,
     visibleTwo: false,
-    src: ''
+    src: '',
+    filesThree:[],
+    filesThreeSon:'',
+    filesSix:[],
+    filesSixSon:'',
+    filesFour:[],
+    filesFourSon:'',
+    filesFive:[],
+    filesFiveSon:'',
+    imgMasking:'',
+    masking:false,
   };
 
   async getIsStatus(data) {
@@ -130,7 +101,15 @@ class qualification extends React.Component {
   async getVenueOpenBankList(data) {
     const res = await getVenueOpenBankList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ backList: res.data.data, flagThree: false })
+      let name=res.data.data
+      let arrName=[]
+      for(let i in name){
+        let obj={}
+        obj.name=name[i].sub_branch_name
+        obj.nameT=name[i].sub_branch_name.slice(name[i].sub_branch_name.indexOf('公司')+2,name[i].sub_branch_name.length)
+        arrName.push(obj)
+      }
+      this.setState({ backList: arrName })
     }
   }
 
@@ -142,6 +121,27 @@ class qualification extends React.Component {
       sessionStorage.clear()
       message.error('登录超时请重新登录!')
     } else if (res.data.code === 2000) {
+      if (res.data.data.ProvinceBank !== '') {
+        this.getVenueOpenBankCity({ province_id: res.data.data.ProvinceBank })
+      }
+      this.setState({
+        imageUrl: res.data.data.lisenceURL, handleName: res.data.data.legalname, handleCardId: res.data.data.legalcard,
+        filesThree: res.data.data.lisenceURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.lisenceURL }],
+        filesThreeSon: res.data.data.lisenceURL === '' ? '' : res.data.data.lisenceURL,
+        handlePhone: res.data.data.legalphone, Radiovalue: res.data.data.Settlement, handleBankNum: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
+        legalBaseURL: res.data.data.legalBaseURL,
+        filesFiveSon: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[1],
+        filesFive: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1] }],
+        CorporateName: res.data.data.CorporateName,
+        bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
+        filesSix: res.data.data.empowerURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.empowerURL }],
+        filesSixSon: res.data.data.empowerURL === '' ? '' : res.data.data.empowerURL,
+        filesFourSon: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[0],
+        filesFour: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0] }],
+        flagDis:false
+      })
+
+
       if (sessionStorage.getItem('qualifData') === null) {
         if (res.data.data.ProvinceBank !== '') {
           this.getVenueOpenBankCity({ province_id: res.data.data.ProvinceBank })
@@ -166,11 +166,18 @@ class qualification extends React.Component {
         sessionStorage.setItem('qualifData', JSON.stringify(data))
         let lpk = JSON.parse(sessionStorage.getItem('qualifData'))
         this.setState({
-          imageUrl: lpk.lisenceURL, handleName: lpk.legalname, handleCardId: lpk.legalcard, imageRes: lpk.lisenceURL,imageResSix:lpk.empowerURL,
+          imageUrl: lpk.lisenceURL, handleName: lpk.legalname, handleCardId: lpk.legalcard,
+          filesThree: lpk.lisenceURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + lpk.lisenceURL }],
+          filesThreeSon: lpk.lisenceURL === '' ? '' : lpk.lisenceURL,
+          filesSix: lpk.empowerURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + lpk.empowerURL }],
+          filesSixSon: lpk.empowerURL === '' ? '' : lpk.empowerURL,
+          filesFourSon: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[0],
+          filesFour: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + lpk.legalBaseURL + lpk.legalFilesURL.split('|')[0] }],
           handlePhone: lpk.legalphone, Radiovalue: lpk.Settlement, handleBankNum: lpk.Bankaccount, openingLine: lpk.OpeningBank,
           legalBaseURL: lpk.legalBaseURL,
-          imageResT: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[0],
-          imageReST: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[1], CorporateName: lpk.CorporateName,
+          filesFiveSon: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[1],
+          filesFive: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + lpk.legalBaseURL + lpk.legalFilesURL.split('|')[1] }],
+          CorporateName: lpk.CorporateName,
           bank_id: lpk.Banktype, province_id: lpk.ProvinceBank, city_id: lpk.CityBank,
           flagDis:false
         })
@@ -180,11 +187,18 @@ class qualification extends React.Component {
           this.getVenueOpenBankCity({ province_id: lpk.ProvinceBank })
         }
         this.setState({
-          imageUrl: lpk.lisenceURL, handleName: lpk.legalname, handleCardId: lpk.legalcard, imageRes: lpk.lisenceURL,imageResSix:lpk.empowerURL,
+          imageUrl: lpk.lisenceURL, handleName: lpk.legalname, handleCardId: lpk.legalcard, 
+          filesThree: lpk.lisenceURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + lpk.lisenceURL }],
+          filesThreeSon: lpk.lisenceURL === '' ? '' : lpk.lisenceURL,
+          filesSix: lpk.empowerURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + lpk.empowerURL }],
+          filesSixSon: lpk.empowerURL === '' ? '' : lpk.empowerURL,
+          filesFourSon: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[0],
+          filesFour: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + lpk.legalBaseURL + lpk.legalFilesURL.split('|')[0] }],
           handlePhone: lpk.legalphone, Radiovalue: lpk.Settlement, handleBankNum: lpk.Bankaccount, openingLine: lpk.OpeningBank,
           legalBaseURL: lpk.legalBaseURL,
-          imageResT: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[0],
-          imageReST: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[1], CorporateName: lpk.CorporateName,
+          filesFiveSon: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[1],
+          filesFive: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + lpk.legalBaseURL + lpk.legalFilesURL.split('|')[1] }],
+          CorporateName: lpk.CorporateName,
           bank_id: lpk.Banktype, province_id: lpk.ProvinceBank, city_id: lpk.CityBank,
           flagDis: false
         })
@@ -263,107 +277,137 @@ class qualification extends React.Component {
   }
 
 
-  handleChange = info => {
-    if (info.file.status === 'uploading') {
-      this.setState({ loading: false })
-      return
+  async UploadVenueImgsLisen(data) {
+    const res = await UploadVenueImgsLisen(data)
+    if (res.data.code === 2000) {
+      this.setState({ filesThreeSon: res.data.data.baseURL + res.data.data.filesURL, loading: true })
+    } else if (res.data.code === 4004) {
+      message.warning('图片违规请重新上传', 2)
+      this.setState({ filesThree: [], loading: true })
+    } else {
+      this.setState({ filesThree: [], loading: true })
+      message.warning(res.data.msg, 2)
     }
-    if (info.file.status === 'done') {
-      this.setState({ loading: true })
-      if (info.file.response.data.baseURL !== undefined) {
-        this.setState({ imageRes: info.file.response.data.baseURL + info.file.response.data.filesURL })
-      } else {
-        this.setState({ imageRes: 1 })
-      }
-      if (info.file.response.code === 4004) {
-        message.error(info.file.response.msg)
-      } else if (info.file.response.code === 4002) {
-        message.error('上传失败')
-      }
+  }
 
+  handleChangeOne = (files, type, index) => {
+    this.setState({ filesThree: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 7) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.UploadVenueImgsLisen(formdata1)
+          })
+      } else {
+        message.warning('图片超过7M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ filesThreeSon: '' })
     }
-    
+  }
+
+  async UploadVenueImgsLisenSix(data) {
+    const res = await UploadVenueImgsLisen(data)
+    if (res.data.code === 2000) {
+      this.setState({ filesSixSon: res.data.data.baseURL + res.data.data.filesURL, loading: true })
+    } else if (res.data.code === 4004) {
+      message.warning('图片违规请重新上传', 2)
+      this.setState({ filesSix: [], loading: true })
+    } else {
+      this.setState({ filesSix: [], loading: true })
+      message.warning(res.data.msg, 2)
+    }
   }
 
 
-  handleChangeSix = info => {
-    if (info.file.status === 'uploading') {
-      this.setState({ loadingSix: false })
-      return
-    }
-    if (info.file.status === 'done') {
-      this.setState({ loadingSix: true })
-      if (info.file.response.data.baseURL !== undefined) {
-        this.setState({ imageResSix: info.file.response.data.baseURL + info.file.response.data.filesURL })
+  handleChangeSix = (files, type, index) => {
+    this.setState({ filesSix: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 7) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.UploadVenueImgsLisenSix(formdata1)
+          })
       } else {
-        this.setState({ imageResSix: 1 })
+        message.warning('图片超过7M无法上传', 2)
       }
-      if (info.file.response.code === 4004) {
-        message.error(info.file.response.msg)
-      } else if (info.file.response.code === 4002) {
-        message.error('上传失败')
-      }
+    } else if (type === 'remove') {
+      this.setState({ filesSixSon: '' })
     }
-   
+  }
+
+
+  async UploadVenueImgsLisenTwo(data) {
+    const res = await UploadVenueImgsLisenTwo(data)
+    if (res.data.code === 2000) {
+      this.setState({ filesFourSon: res.data.data.filesURL, legalBaseURL: res.data.data.baseURL, loading: true })
+    } else if (res.data.code === 4004) {
+      message.warning('图片违规请重新上传', 2)
+      this.setState({ filesFour: [], loading: true })
+    } else {
+      this.setState({ filesFour: [], loading: true })
+      message.warning(res.data.msg, 2)
+    }
+  }
+
+  handleChangeTwo = (files, type, index) => {
+    this.setState({ filesFour: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 7) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.UploadVenueImgsLisenTwo(formdata1)
+          })
+      } else {
+        message.warning('图片超过7M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ filesFourSon: '', filesFiveSon: '', filesFive: [] })
+    }
+  }
+
+
+  async UploadVenueImgsLisenTwoT(data) {
+    const res = await UploadVenueImgsLisenTwo(data)
+    if (res.data.code === 2000) {
+      this.setState({ filesFiveSon: res.data.data.filesURL, legalBaseURL: res.data.data.baseURL, loading: true })
+    } else if (res.data.code === 4004) {
+      message.warning('图片违规请重新上传', 2)
+      this.setState({ filesFive: [], loading: true })
+    } else {
+      this.setState({ filesFive: [], loading: true })
+      message.warning(res.data.msg, 2)
+    }
   }
 
 
 
-
-
-  handleChangeT = info => {
-    if (info.file.status === 'uploading') {
-      this.setState({ loadingTwo: false })
-      return
-    }
-    if (info.file.status === 'done') {
-      this.setState({ loadingTwo: true })
-      if (info.file.response.data.baseURL !== undefined) {
-        if (this.state.imageResT !== '') {
-          this.setState({ imageResT: info.file.response.data.filesURL, legalBaseURL: info.file.response.data.baseURL, imageReST: '' })
-        } else {
-          this.setState({ imageResT: info.file.response.data.filesURL, legalBaseURL: info.file.response.data.baseURL })
-        }
-
+  handleChangeThree = (files, type, index) => {
+    this.setState({ filesFive: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 7) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.UploadVenueImgsLisenTwoT(formdata1)
+          })
       } else {
-        this.setState({ imageReST: 1 })
+        message.warning('图片超过7M无法上传', 2)
       }
-      if (info.file.response.code === 4004) {
-        message.error(info.file.response.msg)
-      } else if (info.file.response.code === 4002) {
-        message.error('上传失败')
-      }
-
+    } else if (type === 'remove') {
+      this.setState({ filesFiveSon: '', filesFourSon: '', filesFour: [] })
     }
-   
-  }
-
-
-
-
-  handleChangeTS = info => {
-    if (info.file.status === 'uploading') {
-      this.setState({ loadingThree: false })
-      return
-    }
-    if (info.file.status === 'done') {
-      this.setState({ loadingThree: true })
-      if (info.file.response.data.baseURL !== undefined) {
-        if (this.state.imageReST !== '') {
-          this.setState({ imageReST: info.file.response.data.filesURL, legalBaseURL: info.file.response.data.baseURL, imageResT: '' })
-        } else {
-          this.setState({ imageReST: info.file.response.data.filesURL, legalBaseURL: info.file.response.data.baseURL })
-        }
-      } else {
-        this.setState({ imageReST: 1 })
-      }
-      if (info.file.response.code === 4004) {
-        message.error(info.file.response.msg)
-      } else if (info.file.response.code === 4002) {
-        message.error('上传失败')
-      }
-    }
-    
   }
 
 
@@ -410,17 +454,17 @@ class qualification extends React.Component {
   async VenueVerifyThatAllAreFilledIn(data) {
     const res = await VenueVerifyThatAllAreFilledIn(data, sessionStorage.getItem('venue_token'))
    if(res.data.code===2000){
-    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes,imageResSix, legalBaseURL, imageResT, imageReST, CorporateName, bank_id, province_id, city_id } = this.state
+    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine,filesFiveSon, siteUUID, filesThreeSon,  filesSixSon, legalBaseURL, filesFourSon, CorporateName, bank_id, province_id, city_id } = this.state
     if (this.state.isqult === 0) {
       let data = {
         siteUUID: siteUUID,
-        empowerURL:imageResSix,
-        lisenceURL: imageRes,
+        empowerURL:filesSixSon,
+        lisenceURL: filesThreeSon,
         legalname: handleName,
         legalcard: Radiovalue === 0 ? '' : handleCardId,
         legalphone: handlePhone,
-        legalBaseURL: Radiovalue === 0 ? '' : legalBaseURL,
-        legalFilesURL: Radiovalue === 0 ? '' : imageResT + '|' + imageReST,
+        legalBaseURL: Radiovalue === 0 ? '' :filesFourSon===''?'':legalBaseURL,
+        legalFilesURL: Radiovalue === 0 ? '' :filesFourSon===''?'':filesFourSon + '|' + filesFiveSon,
         Settlement: Radiovalue,
         Bankaccount: handleBankNum,
         OpeningBank: openingLine,
@@ -429,30 +473,22 @@ class qualification extends React.Component {
         ProvinceBank: province_id,
         CityBank: city_id
       }
-      if (data.lisenceURL === 1) {
-        message.error('营业执照违规请重新上传');
-      } else if (imageResSix === 1) {
-        message.error('授权书照违规请重新上传');
-      }  else if (imageResT === 1 && Radiovalue === 1) {
-        message.error('身份证正面照违规请重新上传');
-      } else if (imageReST === 1 && Radiovalue === 1) {
-        message.error('身份证反面照违规请重新上传');
-      } else {
+     
         if (this.state.loading === false || this.state.loadingTwo === false || this.state.loadingThree === false||this.state.loadingSix === false) {
           message.warning('图片上传中...');
         } else {
           this.VenueQualifications(data)
         }
-      }
+      
     } else {
       let data = {
-        lisenceURL: imageRes,
-        empowerURL:imageResSix,
+        lisenceURL: filesThreeSon,
+        empowerURL:filesSixSon,
         legalname: handleName,
         legalcard: Radiovalue === 0 ? '' : handleCardId,
         legalphone: handlePhone,
-        legalBaseURL: Radiovalue === 0 ? '' : legalBaseURL,
-        legalFilesURL: Radiovalue === 0 ? '' : imageResT + '|' + imageReST,
+        legalBaseURL: Radiovalue === 0 ? '' :filesFourSon===''?'':legalBaseURL,
+        legalFilesURL: Radiovalue === 0 ? '' :filesFourSon===''?'':filesFourSon + '|' + filesFiveSon,
         Settlement: Radiovalue,
         Bankaccount: handleBankNum,
         OpeningBank: openingLine,
@@ -462,21 +498,13 @@ class qualification extends React.Component {
         CityBank: city_id,
         type: 1
       }
-      if (data.lisenceURL === 1) {
-        message.error('营业执照违规请重新上传');
-      }else if (imageResSix === 1) {
-        message.error('授权书照违规请重新上传');
-      }  else if (imageResT === 1) {
-        message.error('身份证正面照违规请重新上传');
-      } else if (imageReST === 1) {
-        message.error('身份证反面照违规请重新上传');
-      } else {
+      
         if (this.state.loading === false || this.state.loadingTwo === false || this.state.loadingThree === false||this.state.loadingSix === false) {
           message.warning('图片上传中...');
         } else {
           this.VenueQualificationInformationSave(data)
         }
-      }
+      
     }
    }else{
     message.warning('请完善基本信息');
@@ -499,16 +527,16 @@ class qualification extends React.Component {
   }
   stepBack = () => {
 
-    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes,imageResSix, legalBaseURL, imageResT, imageReST, CorporateName, bank_id, province_id, city_id } = this.state
+    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID,filesFiveSon, filesThreeSon,filesSixSon, legalBaseURL, filesFourSon, CorporateName, bank_id, province_id, city_id } = this.state
     let data = {
       siteUUID: siteUUID,
-      lisenceURL: imageRes,
-      empowerURL:imageResSix,
+      lisenceURL: filesThreeSon,
+      empowerURL:filesSixSon,
       legalname: handleName,
       legalcard: Radiovalue === 0 ? '' : handleCardId,
       legalphone: handlePhone,
-      legalBaseURL: Radiovalue === 0 ? '' : legalBaseURL,
-      legalFilesURL: Radiovalue === 0 ? '' : imageResT + '|' + imageReST,
+      legalBaseURL: Radiovalue === 0 ? '' :filesFourSon===''?'':legalBaseURL,
+      legalFilesURL: Radiovalue === 0 ? '' :filesFourSon===''?'':filesFourSon + '|' + filesFiveSon,
       Settlement: Radiovalue,
       Bankaccount: handleBankNum,
       OpeningBank: openingLine,
@@ -527,16 +555,16 @@ class qualification extends React.Component {
     const res = await TemporaryQualificationInformation(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success(res.data.msg)
-      let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes,imageResSix, legalBaseURL, imageResT, imageReST, CorporateName, bank_id, province_id, city_id } = this.state
+      let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID,filesFiveSon, filesThreeSon,filesSixSon, legalBaseURL, filesFourSon, CorporateName, bank_id, province_id, city_id } = this.state
       let data = { 
         siteUUID: siteUUID,
-        lisenceURL: imageRes,
-        empowerURL:imageResSix,
+        lisenceURL: filesThreeSon,
+        empowerURL:filesSixSon,
         legalname: handleName,
         legalcard: Radiovalue === 0 ? '' : handleCardId,
         legalphone: handlePhone,
-        legalBaseURL: Radiovalue === 0 ? '' : legalBaseURL,
-        legalFilesURL: Radiovalue === 0 ? '' : imageResT + '|' + imageReST,
+        legalBaseURL: Radiovalue === 0 ? '' :filesFourSon===''?'':legalBaseURL,
+        legalFilesURL: Radiovalue === 0 ? '' :filesFourSon===''?'':filesFourSon + '|' + filesFiveSon,
         Settlement: Radiovalue,
         Bankaccount: handleBankNum,
         OpeningBank: openingLine,
@@ -551,16 +579,16 @@ class qualification extends React.Component {
     }
   }
   save = () => {
-    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID, imageRes,imageResSix, legalBaseURL, imageResT, imageReST, CorporateName, bank_id, province_id, city_id } = this.state
+    let { handleName, handleCardId, handlePhone, handleBankNum, Radiovalue, openingLine, siteUUID,filesFiveSon, filesThreeSon,filesSixSon, legalBaseURL, filesFourSon, CorporateName, bank_id, province_id, city_id } = this.state
     let data = {
       siteUUID: siteUUID,
-      lisenceURL: imageRes,
-      empowerURL:imageResSix,
+      lisenceURL: filesThreeSon,
+      empowerURL:filesSixSon,
       legalname: handleName,
       legalcard: Radiovalue === 0 ? '' : handleCardId,
       legalphone: handlePhone,
-      legalBaseURL: Radiovalue === 0 ? '' : legalBaseURL,
-      legalFilesURL: Radiovalue === 0 ? '' : imageResT + '|' + imageReST,
+      legalBaseURL: Radiovalue === 0 ? '' :filesFourSon===''?'':legalBaseURL,
+        legalFilesURL: Radiovalue === 0 ? '' :filesFourSon===''?'':filesFourSon + '|' + filesFiveSon,
       Settlement: Radiovalue,
       Bankaccount: handleBankNum,
       OpeningBank: openingLine,
@@ -569,21 +597,13 @@ class qualification extends React.Component {
       ProvinceBank: province_id,
       CityBank: city_id
     }
-    if (data.lisenceURL === 1) {
-      message.warning('营业执照违规请重新上传');
-    }else if (imageResSix === 1) {
-      message.error('授权书照违规请重新上传');
-    }  else if (imageResT === 1) {
-      message.warning('身份证正面照违规请重新上传');
-    } else if (imageReST === 1) {
-      message.warning('身份证反面照违规请重新上传');
-    } else {
+   
       if (this.state.loading === false || this.state.loadingTwo === false || this.state.loadingThree === false||this.state.loadingSix === false) {
         message.warning('图片上传中...');
       } else {
         this.TemporaryQualificationInformation(data)
       }
-    }
+    
   }
 
 
@@ -637,11 +657,17 @@ class qualification extends React.Component {
         this.getVenueOpenBankCity({ province_id: res.data.data.ProvinceBank })
       }
       this.setState({
-        imageUrl: res.data.data.lisenceURL, handleName: res.data.data.legalname, handleCardId: res.data.data.legalcard, imageRes: res.data.data.lisenceURL,
-        imageResSix:res.data.data.empowerURL,
+        imageUrl: res.data.data.lisenceURL, handleName: res.data.data.legalname, handleCardId: res.data.data.legalcard, 
+        filesThree: res.data.data.lisenceURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.lisenceURL }],
+        filesThreeSon: res.data.data.lisenceURL === '' ? '' : res.data.data.lisenceURL,
+        filesSix: res.data.data.empowerURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.empowerURL }],
+        filesSixSon: res.data.data.empowerURL === '' ? '' : res.data.data.empowerURL,
+        filesFourSon: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[0],
+        filesFour: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0] }],
         handlePhone: res.data.data.legalphone, Radiovalue: res.data.data.Settlement, handleBankNum: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank, legalBaseURL: res.data.data.legalBaseURL,
-        imageResT: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[0],
-        imageReST: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[1], CorporateName: res.data.data.CorporateName,
+        filesFiveSon: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[1],
+        filesFive: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1] }],
+        CorporateName: res.data.data.CorporateName,
         bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
         flagDis: false, visible: false
       })
@@ -658,41 +684,20 @@ class qualification extends React.Component {
   srcScale = e => {
     this.setState({ visibleTwo: true, src: e.target.src })
   }
+
+  previewing = (files, index) => {
+    if(this.state.loading===false){
+     message.warning('图片上传中...', 1)
+    }else{
+      this.setState({imgMasking:index[files].url,masking:true})
+    }
+  }
+  maskingF=()=>{
+    this.setState({masking:false})
+  }
   render() {
-    const uploadButton = (
-      <div>
-        {this.state.loading === false ? < LoadingOutlined style={{ fontSize: '20px' }} /> : <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
-        }
-      </div>
-       
-    )
-    const uploadButtonSix = (
-      <div>
-        {this.state.loadingSix === false ? < LoadingOutlined style={{ fontSize: '20px' }} /> : <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
-        }
-      </div>
-       
-    )
-    const { imageRes,imageResSix } = this.state;
-
-    const uploadButtonT = (
-      <div>
-        {this.state.loadingTwo === false ? < LoadingOutlined style={{ fontSize: '20px' }} /> : <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
-        }
-        <div>正面</div>
-      </div>
-    );
-    const { imageResT } = this.state;
-
-    const uploadButtonS = (
-      <div>
-        {this.state.loadingThree === false ? < LoadingOutlined style={{ fontSize: '20px' }} /> : <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
-        }
-        <div>反面</div>
-      </div>
-    )
-    const { imageReST } = this.state;
-
+  
+    const { filesThree,filesSix,filesFour,filesFive } = this.state;
     return (
       <div className="qualification">
         <div className="header">
@@ -723,38 +728,34 @@ class qualification extends React.Component {
               <div className="nameSonTle">
                 <span className="boTitle">营业执照</span><span className="symbol">*</span>
               </div>
-              <Upload
-                name="files"
-                listType="picture-card"
-                className="avatar-uploader addImg"
-                showUploadList={false}
-                action="/api/UploadVenueImgs?type=Venuelisence"
-                beforeUpload={beforeUpload}
-                onChange={this.handleChange}
-                disabled={this.state.flagDis}
-                accept=".jpg, .jpeg, .png"
-              >
-                {imageRes !== 1 && imageRes !== '' ? <img onClick={this.state.flagDis === true ? this.srcScale : this.lpsdgfj} src={'https://app.tiaozhanmeiyitian.com/' + imageRes} width="185px" alt="avatar" style={{position:'absolute',top:-20,left:-30 }} /> : uploadButton}
-              </Upload>
+              <ImagePicker
+              files={filesThree}
+              style={{ float: 'left', width: '15%' }}
+              onChange={this.handleChangeOne}
+              onImageClick={this.previewing}
+              selectable={filesThree.length < 1}
+              length={1}
+              multiple={false}
+              disableDelete={this.state.flagDis}
+            />
+
+
             </div>
 
             <div className="name">
               <div className="nameSonTle">
                 <span className="boTitle">授权书照</span><span className="symbol"></span>
               </div>
-              <Upload
-                name="files"
-                listType="picture-card"
-                className="avatar-uploader addImg"
-                showUploadList={false}
-                action="/api/UploadVenueImgs?type=Venuelisence"
-                beforeUpload={beforeUpload}
-                onChange={this.handleChangeSix}
-                disabled={this.state.flagDis}
-                accept=".jpg, .jpeg, .png"
-              >
-                {imageResSix !== 1 && imageResSix !== '' ? <img onClick={this.state.flagDis === true ? this.srcScale : this.lpsdgfj} src={'https://app.tiaozhanmeiyitian.com/' + imageResSix} width="185px"  alt="avatar" style={{position:'absolute',top:-20,left:-30 }}/> : uploadButtonSix}
-              </Upload>
+              <ImagePicker
+              files={filesSix}
+              style={{ float: 'left', width: '15%' }}
+              onChange={this.handleChangeSix}
+              onImageClick={this.previewing}
+              selectable={filesSix.length < 1}
+              length={1}
+              multiple={false}
+              disableDelete={this.state.flagDis}
+            />
             </div>
 
             <div className="name">
@@ -795,37 +796,27 @@ class qualification extends React.Component {
               <div className="nameSonTle">
                 <span className="boTitle">法人身份证照</span>
               </div>
-              <Upload
-                name="files"
-                listType="picture-card"
-                className="avatar-uploader addImg addimgT"
-                showUploadList={false}
-                action="/api/UploadVenueImgs?type=VenueIdCardImgs"
-                beforeUpload={beforeUploadT}
-                onChange={this.handleChangeT}
-                disabled={this.state.flagDis}
-                accept=".jpg, .jpeg, .png"
-              >
-                {imageResT !== 1 && imageResT !== '' ? <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.legalBaseURL + imageResT} alt="avatar" style={{ maxWidth: '4.5rem', maxHeight: '4.5rem' }} /> : uploadButtonT}
-
-              </Upload>
-              <Upload
-                name="files"
-                listType="picture-card"
-                className="avatar-uploader addImg addimgT"
-                showUploadList={false}
-                action="/api/UploadVenueImgs?type=VenueIdCardImgs"
-                beforeUpload={beforeUploadTS}
-                onChange={this.handleChangeTS}
-                disabled={this.state.flagDis}
-                accept=".jpg, .jpeg, .png"
-              >
-                {imageReST !== 1 && imageReST !== '' ? <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.legalBaseURL + imageReST} alt="avatar" style={{ maxWidth: '4.5rem', maxHeight: '4.5rem' }} /> : uploadButtonS}
-              </Upload>
-
+              <ImagePicker
+              files={filesFour}
+              style={{ float: 'left', width: '15%' }}
+              onChange={this.handleChangeTwo}
+              onImageClick={this.previewing}
+              selectable={filesFour.length < 1}
+              length={1}
+              multiple={false}
+              disableDelete={this.state.flagDis}
+            />
+            <ImagePicker
+              files={filesFive}
+              style={{ float: 'left', width: '15%' }}
+              onChange={this.handleChangeThree}
+              onImageClick={this.previewing}
+              selectable={filesFive.length < 1}
+              length={1}
+              multiple={false}
+              disableDelete={this.state.flagDis}
+            />
             </div>
-
-
             <div className="name">
               <div className="nameSonTle">
                 <span className="boTitle">银行账号</span>
@@ -879,10 +870,10 @@ class qualification extends React.Component {
               >
                 {
                   this.state.backList.map((item, i) => (
-                    <Option key={i} value={item.sub_branch_name} alt={item.sub_branch_name}>
-                      <Tooltip title={item.sub_branch_name}>
-                        <span>{item.sub_branch_name}</span>
-                      </Tooltip>
+                    <Option key={i} value={item.name} alt={item.name}>
+                   
+                        <span>{item.nameT}</span>
+  
                     </Option>
                   ))
 
@@ -914,15 +905,12 @@ class qualification extends React.Component {
           <div style={{ width: '80px', height: '30px', color: '#fff', background: '#F5A623', cursor: 'pointer', clear: 'both', textAlign: 'center', lineHeight: '30px', marginLeft: '90px', marginTop: '120px' }} onClick={this.get}>获取</div>
         </Modal>
 
-        <Modal
-          visible={this.state.visibleTwo}
-          className="mode"
-          width={350}
-          closable={false}
-          onCancel={this.handleCancel}
-        >
-          <img src={this.state.src} style={{ width: '100%' }} alt="img" />
-        </Modal>
+        
+        
+        <div className={this.state.masking === true ? 'masking' : 'hidden'} onClick={this.maskingF}>
+          <img src={this.state.imgMasking} alt="img" />
+        </div>
+
 
 
       </div>

@@ -3,7 +3,7 @@ import './closeYu.css';
 import 'antd/dist/antd.css';
 import { VenueTemporarilyClosedList, VenueTemporarilyClosed, VenueTemporarilyClosedDel, VenueTemporarilyClosedSave, getSetPriceVenueSport, getIsClosedPublic } from '../../api';
 import { message, Modal, Select, DatePicker, Input, Row, Col, Popconfirm, Pagination } from 'antd';
-import {  CloseCircleOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import 'moment/locale/zh-cn';
@@ -39,7 +39,7 @@ class closeYu extends React.Component {
     page: 1,
     update: 0,
     colseuuid: '',
-    textNum:'',
+    textNum: '',
   };
 
 
@@ -78,8 +78,8 @@ class closeYu extends React.Component {
   }
   componentDidMount() {
     this.VenueTemporarilyClosedList()
-   
-   
+
+
     this.getSetPriceVenueSport()
   }
 
@@ -93,17 +93,17 @@ class closeYu extends React.Component {
 
   dateSelect = (e) => {
 
-    let start=""
-    let end=""
-    if(e[0]!==''){
+    let start = ""
+    let end = ""
+    if (e[0] !== '') {
       start = this.timer(e[0]._d)
-    }else{
-      start=null
+    } else {
+      start = null
     }
-     if(e[1]!==''){
-       end = this.timer(e[1]._d)
-    }else{
-      end=null
+    if (e[1] !== '') {
+      end = this.timer(e[1]._d)
+    } else {
+      end = null
     }
     this.setState({ start: start, end: end })
   }
@@ -205,20 +205,20 @@ class closeYu extends React.Component {
     if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登录超时请重新登录!')
-    } else if(res.data.code===2001) {
-      this.setState({textNum:'您确定关闭临时预约吗'})
-    }else{
-      this.setState({textNum:res.data.msg})
+    } else if (res.data.code === 2001) {
+      this.setState({ textNum: '您确定关闭临时预约吗' })
+    } else {
+      this.setState({ textNum: res.data.msg })
     }
   }
 
   modelSubmit = () => {
     let { runId, start, end } = this.state
-    this.getIsClosedPublic({sportid:runId,starttime:start,endtime:end})
+    this.getIsClosedPublic({ sportid: runId, starttime: start, endtime: end })
 
   }
 
-  confirmHood=()=>{
+  confirmHood = () => {
     let { runName, runId, start, end, textArea, colseuuid } = this.state
     if (this.state.update === 0) {
       this.VenueTemporarilyClosed({ sportid: runId, sportname: runName, starttime: start, endtime: end, comment: textArea })
@@ -240,12 +240,12 @@ class closeYu extends React.Component {
     } else {
       this.setState({ visible: false, update: 0 })
       message.success(res.data.msg)
-      if(this.state.other%10===1){
-        this.setState({page:this.state.page-1})
-      this.VenueTemporarilyClosedList({ page:Number(this.state.page)-1})
-      }else{
-        this.setState({page:this.state.page})
-        this.VenueTemporarilyClosedList({ page:this.state.page})
+      if (this.state.other % 10 === 1) {
+        this.setState({ page: this.state.page - 1 })
+        this.VenueTemporarilyClosedList({ page: Number(this.state.page) - 1 })
+      } else {
+        this.setState({ page: this.state.page })
+        this.VenueTemporarilyClosedList({ page: this.state.page })
       }
     }
   }
@@ -279,11 +279,11 @@ class closeYu extends React.Component {
   render() {
     return (
       <div className="closeYu">
-        <div className="headTitle"><span onClick={this.next}>系统设置 > </span><span style={{ color: '#F5A623' }}> 临时关闭预约列表</span> <div className='rightBtn' onClick={this.model}><span>添加</span></div></div>
+        <div className="headTitle"><span onClick={this.next}>系统设置 > </span><span style={{ color: '#F5A623' }}>临时关闭预约列表</span> <div className='rightBtn' onClick={this.model}><span>添加</span></div></div>
         <div style={{ width: '100%', height: '8px', background: '#F5F5F5' }}></div>
         <div style={this.state.closeList.length < 1 ? { display: 'none' } : { display: 'block' }}>
           <Row style={{ borderBottom: '1px solid #E1E0E1' }}>
-            <Col xs={{ span: 5 }}>运动名称</Col>
+            <Col xs={{ span: 5 }}>场地类型</Col>
             <Col xs={{ span: 7 }}>开始时间</Col>
             <Col xs={{ span: 7 }}>结束时间</Col>
             <Col xs={{ span: 5 }}>操作</Col>
@@ -295,9 +295,8 @@ class closeYu extends React.Component {
                 <Col xs={{ span: 7 }}>{item.starttime}</Col>
                 <Col xs={{ span: 7 }}>{item.endtime}</Col>
                 <Col xs={{ span: 5 }}>
-                  {/* <img onClick={this.update} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp; */}
                   <Popconfirm
-                    title={"您确定要解除"+item.sportname+"临时关闭预约吗?"}
+                    title={"您确定要解除" + item.sportname + "临时关闭预约吗?"}
                     onConfirm={this.confirm}
                     onCancel={this.cancel}
                     okText="确定"
@@ -305,15 +304,14 @@ class closeYu extends React.Component {
                   >
                     <img onClick={this.delet} data-uid={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
                   </Popconfirm>
-
                 </Col>
               </Row>
             ))
           }
         </div>
 
-        <Pagination className={this.state.closeList.length > 0 ? 'fenye' : 'hidden'} defaultCurrent={1} hideOnSinglePage={true}  current={this.state.page}  showSizeChanger={false}  total={parseInt(this.state.other)} onChange={this.current} />
-        <div style={this.state.closeList.length < 1 ?{width:'100%'}:{display:'none'}}><img style={{width:84,height:84,display:'block',margin:'84px auto 0'}} src={require('../../assets/xifen (4).png')} alt="icon"/><span style={{display:'block',textAlign:'center'}}>您还没有添加临时关闭预约!</span></div>
+        <Pagination className={this.state.closeList.length > 0 ? 'fenye' : 'hidden'} defaultCurrent={1} hideOnSinglePage={true} current={this.state.page} showSizeChanger={false} total={parseInt(this.state.other)} onChange={this.current} />
+        <div style={this.state.closeList.length < 1 ? { width: '100%' } : { display: 'none' }}><img style={{ width: 84, height: 84, display: 'block', margin: '84px auto 0' }} src={require('../../assets/xifen (4).png')} alt="icon" /><span style={{ display: 'block', textAlign: 'center' }}>您还没有添加临时关闭预约!</span></div>
 
 
         <Modal
@@ -338,12 +336,11 @@ class closeYu extends React.Component {
             <span>选择时间</span>
             <RangePicker
               style={{ width: 350, marginLeft: 15 }}
-              // disabledDate={disabledDate}
               onOk={this.dateSelect}
               locale={locale}
               allowClear={false}
               minuteStep={30}
-              value={[this.state.start===null?'':moment(this.state.start, 'YYYY-MM-DD HH:mm'), this.state.end===null?'':moment(this.state.end, 'YYYY-MM-DD HH:mm')]}
+              value={[this.state.start === null ? '' : moment(this.state.start, 'YYYY-MM-DD HH:mm'), this.state.end === null ? '' : moment(this.state.end, 'YYYY-MM-DD HH:mm')]}
               showTime={{
                 hideDisabledOptions: true,
                 defaultValue: [moment('00:00', 'HH:mm'), moment('23:00', 'HH:mm')],
@@ -364,12 +361,10 @@ class closeYu extends React.Component {
             okText="确定"
             cancelText="取消"
           >
-            <div className="submit" style={{lineHeight:'28px',marginLeft:'70px'}} onClick={this.modelSubmit}>确认</div>
+            <div className="submit" style={{ lineHeight: '28px', marginLeft: '70px' }} onClick={this.modelSubmit}>确认</div>
           </Popconfirm>
         </Modal>
       </div>
-
-
     )
   }
 }

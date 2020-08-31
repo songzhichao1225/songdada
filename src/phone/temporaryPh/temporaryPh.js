@@ -223,7 +223,7 @@ class temporaryPh extends React.Component {
   async VenueTemporarilyClosedDel(data) {
     const res = await VenueTemporarilyClosedDel(data, localStorage.getItem('venue_token'))
     Toast.success(res.data.msg, 1);
-    this.setState({temPage:1})
+    this.setState({ temPage: 1 })
     this.VenueTemporarilyClosedList({ page: 1 })
 
   }
@@ -276,8 +276,7 @@ class temporaryPh extends React.Component {
                 <Col xs={{ span: 6 }} lg={{ span: 6 }}>{item.sportname}</Col>
                 <Col style={{ lineHeight: '1.5rem' }} xs={{ span: 12 }} lg={{ span: 12 }}>{item.starttime}<br />{item.endtime}</Col>
                 <Col xs={{ span: 6 }} lg={{ span: 6 }}>
-                  {/* <img style={{ paddingRight: '0.5rem',width:'1.37rem',height:'1.37rem' }} data-uuid={item.uuid} onClick={this.upload} src={require("../../assets/upLoad.png")} alt='修改' /> */}
-
+                 
                   <Popconfirm
                     title="你确定要删除吗?"
                     onConfirm={this.temDelet}
@@ -292,10 +291,11 @@ class temporaryPh extends React.Component {
             )
             )
           }
+
+          <img className="addList" onClick={this.addYouList} src={require("../../assets/comeOn@2x.png")} alt="添加" />
+          <Pagination className="fenye" defaultCurrent={1} hideOnSinglePage={true} current={this.state.temPage} showSizeChanger={false} style={this.state.VenueTemporarilyClosedList.length < 1 ? { display: 'none' } : {}} size="small" onChange={this.current} total={this.state.total} />
+          <div style={this.state.VenueTemporarilyClosedList.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (4).png')} alt="555" /><span style={{ display: 'block', textAlign: 'center' }}>没有添加临时关闭预约</span></div>
         </div>
-        <img className="addList" onClick={this.addYouList} src={require("../../assets/comeOn@2x.png")} alt="添加" />
-        <Pagination className="fenye" defaultCurrent={1} hideOnSinglePage={true} current={this.state.temPage} showSizeChanger={false} style={this.state.VenueTemporarilyClosedList.length < 1 ? { display: 'none' } : {}} size="small" onChange={this.current} total={this.state.total} />
-        <div style={this.state.VenueTemporarilyClosedList.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (4).png')} alt="555" /><span style={{ display: 'block', textAlign: 'center' }}>没有添加临时关闭预约</span></div>
 
 
         <Drawer
