@@ -1,12 +1,13 @@
 import React from 'react';
 import './myWallet.css';
 import 'antd/dist/antd.css';
-import { getVenueMoneyList, getVenueWithdrawalList, getVenueWithdrawalOneList, VenueWithdrawal, getReceivingBankQualifications, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankList, getVenueOpenBankCity,VenueReceivingBankInformation } from '../../api';
+import { getVenueMoneyList, getVenueWithdrawalList, getVenueWithdrawalOneList, VenueWithdrawal, getReceivingBankQualifications, getVenueMembershipCardConsumptionList, MembershipCollectionAgreeToRefuse, getCompleteMembershipRechargeDetails, getMembershipCollectionDetails, MembershipRechargeAgreeToRefuse, getMembershipRechargeDetails, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankList, getVenueOpenBankCity, VenueReceivingBankInformation } from '../../api';
 import { DatePicker, Row, Col, Pagination, message, Input, Modal, Radio, Upload, Select, Popconfirm, Button } from 'antd';
 import { } from '@ant-design/icons';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 const { Option } = Select;
+const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 function beforeUpload(file) {
@@ -19,7 +20,7 @@ function beforeUpload(file) {
     message.error('图片不能超过5MB!');
   }
   return isJpgOrPng && isLt2M;
-} 
+}
 
 
 
@@ -62,11 +63,20 @@ class myWallet extends React.Component {
     city_id: '',//市id
     backList: [],//获取的银行
     corporateCardId: '',
-    imgFile:'',
-    imgFileTwo:'',
-    corporateId:'',
-    imgHood:'',
-    corporateOpen:'',
+    imgFile: '',
+    imgFileTwo: '',
+    corporateId: '',
+    imgHood: '',
+    corporateOpen: '',
+    flagHead: 0,
+    vipVisible: false,
+    vipList: [],
+    vipNot: '',
+    vipListTwo: [],
+    imgMasking: '',
+    masking: false,
+    chargeDetails: [],
+    chargeDetailsNum: '',
   }
 
   dateChange = (data, dateString) => {
@@ -86,7 +96,7 @@ class myWallet extends React.Component {
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登录超时请重新登录!')
-    } else { 
+    } else {
       this.setState({ moneyList: res.data.data.data, sumMoney: res.data.data.sumMoney, whereMoney: res.data.data.whereMoney, other: parseInt(res.data.data.count), loading: false, hidden: true })
     }
   }
@@ -99,11 +109,43 @@ class myWallet extends React.Component {
     } else if (res.data.data.length < 1) {
       this.setState({ hiddenTwo: false })
     } else {
-       let opank=res.data.data
-       for(let i in opank){
-        opank[i].OpeningBank=opank[i].OpeningBank.slice(0,opank[i].OpeningBank.indexOf('公司')+2)
-       }
+      let opank = res.data.data
+      for (let i in opank) {
+        opank[i].OpeningBank = opank[i].OpeningBank.slice(0, opank[i].OpeningBank.indexOf('公司') + 2)
+      }
       this.setState({ recordList: res.data.data, recordListOther: res.data.other.maxcount, maxmoney: res.data.other.maxmoney, hiddenTwo: true })
+    }
+  }
+
+  async getMembershipRechargeDetails(data) {
+    const res = await getMembershipRechargeDetails(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ vipList: res.data.data })
+    }
+  }
+
+
+  async getMembershipCollectionDetails(data) {
+    const res = await getMembershipCollectionDetails(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ vipListTwo: res.data.data })
+    }
+  }
+
+  async getCompleteMembershipRechargeDetails(data) {
+    const res = await getCompleteMembershipRechargeDetails(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ chargeDetails: res.data.data, chargeDetailsNum: res.data.other })
+    }
+  }
+
+  async getVenueMembershipCardConsumptionList(data) {
+    const res = await getVenueMembershipCardConsumptionList(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ sumptionList: res.data.data })
+    } else if (res.data.code === 4001) {
+      this.props.history.push('/')
+      message.error('登录超时请重新登录!')
     }
   }
 
@@ -115,8 +157,23 @@ class myWallet extends React.Component {
         sessionStorage.setItem('wallet', true)
       }
     }, 50);
+    let myDate = new Date()
+    let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
+    let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
+    this.getVenueMembershipCardConsumptionList({ page: 1, type: 2, startdate: start, enddate: end })
+    console.log(666)
+    this.getCompleteMembershipRechargeDetails()
     this.getVenueOpenBankProvince()
     this.getVenueOpenBank()
+    if (sessionStorage.getItem('ishaverecharge') === '1') {
+      this.setState({ vipVisible: true })
+      this.getMembershipRechargeDetails()
+    } else if (sessionStorage.getItem('ishaverecharge') === '2') {
+      this.setState({ vipVisibleTwo: true })
+      this.getMembershipCollectionDetails()
+    }
+
+   
 
     if (sessionStorage.getItem('incomtime') !== 'null' && sessionStorage.getItem('incomtime') !== null) {
       if (sessionStorage.getItem('incomtime') === '1') {
@@ -129,7 +186,7 @@ class myWallet extends React.Component {
         let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         this.setState({ start: start, end: end, dateString: [start, end], koL: false })
- 
+
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
       }
     } else if (sessionStorage.getItem('incomtime') === 'null') {
@@ -149,9 +206,9 @@ class myWallet extends React.Component {
     this.setState({ flag: 1 })
   }
   withdrawal = () => {
-    
+
     this.getReceivingBankQualifications()
-    
+
   }
 
   moneyFen = (page, pageSize) => {
@@ -199,8 +256,8 @@ class myWallet extends React.Component {
       message.error('登录超时请重新登录!')
     } else if (res.data.code === 2000) {
       this.setState({ flag: 3 })
-    this.getVenueWithdrawalOneList()
-    }else if(res.data.code===4004){
+      this.getVenueWithdrawalOneList()
+    } else if (res.data.code === 4004) {
       message.error(res.data.msg)
     } else {
       this.setState({ visible: true })
@@ -226,10 +283,10 @@ class myWallet extends React.Component {
       return
     }
     if (info.file.status === 'done') {
-      if(this.state.imgFileTwo!==''){
-        this.setState({ imageUrlTwo: info.file.response.data.baseURL + info.file.response.data.filesURL,imageUrlThree:'', imgHood: info.file.response.data.baseURL,imgFile: info.file.response.data.filesURL,imgFileTwo:'' })
-      }else{
-        this.setState({ imageUrlTwo: info.file.response.data.baseURL + info.file.response.data.filesURL, imgHood: info.file.response.data.baseURL,  imgFile: info.file.response.data.filesURL })
+      if (this.state.imgFileTwo !== '') {
+        this.setState({ imageUrlTwo: info.file.response.data.baseURL + info.file.response.data.filesURL, imageUrlThree: '', imgHood: info.file.response.data.baseURL, imgFile: info.file.response.data.filesURL, imgFileTwo: '' })
+      } else {
+        this.setState({ imageUrlTwo: info.file.response.data.baseURL + info.file.response.data.filesURL, imgHood: info.file.response.data.baseURL, imgFile: info.file.response.data.filesURL })
       }
     }
     if (info.file.response.code === 4004) {
@@ -243,12 +300,12 @@ class myWallet extends React.Component {
       return;
     }
     if (info.file.status === 'done') {
-      if(this.state.imageUrlThree!==''){
-        this.setState({ imageUrlThree: info.file.response.data.baseURL + info.file.response.data.filesURL,imageUrlTwo:'', imgHood: info.file.response.data.baseURL, imgFileTwo: info.file.response.data.filesURL,imgFile:'' })
-      }else{
+      if (this.state.imageUrlThree !== '') {
+        this.setState({ imageUrlThree: info.file.response.data.baseURL + info.file.response.data.filesURL, imageUrlTwo: '', imgHood: info.file.response.data.baseURL, imgFileTwo: info.file.response.data.filesURL, imgFile: '' })
+      } else {
         this.setState({ imageUrlThree: info.file.response.data.baseURL + info.file.response.data.filesURL, imgHood: info.file.response.data.baseURL, imgFileTwo: info.file.response.data.filesURL })
       }
-      
+
     }
     if (info.file.response.code === 4004) {
       message.error(info.file.response.msg)
@@ -275,12 +332,12 @@ class myWallet extends React.Component {
   async getVenueOpenBankList(data) {
     const res = await getVenueOpenBankList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      let name=res.data.data
-      let arrName=[]
-      for(let i in name){
-        let obj={}
-        obj.name=name[i].sub_branch_name
-        obj.nameT=name[i].sub_branch_name.slice(name[i].sub_branch_name.indexOf('公司')+2,name[i].sub_branch_name.length)
+      let name = res.data.data
+      let arrName = []
+      for (let i in name) {
+        let obj = {}
+        obj.name = name[i].sub_branch_name
+        obj.nameT = name[i].sub_branch_name.slice(name[i].sub_branch_name.indexOf('公司') + 2, name[i].sub_branch_name.length)
         arrName.push(obj)
       }
       this.setState({ backList: arrName, flagThree: false })
@@ -304,14 +361,14 @@ class myWallet extends React.Component {
   }
 
   typeChange = e => {
-    this.setState({ bank_id: e, province_id: '', city_id: '', corporateOpen: '',backList:[] })
+    this.setState({ bank_id: e, province_id: '', city_id: '', corporateOpen: '', backList: [] })
   }
   provinceChange = e => {
-    this.setState({ province_id: e, city_id: '', corporateOpen: '',backList:[] })
+    this.setState({ province_id: e, city_id: '', corporateOpen: '', backList: [] })
     this.getVenueOpenBankCity({ province_id: e })
   }
   cityChange = e => {
-    this.setState({ city_id: e, corporateOpen: '',backList:[] })
+    this.setState({ city_id: e, corporateOpen: '', backList: [] })
   }
 
   handleSearch = e => {
@@ -327,7 +384,7 @@ class myWallet extends React.Component {
     const res = await VenueReceivingBankInformation(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success('提交成功')
-      this.setState({visible:false})
+      this.setState({ visible: false })
     } else {
       message.error(res.data.msg)
     }
@@ -335,19 +392,19 @@ class myWallet extends React.Component {
 
 
   ziSubmitTwo = () => {
-    let { numRadio, imgHood, imgFile,corporateId, imgFileTwo, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
+    let { numRadio, imgHood, imgFile, corporateId, imgFileTwo, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
     let data = {
-      legalcard:numRadio === 0 ? '' :corporateId,
+      legalcard: numRadio === 0 ? '' : corporateId,
       legalBaseURL: numRadio === 0 ? '' : imgHood,
       legalFilesURL: numRadio === 0 ? '' : imgFile + '|' + imgFileTwo,
       Settlement: numRadio,
       Bankaccount: corporateCardId,
       OpeningBank: corporateOpen,
-      Banktype:bank_id,
-      ProvinceBank:province_id,
-      CityBank:city_id,
+      Banktype: bank_id,
+      ProvinceBank: province_id,
+      CityBank: city_id,
     }
-    
+
     if (numRadio && imgFile === undefined) {
       message.error('图片违规请重新上传')
     } else if (numRadio && imgFileTwo === undefined) {
@@ -356,9 +413,79 @@ class myWallet extends React.Component {
       this.VenueReceivingBankInformation(data)
     }
   }
-  corporateId=e=>{
-    this.setState({corporateId:e.target.value})
+  corporateId = e => {
+    this.setState({ corporateId: e.target.value })
   }
+  flagHead = () => {
+    this.setState({ flagHead: 0 })
+  }
+  flagHeadTwo = () => {
+    this.setState({ flagHead: 1 })
+  }
+  handleCancel = () => {
+    this.setState({ vipVisible: false, vipVisibleTwo: false })
+  }
+  vipNot = e => {
+    this.setState({ vipNot: e.target.value })
+  }
+  async MembershipRechargeAgreeToRefuse(data) {
+    const res = await MembershipRechargeAgreeToRefuse(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      message.success(res.data.msg)
+      this.setState({ vipVisible: false })
+    } else {
+      message.error(res.data.msg)
+    }
+  }
+
+  bukeyi = e => {
+    this.MembershipRechargeAgreeToRefuse({ shipuuid: e.currentTarget.dataset.id, status: 2, remarks: this.state.vipNot })
+  }
+
+
+  async getReceivingBankQualificationsTwo(data) {
+    const res = await getReceivingBankQualifications(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 4001) {
+      this.props.history.push('/')
+      message.error('登录超时请重新登录!')
+    } else if (res.data.code === 2000) {
+      this.MembershipRechargeAgreeToRefuse({ shipuuid: this.state.shipuuid, status: 1, remarks: '' })
+    } else if (res.data.code === 4004) {
+      message.error(res.data.msg)
+    } else {
+      this.setState({ visible: true })
+    }
+  }
+
+  tongyi = e => {
+    this.setState({ shipuuid: e.currentTarget.dataset.id })
+    this.getReceivingBankQualificationsTwo()
+  }
+
+  maskingF = () => {
+    this.setState({ masking: false })
+  }
+  imgMasking = e => {
+    this.setState({ imgMasking: e.currentTarget.dataset.url, masking: true })
+  }
+
+  async MembershipCollectionAgreeToRefuse(data) {
+    const res = await MembershipCollectionAgreeToRefuse(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.getCompleteMembershipRechargeDetails()
+      this.setState({ vipVisibleTwo: false })
+      message.success(res.data.msg)
+    } else {
+      message.error(res.data.msg)
+    }
+  }
+
+
+
+  queren = e => {
+    this.MembershipCollectionAgreeToRefuse({ shipuuid: e.currentTarget.dataset.id })
+  }
+
 
   render() {
     const uploadButtonTwo = (
@@ -368,113 +495,207 @@ class myWallet extends React.Component {
     )
     const uploadButtonThree = (
       <div>
-      <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
-    </div>
+        <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
+      </div>
     )
     const { imageUrlTwo, imageUrlThree } = this.state;
     return (
-      <div style={{ height: '98%' }}>
-        <div className={this.state.flag === 1 ? 'myWallet' : 'myWalletNone'}>
-          <div className="header">
-            <span className="select"></span>
-            <RangePicker
-              placeholder={[this.state.start, this.state.end]}
-              style={{ marginTop: '8px', float: 'left', marginLeft: '10px' }}
-              locale={locale}
-              allowClear={false}
-              onChange={this.dateChange}
-            />
-            <span className="query" style={this.state.kod === 1 ? { display: 'block' } : { display: 'none' }} onClick={this.search}>查询</span>
-            <div className="rightMoney">
-              <span className="sum">钱包余额(元): ￥{this.state.sumMoney} </span>
-              <span className="withdrawal" onClick={this.withdrawal}>申请提现</span>
-              <span className="withdrawal" onClick={this.record}>提现记录</span>
+      <div style={{ height: '98%' }} className="lpkji">
+        <div className="myWalletheaderTop"><div onClick={this.flagHead} style={this.state.flagHead === 0 ? { background: '#F5A623', color: '#fff' } : {}}>会员卡扣费</div><div onClick={this.flagHeadTwo} style={this.state.flagHead === 1 ? { background: '#F5A623', color: '#fff' } : {}}>钱包到账</div></div>
+        <div className="xiange"></div>
+
+        <div style={this.state.flagHead === 1 ? { height: '90%' } : { display: 'none' }}>
+
+          <div className={this.state.flag === 1 ? 'myWallet' : 'myWalletNone'}>
+            <div className="header">
+              <span className="select"></span>
+              <RangePicker
+                placeholder={[this.state.start, this.state.end]}
+                style={{ marginTop: '8px', float: 'left', marginLeft: '27px' }}
+                locale={locale}
+                allowClear={false}
+                onChange={this.dateChange}
+              />
+              <span className="query" style={this.state.kod === 1 ? { display: 'block' } : { display: 'none' }} onClick={this.search}>查询</span>
+              <div className="rightMoney">
+                <span className="sum">钱包余额(元): ￥{this.state.sumMoney} </span>
+                <span className="withdrawal" onClick={this.withdrawal}>申请提现</span>
+                <span className="withdrawal" onClick={this.record}>提现记录</span>
+              </div>
             </div>
+            <div className="xiange"></div>
+            <div className={this.state.moneyList.length !== 0 ? 'listMoney' : 'hidden'} >
+              <Row>
+                <Col className="oneText" xs={{ span: 4 }}>到账时间</Col>
+                <Col xs={{ span: 16 }}>明细</Col>
+                <Col xs={{ span: 4, }}>金额(元)</Col>
+              </Row>
+              <div style={{ position: 'relative' }}>
+                {
+                  this.state.moneyList.map((item, i) => (
+                    <Row key={i} >
+                      <Col className="oneText" xs={{ span: 4 }}>{item.time}</Col>
+                      <Col xs={{ span: 16 }}>{item.public}</Col>
+                      <Col xs={{ span: 4 }}>￥{item.money}</Col>
+                    </Row>
+                  ))
+                }
+                <div className="moneyFoucs">查询期间收入(元)：￥{this.state.whereMoney}</div>
+              </div>
+              <Pagination current={this.state.page} className={this.state.moneyList.length === 0 ? 'myWalletNone' : 'fenye'} hideOnSinglePage={true} showSizeChanger={false} onChange={this.moneyFen} total={this.state.other} />
+            </div>
+            <div style={this.state.moneyList.length !== 0 ? { display: 'none' } : { width: '100%' }}><img style={{ width: 84, height: 84, display: 'block', margin: '84px auto 0' }} src={require('../../assets/xifen (7).png')} alt="icon" /><span style={{ display: 'block', textAlign: 'center' }}>您没有收入记录!</span></div>
+
           </div>
-          <div className="xiange"></div>
-          <div className={this.state.moneyList.length !== 0 ? 'listMoney' : 'hidden'} >
-            <Row>
-              <Col className="oneText" xs={{ span: 4 }}>到账时间</Col>
-              <Col xs={{ span: 16 }}>明细</Col>
-              <Col xs={{ span: 4, }}>金额(元)</Col>
-            </Row>
-            <div style={{ position: 'relative' }}>
+          <div className={this.state.flag === 2 ? 'record myWallet' : 'myWalletNone'}>
+
+            <div className="header">
+              <span className="previousStep" onClick={this.returnN}>钱包到账 ></span><span style={{ color: '#F5A623' }}>提现记录</span>
+              <div style={{ float: 'right', fontSize: '16px', marginRight: '130px', lineHeight: '46px' }}>总计:￥{this.state.maxmoney}</div>
+            </div>
+            <div className="xiange"></div>
+            <div className={this.state.hiddenTwo === true ? '' : 'hidden'} >
+              <Row>
+                <Col className="oneText" xs={{ span: 5 }}>申请时间</Col>
+                <Col xs={{ span: 7, offset: 0 }}>账户名称</Col>
+                <Col xs={{ span: 4, offset: 0 }}>处理时间</Col>
+                <Col xs={{ span: 4, offset: 0 }}>金额</Col>
+                <Col xs={{ span: 4, offset: 0 }}>提现进度</Col>
+              </Row>
               {
-                this.state.moneyList.map((item, i) => (
+                this.state.recordList.map((item, i) => (
                   <Row key={i} >
-                    <Col className="oneText" xs={{ span: 4 }}>{item.time}</Col>
-                    <Col xs={{ span: 16 }}>{item.public}</Col>
-                    <Col xs={{ span: 4 }}>￥{item.money}</Col>
+                    <Col className="oneText" xs={{ span: 5 }}>{item.SubmitDate}</Col>
+                    <Col xs={{ span: 7, offset: 0 }}>{item.OpeningBank}|{'*' + item.BankCard.slice(-4)}|{'*' + item.BankName.slice(-1)}</Col>
+                    <Col xs={{ span: 4, offset: 0 }}>{item.FinishedDate === null ? '---' : item.FinishedDate}</Col>
+                    <Col xs={{ span: 4, offset: 0 }}>￥{item.RequestMoney}</Col>
+                    <Col xs={{ span: 4, offset: 0 }}>{item.status === 1 ? '待处理' : '' || item.status === 2 ? '已处理' : '' || item.status === 3 ? '未通过' : ''}</Col>
                   </Row>
                 ))
               }
-              <div className="moneyFoucs">查询期间收入(元)：￥{this.state.whereMoney}</div>
             </div>
-            <Pagination current={this.state.page} className={this.state.moneyList.length === 0 ? 'myWalletNone' : 'fenye'} hideOnSinglePage={true} showSizeChanger={false} onChange={this.moneyFen} total={this.state.other} />
+            <Pagination className={this.state.hiddenTwo === true ? 'fenye' : 'hidden'} current={this.state.pageOne} showSizeChanger={false} hideOnSinglePage={true} onChange={this.recordListOther} total={this.state.recordListOther === '' ? 0 : this.state.recordListOther} />
+            <div style={this.state.hiddenTwo === true ? { display: 'none' } : { width: '100%' }}><img style={{ width: 84, height: 84, display: 'block', margin: '84px auto 0' }} src={require('../../assets/xifen (8).png')} alt="icon" /><span style={{ display: 'block', textAlign: 'center' }}>您还没有提现记录!</span></div>
           </div>
-          <div style={this.state.moneyList.length !== 0 ? { display: 'none' } : { width: '100%' }}><img style={{ width: 84, height: 84, display: 'block', margin: '84px auto 0' }} src={require('../../assets/xifen (7).png')} alt="icon" /><span style={{ display: 'block', textAlign: 'center' }}>您没有收入记录!</span></div>
+          <div className={this.state.flag === 3 ? 'withdrawal myWallet' : 'myWalletNone'}>
 
-        </div>
-        <div className={this.state.flag === 2 ? 'record myWallet' : 'myWalletNone'}>
-
-          <div className="header">
-            <span className="previousStep" onClick={this.returnN}>我的钱包 ></span><span style={{ color: '#F5A623' }}>提现记录</span>
-            <div style={{ float: 'right', fontSize: '16px', marginRight: '130px', lineHeight: '46px' }}>总计:￥{this.state.maxmoney}</div>
-          </div>
-          <div className="xiange"></div>
-          <div className={this.state.hiddenTwo === true ? '' : 'hidden'} >
-            <Row>
-              <Col className="oneText" xs={{ span: 5 }}>申请时间</Col>
-              <Col xs={{ span: 7, offset: 0 }}>账户名称</Col>
-              <Col xs={{ span: 4, offset: 0 }}>处理时间</Col>
-              <Col xs={{ span: 4, offset: 0 }}>金额</Col>
-              <Col xs={{ span: 4, offset: 0 }}>提现进度</Col>
-            </Row>
-            {
-              this.state.recordList.map((item, i) => (
-                <Row key={i} >
-                  <Col className="oneText" xs={{ span: 5 }}>{item.SubmitDate}</Col>
-                  <Col xs={{ span: 7, offset: 0 }}>{item.OpeningBank}|{'*' + item.BankCard.slice(-4)}|{'*' + item.BankName.slice(-1)}</Col>
-                  <Col xs={{ span: 4, offset: 0 }}>{item.FinishedDate === null ? '---' : item.FinishedDate}</Col>
-                  <Col xs={{ span: 4, offset: 0 }}>￥{item.RequestMoney}</Col>
-                  <Col xs={{ span: 4, offset: 0 }}>{item.status === 1 ? '待处理' : '' || item.status === 2 ? '已处理' : '' || item.status === 3 ? '未通过' : ''}</Col>
-                </Row>
-              ))
-            }
-          </div>
-          <Pagination className={this.state.hiddenTwo === true ? 'fenye' : 'hidden'} current={this.state.pageOne} showSizeChanger={false} hideOnSinglePage={true} onChange={this.recordListOther} total={this.state.recordListOther === '' ? 0 : this.state.recordListOther} />
-          <div style={this.state.hiddenTwo === true ? { display: 'none' } : { width: '100%' }}><img style={{ width: 84, height: 84, display: 'block', margin: '84px auto 0' }} src={require('../../assets/xifen (8).png')} alt="icon" /><span style={{ display: 'block', textAlign: 'center' }}>您还没有提现记录!</span></div>
-        </div>
-        <div className={this.state.flag === 3 ? 'withdrawal myWallet' : 'myWalletNone'}>
-
-          <div className="header">
-            <span className="previousStep" onClick={this.returnN}>我的钱包> </span><span>提现</span>
-          </div>
-          <div className="xiange"></div>
-          <div className="balance">
-            <span>钱包余额</span> <span>{this.state.walletList.money}</span><span>元</span>
-          </div>
-          <div className="home">
-            <span style={{ marginLeft: -15 }}>提现银行卡:</span><span className="textNext">{'******' + this.state.walletList.Bankaccount} {this.state.walletList.OpeningBank}</span>
-            <div className="listSon">
-              <span>提现金额:</span>
-              <Input className="input" onChange={this.allNow} value={this.state.moneyYuan} />&nbsp;&nbsp;&nbsp;元
+            <div className="header">
+              <span className="previousStep" onClick={this.returnN}>钱包到账> </span><span>提现</span>
+            </div>
+            <div className="xiange"></div>
+            <div className="balance">
+              <span>钱包余额</span> <span>{this.state.walletList.money}</span><span>元</span>
+            </div>
+            <div className="home">
+              <span style={{ marginLeft: -15 }}>提现银行卡:</span><span className="textNext">{'******' + this.state.walletList.Bankaccount} {this.state.walletList.OpeningBank}</span>
+              <div className="listSon">
+                <span>提现金额:</span>
+                <Input className="input" onChange={this.allNow} value={this.state.moneyYuan} />&nbsp;&nbsp;&nbsp;元
               <span className="all" onClick={this.all}>全部提现</span>
+              </div>
+              <div className="listSon">
+                <span>到账时间:</span>
+                <span className="textNext">预计 2-3 个工作日到账</span>
+              </div>
+              <div className="listSon">
+                <span>提现时间:</span>
+                <span className="textNext">每月1号、15号</span>
+              </div>
+              <div className="comfir" onClick={this.comfir}>确定</div>
             </div>
-            <div className="listSon">
-              <span>到账时间:</span>
-              <span className="textNext">预计 2-3 个工作日到账</span>
+          </div>
+        </div>
+
+        <div className="vipContent" style={this.state.flagHead === 0 ? {} : { display: 'none' }}>
+
+          <div className="content">
+            <div style={this.state.chargeDetails.length === 0 ? { display: 'none' } : {}}>
+              <div className="backVip">
+                <span className="h1">会员卡信息</span>
+                <span className="h2">北京甲乙电子商务有限公司(找对手平台)</span>
+                <span className="h2" style={this.state.chargeDetails.cardnumber === '' ? { display: 'none' } : {}}>卡号：{this.state.chargeDetails.cardnumber}</span>
+                <span className="h1" style={{ textAlign: 'right', paddingRight: '6px' }}>当前余额：¥{this.state.chargeDetailsNum}</span>
+              </div>
+              <div className="backVipTwo" style={this.state.chargeDetails.cardJustURL === '' ? { display: 'none' } : {}}>
+                <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.chargeDetails.cardJustURL} alt="img" />
+              </div>
+              <div className="backVipTwo" style={this.state.chargeDetails.cardBackURL === '' ? { display: 'none' } : {}}>
+                <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.chargeDetails.cardBackURL} alt="img" />
+              </div>
             </div>
-            <div className="listSon">
-              <span>提现时间:</span>
-              <span className="textNext">每月1号、15号</span>
+            <div style={this.state.chargeDetails.length === 0 ? { textAlign: 'center', padding: '20px 0' } : { display: 'none' }}>暂无会员卡</div>
+            <div className="textContent">
+              <div className="head">
+                <span className="title">会员卡明细</span>
+                <span className="rightText">支出</span>
+                <span className="rightText">收入</span>
+                <span className="query" style={this.state.kod === 1 ? { display: 'block' } : { display: 'none' }} onClick={this.search}>查询</span>
+                <RangePicker
+                  placeholder={[this.state.start, this.state.end]}
+                  style={{ float: 'right', }}
+                  locale={locale}
+                  allowClear={false}
+                  onChange={this.dateChange}
+                />
+              </div>
+
+              <div>
+                <Row style={{ borderTop: '1px solid #e1e0e1' }}>
+                  <Col xs={{ span: 6 }} style={{ textAlign: 'left' }}>时间</Col>
+                  <Col xs={{ span: 6, offset: 0 }}>明细</Col>
+                  <Col xs={{ span: 6, offset: 0 }}>类型</Col>
+                  <Col xs={{ span: 6, offset: 0 }}>金额</Col>
+                </Row>
+                {
+                  this.state.recordList.map((item, i) => (
+                    <Row key={i} >
+                      <Col className="oneText" xs={{ span: 5 }}>{item.SubmitDate}</Col>
+                      <Col xs={{ span: 7, offset: 0 }}>{item.OpeningBank}|{'*' + item.BankCard.slice(-4)}|{'*' + item.BankName.slice(-1)}</Col>
+                      <Col xs={{ span: 4, offset: 0 }}>{item.FinishedDate === null ? '---' : item.FinishedDate}</Col>
+                      <Col xs={{ span: 4, offset: 0 }}>￥{item.RequestMoney}</Col>
+                    </Row>
+                  ))
+                }
+
+
+              </div>
             </div>
-            <div className="comfir" onClick={this.comfir}>确定</div>
+
+
+
           </div>
 
-
-
         </div>
+
+        <Modal
+          title="会员卡充值确认"
+          visible={this.state.vipVisible}
+          onOk={this.handleOk}
+          className="mode"
+          onCancel={this.handleCancel}
+        >
+          <p><span className="vipLeft">持卡人</span>北京甲乙电子商务有限公司(找对手平台)</p>
+          <p><span className="vipLeft">会员卡余额</span>￥{this.state.vipList.balance}</p>
+          <p><span className="vipLeft">计划充值金额</span>￥{this.state.vipList.PlanRecharge}</p>
+          <p><span className="vipLeft">需赠送金额</span>￥{this.state.vipList.givemoney}</p>
+          <TextArea rows={4} maxLength={100} onChange={this.vipNot} placeholder="请填写拒绝原因" style={{ background: '#F3F3F3' }} />
+          <div className="vipFooter"><span onClick={this.bukeyi} data-id={this.state.vipList.uuid}>拒绝</span><span onClick={this.tongyi} data-id={this.state.vipList.uuid}>同意</span></div>
+        </Modal>
+
+
+        <Modal
+          title="汇款凭证信息"
+          visible={this.state.vipVisibleTwo}
+          onOk={this.handleOk}
+          className="mode"
+          onCancel={this.handleCancel}
+        >
+          <p><span className="vipLeft">持卡人</span>北京甲乙电子商务有限公司(找对手平台)</p>
+          <p><span className="vipLeft">充值金额</span>￥{this.state.vipListTwo.PlanRecharge}</p>
+          <p><span className="vipLeft">需赠送金额</span>￥{this.state.vipListTwo.givemoney}</p>
+          <p><span className="vipLeft" style={{ color: '#F5A623', cursor: 'pointer' }} data-url={this.state.vipListTwo.RemittanceURL} onClick={this.imgMasking}>查看凭证</span></p>
+          <p className="vipFooter"><span data-id={this.state.vipListTwo.uuid} onClick={this.queren}>确认</span></p>
+        </Modal>
 
         <Modal
           title="添加场馆收款信息"
@@ -490,11 +711,11 @@ class myWallet extends React.Component {
               <Radio value={1}>法人账号</Radio>
             </Radio.Group>
           </div>
-           
-          <div className="listing" style={this.state.numRadio===0?{display:'none'}:{}}>
-              <span>法人身份证号:</span>
-              <Input className="listingInput" value={this.state.corporateId} placeholder="请输入法人身份证号" maxLength={18} onChange={this.corporateId} />
-            </div>
+
+          <div className="listing" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
+            <span>法人身份证号:</span>
+            <Input className="listingInput" value={this.state.corporateId} placeholder="请输入法人身份证号" maxLength={18} onChange={this.corporateId} />
+          </div>
 
           <div className="listing" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
             <span>身份证照:</span>
@@ -565,7 +786,7 @@ class myWallet extends React.Component {
               defaultActiveFirstOption={false}
               showArrow={false}
               notFoundContent={null}
-              value={this.state.corporateOpen===''?null:this.state.corporateOpen}
+              value={this.state.corporateOpen === '' ? null : this.state.corporateOpen}
               placeholder="请输入支行关键字"
             >
               {
@@ -588,6 +809,10 @@ class myWallet extends React.Component {
             <Button className="submit">提交</Button>
           </Popconfirm>
         </Modal>
+
+        <div className={this.state.masking === true ? 'masking' : 'hidden'} onClick={this.maskingF}>
+          <img src={this.state.imgMasking} alt="img" />
+        </div>
       </div>
     )
   }

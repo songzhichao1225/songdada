@@ -374,7 +374,9 @@
     margin-right: 0;
 } 
 
-
+.model .ant-modal-footer{
+    display: none;
+ }
 
 
 .lookFir .ant-select-selection__placeholder, .ant-select-search__field__placeholder{

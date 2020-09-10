@@ -48,7 +48,7 @@ class moneyDetailPh extends React.Component {
          <div className="list"><div className="listSon"><span>备</span><span>注</span></div><span className="value">场地费</span></div>
          <span className="content">活动&nbsp;&nbsp;&nbsp;&nbsp;{this.state.public[0]}<br/>场地类型:{this.state.public[2]}{this.state.public[3]}<br/>活动时间:{this.state.public[1]}</span>
       </div>
-    );
+    )
   }
 }
 

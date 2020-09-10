@@ -725,14 +725,15 @@ class information extends React.Component {
           <div style={this.state.menu === 1 ? { display: 'block' } : { display: 'none' }}>
             {this.state.otherObj}
           </div>
-
         </Drawer>
+
 
 
         <Modal
           title="请输入线下预订人的相关信息"
           visible={this.state.info}
           onOk={this.handleOk}
+          className="mode"
           onCancel={this.handleCancel}
           closeIcon={<CloseCircleOutlined style={{color:'#fff',fontSize:'20px'}} />}
         >
@@ -772,7 +773,7 @@ class information extends React.Component {
                 <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>处理时间:</span>{item.date}</div>
               </div>
             ))
-          } 
+          }
         </Drawer>
 
 

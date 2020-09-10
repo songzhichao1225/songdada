@@ -185,20 +185,29 @@ class inforSitePh extends React.Component {
   handleChange = (files, type, index) => {
     this.setState({ files })
     if (type === 'add') {
-      if (files[0].file.size / 1024 / 1024 < 7) {
-        lrz(files[0].url, { quality: 0.5 })
-          .then((rst) => {
-            this.setState({ loading: false })
-            let formdata1 = new FormData();
-            formdata1.append('files', rst.file);
-            this.UploadVenueImgs(formdata1)
-          })
-      } else {
-        Toast.fail('图片超过7M无法上传', 2)
+      if(files[0].file.name.indexOf('gif')===-1){
+        if (files[0].file.size / 1024 / 1024 < 7) {
+          lrz(files[0].url, { quality: 0.5 })
+            .then((rst) => {
+              this.setState({ loading: false })
+              let formdata1 = new FormData()
+              formdata1.append('files', rst.file);
+              this.UploadVenueImgs(formdata1)
+            })
+        } else {
+          Toast.fail('图片超过7M无法上传', 2)
+        }
+
+      }else{
+        this.setState({ files:[] })
+        Toast.fail('请上传png/jpg/jpeg类型图片', 2)
       }
-    } else if (type === 'remove') {
-      this.setState({ filesSon: '' })
-    }
+
+      } else if (type === 'remove') {
+        this.setState({ filesSon: '' })
+      }
+      
+    
 
 
   }
@@ -821,7 +830,7 @@ class inforSitePh extends React.Component {
             />
           </div>
           <div className="listSon">
-            <span>场地设施</span>
+            <span>场馆设施</span>
             <div className="rightLi">
               <Checkbox.Group options={optionsTwo} value={this.state.facilities} onChange={this.onChangeSite} />
             </div>
@@ -836,7 +845,7 @@ class inforSitePh extends React.Component {
             <span>场馆介绍</span>
             <Input className="right" value={this.state.comment} placeholder='场馆介绍如：比赛等' onChange={this.comment} />
           </div>
-          <Button className="submit" onClick={() =>
+          <Button className="submit" onTouchStart={() =>
             alert('提示', '您确定本次修改吗?', [
               { text: '取消', onPress: () => console.log('cancel') },
               {
@@ -898,7 +907,7 @@ class inforSitePh extends React.Component {
             <Input className="right" value={this.state.corporatePhone} placeholder="请输入法人手机号" onChange={this.corporatePhone} />
           </div>
 
-          <Button className="submit" onClick={() =>
+          <Button className="submit" onTouchStart={() =>
             alert('提示', '您确定本次修改吗?', [
               { text: '取消', onPress: () => console.log('cancel') },
               {
@@ -999,7 +1008,7 @@ class inforSitePh extends React.Component {
           </div>
 
 
-          <Button className="submit" onClick={() =>
+          <Button className="submit" onTouchStart={() =>
             alert('提示', '您确定本次修改吗?', [
               { text: '取消', onPress: () => console.log('cancel') },
               {

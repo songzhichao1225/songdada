@@ -126,7 +126,7 @@ class minePh extends React.Component {
 
 
         <ul className="mineList">
-          <li onClick={this.inforSitePh}>
+          <li onTouchStart={this.inforSitePh}>
             <svg width="16px" height="16px" style={{ float: 'left', marginTop: '1rem' }} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/设置</title>
               <desc>Created with Sketch.</desc>
@@ -174,7 +174,7 @@ class minePh extends React.Component {
               <desc>Created with Sketch.</desc>
               <g id="合作场馆" stroke="none"  fill="none">
                 <g id="53-|-我的" transform="translate(-14.000000, -367.000000)" fill="#D85D27">
-                  <g id="2" transform="translate(1.000000, 349.000000)">
+                  <g id="2" transform="translate(1.000000,349.000000)">
                     <g id="编组-3" transform="translate(12.000000, 0.000000)">
                       <g id="表单/输入框/右箭头" transform="translate(0.000000, 16.000000)">
                         <g id="编组-2">

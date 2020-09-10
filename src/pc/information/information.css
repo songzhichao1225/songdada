@@ -23,6 +23,9 @@
 .orderList .navTab Button:last-child{
     margin-left: 27px;
 }
+.model .ant-modal-footer{
+    display: none;
+ }
 .colorGo{
     color: #fff;
     background: #F5A623;

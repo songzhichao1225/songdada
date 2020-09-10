@@ -972,9 +972,9 @@ class sitePh extends React.Component {
     return (
       <div className="sitePh">
         <div className="header">
-          <div onClick={this.header} data-index='1' style={this.state.index === '1' ? { color: '#D85D27' } : {}}>场地细分<div style={this.state.index === '1' ? { width: '10%', height: '2px', background: '#D85D27', margin: '-3px auto 0' } : { display: 'none' }}></div></div>
-          <div onClick={this.header} data-index='2' style={this.state.index === '2' ? { color: '#D85D27' } : {}}>价格设置<div style={this.state.index === '2' ? { width: '10%', height: '2px', background: '#D85D27', margin: '-3px auto 0' } : { display: 'none' }}></div></div>
-          <div onClick={this.header} data-index='3' style={this.state.index === '3' ? { color: '#D85D27' } : {}}>历史设置<div style={this.state.index === '3' ? { width: '10%', height: '2px', background: '#D85D27', margin: '-3px auto 0' } : { display: 'none' }}></div></div>
+          <div onTouchStart={this.header} data-index='1' style={this.state.index === '1' ? { color: '#D85D27' } : {}}>场地细分<div style={this.state.index === '1' ? { width: '10%', height: '2px', background: '#D85D27', margin: '-3px auto 0' } : { display: 'none' }}></div></div>
+          <div onTouchStart={this.header} data-index='2' style={this.state.index === '2' ? { color: '#D85D27' } : {}}>价格设置<div style={this.state.index === '2' ? { width: '10%', height: '2px', background: '#D85D27', margin: '-3px auto 0' } : { display: 'none' }}></div></div>
+          <div onTouchStart={this.header} data-index='3' style={this.state.index === '3' ? { color: '#D85D27' } : {}}>历史设置<div style={this.state.index === '3' ? { width: '10%', height: '2px', background: '#D85D27', margin: '-3px auto 0' } : { display: 'none' }}></div></div>
         </div>
         <div className="wsMa4" style={this.state.index === '1' ? {} : { display: 'none' }}>
           <div className="Subdivide">
@@ -1008,7 +1008,7 @@ class sitePh extends React.Component {
             >
               <div><img src={require('../../assets/shai.png')} alt="img" />筛选：<span style={{ color: '#000' }}>{this.state.sportArr[this.state.asyncValue].label}</span></div>
             </Picker>
-            <div style={{ marginLeft: '4%' }} onClick={this.visibleXi}>+添加场地细分</div>
+            <div style={{ marginLeft: '4%' }} onTouchStart={this.visibleXi}>+添加场地细分</div>
           </div>
         </div>
 
@@ -1052,7 +1052,7 @@ class sitePh extends React.Component {
             >
               <div><img src={require('../../assets/shai.png')} alt="img" />筛选：<span style={{ color: '#000' }}>{this.state.sportArr[this.state.asyncValueTwo].label}</span></div>
             </Picker>
-            <div style={{ marginLeft: '4%' }} onClick={this.Price}>+添加价格设置</div>
+            <div style={{ marginLeft: '4%' }} onTouchStart={this.Price}>+添加价格设置</div>
           </div>
         </div>
 
@@ -1121,7 +1121,7 @@ class sitePh extends React.Component {
           <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} onClick={this.state.upData === 1 ? '' : this.visibleTitle} extra={this.state.idxTitleTwo} style={{ borderBottom: '1px solid #E9E9E9' }}>细分标签</List.Item>
           <List.Item arrow="horizontal" onClick={this.Serial} extra={this.state.chekedArr.length === 0 ? '请选择' : this.state.chekedArr.join(',')} style={{ borderBottom: '1px solid #E9E9E9' }}>场地编号</List.Item>
           <List.Item arrow="empty" extra={this.state.chekedArr.length} style={{ borderBottom: '1px solid #E9E9E9' }}>场地数量</List.Item>
-          <div className="btnSub" onClick={this.xifenPush}>提交</div>
+          <div className="btnSub" onTouchStart={this.xifenPush}>提交</div>
         </Drawer>
 
 
@@ -1144,7 +1144,7 @@ class sitePh extends React.Component {
               <span onClick={this.joinTitle}>+新增自定义标签</span>
             </div>
             {/* <div className="btnDetle" style={this.state.titleDetle === true ? { background: '#e9e9e9', color: '#000' } : { background: '#D85D27' }} onClick={this.titleDetle}>{this.state.titleDetle === true ? '取消' : '删除'}</div><span style={{ lineHeight: '1.75rem', fontSize: '0.6rem', color: '#ccc', display: 'block', float: 'left', marginTop: '0.5rem', marginLeft: '0.3rem' }}>(长按某一个标签选择删除)</span> */}
-            <div className="btnComfir" onClick={this.btnComfir}>确定</div>
+            <div className="btnComfir" onTouchStart={this.btnComfir}>确定</div>
 
           </div>
         </Drawer>
@@ -1162,7 +1162,7 @@ class sitePh extends React.Component {
             <div className="titleHead">
               <InputItem style={{ fontSize: '0.75rem' }} maxLength={5} placeholder-style={{ fontSize: '0.75rem' }} onChange={this.joinTitleC} placeholder="新增标签最多输入5个字符"></InputItem>
             </div>
-            <div className="btnComfir" onClick={this.joinTitleTwo}>确定</div>
+            <div className="btnComfir" onTouchStart={this.joinTitleTwo}>确定</div>
 
           </div>
         </Drawer>
@@ -1189,7 +1189,7 @@ class sitePh extends React.Component {
               ))
             }
           </div>
-          <div className="sitePhFooter" onClick={this.koNumArr}>确定</div>
+          <div className="sitePhFooter" onTouchStart={this.koNumArr}>确定</div>
         </Drawer>
 
 
@@ -1376,7 +1376,7 @@ class sitePh extends React.Component {
               ))
             }
           </div>
-          <div className="sitePhFooter" onClick={this.koNumArrSiscount}>确定</div>
+          <div className="sitePhFooter" onTouchStart={this.koNumArrSiscount}>确定</div>
         </Drawer>
 
 

@@ -237,8 +237,8 @@ class newsPh extends React.Component {
     return (
       <div className="newsPh">
         <div className="newsheaderTitle">
-          <div onClick={this.receive} style={this.state.flag === 1 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>我收到的</div>
-          <div onClick={this.publish} style={this.state.flag === 2 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>我发送的</div>
+          <div onTouchStart={this.receive} style={this.state.flag === 1 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>我收到的</div>
+          <div onTouchStart={this.publish} style={this.state.flag === 2 ? { color: '#D85D27', borderBottom: '0.12rem solid #D85D27' } : {}}>我发送的</div>
         </div>
         <div className='headSelect' style={this.state.spinFlag === true ? { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' } : { display: 'none' }} > <LoadingOutlined className='loadingY' style={{ top: this.state.clenTop / 7 }} /></div>
         <div className="receive" style={this.state.flag === 1 ? { display: 'block' } : { display: 'none' }} >

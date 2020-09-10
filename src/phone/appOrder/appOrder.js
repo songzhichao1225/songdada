@@ -38,6 +38,7 @@ class appOrder extends React.Component {
     resData: '',
     touchMove: 1,
     touchEnd: 1,
+    otherNum:'',
   };
 
 
@@ -84,10 +85,10 @@ class appOrder extends React.Component {
 
       this.loodp(this.state.resData)
 
-      for (let i in res.data.other) {
-        res.data.other[i].dataIndex = res.data.other[i].venueid
-        res.data.other[i].title = <div style={{ textAlign: 'center' }}>{res.data.other[i].venueid}<br />{res.data.other[i].title}</div>
-        res.data.other[i].width = 80
+      for (let i in res.data.other.bq) {
+        res.data.other.bq[i].dataIndex = res.data.other.bq[i].venueid
+        res.data.other.bq[i].title = <div style={{ textAlign: 'center' }}>{res.data.other.bq[i].venueid}<br />{res.data.other.bq[i].title}</div>
+        res.data.other.bq[i].width = 80
       }
       let ploboj = {
         title: <div>场地号<br />标签</div>,
@@ -95,8 +96,8 @@ class appOrder extends React.Component {
         width: 80,
         dataIndex: 'lppd',
       }
-      res.data.other.unshift(ploboj)
-      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c, otherType: res.data.other, value: 'l', spinningTwo: false, loadingTwo: false, animating: false })
+      res.data.other.bq.unshift(ploboj)
+      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c, otherType: res.data.other.bq,otherNum:res.data.other.zq, value: 'l', spinningTwo: false, loadingTwo: false, animating: false })
 
 
     } else {
@@ -146,7 +147,7 @@ class appOrder extends React.Component {
 
   componentDidMount() {
     //测试数据
-    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=o7iJcobNa5otpb5UWidPn6uzaep7VEC604KLFWQFTWAlGoIbDANY9fWncyI2GkBB&sporttype=5'
+    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=ifMQE9gdvgBJmcXKykRW8QYdQUuuTQfR58OwFRqztJFeRvWmIB8rqufHb73uxDYj&sporttype=5'
     let query = this.props.location.search  
 
 
@@ -302,6 +303,7 @@ class appOrder extends React.Component {
           placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
           placeDate: Number(this.state.date.split('/')[0]) > 500 ? this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2] : this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1],
           placeMoney: this.state.moneyCall,
+          placeMoneyTwo:this.state.moneyCall/Number(this.state.otherNum),
           placeTimeLen: (time.split(',').length - 1) * 0.5 + '小时'
         }
 

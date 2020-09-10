@@ -657,11 +657,11 @@ class appointmentList extends React.Component {
           <div className="informDrawer">
             <span>项目名称：</span>
             <span>{this.state.informList.length > 0 ? this.state.informList[0].SportName : ''}</span>
-          </div>
+          </div>   
           <div className="informDrawer">
             <span>开始时间：</span>
             <span>{this.state.informList.length > 0 ? this.state.informList[0].StartTime : ''}</span>
-          </div>
+          </div> 
           <div className="informDrawer">
             <span>结束时间：</span>
             <span>{this.state.informList.length > 0 ? this.state.informList[0].FinishedTime : ''}</span>
@@ -710,10 +710,9 @@ class appointmentList extends React.Component {
               }
             </div>
           </div>
-          <div style={this.state.menu === 1 ? { display: 'block' } : { display: 'none' }}>
+          <div style={this.state.menu=== 1 ? { display: 'block' } : { display: 'none' }}>
             {this.state.otherObj}
           </div>
-
         </Drawer>
 
 
@@ -760,8 +759,9 @@ class appointmentList extends React.Component {
                 <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>处理时间:</span>{item.date}</div>
               </div>
             ))
-          } 
+          }
         </Drawer>
+
 
 
       </div>

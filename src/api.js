@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-
+// axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';
+// axios.defaults.withCredentials = true
 
 export function _login(data){    //登录
     return axios.post('/api/getVenueLogin',data)
@@ -131,7 +132,7 @@ export function getVenueMoney(data,headers){    //我的钱包余额
 export function getVenueWithdrawalList(data,headers){    //提现记录列表
     return axios.post('/api/getVenueWithdrawalList',data, {headers: {'token': headers}})
 }
-
+  
 export function getCommentList(data,headers){    //用户对该场馆的评价列
     return axios.post('/api/getCommentList',data, {headers: {'token': headers}})
 }
@@ -435,6 +436,32 @@ export function UploadVenueImgsLisenTwo(data){    //上传身份证
 export function VenueVerifyThatAllAreFilledIn(data,headers){    //验证基本信息是否填写完整  
     return axios.post('/api/VenueVerifyThatAllAreFilledIn',data,{headers: {'token': headers}})
 }
+
+export function getMembershipRechargeDetails(data,headers){    //场馆端~会员卡弹窗中，获取正在对该场馆发起的会员卡充值详情
+    return axios.post('/api/getMembershipRechargeDetails',data,{headers: {'token': headers}})
+}
+
+export function MembershipRechargeAgreeToRefuse(data,headers){    //场馆端~会员卡弹窗中，场馆端进行会员卡充值的确认与拒绝
+    return axios.post('/api/MembershipRechargeAgreeToRefuse',data,{headers: {'token': headers}})
+}
+
+export function getMembershipCollectionDetails(data,headers){    //场馆端~获取正在对该场馆的汇款凭证信息,待确认收款 
+    return axios.post('/api/getMembershipCollectionDetails',data,{headers: {'token': headers}})
+}
+
+export function getCompleteMembershipRechargeDetails(data,headers){    //场馆端~获取该场馆会员卡的完整详情
+    return axios.post('/api/getCompleteMembershipRechargeDetails',data,{headers: {'token': headers}})
+}
+
+export function MembershipCollectionAgreeToRefuse(data,headers){    //场馆端~财务汇款后，待场馆端进行收款的确认（点击确认按钮）
+    return axios.post('/api/MembershipCollectionAgreeToRefuse',data,{headers: {'token': headers}})
+}
+
+export function getVenueMembershipCardConsumptionList(data,headers){    //场馆端~会员卡的收入与支出列表
+    return axios.post('/api/getVenueMembershipCardConsumptionList',data,{headers: {'token': headers}})
+}
+
+
 
 
 

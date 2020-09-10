@@ -345,7 +345,7 @@ class stadiumInformationPh extends React.Component {
       } else if (onChangeRun.length === 0) {
         Toast.fail('请选择场地类型', 1)
       } else if (onChangeCheck.length === 0 || onChangeCheck === ',,,') {
-        Toast.fail('请选择场地设施', 1)
+        Toast.fail('请选择场馆设施', 1)
       } else if (textKo === '') {
         Toast.fail('请输入场馆介绍', 1)
       } else {
@@ -400,7 +400,7 @@ class stadiumInformationPh extends React.Component {
       } else if (onChangeRun.length === 0) {
         Toast.fail('请选择场地类型', 1)
       } else if (onChangeCheck.length === 0 || onChangeCheck === ',,,') {
-        Toast.fail('请选择场地设施', 1)
+        Toast.fail('请选择场馆设施', 1)
       } else if (textKo === '') {
         Toast.fail('请输入场馆介绍', 1)
       } else {
@@ -669,7 +669,7 @@ class stadiumInformationPh extends React.Component {
           </div>
 
           <div className="input">
-            <span>场地设施</span>
+            <span>场馆设施</span>
             <Checkbox.Group options={options} style={{ fontSize: '0.75rem' }} value={this.state.onChangeCheck} onChange={this.onChangeCheck} /><br /><span className="kong"></span>
           </div>
 
@@ -678,12 +678,9 @@ class stadiumInformationPh extends React.Component {
             <TextArea rows={3} maxLength={200} onChange={this.textKo} style={{ padding: '0', width: '63%', marginLeft: '10%', fontSize: '0.75rem' }} value={this.state.textKo} placeholder="请输入场馆介绍，如场馆规模、特色等。" />
           </div>
           <div className="footerBtn">
-            <div onClick={this.SaveInfor}>保存</div>
-            <div onClick={this.next}>下一步</div>
-
+            <div onTouchStart={this.SaveInfor}>保存</div>
+            <div onTouchStart={this.next}>下一步</div>
           </div>
-
-
         </div>
         <div className={this.state.masking===true?'masking':'hidden'} onClick={this.maskingF}>
           <img src={this.state.imgMasking} alt="img"/>

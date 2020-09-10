@@ -267,7 +267,7 @@ class perfect extends React.Component {
       } else if (data.sport === '' || data.sport === '0') {
         message.warning('请选择场地类型')
       } else if (data.facilities === '' || data.facilities === ',,,') {
-        message.warning('请选择至少一项场地设施')
+        message.warning('请选择至少一项场馆设施')
       } else {
         if (this.state.loading === false) {
           message.warning('图片上传中...')
@@ -316,7 +316,7 @@ class perfect extends React.Component {
       } else if (data.sport === '' || data.sport === '0') {
         message.warning('请选择场地类型')
       } else if (data.facilities === '' || data.facilities === ',,,') {
-        message.warning('请选择至少一项场地设施')
+        message.warning('请选择至少一项场馆设施')
       } else {
         if (this.state.loading === false) {
           message.warning('图片上传中...')
@@ -496,7 +496,7 @@ class perfect extends React.Component {
 
 
             <div className="name" >
-              <span className="symbol">*</span><span className="boTitle">场地设施</span><span className="kong"></span>
+              <span className="symbol">*</span><span className="boTitle">场馆设施</span><span className="kong"></span>
               <Checkbox.Group options={options} onChange={this.onChangeSite} value={this.state.onChangeSite} />
             </div>
 

@@ -437,7 +437,7 @@ class stadiums extends React.Component {
       if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(contacts) === false) {
         message.error('联系人只允许输入文字/字母')
       } else if (facilities.length === 0) {
-        message.error('请至少选择一项场地设施');
+        message.error('请至少选择一项场馆设施');
       } else {
         if (this.state.loading === false) {
           message.warning('图片上传中...')
@@ -780,7 +780,7 @@ class stadiums extends React.Component {
               <Checkbox.Group style={{ float: 'left', width: '50%', marginLeft: '26.8px' }} className="chekkoh" options={this.state.plainOptions} value={this.state.sport} onChange={this.onChangeCheck} /><br /><span className="kong"></span>
             </div>
             <div className="name">
-              <span className="boTitle">场地设施:</span><span className="kong"></span>
+              <span className="boTitle">场馆设施:</span><span className="kong"></span>
               <Checkbox.Group options={options} value={this.state.facilities} onChange={this.onChangeSite}/>
             </div>
 

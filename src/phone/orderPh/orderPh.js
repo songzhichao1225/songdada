@@ -776,8 +776,8 @@ class orderPh extends React.Component {
     return (
       <div className="orderPh">
         <div className="headerNav">
-          <div onClick={this.activityList} style={this.state.activityList === true ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>预约活动列表</div>
-          <div onClick={this.bookingKanban} style={this.state.activityList === false ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>场地预约情况</div>
+          <div onTouchStart={this.activityList} style={this.state.activityList === true ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>预约活动列表</div>
+          <div onTouchStart={this.bookingKanban} style={this.state.activityList === false ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>场地预约情况</div>
         </div>
         <div className='headSelect' style={this.state.spinFlag === false ? { display: 'none' } : { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' }} ><LoadingOutlined className='loadingY' style={{ top: this.state.clenTop / 4 }} /></div>
 
@@ -926,8 +926,8 @@ class orderPh extends React.Component {
             </div>
           </div>
           <div className="drawerBtn">
-            <div onClick={this.onClose}>取消</div>
-            <div onClick={this.submitVal}>确定</div>
+            <div onTouchStart={this.onClose}>取消</div>
+            <div onTouchStart={this.submitVal}>确定</div>
           </div>
         </Drawer>
 

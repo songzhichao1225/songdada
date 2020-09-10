@@ -804,9 +804,8 @@ class qualificationPh extends React.Component {
 
           <div className="input">
             <span>公司名称</span>
-            <span className="lkpoji" style={{ float: 'right', color: '#fff' }} onClick={this.search}>查询</span>
+            <span className="lkpoji" style={{ float: 'right', color: '#fff' }} onTouchStart={this.search}>查询</span>
             <Input className="select" onChange={this.CorporateName} style={{ width: '55%', float: 'right' }} value={this.state.CorporateName} placeholder="请输入公司名称" />
-
           </div>
           <div className="input" style={{ padding: '0.4rem 0' }}>
             <span style={{ lineHeight: '2rem', paddingRight: '0.5rem' }}>营业执照</span>
@@ -949,9 +948,9 @@ class qualificationPh extends React.Component {
 
 
           <div className="footerBtn">
-            <div style={this.state.flagDis === true ? { width: '49.5%' } : {}} onClick={this.reture}>上一步</div>
-            <div style={this.state.flagDis === true ? { display: 'none' } : {}} onClick={this.save}>保存</div>
-            <div style={this.state.flagDis === true ? { width: '49.5%' } : {}} onClick={this.submit}>提交</div>
+            <div style={this.state.flagDis === true ? { width: '49.5%' } : {}} onTouchStart={this.reture}>上一步</div>
+            <div style={this.state.flagDis === true ? { display: 'none' } : {}} onTouchStart={this.save}>保存</div>
+            <div style={this.state.flagDis === true ? { width: '49.5%' } : {}} onTouchStart={this.submit}>提交</div>
           </div>
 
 

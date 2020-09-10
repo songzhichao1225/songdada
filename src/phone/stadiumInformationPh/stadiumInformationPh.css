@@ -36,9 +36,10 @@
     padding-left: 0.5rem;
 }
 .stadiumInformationPh .boss{
-    height: 88%;
+    height: 95%;
     float: left;
     background: #fff;
+    padding-bottom: 5rem;
     overflow-y: auto;
 }
 .stadiumInformationPh .boss .input{

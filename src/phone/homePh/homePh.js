@@ -132,11 +132,11 @@ class homePh extends React.Component {
               onRefresh={this.refResh}
             >
               <div className="homeScroll" >
-                <div onClick={this.yuYue}><span className="title" >今日成功预约</span><div className="content"><span>{this.state.getVenue.today_count}</span><span>单</span></div></div>
-                <div onClick={this.yuYueTwo}><span className="title">本月成功预约</span><div className="content"><span>{this.state.getVenue.month_count}</span><span>单</span></div></div>
-                <div onClick={this.dayIncomePh}><span className="title" >今日收入</span><div className="content"><span>￥{this.state.getVenue.today_money}</span></div></div>
-                <div onClick={this.monthlyIncomePh}><span className="title" >本月收入</span><div className="content"><span>￥{this.state.getVenue.month_money}</span></div></div>
-                <div onClick={this.commentPh}><span className="title" >场馆评分  {this.state.getVenue.score}分</span>
+                <div onTouchStart={this.yuYue}><span className="title" >今日成功预约</span><div className="content"><span>{this.state.getVenue.today_count}</span><span>单</span></div></div>
+                <div onTouchStart={this.yuYueTwo}><span className="title">本月成功预约</span><div className="content"><span>{this.state.getVenue.month_count}</span><span>单</span></div></div>
+                <div onTouchStart={this.dayIncomePh}><span className="title" >今日收入</span><div className="content"><span>￥{this.state.getVenue.today_money}</span></div></div>
+                <div onTouchStart={this.monthlyIncomePh}><span className="title" >本月收入</span><div className="content"><span>￥{this.state.getVenue.month_money}</span></div></div>
+                <div onTouchStart={this.commentPh}><span className="title" >场馆评分  {this.state.getVenue.score}分</span>
                   <div className="content">
                     <div className="img">
                       <img src={this.state.getVenue.score >= 1 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 1 && this.state.getVenue.score > 0 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
