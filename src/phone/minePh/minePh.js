@@ -21,6 +21,7 @@ class minePh extends React.Component {
     helpList: [],
     other: 0,
     page: 1,
+    ishaverecharge:0,
   }
 
 
@@ -31,7 +32,7 @@ class minePh extends React.Component {
     localStorage.setItem('avatar', "https://app.tiaozhanmeiyitian.com/" + res.data.data.siteimg)
     localStorage.setItem('lyv', res.data.data.rate)
     localStorage.setItem('siteUid', res.data.data.siteuid)
-    this.setState({ gerVenueName: res.data.data, refreshing: false })
+    this.setState({ gerVenueName: res.data.data, refreshing: false,ishaverecharge:res.data.data.ishaverecharge })
 
   }
  
@@ -167,7 +168,7 @@ class minePh extends React.Component {
                 </g>
               </g>
             </svg>
-            <span>场馆钱包</span><img  src={require("../../assets/right.png")} alt="arrow" /></li>
+            <span>场地费支付</span><span className="redQuan" style={this.state.ishaverecharge===1||this.state.ishaverecharge===1?{marginLeft:'0.3rem'}:{display:'none'}}></span><img  src={require("../../assets/right.png")} alt="arrow" /></li>
           <li onClick={this.Agreement}>
             <svg width="14px" height="16px" viewBox="0 0 14 16" style={{ float: 'left', marginTop: '1rem' }} version="1.1" xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/设置</title>

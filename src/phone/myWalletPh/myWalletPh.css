@@ -6,18 +6,24 @@
     width: 100%;
     height:14.38rem;
     background:linear-gradient(135deg,rgba(238,72,39,1) 0%,rgba(254,155,57,1) 100%);
+    margin-top: 0;
 }
-.myWalletPh .headBanner .headerTitle{
+.myWalletPh .headerTitle{
     height: 3rem;
     text-align: center;
     line-height: 3rem;
     color: #fff;
     position: relative;
     font-size: 1rem;
+    background:linear-gradient(120deg,rgba(238,72,39,1) 0%,rgb(253, 116, 4)  100%);
+}
+.myWalletPh .headerTitle>span{
+    padding:0.5rem 1rem;
 }
 .myWalletPh .headBanner .content{
     margin-left: 2rem;
     margin-top: 2rem;
+    float: left;
 }
 .myWalletPh .headBanner .content>span:first-child{
      display: block;
@@ -179,4 +185,101 @@
 }
 .am-picker-popup-wrap{
     z-index: 1005;
+}
+.myWalletPh .oneVip{
+    width: 20rem;
+    height:12.19rem;
+    background:url(../../assets/backVip.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-left: 27px;
+    margin-top: 20px;
+    float: left;
+    padding: 1rem 0;
+}
+.myWalletPh .oneVip>span{
+  padding-left: 1rem;
+  display: block;
+
+}
+.myWalletPh .ulList{
+    display: block;
+    float: left;
+    list-style: none;
+    width: 20rem;
+    margin-left: 27px;
+    margin-top: 2rem;
+}
+.myWalletPh .ulList>div>img:first-child{
+    width: 1rem;
+    height: 1rem;
+    display: block;
+    float: left;
+    margin-top: 1rem;
+}
+.myWalletPh .ulList>div{
+    width: 100%;
+    height: 3rem;
+    border-bottom: 1px solid #e9e9e9;
+    line-height: 3rem;
+}
+.myWalletPh .ulList>div>img:last-child{
+    width: 0.44rem;
+    height: 0.69rem;
+    display: block;
+    float: right;
+    margin-top: 1.3rem;
+}
+p{
+    text-align: left;
+    clear: both;
+}
+.vipLeftTwo{
+    text-align: center;
+    width: 6rem;
+    display:block;
+    text-align: left;
+    float: left;
+}
+.vipRightTwo{
+    display: block;
+    float: left;
+    width: 9rem;
+}
+.vipFooterTwo{
+    width: 100%;
+    height: 3rem;
+    border-top: 1px solid #ccc;
+    margin-top: 0.3rem;
+}
+.vipFooterTwo>span{
+    display: block;
+    height: 3rem;
+    width: 50%;
+    float: left;
+    line-height: 3rem;
+    color: #108ee9;
+}
+
+.myWalletPh .masking{
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1001;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+}
+.myWalletPh .hidden{
+    display: none;
+}
+.myWalletPh .masking img{
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
 }

@@ -26,6 +26,9 @@ import appOrder from './phone/appOrder/appOrder';
 import Agreement from './phone/Agreement/Agreement';
 import phone from './phone/phone/phone';
 import homePagePh from './phone/homePagePh/homePagePh';
+import Membership from './phone/Membership/Membership';
+import MembershipList from './phone/MembershipList/MembershipList';
+
 const BasicRoute = () => (
     <HashRouter>
         <Switch>
@@ -55,6 +58,9 @@ const BasicRoute = () => (
             <Route exact path="/appOrder" component={appOrder}/>
             <Route exact path="/phone" component={phone}/>
             <Route exact path="/Agreement" component={Agreement}/>
+            <Route exact path="/Membership" component={Membership}/>
+            <Route exact path="/MembershipList" component={MembershipList}/>
+            
         </Switch>
     </HashRouter>
 );

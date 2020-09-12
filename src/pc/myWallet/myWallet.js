@@ -1,11 +1,12 @@
 import React from 'react';
 import './myWallet.css';
 import 'antd/dist/antd.css';
-import { getVenueMoneyList, getVenueWithdrawalList, getVenueWithdrawalOneList, VenueWithdrawal, getReceivingBankQualifications, getVenueMembershipCardConsumptionList, MembershipCollectionAgreeToRefuse, getCompleteMembershipRechargeDetails, getMembershipCollectionDetails, MembershipRechargeAgreeToRefuse, getMembershipRechargeDetails, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankList, getVenueOpenBankCity, VenueReceivingBankInformation } from '../../api';
+import { getVenueMoneyList, getVenueWithdrawalList, getVenueWithdrawalOneList, VenueWithdrawal, getReceivingBankQualifications,gerVenueName, getVenueMembershipCardConsumptionList, MembershipCollectionAgreeToRefuse, getCompleteMembershipRechargeDetails, getMembershipCollectionDetails, MembershipRechargeAgreeToRefuse, getMembershipRechargeDetails, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankList, getVenueOpenBankCity, VenueReceivingBankInformation } from '../../api';
 import { DatePicker, Row, Col, Pagination, message, Input, Modal, Radio, Upload, Select, Popconfirm, Button } from 'antd';
 import { } from '@ant-design/icons';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/zh_CN';
+
 const { Option } = Select;
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
@@ -77,15 +78,29 @@ class myWallet extends React.Component {
     masking: false,
     chargeDetails: [],
     chargeDetailsNum: '',
+    index: 1,
+    sumptionList: [],
+    startSump: '',
+    endSump: '',
+    koTwo:0,
+    sumptionListNum:0,
   }
 
   dateChange = (data, dateString) => {
-
     this.setState({ dateString: dateString, start: dateString[0], end: dateString[1], kod: 1 })
   }
   search = () => {
     this.setState({ kod: 0 })
     this.getVenueMoneyList({ start: this.state.dateString[0], end: this.state.dateString[1], page: 1 })
+  }
+
+  searchTwo = () => {
+    this.setState({ kodTwo: 0 })
+    this.getVenueMembershipCardConsumptionList({ page: 1, type: this.state.index, startdate: this.state.startSump, enddate: this.state.endSump })
+  }
+
+  dateChangeTwo = (data, dateString) => {
+    this.setState({ startSump: dateString[0], endSump: dateString[1],koTwo:1})
   }
 
   async getVenueMoneyList(data) {
@@ -136,18 +151,43 @@ class myWallet extends React.Component {
     const res = await getCompleteMembershipRechargeDetails(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ chargeDetails: res.data.data, chargeDetailsNum: res.data.other })
+    }else{
+      this.setState({chargeDetailsNum: res.data.other })
     }
   }
 
   async getVenueMembershipCardConsumptionList(data) {
     const res = await getVenueMembershipCardConsumptionList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ sumptionList: res.data.data })
+
+      this.setState({ sumptionList: res.data.data,sumptionListNum:res.data.other.maxcount })
+
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登录超时请重新登录!')
     }
   }
+
+  async gerVenueName(data) {
+    const res = await gerVenueName(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 4001) {
+      this.props.history.push('/')
+      message.error('登录超时请重新登录!')
+    } else {
+      this.setState({ gerVenueNameName: res.data.data.name, gerVenueNameRate: res.data.data.rate,ishaverecharge:res.data.data.ishaverecharge })
+      sessionStorage.setItem('mess', res.data.data.mess)
+      sessionStorage.setItem('siteuid',res.data.data.siteuid)
+      sessionStorage.setItem('ishaverecharge',res.data.data.ishaverecharge)
+      if (res.data.data.ishaverecharge === 1) {
+        this.setState({ vipVisible: true })
+        this.getMembershipRechargeDetails()
+      } else if (res.data.data.ishaverecharge === 2) {
+        this.setState({ vipVisibleTwo: true })
+        this.getMembershipCollectionDetails()
+      }
+    }
+  }
+
 
 
   componentDidMount() {
@@ -157,23 +197,18 @@ class myWallet extends React.Component {
         sessionStorage.setItem('wallet', true)
       }
     }, 50);
+    this.gerVenueName()
     let myDate = new Date()
     let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
     let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-    this.getVenueMembershipCardConsumptionList({ page: 1, type: 2, startdate: start, enddate: end })
-    console.log(666)
+    this.setState({ startSump: start, endSump: end })
+    this.getVenueMembershipCardConsumptionList({ page: 1, type: this.state.index, startdate: start, enddate: end })
     this.getCompleteMembershipRechargeDetails()
     this.getVenueOpenBankProvince()
     this.getVenueOpenBank()
-    if (sessionStorage.getItem('ishaverecharge') === '1') {
-      this.setState({ vipVisible: true })
-      this.getMembershipRechargeDetails()
-    } else if (sessionStorage.getItem('ishaverecharge') === '2') {
-      this.setState({ vipVisibleTwo: true })
-      this.getMembershipCollectionDetails()
-    }
+    
 
-   
+
 
     if (sessionStorage.getItem('incomtime') !== 'null' && sessionStorage.getItem('incomtime') !== null) {
       if (sessionStorage.getItem('incomtime') === '1') {
@@ -432,6 +467,7 @@ class myWallet extends React.Component {
     const res = await MembershipRechargeAgreeToRefuse(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success(res.data.msg)
+      this.gerVenueName()
       this.setState({ vipVisible: false })
     } else {
       message.error(res.data.msg)
@@ -450,6 +486,7 @@ class myWallet extends React.Component {
       message.error('登录超时请重新登录!')
     } else if (res.data.code === 2000) {
       this.MembershipRechargeAgreeToRefuse({ shipuuid: this.state.shipuuid, status: 1, remarks: '' })
+      this.gerVenueName()
     } else if (res.data.code === 4004) {
       message.error(res.data.msg)
     } else {
@@ -473,6 +510,7 @@ class myWallet extends React.Component {
     const res = await MembershipCollectionAgreeToRefuse(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.getCompleteMembershipRechargeDetails()
+      this.gerVenueName()
       this.setState({ vipVisibleTwo: false })
       message.success(res.data.msg)
     } else {
@@ -486,6 +524,19 @@ class myWallet extends React.Component {
     this.MembershipCollectionAgreeToRefuse({ shipuuid: e.currentTarget.dataset.id })
   }
 
+  Income = () => {
+    this.setState({ index: 2, sumptionList: [] })
+    this.getVenueMembershipCardConsumptionList({ page: 1, type: 2, startdate: this.state.startSump, enddate: this.state.endSump })
+  }
+  Outlay = () => {
+    this.setState({ index: 1, sumptionList: [] })
+    this.getVenueMembershipCardConsumptionList({ page: 1, type: 1, startdate: this.state.startSump, enddate: this.state.endSump })
+  }
+
+  sumptionListNumPage=(page,pageSize)=>{
+     this.setState({pageTwo:page})
+     this.getVenueMembershipCardConsumptionList({ page: page, type: this.state.index, startdate: this.state.startSump, enddate: this.state.endSump })
+  }
 
   render() {
     const uploadButtonTwo = (
@@ -609,33 +660,32 @@ class myWallet extends React.Component {
         <div className="vipContent" style={this.state.flagHead === 0 ? {} : { display: 'none' }}>
 
           <div className="content">
-            <div style={this.state.chargeDetails.length === 0 ? { display: 'none' } : {}}>
+            <div>
               <div className="backVip">
                 <span className="h1">会员卡信息</span>
                 <span className="h2">北京甲乙电子商务有限公司(找对手平台)</span>
-                <span className="h2" style={this.state.chargeDetails.cardnumber === '' ? { display: 'none' } : {}}>卡号：{this.state.chargeDetails.cardnumber}</span>
+                <span className="h2" style={this.state.chargeDetails.cardnumber === ''||this.state.chargeDetails.length === 0 ? { display: 'none' } : {}}>卡号：{this.state.chargeDetails.cardnumber}</span>
                 <span className="h1" style={{ textAlign: 'right', paddingRight: '6px' }}>当前余额：¥{this.state.chargeDetailsNum}</span>
               </div>
-              <div className="backVipTwo" style={this.state.chargeDetails.cardJustURL === '' ? { display: 'none' } : {}}>
+              <div className="backVipTwo" style={this.state.chargeDetails.cardJustURL === ''||this.state.chargeDetails.length === 0 ? { display: 'none' } : {}}>
                 <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.chargeDetails.cardJustURL} alt="img" />
               </div>
-              <div className="backVipTwo" style={this.state.chargeDetails.cardBackURL === '' ? { display: 'none' } : {}}>
+              <div className="backVipTwo" style={this.state.chargeDetails.cardBackURL === ''||this.state.chargeDetails.length === 0 ? { display: 'none' } : {}}>
                 <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.chargeDetails.cardBackURL} alt="img" />
               </div>
             </div>
-            <div style={this.state.chargeDetails.length === 0 ? { textAlign: 'center', padding: '20px 0' } : { display: 'none' }}>暂无会员卡</div>
             <div className="textContent">
               <div className="head">
                 <span className="title">会员卡明细</span>
-                <span className="rightText">支出</span>
-                <span className="rightText">收入</span>
-                <span className="query" style={this.state.kod === 1 ? { display: 'block' } : { display: 'none' }} onClick={this.search}>查询</span>
+                <span className="rightText" style={this.state.index === 2 ? { color: '#F5A623' } : {}} onClick={this.Income}>收入</span>
+                <span className="rightText" style={this.state.index === 1 ? { color: '#F5A623' } : {}} onClick={this.Outlay}>支出</span>
+                <span className="query" style={this.state.koTwo === 1 ? { display: 'block' } : { display: 'none' }} onClick={this.searchTwo}>查询</span>
                 <RangePicker
-                  placeholder={[this.state.start, this.state.end]}
+                  placeholder={[this.state.startSump, this.state.endSump]}
                   style={{ float: 'right', }}
                   locale={locale}
                   allowClear={false}
-                  onChange={this.dateChange}
+                  onChange={this.dateChangeTwo}
                 />
               </div>
 
@@ -647,17 +697,17 @@ class myWallet extends React.Component {
                   <Col xs={{ span: 6, offset: 0 }}>金额</Col>
                 </Row>
                 {
-                  this.state.recordList.map((item, i) => (
-                    <Row key={i} >
-                      <Col className="oneText" xs={{ span: 5 }}>{item.SubmitDate}</Col>
-                      <Col xs={{ span: 7, offset: 0 }}>{item.OpeningBank}|{'*' + item.BankCard.slice(-4)}|{'*' + item.BankName.slice(-1)}</Col>
-                      <Col xs={{ span: 4, offset: 0 }}>{item.FinishedDate === null ? '---' : item.FinishedDate}</Col>
-                      <Col xs={{ span: 4, offset: 0 }}>￥{item.RequestMoney}</Col>
+                  this.state.sumptionList.map((item, i) => (
+                    <Row key={i} style={{ height: '35px',lineHeight:'35px',borderTop:'1px solid #e1e0e1' }} >
+                      <Col className="oneText" xs={{ span: 6 }} style={{ textAlign: 'left',height:'35px',lineHeight:'35px' }}>{item.date}</Col>
+                      <Col xs={{ span: 6, offset: 0 }} style={{height:'35px',lineHeight:'35px' }}>{this.state.index === 1 ? 'ID：'+item.orderid : '充值' + item.PlanRecharge + ',赠送' + item.givemoney}</Col>
+                      <Col xs={{ span: 6, offset: 0 }} style={{height:'35px',lineHeight:'35px' }}>{this.state.index === 1 ? '支出' : '收入'}</Col>
+                      <Col xs={{ span: 6, offset: 0 }} style={{height:'35px',lineHeight:'35px' }}>￥{this.state.index === 1 ? item.money : Number(item.PlanRecharge) + Number(item.givemoney)}</Col>
                     </Row>
                   ))
                 }
-
-
+                <div style={this.state.sumptionList.length===0?{textAlign:'center',padding:'20px 0',borderTop:'1px solid #e1e0e1'}:{display:'none'}}>暂无{this.state.index===1?'支出':'收入'}明细</div>
+                <Pagination className={this.state.sumptionList.length!==0 ? 'fenye' : 'hidden'} current={this.state.pageTwo} showSizeChanger={false} hideOnSinglePage={true} onChange={this.sumptionListNumPage} total={this.state.sumptionListNum === '' ? 0 : this.state.sumptionListNum} />
               </div>
             </div>
 
@@ -678,7 +728,7 @@ class myWallet extends React.Component {
           <p><span className="vipLeft">会员卡余额</span>￥{this.state.vipList.balance}</p>
           <p><span className="vipLeft">计划充值金额</span>￥{this.state.vipList.PlanRecharge}</p>
           <p><span className="vipLeft">需赠送金额</span>￥{this.state.vipList.givemoney}</p>
-          <TextArea rows={4} maxLength={100} onChange={this.vipNot} placeholder="请填写拒绝原因" style={{ background: '#F3F3F3' }} />
+          <TextArea rows={4} maxLength={100} onChange={this.vipNot} placeholder="拒绝时请填写拒绝原因" style={{ background: '#F3F3F3' }} />
           <div className="vipFooter"><span onClick={this.bukeyi} data-id={this.state.vipList.uuid}>拒绝</span><span onClick={this.tongyi} data-id={this.state.vipList.uuid}>同意</span></div>
         </Modal>
 
