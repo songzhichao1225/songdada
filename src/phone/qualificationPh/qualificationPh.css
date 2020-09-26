@@ -24,12 +24,13 @@
     border-bottom:0.06rem solid #f5f5f5;
 }
 .qualificationPh .boss{
-    height: 88%;
+    height: 95%;
     float: left;
-    margin: 1rem auto 0;
+    margin: 0 auto;
     background: #fff;
     padding-bottom: 10rem;
     overflow-y: auto;
+    position: relative;
 }
 .qualificationPh .boss .input{
     width: 92%;
@@ -167,6 +168,10 @@
     flex-basis:62%;
     color: #333;
 }
+.qualificationPh .am-checkbox.am-checkbox-checked .am-checkbox-inner{
+    background: #D85D27;
+    border-color: #D85D27;
+}
 .qualificationPh .am-list-item .am-list-line{
     padding-right: 0;
 }
@@ -186,10 +191,11 @@
     float: right;
 }
 .qualificationPh .footerBtn{
-    clear: both;
+    width: 100%;
     position: fixed;
     bottom: 0;
-    width: 100%;
+    background-color: #fff;
+    z-index: 1001;
 
 }
 

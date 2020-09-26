@@ -38,18 +38,14 @@ class appOrder extends React.Component {
     resData: '',
     touchMove: 1,
     touchEnd: 1,
-    otherNum:'',
+    otherNum: '',
   };
 
 
 
   async getAppVenueReservations(data) {
     const res = await getAppVenueReservations(data, this.state.token)
-
-
     if (res.data.code === 2000) {
-
-
       if (this.state.topNumList.length > 0) {
         for (let j = 0; j < this.state.topNumList.length; j++) {
           if (res.data.data[0].c[this.state.topNumList[j].venueid - 1] !== undefined) {
@@ -97,7 +93,7 @@ class appOrder extends React.Component {
         dataIndex: 'lppd',
       }
       res.data.other.bq.unshift(ploboj)
-      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c, otherType: res.data.other.bq,otherNum:res.data.other.zq, value: 'l', spinningTwo: false, loadingTwo: false, animating: false })
+      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c, otherType: res.data.other.bq, otherNum: res.data.other.zq, value: 'l', spinningTwo: false, loadingTwo: false, animating: false })
 
 
     } else {
@@ -120,8 +116,9 @@ class appOrder extends React.Component {
           data-uuid={resData.data[i].c[j].uuid}
           onClick={this.lookPlate}
           data-money={resData.data[i].c[j].money}
-          data-lo={resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money}
-          style={resData.data[i].c[j].type === 1 && this.state.lotime.indexOf(resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money) === -1 ? { background: '#6FB2FF', height: 40, lineHeight: 3, color: '#fff' } : {} && resData.data[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 40, lineHeight: 3 } : {} && resData.data[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 40, lineHeight: 3 } : {} && resData.data[i].c[j].type === 4 ? { background: 'red', height: 40, lineHeight: 3 } : { background: 'red', height: 40, lineHeight: 3, color: '#fff' }}
+          data-summoney={resData.data[i].c[j].summoney}
+          data-lo={resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney}
+          style={resData.data[i].c[j].type === 1 && this.state.lotime.indexOf(resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney) === -1 ? { background: '#6FB2FF', height: 40, lineHeight: 3, color: '#fff' } : {} && resData.data[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 40, lineHeight: 3 } : {} && resData.data[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 40, lineHeight: 3 } : {} && resData.data[i].c[j].type === 4 ? { background: 'red', height: 40, lineHeight: 3 } : { background: 'red', height: 40, lineHeight: 3, color: '#fff' }}
         > {resData.data[i].c[j].money}</div>
         obj[key] = value
         let koTwo = parseInt(resData.data[i].a.slice(1, 2)) + 1 + ':00'
@@ -147,7 +144,7 @@ class appOrder extends React.Component {
 
   componentDidMount() {
     //测试数据
-    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=ifMQE9gdvgBJmcXKykRW8QYdQUuuTQfR58OwFRqztJFeRvWmIB8rqufHb73uxDYj&sporttype=5'
+    // let query = '?siteuid=9f72c510-f516-4ebe-fab1-09bf860e21fd&sportid=1&token=hW21YN2tUTi2KJZuQRTeqxvRRYcyjSBdxY1x8pfFgpazBl9UECzLE2LjrXbIw63I&sporttype=5'
     let query = this.props.location.search  
 
 
@@ -215,9 +212,11 @@ class appOrder extends React.Component {
 
   lookPlate = e => {
     let money = e.currentTarget.dataset.money
+    let summoney = e.currentTarget.dataset.summoney
     let time = e.currentTarget.dataset.time
     let num = e.currentTarget.dataset.num
     let lotime = e.currentTarget.dataset.lo
+    console.log(this.state.lotime)
 
     if (e.currentTarget.dataset.type === '1') {
       if (this.state.lotime.length > 0) {
@@ -231,19 +230,28 @@ class appOrder extends React.Component {
           this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
         } else if (this.state.time.sort().indexOf(time) !== -1) {
 
-          this.state.lotime.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money)
+          this.state.lotime.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney)
           this.setState({ lotime: this.state.lotime })
           let moneyCall = 0
           for (let i in this.state.lotime) {
             moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
           }
+
           this.setState({ moneyCall: moneyCall })
         } else {
-          this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: Number(this.state.moneyCall) + Number(money) })
 
+          let pop = (Number(this.state.moneyCall) + Number(money)).toString()
+          if (pop.indexOf('.') !== -1) {
+            pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
+          }
+          this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop })
         }
       } else {
-        this.setState({ time: [...this.state.time, time], lotime: [...this.state.lotime, lotime], moneyCall: Number(this.state.moneyCall) + Number(money) })
+        let pop = (Number(this.state.moneyCall) + Number(money)).toString()
+        if (pop.indexOf('.') !== -1) {
+          pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
+        }
+        this.setState({ time: [...this.state.time, time], lotime: [...this.state.lotime, lotime], moneyCall: pop })
       }
     }
     setTimeout(() => {
@@ -288,9 +296,11 @@ class appOrder extends React.Component {
   onSubmit = () => {
     let time = ''
     let num = ''
+    let original=0
     for (let i in this.state.lotime.sort()) {
       num += this.state.lotime[i].split('-')[1] + ','
       time += this.state.lotime[i].split('-')[0] + ','
+      original += Number(this.state.lotime[i].split('-')[3])
     }
     if (this.state.lotime.length > 0) {
       let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[this.state.lotime.length - 1])
@@ -303,7 +313,7 @@ class appOrder extends React.Component {
           placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
           placeDate: Number(this.state.date.split('/')[0]) > 500 ? this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2] : this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1],
           placeMoney: this.state.moneyCall,
-          placeMoneyTwo:this.state.moneyCall/Number(this.state.otherNum),
+          placeMoneyTwo: original,
           placeTimeLen: (time.split(',').length - 1) * 0.5 + '小时'
         }
 

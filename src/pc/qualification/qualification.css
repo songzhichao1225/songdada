@@ -83,6 +83,8 @@
 	font-size: 20px;
 	color: #4A4A4A;
 	font-weight: 550;
+	width: 150px;
+	text-align: right;
 }
 .qualification .area{
 	margin-top: 20px;

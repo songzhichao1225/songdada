@@ -7,7 +7,7 @@ import 'antd-mobile/dist/antd-mobile.css';
 import { Input, Checkbox, Button, Radio, Select, Spin } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 import lrz from 'lrz';
-import { getVenueInformation, getVenueQualificationInformation, VenueInformationSave, UploadVenueImgs, VenueQualificationInformationSave, UploadVenueImgsLisenTwo, UploadVenueImgsLisen, getVenueIssecondaudit, getVenueOpenBank, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity, VenueReceivingBankInformation } from '../../api';
+import { getVenueInformation, getVenueQualificationInformation, VenueInformationSave, UploadVenueImgs,imgUrlTwo, VenueQualificationInformationSave_another, UploadVenueImgsLisenTwo, UploadVenueImgsLisen, getVenueIssecondaudit, getVenueOpenBank, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity, VenueReceivingBankInformation } from '../../api';
 const { Option } = Select
 const alert = Modal.alert;
 
@@ -42,11 +42,11 @@ class inforSitePh extends React.Component {
     //资质信息 参数
     imageUrlTwo: '',
     imageUrlThree: '',
-    corporateName: '',
-    corporateId: '',
+    CorporateName: '',
+    faIdcard: '',
     corporatePhone: '',
     numRadio: 1,
-    corporateCardId: '',
+    cardId: '',
     flagOne: true,
     flagTwo: true,
     flagThree: true,
@@ -57,13 +57,12 @@ class inforSitePh extends React.Component {
     province_id: '',//省Id
     city_id: '',//市id
     backList: [],//获取的银行
-    corporateOpen: '',
+    openingLine: '',
     zuo: 0,
     imgHoodTwo: '',
     imgHood: '',
     spin: true,
     onChangeCheckTwo: [],
-    CorporateName: '',
     other: false,
     loading: true,
     files: [],
@@ -79,6 +78,21 @@ class inforSitePh extends React.Component {
     filesFiveSon: '',
     empowerURL: '',
     empowerURLBos: [],
+    ascription: 0,
+    BelongingOne: [],
+    BelongingOneSon: '',
+    BelongingTwo: [],
+    BelongingTwoSon: '',
+    BelongingThree: [],
+    BelongingThreeSon: '',
+    BelongingFour: [],
+    BelongingFourSon: '',
+    BelongingFive: [],
+    BelongingFiveSon: '',
+    BelongingSix: [],
+    BelongingSixSon: '',
+    ascrBaceUrl:'',
+    legalhourBaseURL:'',
   };
 
   async getVenueInformation(data) {
@@ -87,20 +101,20 @@ class inforSitePh extends React.Component {
     if (res.data.code === 2000) {
       let imgS = (res.data.data.filesURL).slice(1, (res.data.data.filesURL).length).split('|')
       for (let i in imgS) {
-        arrImg.push({ url: imgS[i] })
+        arrImg.push({ url: imgUrlTwo+imgS[i] })
       }
 
       if (this.props.history.location.query !== undefined) {
         this.setState({
           listSon: res.data.data, sport: res.data.data.sport.split(','), facilities: res.data.data.facilities.split(','),
-           files: [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
+          files: [{ url:imgUrlTwo+res.data.data.firstURL }], filesSon: res.data.data.firstURL,
           province: this.props.history.location.query.province, city: this.props.history.location.query.city, area: this.props.history.location.query.district,
           cgName: res.data.data.name, address: this.props.history.location.query.adddress, linkMan: res.data.data.linkMan, telephone: res.data.data.telephone, siteInfo: res.data.data.siteInfo,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, comment: res.data.data.siteInfo, lat: this.props.history.location.query.lat, lng: this.props.history.location.query.lng, position: this.props.history.location.query.title, spin: false
         })
       } else {
         this.setState({
-          listSon: res.data.data, sport: res.data.data.sport.split(','), facilities: res.data.data.facilities.split(','), files: [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
+          listSon: res.data.data, sport: res.data.data.sport.split(','), facilities: res.data.data.facilities.split(','), files: [{ url:imgUrlTwo+res.data.data.firstURL }], filesSon: res.data.data.firstURL,
           province: res.data.data.province, city: res.data.data.city, area: res.data.data.area,
           cgName: res.data.data.name, address: res.data.data.address, linkMan: res.data.data.linkMan, telephone: res.data.data.telephone, siteInfo: res.data.data.siteInfo,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, comment: res.data.data.siteInfo, lat: res.data.data.lat, lng: res.data.data.lng, position: res.data.data.position, spin: false
@@ -123,26 +137,37 @@ class inforSitePh extends React.Component {
   async getVenueQualificationInformation(data) {
     const res = await getVenueQualificationInformation(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      let corporate = res.data.data
-      let cardImg = corporate.legalFilesURL.replace('|', ',').split(',')
       if (res.data.data.ProvinceBank !== '') {
         this.getVenueOpenBankCity({ province_id: res.data.data.ProvinceBank })
       }
       this.setState({
-        legalBaseURL: corporate.legalBaseURL,
-        filesFourSon: corporate.legalBaseURL === '' ? '' : corporate.legalFilesURL.split('|')[0],
-        filesFiveSon: corporate.legalBaseURL === '' ? '' : corporate.legalFilesURL.split('|')[1],
-        filesFour: corporate.legalBaseURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + corporate.legalBaseURL + corporate.legalFilesURL.split('|')[0] }],
-        filesFive: corporate.legalBaseURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + corporate.legalBaseURL + corporate.legalFilesURL.split('|')[1] }],
-        filesThreeSon: corporate.lisenceURL,
-        filesThree: [{ url: 'https://app.tiaozhanmeiyitian.com/' + corporate.lisenceURL }],
-        baseImg: corporate.legalBaseURL,
-        imgFile: corporate.legalBaseURL === '' ? '' : cardImg[0], imgFileTwo: corporate.legalBaseURL === '' ? '' : cardImg[1],
-        corporateName: corporate.legalname, corporateId: corporate.legalcard, corporatePhone: corporate.legalphone,
-        numRadio: corporate.Settlement, corporateCardId: corporate.Bankaccount, CorporateName: corporate.CorporateName, corporateOpen: corporate.OpeningBank,
-        bank_id: corporate.Banktype, city_id: corporate.CityBank, province_id: corporate.ProvinceBank,
-        empowerURLBos: corporate.empowerURL===''?[]:[{ url: 'https://app.tiaozhanmeiyitian.com/' + corporate.empowerURL }],
-        empowerURL: corporate.empowerURL
+        CorporateName: res.data.data.CorporateName, bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
+        faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
+        numRadio: res.data.data.Settlement, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
+        legalBaseURL: res.data.data.legalBaseURL,
+        filesThree: res.data.data.lisenceURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.lisenceURL }],
+        filesThreeSon: res.data.data.lisenceURL === '' ? '' : res.data.data.lisenceURL,
+        filesFourSon: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[0],
+        filesFour: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0] }],
+        filesFiveSon: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[1],
+        filesFive: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1] }],
+        BelongingFourSon: res.data.data.empowerURL === '' ? '' : res.data.data.empowerURL,
+        BelongingFour: res.data.data.empowerURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.empowerURL }],
+        BelongingOneSon: res.data.data.promiseURL === '' ? '' : res.data.data.promiseURL,
+        BelongingOne: res.data.data.promiseURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.promiseURL }],
+        ascrBaceUrl: res.data.data.ascriphourBaseURL,
+        BelongingTwo: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.ascriphourBaseURL + res.data.data.ascriphourFilesURL.split('|')[0] }],
+        BelongingTwoSon: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? '' : res.data.data.ascriphourFilesURL.split('|')[0],
+        BelongingThree: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.ascriphourBaseURL + res.data.data.ascriphourFilesURL.split('|')[1] }],
+        BelongingThreeSon: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? '' : res.data.data.ascriphourFilesURL.split('|')[1],
+        legalhourBaseURL: res.data.data.legalhourBaseURL,
+        BelongingFive: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalhourBaseURL + res.data.data.legalhourFilesURL.split('|')[0] }],
+        BelongingFiveSon: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? '' : res.data.data.legalhourFilesURL.split('|')[0],
+        BelongingSix: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalhourBaseURL + res.data.data.legalhourFilesURL.split('|')[1] }],
+        BelongingSixSon: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? '' : res.data.data.legalhourFilesURL.split('|')[1],
+        value: res.data.data.ascription,
+        valueTwo: res.data.data.personIncharge,
+        valueThree:res.data.data.verification
       })
     }
   }
@@ -154,8 +179,6 @@ class inforSitePh extends React.Component {
     this.getVenueIssecondaudit()
     this.getVenueOpenBankProvince()
     this.getVenueOpenBank()
-
-
   }
   left = () => {
     this.setState({ flag: 1 })
@@ -185,8 +208,8 @@ class inforSitePh extends React.Component {
   handleChange = (files, type, index) => {
     this.setState({ files })
     if (type === 'add') {
-      if(files[0].file.name.indexOf('gif')===-1){
-        if (files[0].file.size / 1024 / 1024 < 7) {
+      if (files[0].file.name.indexOf('gif') === -1) {
+        if (files[0].file.size / 1024 / 1024 < 9) {
           lrz(files[0].url, { quality: 0.5 })
             .then((rst) => {
               this.setState({ loading: false })
@@ -195,19 +218,19 @@ class inforSitePh extends React.Component {
               this.UploadVenueImgs(formdata1)
             })
         } else {
-          Toast.fail('图片超过7M无法上传', 2)
+          Toast.fail('图片超过9M无法上传', 2)
         }
 
-      }else{
-        this.setState({ files:[] })
+      } else {
+        this.setState({ files: [] })
         Toast.fail('请上传png/jpg/jpeg类型图片', 2)
       }
 
-      } else if (type === 'remove') {
-        this.setState({ filesSon: '' })
-      }
-      
-    
+    } else if (type === 'remove') {
+      this.setState({ filesSon: '' })
+    }
+
+
 
 
   }
@@ -232,7 +255,7 @@ class inforSitePh extends React.Component {
     this.setState({ filesTwo: files })
     this.setState({ num: 0 })
     if (type === 'add') {
-      if (files[files.length - 1].file.size / 1024 / 1024 < 7) {
+      if (files[files.length - 1].file.size / 1024 / 1024 < 9) {
         lrz(files[files.length - 1].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
@@ -241,7 +264,7 @@ class inforSitePh extends React.Component {
             this.UploadVenueImgsTwo(formdata1)
           })
       } else {
-        Toast.fail('图片超过7M无法上传', 2)
+        Toast.fail('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       let pok = this.state.filesTwoSon.slice(1, this.state.filesTwoSon.length).split('|')
@@ -270,7 +293,7 @@ class inforSitePh extends React.Component {
   handleChangeOne = (files, type, index) => {
     this.setState({ filesThree: files })
     if (type === 'add') {
-      if (files[0].file.size / 1024 / 1024 < 7) {
+      if (files[0].file.size / 1024 / 1024 < 9) {
         lrz(files[0].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
@@ -279,7 +302,7 @@ class inforSitePh extends React.Component {
             this.UploadVenueImgsLisen(formdata1)
           })
       } else {
-        Toast.fail('图片超过7M无法上传', 2)
+        Toast.fail('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       this.setState({ filesThreeSon: '' })
@@ -375,7 +398,7 @@ class inforSitePh extends React.Component {
       if (this.state.loading === false) {
         Toast.loading('图片上传中', 1);
       } else {
-        this.props.history.location.query=undefined
+        this.props.history.location.query = undefined
         this.VenueInformationSave(data)
       }
     } else {
@@ -404,7 +427,7 @@ class inforSitePh extends React.Component {
   handleChangeTwo = (files, type, index) => {
     this.setState({ filesFour: files })
     if (type === 'add') {
-      if (files[0].file.size / 1024 / 1024 < 7) {
+      if (files[0].file.size / 1024 / 1024 < 9) {
         lrz(files[0].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
@@ -413,7 +436,7 @@ class inforSitePh extends React.Component {
             this.UploadVenueImgsLisenTwo(formdata1)
           })
       } else {
-        Toast.fail('图片超过7M无法上传', 2)
+        Toast.fail('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       this.setState({ filesFourSon: '', filesFiveSon: '', filesFive: [] })
@@ -441,7 +464,7 @@ class inforSitePh extends React.Component {
   handleChangeThree = (files, type, index) => {
     this.setState({ filesFive: files })
     if (type === 'add') {
-      if (files[0].file.size / 1024 / 1024 < 7) {
+      if (files[0].file.size / 1024 / 1024 < 9) {
         lrz(files[0].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
@@ -450,32 +473,32 @@ class inforSitePh extends React.Component {
             this.UploadVenueImgsLisenTwoT(formdata1)
           })
       } else {
-        Toast.fail('图片超过7M无法上传', 2)
+        Toast.fail('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       this.setState({ filesFiveSon: '', filesFourSon: '', filesFour: [] })
     }
   }
 
-  corporateName = e => {
-    this.setState({ corporateName: e.target.value })
-  }
+
   corporateId = e => {
-    this.setState({ corporateId: e.target.value })
+    this.setState({ faIdcard: e.target.value })
   }
   corporatePhone = e => {
     this.setState({ corporatePhone: e.target.value })
   }
 
   numRadio = e => {
-    this.setState({ numRadio: e.target.value, corporateCardId: '', corporateOpen: '' })
+    this.setState({ numRadio: e.target.value, cardId: '', openingLine: '' })
     if (e.target.value === 1) {
       this.setState({ bank_id: '', province_id: '', city_id: '' })
     }
+
+
   }
 
   corporateCardId = e => {
-    this.setState({ corporateCardId: e.target.value })
+    this.setState({ cardId: e.target.value })
   }
   CorporateName = e => {
     this.setState({ CorporateName: e.target.value })
@@ -532,15 +555,15 @@ class inforSitePh extends React.Component {
   async getVenueOpenBankList(data) {
     const res = await getVenueOpenBankList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      let name=res.data.data
-      let arrName=[]
-      for(let i in name){
-        let obj={}
-        obj.name=name[i].sub_branch_name
-        obj.nameT=name[i].sub_branch_name.slice(name[i].sub_branch_name.indexOf('公司')+2,name[i].sub_branch_name.length)
+      let name = res.data.data
+      let arrName = []
+      for (let i in name) {
+        let obj = {}
+        obj.name = name[i].sub_branch_name
+        obj.nameT = name[i].sub_branch_name.slice(name[i].sub_branch_name.indexOf('公司') + 2, name[i].sub_branch_name.length)
         arrName.push(obj)
       }
-      this.setState({ backList: arrName})
+      this.setState({ backList: arrName })
     }
   }
 
@@ -548,13 +571,13 @@ class inforSitePh extends React.Component {
 
 
   typeChange = e => {
-    this.setState({ bank_id: e, corporateOpen: '', backList: [] })
+    this.setState({ bank_id: e, openingLine: '', backList: [] })
   }
   cityChange = e => {
-    this.setState({ city_id: e, corporateOpen: '', backList: [] })
+    this.setState({ city_id: e, openingLine: '', backList: [] })
   }
   provinceChange = e => {
-    this.setState({ province_id: e, corporateOpen: '', backList: [] })
+    this.setState({ province_id: e, openingLine: '', backList: [] })
     this.getVenueOpenBankCity({ province_id: e })
   }
 
@@ -566,21 +589,21 @@ class inforSitePh extends React.Component {
     } else if (this.state.city_id === '') {
       Toast.fail('请选择银行所在市', 1.5)
     } else {
-      if(typeof(this.state.bank_id)!== 'string'){
+      if (typeof (this.state.bank_id) !== 'string') {
         this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
-      }else{
+      } else {
         this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
       }
-     
+
     }
   }
 
   corporateOpen = e => {
-    this.setState({ corporateOpen: e })
+    this.setState({ openingLine: e })
   }
 
-  async VenueQualificationInformationSave(data) {
-    const res = await VenueQualificationInformationSave(data, localStorage.getItem('venue_token'))
+  async VenueQualificationInformationSave_another(data) {
+    const res = await VenueQualificationInformationSave_another(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       Toast.success('提交成功', 1)
       this.getVenueIssecondaudit()
@@ -590,44 +613,51 @@ class inforSitePh extends React.Component {
   }
 
   ziSubmit = () => {
-    let { zuo, imgHoodTwo, imgHood, filesThreeSon, corporateName, empowerURL, corporatePhone, CorporateName } = this.state
+    let { zuo,value,valueTwo,valueThree,BelongingTwoSon,BelongingThreeSon,BelongingOneSon,BelongingFourSon,faName,faPhone,faIdcard,legalhourBaseURL,BelongingFiveSon,BelongingSixSon, imgHood,ascrBaceUrl, filesThreeSon, CorporateName } = this.state
     let data = {
-      legalname: corporateName,
-      legalcard: '',
-      legalphone: corporatePhone,
-      Settlement: 0,
+      ascription:value,
+      CorporateName: value === 1 ? '' : CorporateName,
+      lisenceURL: value === 1 ? '' : filesThreeSon,
+      promiseURL: value === 1 ? BelongingOneSon : '',
+      ascriphourBaseURL: value === 1 && ascrBaceUrl !== '' ? ascrBaceUrl : '',
+      ascriphourFilesURL: value === 1 && ascrBaceUrl !== '' ? BelongingTwoSon + '|' + BelongingThreeSon : '',
+      personIncharge:valueTwo,
+      empowerURL:valueTwo === 1 && valueTwo === 2 ? '' : BelongingFourSon,
+      verification:valueThree,
+      legalname:faName,
+      legalphone:faPhone,
+      legalcard:faIdcard,
+      legalhourBaseURL:legalhourBaseURL,
+      legalhourFilesURL: this.state.valueThree === 3 ? BelongingFiveSon + '|' + BelongingSixSon : '',
+      Settlement:value,
       Bankaccount: '',
       OpeningBank: '',
-      lisenceURL: filesThreeSon,
       legalBaseURL: '',
       legalFilesURL: '',
-      CorporateName: CorporateName,
       Banktype: '',
       ProvinceBank: '',
       CityBank: '',
-      empowerURL: empowerURL,
       type: 2
 
     }
     if (zuo === 1) {
-      if (imgHood === '') {
-        Toast.fail('请更换身份证正面照', 1);
-
-      } else if (imgHoodTwo === '') {
-        Toast.fail('请更换身份证反面照', 1);
-      } else {
+     
         data.legalBaseURL = imgHood
         if (this.state.loading === false) {
           Toast.loading('图片上传中', 1);
         } else {
-          this.VenueQualificationInformationSave(data)
+         
+            this.VenueQualificationInformationSave_another(data)
+          
         }
-      }
+      
     } else {
       if (this.state.loading === false) {
         Toast.loading('图片上传中', 1);
       } else {
-        this.VenueQualificationInformationSave(data)
+       
+          this.VenueQualificationInformationSave_another(data)
+        
       }
     }
   }
@@ -656,14 +686,14 @@ class inforSitePh extends React.Component {
 
 
   ziSubmitTwo = () => {
-    let { numRadio, filesFourSon, corporateId, legalBaseURL, filesFiveSon, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
+    let { numRadio, filesFourSon, faIdcard, legalBaseURL, filesFiveSon, cardId, openingLine, bank_id, province_id, city_id } = this.state
     let data = {
-      legalcard: numRadio === 0 ? '' : corporateId,
+      legalcard: numRadio === 0 ? '' : faIdcard,
       legalBaseURL: numRadio === 0 ? '' : legalBaseURL,
       legalFilesURL: numRadio === 0 ? '' : filesFourSon + '|' + filesFiveSon,
       Settlement: numRadio,
-      Bankaccount: corporateCardId,
-      OpeningBank: corporateOpen,
+      Bankaccount: cardId,
+      OpeningBank: openingLine,
       Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
       ProvinceBank: typeof (province_id) !== 'string' ? province_id.join() : province_id,
       CityBank: typeof (city_id) !== 'string' ? city_id.join() : city_id,
@@ -695,7 +725,7 @@ class inforSitePh extends React.Component {
   authorizations = (files, type, index) => {
     this.setState({ empowerURLBos: files })
     if (type === 'add') {
-      if (files[0].file.size / 1024 / 1024 < 7) {
+      if (files[0].file.size / 1024 / 1024 < 9) {
         lrz(files[0].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
@@ -704,23 +734,239 @@ class inforSitePh extends React.Component {
             this.UploadVenueImgsLisenAuthor(formdata1)
           })
       } else {
-        Toast.fail('图片超过7M无法上传', 2)
+        Toast.fail('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       this.setState({ empowerURL: '' })
     }
   }
 
-  
+
   previewing = (files, index) => {
-    if(this.state.loading===false){
+    if (this.state.loading === false) {
       Toast.loading('图片上传中', 1)
-    }else{
-      this.setState({imgMasking:index[files].url,masking:true})
+    } else {
+      this.setState({ imgMasking: index[files].url, masking: true })
     }
   }
-  maskingF=()=>{
-    this.setState({masking:false})
+  maskingF = () => {
+    this.setState({ masking: false })
+  }
+
+  async BelongingOneLisen(data) {
+    const res = await UploadVenueImgsLisen(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingOneSon: res.data.data.baseURL + res.data.data.filesURL, loading: true })
+    } else if (res.data.code === 4004) {
+      Toast.fail('图片违规请重新上传', 2)
+      this.setState({ BelongingOne: [], loading: true })
+    } else {
+      this.setState({ BelongingOne: [], loading: true })
+      Toast.fail(res.data.msg, 2)
+    }
+  }
+
+  BelongingOne = (files, type, index) => {
+    this.setState({ BelongingOne: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingOneLisen(formdata1)
+          })
+      } else {
+        Toast.fail('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingOneSon: '' })
+    }
+  }
+
+  async BelongingTwoLisen(data) {
+    const res = await UploadVenueImgsLisenTwo(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingTwoSon: res.data.data.filesURL, ascrBaceUrl: res.data.data.baseURL, loading: true })
+    } else if (res.data.code === 4004) {
+      Toast.fail('图片违规请重新上传', 2)
+      this.setState({ BelongingTwo: [], loading: true })
+    } else {
+      this.setState({ BelongingTwo: [], loading: true })
+      Toast.fail(res.data.msg, 2)
+    }
+  }
+
+  BelongingTwo = (files, type, index) => {
+    this.setState({ BelongingTwo: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingTwoLisen(formdata1)
+          })
+      } else {
+        Toast.fail('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingTwoSon: '', BelongingThree: [], BelongingThreeSon: '' })
+    }
+  }
+
+
+  async BelongingThreeLisen(data) {
+    const res = await UploadVenueImgsLisenTwo(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingThreeSon: res.data.data.filesURL, ascrBaceUrl: res.data.data.baseURL, loading: true })
+    } else if (res.data.code === 4004) {
+      Toast.fail('图片违规请重新上传', 2)
+      this.setState({ BelongingThree: [], loading: true })
+    } else {
+      this.setState({ BelongingThree: [], loading: true })
+      Toast.fail(res.data.msg, 2)
+    }
+  }
+
+  BelongingThree = (files, type, index) => {
+    this.setState({ BelongingThree: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingThreeLisen(formdata1)
+          })
+      } else {
+        Toast.fail('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingThreeSon: '', BelongingTwo: [], BelongingTwoSon: '' })
+    }
+  }
+
+  async BelongingFourLisen(data) {
+    const res = await UploadVenueImgsLisen(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingFourSon: res.data.data.baseURL + res.data.data.filesURL, loading: true })
+    } else if (res.data.code === 4004) {
+      Toast.fail('图片违规请重新上传', 2)
+      this.setState({ BelongingFour: [], loading: true })
+    } else {
+      this.setState({ BelongingFour: [], loading: true })
+      Toast.fail(res.data.msg, 2)
+    }
+  }
+
+  BelongingFour = (files, type, index) => {
+    this.setState({ BelongingFour: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingFourLisen(formdata1)
+          })
+      } else {
+        Toast.fail('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingFourSon: '' })
+    }
+  }
+  faName = e => {
+    this.setState({ faName: e.target.value })
+  }
+  faPhone = e => {
+    this.setState({ faPhone: e.target.value })
+  }
+  faIdcard = e => {
+    this.setState({ faIdcard: e.target.value })
+  }
+  numRadioTwo = e => {
+    if (e.target.value === 0) {
+      this.setState({ valueTwo: 1 })
+    }else{
+      this.setState({ valueTwo: 2 })
+    }
+    this.setState({ value: e.target.value })
+  }
+  numRadioThree = e => {
+    this.setState({ valueTwo: e.target.value })
+  }
+  numRadioFour=e=>{
+    this.setState({valueThree:e.target.value})
+  }
+  async BelongingFiveLisen(data) {
+    const res = await UploadVenueImgsLisenTwo(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingFiveSon: res.data.data.filesURL, legalhourBaseURL: res.data.data.baseURL, loading: true })
+    } else if (res.data.code === 4004) {
+      Toast.fail('图片违规请重新上传', 2)
+      this.setState({ BelongingFive: [], loading: true })
+    } else {
+      this.setState({ BelongingFive: [], loading: true })
+      Toast.fail(res.data.msg, 2)
+    }
+  }
+
+  BelongingFive = (files, type, index) => {
+    this.setState({ BelongingFive: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingFiveLisen(formdata1)
+          })
+      } else {
+        Toast.fail('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingFiveSon: '', BelongingSix: [], BelongingSixSon: '' })
+    }
+  }
+
+
+  async BelongingSixLisen(data) {
+    const res = await UploadVenueImgsLisenTwo(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingSixSon: res.data.data.filesURL, legalhourBaseURL: res.data.data.baseURL, loading: true })
+    } else if (res.data.code === 4004) {
+      Toast.fail('图片违规请重新上传', 2)
+      this.setState({ BelongingSix: [], loading: true })
+    } else {
+      this.setState({ BelongingSix: [], loading: true })
+      Toast.fail(res.data.msg, 2)
+    }
+  }
+
+  BelongingSix = (files, type, index) => {
+    this.setState({ BelongingSix: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingSixLisen(formdata1)
+          })
+      } else {
+        Toast.fail('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingSixSon: '', BelongingFive: [], BelongingFiveSon: '' })
+    }
   }
 
 
@@ -744,9 +990,10 @@ class inforSitePh extends React.Component {
 
 
 
+
     const optionsTwo = [{ label: '停车场', value: '1' }, { label: 'WiFi', value: '2' }, { label: '淋浴', value: '3' }, { label: '室内摄像头', value: '4' },]
 
-    const { files, filesTwo, filesFour, filesThree, filesFive, empowerURLBos } = this.state
+    const { files, filesTwo, filesFour, filesThree, filesFive, BelongingFour, BelongingOne, BelongingThree, BelongingTwo, BelongingFive, BelongingSix } = this.state
 
 
     return (
@@ -783,7 +1030,7 @@ class inforSitePh extends React.Component {
           <div className="listSon" onClick={this.mapPh} data-position={listSon.position}>
             <span style={{ float: 'left' }}>场馆位置</span>
             <img style={{ float: 'right', width: '0.85rem', marginTop: '0.9rem' }} src={require('../../assets/icon_pc_dingwei.png')} alt="icon" />
-            <Input className="right" style={{ width: '76%' }} value={this.state.position} disabled={true}/>
+            <Input className="right" style={{ width: '76%' }} value={this.state.position} disabled={true} />
           </div>
           <div className="listSon">
             <TextareaItem
@@ -791,7 +1038,7 @@ class inforSitePh extends React.Component {
               placeholder="click the button below to focus"
               value={this.state.address}
               onChange={this.address}
-              style={{ minHeight: '2rem', fontSize: '0.75rem', color: '#333' }}
+              style={{ minHeight: '2rem', fontSize: '0.75rem', color: '#333',padding:'0' }}
               className="textItem"
               autoHeight
             />
@@ -862,51 +1109,148 @@ class inforSitePh extends React.Component {
 
 
         <Spin spinning={this.state.spin} style={{ width: '100%', marginTop: '45%' }} />
-        <div className="qualification" style={this.state.flag === 2 ? { display: 'block',height:'90%' } : { display: 'none' }}>
-          <div className="listSon">
-            <span>公司名称</span>
-            <Input className="right" value={this.state.CorporateName} placeholder="请输入公司名称" onChange={this.CorporateName} />
-          </div>
-          <div className="listSon">
-            <span>营业执照</span>
-            <ImagePicker
-              files={filesThree}
-              style={{ float: 'right', width: '80%' }}
-              onChange={this.handleChangeOne}
-              onImageClick={this.previewing}
-              selectable={filesThree.length < 1}
-              length={3}
-              multiple={false}
-            />
-          </div>
+        <div className="qualification" style={this.state.flag === 2 ? { display: 'block', height: '90%' } : { display: 'none' }}>
 
-          <div className="listSon">
-            <span>授权书照</span>
-            <ImagePicker
-              files={empowerURLBos}
-              style={{ float: 'right', width: '80%' }}
-              onChange={this.authorizations}
-              onImageClick={this.previewing}
-              selectable={empowerURLBos.length < 1}
-              length={3}
-              multiple={false}
-            />
+          <div style={{ fontSize: '1.2rem', fontWeight: 'bold', float: 'left', paddingLeft: '2.5%' }}>场馆归属证明</div>
+          <div style={{ width: '100%', height: '2.5rem' }}> </div>
+          <Radio.Group style={{ clear: 'both', fontSize: '0.75rem', marginLeft: '2.5%', marginBottom: '1rem', overflow: 'hidden' }} onChange={this.numRadioTwo} value={this.state.value}>
+            <Radio value={0}>公司</Radio>
+            <Radio value={1}>个人</Radio>
+          </Radio.Group>
+
+
+          <div style={this.state.value === 0 ? {} : { display: 'none' }}>
+            <div className="listSon">
+              <span>公司名称</span>
+              <Input className="right" value={this.state.CorporateName} placeholder="请输入公司名称" onChange={this.CorporateName} />
+            </div>
+            <div className="listSon">
+              <span>营业执照</span>
+              <ImagePicker
+                files={filesThree}
+                style={{ float: 'right', width: '80%' }}
+                onChange={this.handleChangeOne}
+                onImageClick={this.previewing}
+                selectable={filesThree.length < 1}
+                length={3}
+                multiple={false}
+              />
+            </div>
           </div>
 
+          <div style={this.state.value === 1 ? {} : { display: 'none' }}>
 
+            <div className="listSon">
+              <span>承诺书照</span>
+              <ImagePicker
+                files={BelongingOne}
+                style={{ float: 'right', width: '80%' }}
+                onChange={this.BelongingOne}
+                onImageClick={this.previewing}
+                selectable={BelongingOne.length < 1}
+                length={3}
+                multiple={false}
+                disableDelete={this.state.flagDis}
+              />
+            </div>
 
-          <div className="listSon">
-            <span>法人姓名</span>
-            <Input className="right" value={this.state.corporateName} placeholder="请输入法人姓名" onChange={this.corporateName} />
+            <div className="listSon">
+              <span style={{ float: 'left' }}>手持身份证照</span>
+              <ImagePicker
+                files={BelongingTwo}
+                style={{ float: 'left', width: '28%', marginLeft: '0.2rem' }}
+                onChange={this.BelongingTwo}
+                onImageClick={this.previewing}
+                selectable={BelongingTwo.length < 1}
+                length={1}
+                multiple={false}
+                disableDelete={this.state.flagDis}
+              />
+              <ImagePicker
+                files={BelongingThree}
+                style={{ float: 'left', width: '28%' }}
+                onChange={this.BelongingThree}
+                onImageClick={this.previewing}
+                selectable={BelongingThree.length < 1}
+                length={1}
+                multiple={false}
+                disableDelete={this.state.flagDis}
+              />
+            </div>
           </div>
 
- 
 
-          <div className="listSon">
-            <span>法人手机号</span>
-            <Input className="right" value={this.state.corporatePhone} placeholder="请输入法人手机号" onChange={this.corporatePhone} />
+          <div style={{ fontSize: '1.2rem', fontWeight: 'bold', float: 'left', paddingLeft: '2.5%' }}>场馆负责人</div>
+          <div style={{ width: '100%', height: '2.5rem' }}> </div>
+          <Radio.Group style={{ clear: 'both', fontSize: '0.75rem', marginLeft: '2.5%', marginBottom: '1rem', overflow: 'hidden' }} onChange={this.numRadioThree} value={this.state.valueTwo}>
+            <Radio style={this.state.value === 0 ? {} : { display: 'none' }} value={1}>法人</Radio>
+            <Radio style={this.state.value === 1 ? {} : { display: 'none' }} value={2}>承诺人本人</Radio>
+            <Radio value={3}>代理人</Radio>
+          </Radio.Group>
+          <div style={{ clear: 'both' }}>
+            <div className="listSon" style={this.state.valueTwo === 1||this.state.valueTwo === 2 ? { display: 'none' } : {}}>
+              <span>授权书照</span>
+              <ImagePicker
+                files={BelongingFour}
+                style={{ float: 'right', width: '78%' }}
+                onChange={this.BelongingFour}
+                onImageClick={this.previewing}
+                selectable={BelongingFour.length < 1}
+                length={3}
+                multiple={false}
+                disableDelete={this.state.flagDis}
+              />
+            </div>
           </div>
 
+          <div style={{ fontSize: '1.2rem', fontWeight: 'bold', float: 'left', paddingLeft: '2.5%' }}>负责人验证方式</div>
+          <div style={{ width: '100%', height: '2.5rem' }}> </div>
+          <Radio.Group style={{ clear: 'both', fontSize: '0.75rem', marginLeft: '2.5%', marginBottom: '1rem', overflow: 'hidden' }} onChange={this.numRadioFour} value={this.state.valueThree}>
+            <Radio value={1}>姓名、手机号</Radio>
+            <Radio value={2}>姓名、手机号、身份证号</Radio>
+            <Radio value={3}>姓名、手机号、手持身份证照</Radio>
+          </Radio.Group>
+
+
+          <div>
+            <div className="listSon">
+              <span>姓名</span>
+              <Input className="right" value={this.state.faName} placeholder="请输入法人姓名" onChange={this.faName} />
+            </div>
+
+            <div className="listSon">
+              <span>手机号</span>
+              <Input className="right" value={this.state.faPhone} placeholder="请输入法人手机号" onChange={this.faPhone} />
+            </div>
+            <div className="listSon" style={this.state.valueThree === 2 ? {} : {display: 'none'}}>
+              <span>身份证号</span>
+              <Input className="right" onChange={this.faIdcard} value={this.state.faIdcard} placeholder="请输入身份证号" />
+            </div>
+
+            <div className="listSon" style={this.state.valueThree === 3 ? {} : {display: 'none'}}>
+              <span style={{ lineHeight: '1.5rem', paddingRight: '0.5rem', float: 'left' }}>手持身份证照</span>
+              <ImagePicker
+                files={BelongingFive}
+                style={{ float: 'left', width: '28%', marginLeft: '0' }}
+                onChange={this.BelongingFive}
+                onImageClick={this.previewing}
+                selectable={BelongingFive.length < 1}
+                length={1}
+                multiple={false}
+                disableDelete={this.state.flagDis}
+              />
+              <ImagePicker
+                files={BelongingSix}
+                style={{ float: 'left', width: '28%' }}
+                onChange={this.BelongingSix}
+                onImageClick={this.previewing}
+                selectable={BelongingSix.length < 1}
+                length={1}
+                multiple={false}
+                disableDelete={this.state.flagDis}
+              />
+            </div>
+          </div>
           <Button className="submit" onTouchStart={() =>
             alert('提示', '您确定本次修改吗?', [
               { text: '取消', onPress: () => console.log('cancel') },
@@ -923,7 +1267,18 @@ class inforSitePh extends React.Component {
 
 
 
-        <div className="qualification" style={this.state.flag === 3 ? { display: 'block',height:'90%' } : { display: 'none' }}>
+
+
+
+
+
+
+
+
+
+
+
+        <div className="qualification" style={this.state.flag === 3 ? { display: 'block', height: '90%' } : { display: 'none' }}>
           <div className="listSon">
             <span style={{ float: 'left' }}>结算账号:</span>
             <Radio.Group style={{ float: 'left', fontSize: '0.75rem', marginLeft: '10%' }} onChange={this.numRadio} value={this.state.numRadio}>
@@ -932,14 +1287,14 @@ class inforSitePh extends React.Component {
             </Radio.Group>
           </div>
           <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
-            <span style={{float:'left'}}>法人身份证号</span>
-            <Input className="right" style={{ width: '60%', paddingLeft: '0.5rem',float:'left' }} maxLength={18} placeholder="请输入法人身份证号" value={this.state.corporateId} onChange={this.corporateId} />
+            <span style={{ float: 'left' }}>法人身份证号</span>
+            <Input className="right" style={{ width: '60%', paddingLeft: '0.5rem', float: 'left' }} maxLength={18} placeholder="请输入法人身份证号" value={this.state.faIdcard} onChange={this.corporateId} />
           </div>
           <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
-            <span style={{float:'left'}}>身份证照</span>
+            <span style={{ float: 'left' }}>身份证照</span>
             <ImagePicker
               files={filesFour}
-              style={{ float: 'left', width: '30%',marginLeft:"8%" }}
+              style={{ float: 'left', width: '30%', marginLeft: "8%" }}
               onChange={this.handleChangeTwo}
               onImageClick={this.previewing}
               selectable={filesFour.length < 1}
@@ -959,7 +1314,7 @@ class inforSitePh extends React.Component {
           </div>
           <div className="listSon">
             <span>银行账号</span>
-            <Input className="right" value={this.state.corporateCardId} placeholder="请输入银行账号" onChange={this.corporateCardId} />
+            <Input className="right" value={this.state.cardId} placeholder="请输入银行账号" onChange={this.corporateCardId} />
           </div>
 
 
@@ -995,12 +1350,12 @@ class inforSitePh extends React.Component {
               showArrow={false}
               notFoundContent={null}
               placeholder="请输入银行关键字"
-              value={this.state.corporateOpen === '' ? null : this.state.corporateOpen}
+              value={this.state.openingLine === '' ? null : this.state.openingLine}
             >
               {
                 this.state.backList.map((item, i) => (
                   <Option key={i} value={item.name} alt={item.name}>
-                    <span style={{fontSize:'12px'}}>{item.nameT}</span>
+                    <span style={{ fontSize: '12px' }}>{item.nameT}</span>
                   </Option>
                 ))
               }
@@ -1034,8 +1389,8 @@ class inforSitePh extends React.Component {
           <img alt="example" style={{ width: '100%' }} src={this.state.previewImage} />
         </Modal>
 
-        <div className={this.state.masking===true?'masking':'hidden'} onClick={this.maskingF}>
-          <img src={this.state.imgMasking} alt="img"/>
+        <div className={this.state.masking === true ? 'masking' : 'hidden'} onClick={this.maskingF}>
+          <img src={this.state.imgMasking} alt="img" />
         </div>
 
       </div>

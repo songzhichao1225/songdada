@@ -41,7 +41,7 @@ class moneyDetailPh extends React.Component {
          <div className="headerTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px'}} />查看详情</div>
          <div className="title">
            <span>入账金额</span>
-           <span>{this.state.datatring.money}</span>
+           <span>+{this.state.datatring.money}</span>
          </div>
          <div className="list"><div className="listSon"><span>类</span><span>型</span></div><span className="value">收入</span></div>
          <div className="list"><div className="listSon"><span>时</span><span>间</span></div><span className="value">{this.state.datatring.time}</span></div>

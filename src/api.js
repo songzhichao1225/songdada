@@ -1,7 +1,14 @@
 import axios from 'axios';
 
-// axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';
-// axios.defaults.withCredentials = true
+//本地全部隐去
+// axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
+// axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
+
+export let imgUrlTwo='https://app.tiaozhanmeiyitian.com/'  //正式图片路径
+// export let imgUrlTwo='https://appstg.tiaozhanmeiyitian.com/'  //测试图片路径
+
+export let wsFn = new WebSocket("wss://www.cg.zhaoduishou.com/socket");//正式socket
+// export let wsFn = new WebSocket("wss://cgstg.zhaoduishou.com/socket");//测试socket
 
 export function _login(data){    //登录
     return axios.post('/api/getVenueLogin',data)
@@ -25,7 +32,7 @@ export function _code(data){    //获取验证码
 
 export function getProvince(data){    //获取省份
     return axios.post('/api/getProvince',data)
-}
+} 
 
 export function getCrty(data){    //获取市
     return axios.post('/api/getCrty',data)
@@ -460,6 +467,24 @@ export function MembershipCollectionAgreeToRefuse(data,headers){    //场馆端~
 export function getVenueMembershipCardConsumptionList(data,headers){    //场馆端~会员卡的收入与支出列表
     return axios.post('/api/getVenueMembershipCardConsumptionList',data,{headers: {'token': headers}})
 }
+
+export function VenueQualifications_another(data,headers){    //场馆端2020-09-21添加场馆资质信息 
+    return axios.post('/api/VenueQualifications_another',data,{headers: {'token': headers}})
+}
+
+export function VenueQualificationInformationSave_another(data,headers){    //场馆端2020-09-21修改场馆资质信息
+    return axios.post('/api/VenueQualificationInformationSave_another',data,{headers: {'token': headers}})
+}
+
+export function TemporaryQualificationInformation_another(data,headers){    //场馆端2020-09-21临时添加资质信息（保存按钮）
+    return axios.post('/api/TemporaryQualificationInformation_another',data,{headers: {'token': headers}})
+}
+
+
+  
+
+
+
 
 
 

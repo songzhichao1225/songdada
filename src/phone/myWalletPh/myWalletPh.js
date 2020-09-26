@@ -6,7 +6,7 @@ import { Input, Select, Radio, } from 'antd';
 import 'antd-mobile/dist/antd-mobile.css';
 import { LeftOutlined } from '@ant-design/icons';
 import lrz from 'lrz';
-import { getVenueMoney, getReceivingBankQualifications, getVenueOpenBank, getVenueOpenBankProvince, UploadVenueImgsLisenTwo,getMembershipCollectionDetails,MembershipCollectionAgreeToRefuse,getCompleteMembershipRechargeDetails,MembershipRechargeAgreeToRefuse,getMembershipRechargeDetails,gerVenueName, getVenueOpenBankCity, getVenueOpenBankList, VenueReceivingBankInformation } from '../../api';
+import { getVenueMoney, getReceivingBankQualifications, getVenueOpenBank, getVenueOpenBankProvince, UploadVenueImgsLisenTwo, getMembershipCollectionDetails, MembershipCollectionAgreeToRefuse, getCompleteMembershipRechargeDetails, MembershipRechargeAgreeToRefuse, getMembershipRechargeDetails, gerVenueName, getVenueOpenBankCity, getVenueOpenBankList, VenueReceivingBankInformation } from '../../api';
 const { Option } = Select
 const alert = Modal.alert;
 const { TextArea } = Input;
@@ -36,23 +36,23 @@ class myWalletPh extends React.Component {
     filesSonTwo: '',//身份证反面
     flag: 1,
     vipList: [],
-    vipVisible:false,
-    vipNot:'',
-    shipuuid:'',
-    chargeDetails:[],
-    chargeDetailsNum:'',
-    vipVisibleTwo:false,
-    vipListTwo:[],
+    vipVisible: false,
+    vipNot: '',
+    shipuuid: '',
+    chargeDetails: [],
+    chargeDetailsNum: '',
+    vipVisibleTwo: false,
+    vipListTwo: [],
     imgMasking: '',
-    masking:false,
+    masking: false,
   };
 
-  
+
   maskingF = () => {
-    this.setState({ masking: false,vipVisibleTwo:true, })
+    this.setState({ masking: false, vipVisibleTwo: true, })
   }
   imgMasking = e => {
-    this.setState({ imgMasking: e.currentTarget.dataset.url, masking: true,vipVisibleTwo:false })
+    this.setState({ imgMasking: e.currentTarget.dataset.url, masking: true, vipVisibleTwo: false })
   }
 
   async getVenueMoney(data) {
@@ -70,7 +70,7 @@ class myWalletPh extends React.Component {
 
   async gerVenueName(data) {
     const res = await gerVenueName(data, localStorage.getItem('venue_token'))
-  
+
     localStorage.setItem('name', res.data.data.name)
     localStorage.setItem('avatar', "https://app.tiaozhanmeiyitian.com/" + res.data.data.siteimg)
     localStorage.setItem('lyv', res.data.data.rate)
@@ -91,7 +91,9 @@ class myWalletPh extends React.Component {
     this.getVenueOpenBank()
     this.gerVenueName()
     this.getCompleteMembershipRechargeDetails()
-  
+    this.setState({
+      flag: Number(sessionStorage.getItem('flaghood'))
+    })
 
   }
 
@@ -146,7 +148,7 @@ class myWalletPh extends React.Component {
   handleChangeTwo = (files, type, index) => {
     this.setState({ files })
     if (type === 'add') {
-      if (files[0].file.size / 1024 / 1024 < 7) {
+      if (files[0].file.size / 1024 / 1024 < 9) {
         lrz(files[0].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
@@ -155,7 +157,7 @@ class myWalletPh extends React.Component {
             this.UploadVenueImgsLisenTwo(formdata1)
           })
       } else {
-        Toast.fail('图片超过7M无法上传', 2)
+        Toast.fail('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       this.setState({ filesSon: '', filesTwo: [], filesSonTwo: '' })
@@ -180,7 +182,7 @@ class myWalletPh extends React.Component {
   handleChangeThree = (files, type, index) => {
     this.setState({ filesTwo: files })
     if (type === 'add') {
-      if (files[0].file.size / 1024 / 1024 < 7) {
+      if (files[0].file.size / 1024 / 1024 < 9) {
         lrz(files[0].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
@@ -189,7 +191,7 @@ class myWalletPh extends React.Component {
             this.UploadVenueImgsLisenTwoT(formdata1)
           })
       } else {
-        Toast.fail('图片超过7M无法上传', 2)
+        Toast.fail('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       this.setState({ filesSonTwo: '', files: [], filesSon: '' })
@@ -335,9 +337,11 @@ class myWalletPh extends React.Component {
 
   }
   oneLeft = () => {
+    sessionStorage.setItem('flaghood', 1)
     this.setState({ flag: 1 })
   }
   TwoRight = () => {
+    sessionStorage.setItem('flaghood', 2)
     this.setState({ flag: 2 })
   }
 
@@ -346,8 +350,8 @@ class myWalletPh extends React.Component {
     const res = await getCompleteMembershipRechargeDetails(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ chargeDetails: res.data.data, chargeDetailsNum: res.data.other })
-    }else{
-      this.setState({chargeDetailsNum: res.data.other })
+    } else {
+      this.setState({ chargeDetailsNum: res.data.other })
     }
   }
 
@@ -358,11 +362,11 @@ class myWalletPh extends React.Component {
     }
   }
 
-  onCloseTwo=()=>{
-    this.setState({vipVisible:false})
+  onCloseTwo = () => {
+    this.setState({ vipVisible: false })
   }
-  onCloseThree=()=>{
-    this.setState({vipVisibleTwo:false})
+  onCloseThree = () => {
+    this.setState({ vipVisibleTwo: false })
   }
 
   vipNot = e => {
@@ -415,16 +419,16 @@ class myWalletPh extends React.Component {
     }
   }
 
-  Membership=()=>{
-    
-    if(this.state.chargeDetails.cardBackURL === ''||this.state.chargeDetails.length === 0){
-      Toast.fail('没有会员卡照片', 1)
-    }else{
+  Membership = () => {
+
+    if (this.state.chargeDetails.cardBackURL === '' || this.state.chargeDetails.length === 0) {
+      Toast.fail('暂无会员卡照片', 1)
+    } else {
       this.props.history.push('/Membership')
     }
   }
 
-  MembershipList=()=>{
+  MembershipList = () => {
     this.props.history.push('/MembershipList')
   }
 
@@ -434,12 +438,12 @@ class myWalletPh extends React.Component {
 
     return (
       <div className="myWalletPh">
-        <div className="headerTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', left: '0', width: '48px', height: '48px', lineHeight: '48px' }} /><span onClick={this.oneLeft} style={this.state.flag === 1 ? { borderBottom: '1px solid #fff' } : {}}>会员卡扣费</span><span onClick={this.TwoRight} style={this.state.flag === 2 ? { borderBottom: '1px solid #fff' } : {}}>钱包到账</span></div>
+        <div className="headerTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', left: '0', width: '48px', height: '48px', lineHeight: '38px' }} /><span onClick={this.oneLeft} style={this.state.flag === 1 ? { borderBottom: '1px solid #fff' } : {}}>会员卡扣费</span><span onClick={this.TwoRight} style={this.state.flag === 2 ? { borderBottom: '1px solid #fff' } : {}}>钱包到账</span></div>
 
         <div className="moneyBao" style={this.state.flag === 2 ? {} : { display: 'none' }}>
           <div className="headBanner">
             <div className="content">
-              <span>账户余额(元)</span>
+              <span>钱包余额(元)</span>
               <span>{this.state.money}</span>
             </div>
           </div>
@@ -500,7 +504,7 @@ class myWalletPh extends React.Component {
           <div className="oneVip">
             <span style={{ fontSize: '14px' }}>会员卡信息</span>
             <span style={{ paddingTop: '1.5rem' }}>北京甲乙电子商务有限公司(找对手平台)</span>
-            <span style={this.state.chargeDetails.cardnumber === ''||this.state.chargeDetails.length === 0 ? { display: 'none' } : { paddingTop: '1.5rem'}}>卡号：{this.state.chargeDetails.cardnumber}</span>
+            <span style={this.state.chargeDetails.cardnumber === '' || this.state.chargeDetails.length === 0 ? { display: 'none' } : { paddingTop: '1.5rem' }}>卡号：{this.state.chargeDetails.cardnumber}</span>
             <span style={{ textAlign: 'right', fontSize: '14px', paddingTop: '1.5rem', paddingRight: '1rem' }}>当前余额：¥{this.state.chargeDetailsNum}</span>
           </div>
           <div className="ulList">
@@ -536,9 +540,9 @@ class myWalletPh extends React.Component {
           maskClosable={true}
           onClose={this.onCloseThree}
           title="汇款凭证信息"
-          footer={[{ text: '确认', onPress: () => { this.MembershipCollectionAgreeToRefuse({ shipuuid:this.state.vipListTwo.uuid }) } }]}
+          footer={[{ text: '确认', onPress: () => { this.MembershipCollectionAgreeToRefuse({ shipuuid: this.state.vipListTwo.uuid }) } }]}
         >
-           <p><span className="vipLeft">持卡人</span><span style={{width:'7rem',display:'block',float:'left'}}>北京甲乙电子商务有限公司(找对手平台)</span></p>
+          <p><span className="vipLeft">持卡人</span><span style={{ width: '7rem', display: 'block', float: 'left' }}>北京甲乙电子商务有限公司(找对手平台)</span></p>
           <p><span className="vipLeft">充值金额</span>￥{this.state.vipListTwo.PlanRecharge}</p>
           <p><span className="vipLeft">需赠送金额</span>￥{this.state.vipListTwo.givemoney}</p>
           <p><span className="vipLeft" style={{ color: '#F5A623', cursor: 'pointer' }} data-url={this.state.vipListTwo.RemittanceURL} onClick={this.imgMasking}>查看凭证</span></p>

@@ -72,7 +72,7 @@ class withdrawalPh extends React.Component {
         <div className="money">
           <span className="title">提现金额</span>
           <div className="text">
-            <span className="moneySon">￥</span><input value={this.state.value} onChange={this.inputValue} type="number" style={{ float: 'right', width: '80%', background: 'transparent' }} />
+            <span className="moneySon">￥</span><input value={this.state.value} onChange={this.inputValue} type="number" style={{ float: 'left', width: '80%', background: 'transparent' }} />
           </div>
           <div className="bottomSpan">
             <span style={{ display: 'block' }}>{'可用金额' + this.state.money + '元'}</span>

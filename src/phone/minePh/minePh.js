@@ -4,7 +4,7 @@ import './minePh.css';
 import { Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Drawer, Input, Pagination } from 'antd';
-import { VenueFeedback, getVenueHelpCenter,gerVenueName } from '../../api';
+import { VenueFeedback, getVenueHelpCenter,gerVenueName,imgUrlTwo } from '../../api';
 
 const { TextArea } = Input
 
@@ -29,7 +29,7 @@ class minePh extends React.Component {
     const res = await gerVenueName(data, localStorage.getItem('venue_token'))
   
     localStorage.setItem('name', res.data.data.name)
-    localStorage.setItem('avatar', "https://app.tiaozhanmeiyitian.com/" + res.data.data.siteimg)
+    localStorage.setItem('avatar', imgUrlTwo+ res.data.data.siteimg)
     localStorage.setItem('lyv', res.data.data.rate)
     localStorage.setItem('siteUid', res.data.data.siteuid)
     this.setState({ gerVenueName: res.data.data, refreshing: false,ishaverecharge:res.data.data.ishaverecharge })
@@ -39,6 +39,7 @@ class minePh extends React.Component {
 
   componentDidMount() {
      this.gerVenueName()
+     sessionStorage.setItem('flaghood',1)
   }
 
   myWalletPh = () => {

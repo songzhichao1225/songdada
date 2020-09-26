@@ -4,7 +4,7 @@ import { Card, Picker, List, Toast, InputItem, Modal, DatePicker, TextareaItem }
 import 'antd-mobile/dist/antd-mobile.css';
 import { Pagination, Drawer, Spin } from 'antd';
 import { } from '@ant-design/icons';
-import { getVenueNumberTitleList, getVenueSportidTitle,getVenueSport,DelVenueTitle, getVenueTitleSave, getSiteSelectedVenueid, DelVenueNumberTitle, getSiteSettingHistoryList, DelSiteSetting, AddSiteSetting, getVenueNumberTitleSave, getVenueNumberTitleFirst, getSiteSettingList, getSiteSelectedTitle, getSiteSettingFirst, DelSiteSettingDiscount, SiteSettingDiscountSave } from '../../api';
+import { getVenueNumberTitleList, getVenueSportidTitle, getVenueSport, DelVenueTitle, getVenueTitleSave, getSiteSelectedVenueid, DelVenueNumberTitle, getSiteSettingHistoryList, DelSiteSetting, AddSiteSetting, getVenueNumberTitleSave, getVenueNumberTitleFirst, getSiteSettingList, getSiteSelectedTitle, getSiteSettingFirst, DelSiteSettingDiscount, SiteSettingDiscountSave } from '../../api';
 
 const alert = Modal.alert;
 
@@ -69,7 +69,7 @@ class sitePh extends React.Component {
     ],
     timeRtArr: [{ label: '00:00', value: '00:00' }, { label: '00:30', value: '00:30' }, { label: '01:00', value: '01:00' }, { label: '01:30', value: '01:30' }, { label: '02:00', value: '02:00' }, { label: '02:30', value: '02:30' }, { label: '03:00', value: '03:00' }, { label: '03:30', value: '03:30' }, { label: '04:00', value: '04:00' }, { label: '04:30', value: '04:30' }, { label: '05:00', value: '05:00' }, { label: '05:30', value: '05:30' }, { label: '06:00', value: '06:00' }, { label: '06:30', value: '06:30' }, { label: '07:00', value: '07:00' }, { label: '07:30', value: '07:30' }, { label: '08:00', value: '08:00' }, { label: '08:30', value: '08:30' }, { label: '09:00', value: '09:00' }, { label: '09:30', value: '09:30' }, { label: '10:00', value: '10:00' }, { label: '10:30', value: '10:30' }, { label: '11:00', value: '11:00' }, { label: '11:30', value: '11:30' }, { label: '12:00', value: '12:00' }, { label: '12:30', value: '12:30' }, { label: '13:00', value: '13:00' }, { label: '13:30', value: '13:30' }, { label: '14:00', value: '14:00' }, { label: '14:30', value: '14:30' }, { label: '15:00', value: '15:00' }, { label: '15:30', value: '15:30' }, { label: '16:00', value: '16:00' }, { label: '16:30', value: '16:30' }, { label: '17:00', value: '17:00' }, { label: '17:30', value: '17:30' }, { label: '18:00', value: '18:00' }, { label: '18:30', value: '18:30' }, { label: '19:00', value: '19:00' }, { label: '19:30', value: '19:30' }, { label: '20:00', value: '20:00' }, { label: '20:30', value: '20:30' }, { label: '21:00', value: '21:00' }, { label: '21:30', value: '21:30' }, { label: '22:00', value: '22:00' }, { label: '22:30', value: '22:30' }, { label: '23:00', value: '23:00' }, { label: '23:30', value: '23:30' }, { label: '24:00', value: '24:00' }],
     Longest: [{ label: '一周', value: 0.1 }, { label: '两周', value: 0.2 }, { label: '三周', value: 0.3 }, { label: '一个月', value: 1 }, { label: '两个月', value: 2 },],
-    Shortest: [{ label: '0分钟', value: 0 }, { label: '30分钟', value: 30 }, { label: '60分钟', value: 60 }, { label: '120分钟', value: 120 }, { label: '180分钟', value: 180 }, { label: '240分钟', value: 240 }, { label: '360分钟', value: 360 }, { label: '1140分钟', value: 1140 }, { label: '2280分钟', value: 2280 }, { label: '4320分钟', value: 4320 },],
+    Shortest: [{ label: '0分钟', value: 0 }, { label: '30分钟', value: 30 }, { label: '60分钟', value: 60 }, { label: '2小时', value: 120 }, { label: '3小时', value: 180 }, { label: '4小时', value: 240 }, { label: '6小时', value: 360 }, { label: '24小时', value: 1440 }, { label: '48小时', value: 2280 }, { label: '72小时', value: 4320 },],
     LiturgyArr: [{ name: "周一", idx: 1, cheked: false }, { name: "周二", idx: 2, cheked: false }, { name: "周三", idx: 3, cheked: false }, { name: "周四", idx: 4, cheked: false }, { name: "周五", idx: 5, cheked: false }, { name: "周六", idx: 6, cheked: false, }, { name: "周日", idx: 7, cheked: false }],
     asyncValue: 0,
     index: '1',
@@ -141,18 +141,18 @@ class sitePh extends React.Component {
     }
   }
 
-  
+
 
   async getVenueSport(data) {
     const res = await getVenueSport(data, localStorage.getItem('venue_token'))
-    let sp=res.data.data
-    let arr=[]
-    for(let i in sp){
-      let obj= { label: sp[i].name, value: sp[i].id }
+    let sp = res.data.data
+    let arr = []
+    for (let i in sp) {
+      let obj = { label: sp[i].name, value: sp[i].id }
       arr.push(obj)
     }
-    this.setState({sportArrTwo:arr})
-    
+    this.setState({ sportArrTwo: arr })
+
 
 
   }
@@ -444,10 +444,10 @@ class sitePh extends React.Component {
   async DelVenueNumberTitle(data) {
     const res = await DelVenueNumberTitle(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      if(this.state.titleLise.length===1){
-        this.getVenueNumberTitleList({ page: this.state.page-1, sportid: this.state.asyncValue })
-        this.setState({ page: this.state.page-1 })
-      }else{
+      if (this.state.titleLise.length === 1) {
+        this.getVenueNumberTitleList({ page: this.state.page - 1, sportid: this.state.asyncValue })
+        this.setState({ page: this.state.page - 1 })
+      } else {
         this.getVenueNumberTitleList({ page: this.state.page, sportid: this.state.asyncValue })
         this.setState({ page: this.state.page })
       }
@@ -593,14 +593,14 @@ class sitePh extends React.Component {
     const res = await DelSiteSetting(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       Toast.success('删除成功', 1);
-      if(this.state.siteList.length===1){
-        this.setState({ pageTwo: this.state.pageTwo-1 })
-        this.getSiteSettingList({ page: this.state.pageTwo-1, sportid: this.state.asyncValueTwo })
-      }else{
+      if (this.state.siteList.length === 1) {
+        this.setState({ pageTwo: this.state.pageTwo - 1 })
+        this.getSiteSettingList({ page: this.state.pageTwo - 1, sportid: this.state.asyncValueTwo })
+      } else {
         this.setState({ pageTwo: this.state.pageTwo })
         this.getSiteSettingList({ page: this.state.pageTwo, sportid: this.state.asyncValueTwo })
       }
-     
+
     } else {
       Toast.fail(res.data.msg, 1);
     }
@@ -706,7 +706,7 @@ class sitePh extends React.Component {
       Toast.fail('请选择场地类型', 1);
     } else if (pickerValueThree.length === 0) {
       Toast.fail('请选择细分标签', 1);
-    } else if (Liturgyche === '请选择') { 
+    } else if (Liturgyche === '请选择') {
       Toast.fail('请选择星期', 1);
     } else if (starttime.length === undefined) {
       Toast.fail('请选择开始时间', 1);
@@ -723,7 +723,7 @@ class sitePh extends React.Component {
       let obj = {
         uuid: jiageUUid,
         sportid: pickerValueTwo,
-        sportname:pickerValueTwo===1?'羽毛球':pickerValueTwo===2?'乒乓球':pickerValueTwo===3?'台球中式黑八':pickerValueTwo===4?'台球美式九球':pickerValueTwo===5?'台球斯诺克':pickerValueTwo===6?'篮球':pickerValueTwo===7?'足球11人制':pickerValueTwo===8?'足球8人制':pickerValueTwo===9?'足球7人制':pickerValueTwo===10?'足球5人制':pickerValueTwo===11?'排球':pickerValueTwo===12?'网球':'',
+        sportname: pickerValueTwo === 1 ? '羽毛球' : pickerValueTwo === 2 ? '乒乓球' : pickerValueTwo === 3 ? '台球中式黑八' : pickerValueTwo === 4 ? '台球美式九球' : pickerValueTwo === 5 ? '台球斯诺克' : pickerValueTwo === 6 ? '篮球' : pickerValueTwo === 7 ? '足球11人制' : pickerValueTwo === 8 ? '足球8人制' : pickerValueTwo === 9 ? '足球7人制' : pickerValueTwo === 10 ? '足球5人制' : pickerValueTwo === 11 ? '排球' : pickerValueTwo === 12 ? '网球' : '',
         tags: titleArr[pickerValueThree].label,
         openday: LiturgycheNum,
         opendayname: Liturgyche,
@@ -1008,7 +1008,7 @@ class sitePh extends React.Component {
             >
               <div><img src={require('../../assets/shai.png')} alt="img" />筛选：<span style={{ color: '#000' }}>{this.state.sportArr[this.state.asyncValue].label}</span></div>
             </Picker>
-            <div style={{ marginLeft: '4%' }} onTouchStart={this.visibleXi}>+添加场地细分</div>
+            <div style={{ marginLeft: '4%' }} onClick={this.visibleXi}>+添加场地细分</div>
           </div>
         </div>
 
@@ -1026,7 +1026,7 @@ class sitePh extends React.Component {
                       <div onClick={this.venDuo} data-venueid={item.venueid}>场地编号：{item.venueid}</div>
                       <div>场地数量：{item.sitenumber}</div>
                       <div onClick={this.venDuo} data-venueid={item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}>星期：{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</div>
-                      <div onClick={this.venDuo} data-venueid={item.starttime+'~'+item.endtime}>时间范围：{item.starttime}~{item.endtime}</div>
+                      <div onClick={this.venDuo} data-venueid={item.starttime + '~' + item.endtime}>时间范围：{item.starttime}~{item.endtime}</div>
                       <div>价格：{item.costperhour}元/时</div>
                       <div onClick={this.venDuo} data-venueid={item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}>最长提前预定时间：{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</div>
                       <div onClick={this.venDuo} data-venueid={item.appointmenttime / 60 + '小时'}>最短提前预定时间：{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</div>
@@ -1052,7 +1052,7 @@ class sitePh extends React.Component {
             >
               <div><img src={require('../../assets/shai.png')} alt="img" />筛选：<span style={{ color: '#000' }}>{this.state.sportArr[this.state.asyncValueTwo].label}</span></div>
             </Picker>
-            <div style={{ marginLeft: '4%' }} onTouchStart={this.Price}>+添加价格设置</div>
+            <div style={{ marginLeft: '4%' }} onClick={this.Price}>+添加价格设置</div>
           </div>
         </div>
 
@@ -1070,7 +1070,7 @@ class sitePh extends React.Component {
                       <div onClick={this.venDuo} data-venueid={item.venueid}>场地编号：{item.venueid}</div>
                       <div>场地数量：{item.sitenumber}</div>
                       <div onClick={this.venDuo} data-venueid={item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}>星期：{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</div>
-                      <div onClick={this.venDuo} data-venueid={item.starttime+'~'+item.endtime}>时间范围：{item.starttime}~{item.endtime}</div>
+                      <div onClick={this.venDuo} data-venueid={item.starttime + '~' + item.endtime}>时间范围：{item.starttime}~{item.endtime}</div>
                       <div>价格：{item.costperhour}元/时</div>
                       <div onClick={this.venDuo} data-venueid={item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}>最长提前预定时间：{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</div>
                       <div onClick={this.venDuo} data-venueid={item.appointmenttime / 60 + '小时'}>最短提前预定时间：{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</div>
@@ -1122,6 +1122,10 @@ class sitePh extends React.Component {
           <List.Item arrow="horizontal" onClick={this.Serial} extra={this.state.chekedArr.length === 0 ? '请选择' : this.state.chekedArr.join(',')} style={{ borderBottom: '1px solid #E9E9E9' }}>场地编号</List.Item>
           <List.Item arrow="empty" extra={this.state.chekedArr.length} style={{ borderBottom: '1px solid #E9E9E9' }}>场地数量</List.Item>
           <div className="btnSub" onTouchStart={this.xifenPush}>提交</div>
+          <span style={{ paddingTop: '1rem', color: '#F5A623', display: 'block' }} onClick={() =>
+            alert('提示', '请对所选场地类型进行再细分，如场地类型选择的是羽毛球，贵场馆羽毛球场地是否有普通场、VIP场等之分? 如没有，则所有场地选择一个标签即可，如有，则分开设置标签及对应的“场地编号”。总之，同一时刻，不同价格的场地须细分并给出标签。', [
+              { text: '确定', onPress: () => console.log('cancel') },
+            ])}>什么是场地细分?</span>
         </Drawer>
 
 
@@ -1231,7 +1235,7 @@ class sitePh extends React.Component {
             value={this.state.starttime}
             cols={1}
           >
-            <List.Item arrow="horizontal"  style={{ borderBottom: '1px solid #E9E9E9' }}>开始时间</List.Item>
+            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>开始时间</List.Item>
           </Picker>
 
 
@@ -1241,11 +1245,11 @@ class sitePh extends React.Component {
             value={this.state.endtime}
             cols={1}
           >
-            <List.Item arrow="horizontal"  style={{ borderBottom: '1px solid #E9E9E9' }}>结束时间</List.Item>
+            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>结束时间</List.Item>
           </Picker>
 
 
-          <List.Item arrow="empty"  style={{ borderBottom: '1px solid #E9E9E9' }}>
+          <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
             <InputItem
               type='money'
               placeholder="请输入"
@@ -1318,7 +1322,7 @@ class sitePh extends React.Component {
           <List.Item extra={this.state.titleSiscount} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty" >细分标签</List.Item>
           <List.Item extra={this.state.xingSiscount} className="lopk" style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">星期</List.Item>
           <List.Item extra={this.state.starttimeSiscount + '~' + this.state.endtimeSiscount} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">时间范围</List.Item>
-          <List.Item arrow="horizontal" extra={this.state.venueidSiscountTwo} onClick={this.offer} style={{ borderBottom: '1px solid #E9E9E9' }} >参加优惠的场地</List.Item>
+          <List.Item arrow="horizontal" extra={this.state.venueidSiscountTwo} onClick={this.offer} style={{ borderBottom: '1px solid #E9E9E9' }} >参加优惠的场地号</List.Item>
           <DatePicker
             mode="datetime"
             extra="请选择"

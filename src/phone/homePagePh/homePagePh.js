@@ -11,13 +11,14 @@ import newsPh from '../newsPh/newsPh';
 import minePh from '../minePh/minePh';
 import orderPhT from '../orderPhT/orderPhT';
 import {  notification } from 'antd';
-import { getIsStatus,getIsSignOut } from '../../api';
+import { getIsStatus,getIsSignOut,wsFn } from '../../api';
 import {EllipsisOutlined} from '@ant-design/icons';
 
 const Item = Popover.Item;
 const alert = Modal.alert;
 function jo() {
-  var ws = new WebSocket("wss://www.cg.zhaoduishou.com/socket");
+  let ws=wsFn
+  
   ws.onopen = function () {
     ws.send(localStorage.getItem('siteUid'))
   }

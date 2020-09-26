@@ -26,8 +26,8 @@ class MembershipList extends React.Component {
 
   componentDidMount() {
     let myDate = new Date()
-    let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
-    let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
+    let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString()
+    let end = moment().endOf('day')._d.toLocaleDateString()
     console.log(start, end)
     this.getVenueMembershipCardConsumptionList({ page: this.state.pageTwo, type: this.state.index, startdate: start, enddate: end })
     this.setState({ qiStart: start, qiEnd: end })
@@ -49,10 +49,12 @@ class MembershipList extends React.Component {
  }
 
  qiStart=e=>{
+   this.setState({qiStart: e.toLocaleDateString()})
    this.getVenueMembershipCardConsumptionList({ page: this.state.pageTwo, type: this.state.index, startdate: e.toLocaleDateString().replace(/\//g, "-"), enddate: this.state.qiEnd })
  }
 
  qiEnd=e=>{
+   this.setState({qiEnd:e.toLocaleDateString()})
   this.getVenueMembershipCardConsumptionList({ page: this.state.pageTwo, type: this.state.index, startdate: this.state.qiStart, enddate: e.toLocaleDateString().replace(/\//g, "-")})
 }
 

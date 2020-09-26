@@ -1,7 +1,7 @@
 import React from 'react';
 import './perfect.css';
 import 'antd/dist/antd.css';
-import { PerfectingVenueInformation, getVenueInformation, getVenueSportList, VenueInformationSave, TemporaryVenueInformation, UploadVenueImgs } from '../../api';
+import { PerfectingVenueInformation, getVenueInformation, getVenueSportList, VenueInformationSave,imgUrlTwo, TemporaryVenueInformation, UploadVenueImgs } from '../../api';
 import { Input, Checkbox, Button, message } from 'antd';
 import { ImagePicker } from 'antd-mobile';
 import lrz from 'lrz';
@@ -67,7 +67,7 @@ class perfect extends React.Component {
           arrImg = []
         } else {
           for (let i in imgS) {
-            arrImg.push({ url: imgS[i] })
+            arrImg.push({ url:imgUrlTwo+imgS[i] })
           }
         }
 
@@ -85,7 +85,7 @@ class perfect extends React.Component {
         onChangeCheck: arrjo, onChangeSite: res.data.data.facilities === ',,,' ? '' : res.data.data.facilities, onChangeText: res.data.data.siteInfo, lat: res.data.data.lat, lng: res.data.data.lng,
         province: res.data.data.province, city: res.data.data.city, area: res.data.data.area, siteUid: res.data.data.uid,
         filesSon: res.data.data.firstURL !== null && res.data.data.firstURL !== '' ? res.data.data.firstURL : '',
-        files: res.data.data.firstURL !== null && res.data.data.firstURL !== '' ? [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.firstURL }] : [],
+        files: res.data.data.firstURL !== null && res.data.data.firstURL !== '' ? [{ url:imgUrlTwo+res.data.data.firstURL }] : [],
         handelPerson: res.data.data.linkMan, handleTelephone: res.data.data.telephone, click: true
       })
 
@@ -151,7 +151,6 @@ class perfect extends React.Component {
     if (type === 'add') {
       lrz(files[0].url, { quality: 0.5 })
         .then((rst) => {
-          console.log(rst)
           this.setState({ loading: false })
           let formdata1 = new FormData();
           formdata1.append('files', rst.file);
@@ -186,7 +185,7 @@ class perfect extends React.Component {
     this.setState({ filesTwo: files })
     this.setState({ num: 0 })
     if (type === 'add') {
-      if (files[files.length - 1].file.size / 1024 / 1024 < 7) {
+      if (files[files.length - 1].file.size / 1024 / 1024 < 9) {
         lrz(files[files.length - 1].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
@@ -195,7 +194,7 @@ class perfect extends React.Component {
             this.UploadVenueImgsTwo(formdata1)
           })
       } else {
-        message.warning('图片超过7M无法上传', 2)
+        message.warning('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       let pok = this.state.filesTwoSon.slice(1, this.state.filesTwoSon.length).split('|')
@@ -386,11 +385,11 @@ class perfect extends React.Component {
         telephone: handleTelephone,
       }
       if (localStorage.getItem('handleName') === 'null') {
-        message.error('请填写场馆名称')
+        message.warning('请填写场馆名称')
       } else if (handelPerson === '') {
-        message.error('请填写联系人')
+        message.warning('请填写联系人')
       } else if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(handelPerson) === false) {
-        message.error('联系人只允许输入文字/字母')
+        message.warning('联系人只允许输入文字/字母')
       } else {
         if (this.state.loading === false) {
           message.warning('图片上传中...')
@@ -478,7 +477,7 @@ class perfect extends React.Component {
 
                 <ImagePicker
                   files={filesTwo}
-                  style={{ float: 'left', width: '65%', marginLeft: '27px' }}
+                  style={{ float: 'left', width: '65%', marginLeft: '20px' }}
                   onChange={this.handleChangeT}
                   onImageClick={this.previewing}
                   selectable={filesTwo.length < 20}

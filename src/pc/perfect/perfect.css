@@ -226,3 +226,7 @@ float: left;
     max-width: 90%;
     max-height: 90%;
 }
+ .ant-checkbox-checked .ant-checkbox-inner{
+	background-color: #F5A623;
+	border-color: #F5A623;
+}

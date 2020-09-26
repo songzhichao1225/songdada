@@ -1,17 +1,17 @@
 import React from 'react';
 import './qualificationPh.css';
 
-import { Toast, Picker, List, NavBar, Popover, Modal, ImagePicker } from 'antd-mobile';
+import { Toast, Picker, List, NavBar, Popover, Modal, ImagePicker, Checkbox } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Input, Radio, Select } from 'antd';
 import lrz from 'lrz';
 import { LeftOutlined, EllipsisOutlined } from '@ant-design/icons';
-import { getIsStatus, getVenueOpenBankList, getVenueOpenBank, getVenueOpenBankProvince,VenueVerifyThatAllAreFilledIn, getVenueOpenBankCity, getIsSignOut, UploadVenueImgsLisenTwo, _code, UploadVenueImgsLisen, getVenueQualified, TemporaryQualificationInformation, VenueQualifications, getVenueQualificationInformation, VenueQualificationInformationSave, getVenueQualifiedCompany } from '../../api';
+import { getIsStatus, getVenueOpenBankList, getVenueOpenBank, getVenueOpenBankProvince, VenueVerifyThatAllAreFilledIn,imgUrlTwo, getVenueOpenBankCity, VenueQualifications_another, getIsSignOut, UploadVenueImgsLisenTwo, _code, UploadVenueImgsLisen, getVenueQualified, TemporaryQualificationInformation_another, getVenueQualificationInformation, VenueQualificationInformationSave_another, getVenueQualifiedCompany } from '../../api';
 const alert = Modal.alert;
 const prompt = Modal.prompt;
 const { Option } = Select;
 const Item = Popover.Item;
-
+const CheckboxItem = Checkbox.CheckboxItem;
 
 
 
@@ -52,8 +52,29 @@ class qualificationPh extends React.Component {
     filesFiveSon: '',
     filesSix: [],
     filesSixSon: '',//授权照
-    imgMasking:'',
-    masking:false
+    imgMasking: '',
+    masking: false,
+    companyEd: true,
+    individualsEd: false,
+    BelongingOne: [],
+    BelongingOneSon: '',
+    BelongingTwo: [],
+    BelongingTwoSon: '',
+    BelongingThree: [],
+    BelongingThreeSon: '',
+    BelongingFour: [],
+    BelongingFourSon: '',
+    Agent: true,
+    promisor: false,
+    nameOne: true,
+    nameTwo: false,
+    nameThree: false,
+    BelongingFive: [],
+    BelongingFiveSon: '',
+    BelongingSix: [],
+    BelongingSixSon: '',
+    ascrBaceUrl: '',
+    legalhourBaseURL: '',
   };
 
 
@@ -115,14 +136,33 @@ class qualificationPh extends React.Component {
         faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
         value: res.data.data.Settlement, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
         legalBaseURL: res.data.data.legalBaseURL,
-        filesThree: res.data.data.lisenceURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.lisenceURL }],
+        filesThree: res.data.data.lisenceURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.lisenceURL }],
         filesThreeSon: res.data.data.lisenceURL === '' ? '' : res.data.data.lisenceURL,
         filesFourSon: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[0],
-        filesFour: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0] }],
+        filesFour: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0] }],
         filesFiveSon: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[1],
-        filesFive: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1] }],
-        filesSix: res.data.data.empowerURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.empowerURL }],
-        filesSixSon: res.data.data.empowerURL === '' ? '' : res.data.data.empowerURL,
+        filesFive: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1] }],
+        BelongingFourSon: res.data.data.empowerURL === '' ? '' : res.data.data.empowerURL,
+        BelongingFour: res.data.data.empowerURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.empowerURL }],
+        BelongingOneSon: res.data.data.promiseURL === '' ? '' : res.data.data.promiseURL,
+        BelongingOne: res.data.data.promiseURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.promiseURL }],
+        ascrBaceUrl: res.data.data.ascriphourBaseURL,
+        BelongingTwo: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.ascriphourBaseURL + res.data.data.ascriphourFilesURL.split('|')[0] }],
+        BelongingTwoSon: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? '' : res.data.data.ascriphourFilesURL.split('|')[0],
+        BelongingThree: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.ascriphourBaseURL + res.data.data.ascriphourFilesURL.split('|')[1] }],
+        BelongingThreeSon: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? '' : res.data.data.ascriphourFilesURL.split('|')[1],
+        legalhourBaseURL: res.data.data.legalhourBaseURL,
+        BelongingFive: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalhourBaseURL + res.data.data.legalhourFilesURL.split('|')[0] }],
+        BelongingFiveSon: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? '' : res.data.data.legalhourFilesURL.split('|')[0],
+        BelongingSix: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalhourBaseURL + res.data.data.legalhourFilesURL.split('|')[1] }],
+        BelongingSixSon: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? '' : res.data.data.legalhourFilesURL.split('|')[1],
+        companyEd: res.data.data.ascription === 0 ? true : false,
+        individualsEd:res.data.data.ascription===1?true:false,
+        nameOne: res.data.data.verification === 1 ? true : false,
+        nameTwo: res.data.data.verification === 2 ? true : false,
+        nameThree: res.data.data.verification === 3 ? true : false,
+        promisor: res.data.data.personIncharge === 1|| res.data.data.personIncharge === 2 ? true : false,
+        Agent: res.data.data.personIncharge === 3 ? true : false,
       })
 
       if (localStorage.getItem('qualifData') === null) {
@@ -133,11 +173,11 @@ class qualificationPh extends React.Component {
         let data = {
           siteUUID: res.data.data.siteUid,
           lisenceURL: res.data.data.lisenceURL,
+          legalBaseURL: res.data.data.legalBaseURL,
+          legalFilesURL: res.data.data.legalFilesURL,
           legalname: res.data.data.legalname,
           legalcard: res.data.data.legalcard,
           legalphone: res.data.data.legalphone,
-          legalBaseURL: res.data.data.legalBaseURL,
-          legalFilesURL: res.data.data.legalFilesURL,
           Settlement: res.data.data.Settlement,
           Bankaccount: res.data.data.Bankaccount,
           OpeningBank: res.data.data.OpeningBank,
@@ -145,23 +185,51 @@ class qualificationPh extends React.Component {
           Banktype: res.data.data.Banktype,
           ProvinceBank: res.data.data.ProvinceBank,
           CityBank: res.data.data.CityBank,
-          empowerURL: res.data.data.empowerURL
+          empowerURL: res.data.data.empowerURL,
+          promiseURL: res.data.data.promiseURL,
+          ascriphourBaseURL: res.data.data.ascriphourBaseURL,
+          ascriphourFilesURL: res.data.data.ascriphourFilesURL,
+          legalhourBaseURL: res.data.data.legalhourBaseURL,
+          legalhourFilesURL: res.data.data.legalhourFilesURL,
+          ascription: res.data.data.ascription,
+          personIncharge: res.data.data.personIncharge,
+          verification: res.data.data.verification
         }
         localStorage.setItem('qualifData', JSON.stringify(data))
         let lpk = JSON.parse(localStorage.getItem('qualifData'))
+        
         this.setState({
           CorporateName: lpk.CorporateName, bank_id: lpk.Banktype, province_id: lpk.ProvinceBank, city_id: lpk.CityBank,
           faName: lpk.legalname, faIdcard: lpk.legalcard, faPhone: lpk.legalphone,
           value: lpk.Settlement, cardId: lpk.Bankaccount, openingLine: lpk.OpeningBank,
           legalBaseURL: lpk.legalBaseURL,
-          filesThree: lpk.lisenceURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + lpk.lisenceURL }],
+          filesThree: lpk.lisenceURL === '' ? [] : [{ url:imgUrlTwo+lpk.lisenceURL }],
           filesThreeSon: lpk.lisenceURL === '' ? '' : lpk.lisenceURL,
           filesFourSon: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[0],
-          filesFour: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + lpk.legalBaseURL + lpk.legalFilesURL.split('|')[0] }],
+          filesFour: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? [] : [{ url:imgUrlTwo+lpk.legalBaseURL + lpk.legalFilesURL.split('|')[0] }],
           filesFiveSon: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[1],
-          filesFive: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + lpk.legalBaseURL + lpk.legalFilesURL.split('|')[1] }],
-          filesSix: lpk.empowerURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + lpk.empowerURL }],
-          filesSixSon: lpk.empowerURL === '' ? '' : lpk.empowerURL,
+          filesFive: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? [] : [{ url:imgUrlTwo+lpk.legalBaseURL + lpk.legalFilesURL.split('|')[1] }],
+          BelongingFourSon: lpk.empowerURL === '' ? '' : lpk.empowerURL,
+          BelongingFour: lpk.empowerURL === '' ? [] : [{ url: imgUrlTwo+lpk.empowerURL }],
+          ascrBaceUrl: lpk.ascriphourBaseURL,
+          BelongingOneSon: lpk.promiseURL === '' ? '' : lpk.promiseURL,
+          BelongingOne: lpk.promiseURL === '' ? [] : [{ url:imgUrlTwo+lpk.promiseURL }],
+          BelongingTwo: lpk.ascriphourBaseURL === '' || lpk.ascriphourBaseURL === null ? [] : [{ url:imgUrlTwo+lpk.ascriphourBaseURL + lpk.ascriphourFilesURL.split('|')[0] }],
+          BelongingTwoSon: lpk.ascriphourBaseURL === '' || lpk.ascriphourBaseURL === null ? '' : lpk.ascriphourFilesURL.split('|')[0],
+          BelongingThree: lpk.ascriphourBaseURL === '' || lpk.ascriphourBaseURL === null ? [] : [{ url:imgUrlTwo+lpk.ascriphourBaseURL + lpk.ascriphourFilesURL.split('|')[1] }],
+          BelongingThreeSon: lpk.ascriphourBaseURL === '' || lpk.ascriphourBaseURL === null ? '' : lpk.ascriphourFilesURL.split('|')[1],
+          legalhourBaseURL: lpk.legalhourBaseURL,
+          BelongingFive: lpk.legalhourBaseURL === '' || lpk.legalhourBaseURL === null ? [] : [{ url:imgUrlTwo+lpk.legalhourBaseURL + lpk.legalhourFilesURL.split('|')[0] }],
+          BelongingFiveSon: lpk.legalhourBaseURL === '' || lpk.legalhourBaseURL === null ? '' : lpk.legalhourFilesURL.split('|')[0],
+          BelongingSix: lpk.legalhourBaseURL === '' || lpk.legalhourBaseURL === null ? [] : [{ url:imgUrlTwo+lpk.legalhourBaseURL + lpk.legalhourFilesURL.split('|')[1] }],
+          BelongingSixSon: lpk.legalhourBaseURL === '' || lpk.legalhourBaseURL === null ? '' : lpk.legalhourFilesURL.split('|')[1],
+          companyEd: lpk.ascription === 0 ? true : false,
+          individualsEd:lpk.ascription===1?true:false,
+          nameOne: lpk.verification === 1 ? true : false,
+          nameTwo: lpk.verification === 2 ? true : false,
+          nameThree: lpk.verification === 3? true : false,
+          promisor: lpk.personIncharge === 1 || lpk.personIncharge === 2 ? true : false,
+          Agent: lpk.personIncharge === 3? true : false,
           flagDis: false
         })
       } else {
@@ -174,14 +242,33 @@ class qualificationPh extends React.Component {
           faName: lpk.legalname, faIdcard: lpk.legalcard, faPhone: lpk.legalphone,
           value: lpk.Settlement, cardId: lpk.Bankaccount, openingLine: lpk.OpeningBank,
           legalBaseURL: lpk.legalBaseURL,
-          filesThree: lpk.lisenceURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + lpk.lisenceURL }],
+          filesThree: lpk.lisenceURL === '' ? [] : [{ url:imgUrlTwo+lpk.lisenceURL }],
           filesThreeSon: lpk.lisenceURL === '' ? '' : lpk.lisenceURL,
           filesFourSon: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[0],
-          filesFour: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + lpk.legalBaseURL + lpk.legalFilesURL.split('|')[0] }],
+          filesFour: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? [] : [{ url:imgUrlTwo+lpk.legalBaseURL + lpk.legalFilesURL.split('|')[0] }],
           filesFiveSon: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? '' : lpk.legalFilesURL.split('|')[1],
-          filesFive: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + lpk.legalBaseURL + lpk.legalFilesURL.split('|')[1] }],
-          filesSix: lpk.empowerURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + lpk.empowerURL }],
-          filesSixSon: lpk.empowerURL === '' ? '' :lpk.empowerURL,
+          filesFive: lpk.legalBaseURL === '' || lpk.legalBaseURL === null ? [] : [{ url:imgUrlTwo+lpk.legalBaseURL + lpk.legalFilesURL.split('|')[1] }],
+          BelongingFourSon: lpk.empowerURL === '' ? '' : lpk.empowerURL,
+          BelongingFour: lpk.empowerURL === '' ? [] : [{ url:imgUrlTwo+lpk.empowerURL }],
+          ascrBaceUrl: lpk.ascriphourBaseURL,
+          BelongingOneSon: lpk.promiseURL === '' ? '' : lpk.promiseURL,
+          BelongingOne: lpk.promiseURL === '' ? [] : [{ url:imgUrlTwo+lpk.promiseURL }],
+          BelongingTwo: lpk.ascriphourBaseURL === '' || lpk.ascriphourBaseURL === null ? [] : [{ url:imgUrlTwo+lpk.ascriphourBaseURL + lpk.ascriphourFilesURL.split('|')[0] }],
+          BelongingTwoSon: lpk.ascriphourBaseURL === '' || lpk.ascriphourBaseURL === null ? '' : lpk.ascriphourFilesURL.split('|')[0],
+          BelongingThree: lpk.ascriphourBaseURL === '' || lpk.ascriphourBaseURL === null ? [] : [{ url:imgUrlTwo+lpk.ascriphourBaseURL + lpk.ascriphourFilesURL.split('|')[1] }],
+          BelongingThreeSon: lpk.ascriphourBaseURL === '' || lpk.ascriphourBaseURL === null ? '' : lpk.ascriphourFilesURL.split('|')[1],
+          legalhourBaseURL: lpk.legalhourBaseURL,
+          BelongingFive: lpk.legalhourBaseURL === '' || lpk.legalhourBaseURL === null ? [] : [{ url:imgUrlTwo+lpk.legalhourBaseURL + lpk.legalhourFilesURL.split('|')[0] }],
+          BelongingFiveSon: lpk.legalhourBaseURL === '' || lpk.legalhourBaseURL === null ? '' : lpk.legalhourFilesURL.split('|')[0],
+          BelongingSix: lpk.legalhourBaseURL === '' || lpk.legalhourBaseURL === null ? [] : [{ url: imgUrlTwo+lpk.legalhourBaseURL + lpk.legalhourFilesURL.split('|')[1] }],
+          BelongingSixSon: lpk.legalhourBaseURL === '' || lpk.legalhourBaseURL === null ? '' : lpk.legalhourFilesURL.split('|')[1],
+          companyEd: lpk.ascription === 0 ? true : false,
+          individualsEd:lpk.ascription===1?true:false,
+          nameOne: lpk.verification === 1 ? true : false,
+          nameTwo: lpk.verification === 2 ? true : false,
+          nameThree: lpk.verification === 3 ? true : false,
+          promisor: lpk.personIncharge === 1 || lpk.personIncharge === 2 ? true : false,
+          Agent: lpk.personIncharge === 3 ? true : false,
           flagDis: false
         })
       }
@@ -274,12 +361,12 @@ class qualificationPh extends React.Component {
   async getVenueOpenBankList(data) {
     const res = await getVenueOpenBankList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      let name=res.data.data
-      let arrName=[]
-      for(let i in name){
-        let obj={}
-        obj.name=name[i].sub_branch_name
-        obj.nameT=name[i].sub_branch_name.slice(name[i].sub_branch_name.indexOf('公司')+2,name[i].sub_branch_name.length)
+      let name = res.data.data
+      let arrName = []
+      for (let i in name) {
+        let obj = {}
+        obj.name = name[i].sub_branch_name
+        obj.nameT = name[i].sub_branch_name.slice(name[i].sub_branch_name.indexOf('公司') + 2, name[i].sub_branch_name.length)
         arrName.push(obj)
       }
       this.setState({ backList: arrName, flagThree: false })
@@ -321,8 +408,8 @@ class qualificationPh extends React.Component {
     this.setState({ openingLine: e })
   }
 
-  async VenueQualifications(data) {
-    const res = await VenueQualifications(data,localStorage.getItem('venue_token'))
+  async VenueQualifications_another(data) {
+    const res = await VenueQualifications_another(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.props.history.push('/resultsAuditsPh')
       Toast.success('提交成功', 1);
@@ -334,8 +421,8 @@ class qualificationPh extends React.Component {
 
 
 
-  async VenueQualificationInformationSave(data) {
-    const res = await VenueQualificationInformationSave(data, localStorage.getItem('venue_token'))
+  async VenueQualificationInformationSave_another(data) {
+    const res = await VenueQualificationInformationSave_another(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.props.history.push('/resultsAuditsPh')
       Toast.success('提交成功', 1);
@@ -347,20 +434,28 @@ class qualificationPh extends React.Component {
 
   async VenueVerifyThatAllAreFilledIn(data) {
     const res = await VenueVerifyThatAllAreFilledIn(data, localStorage.getItem('venue_token'))
-    if(res.data.code===2000){
-      let { siteUUID, filesThreeSon, legalBaseURL, CorporateName,filesSixSon, filesFourSon, filesFiveSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, value, cardId, openingLine } = this.state
+    if (res.data.code === 2000) {
+      let { siteUUID, filesThreeSon, legalBaseURL, CorporateName, filesFourSon, BelongingOneSon, BelongingFourSon, BelongingFiveSon, BelongingSixSon, legalhourBaseURL, filesFiveSon, ascrBaceUrl, BelongingTwoSon, BelongingThreeSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, value, cardId, openingLine } = this.state
 
       if (sessionStorage.getItem('notType') === '1') {
         let data = {
-          lisenceURL: filesThreeSon,
-          empowerURL:filesSixSon,
-          legalname: faName,
-          legalcard: value === 0 ? '' : faIdcard,
-          legalphone: faPhone,
-          legalBaseURL: value === 0 ? '' :filesFourSon===''?'':legalBaseURL,
-          legalFilesURL: value === 0 ? '' :filesFourSon===''?'':filesFourSon + '|' + filesFiveSon,
+          ascription: this.state.companyEd === true ? 0 : 1,
           CorporateName: CorporateName,
+          lisenceURL: filesThreeSon,
+          promiseURL: this.state.companyEd === false ? BelongingOneSon : '',
+          ascriphourBaseURL: this.state.companyEd === false&&ascrBaceUrl!=='' ? ascrBaceUrl : '',
+          ascriphourFilesURL: this.state.companyEd === false&&ascrBaceUrl!=='' ? BelongingTwoSon + '|' + BelongingThreeSon : '',
+          personIncharge: this.state.companyEd === true && this.state.promisor === true ? 1 : this.state.companyEd === true && this.state.promisor === false ? 3 : this.state.companyEd === false && this.state.promisor === true ? 2 : this.state.companyEd === false && this.state.promisor === false ? 3 : '',
+          empowerURL: this.state.Agent === false ? '' : BelongingFourSon,
+          verification: this.state.nameOne === true ? 1 : this.state.nameTwo === true ? 2 : this.state.nameThree === true ? 3 : '',
+          legalname: faName,
+          legalphone: faPhone,
+          legalcard: this.state.nameOne === true || this.state.nameThree === true ? '' : faIdcard,
+          legalhourBaseURL: this.state.nameThree === true&&legalhourBaseURL!=='' ? legalhourBaseURL : '',
+          legalhourFilesURL: this.state.nameThree === true&&legalhourBaseURL!=='' ? BelongingFiveSon + '|' + BelongingSixSon : '',
           Settlement: value,
+          legalBaseURL: value === 0 ? '' : filesFourSon === '' ? '' : legalBaseURL,
+          legalFilesURL: value === 0 ? '' : filesFourSon === '' ? '' : filesFourSon + '|' + filesFiveSon,
           Bankaccount: cardId,
           OpeningBank: openingLine,
           Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
@@ -371,20 +466,28 @@ class qualificationPh extends React.Component {
         if (this.state.loading === false) {
           Toast.loading('图片上传中...', 1);
         } else {
-          this.VenueQualificationInformationSave(data)
+            this.VenueQualificationInformationSave_another(data)
         }
       } else {
         let data = {
           siteUUID: siteUUID,
-          lisenceURL: filesThreeSon,
-          empowerURL:filesSixSon,
-          legalname: faName,
-          legalcard: value === 0 ? '' : faIdcard,
-          legalphone: faPhone,
-          legalBaseURL: value === 0 ? '' :filesFourSon===''?'':legalBaseURL,
-          legalFilesURL: value === 0 ? '' :filesFourSon===''?'':filesFourSon + '|' + filesFiveSon,
+          ascription: this.state.companyEd === true ? 0 : 1,
           CorporateName: CorporateName,
+          lisenceURL: filesThreeSon,
+          promiseURL: this.state.companyEd === false ? BelongingOneSon : '',
+          ascriphourBaseURL: this.state.companyEd === false&&ascrBaceUrl!=='' ? ascrBaceUrl : '',
+          ascriphourFilesURL: this.state.companyEd === false&&ascrBaceUrl!=='' ? BelongingTwoSon + '|' + BelongingThreeSon : '',
+          personIncharge: this.state.companyEd === true && this.state.promisor === true ? 1 : this.state.companyEd === true && this.state.promisor === false ? 3 : this.state.companyEd === false && this.state.promisor === true ? 2 : this.state.companyEd === false && this.state.promisor === false ? 3 : '',
+          empowerURL: this.state.Agent === false ? '' : BelongingFourSon,
+          verification: this.state.nameOne === true ? 1 : this.state.nameTwo === true ? 2 : this.state.nameThree === true ? 3 : '',
+          legalname: faName,
+          legalphone: faPhone,
+          legalcard: this.state.nameOne === true || this.state.nameThree === true ? '' : faIdcard,
+          legalhourBaseURL: this.state.nameThree === true&&legalhourBaseURL!=='' ? legalhourBaseURL : '',
+          legalhourFilesURL: this.state.nameThree === true&&legalhourBaseURL!=='' ? BelongingFiveSon + '|' + BelongingSixSon : '',
           Settlement: value,
+          legalBaseURL: value === 0 ? '' : filesFourSon === '' ? '' : legalBaseURL,
+          legalFilesURL: value === 0 ? '' : filesFourSon === '' ? '' : filesFourSon + '|' + filesFiveSon,
           Bankaccount: cardId,
           OpeningBank: openingLine,
           Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
@@ -394,21 +497,21 @@ class qualificationPh extends React.Component {
         if (this.state.loading === false) {
           Toast.loading('图片上传中...', 1);
         } else {
-          this.VenueQualifications(data)
+            this.VenueQualifications_another(data)
         }
       }
-    }else{
+    } else {
       Toast.fail('请完善基本信息', 1);
       this.props.history.push('/stadiumInformationPh')
     }
   }
 
-  
+
 
 
   submit = () => {
     this.VenueVerifyThatAllAreFilledIn()
-    
+
   }
 
 
@@ -430,18 +533,26 @@ class qualificationPh extends React.Component {
 
   reture = () => {
 
-    let { siteUUID, filesThreeSon, legalBaseURL, CorporateName, filesFourSon,filesSixSon, filesFiveSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, value, cardId, openingLine } = this.state
+    let { siteUUID, filesThreeSon, legalBaseURL, CorporateName, filesFourSon, BelongingOneSon, filesFiveSon, faIdcard,ascrBaceUrl, faName,BelongingTwoSon,BelongingThreeSon,BelongingFourSon,legalhourBaseURL,BelongingFiveSon,BelongingSixSon, bank_id, province_id, city_id, faPhone, value, cardId, openingLine } = this.state
     let data = {
       siteUUID: siteUUID,
-      lisenceURL: filesThreeSon,
-      empowerURL:filesSixSon,
-      legalname: faName,
-      legalcard: faIdcard,
-      legalphone: faPhone,
-      legalBaseURL: value === 0 ? '' :filesFourSon===''?'':legalBaseURL,
-      legalFilesURL: value === 0 ? '' :filesFourSon===''?'':filesFourSon + '|' + filesFiveSon,
+      ascription: this.state.companyEd === true ? 0 : 1,
       CorporateName: CorporateName,
+      lisenceURL: filesThreeSon,
+      promiseURL: this.state.companyEd === false ? BelongingOneSon : '',
+      ascriphourBaseURL: this.state.companyEd === false&&ascrBaceUrl!=='' ? ascrBaceUrl : '',
+      ascriphourFilesURL: this.state.companyEd === false&&ascrBaceUrl!=='' ? BelongingTwoSon + '|' + BelongingThreeSon : '',
+      personIncharge: this.state.companyEd === true && this.state.promisor === true ? 1 : this.state.companyEd === true && this.state.promisor === false ? 3 : this.state.companyEd === false && this.state.promisor === true ? 2 : this.state.companyEd === false && this.state.promisor === false ? 3 : '',
+      empowerURL: this.state.Agent === false? '' : BelongingFourSon,
+      verification: this.state.nameOne === true ? 1 : this.state.nameTwo === true ? 2 : this.state.nameThree === true ? 3 : '',
+      legalname: faName,
+      legalphone: faPhone,
+      legalcard: this.state.nameOne === true || this.state.nameThree === true ? '' : faIdcard,
+      legalhourBaseURL: this.state.nameThree === true&&legalhourBaseURL!=='' ? legalhourBaseURL : '',
+      legalhourFilesURL: this.state.nameThree === true&&legalhourBaseURL!=='' ? BelongingFiveSon + '|' + BelongingSixSon : '',
       Settlement: value,
+      legalBaseURL: value === 0 ? '' : filesFourSon === '' ? '' : legalBaseURL,
+      legalFilesURL: value === 0 ? '' : filesFourSon === '' ? '' : filesFourSon + '|' + filesFiveSon,
       Bankaccount: cardId,
       OpeningBank: openingLine,
       Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
@@ -456,12 +567,12 @@ class qualificationPh extends React.Component {
 
   closeWeb = () => {
     if (window.location.href.indexOf('flag=1') === -1) {
-      this.props.history.push('/phone') 
+      this.props.history.push('/phone')
     } else {
       this.close()
     }
   }
-  
+
   CorporateName = (e) => {
     if (this.state.flagDis === true && e.target.value === '') {
       localStorage.removeItem('qualifData')
@@ -469,7 +580,7 @@ class qualificationPh extends React.Component {
     }
     if (e.target.value.indexOf(' ') !== -1) {
       this.setState({ CorporateName: e.target.value.slice(0, e.target.value.length - 1) })
-    }else{
+    } else {
       this.setState({ CorporateName: e.target.value })
     }
   }
@@ -499,14 +610,33 @@ class qualificationPh extends React.Component {
         faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
         value: res.data.data.Settlement, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
         legalBaseURL: res.data.data.legalBaseURL,
-        filesThree: res.data.data.lisenceURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.lisenceURL }],
+        filesThree: res.data.data.lisenceURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.lisenceURL }],
         filesThreeSon: res.data.data.lisenceURL === '' ? '' : res.data.data.lisenceURL,
         filesFourSon: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[0],
-        filesFour: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0] }],
+        filesFour: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url: imgUrlTwo+res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0] }],
         filesFiveSon: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[1],
-        filesFive: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1] }],
-        filesSix: res.data.data.empowerURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.empowerURL }],
-        filesSixSon: res.data.data.empowerURL === '' ? '' :res.data.data.empowerURL,
+        filesFive: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url: imgUrlTwo+res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1] }],
+        BelongingFourSon: res.data.data.empowerURL === '' ? '' : res.data.data.empowerURL,
+        BelongingFour: res.data.data.empowerURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.empowerURL }],
+        BelongingOneSon: res.data.data.promiseURL === '' ? '' : res.data.data.promiseURL,
+        BelongingOne: res.data.data.promiseURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.promiseURL }],
+        ascrBaceUrl: res.data.data.ascriphourBaseURL,
+        BelongingTwo: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.ascriphourBaseURL + res.data.data.ascriphourFilesURL.split('|')[0] }],
+        BelongingTwoSon: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? '' : res.data.data.ascriphourFilesURL.split('|')[0],
+        BelongingThree: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.ascriphourBaseURL + res.data.data.ascriphourFilesURL.split('|')[1] }],
+        BelongingThreeSon: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? '' : res.data.data.ascriphourFilesURL.split('|')[1],
+        legalhourBaseURL: res.data.data.legalhourBaseURL,
+        BelongingFive: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalhourBaseURL + res.data.data.legalhourFilesURL.split('|')[0] }],
+        BelongingFiveSon: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? '' : res.data.data.legalhourFilesURL.split('|')[0],
+        BelongingSix: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? [] : [{ url: imgUrlTwo+res.data.data.legalhourBaseURL + res.data.data.legalhourFilesURL.split('|')[1] }],
+        BelongingSixSon: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? '' : res.data.data.legalhourFilesURL.split('|')[1],
+        companyEd: res.data.data.ascription === 0 ? true : false,
+        individualsEd:res.data.data.ascription===1?true:false,
+        nameOne: res.data.data.verification === 1 ? true : false,
+        nameTwo: res.data.data.verification === 2 ? true : false,
+        nameThree: res.data.data.verification === 3 ? true : false,
+        promisor: res.data.data.personIncharge === 1|| res.data.data.personIncharge === 2 ? true : false,
+        Agent: res.data.data.personIncharge === 3 ? true : false,
         flagDis: false
       })
     }
@@ -546,26 +676,34 @@ class qualificationPh extends React.Component {
 
 
 
-  async TemporaryQualificationInformation(data) {
-    const res = await TemporaryQualificationInformation(data, localStorage.getItem('venue_token'))
+  async TemporaryQualificationInformation_another(data) {
+    const res = await TemporaryQualificationInformation_another(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      let { siteUUID, filesThreeSon, legalBaseURL, CorporateName,filesSixSon, filesFourSon, filesFiveSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, value, cardId, openingLine } = this.state
+      let { siteUUID, filesThreeSon, legalBaseURL, CorporateName, filesFourSon,ascrBaceUrl,BelongingTwoSon,BelongingThreeSon,BelongingFourSon,legalhourBaseURL,BelongingFiveSon,BelongingSixSon,BelongingOneSon, filesFiveSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, value, cardId, openingLine } = this.state
       let data = {
         siteUUID: siteUUID,
-        lisenceURL: filesThreeSon,
-        empowerURL:filesSixSon,
-        legalname: faName,
-        legalcard: faIdcard,
-        legalphone: faPhone,
-        legalBaseURL: value === 0 ? '' :filesFourSon===''?'':legalBaseURL,
-        legalFilesURL: value === 0 ? '' :filesFourSon===''?'':filesFourSon + '|' + filesFiveSon,
-        CorporateName: CorporateName,
-        Settlement: value,
-        Bankaccount: cardId,
-        OpeningBank: openingLine,
-        Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
-        ProvinceBank: typeof (province_id) !== 'string' ? province_id.join() : province_id,
-        CityBank: typeof (city_id) !== 'string' ? city_id.join() : city_id,
+          ascription:this.state.companyEd===true?0:1,
+          CorporateName: CorporateName,
+          lisenceURL: filesThreeSon,
+          promiseURL:this.state.companyEd===false?BelongingOneSon:'',
+          ascriphourBaseURL:this.state.companyEd===false&&ascrBaceUrl!==''?ascrBaceUrl:'',
+          ascriphourFilesURL:this.state.companyEd===false&&ascrBaceUrl!==''?BelongingTwoSon+'|'+BelongingThreeSon:'',
+          personIncharge:this.state.companyEd===true&&this.state.promisor===true?1:this.state.companyEd===true&&this.state.promisor===false?3:this.state.companyEd===false&&this.state.promisor===true?2:this.state.companyEd===false&&this.state.promisor===false?3:'',
+          empowerURL:this.state.Agent===false?'':BelongingFourSon,
+          verification:this.state.nameOne===true?1:this.state.nameTwo===true?2:this.state.nameThree===true?3:'',
+          legalname:faName,
+          legalphone: faPhone,
+          legalcard:this.state.nameOne===true||this.state.nameThree===true?'':faIdcard,
+          legalhourBaseURL:this.state.nameThree===true&&legalhourBaseURL!==''?legalhourBaseURL:'',
+          legalhourFilesURL:this.state.nameThree===true&&legalhourBaseURL!==''?BelongingFiveSon+'|'+BelongingSixSon:'',
+          Settlement: value,
+          legalBaseURL: value === 0 ? '' : filesFourSon === '' ? '' : legalBaseURL,
+          legalFilesURL: value === 0 ? '' : filesFourSon === '' ? '' : filesFourSon + '|' + filesFiveSon,
+          Bankaccount: cardId,
+          OpeningBank: openingLine,
+          Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
+          ProvinceBank: typeof (province_id) !== 'string' ? province_id.join() : province_id,
+          CityBank: typeof (city_id) !== 'string' ? city_id.join() : city_id,
         flagDis: this.state.flagDis
       }
 
@@ -575,18 +713,26 @@ class qualificationPh extends React.Component {
     }
   }
   save = () => {
-    let { siteUUID, filesThreeSon, legalBaseURL, CorporateName,filesSixSon, filesFourSon, filesFiveSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, value, cardId, openingLine } = this.state
+    let { siteUUID, filesThreeSon, legalBaseURL, CorporateName, BelongingOneSon, filesFourSon, ascrBaceUrl,filesFiveSon, BelongingTwoSon,BelongingFiveSon,BelongingSixSon,BelongingThreeSon,legalhourBaseURL,BelongingFourSon,faIdcard, faName, bank_id, province_id, city_id, faPhone, value, cardId, openingLine } = this.state
     let data = {
       siteUUID: siteUUID,
-      lisenceURL: filesThreeSon,
-      empowerURL:filesSixSon,
-      legalname: faName,
-      legalcard: value === 0 ? '' : faIdcard,
-      legalphone: faPhone,
-      legalBaseURL: value === 0 ? '' :filesFourSon===''?'':legalBaseURL,
-        legalFilesURL: value === 0 ? '' :filesFourSon===''?'':filesFourSon + '|' + filesFiveSon,
+      ascription:this.state.companyEd===true?0:1,
       CorporateName: CorporateName,
+      lisenceURL: filesThreeSon,
+      promiseURL:this.state.companyEd===false?BelongingOneSon:'',
+      ascriphourBaseURL:this.state.companyEd===false&&ascrBaceUrl!==''?ascrBaceUrl:'',
+      ascriphourFilesURL:this.state.companyEd===false&&ascrBaceUrl!==''?BelongingTwoSon+'|'+BelongingThreeSon:'',
+      personIncharge:this.state.companyEd===true&&this.state.promisor===true?1:this.state.companyEd===true&&this.state.promisor===false?3:this.state.companyEd===false&&this.state.promisor===true?2:this.state.companyEd===false&&this.state.promisor===false?3:'',
+      empowerURL:this.state.Agent===false?'':BelongingFourSon,
+      verification:this.state.nameOne===true?1:this.state.nameTwo===true?2:this.state.nameThree===true?3:'',
+      legalname:faName,
+      legalphone: faPhone,
+      legalcard:this.state.nameOne===true||this.state.nameThree===true?'':faIdcard,
+      legalhourBaseURL:this.state.nameThree===true&&legalhourBaseURL!==''?legalhourBaseURL:'',
+      legalhourFilesURL:this.state.nameThree===true&&legalhourBaseURL!==''?BelongingFiveSon+'|'+BelongingSixSon:'',
       Settlement: value,
+      legalBaseURL: value === 0 ? '' : filesFourSon === '' ? '' : legalBaseURL,
+      legalFilesURL: value === 0 ? '' : filesFourSon === '' ? '' : filesFourSon + '|' + filesFiveSon,
       Bankaccount: cardId,
       OpeningBank: openingLine,
       Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
@@ -597,7 +743,7 @@ class qualificationPh extends React.Component {
     if (this.state.loading === false) {
       Toast.loading('图片上传中...', 1);
     } else {
-      this.TemporaryQualificationInformation(data)
+      this.TemporaryQualificationInformation_another(data)
     }
 
 
@@ -638,7 +784,7 @@ class qualificationPh extends React.Component {
   handleChangeOne = (files, type, index) => {
     this.setState({ filesThree: files })
     if (type === 'add') {
-      if (files[0].file.size / 1024 / 1024 < 7) {
+      if (files[0].file.size / 1024 / 1024 < 9) {
         lrz(files[0].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
@@ -647,7 +793,7 @@ class qualificationPh extends React.Component {
             this.UploadVenueImgsLisen(formdata1)
           })
       } else {
-        Toast.fail('图片超过7M无法上传', 2)
+        Toast.fail('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       this.setState({ filesThreeSon: '' })
@@ -670,7 +816,7 @@ class qualificationPh extends React.Component {
   handleChangeSix = (files, type, index) => {
     this.setState({ filesSix: files })
     if (type === 'add') {
-      if (files[0].file.size / 1024 / 1024 < 7) {
+      if (files[0].file.size / 1024 / 1024 < 9) {
         lrz(files[0].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
@@ -679,7 +825,7 @@ class qualificationPh extends React.Component {
             this.UploadVenueImgsLisenSix(formdata1)
           })
       } else {
-        Toast.fail('图片超过7M无法上传', 2)
+        Toast.fail('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       this.setState({ filesSixSon: '' })
@@ -703,7 +849,7 @@ class qualificationPh extends React.Component {
   handleChangeTwo = (files, type, index) => {
     this.setState({ filesFour: files })
     if (type === 'add') {
-      if (files[0].file.size / 1024 / 1024 < 7) {
+      if (files[0].file.size / 1024 / 1024 < 9) {
         lrz(files[0].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
@@ -712,7 +858,7 @@ class qualificationPh extends React.Component {
             this.UploadVenueImgsLisenTwo(formdata1)
           })
       } else {
-        Toast.fail('图片超过7M无法上传', 2)
+        Toast.fail('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       this.setState({ filesFourSon: '', filesFiveSon: '', filesFive: [] })
@@ -736,7 +882,7 @@ class qualificationPh extends React.Component {
   handleChangeThree = (files, type, index) => {
     this.setState({ filesFive: files })
     if (type === 'add') {
-      if (files[0].file.size / 1024 / 1024 < 7) {
+      if (files[0].file.size / 1024 / 1024 < 9) {
         lrz(files[0].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
@@ -745,7 +891,7 @@ class qualificationPh extends React.Component {
             this.UploadVenueImgsLisenTwoT(formdata1)
           })
       } else {
-        Toast.fail('图片超过7M无法上传', 2)
+        Toast.fail('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       this.setState({ filesFiveSon: '', filesFourSon: '', filesFour: [] })
@@ -753,20 +899,243 @@ class qualificationPh extends React.Component {
   }
 
   previewing = (files, index) => {
-    if(this.state.loading===false){
+    if (this.state.loading === false) {
       Toast.loading('图片上传中', 1)
-    }else{
-      this.setState({imgMasking:index[files].url,masking:true})
+    } else {
+      this.setState({ imgMasking: index[files].url, masking: true })
     }
   }
-  maskingF=()=>{
-    this.setState({masking:false})
+  maskingF = () => {
+    this.setState({ masking: false })
   }
+
+  company = e => {
+    if( e.target.checked===false){
+      this.setState({value:1})
+    }
+    this.setState({ companyEd: e.target.checked, individualsEd: false })
+  }
+  individuals = e => {
+    this.setState({ individualsEd: e.target.checked, companyEd: false,value:1 })
+  }
+
+
+  async BelongingOneLisen(data) {
+    const res = await UploadVenueImgsLisen(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingOneSon: res.data.data.baseURL + res.data.data.filesURL, loading: true })
+    } else if (res.data.code === 4004) {
+      Toast.fail('图片违规请重新上传', 2)
+      this.setState({ BelongingOne: [], loading: true })
+    } else {
+      this.setState({ BelongingOne: [], loading: true })
+      Toast.fail(res.data.msg, 2)
+    }
+  }
+
+  BelongingOne = (files, type, index) => {
+    this.setState({ BelongingOne: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingOneLisen(formdata1)
+          })
+      } else {
+        Toast.fail('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingOneSon: '' })
+    }
+  }
+
+  async BelongingTwoLisen(data) {
+    const res = await UploadVenueImgsLisenTwo(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingTwoSon: res.data.data.filesURL, ascrBaceUrl: res.data.data.baseURL, loading: true })
+    } else if (res.data.code === 4004) {
+      Toast.fail('图片违规请重新上传', 2)
+      this.setState({ BelongingTwo: [], loading: true })
+    } else {
+      this.setState({ BelongingTwo: [], loading: true })
+      Toast.fail(res.data.msg, 2)
+    }
+  }
+
+  BelongingTwo = (files, type, index) => {
+    this.setState({ BelongingTwo: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingTwoLisen(formdata1)
+          })
+      } else {
+        Toast.fail('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingTwoSon: '', BelongingThree: [], BelongingThreeSon: '',ascrBaceUrl:'' })
+    }
+  }
+
+
+  async BelongingThreeLisen(data) {
+    const res = await UploadVenueImgsLisenTwo(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingThreeSon: res.data.data.filesURL, ascrBaceUrl: res.data.data.baseURL, loading: true })
+    } else if (res.data.code === 4004) {
+      Toast.fail('图片违规请重新上传', 2)
+      this.setState({ BelongingThree: [], loading: true })
+    } else {
+      this.setState({ BelongingThree: [], loading: true })
+      Toast.fail(res.data.msg, 2)
+    }
+  }
+
+  BelongingThree = (files, type, index) => {
+    this.setState({ BelongingThree: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingThreeLisen(formdata1)
+          })
+      } else {
+        Toast.fail('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingThreeSon: '', BelongingTwo: [], BelongingTwoSon: '',ascrBaceUrl:'' })
+    }
+  }
+
+
+  async BelongingFourLisen(data) {
+    const res = await UploadVenueImgsLisen(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingFourSon: res.data.data.baseURL + res.data.data.filesURL, loading: true })
+    } else if (res.data.code === 4004) {
+      Toast.fail('图片违规请重新上传', 2)
+      this.setState({ BelongingFour: [], loading: true })
+    } else {
+      this.setState({ BelongingFour: [], loading: true })
+      Toast.fail(res.data.msg, 2)
+    }
+  }
+
+  BelongingFour = (files, type, index) => {
+    this.setState({ BelongingFour: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingFourLisen(formdata1)
+          })
+      } else {
+        Toast.fail('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingFourSon: '' })
+    }
+  }
+
+  Agent = e => {
+    this.setState({ Agent: e.target.checked, promisor: false })
+  }
+  promisor = e => {
+    this.setState({ promisor: e.target.checked, Agent: false })
+  }
+  nameOne = e => {
+    this.setState({ nameOne: e.target.checked, nameTwo: false, nameThree: false, })
+  }
+  nameTwo = e => {
+    this.setState({ nameTwo: e.target.checked, nameOne: false, nameThree: false })
+  }
+  nameThree = e => {
+    this.setState({ nameThree: e.target.checked, nameOne: false, nameTwo: false })
+  }
+
+  async BelongingFiveLisen(data) {
+    const res = await UploadVenueImgsLisenTwo(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingFiveSon: res.data.data.filesURL, legalhourBaseURL: res.data.data.baseURL, loading: true })
+    } else if (res.data.code === 4004) {
+      Toast.fail('图片违规请重新上传', 2)
+      this.setState({ BelongingFive: [], loading: true })
+    } else {
+      this.setState({ BelongingFive: [], loading: true })
+      Toast.fail(res.data.msg, 2)
+    }
+  }
+
+  BelongingFive = (files, type, index) => {
+    this.setState({ BelongingFive: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingFiveLisen(formdata1)
+          })
+      } else {
+        Toast.fail('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingFiveSon: '', BelongingSix: [], BelongingSixSon: '',legalhourBaseURL:'' })
+    }
+  }
+
+
+  async BelongingSixLisen(data) {
+    const res = await UploadVenueImgsLisenTwo(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingSixSon: res.data.data.filesURL, legalhourBaseURL: res.data.data.baseURL, loading: true })
+    } else if (res.data.code === 4004) {
+      Toast.fail('图片违规请重新上传', 2)
+      this.setState({ BelongingSix: [], loading: true })
+    } else {
+      this.setState({ BelongingSix: [], loading: true })
+      Toast.fail(res.data.msg, 2)
+    }
+  }
+
+  BelongingSix = (files, type, index) => {
+    this.setState({ BelongingSix: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingSixLisen(formdata1)
+          })
+      } else {
+        Toast.fail('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingSixSon: '', BelongingFive: [], BelongingFiveSon: '',legalhourBaseURL:'' })
+    }
+  }
+
 
 
   render() {
 
-    const { filesThree, filesFour, filesFive, filesSix } = this.state;
+    const { filesThree, filesFour, filesFive, BelongingOne, BelongingTwo, BelongingThree, BelongingFour, BelongingFive, BelongingSix } = this.state;
     return (
       <div className="qualificationPh">
         <NavBar
@@ -785,7 +1154,6 @@ class qualificationPh extends React.Component {
               offset: [-10, 0],
             }}
             onVisibleChange={this.handleVisibleChange}
-
           >
             <div style={{
               height: '100%',
@@ -801,57 +1169,193 @@ class qualificationPh extends React.Component {
           </Popover>}
         ><span style={{ fontSize: '1rem' }}>完善资质信息</span></NavBar>
         <div className="boss">
-
+          <div style={{ fontSize: '1.2rem', fontWeight: 'bold', float: 'left', paddingLeft: '2.5%' }}>场馆归属证明</div>
           <div className="input">
-            <span>公司名称</span>
-            <span className="lkpoji" style={{ float: 'right', color: '#fff' }} onTouchStart={this.search}>查询</span>
-            <Input className="select" onChange={this.CorporateName} style={{ width: '55%', float: 'right' }} value={this.state.CorporateName} placeholder="请输入公司名称" />
+            <CheckboxItem onChange={this.company} checked={this.state.companyEd} style={{ float: 'left', currentColor: '#D85D27' }} multipleLine>
+              公司
+            </CheckboxItem>
+            <CheckboxItem onChange={this.individuals} checked={this.state.individualsEd} style={{ float: 'left', marginLeft: '1rem' }} multipleLine>
+              个人
+            </CheckboxItem>
+
           </div>
-          <div className="input" style={{ padding: '0.4rem 0' }}>
-            <span style={{ lineHeight: '2rem', paddingRight: '0.5rem' }}>营业执照</span>
+
+
+          <div style={this.state.companyEd === true ? {} : { display: 'none' }}>
+            <div className="input">
+              <span>公司名称</span>
+              <span className="lkpoji" style={{ float: 'right', color: '#fff' }} onTouchStart={this.search}>查询</span>
+              <Input className="select" onChange={this.CorporateName} style={{ width: '55%', float: 'right' }} value={this.state.CorporateName} placeholder="查询已录入公司资质信息" />
+            </div>
+            <div className="input" style={{ padding: '0.4rem 0' }}>
+              <span style={{ lineHeight: '2rem', paddingRight: '0.5rem' }}>营业执照</span>
+              <ImagePicker
+                files={filesThree}
+                style={{ float: 'right', width: '72%' }}
+                onChange={this.handleChangeOne}
+                onImageClick={this.previewing}
+                selectable={filesThree.length < 1}
+                length={3}
+                multiple={false}
+                disableDelete={this.state.flagDis}
+              />
+            </div>
+          </div>
+          <div style={this.state.individualsEd === true ? {} : { display: 'none' }}>
+            <div className="input">
+              <span style={{ lineHeight: '1.5rem', paddingRight: '0.5rem' }}>承诺书照</span>
+              <ImagePicker
+                files={BelongingOne}
+                style={{ float: 'left', width: '28%', marginLeft: '1.9rem' }}
+                onChange={this.BelongingOne}
+                onImageClick={this.previewing}
+                selectable={BelongingOne.length < 1}
+                length={1}
+                multiple={false}
+                disableDelete={this.state.flagDis}
+              />
+            </div>
+
+            <div className="input">
+              <span style={{ lineHeight: '1.5rem', paddingRight: '0.5rem' }}>手持身份证照</span>
+              <ImagePicker
+                files={BelongingTwo}
+                style={{ float: 'left', width: '28%', marginLeft: '0.2rem' }}
+                onChange={this.BelongingTwo}
+                onImageClick={this.previewing}
+                selectable={BelongingTwo.length < 1}
+                length={1}
+                multiple={false}
+                disableDelete={this.state.flagDis}
+              />
+              <ImagePicker
+                files={BelongingThree}
+                style={{ float: 'left', width: '28%' }}
+                onChange={this.BelongingThree}
+                onImageClick={this.previewing}
+                selectable={BelongingThree.length < 1}
+                length={1}
+                multiple={false}
+                disableDelete={this.state.flagDis}
+              />
+            </div>
+
+          </div>
+
+
+
+
+          <div style={{ fontSize: '1.2rem', fontWeight: 'bold', float: 'left', paddingLeft: '2.5%' }}>场馆负责人</div>
+          <div className="input" style={{ borderBottom: 'none' }}>
+            <CheckboxItem onChange={this.promisor} checked={this.state.promisor} style={{ float: 'left', currentColor: '#D85D27' }} multipleLine>
+              {this.state.companyEd === false ? '承诺人本人' : '法人'}
+            </CheckboxItem>
+            <CheckboxItem onChange={this.Agent} checked={this.state.Agent} style={{ float: 'left', marginLeft: '1rem' }} multipleLine>
+              代理人
+            </CheckboxItem>
+          </div>
+          <div className="input" style={this.state.Agent === false ? { display: 'none' } : { padding: '0.4rem 0' }}>
+            <span style={{ lineHeight: '1.5rem', paddingRight: '0.5rem' }}>授权书照</span>
             <ImagePicker
-              files={filesThree}
-              style={{ float: 'right', width: '72%' }}
-              onChange={this.handleChangeOne}
+              files={BelongingFour}
+              style={{ float: 'left', width: '28%',marginLeft:'1.9rem' }}
+              onChange={this.BelongingFour}
               onImageClick={this.previewing}
-              selectable={filesThree.length < 1}
-              length={3}
+              selectable={BelongingFour.length < 1}
+              length={1}
               multiple={false}
               disableDelete={this.state.flagDis}
             />
           </div>
-          <div className="input" style={filesSix.length===0&&this.state.flagDis===true?{display:'none'}:{ padding: '0.4rem 0' }}>
-            <span style={{ lineHeight: '1.5rem', paddingRight: '0.5rem' }}>授权书照<br/>(选填)</span>
-            <ImagePicker
-              files={filesSix}
-              style={{ float: 'right', width: '72%' }}
-              onChange={this.handleChangeSix}
-              onImageClick={this.previewing}
-              selectable={filesSix.length < 1}
-              length={3}
-              multiple={false}
-              disableDelete={this.state.flagDis}
-            />
+
+
+          <div style={{ fontSize: '1.2rem', fontWeight: 'bold', float: 'left', paddingLeft: '2.5%' }}>负责人验证方式</div>
+
+          <div className="input" style={{ borderBottom: 'none' }}>
+            <CheckboxItem onChange={this.nameOne} checked={this.state.nameOne} style={{ float: 'left', currentColor: '#D85D27' }} multipleLine>
+              姓名、手机号
+            </CheckboxItem>
+            <CheckboxItem onChange={this.nameTwo} checked={this.state.nameTwo} style={{ float: 'left', marginLeft: '1rem' }} multipleLine>
+              姓名、手机号、身份证号
+            </CheckboxItem>
+            <CheckboxItem onChange={this.nameThree} checked={this.state.nameThree} style={{ float: 'left' }} multipleLine>
+              姓名、手机号、手持身份证照
+            </CheckboxItem>
+          </div>
+          <div style={this.state.nameOne === true ? {} : { display: 'none' }}>
+            <div className="input">
+              <span>姓名</span>
+              <Input className="select" disabled={this.state.flagDis} onChange={this.faName} value={this.state.faName} placeholder="请输入姓名" />
+            </div>
+            <div className="input">
+              <span>手机号</span>
+              <Input className="select" disabled={this.state.flagDis} maxLength={11} onChange={this.faPhone} value={this.state.faPhone} placeholder="请输入11位手机号码" />
+            </div>
+          </div>
+
+          <div style={this.state.nameTwo === true ? {} : { display: 'none' }}>
+            <div className="input">
+              <span>姓名</span>
+              <Input className="select" disabled={this.state.flagDis} onChange={this.faName} value={this.state.faName} placeholder="请输入姓名" />
+            </div>
+            <div className="input">
+              <span>手机号</span>
+              <Input className="select" disabled={this.state.flagDis} maxLength={11} onChange={this.faPhone} value={this.state.faPhone} placeholder="请输入11位手机号码" />
+            </div>
+            <div className="input">
+              <span>身份证号</span>
+              <Input className="select" disabled={this.state.flagDis} onChange={this.faIdcard} value={this.state.faIdcard} placeholder="请输入身份证号" />
+            </div>
+          </div>
+
+          <div style={this.state.nameThree === true ? {} : { display: 'none' }}>
+            <div className="input">
+              <span>姓名</span>
+              <Input className="select" disabled={this.state.flagDis} onChange={this.faName} value={this.state.faName} placeholder="请输入姓名" />
+            </div>
+            <div className="input">
+              <span>手机号</span>
+              <Input className="select" disabled={this.state.flagDis} maxLength={11} onChange={this.faPhone} value={this.state.faPhone} placeholder="请输入11位手机号码" />
+            </div>
+            <div className="input">
+              <span style={{ lineHeight: '1.5rem', paddingRight: '0.5rem' }}>身份证照</span>
+              <ImagePicker
+                files={BelongingFive}
+                style={{ float: 'left', width: '28%', marginLeft: '1.9rem' }}
+                onChange={this.BelongingFive}
+                onImageClick={this.previewing}
+                selectable={BelongingFive.length < 1}
+                length={1}
+                multiple={false}
+                disableDelete={this.state.flagDis}
+              />
+              <ImagePicker
+                files={BelongingSix}
+                style={{ float: 'left', width: '28%' }}
+                onChange={this.BelongingSix}
+                onImageClick={this.previewing}
+                selectable={BelongingSix.length < 1}
+                length={1}
+                multiple={false}
+                disableDelete={this.state.flagDis}
+              />
+            </div>
+
+
           </div>
 
 
-          <div className="input">
-            <span>法人姓名</span>
-            <Input className="select" disabled={this.state.flagDis} onChange={this.faName} value={this.state.faName} placeholder="请输入姓名" />
-          </div>
 
 
-          <div className="input">
-            <span>法人手机号</span>
-            <Input className="select" disabled={this.state.flagDis} maxLength={11} onChange={this.faPhone} value={this.state.faPhone} placeholder="请输入11位手机号码" />
-          </div>
 
-          <div style={{ fontSize: '1.2rem', fontWeight: 'bold', float: 'left', padding: '2rem 0 0.5rem' }}>场馆收款银行信息<span style={{ fontSize: '0.9rem', fontWeight: '500', color: '#9B9B9B' }}>(也可在提现前填写)</span></div>
+
+
+          <div style={{ fontSize: '1.2rem', fontWeight: 'bold', float: 'left', padding: '2rem 0 0.5rem 2.5%' }}>场馆收款银行信息<span style={{ fontSize: '0.9rem', fontWeight: '500', color: '#9B9B9B' }}>(也可在提现前填写)</span></div>
           <div className="input" style={{ borderTop: '0.06rem solid #f3f3f3' }}>
             <span style={{ lineHeight: '6rem' }}>结算账号</span>
             <Radio.Group className="radio" onChange={this.radioChange} disabled={this.state.flagDis} value={this.state.value}>
-              <Radio value={0}>公司账户</Radio><span style={{ fontSize: '12px' }}>(法人不是股东或有多个股东时只能选择公司银行账户结算)</span><br />
-              <Radio value={1}>法人账户</Radio>
+              <Radio style={this.state.companyEd===false?{display:'none'}:{}} value={0}>公司账户</Radio><span style={this.state.companyEd===false?{display:'none'}:{ fontSize: '12px' }}>(法人不是股东或有多个股东时只能选择公司银行账户结算)</span><br />
+              <Radio value={1}>负责人账户</Radio>
             </Radio.Group>
           </div>
 
@@ -944,7 +1448,7 @@ class qualificationPh extends React.Component {
           </div>
 
 
-        
+
 
 
           <div className="footerBtn">
@@ -968,8 +1472,8 @@ class qualificationPh extends React.Component {
         </div>
 
 
-        <div className={this.state.masking===true?'masking':'hidden'} onClick={this.maskingF}>
-          <img src={this.state.imgMasking} alt="img"/>
+        <div className={this.state.masking === true ? 'masking' : 'hidden'} onClick={this.maskingF}>
+          <img src={this.state.imgMasking} alt="img" />
         </div>
 
       </div>

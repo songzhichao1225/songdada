@@ -1533,7 +1533,7 @@ class siteSettings extends React.Component {
               <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 269, cursor: 'pointer' }} value={this.state.chekedTwo === '' ? [] : this.state.chekedTwo} disabled={true} placeholder="点击进行添加" onChange={this.money} />
             </div>
             <div className="modelList">
-              <span>场地总数量</span>
+              <span>场地数量</span>
               <div className="startTime" style={{ marginRight: 168 }}>{this.state.chekedTwoLen}</div>
             </div>
 
@@ -1595,7 +1595,7 @@ class siteSettings extends React.Component {
                             && this.state.appointmenttime === 240 ? '4小时' : []
                               && this.state.appointmenttime === 300 ? '5小时' : []
                                 && this.state.appointmenttime === 360 ? '6小时' : []
-                                  && this.state.appointmenttime === 1140 ? '24小时' : []
+                                  && this.state.appointmenttime === 1440 ? '24小时' : []
                                     && this.state.appointmenttime === 2880 ? '48小时' : []
                                       && this.state.appointmenttime === 4320 ? '72小时' : []
                 }
@@ -1610,7 +1610,7 @@ class siteSettings extends React.Component {
                 <Option value="240">4小时</Option>
                 <Option value="300">5小时</Option>
                 <Option value="360">6小时</Option>
-                <Option value="1140">24小时</Option>
+                <Option value="1440">24小时</Option>
                 <Option value="2880">48小时</Option>
                 <Option value="4320">72小时</Option>
 

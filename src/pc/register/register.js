@@ -369,7 +369,6 @@ class register extends React.Component {
               </div>
 
               <div className="son" style={{opacity:0,position:'absolute'}}>
-             
                 <Input maxLength={6} type="text"  className="phone code" />
               </div>
 

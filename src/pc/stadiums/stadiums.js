@@ -1,7 +1,7 @@
 import React from 'react';
 import './stadiums.css';
 import 'antd/dist/antd.css';
-import { getVenueInformation, VenueInformationSave, getVenueIssecondaudit, getVenueQualificationInformation, getVenueOpenBank, UploadVenueImgsLisenTwo, UploadVenueImgsLisen, VenueReceivingBankInformation, UploadVenueImgs, getVenueSportList, VenueQualificationInformationSave, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
+import { getVenueInformation, VenueInformationSave, getVenueIssecondaudit, getVenueQualificationInformation,imgUrlTwo, getVenueOpenBank, UploadVenueImgsLisenTwo, UploadVenueImgsLisen, VenueReceivingBankInformation, UploadVenueImgs, getVenueSportList, VenueQualificationInformationSave_another, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
 import { Input, message, Checkbox, Button, Popconfirm, Radio, Select, Spin } from 'antd';
 import { ImagePicker } from 'antd-mobile';
 import lrz from 'lrz';
@@ -96,6 +96,23 @@ class stadiums extends React.Component {
     filesFiveSon: '',
     imgMasking: '',
     masking: false,
+    value: 0,
+    valueTwo: 1,
+    BelongingOne: [],
+    BelongingOneSon: '',
+    BelongingTwo: [],
+    BelongingTwoSon: '',
+    BelongingThree: [],
+    BelongingThreeSon: '',
+    BelongingFour: [],
+    BelongingFourSon: '',
+    BelongingFive: [],
+    BelongingFiveSon: '',
+    BelongingSix: [],
+    BelongingSixSon: '',
+    legalhourBaseURL: '',
+    ascrBaceUrl: '',
+    valueThree: 1,
   };
 
   async getVenueInformation(data) {
@@ -104,7 +121,7 @@ class stadiums extends React.Component {
       let arrImg = []
       let imgS = (res.data.data.filesURL).slice(1, (res.data.data.filesURL).length).split('|')
       for (let i in imgS) {
-        arrImg.push({ url: imgS[i] })
+        arrImg.push({ url:imgUrlTwo+imgS[i] })
       }
       localStorage.setItem('handleCity', res.data.data.city)
       localStorage.setItem('handleDistrict', res.data.data.area)
@@ -125,7 +142,7 @@ class stadiums extends React.Component {
           area: this.props.location.query.district,
           informationList: res.data.data, name: res.data.data.name,
           contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone,
-          files: [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
+          files: [{ url:imgUrlTwo+res.data.data.firstURL }], filesSon: res.data.data.firstURL,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, sport: lo, facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
         })
       } else if (this.props.location.query === undefined || this.props.location.query.name === 'sunny') {
@@ -138,7 +155,7 @@ class stadiums extends React.Component {
           spinning: false,
           informationList: res.data.data, name: res.data.data.name, handleAddress: res.data.data.address,
           contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, adddress: res.data.data.position,
-          files: [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
+          files: [{ url:imgUrlTwo+res.data.data.firstURL }], filesSon: res.data.data.firstURL,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, sport: lo, facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
         })
       }
@@ -205,25 +222,37 @@ class stadiums extends React.Component {
   async getVenueQualificationInformation(data) {
     const res = await getVenueQualificationInformation(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      let corporate = res.data.data
-      let cardImg = corporate.legalFilesURL.replace('|', ',').split(',')
       if (res.data.data.ProvinceBank !== '') {
         this.getVenueOpenBankCity({ province_id: res.data.data.ProvinceBank })
       }
       this.setState({
-        imageUrlTwo: corporate.legalFilesURL === '' ? '' : cardImg[0], imageUrlThree: corporate.legalFilesURL === '' ? '' : cardImg[1],
-        legalBaseURL: corporate.legalBaseURL,
-        filesFourSon: corporate.legalBaseURL === '' ? '' : corporate.legalFilesURL.split('|')[0],
-        filesFiveSon: corporate.legalBaseURL === '' ? '' : corporate.legalFilesURL.split('|')[1],
-        filesFour: corporate.legalBaseURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + corporate.legalBaseURL + corporate.legalFilesURL.split('|')[0] }],
-        filesFive: corporate.legalBaseURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + corporate.legalBaseURL + corporate.legalFilesURL.split('|')[1] }],
-        corporateName: corporate.legalname, corporateId: corporate.legalcard, corporatePhone: corporate.legalphone, CorporateName: corporate.CorporateName,
-        numRadio: corporate.Settlement, corporateCardId: corporate.Bankaccount, corporateOpen: corporate.OpeningBank,
-        filesThreeSon: corporate.lisenceURL,
-        filesThree: [{ url: 'https://app.tiaozhanmeiyitian.com/' + corporate.lisenceURL }],
-        bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
-        empowerURLBos: corporate.empowerURL === '' ? [] : [{ url: 'https://app.tiaozhanmeiyitian.com/' + corporate.empowerURL }],
-        empowerURL: corporate.empowerURL
+        CorporateName: res.data.data.CorporateName, bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
+        faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
+        numRadio: res.data.data.Settlement, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
+        legalBaseURL: res.data.data.legalBaseURL,
+        filesThree: res.data.data.lisenceURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.lisenceURL }],
+        filesThreeSon: res.data.data.lisenceURL === '' ? '' : res.data.data.lisenceURL,
+        filesFourSon: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[0],
+        filesFour: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0] }],
+        filesFiveSon: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[1],
+        filesFive: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1] }],
+        BelongingFourSon: res.data.data.empowerURL === '' ? '' : res.data.data.empowerURL,
+        BelongingFour: res.data.data.empowerURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.empowerURL }],
+        BelongingOneSon: res.data.data.promiseURL === '' ? '' : res.data.data.promiseURL,
+        BelongingOne: res.data.data.promiseURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.promiseURL }],
+        ascrBaceUrl: res.data.data.ascriphourBaseURL,
+        BelongingTwo: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.ascriphourBaseURL + res.data.data.ascriphourFilesURL.split('|')[0] }],
+        BelongingTwoSon: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? '' : res.data.data.ascriphourFilesURL.split('|')[0],
+        BelongingThree: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.ascriphourBaseURL + res.data.data.ascriphourFilesURL.split('|')[1] }],
+        BelongingThreeSon: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? '' : res.data.data.ascriphourFilesURL.split('|')[1],
+        legalhourBaseURL: res.data.data.legalhourBaseURL,
+        BelongingFive: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalhourBaseURL + res.data.data.legalhourFilesURL.split('|')[0] }],
+        BelongingFiveSon: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? '' : res.data.data.legalhourFilesURL.split('|')[0],
+        BelongingSix: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? [] : [{ url: imgUrlTwo+res.data.data.legalhourBaseURL + res.data.data.legalhourFilesURL.split('|')[1] }],
+        BelongingSixSon: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? '' : res.data.data.legalhourFilesURL.split('|')[1],
+        value: res.data.data.ascription,
+        valueTwo: res.data.data.personIncharge,
+        valueThree: res.data.data.verification
       })
     }
   }
@@ -245,16 +274,16 @@ class stadiums extends React.Component {
   handleChange = (files, type, index) => {
     this.setState({ files })
     if (type === 'add') {
-      if (files[0].file.size / 1024 / 1024 < 7) {
+      if (files[0].file.size / 1024 / 1024 < 9) {
         lrz(files[0].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
             let formdata1 = new FormData();
             formdata1.append('files', rst.file);
             this.UploadVenueImgs(formdata1)
-          })
+          }) 
       } else {
-        message.warning('图片超过7M无法上传', 2)
+        message.warning('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       this.setState({ filesSon: '' })
@@ -280,16 +309,17 @@ class stadiums extends React.Component {
   handleChangeOne = (files, type, index) => {
     this.setState({ filesThree: files })
     if (type === 'add') {
-      if (files[0].file.size / 1024 / 1024 < 7) {
+      if (files[0].file.size / 1024 / 1024 < 9) {
         lrz(files[0].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
             let formdata1 = new FormData();
+            console.log(rst)
             formdata1.append('files', rst.file);
             this.UploadVenueImgsLisen(formdata1)
           })
       } else {
-        message.warning('图片超过7M无法上传', 2)
+        message.warning('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       this.setState({ filesThreeSon: '' })
@@ -350,7 +380,7 @@ class stadiums extends React.Component {
     this.setState({ num: 0 })
     if (type === 'add') {
       console.log(files)
-      if (files[files.length - 1].file.size / 1024 / 1024 < 7) {
+      if (files[files.length - 1].file.size / 1024 / 1024 < 9) {
         lrz(files[files.length - 1].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
@@ -359,7 +389,7 @@ class stadiums extends React.Component {
             this.UploadVenueImgsTwo(formdata1)
           })
       } else {
-        message.warning('图片超过7M无法上传', 2)
+        message.warning('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       let pok = this.state.filesTwoSon.slice(1, this.state.filesTwoSon.length).split('|')
@@ -479,7 +509,7 @@ class stadiums extends React.Component {
   handleChangeTwo = (files, type, index) => {
     this.setState({ filesFour: files })
     if (type === 'add') {
-      if (files[0].file.size / 1024 / 1024 < 7) {
+      if (files[0].file.size / 1024 / 1024 < 9) {
         lrz(files[0].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
@@ -488,7 +518,7 @@ class stadiums extends React.Component {
             this.UploadVenueImgsLisenTwo(formdata1)
           })
       } else {
-        message.warning('图片超过7M无法上传', 2)
+        message.warning('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       this.setState({ filesFourSon: '', filesFiveSon: '', filesFive: [] })
@@ -512,7 +542,7 @@ class stadiums extends React.Component {
   handleChangeThree = (files, type, index) => {
     this.setState({ filesFive: files })
     if (type === 'add') {
-      if (files[0].file.size / 1024 / 1024 < 7) {
+      if (files[0].file.size / 1024 / 1024 < 9) {
         lrz(files[0].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
@@ -521,7 +551,7 @@ class stadiums extends React.Component {
             this.UploadVenueImgsLisenTwoT(formdata1)
           })
       } else {
-        message.warning('图片超过7M无法上传', 2)
+        message.warning('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       this.setState({ filesFiveSon: '', filesFourSon: '', filesFour: [] })
@@ -546,7 +576,7 @@ class stadiums extends React.Component {
   authorizations = (files, type, index) => {
     this.setState({ empowerURLBos: files })
     if (type === 'add') {
-      if (files[0].file.size / 1024 / 1024 < 7) {
+      if (files[0].file.size / 1024 / 1024 < 9) {
         lrz(files[0].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
@@ -555,7 +585,7 @@ class stadiums extends React.Component {
             this.UploadVenueImgsLisenAuthor(formdata1)
           })
       } else {
-        message.warning('图片超过7M无法上传', 2)
+        message.warning('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       this.setState({ empowerURL: '' })
@@ -582,8 +612,8 @@ class stadiums extends React.Component {
 
 
 
-  async VenueQualificationInformationSave(data) {
-    const res = await VenueQualificationInformationSave(data, sessionStorage.getItem('venue_token'))
+  async VenueQualificationInformationSave_another(data) {
+    const res = await VenueQualificationInformationSave_another(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
       this.props.history.push('/login')
       message.error('登录超时请重新登录')
@@ -596,38 +626,45 @@ class stadiums extends React.Component {
   }
 
   ziSubmit = () => {
-    let { zuo, imgHoodTwo, imgHood, filesThreeSon, empowerURL, corporateName, corporatePhone, CorporateName } = this.state
+    let { zuo, value, valueTwo, valueThree, BelongingTwoSon, BelongingThreeSon, BelongingOneSon, BelongingFourSon, faName, faPhone, faIdcard, legalhourBaseURL, BelongingFiveSon, BelongingSixSon, ascrBaceUrl, filesThreeSon, CorporateName } = this.state
     let data = {
-      legalname: corporateName,
-      legalcard: '',
-      legalphone: corporatePhone,
-      Settlement: 0,
+      ascription: value,
+      CorporateName: value === 1 ? '' : CorporateName,
+      lisenceURL: value === 1 ? '' : filesThreeSon,
+      promiseURL: value === 1 ? BelongingOneSon : '',
+      ascriphourBaseURL: value === 1 && ascrBaceUrl !== '' ? ascrBaceUrl : '',
+      ascriphourFilesURL: value === 1 && ascrBaceUrl !== '' ? BelongingTwoSon + '|' + BelongingThreeSon : '',
+      personIncharge: valueTwo,
+      empowerURL: valueTwo === 1|| valueTwo === 2 ? '' : BelongingFourSon,
+      verification: valueThree,
+      legalname: faName,
+      legalphone: faPhone,
+      legalcard: faIdcard,
+      legalhourBaseURL: legalhourBaseURL,
+      legalhourFilesURL: this.state.valueThree === 3 ? BelongingFiveSon + '|' + BelongingSixSon : '',
+      Settlement: value,
       Bankaccount: '',
       OpeningBank: '',
-      lisenceURL: filesThreeSon,
       legalBaseURL: '',
       legalFilesURL: '',
-      CorporateName: CorporateName,
       Banktype: '',
       ProvinceBank: '',
-      empowerURL: empowerURL,
       CityBank: '',
       type: 2
     }
     if (zuo === 1) {
-      if (imgHood === '') {
-        message.error('请更换身份证正面照')
-      } else if (imgHoodTwo === '') {
-        message.error('请更换身份证反面照')
-      } else {
-        data.legalBaseURL = imgHood
-        this.VenueQualificationInformationSave(data)
-      }
+      
+        this.VenueQualificationInformationSave_another(data)
+      
+
+
     } else {
       if (this.state.loading === false) {
         message.warning('图片上传中...')
       } else {
-        this.VenueQualificationInformationSave(data)
+      
+          this.VenueQualificationInformationSave_another(data)
+        
       }
     }
   }
@@ -703,9 +740,217 @@ class stadiums extends React.Component {
   maskingF = () => {
     this.setState({ masking: false })
   }
+  nameRadio = e => {
+    if (e.target.value === 0) {
+      this.setState({ valueTwo: 1 })
+    }else{
+      this.setState({ valueTwo: 2 })
+    }
+    this.setState({ value: e.target.value })
+  }
+
+
+  async BelongingOneLisen(data) {
+    const res = await UploadVenueImgsLisen(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingOneSon: res.data.data.baseURL + res.data.data.filesURL, loading: true })
+    } else if (res.data.code === 4004) {
+      message.warning('图片违规请重新上传', 2)
+      this.setState({ BelongingOne: [], loading: true })
+    } else {
+      this.setState({ BelongingOne: [], loading: true })
+      message.warning(res.data.msg, 2)
+    }
+  }
+
+  BelongingOne = (files, type, index) => {
+    this.setState({ BelongingOne: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingOneLisen(formdata1)
+          })
+      } else {
+        message.warning('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingOneSon: '' })
+    }
+  }
+
+  async BelongingTwoLisen(data) {
+    const res = await UploadVenueImgsLisenTwo(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingTwoSon: res.data.data.filesURL, ascrBaceUrl: res.data.data.baseURL, loading: true })
+    } else if (res.data.code === 4004) {
+      message.warning('图片违规请重新上传', 2)
+      this.setState({ BelongingTwo: [], loading: true })
+    } else {
+      this.setState({ BelongingTwo: [], loading: true })
+      message.warning(res.data.msg, 2)
+    }
+  }
+
+  BelongingTwo = (files, type, index) => {
+    this.setState({ BelongingTwo: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingTwoLisen(formdata1)
+          })
+      } else {
+        message.warning('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingTwoSon: '', BelongingThree: [], BelongingThreeSon: '', ascrBaceUrl: '' })
+    }
+  }
+
+
+  async BelongingThreeLisen(data) {
+    const res = await UploadVenueImgsLisenTwo(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingThreeSon: res.data.data.filesURL, ascrBaceUrl: res.data.data.baseURL, loading: true })
+    } else if (res.data.code === 4004) {
+      message.warning('图片违规请重新上传', 2)
+      this.setState({ BelongingThree: [], loading: true })
+    } else {
+      this.setState({ BelongingThree: [], loading: true })
+      message.warning(res.data.msg, 2)
+    }
+  }
+
+  BelongingThree = (files, type, index) => {
+    this.setState({ BelongingThree: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingThreeLisen(formdata1)
+          })
+      } else {
+        message.warning('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingThreeSon: '', BelongingTwo: [], BelongingTwoSon: '', ascrBaceUrl: '' })
+    }
+  }
+  nameRadioTwo = e => {
+    this.setState({ valueTwo: e.target.value })
+  }
+
+  async BelongingFourLisen(data) {
+    const res = await UploadVenueImgsLisen(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingFourSon: res.data.data.baseURL + res.data.data.filesURL, loading: true })
+    } else if (res.data.code === 4004) {
+      message.warning('图片违规请重新上传', 2)
+      this.setState({ BelongingFour: [], loading: true })
+    } else {
+      this.setState({ BelongingFour: [], loading: true })
+      message.warning(res.data.msg, 2)
+    }
+  }
+
+  BelongingFour = (files, type, index) => {
+    this.setState({ BelongingFour: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingFourLisen(formdata1)
+          })
+      } else {
+        message.warning('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingFourSon: '' })
+    }
+  }
+  async BelongingFiveLisen(data) {
+    const res = await UploadVenueImgsLisenTwo(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingFiveSon: res.data.data.filesURL, legalhourBaseURL: res.data.data.baseURL, loading: true })
+    } else if (res.data.code === 4004) {
+      message.warning('图片违规请重新上传', 2)
+      this.setState({ BelongingFive: [], loading: true })
+    } else {
+      this.setState({ BelongingFive: [], loading: true })
+      message.warning(res.data.msg, 2)
+    }
+  }
+
+  BelongingFive = (files, type, index) => {
+    this.setState({ BelongingFive: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingFiveLisen(formdata1)
+          })
+      } else {
+        message.warning('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingFiveSon: '', BelongingSix: [], BelongingSixSon: '', legalhourBaseURL: '' })
+    }
+  }
+
+  async BelongingSixLisen(data) {
+    const res = await UploadVenueImgsLisenTwo(data)
+    if (res.data.code === 2000) {
+      this.setState({ BelongingSixSon: res.data.data.filesURL, legalhourBaseURL: res.data.data.baseURL, loading: true })
+    } else if (res.data.code === 4004) {
+      message.warning('图片违规请重新上传', 2)
+      this.setState({ BelongingSix: [], loading: true })
+    } else {
+      this.setState({ BelongingSix: [], loading: true })
+      message.warning(res.data.msg, 2)
+    }
+  }
+
+  BelongingSix = (files, type, index) => {
+    this.setState({ BelongingSix: files })
+    if (type === 'add') {
+      if (files[0].file.size / 1024 / 1024 < 9) {
+        lrz(files[0].url, { quality: 0.5 })
+          .then((rst) => {
+            this.setState({ loading: false })
+            let formdata1 = new FormData();
+            formdata1.append('files', rst.file);
+            this.BelongingSixLisen(formdata1)
+          })
+      } else {
+        message.warning('图片超过9M无法上传', 2)
+      }
+    } else if (type === 'remove') {
+      this.setState({ BelongingSixSon: '', BelongingFive: [], BelongingFiveSon: '', legalhourBaseURL: '' })
+    }
+  }
+  nameRadioThree = e => {
+    this.setState({ valueThree: e.target.value })
+  }
+
 
   render() {
-    const { files, filesTwo, filesThree, filesFive, empowerURLBos, filesFour } = this.state;
+    const { files, filesTwo, filesThree, filesFive, BelongingFour, filesFour, BelongingOne, BelongingTwo, BelongingThree, BelongingFive, BelongingSix } = this.state;
 
     return (
       <div className="stadiums">
@@ -774,14 +1019,14 @@ class stadiums extends React.Component {
                   multiple={false}
                 />
               </div>
-            </div> 
+            </div>
             <div className="name" style={{ overflow: 'hidden' }}>
               <span className="boTitle">场地类型:</span><span className="kong"></span>
               <Checkbox.Group style={{ float: 'left', width: '50%', marginLeft: '26.8px' }} className="chekkoh" options={this.state.plainOptions} value={this.state.sport} onChange={this.onChangeCheck} /><br /><span className="kong"></span>
             </div>
             <div className="name">
               <span className="boTitle">场馆设施:</span><span className="kong"></span>
-              <Checkbox.Group options={options} value={this.state.facilities} onChange={this.onChangeSite}/>
+              <Checkbox.Group options={options} value={this.state.facilities} onChange={this.onChangeSite} />
             </div>
 
             <div className="name">
@@ -806,47 +1051,143 @@ class stadiums extends React.Component {
 
 
           <div className={this.state.flag === false ? 'qualification' : 'none'}>
+            <span className="titile kotile">场馆归属证明</span>
             <div className="listing" >
-              <span>公司名称:</span>
-              <Input className="listingInput" value={this.state.CorporateName} onChange={this.CorporateName} />
-            </div>
-            <div className="listing">
-              <span>营业执照:</span>
-
-              <ImagePicker
-                files={filesThree}
-                style={{ float: 'left', width: '7%', marginLeft: '10px' }}
-                onChange={this.handleChangeOne}
-                onImageClick={this.previewing}
-                selectable={filesThree.length < 1}
-                length={1}
-                multiple={false}
-              />
+              <Radio.Group onChange={this.nameRadio} value={this.state.value}>
+                <Radio value={0}>公司</Radio>
+                <Radio value={1}>个人</Radio>
+              </Radio.Group>
             </div>
 
-            <div className="listing">
+            <div style={this.state.value === 0 ? {} : { display: 'none' }}>
+              <div className="listing" >
+                <span>公司名称:</span>
+                <Input className="listingInput" value={this.state.CorporateName} onChange={this.CorporateName} />
+              </div>
+              <div className="listing">
+                <span>营业执照:</span>
+
+                <ImagePicker
+                  files={filesThree}
+                  style={{ float: 'left', width: '7%', marginLeft: '10px' }}
+                  onChange={this.handleChangeOne}
+                  onImageClick={this.previewing}
+                  selectable={filesThree.length < 1}
+                  length={1}
+                  multiple={false}
+                />
+              </div>
+            </div>
+
+            <div style={this.state.value === 1 ? {} : { display: 'none' }}>
+              <div className="listing">
+                <span>承诺书照:</span>
+                <ImagePicker
+                  files={BelongingOne}
+                  style={{ float: 'left', width: '7%', }}
+                  onChange={this.BelongingOne}
+                  onImageClick={this.previewing}
+                  selectable={BelongingOne.length < 1}
+                  length={1}
+                  multiple={false}
+                  disableDelete={this.state.flagDis}
+                />
+              </div>
+
+              <div className="listing">
+                <span>手持身份证照:</span>
+                <ImagePicker
+                  files={BelongingTwo}
+                  style={{ float: 'left', width: '7%' }}
+                  onChange={this.BelongingTwo}
+                  onImageClick={this.previewing}
+                  selectable={BelongingTwo.length < 1}
+                  length={1}
+                  multiple={false}
+                  disableDelete={this.state.flagDis}
+                />
+                <ImagePicker
+                  files={BelongingThree}
+                  style={{ float: 'left', width: '7%' }}
+                  onChange={this.BelongingThree}
+                  onImageClick={this.previewing}
+                  selectable={BelongingThree.length < 1}
+                  length={1}
+                  multiple={false}
+                  disableDelete={this.state.flagDis}
+                />
+              </div>
+            </div>
+
+            <span className="titile kotile">场馆负责人</span>
+
+            <Radio.Group onChange={this.nameRadioTwo} style={{ marginTop: '20px' }} value={this.state.valueTwo}>
+              <Radio style={this.state.value === 0 ? {} : { display: 'none' }} value={1}>法人</Radio>
+              <Radio style={this.state.value === 1 ? {} : { display: 'none' }} value={2}>承诺人本人</Radio>
+              <Radio value={3}>代理人</Radio>
+            </Radio.Group>
+            <div className="listing" style={this.state.valueTwo !== 1&&this.state.valueTwo!== 2 ? {} : { display: 'none' }}>
               <span>授权书照:</span>
               <ImagePicker
-                files={empowerURLBos}
+                files={BelongingFour}
                 style={{ float: 'left', width: '7%', marginLeft: '10px' }}
-                onChange={this.authorizations}
+                onChange={this.BelongingFour}
                 onImageClick={this.previewing}
-                selectable={empowerURLBos.length < 1}
+                selectable={BelongingFour.length < 1}
                 length={1}
                 multiple={false}
+                disableDelete={this.state.flagDis}
+              />
+            </div>
+
+            <span className="titile kotile" style={{ padding: '20px 0' }}>负责人验证方式</span>
+            <Radio.Group onChange={this.nameRadioThree} value={this.state.valueThree}>
+              <Radio value={1}>姓名、手机号</Radio>
+              <Radio value={2}>姓名、手机号、身份证号</Radio>
+              <Radio value={3}>姓名、手机号、手持身份证照</Radio>
+            </Radio.Group>
+
+            <div className="listing">
+              <span>姓名:</span>
+              <Input className="listingInput" disabled={this.state.flagDis} onChange={this.handleName} value={this.state.faName} placeholder="请输入法人姓名" />
+            </div>
+
+
+            <div className="listing">
+              <span>手机号:</span>
+              <Input className="listingInput phone" maxLength={11} disabled={this.state.flagDis} value={this.state.faPhone} onChange={this.handlePhone} style={{ fontSize: '14px' }} placeholder="请输入11位手机号" />
+            </div>
+
+            <div className="listing" style={this.state.valueThree === 2 ? {} : { display: 'none' }}>
+              <span >身份证号:</span>
+              <Input className="listingInput phone" disabled={this.state.flagDis} value={this.state.faIdcard} onChange={this.facard} style={{ fontSize: '14px' }} placeholder="请输入身份证号" />
+            </div>
+
+            <div className="listing" style={this.state.valueThree === 3 ? {} : { display: 'none' }}>
+              <span>手持身份证照:</span>
+              <ImagePicker
+                files={BelongingFive}
+                style={{ float: 'left', width: '7%', marginLeft: '10px' }}
+                onChange={this.BelongingFive}
+                onImageClick={this.previewing}
+                selectable={BelongingFive.length < 1}
+                length={1}
+                multiple={false}
+                disableDelete={this.state.flagDis}
+              />
+              <ImagePicker
+                files={BelongingSix}
+                style={{ float: 'left', width: '7%' }}
+                onChange={this.BelongingSix}
+                onImageClick={this.previewing}
+                selectable={BelongingSix.length < 1}
+                length={1}
+                multiple={false}
+                disableDelete={this.state.flagDis}
               />
             </div>
 
 
-            <div className="listing">
-              <span>法人姓名:</span>
-              <Input className="listingInput" value={this.state.corporateName} onChange={this.corporateName} />
-            </div>
-
-            <div className="listing">
-              <span>法人手机号:</span>
-              <Input className="listingInput" value={this.state.corporatePhone} onChange={this.corporatePhone} />
-            </div>
 
 
 
@@ -890,7 +1231,7 @@ class stadiums extends React.Component {
                 files={filesFive}
                 style={{ float: 'left', width: '7%' }}
                 onChange={this.handleChangeThree}
-                onImageClick={this.previewing} 
+                onImageClick={this.previewing}
                 selectable={filesFive.length < 1}
                 length={1}
                 multiple={false}
@@ -964,9 +1305,9 @@ class stadiums extends React.Component {
           </div>
         </Spin>
         <div className={this.state.masking === true ? 'masking' : 'hidden'} onClick={this.maskingF}>
-          <img src={this.state.imgMasking} alt="img"/>
+          <img src={this.state.imgMasking} alt="img" />
         </div>
-      </div>
+      </div >
     )
   }
 }

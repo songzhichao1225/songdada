@@ -1,7 +1,7 @@
 import React from 'react';
 import './myWallet.css';
 import 'antd/dist/antd.css';
-import { getVenueMoneyList, getVenueWithdrawalList, getVenueWithdrawalOneList, VenueWithdrawal, getReceivingBankQualifications,gerVenueName, getVenueMembershipCardConsumptionList, MembershipCollectionAgreeToRefuse, getCompleteMembershipRechargeDetails, getMembershipCollectionDetails, MembershipRechargeAgreeToRefuse, getMembershipRechargeDetails, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankList, getVenueOpenBankCity, VenueReceivingBankInformation } from '../../api';
+import { getVenueMoneyList, getVenueWithdrawalList, getVenueWithdrawalOneList, VenueWithdrawal, getReceivingBankQualifications, gerVenueName, getVenueMembershipCardConsumptionList, MembershipCollectionAgreeToRefuse, getCompleteMembershipRechargeDetails, getMembershipCollectionDetails, MembershipRechargeAgreeToRefuse, getMembershipRechargeDetails, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankList, getVenueOpenBankCity, VenueReceivingBankInformation } from '../../api';
 import { DatePicker, Row, Col, Pagination, message, Input, Modal, Radio, Upload, Select, Popconfirm, Button } from 'antd';
 import { } from '@ant-design/icons';
 import moment from 'moment';
@@ -82,8 +82,8 @@ class myWallet extends React.Component {
     sumptionList: [],
     startSump: '',
     endSump: '',
-    koTwo:0,
-    sumptionListNum:0,
+    koTwo: 0,
+    sumptionListNum: 0,
   }
 
   dateChange = (data, dateString) => {
@@ -100,7 +100,7 @@ class myWallet extends React.Component {
   }
 
   dateChangeTwo = (data, dateString) => {
-    this.setState({ startSump: dateString[0], endSump: dateString[1],koTwo:1})
+    this.setState({ startSump: dateString[0], endSump: dateString[1], koTwo: 1 })
   }
 
   async getVenueMoneyList(data) {
@@ -151,8 +151,8 @@ class myWallet extends React.Component {
     const res = await getCompleteMembershipRechargeDetails(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ chargeDetails: res.data.data, chargeDetailsNum: res.data.other })
-    }else{
-      this.setState({chargeDetailsNum: res.data.other })
+    } else {
+      this.setState({ chargeDetailsNum: res.data.other })
     }
   }
 
@@ -160,7 +160,7 @@ class myWallet extends React.Component {
     const res = await getVenueMembershipCardConsumptionList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
 
-      this.setState({ sumptionList: res.data.data,sumptionListNum:res.data.other.maxcount })
+      this.setState({ sumptionList: res.data.data, sumptionListNum: res.data.other.maxcount })
 
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
@@ -174,10 +174,10 @@ class myWallet extends React.Component {
       this.props.history.push('/')
       message.error('登录超时请重新登录!')
     } else {
-      this.setState({ gerVenueNameName: res.data.data.name, gerVenueNameRate: res.data.data.rate,ishaverecharge:res.data.data.ishaverecharge })
+      this.setState({ gerVenueNameName: res.data.data.name, gerVenueNameRate: res.data.data.rate, ishaverecharge: res.data.data.ishaverecharge })
       sessionStorage.setItem('mess', res.data.data.mess)
-      sessionStorage.setItem('siteuid',res.data.data.siteuid)
-      sessionStorage.setItem('ishaverecharge',res.data.data.ishaverecharge)
+      sessionStorage.setItem('siteuid', res.data.data.siteuid)
+      sessionStorage.setItem('ishaverecharge', res.data.data.ishaverecharge)
       if (res.data.data.ishaverecharge === 1) {
         this.setState({ vipVisible: true })
         this.getMembershipRechargeDetails()
@@ -196,7 +196,7 @@ class myWallet extends React.Component {
         this.setState({ flag: 1 })
         sessionStorage.setItem('wallet', true)
       }
-    }, 50);
+    }, 50)
     this.gerVenueName()
     let myDate = new Date()
     let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
@@ -206,7 +206,7 @@ class myWallet extends React.Component {
     this.getCompleteMembershipRechargeDetails()
     this.getVenueOpenBankProvince()
     this.getVenueOpenBank()
-    
+
 
 
 
@@ -347,7 +347,7 @@ class myWallet extends React.Component {
     }
   }
   numRadio = e => {
-    this.setState({ numRadio: e.target.value })
+    this.setState({ numRadio: e.target.value})
   }
 
   async getVenueOpenBank(data) {
@@ -378,6 +378,7 @@ class myWallet extends React.Component {
       this.setState({ backList: arrName, flagThree: false })
     }
   }
+
   async getVenueOpenBankCity(data) {
     const res = await getVenueOpenBankCity(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
@@ -389,10 +390,7 @@ class myWallet extends React.Component {
     this.setState({ corporateCardId: e.target.value })
   }
   corporateOpen = e => {
-
-
     this.setState({ corporateOpen: e })
-
   }
 
   typeChange = e => {
@@ -460,9 +458,11 @@ class myWallet extends React.Component {
   handleCancel = () => {
     this.setState({ vipVisible: false, vipVisibleTwo: false })
   }
+
   vipNot = e => {
     this.setState({ vipNot: e.target.value })
   }
+
   async MembershipRechargeAgreeToRefuse(data) {
     const res = await MembershipRechargeAgreeToRefuse(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
@@ -474,9 +474,11 @@ class myWallet extends React.Component {
     }
   }
 
+
   bukeyi = e => {
     this.MembershipRechargeAgreeToRefuse({ shipuuid: e.currentTarget.dataset.id, status: 2, remarks: this.state.vipNot })
   }
+
 
 
   async getReceivingBankQualificationsTwo(data) {
@@ -533,9 +535,9 @@ class myWallet extends React.Component {
     this.getVenueMembershipCardConsumptionList({ page: 1, type: 1, startdate: this.state.startSump, enddate: this.state.endSump })
   }
 
-  sumptionListNumPage=(page,pageSize)=>{
-     this.setState({pageTwo:page})
-     this.getVenueMembershipCardConsumptionList({ page: page, type: this.state.index, startdate: this.state.startSump, enddate: this.state.endSump })
+  sumptionListNumPage = (page, pageSize) => {
+    this.setState({ pageTwo: page })
+    this.getVenueMembershipCardConsumptionList({ page: page, type: this.state.index, startdate: this.state.startSump, enddate: this.state.endSump })
   }
 
   render() {
@@ -664,13 +666,13 @@ class myWallet extends React.Component {
               <div className="backVip">
                 <span className="h1">会员卡信息</span>
                 <span className="h2">北京甲乙电子商务有限公司(找对手平台)</span>
-                <span className="h2" style={this.state.chargeDetails.cardnumber === ''||this.state.chargeDetails.length === 0 ? { display: 'none' } : {}}>卡号：{this.state.chargeDetails.cardnumber}</span>
+                <span className="h2" style={this.state.chargeDetails.cardnumber === '' || this.state.chargeDetails.length === 0 ? { display: 'none' } : {}}>卡号：{this.state.chargeDetails.cardnumber}</span>
                 <span className="h1" style={{ textAlign: 'right', paddingRight: '6px' }}>当前余额：¥{this.state.chargeDetailsNum}</span>
               </div>
-              <div className="backVipTwo" style={this.state.chargeDetails.cardJustURL === ''||this.state.chargeDetails.length === 0 ? { display: 'none' } : {}}>
+              <div className="backVipTwo" style={this.state.chargeDetails.cardJustURL === '' || this.state.chargeDetails.length === 0 ? { display: 'none' } : {}}>
                 <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.chargeDetails.cardJustURL} alt="img" />
               </div>
-              <div className="backVipTwo" style={this.state.chargeDetails.cardBackURL === ''||this.state.chargeDetails.length === 0 ? { display: 'none' } : {}}>
+              <div className="backVipTwo" style={this.state.chargeDetails.cardBackURL === '' || this.state.chargeDetails.length === 0 ? { display: 'none' } : {}}>
                 <img src={'https://app.tiaozhanmeiyitian.com/' + this.state.chargeDetails.cardBackURL} alt="img" />
               </div>
             </div>
@@ -698,21 +700,18 @@ class myWallet extends React.Component {
                 </Row>
                 {
                   this.state.sumptionList.map((item, i) => (
-                    <Row key={i} style={{ height: '35px',lineHeight:'35px',borderTop:'1px solid #e1e0e1' }} >
-                      <Col className="oneText" xs={{ span: 6 }} style={{ textAlign: 'left',height:'35px',lineHeight:'35px' }}>{item.date}</Col>
-                      <Col xs={{ span: 6, offset: 0 }} style={{height:'35px',lineHeight:'35px' }}>{this.state.index === 1 ? 'ID：'+item.orderid : '充值' + item.PlanRecharge + ',赠送' + item.givemoney}</Col>
-                      <Col xs={{ span: 6, offset: 0 }} style={{height:'35px',lineHeight:'35px' }}>{this.state.index === 1 ? '支出' : '收入'}</Col>
-                      <Col xs={{ span: 6, offset: 0 }} style={{height:'35px',lineHeight:'35px' }}>￥{this.state.index === 1 ? item.money : Number(item.PlanRecharge) + Number(item.givemoney)}</Col>
+                    <Row key={i} style={{ height: '35px', lineHeight: '35px', borderTop: '1px solid #e1e0e1' }} >
+                      <Col className="oneText" xs={{ span: 6 }} style={{ textAlign: 'left', height: '35px', lineHeight: '35px' }}>{item.date}</Col>
+                      <Col xs={{ span: 6, offset: 0 }} style={{ height: '35px', lineHeight: '35px' }}>{this.state.index === 1 ? 'ID：' + item.orderid : '充值' + item.PlanRecharge + ',赠送' + item.givemoney}</Col>
+                      <Col xs={{ span: 6, offset: 0 }} style={{ height: '35px', lineHeight: '35px' }}>{this.state.index === 1 ? '支出' : '收入'}</Col>
+                      <Col xs={{ span: 6, offset: 0 }} style={{ height: '35px', lineHeight: '35px' }}>￥{this.state.index === 1 ? item.money : Number(item.PlanRecharge) + Number(item.givemoney)+'.00'}</Col>
                     </Row>
                   ))
                 }
-                <div style={this.state.sumptionList.length===0?{textAlign:'center',padding:'20px 0',borderTop:'1px solid #e1e0e1'}:{display:'none'}}>暂无{this.state.index===1?'支出':'收入'}明细</div>
-                <Pagination className={this.state.sumptionList.length!==0 ? 'fenye' : 'hidden'} current={this.state.pageTwo} showSizeChanger={false} hideOnSinglePage={true} onChange={this.sumptionListNumPage} total={this.state.sumptionListNum === '' ? 0 : this.state.sumptionListNum} />
+                <div style={this.state.sumptionList.length === 0 ? { textAlign: 'center', padding: '20px 0', borderTop: '1px solid #e1e0e1' } : { display: 'none' }}>暂无{this.state.index === 1 ? '支出' : '收入'}明细</div>
+                <Pagination className={this.state.sumptionList.length !== 0 ? 'fenye' : 'hidden'} current={this.state.pageTwo} showSizeChanger={false} hideOnSinglePage={true} onChange={this.sumptionListNumPage} total={this.state.sumptionListNum === '' ? 0 : this.state.sumptionListNum} />
               </div>
             </div>
-
-
-
           </div>
 
         </div>
@@ -816,7 +815,7 @@ class myWallet extends React.Component {
                 ))
               }
             </Select>
-            <Select placeholder="所在市" style={{ width: 120, marginLeft: '18px' }} value={this.state.city_id === '' ? null : Number(this.state.city_id)} loading={this.state.flagThree} onChange={this.cityChange}>
+            <Select placeholder="所在市" style={{ width: 120, marginLeft: '18px' }} value={this.state.city_id === '' ? null:Number(this.state.city_id)} loading={this.state.flagThree} onChange={this.cityChange}>
               {
                 this.state.backCity.map((item, i) => (
                   <Option key={i} value={item.city_id}>{item.city}</Option>
@@ -826,11 +825,12 @@ class myWallet extends React.Component {
           </div>
 
 
+
           <div className="listing">
             <span>开户行:</span>
             <Select
               showSearch
-              style={{ width: 395, height: '36px', marginLeft: '18px', float: 'left' }}
+              style={{ width: 395, height: '36px', marginLeft: '18px', float: 'left'}}
               onSearch={this.handleSearch}
               onChange={this.corporateOpen}
               defaultActiveFirstOption={false}

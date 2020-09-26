@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Link } from 'react-router-dom';
 import './home.css';
 import 'antd/dist/antd.css';
-import { getVenueIndex, gerVenueName } from '../../api';
+import { getVenueIndex, gerVenueName,wsFn } from '../../api';
 import { Layout, Menu, message, notification } from 'antd';
 import { } from '@ant-design/icons';
 import homePage from '../homePage/homePage';
@@ -22,10 +22,12 @@ import special from '../special/special';
 const { Header, Sider, Content } = Layout;
 
 function jo() {
-  var ws = new WebSocket("wss://www.cg.zhaoduishou.com/socket");
+
+  let ws=wsFn
   ws.onopen = function () {
     ws.send(sessionStorage.getItem('siteuid'))
   }
+  
   ws.onmessage = function (e) {
     let message_info = JSON.parse(e.data)
     let msg = new SpeechSynthesisUtterance(message_info.percent)

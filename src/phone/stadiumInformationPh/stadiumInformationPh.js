@@ -6,7 +6,7 @@ import 'antd-mobile/dist/antd-mobile.css';
 import { Input, Checkbox } from 'antd';
 import { LeftOutlined, EllipsisOutlined } from '@ant-design/icons';
 import lrz from 'lrz';
-import { PerfectingVenueInformation, getVenueInformation, VenueInformationSave, UploadVenueImgs, getVenueSportList, TemporaryVenueInformation, getIsSignOut } from '../../api';
+import { PerfectingVenueInformation, getVenueInformation, VenueInformationSave, UploadVenueImgs, getVenueSportList,imgUrlTwo, TemporaryVenueInformation, getIsSignOut } from '../../api';
 const { TextArea } = Input;
 const Item = Popover.Item;
 const options = [{ label: '停车场', value: '1' }, { label: 'WiFi', value: '2' }, { label: '淋浴', value: '3' }, { label: '室内摄像头', value: '4' }]
@@ -81,7 +81,7 @@ class stadiumInformationPh extends React.Component {
           arrImg = []
         } else {
           for (let i in imgS) {
-            arrImg.push({ url: imgS[i] })
+            arrImg.push({ url: imgUrlTwo+imgS[i] })
           }
         }
 
@@ -106,7 +106,7 @@ class stadiumInformationPh extends React.Component {
           handleDistrictTwo: sessionStorage.getItem('handleDistrictTwo'), stadiumName: res.data.data.name,
           telephone: res.data.data.telephone === null ? res.data.data.telephone : res.data.data.telephone.replace(/\s*/g, ""), linkMan: res.data.data.linkMan,
           filesSon: res.data.data.firstURL !== null && res.data.data.firstURL !== '' ? res.data.data.firstURL : '',
-          files: res.data.data.firstURL !== null && res.data.data.firstURL !== '' ? [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.firstURL }] : [],
+          files: res.data.data.firstURL !== null && res.data.data.firstURL !== '' ? [{ url: imgUrlTwo+res.data.data.firstURL }] : [],
           filesTwo: arrImg,
           filesTwoSon: res.data.data.filesURL === null ? '' : res.data.data.filesURL,
           onChangeRun: arrjo,
@@ -124,7 +124,7 @@ class stadiumInformationPh extends React.Component {
           address: res.data.data.position, addressXian: res.data.data.address, stadiumName: res.data.data.name,
           telephone: res.data.data.telephone === null ? res.data.data.telephone : res.data.data.telephone.replace(/\s*/g, ""), linkMan: res.data.data.linkMan,
           filesSon: res.data.data.firstURL !== null && res.data.data.firstURL !== '' ? res.data.data.firstURL : '',
-          files: res.data.data.firstURL !== null && res.data.data.firstURL !== '' ? [{ url: 'https://app.tiaozhanmeiyitian.com/' + res.data.data.firstURL }] : [],
+          files: res.data.data.firstURL !== null && res.data.data.firstURL !== '' ? [{ url:imgUrlTwo+res.data.data.firstURL }] : [],
           filesTwo: arrImg,
           filesTwoSon: res.data.data.filesURL === null ? '' : res.data.data.filesURL,
           onChangeRun: arrjo,
@@ -250,7 +250,7 @@ class stadiumInformationPh extends React.Component {
     this.setState({ filesTwo: files })
     this.setState({ num: 0 })
     if (type === 'add') {
-      if (files[files.length - 1].file.size / 1024 / 1024 < 7) {
+      if (files[files.length - 1].file.size / 1024 / 1024 < 9) {
         lrz(files[files.length - 1].url, { quality: 0.5 })
           .then((rst) => {
             this.setState({ loading: false })
@@ -259,7 +259,7 @@ class stadiumInformationPh extends React.Component {
             this.UploadVenueImgsTwo(formdata1)
           })
       } else {
-        Toast.fail('图片超过7M无法上传', 2)
+        Toast.fail('图片超过9M无法上传', 2)
       }
     } else if (type === 'remove') {
       let pok = this.state.filesTwoSon.slice(1, this.state.filesTwoSon.length).split('|')
@@ -281,15 +281,16 @@ class stadiumInformationPh extends React.Component {
       Toast.fail(res.data.msg, 1)
     }
   }
+
   stadiumName = e => {
     this.setState({ stadiumName: e })
     sessionStorage.setItem('stadiumName', e)
   }
+
   onChangeRun = e => {
-
     this.setState({ onChangeRun: e })
-
   }
+
 
 
   onChangeCheck = e => {
@@ -319,13 +320,10 @@ class stadiumInformationPh extends React.Component {
   }
 
 
+
   next = () => {
     let { stadiumName, lat, lng, linkMan, telephone, filesSon, filesTwoSon, addressXian, address, onChangeRun, onChangeCheck, textKo, handleAreaTwo, handleCityTwo, handleDistrictTwo } = this.state
-
-
     if (this.state.siteUid !== null) {
-
-
       if (lat === '') {
         Toast.fail('请选择场馆位置', 1)
       } if (stadiumName === '') {
@@ -589,7 +587,7 @@ class stadiumInformationPh extends React.Component {
               title="详细地址"
               placeholder="请输入详细地址  "
               value={this.state.addressXian}
-              style={{ fontSize: '0.75rem', float: 'right', paddingLeft: '5px' }}
+              style={{ fontSize: '0.75rem', float: 'right',paddingLeft:'0.45rem' }}
               onChange={this.xaingxi}
               autoHeight
             />
