@@ -145,7 +145,7 @@ class appOrder extends React.Component {
   componentDidMount() {
     //测试数据
     // let query = '?siteuid=9f72c510-f516-4ebe-fab1-09bf860e21fd&sportid=1&token=hW21YN2tUTi2KJZuQRTeqxvRRYcyjSBdxY1x8pfFgpazBl9UECzLE2LjrXbIw63I&sporttype=5'
-    let query = this.props.location.search  
+    let query = this.props.location.search
 
 
     let arr = query.split('&')
