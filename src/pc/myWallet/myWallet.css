@@ -410,3 +410,22 @@
     max-width: 100%;
     max-height: 100%;
 }
+ .ant-modal-footer{
+    display: none;
+ }
+ .ant-modal-header{
+    padding: 8px 16px;
+    background: #F5A623;
+ }
+ .ant-modal-header .ant-modal-title{
+     color: #fff;
+ }
+ .ant-modal-content{
+    overflow: hidden;
+    padding-bottom: 30px;
+ }
+ .mode .submit{
+     color: #fff;
+     margin-top: 20px;
+     margin-left: 140px;
+ }

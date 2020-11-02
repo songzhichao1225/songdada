@@ -39,6 +39,8 @@ class appOrder extends React.Component {
     touchMove: 1,
     touchEnd: 1,
     otherNum: '',
+    flag: '1',
+    selectedTwo: [],
   };
 
 
@@ -114,18 +116,24 @@ class appOrder extends React.Component {
           data-time={resData.data[i].a}
           data-num={resData.data[i].c[j].venueid}
           data-uuid={resData.data[i].c[j].uuid}
-          onClick={this.lookPlate}
+          onClick={this.state.flag === '1' ? this.lookPlateTwo : this.state.sporttypeFive === '10' ? this.lookPlateFive : this.lookPlate}
           data-money={resData.data[i].c[j].money}
           data-summoney={resData.data[i].c[j].summoney}
           data-lo={resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney}
           style={resData.data[i].c[j].type === 1 && this.state.lotime.indexOf(resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney) === -1 ? { background: '#6FB2FF', height: 40, lineHeight: 3, color: '#fff' } : {} && resData.data[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 40, lineHeight: 3 } : {} && resData.data[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 40, lineHeight: 3 } : {} && resData.data[i].c[j].type === 4 ? { background: 'red', height: 40, lineHeight: 3 } : { background: 'red', height: 40, lineHeight: 3, color: '#fff' }}
         > {resData.data[i].c[j].money}</div>
+        if (resData.data[i].c[j].type === 3) {
+          this.setState({ selectedTwo: [...this.state.selectedTwo, resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney] })
+        }
+
+
         obj[key] = value
         let koTwo = parseInt(resData.data[i].a.slice(1, 2)) + 1 + ':00'
         obj.lppd = <div style={{ color: '#F5A623' }}>{resData.data[i].a}<br />{resData.data[i].a.slice(3, resData.data[i].a.length) === '00' ? resData.data[i].a.slice(0, 2) + ':30' : koTwo === '10:00' && resData.data[i].a !== '19:30' ? '10:00' : resData.data[i].a === '19:30' ? '20:00' : resData.data[i].a.slice(0, 1) + koTwo}</div>
       }
       jood.push(obj)
     }
+
     this.setState({
       lookBan: jood
     })
@@ -144,7 +152,7 @@ class appOrder extends React.Component {
 
   componentDidMount() {
     //测试数据
-    // let query = '?siteuid=9f72c510-f516-4ebe-fab1-09bf860e21fd&sportid=1&token=hW21YN2tUTi2KJZuQRTeqxvRRYcyjSBdxY1x8pfFgpazBl9UECzLE2LjrXbIw63I&sporttype=5'
+    // let query = '?siteuid=f798e37b-644a-9846-fed9-72547a8ea90b&sportid=6&token=KtfJFfVmlqZtS1VyOZx4PpxtY2dVfqOOs9Tk4Z5rJp0NgpyReREOEmjDHVIfuZvX&sporttype=10&flag=1'
     let query = this.props.location.search
 
 
@@ -153,6 +161,7 @@ class appOrder extends React.Component {
     let sportid = arr[1].slice(8, arr[1].length)
     let token = arr[2].slice(6, arr[2].length)
     let sporttype = arr[3].slice(10, arr[3].length)
+    this.setState({ flag: arr[4].slice(5, arr[4].length), sporttypeFive: sporttype })
     this.setState({ sportidQuery: sportid, token: token })
     setTimeout(() => {
       this.getAppVenueReservations({ date: '', siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
@@ -164,7 +173,6 @@ class appOrder extends React.Component {
     } else {
       let yoo = start.split('/')[2] + '/' + start.split('/')[0] + '/' + start.split('/')[1]
       this.setState({ date: yoo, token: token, siteid: siteuid, sportid: sportid, sporttypeTwo: sporttype, start: yoo })
-
     }
   }
 
@@ -210,14 +218,10 @@ class appOrder extends React.Component {
     this.setState({ show: false })
   }
 
-  lookPlate = e => {
+  lookPlateTwo = e => {
     let money = e.currentTarget.dataset.money
-    let summoney = e.currentTarget.dataset.summoney
     let time = e.currentTarget.dataset.time
-    let num = e.currentTarget.dataset.num
     let lotime = e.currentTarget.dataset.lo
-    console.log(this.state.lotime)
-
     if (e.currentTarget.dataset.type === '1') {
       if (this.state.lotime.length > 0) {
         if (this.state.lotime.indexOf(lotime) !== -1) {
@@ -228,18 +232,7 @@ class appOrder extends React.Component {
             moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
           }
           this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
-        } else if (this.state.time.sort().indexOf(time) !== -1) {
-
-          this.state.lotime.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney)
-          this.setState({ lotime: this.state.lotime })
-          let moneyCall = 0
-          for (let i in this.state.lotime) {
-            moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
-          }
-
-          this.setState({ moneyCall: moneyCall })
         } else {
-
           let pop = (Number(this.state.moneyCall) + Number(money)).toString()
           if (pop.indexOf('.') !== -1) {
             pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
@@ -254,6 +247,139 @@ class appOrder extends React.Component {
         this.setState({ time: [...this.state.time, time], lotime: [...this.state.lotime, lotime], moneyCall: pop })
       }
     }
+
+    setTimeout(() => {
+      this.loodp(this.state.resData)
+    }, 100)
+  }
+
+
+  lookPlate = e => {
+    let money = e.currentTarget.dataset.money
+    let summoney = e.currentTarget.dataset.summoney
+    let time = e.currentTarget.dataset.time
+    let num = e.currentTarget.dataset.num
+    let lotime = e.currentTarget.dataset.lo
+
+    if (e.currentTarget.dataset.type === '1') {
+      if (this.state.lotime.length > 0) {
+        if (this.state.lotime.indexOf(lotime) !== -1) {
+          this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
+          this.state.time.splice(this.state.time.indexOf(time), 1)
+          let moneyCall = 0
+          for (let i in this.state.lotime) {
+            moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
+          }
+          this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
+        } else if (this.state.time.sort().indexOf(time) !== -1) {
+          this.state.lotime.sort().splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney)
+          this.setState({ lotime: this.state.lotime })
+          let moneyCall = 0
+          for (let i in this.state.lotime) {
+            moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
+          }
+          this.setState({ moneyCall: moneyCall })
+        } else {
+          let pop = (Number(this.state.moneyCall) + Number(money)).toString()
+          if (pop.indexOf('.') !== -1) {
+            pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
+          }
+          this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop })
+        }
+      } else {
+        let pop = (Number(this.state.moneyCall) + Number(money)).toString()
+        if (pop.indexOf('.') !== -1) {
+          pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
+        }
+        this.setState({ time: [...this.state.time, time], lotime: [...this.state.lotime, lotime], moneyCall: pop })
+      }
+    }
+
+    setTimeout(() => {
+      this.loodp(this.state.resData)
+    }, 100)
+  }
+
+
+
+
+  lookPlateFive = e => {
+
+    let money = e.currentTarget.dataset.money
+    let summoney = e.currentTarget.dataset.summoney
+    let time = e.currentTarget.dataset.time
+    let timeTwo = e.currentTarget.dataset.time + 's'
+    let num = e.currentTarget.dataset.num
+    let lotime = e.currentTarget.dataset.lo
+    let lotimeTwo = ''
+    if (lotime.split('-')[1].slice(lotime.split('-')[1].length - 1, lotime.split('-')[1].length) === 'A') {
+      lotimeTwo = lotime.replace(/A/, 'B')
+    } else {
+      lotimeTwo = lotime.replace(/B/, 'A')
+    }
+    if (this.state.selectedTwo.indexOf(lotime) !== -1) {
+      Toast.fail('该场地已被占用', 2, null, false);
+      return
+    } else if (this.state.selectedTwo.indexOf(lotimeTwo) !== -1) {
+      Toast.fail('该场地已被占用', 2, null, false);
+      return
+    }
+
+
+    if (e.currentTarget.dataset.type === '1') {
+
+      if (this.state.lotime.length > 0) {
+
+        if (this.state.lotime.indexOf(lotime) !== -1) {
+
+          this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
+          this.state.lotime.splice(this.state.lotime.indexOf(lotimeTwo), 1)
+          this.state.time.splice(this.state.time.indexOf(time), 1)
+          this.state.time.splice(this.state.time.indexOf(timeTwo), 1)
+          let moneyCall = 0
+          for (let i in this.state.lotime) {
+            moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
+          }
+          this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
+        } else if (this.state.time.sort().indexOf(time) !== -1) {
+          let numTwo = ''
+          if (num.slice(num.length - 1, num.length) === 'A') {
+            numTwo = num.replace(/A/, 'B')
+            this.state.lotime.splice(this.state.time.indexOf(timeTwo), 1, time + '-' + numTwo + '-' + money + '-' + summoney)
+            this.state.lotime.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney)
+          } else {
+            numTwo = num.replace(/B/, 'A')
+            this.state.lotime.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney)
+            this.state.lotime.splice(this.state.time.indexOf(timeTwo), 1, time + '-' + numTwo + '-' + money + '-' + summoney)
+          }
+          this.setState({ lotime: this.state.lotime })
+          let moneyCall = 0
+          for (let i in this.state.lotime) {
+            moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
+          }
+          this.setState({ moneyCall: moneyCall })
+        } else {
+          let pop = (Number(this.state.moneyCall) + Number(money * 2)).toString()
+          if (pop.indexOf('.') !== -1) {
+            pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
+          }
+
+          this.setState({ lotime: [...this.state.lotime, lotime, lotimeTwo], time: [...this.state.time, time, timeTwo], moneyCall: pop })
+        }
+
+
+
+      } else {
+        let pop = (Number(this.state.moneyCall) + Number(money) * 2).toString()
+        if (pop.indexOf('.') !== -1) {
+          pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
+        }
+
+
+        this.setState({ time: [...this.state.time, time, timeTwo], lotime: [...this.state.lotime, lotime, lotimeTwo], moneyCall: pop })
+      }
+    }
+
     setTimeout(() => {
       this.loodp(this.state.resData)
     }, 100)
@@ -266,6 +392,7 @@ class appOrder extends React.Component {
     if (res.data.code !== 2000) {
       Toast.fail(res.data.msg, 2, null, false);
     } else {
+      console.log(this.state.obj)
       var sUserAgent = navigator.userAgent;
       var mobileAgents = ['Android', 'iPhone', 'miniProgram'];
       for (let index = 0; index < mobileAgents.length; index++) {
@@ -296,38 +423,166 @@ class appOrder extends React.Component {
   onSubmit = () => {
     let time = ''
     let num = ''
-    let original=0
-    for (let i in this.state.lotime.sort()) {
-      num += this.state.lotime[i].split('-')[1] + ','
-      time += this.state.lotime[i].split('-')[0] + ','
-      original += Number(this.state.lotime[i].split('-')[3])
-    }
-    if (this.state.lotime.length > 0) {
-      let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[this.state.lotime.length - 1])
-      let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[0])
-      if ((Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1 !== this.state.lotime.length) {
-        Toast.fail('时间必须连贯', 2, null, false);
-      } else {
-        let obj = {
-          placeNun: num,
-          placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
-          placeDate: Number(this.state.date.split('/')[0]) > 500 ? this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2] : this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1],
-          placeMoney: this.state.moneyCall,
-          placeMoneyTwo: original,
-          placeTimeLen: (time.split(',').length - 1) * 0.5 + '小时'
-        }
+    let original = 0
+    if (this.state.flag === '1') {
+      let kopAd = this.state.lotime.sort()
+      let arr = []
+      for (let i in kopAd) {
+        time += kopAd[i].split('-')[0] + ','
+        let obj = {}
+        obj.time = kopAd[i].split('-')[0]
+        obj.num = kopAd[i].split('-')[1]
+        arr.push(obj)
+      }
 
-        this.setState({ obj: obj })
-        if (this.state.date.split('/')[0].length === 4) {
-          let mood = this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2]
-          this.getAPPVenueSelectSite({ startTime: mood + ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5, siteUid: this.state.siteid })
+      var result = {};
+
+      for (let i in arr) {
+        if (result[arr[i].time]) {
+          result[arr[i].time] += '-' + arr[i].num;
         } else {
-          let mood = this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1]
-          this.getAPPVenueSelectSite({ startTime: mood + ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5, siteUid: this.state.siteid })
+          result[arr[i].time] = arr[i].num;
         }
       }
+
+      var keyvalue = [];
+      for (var key in result) {
+        keyvalue.push(result[key])
+      }
+      let youhood = time.slice(0, time.length - 1).split(',')
+      let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[youhood.length - 1])
+      let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[0])
+      let longTime = (Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1
+      let obj = {
+        placeNun: keyvalue.join(','),
+        placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
+        placeDate: Number(this.state.date.split('/')[0]) > 500 ? this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2] : this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1],
+        placeMoney: this.state.moneyCall,
+        placeMoneyTwo: original,
+        placeTimeLen: longTime * 0.5 + '小时'
+      }
+      this.setState({ obj: obj })
+
+      var sUserAgent = navigator.userAgent;
+      var mobileAgents = ['Android', 'iPhone', 'miniProgram'];
+      for (let index = 0; index < mobileAgents.length; index++) {
+        if (sUserAgent.indexOf('Android') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
+          let objT = JSON.stringify(this.state.obj)
+          window.JsAndroid.goTime(objT)
+        } else if (sUserAgent.indexOf('iPhone') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
+          try {
+            window.webkit.messageHandlers.ScanAction.postMessage(obj)
+          } catch (error) {
+          }
+
+        } else if (sUserAgent.indexOf('miniProgram') > -1) {
+          console.log('执行了')
+          //eslint-disable-next-line
+          wx.miniProgram.navigateBack({ delta: 1 })
+          //eslint-disable-next-line
+          wx.miniProgram.postMessage({ data: this.state.obj })
+          console.log('执行结束了')
+        }
+      }
+    } else if (this.state.sporttypeFive === '10') {
+      for (let i in this.state.lotime.sort()) {
+        num += this.state.lotime[i].split('-')[1] + ','
+        time += this.state.lotime[i].split('-')[0] + ','
+        original += Number(this.state.lotime[i].split('-')[3])
+      }
+      let kopAd = this.state.lotime.sort()
+      let arr = []
+      for (let i in kopAd) {
+        time += kopAd[i].split('-')[0] + ','
+        let obj = {}
+        obj.time = kopAd[i].split('-')[0]
+        obj.num = kopAd[i].split('-')[1]
+        arr.push(obj)
+      }
+
+      let result = {};
+
+      for (let i in arr) {
+        if (result[arr[i].time]) {
+          result[arr[i].time] += '-' + arr[i].num;
+        } else {
+          result[arr[i].time] = arr[i].num;
+        }
+      }
+
+      let keyvalue = [];
+      for (let key in result) {
+        keyvalue.push(result[key])
+      }
+
+      if (this.state.lotime.length > 0) {
+        let youhood = time.slice(0, time.length - 1).split(',').sort()
+        let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[youhood.length - 1])
+        let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[0])
+        if ((Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1 !== this.state.lotime.length / 2 && this.state.flag !== '1') {
+          Toast.fail('时间必须连贯', 2, null, false);
+        } else if (this.state.lotime.length < 4) {
+          Toast.fail('最少选择1小时场地', 2, null, false);
+        } else {
+          let obj = {
+            placeNun: keyvalue.join(','),
+            placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
+            placeDate: Number(this.state.date.split('/')[0]) > 500 ? this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2] : this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1],
+            placeMoney: this.state.moneyCall,
+            placeMoneyTwo: original,
+            placeTimeLen: this.state.lotime.length / 2 * 0.5 + '小时'
+          }
+
+          this.setState({ obj: obj })
+          if (this.state.date.split('/')[0].length === 4) {
+            let mood = this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2]
+            this.getAPPVenueSelectSite({ startTime: mood + ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5, siteUid: this.state.siteid })
+          } else {
+            let mood = this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1]
+            this.getAPPVenueSelectSite({ startTime: mood + ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5, siteUid: this.state.siteid })
+          }
+        }
+      } else {
+        Toast.fail('请选择场地', 2, null, false);
+      }
+
     } else {
-      Toast.fail('请选择场地', 2, null, false);
+      for (let i in this.state.lotime.sort()) {
+        num += this.state.lotime[i].split('-')[1] + ','
+        time += this.state.lotime[i].split('-')[0] + ','
+        original += Number(this.state.lotime[i].split('-')[3])
+      }
+
+      if (this.state.lotime.length > 0) {
+        let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[this.state.lotime.length - 1])
+        let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[0])
+
+        if ((Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1 !== this.state.lotime.length && this.state.flag !== '1') {
+          Toast.fail('时间必须连贯', 2, null, false);
+        } else if (this.state.lotime.length < 2) {
+          Toast.fail('最少选择1小时场地', 2, null, false);
+        } else {
+          let obj = {
+            placeNun: num,
+            placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
+            placeDate: Number(this.state.date.split('/')[0]) > 500 ? this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2] : this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1],
+            placeMoney: this.state.moneyCall,
+            placeMoneyTwo: original,
+            placeTimeLen: (time.split(',').length - 1) * 0.5 + '小时'
+          }
+
+          this.setState({ obj: obj })
+          if (this.state.date.split('/')[0].length === 4) {
+            let mood = this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2]
+            this.getAPPVenueSelectSite({ startTime: mood + ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5, siteUid: this.state.siteid })
+          } else {
+            let mood = this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1]
+            this.getAPPVenueSelectSite({ startTime: mood + ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5, siteUid: this.state.siteid })
+          }
+        }
+      } else {
+        Toast.fail('请选择场地', 2, null, false);
+      }
     }
   }
   dayBefore = e => {

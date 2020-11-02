@@ -123,13 +123,13 @@ class forgetPassword extends React.Component {
                 </Form.Item>
 
                 <Form.Item>
-                <div className="son">
+                <div className="son" style={{margin:'10px 0'}}>
                   <span style={{float:'left'}}>验证码</span>
-                  <Input onChange={this.code} style={{float:'left',width:'176px',marginLeft:'50px'}} placeholder="请输入验证码" maxLength={6} className="phone code" />
-                  <div className={this.state.textT === '获取验证码' ? 'huoBtn' : 'koohidden'} onClick={this.naCode} >
+                  <Input onChange={this.code} style={{float:'left',width:'176px',marginLeft:'33px'}} placeholder="请输入验证码" maxLength={6} className="phone code" />
+                  <div className={this.state.textT === '获取验证码' ? 'huoBtn' : 'koohidden'} style={{textAlign:'center'}} onClick={this.naCode} >
                     {this.state.textT}
                   </div>
-                  <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'huoBtn'} >
+                  <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'huoBtn'}  style={{textAlign:'center'}}>
                     {this.state.textT}
                   </div>
                 </div>
@@ -157,7 +157,7 @@ class forgetPassword extends React.Component {
                 </Form.Item>
               <Form.Item>
 
-                <Button className="confirmBtn" onClick={this.comfir}>确定</Button>
+                <Button className="confirmBtn" style={{marginLeft:'0'}} onClick={this.comfir}>确定</Button>
 
               </Form.Item>
             </Form>

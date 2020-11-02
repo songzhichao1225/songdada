@@ -286,6 +286,7 @@ img{
    background: #F5A623;
    float: right;
    cursor: pointer;
+   margin-top: 30px;
 }
 
 .timeRange .ant-picker-date-panel{
@@ -308,4 +309,43 @@ img{
 }
 .ant-input-number-input{
     padding: 0;
+}
+.ant-col{
+    height: 50px;
+    line-height: 50px;
+  text-align: center;
+}
+.fenye{
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+ .rowConten{
+    height: 50px;
+    margin-top: 10px;
+    border-bottom: 1px solid #E1E0E1;
+}
+
+.ant-picker-calendar-header .ant-picker-calendar-year-select{
+    min-width: 100px;
+}
+.serialSonTwo{
+    width: 30px;
+    height: 30px;
+    background: #F5F5F5;
+    text-align: center;
+    line-height: 30px;
+    margin-left: 13px;
+    margin-top: 13px;
+    float: left;
+    cursor: pointer;
+}
+.serialSonTwo:last-child{
+    width: 80px;
+}
+.ant-modal-close-x{
+    height: 39px;
+    line-height: 39px;
 }

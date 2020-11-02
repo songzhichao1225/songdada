@@ -108,6 +108,7 @@
 .orderList .circumstance{
     display: block;
     clear: both;
+    position: relative;
 }
 .orderList .circumstanceT{
     display: none;
@@ -454,4 +455,7 @@
 .orderList .ant-input-affix-wrapper .ant-input-suffix{
     top: 8px;
     right: 1px;
+}
+.ant-modal-footer{
+    display: none;
 }

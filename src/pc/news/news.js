@@ -305,7 +305,7 @@ class news extends React.Component {
           title="给找对手平台发消息"
           visible={this.state.visibleTwo}
           onCancel={this.handleCancel}
-          className="mode"
+          
           closeIcon={<CloseCircleOutlined style={{color:'#fff',fontSize:'20px'}} />}
         >
           <TextArea rows={3} placeholder="请输入您推送的消息" value={this.state.textArea} onChange={this.textArea} maxLength={200} />

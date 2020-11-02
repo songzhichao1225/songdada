@@ -5,21 +5,37 @@ import 'antd/dist/antd.css';
 import { getVenueIndex, gerVenueName,wsFn } from '../../api';
 import { Layout, Menu, message, notification } from 'antd';
 import { } from '@ant-design/icons';
-import homePage from '../homePage/homePage';
-import information from '../information/information';
-import siteSettings from '../siteSettings/siteSettings';
-import preferentialTwo from '../preferentialTwo/preferentialTwo';
-import stadiums from '../stadiums/stadiums';
-import systemSettings from '../systemSettings/systemSettings';
+// import homePage from '../homePage/homePage';
+// import information from '../information/information';
+// import siteSettings from '../siteSettings/siteSettings';
+// import preferentialTwo from '../preferentialTwo/preferentialTwo';
+// import stadiums from '../stadiums/stadiums';
+// import systemSettings from '../systemSettings/systemSettings';
 import myWallet from '../myWallet/myWallet';
-import comment from '../comment/comment';
-import news from '../news/news';
-import closeYu from '../closeYu/closeYu';
-import appointmentList from '../appointmentList/appointmentList';
-import special from '../special/special';
+// import comment from '../comment/comment';
+// import news from '../news/news';
+// import closeYu from '../closeYu/closeYu';
+// import appointmentList from '../appointmentList/appointmentList';
+// import special from '../special/special';
 
+import lazyLoad from '../../lazyLoad';
+
+
+const homePage = lazyLoad(() => import('../homePage/homePage'));
+const information = lazyLoad(() => import('../information/information'));
+const siteSettings = lazyLoad(() => import('../siteSettings/siteSettings'));
+const preferentialTwo = lazyLoad(() => import('../preferentialTwo/preferentialTwo'));
+const stadiums = lazyLoad(() => import('../stadiums/stadiums'));
+const systemSettings = lazyLoad(() => import('../systemSettings/systemSettings'));
+// const myWallet = lazyLoad(() => import('../myWallet/myWallet'));
+const comment = lazyLoad(() => import('../comment/comment'));
+const news = lazyLoad(() => import('../news/news'));
+const closeYu = lazyLoad(() => import('../closeYu/closeYu'));
+const appointmentList = lazyLoad(() => import('../appointmentList/appointmentList'));
+const special = lazyLoad(() => import('../special/special'));
 
 const { Header, Sider, Content } = Layout;
+
 
 function jo() {
 
@@ -438,6 +454,8 @@ class home extends React.Component {
                 </div>
               </div>
             </div>
+
+
             <Route path="/home/homePage" component={homePage} />
             <Route path="/home/information" component={information} />
             <Route path="/home/siteSettings" component={siteSettings} />

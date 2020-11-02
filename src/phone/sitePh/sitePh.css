@@ -171,7 +171,7 @@
     max-height: 23rem;
     float: left;
 }
-.sitePhSerial div{
+.sitePhSerial .serialSonTwo{
     width:1.7rem;
     height:1.7rem;
     text-align: center;
@@ -430,4 +430,30 @@
 }
 .kopd{
     z-index: 998;
+}
+.kopd .ant-drawer-content{
+    padding-bottom: 5rem;
+}
+
+.sitePhSerial .serialSon{
+    width: 1.7rem;
+    height:1.7rem;
+    text-align: center;
+    line-height: 1.7rem;
+    float: left;
+    background:#F3F3F3;
+    color:#000;
+    margin-left: 0.3rem;
+    margin-top: 0.6rem;
+}
+.sitePhSerial .serialSon:last-child{
+    width: 5rem;
+    height:1.7rem;
+    text-align: center;
+    line-height: 1.7rem;
+    float: left;
+    background:#F3F3F3;
+    color:#000;
+    margin-left: 0.3rem;
+    margin-top: 0.6rem;
 }

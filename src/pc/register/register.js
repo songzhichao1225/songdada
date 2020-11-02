@@ -74,7 +74,7 @@ class register extends React.Component {
     }
   }
   changePhone = (e) => {
-    if ((/^1[3|4|5|8][0-9]\d{4,8}$/.test(e.target.value)) !== false && e.target.value.length === 11) {
+    if (e.target.value.length === 11) {
       this.setState({ visiblePhone: false, phone: e.target.value, kodThree: '' })
     } else if (this.state.phone !== '') {
       this.setState({ kodThree: '请输入正确手机号' })

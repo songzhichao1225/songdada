@@ -32,8 +32,9 @@ class Agreement extends React.Component {
           <span className="block">1、"找对手"平台不得主动将场馆方提交的非公开信息（如营业执照、法人姓名、身份证号、法人手<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;机号、收款银行信息）透漏给第三方；否则场馆方有权追诉平台方的责任；</span>
           <span className="block">2、用户发布活动时，平台须第一时间通过场馆端内部推送信息、声音播报、场地占用页面告知场馆<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;方；</span>
           <span className="block">3、活动截止报名时，平台须第一时间通过场馆端内部推送信息、声音播报、场地占用页面告知场馆<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;方活动是否匹配成功，是否需要预留场地；</span>
-          <span className="block">4、截止报名时，活动匹配成功。不管用户是否到场，场馆方正常提供场地前提下（无用户投诉场馆<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;未预留场地），平台方都须第一时间将扣除服务费后的场地费支付给场馆方；<span className="weight">平台服务费=场地<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;费*8%。</span></span>
+          <span className="block">4、截止报名时，活动匹配成功。不管用户是否到场，场馆方正常提供场地前提下（无用户投诉场馆<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;未预留场地），平台方都须第一时间将扣除服务费后的场地费支付给场馆方；<span className="weight">平台服务费=场地<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;费*8%(平台充值会员的场馆，服务费由场馆给我们的会员价、我们给用户的售卖价自行确定利润产生，不再收取场地费的8%作为平台服务费)。</span></span>
           <span className="block">5、当有用户投诉场馆未预留场地后，平台方须在24小时内安排推广员进行核实，根据最终核实情<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;况，决定是否将场地费支付给场馆方；</span>
+          <span className="block">6、当场馆方申请提现时，平台须确保提现的场地费24小时内到账。否则平台每天须<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;支付1‰提现金额的滞纳金。</span>
           <span className="block weight" style={{ fontSize: '18px' }}>二、场馆方的责任和义务</span>
           <span className="block">1、场馆方注册时填写的信息须客观、真实，不得在平台填写违规、违法等敏感信息内容，否则平台<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;有权解除与场馆方的合作关系；</span>
           <span className="block">2、场馆方可根据各类场地各时间段的供需情况，设置各类场地各时间段的场地价格、最短提前预<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;约时间；</span>
@@ -45,7 +46,7 @@ class Agreement extends React.Component {
           <span className="block">4、到截止报名时间，根据活动匹配成功与否，决定场馆方是否需要继续预留场地，如下:</span>
           <span className="block">4.1、<span className="weight">活动匹配成功</span>:场馆方须继续预留场地给匹配成功的活动直至活动结束时间，否则会影响该场<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;馆的履约率。</span>
           <span className="block">4.2、<span className="weight">活动匹配失败</span>:场馆方无须继续给该活动预留场地；</span>
-          <span className="block">5、<span className="weight">场馆方须支付场地费的8%作为平台服务费</span>，如场馆 方给平台的价格为20元/小时，场馆方收<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;到的场地费为18.4元/小时；</span>
+          <span className="block">5、<span className="weight">场馆方须支付场地费的8%作为平台服务费(平台充值的场馆，服务费按照场馆给我们的会员价、<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们给用户的售卖价自行确定)</span>，如场馆 方给平台的价格为20元/小时，场馆方收到的场地费为<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;18.4元/小时；</span>
           <span className="block">6、场馆方在特殊情况下须临时关闭场馆时，须第一时间在场馆端进行操作。</span>
           <span className="block">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;勾选√“已阅读并同意《场馆入驻协议》”，视为双方均同意上述条款，对双方均具有法律约束力。</span>
         </div>

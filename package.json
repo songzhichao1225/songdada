@@ -2,7 +2,7 @@
   "name": "staten",
   "version": "0.1.0",
   "private": true,
-  "proxy":"https://app.tiaozhanmeiyitian.com",
+  "proxy": "https://appstg.tiaozhanmeiyitian.com/",
   "dependencies": {
     "@ant-design/icons": "^4.0.6",
     "@babel/core": "7.4.3",
@@ -140,6 +140,8 @@
     ]
   },
   "devDependencies": {
+    "-": "0.0.1",
+    "bundle-loader": "^0.5.6",
     "react-router-dom": "^5.0.1"
   }
 }

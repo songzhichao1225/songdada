@@ -5,6 +5,7 @@ import { getVenueMoneyList, getVenueWithdrawalList, getVenueWithdrawalOneList, V
 import { DatePicker, Row, Col, Pagination, message, Input, Modal, Radio, Upload, Select, Popconfirm, Button } from 'antd';
 import { } from '@ant-design/icons';
 import moment from 'moment';
+import 'moment/locale/zh-cn';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 
 const { Option } = Select;
@@ -303,7 +304,7 @@ class myWallet extends React.Component {
     this.VenueWithdrawal({ money: this.state.moneyYuan })
   }
 
-  handleCancel = () => {
+  handleCancelTwo = () => {
     this.setState({ visible: false })
   }
   recordListOther = (page, pageSize) => {
@@ -455,8 +456,11 @@ class myWallet extends React.Component {
   flagHeadTwo = () => {
     this.setState({ flagHead: 1 })
   }
-  handleCancel = () => {
-    this.setState({ vipVisible: false, vipVisibleTwo: false })
+  handleCancelOne = () => {
+    this.setState({ vipVisible: false })
+  }
+  handleCancelThree = () => {
+    this.setState({vipVisibleTwo: false })
   }
 
   vipNot = e => {
@@ -721,7 +725,7 @@ class myWallet extends React.Component {
           visible={this.state.vipVisible}
           onOk={this.handleOk}
           className="mode"
-          onCancel={this.handleCancel}
+          onCancel={this.handleCancelOne}
         >
           <p><span className="vipLeft">持卡人</span>北京甲乙电子商务有限公司(找对手平台)</p>
           <p><span className="vipLeft">会员卡余额</span>￥{this.state.vipList.balance}</p>
@@ -737,7 +741,7 @@ class myWallet extends React.Component {
           visible={this.state.vipVisibleTwo}
           onOk={this.handleOk}
           className="mode"
-          onCancel={this.handleCancel}
+          onCancel={this.handleCancelThree}
         >
           <p><span className="vipLeft">持卡人</span>北京甲乙电子商务有限公司(找对手平台)</p>
           <p><span className="vipLeft">充值金额</span>￥{this.state.vipListTwo.PlanRecharge}</p>
@@ -751,7 +755,7 @@ class myWallet extends React.Component {
           visible={this.state.visible}
           className="mode"
           width={600}
-          onCancel={this.handleCancel}
+          onCancel={this.handleCancelTwo}
         >
           <div className="listing">
             <span>结算账号:</span>

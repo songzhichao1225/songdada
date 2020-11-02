@@ -1,35 +1,15 @@
 import React from 'react';
 import './sitePh.css';
-import { Card, Picker, List, Toast, InputItem, Modal, DatePicker, TextareaItem } from 'antd-mobile';
+import { Card, Picker, List, Toast, InputItem, Modal, TextareaItem } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Pagination, Drawer, Spin } from 'antd';
+import { Pagination, Drawer, Spin, Calendar } from 'antd';
 import { } from '@ant-design/icons';
 import { getVenueNumberTitleList, getVenueSportidTitle, getVenueSport, DelVenueTitle, getVenueTitleSave, getSiteSelectedVenueid, DelVenueNumberTitle, getSiteSettingHistoryList, DelSiteSetting, AddSiteSetting, getVenueNumberTitleSave, getVenueNumberTitleFirst, getSiteSettingList, getSiteSelectedTitle, getSiteSettingFirst, DelSiteSettingDiscount, SiteSettingDiscountSave } from '../../api';
-
+import 'moment/locale/zh-cn';
+import locale from 'antd/es/date-picker/locale/zh_CN';
 const alert = Modal.alert;
 
 let moneyKeyboardWrapProps;
-
-function dateFormat(fmt, date) {
-  let ret;
-  const opt = {
-    "Y+": date.getFullYear().toString(),        // 年
-    "m+": (date.getMonth() + 1).toString(),     // 月
-    "d+": date.getDate().toString(),            // 日
-    "H+": date.getHours().toString(),           // 时
-    "M+": date.getMinutes().toString(),         // 分
-    "S+": date.getSeconds().toString()          // 秒
-    // 有其他格式化字符需求可以继续添加，必须转化成字符串
-  };
-  for (let k in opt) {
-    ret = new RegExp("(" + k + ")").exec(fmt);
-    if (ret) {
-      fmt = fmt.replace(ret[1], (ret[1].length === 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
-    };
-  };
-  return fmt;
-}
-
 
 
 
@@ -67,6 +47,7 @@ class sitePh extends React.Component {
       { label: '排球', value: 11 },
       { label: '网球', value: 12 }
     ],
+    ListSportTwo: [{ label: '半场', value: 1 }, { label: '散场', value: 2 }],
     timeRtArr: [{ label: '00:00', value: '00:00' }, { label: '00:30', value: '00:30' }, { label: '01:00', value: '01:00' }, { label: '01:30', value: '01:30' }, { label: '02:00', value: '02:00' }, { label: '02:30', value: '02:30' }, { label: '03:00', value: '03:00' }, { label: '03:30', value: '03:30' }, { label: '04:00', value: '04:00' }, { label: '04:30', value: '04:30' }, { label: '05:00', value: '05:00' }, { label: '05:30', value: '05:30' }, { label: '06:00', value: '06:00' }, { label: '06:30', value: '06:30' }, { label: '07:00', value: '07:00' }, { label: '07:30', value: '07:30' }, { label: '08:00', value: '08:00' }, { label: '08:30', value: '08:30' }, { label: '09:00', value: '09:00' }, { label: '09:30', value: '09:30' }, { label: '10:00', value: '10:00' }, { label: '10:30', value: '10:30' }, { label: '11:00', value: '11:00' }, { label: '11:30', value: '11:30' }, { label: '12:00', value: '12:00' }, { label: '12:30', value: '12:30' }, { label: '13:00', value: '13:00' }, { label: '13:30', value: '13:30' }, { label: '14:00', value: '14:00' }, { label: '14:30', value: '14:30' }, { label: '15:00', value: '15:00' }, { label: '15:30', value: '15:30' }, { label: '16:00', value: '16:00' }, { label: '16:30', value: '16:30' }, { label: '17:00', value: '17:00' }, { label: '17:30', value: '17:30' }, { label: '18:00', value: '18:00' }, { label: '18:30', value: '18:30' }, { label: '19:00', value: '19:00' }, { label: '19:30', value: '19:30' }, { label: '20:00', value: '20:00' }, { label: '20:30', value: '20:30' }, { label: '21:00', value: '21:00' }, { label: '21:30', value: '21:30' }, { label: '22:00', value: '22:00' }, { label: '22:30', value: '22:30' }, { label: '23:00', value: '23:00' }, { label: '23:30', value: '23:30' }, { label: '24:00', value: '24:00' }],
     Longest: [{ label: '一周', value: 0.1 }, { label: '两周', value: 0.2 }, { label: '三周', value: 0.3 }, { label: '一个月', value: 1 }, { label: '两个月', value: 2 },],
     Shortest: [{ label: '0分钟', value: 0 }, { label: '30分钟', value: 30 }, { label: '60分钟', value: 60 }, { label: '2小时', value: 120 }, { label: '3小时', value: 180 }, { label: '4小时', value: 240 }, { label: '6小时', value: 360 }, { label: '24小时', value: 1440 }, { label: '48小时', value: 2280 }, { label: '72小时', value: 4320 },],
@@ -80,6 +61,7 @@ class sitePh extends React.Component {
     joinTitleC: '',
     idxTitle: '',
     idxTitleTwo: '请选择/添加',
+    idxTitleThree: '请选择/添加',
     Serial: false,
     numArr: [],
     chekedArr: [],
@@ -93,6 +75,7 @@ class sitePh extends React.Component {
     spin: true,
     Price: false,
     pickerValueTwo: '',
+    typeTwo: [0],
     pickerValueThree: [],
     titleArrFoter: [],
     titleArr: [],
@@ -105,8 +88,10 @@ class sitePh extends React.Component {
     money: '',
     pickerValueFour: [],
     pickerValueFive: [],
+    appointmenttimeTwo: [],
     comment: '',
     tagId: '',
+    tags_type:0,
     LiturgycheNum: '',
     jiageUUid: '',
     specialOffer: false,
@@ -122,7 +107,9 @@ class sitePh extends React.Component {
     historList: [],
     pageThree: 1,
     detail: false,
-    details: []
+    details: [],
+    dateArr: [],
+
   }
 
   header = e => {
@@ -163,17 +150,12 @@ class sitePh extends React.Component {
     let kpotWO = now.setMinutes(now.getMinutes() - now.getMinutes() + 30);
     this.getVenueSport()
     this.getVenueNumberTitleList({ page: 1, sportid: '' })
-    // this.getSiteSettingList({ page: 1, sportid: '' })
-    // this.getSiteSettingHistoryList({ page: 1, sportid: '' })
     let numArr = []
     for (let i = 1; i <= 100; i++) {
       let obj = { num: i, cheked: false }
       numArr.push(obj)
     }
     this.setState({ numArr: numArr, starttime: new Date(kpo), endtime: new Date(kpotWO), startDate: new Date(kpo), endDate: new Date(kpotWO) })
-
-
-
   }
 
   async getVenueNumberTitleList(data) {
@@ -335,21 +317,46 @@ class sitePh extends React.Component {
   async getSiteSelectedVenueid(data) {
     const res = await getSiteSelectedVenueid(data, localStorage.getItem('venue_token'))
     if (this.state.Serial === true) {
-      for (let i in res.data.data) {
-        this.state.numArr[parseInt(res.data.data[i] - 1)].cheked = 'no'
-      }
-      if (this.state.chekedArr.length !== 0) {
-        for (let j in this.state.koArr) {
-          this.state.numArr[this.state.koArr[j] - 1].cheked = false
+      if (this.state.pickerValue[0] === 6) {
+        for (let j in res.data.data) {
+          for (let i in this.state.numArr) {
+            if(this.state.numArr.length===48){
+              if(this.state.numArr[47].cheked===true){
+                this.state.numArr[i].cheked='no'
+                this.state.numArr[47].cheked=true
+               }else{
+                if (this.state.numArr[i].num === res.data.data[j]) {
+                  this.state.numArr[parseInt(this.state.numArr[i].id)].cheked = 'no'
+                }
+               }
+            }else{
+              if (this.state.numArr[i].num === res.data.data[j]) {
+                this.state.numArr[parseInt(this.state.numArr[i].id)].cheked = 'no'
+              }
+            }
+            for(let k in this.state.chekedArr){
+              if(this.state.chekedArr[k]===this.state.numArr[i].num){
+                this.state.numArr[parseInt(this.state.numArr[i].id)].cheked = true
+              }
+          }
+          }
         }
-      }
-      if (this.state.chekedArr.length !== 0) {
-        for (let j in this.state.chekedArr) {
-          this.state.numArr[this.state.chekedArr[j] - 1].cheked = true
+        this.setState({ numArr: this.state.numArr })
+      } else {
+        if (this.state.chekedArr.length !== 0) {
+          for (let j in this.state.koArr) {
+            this.state.numArr[this.state.koArr[j] - 1].cheked = false
+          }
         }
+        if (this.state.chekedArr.length !== 0) {
+          for (let j in this.state.chekedArr) {
+            this.state.numArr[this.state.chekedArr[j] - 1].cheked = true
+          }
+        }
+
+        this.setState({ numArr: this.state.numArr })
       }
 
-      this.setState({ numArr: this.state.numArr })
     }
   }
 
@@ -357,14 +364,132 @@ class sitePh extends React.Component {
   Serial = () => {
     if (this.state.idxTitleTwo === '' || this.state.idxTitleTwo === '请选择/添加') {
       Toast.fail('请选择细分标签', 1);
+    } else if (this.state.pickerValue[0] === 6&&this.state.typeTwo[0] === 0) {
+      Toast.fail('请选择场地类型', 1);
     } else {
-      this.setState({ Serial: true })
-      let items = this.state.numArr
-      for (let i in items) {
-        items[i].cheked = false
+      if (this.state.pickerValue[0] === 6) {
+        if(this.state.typeTwo[0]===2){
+          this.setState({
+            numArr: [
+              { num: '1A', cheked: false, id: 0 },
+               { num: '1B', cheked: false, id: 1 },
+                { num: '2A', cheked: false, id: 2 },
+                 { num: '2B', cheked: false, id: 3 },
+                  { num: '3A', cheked: false, id: 4 },
+                   { num: '3B', cheked: false, id: 5 },
+                    { num: '4A', cheked: false, id: 6 },
+                     { num: '4B', cheked: false, id: 7 },
+                      { num: '5A', cheked: false, id: 8 },
+                       { num: '5B', cheked: false, id: 9 },
+                        { num: '6A', cheked: false, id: 10 },
+                         { num: '6B', cheked: false, id: 11 },
+                          { num: '7A', cheked: false, id: 12 },
+                           { num: '7B', cheked: false, id: 13 },
+                            { num: '8A', cheked: false, id: 14 },
+                             { num: '8B', cheked: false, id: 15 },
+                              { num: '9A', cheked: false, id: 16 },
+                               { num: '9B', cheked: false, id: 17 },
+                                { num: '10A', cheked: false, id: 18 },
+                                 { num: '10B', cheked: false, id: 19 },
+                                  { num: '11A', cheked: false, id: 20 },
+                                   { num: '11B', cheked: false, id: 21 },
+                                    { num: '12A', cheked: false, id: 22 },
+                                     { num: '12B', cheked: false, id: 23 },
+                                     { num: '13A', cheked: false, id: 24 },
+                                     { num: '13B', cheked: false, id: 25 },
+                                     { num: '14A', cheked: false, id: 26 },
+                                     { num: '14B', cheked: false, id: 27 },
+                                     { num: '15A', cheked: false, id: 28 },
+                                     { num: '15B', cheked: false, id: 29 },
+                                     { num: '16A', cheked: false, id: 30 },
+                                     { num: '16B', cheked: false, id: 31 },
+                                     { num: '17A', cheked: false, id: 32 },
+                                     { num: '17B', cheked: false, id: 33 },
+                                     { num: '18A', cheked: false, id: 34 },
+                                     { num: '18B', cheked: false, id: 35 },
+                                     { num: '19A', cheked: false, id: 36 },
+                                     { num: '19B', cheked: false, id: 37 },
+                                     { num: '20A', cheked: false, id: 38 },
+                                     { num: '20B', cheked: false, id: 39 },
+                                     { num: '21A', cheked: false, id: 40 },
+                                     { num: '21B', cheked: false, id: 41 },
+                                     { num: '22A', cheked: false, id: 42 },
+                                     { num: '22B', cheked: false, id: 43 },
+                                     { num: '23A', cheked: false, id: 44 },
+                                     { num: '23B', cheked: false, id: 45 },
+                                     { num: '24A', cheked: false, id: 46 },
+                                     { num: '场地不固定', cheked: false, id: 47 }]
+          })
+        }else if(this.state.typeTwo[0]===1){
+          this.setState({
+            numArr: [
+              { num: '1A', cheked: false, id: 0 },
+               { num: '1B', cheked: false, id: 1 },
+                { num: '2A', cheked: false, id: 2 },
+                 { num: '2B', cheked: false, id: 3 },
+                  { num: '3A', cheked: false, id: 4 },
+                   { num: '3B', cheked: false, id: 5 },
+                    { num: '4A', cheked: false, id: 6 },
+                     { num: '4B', cheked: false, id: 7 },
+                      { num: '5A', cheked: false, id: 8 },
+                       { num: '5B', cheked: false, id: 9 },
+                        { num: '6A', cheked: false, id: 10 },
+                         { num: '6B', cheked: false, id: 11 },
+                          { num: '7A', cheked: false, id: 12 },
+                           { num: '7B', cheked: false, id: 13 },
+                            { num: '8A', cheked: false, id: 14 },
+                             { num: '8B', cheked: false, id: 15 },
+                              { num: '9A', cheked: false, id: 16 },
+                               { num: '9B', cheked: false, id: 17 },
+                                { num: '10A', cheked: false, id: 18 },
+                                 { num: '10B', cheked: false, id: 19 },
+                                  { num: '11A', cheked: false, id: 20 },
+                                   { num: '11B', cheked: false, id: 21 },
+                                    { num: '12A', cheked: false, id: 22 },
+                                     { num: '12B', cheked: false, id: 23 },
+                                     { num: '13A', cheked: false, id: 24 },
+                                     { num: '13B', cheked: false, id: 25 },
+                                     { num: '14A', cheked: false, id: 26 },
+                                     { num: '14B', cheked: false, id: 27 },
+                                     { num: '15A', cheked: false, id: 28 },
+                                     { num: '15B', cheked: false, id: 29 },
+                                     { num: '16A', cheked: false, id: 30 },
+                                     { num: '16B', cheked: false, id: 31 },
+                                     { num: '17A', cheked: false, id: 32 },
+                                     { num: '17B', cheked: false, id: 33 },
+                                     { num: '18A', cheked: false, id: 34 },
+                                     { num: '18B', cheked: false, id: 35 },
+                                     { num: '19A', cheked: false, id: 36 },
+                                     { num: '19B', cheked: false, id: 37 },
+                                     { num: '20A', cheked: false, id: 38 },
+                                     { num: '20B', cheked: false, id: 39 },
+                                     { num: '21A', cheked: false, id: 40 },
+                                     { num: '21B', cheked: false, id: 41 },
+                                     { num: '22A', cheked: false, id: 42 },
+                                     { num: '22B', cheked: false, id: 43 },
+                                     { num: '23A', cheked: false, id: 44 },
+                                     { num: '23B', cheked: false, id: 45 },
+                                     { num: '24A', cheked: false, id: 46 },
+                                     ]
+          })
+        }
+        
+        this.getSiteSelectedVenueid({ sportid: this.state.pickerValue[0] })
+        this.setState({
+          Serial: true
+        })
+
+      } else {
+
+        this.setState({ Serial: true })
+        let numArr = []
+        for (let i = 1; i <= 100; i++) {
+          let obj = { num: i, cheked: false }
+          numArr.push(obj)
+        }
+        this.setState({ numArr: numArr })
+        this.getSiteSelectedVenueid({ sportid: this.state.pickerValue[0] })
       }
-      this.setState({ numArr: items })
-      this.getSiteSelectedVenueid({ sportid: this.state.pickerValue[0] })
     }
   }
 
@@ -386,19 +511,70 @@ class sitePh extends React.Component {
 
   numArrSon = e => {
     let items = this.state.numArr
-    if (items[parseInt(e.currentTarget.dataset.num) - 1].cheked !== 'no') {
-      items[parseInt(e.currentTarget.dataset.num) - 1].cheked = !items[parseInt(e.currentTarget.dataset.num) - 1].cheked
-      this.setState({ numArr: items })
+
+    if (this.state.pickerValue[0] === 6) {
+      if (items[e.currentTarget.dataset.id].cheked === true) {
+        items[e.currentTarget.dataset.id].cheked = false
+      } else if (items[e.currentTarget.dataset.id].cheked === false) {
+        items[e.currentTarget.dataset.id].cheked = true
+      }
+      if(e.currentTarget.dataset.num==='场地不固定'){
+        
+        if(items[47].cheked===true ){
+          for(let i in items){
+            items[i].cheked='no'
+            items[47].cheked=true
+          }
+         }else{
+           for(let i in items){
+            items[i].cheked=false
+           }
+           this.getSiteSelectedVenueidTwo({ sportid: this.state.pickerValue[0] })
+         }
+      }
+      this.setState({
+        numArr: items
+      })
+    } else {
+      if (items[parseInt(e.currentTarget.dataset.num) - 1].cheked !== 'no') {
+        items[parseInt(e.currentTarget.dataset.num) - 1].cheked = !items[parseInt(e.currentTarget.dataset.num) - 1].cheked
+        this.setState({ numArr: items })
+      }
     }
+  }
+
+  async getSiteSelectedVenueidTwo(data) {
+    const res = await getSiteSelectedVenueid(data, localStorage.getItem('venue_token'))
+    if (this.state.pickerValue[0] === 6) {
+      for (let j in res.data.data) {
+        for (let i in this.state.numArr) {
+            if (this.state.numArr[i].num === res.data.data[j]) {
+              this.state.numArr[parseInt(this.state.numArr[i].id)].cheked = 'no'
+            }
+            for(let k in this.state.chekedArr){
+              if(this.state.chekedArr[k]===this.state.numArr[i].num){
+                this.state.numArr[parseInt(this.state.numArr[i].id)].cheked = false
+              }
+          }
+        }
+      }
+      this.setState({ numArr: this.state.numArr })
+    } 
+
+
 
   }
+
+
+
+
   reverseC = () => {
     let items = this.state.numArr
     for (let i in items) {
-      if (items[i].cheked === false) {
+      if (items[i].cheked === false&&items[i].num!=='场地不固定') {
         items[i].cheked = true
         this.setState({ numArr: items })
-      } else if (items[i].cheked === true) {
+      } else if (items[i].cheked === true&&items[i].num!=='场地不固定') {
         items[i].cheked = false
         this.setState({ numArr: items })
       }
@@ -409,7 +585,7 @@ class sitePh extends React.Component {
   allThem = () => {
     let items = this.state.numArr
     for (let i in items) {
-      if (items[i].cheked === false) {
+      if (items[i].cheked === false&&items[i].num!=='场地不固定') {
         items[i].cheked = true
         this.setState({ numArr: items })
       }
@@ -479,15 +655,18 @@ class sitePh extends React.Component {
       Toast.fail('请选择细分标签', 1);
     } else if (chekedArr.length === 0) {
       Toast.fail('请选择场地编号', 1);
+    }else if(this.state.pickerValue[0] === 6&&this.state.typeTwo[0] === 0){
+      Toast.fail('请选择场地类型', 1);
     } else {
-      this.getVenueNumberTitleSave({ sportid: pickerValue[0], title: idxTitleTwo, venueid: chekedArr.join(','), number: chekedArr.length, uuid: this.state.firstUUid })
+      let title=idxTitleTwo.indexOf('-')===-1?idxTitleTwo:this.state.typeTwo[0]===2?idxTitleTwo+'-散场':this.state.typeTwo[0]===1?idxTitleTwo+'-半场':idxTitleTwo
+      this.getVenueNumberTitleSave({ sportid: pickerValue[0], title:title, venueid: chekedArr.join(','), number: chekedArr.length, uuid: this.state.firstUUid,type:this.state.typeTwo[0] })
     }
   }
 
   async getVenueNumberTitleFirst(data) {
     const res = await getVenueNumberTitleFirst(data, localStorage.getItem('venue_token'))
     this.setState({
-      pickerValue: [res.data.data[0].sportid], idxTitleTwo: res.data.data[0].title, chekedArr: res.data.data[0].venueid.split(','), koArr: res.data.data[0].venueid.split(','), firstUUid: res.data.data[0].uuid
+      pickerValue: [res.data.data[0].sportid], idxTitleTwo: res.data.data[0].title, chekedArr: res.data.data[0].venueid.split(','), koArr: res.data.data[0].venueid.split(','), firstUUid: res.data.data[0].uuid,typeTwo:[res.data.data[0].type]
     })
   }
 
@@ -641,7 +820,9 @@ class sitePh extends React.Component {
   pickerValueThree = v => {
     for (let i in this.state.titleArrFoter) {
       if (this.state.titleArrFoter[i].title === this.state.titleArr[v].label) {
-        this.setState({ cheStr: this.state.titleArrFoter[i].venueid, titleArrFoterNum: this.state.titleArrFoter[i].number, tagId: this.state.titleArrFoter[i].uuid })
+        this.setState({ cheStr: this.state.titleArrFoter[i].venueid, titleArrFoterNum: this.state.titleArrFoter[i].number, tagId: this.state.titleArrFoter[i].uuid,
+          tags_type:this.state.titleArrFoter[i].type,
+        })
       }
     }
     this.setState({ pickerValueThree: v })
@@ -701,7 +882,7 @@ class sitePh extends React.Component {
 
   jiageSub = () => {
 
-    let { pickerValueTwo, pickerValueThree, Liturgyche, starttime, endtime, money, cheStr, titleArrFoterNum, pickerValueFour, pickerValueFive, comment, tagId, titleArr, LiturgycheNum, jiageUUid } = this.state
+    let { pickerValueTwo, pickerValueThree, Liturgyche, starttime, endtime, money, cheStr, titleArrFoterNum, pickerValueFour, pickerValueFive,tags_type, comment, tagId, titleArr, LiturgycheNum, jiageUUid } = this.state
     if (pickerValueTwo === '') {
       Toast.fail('请选择场地类型', 1);
     } else if (pickerValueThree.length === 0) {
@@ -735,7 +916,8 @@ class sitePh extends React.Component {
         maxScheduledDate: pickerValueFour[0],
         appointmenttime: pickerValueFive[0],
         comment: comment,
-        tags_id: tagId
+        tags_id: tagId,
+        tags_type:tags_type
       }
       this.AddSiteSetting(obj)
     }
@@ -791,6 +973,7 @@ class sitePh extends React.Component {
           LiturgycheNum: res.data.data[0].openday, Liturgyche: p.join(','), starttime: [res.data.data[0].starttime], endtime: [res.data.data[0].endtime],
           money: res.data.data[0].costperhour, pickerValueFour: [Number(res.data.data[0].maxScheduledDate)], pickerValueFive: [res.data.data[0].appointmenttime],
           tagId: res.data.data[0].tags_id,
+          tags_type:res.data.data[0].tags_type,
           comment: res.data.data[0].comment
         })
 
@@ -822,7 +1005,7 @@ class sitePh extends React.Component {
           }
         }
         let h = res.data.data[0].venueid.split(',')
-        let g = res.data.data[0].discount_venueid === null ? [] : res.data.data[0].discount_venueid.split(',')
+        let g = res.data.data[0].venueid === null ? [] : res.data.data[0].venueid.split(',')
         let kol = []
         for (let i in h) {
           let obj = { num: h[i], cheked: false }
@@ -841,7 +1024,8 @@ class sitePh extends React.Component {
           moneySiscount: res.data.data[0].discount_costperhour === null ? res.data.data[0].costperhour : res.data.data[0].discount_costperhour,
           startDate: res.data.data[0].discount_sdate === null ? this.state.startDate : new Date(res.data.data[0].discount_sdate + ' ' + res.data.data[0].discount_start),
           endDate: res.data.data[0].discount_edate === null ? this.state.endDate : new Date(res.data.data[0].discount_edate + ' ' + res.data.data[0].discount_end),
-          starttimeSiscount: res.data.data[0].starttime, endtimeSiscount: res.data.data[0].endtime, venueidSiscount: kol, venueidSiscountTwo: res.data.data[0].discount_venueid === null ? '请选择' : res.data.data[0].discount_venueid
+          starttimeSiscount: res.data.data[0].starttime, endtimeSiscount: res.data.data[0].endtime, venueidSiscount: kol, venueidSiscountTwo: res.data.data[0].venueid === null ? '请选择' : res.data.data[0].venueid,
+          appointmenttimeTwo: [res.data.data[0].discount_appointment], dateArr: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(','),
         })
       }
     }
@@ -932,16 +1116,18 @@ class sitePh extends React.Component {
     }
   }
 
+  pickerValueFiveTwo = e => {
+    this.setState({ appointmenttimeTwo: e })
+  }
+
   joinSiscount = () => {
-    let { SiscountUUid, startDate, endDate, venueidSiscountTwo, moneySiscount } = this.state
+    let { SiscountUUid, dateArr, appointmenttimeTwo, moneySiscount } = this.state
+
     let obj = {
       uuid: SiscountUUid,
-      discount_start: dateFormat("HH:MM", startDate),
-      discount_end: dateFormat("HH:MM", endDate),
-      discount_venueid: venueidSiscountTwo,
+      discount_date: dateArr.join(','),
       discount_costperhour: moneySiscount,
-      discount_sdate: dateFormat("YYYY-mm-dd", startDate),
-      discount_edate: dateFormat("YYYY-mm-dd", endDate)
+      discount_appointment: appointmenttimeTwo[0]
     }
     this.SiteSettingDiscountSave(obj)
 
@@ -967,6 +1153,18 @@ class sitePh extends React.Component {
   }
   detail = e => {
     this.setState({ detail: true, details: e.currentTarget.dataset })
+  }
+
+  onPanelChange = (date) => {
+    let dateSelect = date.format('YYYY-MM-DD')
+    let dateArr = []
+    if (this.state.dateArr.indexOf(dateSelect) === -1) {
+      dateArr.push(dateSelect)
+      this.setState({ dateArr: [...this.state.dateArr, ...dateArr] })
+    }
+  }
+  deletDate = () => {
+    this.setState({ dateArr: this.state.dateArr.slice(0, this.state.dateArr.length - 1) })
   }
   render() {
     return (
@@ -1033,7 +1231,7 @@ class sitePh extends React.Component {
                       <div onClick={item.comment === null ? '' : this.venDuo} data-venueid={item.comment === '' ? '无' : item.comment}>备注：{item.comment === '' ? '无' : item.comment}</div>
                     </div>
                   </Card.Body>
-                  <Card.Footer content={<div className="lookYou" onClick={this.specialOffer} data-uuid={item.uuid}>{item.discount_venueid !== null ? '查看优惠' : '添加优惠'}</div>} extra={<div className="capzuo"><img style={{ marginRight: '10px' }} onClick={this.jiaUpdata} data-uuid={item.uuid} src={require('../../assets/upLoad.png')} alt="img" /><img onClick={() =>
+                  <Card.Footer content={<div className="lookYou" onClick={this.specialOffer} data-uuid={item.uuid}>{item.discount_venueid !== null ? '查看特定' : '添加特定'}</div>} extra={<div className="capzuo"><img style={{ marginRight: '10px' }} onClick={this.jiaUpdata} data-uuid={item.uuid} src={require('../../assets/upLoad.png')} alt="img" /><img onClick={() =>
                     alert('提示', '您确定要删除该条价格设置么？删除后用户将无法预订该时间段' + item.sportname + '的' + item.tags + '场地。', [
                       { text: '取消', onPress: () => console.log('cancel') },
                       { text: '确定', onPress: () => this.DelSiteSetting({ uuid: item.uuid }) },
@@ -1075,7 +1273,7 @@ class sitePh extends React.Component {
                       <div onClick={this.venDuo} data-venueid={item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}>最长提前预定时间：{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</div>
                       <div onClick={this.venDuo} data-venueid={item.appointmenttime / 60 + '小时'}>最短提前预定时间：{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</div>
                       <div onClick={item.comment === null ? '' : this.venDuo} data-venueid={item.comment === '' ? '无' : item.comment}>备注：{item.comment === '' ? '无' : item.comment}</div>
-                      <div>打折优惠:{item.discount_edate === '' ? '无' : <span style={{ color: '#D85D27', cursor: 'pointer' }} data-sd={item.discount_sdate} data-ed={item.discount_edate} data-st={item.discount_start} data-et={item.discount_end} data-ve={item.discount_venueid} data-cos={item.discount_costperhour} onClick={this.detail}>查看</span>}</div>
+                      <div>特定日期:{item.discount_date === '' ? '无' : <span style={{ color: '#D85D27', cursor: 'pointer' }} data-sd={item.discount_date}   data-app={item.discount_appointment} data-cos={item.discount_costperhour} onClick={this.detail}>查看</span>}</div>
                       <div>操作:{item.operation === 1 ? '添加' : item.operation === 2 ? '修改' : item.operation === 3 ? '删除' : '无'}</div>
                       <div style={{ width: '100%' }}>操作时间:{item.intime}</div>
                     </div>
@@ -1116,12 +1314,25 @@ class sitePh extends React.Component {
             disabled={this.state.upData === 1 ? true : false}
             onOk={v => this.setState({ pickerValue: v, idxTitleTwo: '请选择/添加', chekedArr: [] })}
             cols={1} className="forss">
-            <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} style={{ borderBottom: '1px solid #E9E9E9' }}>场地类型</List.Item>
+            <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} style={{ borderBottom: '1px solid #E9E9E9' }}>运动项目</List.Item>
           </Picker>
+
           <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} onClick={this.state.upData === 1 ? '' : this.visibleTitle} extra={this.state.idxTitleTwo} style={{ borderBottom: '1px solid #E9E9E9' }}>细分标签</List.Item>
+
+          <Picker
+            data={this.state.ListSportTwo}
+            value={this.state.typeTwo}
+            disabled={this.state.upData === 1 ? true : false}
+            onOk={v => this.setState({ typeTwo: v })}
+            cols={1} className="forss">
+            <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} style={this.state.pickerValue[0] === 6 ? { borderBottom: '1px solid #E9E9E9' } : { display: 'none' }}>场地类型</List.Item>
+          </Picker>
+
           <List.Item arrow="horizontal" onClick={this.Serial} extra={this.state.chekedArr.length === 0 ? '请选择' : this.state.chekedArr.join(',')} style={{ borderBottom: '1px solid #E9E9E9' }}>场地编号</List.Item>
           <List.Item arrow="empty" extra={this.state.chekedArr.length} style={{ borderBottom: '1px solid #E9E9E9' }}>场地数量</List.Item>
           <div className="btnSub" onTouchStart={this.xifenPush}>提交</div>
+
+
           <span style={{ paddingTop: '1rem', color: '#F5A623', display: 'block' }} onClick={() =>
             alert('提示', '请对所选场地类型进行再细分，如场地类型选择的是羽毛球，贵场馆羽毛球场地是否有普通场、VIP场等之分? 如没有，则所有场地选择一个标签即可，如有，则分开设置标签及对应的“场地编号”。总之，同一时刻，不同价格的场地须细分并给出标签。', [
               { text: '确定', onPress: () => console.log('cancel') },
@@ -1186,18 +1397,14 @@ class sitePh extends React.Component {
         >
           <div className="sitePhSerialHeader"><span onClick={this.reverseC}>反选</span><span onClick={this.allThem}>全选</span></div>
           <div className="sitePhSerial">
-
             {
               this.state.numArr.map((item, i) => (
-                <div key={i} onClick={this.numArrSon} data-num={item.num} style={item.cheked === true ? { background: '#F5A623', color: '#fff' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', opacity: '0.2' } : {}}>{item.num}</div>
+                <div key={i} className={this.state.typeTwo[0]===2?'serialSon':'serialSonTwo'} onClick={this.numArrSon} data-num={item.num} data-id={item.id} style={item.cheked === true ? { background: '#F5A623', color: '#fff' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', opacity: '0.2' } :item.num==='场地不固定'?{width:'5rem'}:{}}>{item.num}</div>
               ))
             }
           </div>
           <div className="sitePhFooter" onTouchStart={this.koNumArr}>确定</div>
         </Drawer>
-
-
-
 
 
         <Drawer
@@ -1311,7 +1518,7 @@ class sitePh extends React.Component {
 
 
         <Drawer
-          title={'添加/修改' + this.state.sportSiscount + '优惠设置'}
+          title={'添加/修改' + this.state.sportSiscount + '特定日期'}
           placement="bottom"
           height='100%'
           className="kopd"
@@ -1320,30 +1527,15 @@ class sitePh extends React.Component {
         >
           <List.Item extra={this.state.sportSiscount} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">场地类型</List.Item>
           <List.Item extra={this.state.titleSiscount} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty" >细分标签</List.Item>
-          <List.Item extra={this.state.xingSiscount} className="lopk" style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">星期</List.Item>
           <List.Item extra={this.state.starttimeSiscount + '~' + this.state.endtimeSiscount} style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">时间范围</List.Item>
-          <List.Item arrow="horizontal" extra={this.state.venueidSiscountTwo} onClick={this.offer} style={{ borderBottom: '1px solid #E9E9E9' }} >参加优惠的场地号</List.Item>
-          <DatePicker
-            mode="datetime"
-            extra="请选择"
-            minuteStep={30}
-            format="YYYY-MM-DD HH:mm"
-            value={this.state.startDate}
-            onChange={startDate => this.setState({ startDate })}
-          >
-            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>优惠期限(开始)</List.Item>
-          </DatePicker>
-
-          <DatePicker
-            mode="datetime"
-            extra="请选择"
-            minuteStep={30}
-            format="YYYY-MM-DD HH:mm"
-            value={this.state.endDate}
-            onChange={endDate => this.setState({ endDate })}
-          >
-            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>优惠期限(结束)</List.Item>
-          </DatePicker>
+          <List.Item arrow="empty" extra={this.state.venueidSiscountTwo} style={{ borderBottom: '1px solid #E9E9E9' }} >场地号</List.Item>
+          <Picker
+            data={this.state.Shortest}
+            value={this.state.appointmenttimeTwo}
+            onOk={this.pickerValueFiveTwo}
+            cols={1} className="forss">
+            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>最短提前预定时间</List.Item>
+          </Picker>
 
           <List.Item style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">
             <InputItem
@@ -1355,8 +1547,28 @@ class sitePh extends React.Component {
               moneyKeyboardWrapProps={moneyKeyboardWrapProps}
             ><span style={{ fontSize: '0.75rem' }}>价格(元/时)</span></InputItem></List.Item>
 
+
+
+          <List.Item style={{ borderBottom: '1px solid #E9E9E9', paddingLeft: '0' }} arrow="empty">
+            <TextareaItem
+              title={<div style={{ fontSize: '0.75rem' }}>日期</div>}
+              placeholder="请选择特定日期"
+              data-seed="logId"
+              value={this.state.dateArr.sort().join(',')}
+              style={{ fontSize: '0.75rem', color: '#888', paddingLeft: '0' }}
+              disabled={true}
+              autoHeight
+            /><span style={{ float: 'right', background: '#F5A623', color: '#fff', padding: '0.1rem 0.2rem', borderRadius: '0.2rem', cursor: 'pointer' }} onClick={this.deletDate}>回删</span></List.Item>
+
+          <div className="site-calendar-demo-card" style={{ border: '1px solid #e9e9e9', marginTop: 15 }}>
+            <Calendar fullscreen={false} className="startTime" dateCellRender={this.dateCellRender} locale={locale} mode='month' onChange={this.onPanelChange} />
+          </div>
+
+
+
+
           <div className="Siscount"><div style={this.state.kop === null ? { display: 'none' } : {}} onClick={() =>
-            alert('提示', '您确定要删除该条优惠设置么？删除后用户将无法预订该时间段' + this.state.sportSiscount + '的优惠场地', [
+            alert('提示', '您确定要删除该条特定日期设置么？删除后用户将无法预订该时间段' + this.state.sportSiscount + '的特定日期场地', [
               { text: '取消', onPress: () => console.log('cancel') },
               { text: '确定', onPress: () => this.DelSiteSettingDiscount({ uuid: this.state.SiscountUUid }) },
             ])} className="leftSiscount">删除</div><div className="leftSiscount" onClick={this.joinSiscount} style={this.state.kop === null ? { width: '100%', borderRadius: '2.5rem' } : { marginLeft: '1%' }}>提交</div></div>
@@ -1400,14 +1612,13 @@ class sitePh extends React.Component {
           visible={this.state.detail}
           transparent
           onClose={this.onClose}
-          title="折扣优惠详情"
+          title="特定日期详情"
 
         >
           <div style={{ textAlign: 'left' }}>
-            <p>开始日期:{this.state.details.sd}&nbsp;&nbsp;{this.state.details.st}</p>
-            <p>结束日期:{this.state.details.ed}&nbsp;&nbsp;{this.state.details.et}</p>
-            <p style={{ wordBreak: 'break-all' }}>场&nbsp;&nbsp;地&nbsp;&nbsp;号:{this.state.details.ve}</p>
-            <p>优惠价格:{this.state.details.cos}(元/小时)</p>
+            <p>特定日期:{this.state.details.sd}</p>
+            <p style={{ wordBreak: 'break-all' }}>最短提前预定时间:{this.state.details.app/60}小时</p>
+            <p>特定日期价格:{this.state.details.cos}(元/小时)</p>
           </div>
 
         </Modal>
