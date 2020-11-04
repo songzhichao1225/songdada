@@ -297,3 +297,9 @@
      position: absolute;
      bottom: 0;
  }
+ .appOrder .fontSize{
+     color: #fff;
+     line-height: 3rem;
+     text-align: center;
+     display: block;
+ }

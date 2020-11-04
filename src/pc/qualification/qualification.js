@@ -21,8 +21,11 @@ class qualification extends React.Component {
     faName: '',//法人姓名
     faIdcard: '',//身份证号
     faPhone: '',//法人手机号
-    handleBankNum: '',//银行卡号
-    Radiovalue: 0,//选择个人 还是公司
+    cardId: '',//银行卡号
+    bankcorporate:'',//收款公司名称
+    inChargeNa:'',//收款人姓名
+    Radiovalue: 0,//选择个人 还是公司,
+    RadiovalueTwo:0,//结算账号
     openingLine: '',//开户行
     siteUUID: '',//场馆Id
     imageRes: '',//营业执照路径
@@ -144,8 +147,8 @@ class qualification extends React.Component {
       }
       this.setState({
         CorporateName: res.data.data.CorporateName, bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
-        faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
-        Radiovalue: res.data.data.Settlement, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
+        faName: res.data.data.legalname, faIdcard: res.data.data.legalcard,handleCardId:res.data.data.Bankcard,inChargeNa:res.data.data.Bankname,bankcorporate:res.data.data.Bankcorporate, faPhone: res.data.data.legalphone,
+        Radiovalue: res.data.data.Settlement,RadiovalueTwo:res.data.data.account, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
         legalBaseURL: res.data.data.legalBaseURL,
         filesThree: res.data.data.lisenceURL === '' ? [] : [{ url: imgUrlTwo+res.data.data.lisenceURL }],
         filesThreeSon: res.data.data.lisenceURL === '' ? '' : res.data.data.lisenceURL,
@@ -185,6 +188,7 @@ class qualification extends React.Component {
           legalFilesURL: res.data.data.legalFilesURL,
           legalname: res.data.data.legalname,
           legalcard: res.data.data.legalcard,
+          Bankcard:res.data.data.Bankcard,
           legalphone: res.data.data.legalphone,
           Settlement: res.data.data.Settlement,
           Bankaccount: res.data.data.Bankaccount,
@@ -201,14 +205,17 @@ class qualification extends React.Component {
           legalhourFilesURL: res.data.data.legalhourFilesURL,
           ascription: res.data.data.ascription,
           personIncharge: res.data.data.personIncharge,
-          verification: res.data.data.verification
+          verification: res.data.data.verification,
+          account:res.data.data.account,
+          Bankname:res.data.data.Bankname,
+          Bankcorporate:res.data.data.Bankcorporate
         }
         sessionStorage.setItem('qualifData', JSON.stringify(data))
         let lpk = JSON.parse(sessionStorage.getItem('qualifData'))
         this.setState({
           CorporateName: lpk.CorporateName, bank_id: lpk.Banktype, province_id: lpk.ProvinceBank, city_id: lpk.CityBank,
-          faName: lpk.legalname, faIdcard: lpk.legalcard, faPhone: lpk.legalphone,
-          Radiovalue: lpk.Settlement, cardId: lpk.Bankaccount, openingLine: lpk.OpeningBank,
+          faName: lpk.legalname, faIdcard: lpk.legalcard,handleCardId:lpk.Bankcard,inChargeNa:lpk.Bankname,bankcorporate:lpk.Bankcorporate, faPhone: lpk.legalphone,
+          Radiovalue: lpk.Settlement,RadiovalueTwo:lpk.account, cardId: lpk.Bankaccount, openingLine: lpk.OpeningBank,
           legalBaseURL: lpk.legalBaseURL,
           filesThree: lpk.lisenceURL === '' ? [] : [{ url:imgUrlTwo+lpk.lisenceURL }],
           filesThreeSon: lpk.lisenceURL === '' ? '' : lpk.lisenceURL,
@@ -242,8 +249,8 @@ class qualification extends React.Component {
         }
         this.setState({
           CorporateName: lpk.CorporateName, bank_id: lpk.Banktype, province_id: lpk.ProvinceBank, city_id: lpk.CityBank,
-          faName: lpk.legalname, faIdcard: lpk.legalcard, faPhone: lpk.legalphone,
-          Radiovalue: lpk.Settlement, cardId: lpk.Bankaccount, openingLine: lpk.OpeningBank,
+          faName: lpk.legalname, faIdcard: lpk.legalcard,handleCardId:lpk.Bankcard,inChargeNa:lpk.Bankname,bankcorporate:lpk.Bankcorporate, faPhone: lpk.legalphone,
+          Radiovalue: lpk.Settlement,RadiovalueTwo:lpk.account, cardId: lpk.Bankaccount, openingLine: lpk.OpeningBank,
           legalBaseURL: lpk.legalBaseURL,
           filesThree: lpk.lisenceURL === '' ? [] : [{ url:imgUrlTwo+lpk.lisenceURL }],
           filesThreeSon: lpk.lisenceURL === '' ? '' : lpk.lisenceURL,
@@ -321,13 +328,20 @@ class qualification extends React.Component {
   handleCardId = e => {
     this.setState({ handleCardId: e.target.value })
   }
+
+  inChargeNa = e => {
+    this.setState({ inChargeNa: e.target.value })
+  }
+  bankcorporate = e => {
+    this.setState({ bankcorporate: e.target.value })
+  }
+  
   handlePhone = e => {
     this.setState({ faPhone: e.target.value })
   }
   handleBankNum = e => {
-    this.setState({ handleBankNum: e.target.value })
+    this.setState({ cardId: e.target.value })
     if (e.target.value === '') {
-
       this.setState({ bank_id: '', province_id: '', city_id: '', openingLine: '', backProvince: [], backCity: [] })
     }
   }
@@ -485,11 +499,18 @@ class qualification extends React.Component {
   onChangeRadio = e => {
     this.setState({
       Radiovalue: e.target.value,
-      bank_id: '', province_id: '', city_id: '', openingLine: '', handleBankNum: ''
+      bank_id: '', province_id: '', city_id: '', openingLine: '', cardId: ''
     })
-
-
   }
+
+  onChangeRadioTwo = e => {
+    this.setState({
+      RadiovalueTwo: e.target.value,
+      Radiovalue:1,
+      bank_id: '', province_id: '', city_id: '', openingLine: '', cardId: ''
+    })
+  }
+
 
   async VenueQualifications_another(data) {
     const res = await VenueQualifications_another(data, sessionStorage.getItem('venue_token'))
@@ -522,9 +543,10 @@ class qualification extends React.Component {
   async VenueVerifyThatAllAreFilledIn(data) {
     const res = await VenueVerifyThatAllAreFilledIn(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      let { siteUUID, filesThreeSon, legalBaseURL, value, valueTwo, valueThree, CorporateName, filesFourSon, Radiovalue, BelongingOneSon, BelongingFourSon, BelongingFiveSon, BelongingSixSon, legalhourBaseURL, filesFiveSon, ascrBaceUrl, BelongingTwoSon, BelongingThreeSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, cardId, openingLine } = this.state
+      let { siteUUID, filesThreeSon, legalBaseURL, value, valueTwo, valueThree, CorporateName, filesFourSon, Radiovalue,RadiovalueTwo, BelongingOneSon, BelongingFourSon, BelongingFiveSon, BelongingSixSon, legalhourBaseURL, filesFiveSon, ascrBaceUrl, BelongingTwoSon, BelongingThreeSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, cardId, openingLine,handleCardId,inChargeNa,bankcorporate } = this.state
 
       if (this.state.isqult === 0) {
+        console.log(bank_id)
         let data = {
           siteUUID: siteUUID,
           ascription: value,
@@ -539,11 +561,15 @@ class qualification extends React.Component {
           legalname: faName,
           legalphone: faPhone,
           legalcard: valueThree === 2 ? faIdcard : '',
+          Bankcorporate:RadiovalueTwo===0&&Radiovalue===0?bankcorporate:'',
+          Bankname:RadiovalueTwo===1?inChargeNa:Radiovalue===1?inChargeNa:'',
+          Bankcard:RadiovalueTwo===1?handleCardId:Radiovalue===1?handleCardId:'',
           legalhourBaseURL: valueThree === 3 ? legalhourBaseURL : '',
           legalhourFilesURL: valueThree === 3 ? BelongingFiveSon + '|' + BelongingSixSon : '',
           Settlement: Radiovalue,
-          legalBaseURL: Radiovalue === 0 ? '' : filesFourSon === '' ? '' : legalBaseURL,
-          legalFilesURL: Radiovalue === 0 ? '' : filesFourSon === '' ? '' : filesFourSon + '|' + filesFiveSon,
+          account:RadiovalueTwo,
+          legalBaseURL: RadiovalueTwo === 0&&Radiovalue===0 ? '' : filesFourSon === '' ? '' : legalBaseURL,
+          legalFilesURL: RadiovalueTwo === 0&&Radiovalue===0 ? '' : filesFourSon === '' ? '' : filesFourSon + '|' + filesFiveSon,
           Bankaccount: cardId,
           OpeningBank: openingLine,
           Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
@@ -561,6 +587,7 @@ class qualification extends React.Component {
         }
 
       } else {
+        console.log(bank_id)
         let data = {
           ascription: value,
           CorporateName: value === 1 ? '' : CorporateName,
@@ -574,16 +601,20 @@ class qualification extends React.Component {
           legalname: faName,
           legalphone: faPhone,
           legalcard: valueThree === 2 ? faIdcard : '',
+          Bankcorporate:RadiovalueTwo===0&&Radiovalue===0?bankcorporate:'',
+          Bankname:RadiovalueTwo===1?inChargeNa:Radiovalue===1?inChargeNa:'',
+          Bankcard:RadiovalueTwo===1?handleCardId:Radiovalue===1?handleCardId:'',
           legalhourBaseURL: valueThree === 3 ? legalhourBaseURL : '',
           legalhourFilesURL: valueThree === 3 ? BelongingFiveSon + '|' + BelongingSixSon : '',
           Settlement: Radiovalue,
-          legalBaseURL: Radiovalue === 0 ? '' : filesFourSon === '' ? '' : legalBaseURL,
-          legalFilesURL: Radiovalue === 0 ? '' : filesFourSon === '' ? '' : filesFourSon + '|' + filesFiveSon,
+          account:RadiovalueTwo,
+          legalBaseURL: RadiovalueTwo === 0&&Radiovalue===0 ? '' : filesFourSon === '' ? '' : legalBaseURL,
+          legalFilesURL: RadiovalueTwo === 0&&Radiovalue===0 ? '' : filesFourSon === '' ? '' : filesFourSon + '|' + filesFiveSon,
           Bankaccount: cardId,
           OpeningBank: openingLine,
-          Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
-          ProvinceBank: typeof (province_id) !== 'string' ? province_id.join() : province_id,
-          CityBank: typeof (city_id) !== 'string' ? city_id.join() : city_id,
+          Banktype: typeof (bank_id) !== 'string' ? bank_id : bank_id,
+          ProvinceBank: typeof (province_id) !== 'string' ? province_id : province_id,
+          CityBank: typeof (city_id) !== 'string' ? city_id : city_id,
           type: 1
         }
 
@@ -607,7 +638,7 @@ class qualification extends React.Component {
     this.VenueVerifyThatAllAreFilledIn()
   }
   stepBack = () => {
-    let { siteUUID, filesThreeSon, legalBaseURL, value, valueTwo, valueThree, CorporateName, filesFourSon, Radiovalue, BelongingOneSon, BelongingFourSon, BelongingFiveSon, BelongingSixSon, legalhourBaseURL, filesFiveSon, ascrBaceUrl, BelongingTwoSon, BelongingThreeSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, cardId, openingLine } = this.state
+    let { siteUUID, filesThreeSon, legalBaseURL, value, valueTwo, valueThree, CorporateName, filesFourSon, Radiovalue,RadiovalueTwo, BelongingOneSon, BelongingFourSon, BelongingFiveSon, BelongingSixSon, legalhourBaseURL, filesFiveSon, ascrBaceUrl, BelongingTwoSon, BelongingThreeSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, cardId, openingLine,handleCardId,inChargeNa,bankcorporate } = this.state
     let data = {
       siteUUID: siteUUID,
       ascription: value,
@@ -622,11 +653,15 @@ class qualification extends React.Component {
       legalname: faName,
       legalphone: faPhone,
       legalcard: valueThree === 2 ? faIdcard : '',
+      Bankcorporate:RadiovalueTwo===0&&Radiovalue===0?bankcorporate:'',
+      Bankname:RadiovalueTwo===1?inChargeNa:Radiovalue===1?inChargeNa:'',
+      Bankcard:RadiovalueTwo===1?handleCardId:Radiovalue===1?handleCardId:'',
       legalhourBaseURL: valueThree === 3 ? legalhourBaseURL : '',
       legalhourFilesURL: valueThree === 3 ? BelongingFiveSon + '|' + BelongingSixSon : '',
       Settlement: Radiovalue,
-      legalBaseURL: Radiovalue === 0 ? '' : filesFourSon === '' ? '' : legalBaseURL,
-      legalFilesURL: Radiovalue === 0 ? '' : filesFourSon === '' ? '' : filesFourSon + '|' + filesFiveSon,
+      account:RadiovalueTwo,
+      legalBaseURL: Radiovalue === 0&&RadiovalueTwo===0 ? '' : filesFourSon === '' ? '' : legalBaseURL,
+      legalFilesURL: Radiovalue === 0&&RadiovalueTwo===0 ? '' : filesFourSon === '' ? '' : filesFourSon + '|' + filesFiveSon,
       Bankaccount: cardId,
       OpeningBank: openingLine,
       Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
@@ -643,7 +678,7 @@ class qualification extends React.Component {
     const res = await TemporaryQualificationInformation_another(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success(res.data.msg)
-      let { siteUUID, filesThreeSon, legalBaseURL, value, valueTwo, valueThree, CorporateName, filesFourSon, Radiovalue, BelongingOneSon, BelongingFourSon, BelongingFiveSon, BelongingSixSon, legalhourBaseURL, filesFiveSon, ascrBaceUrl, BelongingTwoSon, BelongingThreeSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, cardId, openingLine } = this.state
+      let { siteUUID, filesThreeSon, legalBaseURL, value, valueTwo, valueThree, CorporateName, filesFourSon, Radiovalue,RadiovalueTwo, BelongingOneSon, BelongingFourSon, BelongingFiveSon, BelongingSixSon, legalhourBaseURL, filesFiveSon, ascrBaceUrl, BelongingTwoSon, BelongingThreeSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, cardId, openingLine,handleCardId,inChargeNa,bankcorporate } = this.state
       let data = {
         siteUUID: siteUUID,
         ascription: value,
@@ -658,16 +693,20 @@ class qualification extends React.Component {
         legalname: faName,
         legalphone: faPhone,
         legalcard: valueThree === 2 ? faIdcard : '',
+        Bankcorporate:RadiovalueTwo===0&&Radiovalue===0?bankcorporate:'',
+        Bankname:RadiovalueTwo===1?inChargeNa:Radiovalue===1?inChargeNa:'',
+        Bankcard:RadiovalueTwo===1?handleCardId:Radiovalue===1?handleCardId:'',
         legalhourBaseURL: valueThree === 3&&legalhourBaseURL!=='' ? legalhourBaseURL : '',
         legalhourFilesURL: valueThree === 3&&legalhourBaseURL!=='' ? BelongingFiveSon + '|' + BelongingSixSon : '',
         Settlement: Radiovalue,
-        legalBaseURL: Radiovalue === 0 ? '' : filesFourSon === '' ? '' : legalBaseURL,
-        legalFilesURL: Radiovalue === 0 ? '' : filesFourSon === '' ? '' : filesFourSon + '|' + filesFiveSon,
+        account:RadiovalueTwo,
+        legalBaseURL: Radiovalue === 0&&RadiovalueTwo===0 ? '' : filesFourSon === '' ? '' : legalBaseURL,
+        legalFilesURL: Radiovalue === 0&&RadiovalueTwo===0 ? '' : filesFourSon === '' ? '' : filesFourSon + '|' + filesFiveSon,
         Bankaccount: cardId,
         OpeningBank: openingLine,
-        Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
-        ProvinceBank: typeof (province_id) !== 'string' ? province_id.join() : province_id,
-        CityBank: typeof (city_id) !== 'string' ? city_id.join() : city_id,
+        Banktype: typeof (bank_id) !== 'string' ? bank_id : bank_id,
+        ProvinceBank: typeof (province_id) !== 'string' ? province_id : province_id,
+        CityBank: typeof (city_id) !== 'string' ? city_id : city_id,
         flagDis: this.state.flagDis
       }
       sessionStorage.setItem('qualifData', JSON.stringify(data))
@@ -675,7 +714,7 @@ class qualification extends React.Component {
     }
   }
   save = () => {
-    let { siteUUID, filesThreeSon, legalBaseURL, value, valueTwo, valueThree, CorporateName, filesFourSon, Radiovalue, BelongingOneSon, BelongingFourSon, BelongingFiveSon, BelongingSixSon, legalhourBaseURL, filesFiveSon, ascrBaceUrl, BelongingTwoSon, BelongingThreeSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, cardId, openingLine } = this.state
+    let { siteUUID, filesThreeSon, legalBaseURL, value, valueTwo, valueThree, CorporateName, filesFourSon, Radiovalue,RadiovalueTwo, BelongingOneSon, BelongingFourSon, BelongingFiveSon, BelongingSixSon, legalhourBaseURL, filesFiveSon, ascrBaceUrl, BelongingTwoSon, BelongingThreeSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, cardId, openingLine,handleCardId,inChargeNa,bankcorporate } = this.state
     let data = {
       siteUUID: siteUUID,
       ascription: value,
@@ -690,16 +729,20 @@ class qualification extends React.Component {
       legalname: faName,
       legalphone: faPhone,
       legalcard: valueThree === 2 ? faIdcard : '',
+      Bankcorporate:RadiovalueTwo===0&&Radiovalue===0?bankcorporate:'',
+      Bankname:RadiovalueTwo===1?inChargeNa:Radiovalue===1?inChargeNa:'',
+      Bankcard:RadiovalueTwo===1?handleCardId:Radiovalue===1?handleCardId:'',
       legalhourBaseURL: valueThree === 3 ? legalhourBaseURL : '',
       legalhourFilesURL: valueThree === 3 ? BelongingFiveSon + '|' + BelongingSixSon : '',
       Settlement: Radiovalue,
-      legalBaseURL: Radiovalue === 0 ? '' : filesFourSon === '' ? '' : legalBaseURL,
-      legalFilesURL: Radiovalue === 0 ? '' : filesFourSon === '' ? '' : filesFourSon + '|' + filesFiveSon,
+      account:RadiovalueTwo,
+      legalBaseURL: Radiovalue === 0&&RadiovalueTwo===0 ? '' : filesFourSon === '' ? '' : legalBaseURL,
+      legalFilesURL: Radiovalue === 0&&RadiovalueTwo===0 ? '' : filesFourSon === '' ? '' : filesFourSon + '|' + filesFiveSon,
       Bankaccount: cardId,
       OpeningBank: openingLine,
-      Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
-      ProvinceBank: typeof (province_id) !== 'string' ? province_id.join() : province_id,
-      CityBank: typeof (city_id) !== 'string' ? city_id.join() : city_id,
+      Banktype: typeof (bank_id) !== 'string' ? bank_id : bank_id,
+      ProvinceBank: typeof (province_id) !== 'string' ? province_id : province_id,
+      CityBank: typeof (city_id) !== 'string' ? city_id : city_id,
     }
 
     if (this.state.loading === false || this.state.loadingTwo === false || this.state.loadingThree === false || this.state.loadingSix === false) {
@@ -762,8 +805,8 @@ class qualification extends React.Component {
       }
       this.setState({
         CorporateName: res.data.data.CorporateName, bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
-        faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
-        Radiovalue: res.data.data.Settlement, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
+        faName: res.data.data.legalname, faIdcard: res.data.data.legalcard,handleCardId:res.data.data.Bankcard,inChargeNa:res.data.data.Bankname,bankcorporate:res.data.data.Bankcorporate, faPhone: res.data.data.legalphone,
+        Radiovalue: res.data.data.Settlement,RadiovalueTwo:res.data.data.account, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
         legalBaseURL: res.data.data.legalBaseURL,
         filesThree: res.data.data.lisenceURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.lisenceURL }],
         filesThreeSon: res.data.data.lisenceURL === '' ? '' : res.data.data.lisenceURL,
@@ -821,7 +864,7 @@ class qualification extends React.Component {
     }else{
      this.setState({ valueTwo: 2})
     }
-    this.setState({ value: e.target.value, Radiovalue: 1 })
+    this.setState({ value: e.target.value, RadiovalueTwo:e.target.value })
   }
 
   async BelongingOneLisen(data) {
@@ -1214,26 +1257,46 @@ class qualification extends React.Component {
 
 
 
-
-
-
             <div className="titile" style={{ marginTop: '38px', marginLeft: '-10px', textAlign: 'left', width: '450px' }}>场馆收款银行信息<span style={{ color: '#9B9B9B', fontWeight: '400' }}>(也可在提现前填写)</span></div>
-
             <div className="name">
               <div className="nameSonTle">
                 <span className="boTitle">结算账号</span>
               </div>
-              <Radio.Group onChange={this.onChangeRadio} disabled={this.state.flagDis} value={this.state.Radiovalue}>
-                <Radio style={this.state.value === 1 ? { display: 'none' } : {}} value={0}>公司银行账户<span style={{ fontSize: '12px', paddingLeft: '5px', color: '#9B9B9B' }}>(法人不是股东或有多个股东时只能选择公司银行账户结算)</span></Radio><br style={this.state.value === 1 ? { display: 'none' } : {}} />
-                <Radio value={1}>负责人账户</Radio>
+              <Radio.Group onChange={this.onChangeRadioTwo} disabled={this.state.flagDis} value={this.state.RadiovalueTwo}>
+                <Radio style={this.state.value===1?{display:'none'}:{}} value={0}>场馆归属人账号</Radio>
+                <Radio value={1}>场馆负责人账号</Radio>
               </Radio.Group>
+            </div>
+
+            <div className="name" style={this.state.RadiovalueTwo===1?{display:'none'}:{}}>
+              <div className="nameSonTle">
+                <span className="boTitle">归属人性质</span>
+              </div>
+              <Radio.Group onChange={this.onChangeRadio} disabled={this.state.flagDis} value={this.state.Radiovalue}>
+                <Radio value={0}>公司</Radio>
+                <Radio value={1}>个人</Radio>
+              </Radio.Group>
+            </div>
+
+            <div className="name" style={this.state.Radiovalue === 0 ? {} : { display: 'none' }}>
+              <div className="nameSonTle">
+                <span className="boTitle">公司名称</span>
+              </div>
+              <Input className="nameINput cardId" style={{width:'415px'}} disabled={this.state.flagDis} maxLength={18} value={this.state.bankcorporate} onChange={this.bankcorporate} placeholder="请输入公司名称" />
             </div>
 
             <div className="name" style={this.state.Radiovalue === 1 ? {} : { display: 'none' }}>
               <div className="nameSonTle">
-                <span className="boTitle">法人身份证号</span>
+                <span className="boTitle">负责人姓名</span>
               </div>
-              <Input className="nameINput cardId" disabled={this.state.flagDis} maxLength={18} value={this.state.handleCardId} onChange={this.handleCardId} placeholder="请输入法人身份证号" />
+              <Input className="nameINput cardId" style={{width:'415px'}} disabled={this.state.flagDis} maxLength={18} value={this.state.inChargeNa} onChange={this.inChargeNa} placeholder="请输入负责人姓名" />
+            </div>
+
+            <div className="name" style={this.state.Radiovalue === 1 ? {} : { display: 'none' }}>
+              <div className="nameSonTle">
+                <span className="boTitle">负责人身份证号</span>
+              </div>
+              <Input className="nameINput cardId" style={{width:'415px'}} disabled={this.state.flagDis} maxLength={18} value={this.state.handleCardId} onChange={this.handleCardId} placeholder="请输入负责人身份证号" />
             </div>
 
             <div className="name" style={this.state.Radiovalue === 1 ? {} : { display: 'none' }}>
@@ -1265,9 +1328,8 @@ class qualification extends React.Component {
               <div className="nameSonTle">
                 <span className="boTitle">银行账号</span>
               </div>
-              <Input className="nameINput" disabled={this.state.flagDis} maxLength={19} onChange={this.handleBankNum} value={this.state.handleBankNum} placeholder="请输入银行卡号" />
+              <Input className="nameINput" style={{width:'415px'}} disabled={this.state.flagDis} maxLength={19} onChange={this.handleBankNum} value={this.state.cardId} placeholder="请输入银行卡号" />
             </div>
-
 
 
             <div className="name">

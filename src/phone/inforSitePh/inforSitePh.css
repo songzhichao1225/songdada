@@ -144,7 +144,9 @@
 	float: left;
 	 margin-left: 10%;
 	line-height: 28px;
-	margin-bottom: 40px;
+    margin-bottom: 40px;
+    color: #fff;
+    margin-top: 2rem;
 }
 
 .inforSitePh .ant-select-selection{

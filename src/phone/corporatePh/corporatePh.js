@@ -214,7 +214,7 @@ class corporatePh extends React.Component {
                <EllipsisOutlined />
             </div>
           </Popover>}
-        ><span style={{ fontSize: '1rem' }}>法人手机号登录</span></NavBar>
+        ><span style={{ fontSize: '1rem' }}>负责人登录</span></NavBar>
         <div className="loginInput">
           <div className="name">
             <InputItem 
@@ -249,12 +249,9 @@ class corporatePh extends React.Component {
             </div>
           </div>
 
-
-            
-
           <div className="loginBtn" onTouchStart={this.onSubmit}>登录</div>
           <div className="footer" style={{ marginTop: '1rem' }}>
-            <span onClick={this.loginPhTeo}>普通用户登录</span>
+            <span onClick={this.loginPhTeo}>操作员登录</span>
             <span onClick={this.registerPh}>新用户注册</span>
           </div>
         </div>

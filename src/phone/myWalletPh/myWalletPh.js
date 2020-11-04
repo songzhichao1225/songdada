@@ -25,7 +25,8 @@ class myWalletPh extends React.Component {
     province_id: '',//省Id
     city_id: '',//市id
     backList: [],//获取的银行
-    numRadio: 0,
+    numRadio: 1,
+    numRadioFive:0,
     corporateCardId: '',
     corporateOpen: '',
     legalBaseURL: '',
@@ -45,6 +46,7 @@ class myWalletPh extends React.Component {
     vipListTwo: [],
     imgMasking: '',
     masking: false,
+    inChargeNa:'',
   };
 
 
@@ -199,6 +201,7 @@ class myWalletPh extends React.Component {
   }
 
 
+
   async getVenueOpenBank(data) {
     const res = await getVenueOpenBank(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
@@ -260,10 +263,13 @@ class myWalletPh extends React.Component {
     }
   }
   numRadio = e => {
-    this.setState({ numRadio: e.target.value, corporateCardId: '', corporateOpen: '' })
+    this.setState({ numRadio: e.target.value, corporateCardId: '', })
     if (e.target.value === 1) {
       this.setState({ CorporateName: '', bank_id: '', province_id: '', city_id: '' })
     }
+  }
+  numRadioFive=e=>{
+    this.setState({ numRadioFive: e.target.value,numRadio:e.target.value })
   }
   corporateCardId = e => {
     this.setState({ corporateCardId: e.target.value })
@@ -318,21 +324,31 @@ class myWalletPh extends React.Component {
     this.setState({ corporateId: e.target.value })
   }
 
+  inChargeNa = e => {
+    this.setState({ inChargeNa: e.target.value })
+  }
+
+  inCorName= e => {
+    this.setState({ inCorName: e.target.value })
+  }
+
 
   ziSubmitTwo = () => {
-    let { numRadio, legalBaseURL, filesSon, corporateId, filesSonTwo, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
+    let { numRadio, numRadioFive,inCorName,inChargeNa,legalBaseURL,corporateId,filesSon, filesSonTwo, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
     let data = {
-      legalBaseURL: numRadio === 0 ? '' : legalBaseURL,
-      legalFilesURL: numRadio === 0 ? '' : legalBaseURL === '' ? '' : filesSon + '|' + filesSonTwo,
+      Bankcard: numRadio === 0 ? '' : corporateId,
+      legalBaseURL: numRadioFive === 1 ? legalBaseURL : numRadio === 1 ? legalBaseURL : '',
+      legalFilesURL: numRadioFive === 1 ? filesSon + '|' + filesSonTwo : numRadio === 1 ? filesSon + '|' + filesSonTwo : '',
+      Bankname:numRadio === 0?'':inChargeNa,
       Settlement: numRadio,
       Bankaccount: corporateCardId,
       OpeningBank: corporateOpen,
-      Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
-      ProvinceBank: typeof (province_id) !== 'string' ? province_id.join() : province_id,
-      CityBank: typeof (city_id) !== 'string' ? city_id.join() : city_id,
-      legalcard: numRadio === 0 ? '' : corporateId
+      Banktype: typeof(bank_id)==='object'?bank_id.join():bank_id,
+      ProvinceBank:typeof(province_id)==='object'?province_id.join():province_id,
+      CityBank: typeof(city_id)==='object'?city_id.join():city_id,
+      account: numRadioFive,
+      Bankcorporate:numRadio===0?inCorName:'',
     }
-
     this.VenueReceivingBankInformation(data)
 
   }
@@ -565,12 +581,39 @@ class myWalletPh extends React.Component {
           className="kood"
         >
           <div className="koh">
+
             <div className="listSon">
-              <span style={{ float: 'left', paddingLeft: '5px' }}>结算账号:</span>
-              <Radio.Group style={{ float: 'left', fontSize: '0.75rem', marginLeft: '5%' }} onChange={this.numRadio} value={this.state.numRadio}>
-                <Radio value={0}>公司账号</Radio>
-                <Radio value={1}>法人账号</Radio>
-              </Radio.Group>
+            <span style={{ float: 'left',width:'25%' }}>结算账号:</span>
+            <Radio.Group style={{ float: 'left', fontSize: '0.75rem', marginLeft: '0%',width:'75%' }} onChange={this.numRadioFive} value={this.state.numRadioFive}>
+              <Radio value={0}>场馆归属人</Radio>
+              <Radio value={1}>场馆负责人</Radio>
+            </Radio.Group>
+          </div>
+
+
+          <div className="listSon" style={this.state.numRadioFive===1?{display:'none'}:{}}>
+            <span style={{ float: 'left',width:'25%' }}>归属人性质:</span>
+            <Radio.Group style={{ float: 'left', fontSize: '0.75rem', marginLeft: '7%' }} onChange={this.numRadio} value={this.state.numRadio}>
+              <Radio value={0}>公司</Radio>
+              <Radio value={1}>个人</Radio>
+            </Radio.Group>
+          </div>
+
+          
+          <div className="listSon" style={this.state.numRadio === 1 ? { display: 'none' } : {}}>
+              <span style={{ float: 'left' }}>公司名称</span>
+              <Input className="right"  style={{ width: '70%', paddingLeft: '0.5rem' }} value={this.state.inCorName} maxLength={18} placeholder="请输入公司名称"  onChange={this.inCorName} />
+            </div>
+
+
+            <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
+              <span style={{ float: 'left' }}>负责人姓名</span>
+              <Input className="right"  style={{ width: '70%', paddingLeft: '0.5rem' }} value={this.state.inChargeNa} maxLength={18} placeholder="请输入姓名"  onChange={this.inChargeNa} />
+            </div>
+
+            <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
+              <span style={{ float: 'left' }}>负责人身份证号</span>
+              <Input className="right" style={{ width: '70%', paddingLeft: '0.5rem' }} placeholder="请输入法人身份证号" maxLength={18} value={this.state.corporateId} onChange={this.corporateId} />
             </div>
 
             <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : { paddingTop: '15px' }}>
@@ -596,10 +639,7 @@ class myWalletPh extends React.Component {
               />
             </div>
 
-            <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
-              <span style={{ float: 'left' }}>法人身份证号</span>
-              <Input className="right" style={{ width: '70%', paddingLeft: '0.5rem' }} placeholder="请输入法人身份证号" maxLength={18} value={this.state.corporateId} onChange={this.corporateId} />
-            </div>
+           
 
             <div className="listSon">
               <span style={{ paddingLeft: '5px' }}>银行账号</span>

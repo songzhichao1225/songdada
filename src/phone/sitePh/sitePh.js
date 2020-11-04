@@ -109,7 +109,7 @@ class sitePh extends React.Component {
     detail: false,
     details: [],
     dateArr: [],
-
+    timeFalg:true,
   }
 
   header = e => {
@@ -825,8 +825,11 @@ class sitePh extends React.Component {
         })
       }
     }
+    if (this.state.titleArr[v].label.indexOf('散')!==1) {
+      this.setState({ pickerValueFive: -1, starttime: '00:00', endtime: '24:00', timeFalg: false })
+    }
     this.setState({ pickerValueThree: v })
-
+    
   }
 
   Liturgy = () => {
@@ -933,6 +936,11 @@ class sitePh extends React.Component {
           for (let i in that.state.titleArr) {
 
             if (that.state.titleArr[i].label === res.data.data[0].tags) {
+              if (that.state.titleArr[i].label.indexOf('散')!==1) {
+                this.setState({ pickerValueFive: -1, starttime: ['00:00'], endtime: ['24:00'], timeFalg: false })
+              }else{
+              this.setState({pickerValueFive: [res.data.data[0].appointmenttime],starttime: [res.data.data[0].starttime], endtime: [res.data.data[0].endtime],timeFalg:true})
+              }
               that.setState({ pickerValueThree: [that.state.titleArr[i].value] })
             }
           }
@@ -966,12 +974,14 @@ class sitePh extends React.Component {
           }
         }
 
+       
+
 
         this.setState({
           Price: true, pickerValueTwo: res.data.data[0].sportid,
           cheStr: res.data.data[0].venueid, titleArrFoterNum: res.data.data[0].sitenumber,
-          LiturgycheNum: res.data.data[0].openday, Liturgyche: p.join(','), starttime: [res.data.data[0].starttime], endtime: [res.data.data[0].endtime],
-          money: res.data.data[0].costperhour, pickerValueFour: [Number(res.data.data[0].maxScheduledDate)], pickerValueFive: [res.data.data[0].appointmenttime],
+          LiturgycheNum: res.data.data[0].openday, Liturgyche: p.join(','),
+          money: res.data.data[0].costperhour, pickerValueFour: [Number(res.data.data[0].maxScheduledDate)],
           tagId: res.data.data[0].tags_id,
           tags_type:res.data.data[0].tags_type,
           comment: res.data.data[0].comment
@@ -1375,7 +1385,7 @@ class sitePh extends React.Component {
           <div className="sitePhtitle">
 
             <div className="titleHead">
-              <InputItem style={{ fontSize: '0.75rem' }} maxLength={5} placeholder-style={{ fontSize: '0.75rem' }} onChange={this.joinTitleC} placeholder="新增标签最多输入5个字符"></InputItem>
+              <InputItem style={{ fontSize: '0.75rem' }} maxLength={4} placeholder-style={{ fontSize: '0.75rem' }} onChange={this.joinTitleC} placeholder="新增标签最多输入5个字符"></InputItem>
             </div>
             <div className="btnComfir" onTouchStart={this.joinTitleTwo}>确定</div>
 
@@ -1442,7 +1452,7 @@ class sitePh extends React.Component {
             value={this.state.starttime}
             cols={1}
           >
-            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>开始时间</List.Item>
+            <List.Item arrow="horizontal" style={this.state.timeFalg===true?{ borderBottom: '1px solid #E9E9E9' }:{display:'none'}}>开始时间</List.Item>
           </Picker>
 
 
@@ -1452,7 +1462,7 @@ class sitePh extends React.Component {
             value={this.state.endtime}
             cols={1}
           >
-            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>结束时间</List.Item>
+            <List.Item arrow="horizontal" style={this.state.timeFalg===true?{ borderBottom: '1px solid #E9E9E9' }:{display:'none'}}>结束时间</List.Item>
           </Picker>
 
 
@@ -1478,10 +1488,11 @@ class sitePh extends React.Component {
 
           <Picker
             data={this.state.Shortest}
-            value={this.state.pickerValueFive}
+            value={this.state.pickerValueFive===-1?[0]:this.state.pickerValueFive}
             onOk={this.pickerValueFive}
+            disabled={this.state.pickerValueFive===-1?true:false}
             cols={1} className="forss">
-            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>最短提前预定时间</List.Item>
+            <List.Item arrow={this.state.pickerValueFive===-1?'empty':'horizontal'} style={{ borderBottom: '1px solid #E9E9E9' }}>最短提前预定时间</List.Item>
           </Picker>
 
           <TextareaItem

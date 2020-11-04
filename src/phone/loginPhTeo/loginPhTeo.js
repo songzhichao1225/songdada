@@ -203,7 +203,7 @@ eyes=()=>{
           
           <div className="loginBtn" onClick={this.submit}>登录</div>
           <div className="footer" style={{ marginTop: '1rem' }}>  
-            <span onClick={this.corporatePh}>法人手机号登录</span>
+            <span onClick={this.corporatePh}>负责人登录</span>
             <span onClick={this.registerPh}>新用户注册</span>  
           </div>
         </div>

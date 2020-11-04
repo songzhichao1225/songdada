@@ -212,8 +212,8 @@ class Login extends React.Component {
             <div className="right">
               <span className="uigt">找对手场馆端</span>
               <div className="navTap">
-                <div style={this.state.navNum === false ? { color: '#F5A623' } : { color: '#000' }} onClick={this.nameLogin}>普通登录</div>
-                <div onClick={this.phoneLogin} style={this.state.navNum === true ? { color: '#F5A623' } : { color: '#000' }}>法人登录</div>
+                <div style={this.state.navNum === false ? { color: '#F5A623' } : { color: '#000' }} onClick={this.nameLogin}>操作员登录</div>
+                <div onClick={this.phoneLogin} style={this.state.navNum === true ? { color: '#F5A623' } : { color: '#000' }}>负责人登录</div>
               </div>
               <div className={this.state.navNum ? 'phoneLoginT' : 'phoneLogin'}>
                 <Form layout="inline"  className="form">

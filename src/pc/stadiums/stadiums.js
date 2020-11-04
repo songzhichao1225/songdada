@@ -1,7 +1,7 @@
 import React from 'react';
 import './stadiums.css';
 import 'antd/dist/antd.css';
-import { getVenueInformation, VenueInformationSave, getVenueIssecondaudit, getVenueQualificationInformation,imgUrlTwo, getVenueOpenBank, UploadVenueImgsLisenTwo, UploadVenueImgsLisen, VenueReceivingBankInformation, UploadVenueImgs, getVenueSportList, VenueQualificationInformationSave_another, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
+import { getVenueInformation, VenueInformationSave, getVenueIssecondaudit, getVenueQualificationInformation, imgUrlTwo, getVenueOpenBank, UploadVenueImgsLisenTwo, UploadVenueImgsLisen, VenueReceivingBankInformation, UploadVenueImgs, getVenueSportList, VenueQualificationInformationSave_another, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
 import { Input, message, Checkbox, Button, Popconfirm, Radio, Select, Spin } from 'antd';
 import { ImagePicker } from 'antd-mobile';
 import lrz from 'lrz';
@@ -52,6 +52,9 @@ class stadiums extends React.Component {
     corporateId: '',//法人身份证号
     corporatePhone: '',//法人手机号
     numRadio: 1,//账号类型
+    numRadioTwo: 0,//结算账号
+    inCorName:'',
+    inChargeNa:'',//负责人姓名
     corporateCardId: '',//法人银行卡号
     corporateOpen: '',//开户行
     imgFile: '',
@@ -121,7 +124,7 @@ class stadiums extends React.Component {
       let arrImg = []
       let imgS = (res.data.data.filesURL).slice(1, (res.data.data.filesURL).length).split('|')
       for (let i in imgS) {
-        arrImg.push({ url:imgUrlTwo+imgS[i] })
+        arrImg.push({ url: imgUrlTwo + imgS[i] })
       }
       localStorage.setItem('handleCity', res.data.data.city)
       localStorage.setItem('handleDistrict', res.data.data.area)
@@ -142,7 +145,7 @@ class stadiums extends React.Component {
           area: this.props.location.query.district,
           informationList: res.data.data, name: res.data.data.name,
           contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone,
-          files: [{ url:imgUrlTwo+res.data.data.firstURL }], filesSon: res.data.data.firstURL,
+          files: [{ url: imgUrlTwo + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, sport: lo, facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
         })
       } else if (this.props.location.query === undefined || this.props.location.query.name === 'sunny') {
@@ -155,7 +158,7 @@ class stadiums extends React.Component {
           spinning: false,
           informationList: res.data.data, name: res.data.data.name, handleAddress: res.data.data.address,
           contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, adddress: res.data.data.position,
-          files: [{ url:imgUrlTwo+res.data.data.firstURL }], filesSon: res.data.data.firstURL,
+          files: [{ url: imgUrlTwo + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, sport: lo, facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
         })
       }
@@ -225,30 +228,35 @@ class stadiums extends React.Component {
       if (res.data.data.ProvinceBank !== '') {
         this.getVenueOpenBankCity({ province_id: res.data.data.ProvinceBank })
       }
+      if(res.data.data.ascription===1){
+      this.setState({numRadioTwo:1})
+      }else{
+        this.setState({numRadioTwo: res.data.data.account})
+      }
       this.setState({
         CorporateName: res.data.data.CorporateName, bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
         faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
-        numRadio: res.data.data.Settlement, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
+        numRadio: res.data.data.Settlement,inCorName:res.data.data.Bankcorporate,corporateOpen:res.data.data.OpeningBank,corporateId:res.data.data.Bankcard,corporateCardId:res.data.data.Bankaccount, inChargeNa:res.data.data.Bankname, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
         legalBaseURL: res.data.data.legalBaseURL,
-        filesThree: res.data.data.lisenceURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.lisenceURL }],
+        filesThree: res.data.data.lisenceURL === '' ? [] : [{ url: imgUrlTwo + res.data.data.lisenceURL }],
         filesThreeSon: res.data.data.lisenceURL === '' ? '' : res.data.data.lisenceURL,
         filesFourSon: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[0],
-        filesFour: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0] }],
+        filesFour: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url: imgUrlTwo + res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0] }],
         filesFiveSon: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[1],
-        filesFive: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1] }],
+        filesFive: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url: imgUrlTwo + res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1] }],
         BelongingFourSon: res.data.data.empowerURL === '' ? '' : res.data.data.empowerURL,
-        BelongingFour: res.data.data.empowerURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.empowerURL }],
+        BelongingFour: res.data.data.empowerURL === '' ? [] : [{ url: imgUrlTwo + res.data.data.empowerURL }],
         BelongingOneSon: res.data.data.promiseURL === '' ? '' : res.data.data.promiseURL,
-        BelongingOne: res.data.data.promiseURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.promiseURL }],
+        BelongingOne: res.data.data.promiseURL === '' ? [] : [{ url: imgUrlTwo + res.data.data.promiseURL }],
         ascrBaceUrl: res.data.data.ascriphourBaseURL,
-        BelongingTwo: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.ascriphourBaseURL + res.data.data.ascriphourFilesURL.split('|')[0] }],
+        BelongingTwo: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? [] : [{ url: imgUrlTwo + res.data.data.ascriphourBaseURL + res.data.data.ascriphourFilesURL.split('|')[0] }],
         BelongingTwoSon: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? '' : res.data.data.ascriphourFilesURL.split('|')[0],
-        BelongingThree: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.ascriphourBaseURL + res.data.data.ascriphourFilesURL.split('|')[1] }],
+        BelongingThree: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? [] : [{ url: imgUrlTwo + res.data.data.ascriphourBaseURL + res.data.data.ascriphourFilesURL.split('|')[1] }],
         BelongingThreeSon: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? '' : res.data.data.ascriphourFilesURL.split('|')[1],
         legalhourBaseURL: res.data.data.legalhourBaseURL,
-        BelongingFive: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalhourBaseURL + res.data.data.legalhourFilesURL.split('|')[0] }],
+        BelongingFive: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? [] : [{ url: imgUrlTwo + res.data.data.legalhourBaseURL + res.data.data.legalhourFilesURL.split('|')[0] }],
         BelongingFiveSon: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? '' : res.data.data.legalhourFilesURL.split('|')[0],
-        BelongingSix: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? [] : [{ url: imgUrlTwo+res.data.data.legalhourBaseURL + res.data.data.legalhourFilesURL.split('|')[1] }],
+        BelongingSix: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? [] : [{ url: imgUrlTwo + res.data.data.legalhourBaseURL + res.data.data.legalhourFilesURL.split('|')[1] }],
         BelongingSixSon: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? '' : res.data.data.legalhourFilesURL.split('|')[1],
         value: res.data.data.ascription,
         valueTwo: res.data.data.personIncharge,
@@ -281,7 +289,7 @@ class stadiums extends React.Component {
             let formdata1 = new FormData();
             formdata1.append('files', rst.file);
             this.UploadVenueImgs(formdata1)
-          }) 
+          })
       } else {
         message.warning('图片超过9M无法上传', 2)
       }
@@ -489,9 +497,19 @@ class stadiums extends React.Component {
 
   numRadio = e => {
     this.setState({ numRadio: e.target.value })
-
-
   }
+
+  numRadioTwo = e => {
+    this.setState({ numRadioTwo: e.target.value,numRadio:e.target.value })
+  }
+  inCorName= e => {
+    this.setState({ inCorName: e.target.value })
+  }
+  inChargeNa = e => {
+    this.setState({ inChargeNa: e.target.value })
+  }
+  
+
 
   async UploadVenueImgsLisenTwo(data) {
     const res = await UploadVenueImgsLisenTwo(data)
@@ -635,7 +653,7 @@ class stadiums extends React.Component {
       ascriphourBaseURL: value === 1 && ascrBaceUrl !== '' ? ascrBaceUrl : '',
       ascriphourFilesURL: value === 1 && ascrBaceUrl !== '' ? BelongingTwoSon + '|' + BelongingThreeSon : '',
       personIncharge: valueTwo,
-      empowerURL: valueTwo === 1|| valueTwo === 2 ? '' : BelongingFourSon,
+      empowerURL: valueTwo === 1 || valueTwo === 2 ? '' : BelongingFourSon,
       verification: valueThree,
       legalname: faName,
       legalphone: faPhone,
@@ -653,18 +671,18 @@ class stadiums extends React.Component {
       type: 2
     }
     if (zuo === 1) {
-      
-        this.VenueQualificationInformationSave_another(data)
-      
+
+      this.VenueQualificationInformationSave_another(data)
+
 
 
     } else {
       if (this.state.loading === false) {
         message.warning('图片上传中...')
       } else {
-      
-          this.VenueQualificationInformationSave_another(data)
-        
+
+        this.VenueQualificationInformationSave_another(data)
+
       }
     }
   }
@@ -705,17 +723,20 @@ class stadiums extends React.Component {
   }
 
   ziSubmitTwo = () => {
-    let { numRadio, legalBaseURL, imageUrlTwo, corporateId, imageUrlThree, filesFiveSon, filesFourSon, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
+    let { numRadio, numRadioTwo,inCorName,inChargeNa, legalBaseURL, imageUrlTwo, corporateId, imageUrlThree, filesFiveSon, filesFourSon, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
     let data = {
-      legalBaseURL: numRadio === 0 ? '' : legalBaseURL,
-      legalFilesURL: numRadio === 0 ? '' : filesFourSon + '|' + filesFiveSon,
-      legalcard: numRadio === 0 ? '' : corporateId,
+      legalBaseURL: numRadioTwo === 1 ? legalBaseURL : numRadio === 1 ? legalBaseURL : '',
+      legalFilesURL: numRadioTwo === 1 ? filesFourSon + '|' + filesFiveSon : numRadio === 1 ? filesFourSon + '|' + filesFiveSon : '',
+      Bankcard: numRadio === 0 ? '' : corporateId,
+      Bankname:numRadio === 0?'':inChargeNa,
       Settlement: numRadio,
       Bankaccount: corporateCardId,
       OpeningBank: corporateOpen,
       Banktype: bank_id,
       ProvinceBank: province_id,
       CityBank: city_id,
+      account: numRadioTwo,
+      Bankcorporate:numRadio===0?inCorName:'',
     }
     if (numRadio && imageUrlTwo === 1) {
       message.error('图片违规请重新上传')
@@ -743,7 +764,7 @@ class stadiums extends React.Component {
   nameRadio = e => {
     if (e.target.value === 0) {
       this.setState({ valueTwo: 1 })
-    }else{
+    } else {
       this.setState({ valueTwo: 2 })
     }
     this.setState({ value: e.target.value })
@@ -1126,7 +1147,7 @@ class stadiums extends React.Component {
               <Radio style={this.state.value === 1 ? {} : { display: 'none' }} value={2}>承诺人本人</Radio>
               <Radio value={3}>代理人</Radio>
             </Radio.Group>
-            <div className="listing" style={this.state.valueTwo !== 1&&this.state.valueTwo!== 2 ? {} : { display: 'none' }}>
+            <div className="listing" style={this.state.valueTwo !== 1 && this.state.valueTwo !== 2 ? {} : { display: 'none' }}>
               <span>授权书照:</span>
               <ImagePicker
                 files={BelongingFour}
@@ -1205,15 +1226,36 @@ class stadiums extends React.Component {
 
 
           <div className={this.state.flag === 'no' ? 'qualification' : 'none'}>
+
             <div className="listing">
               <span>结算账号:</span>
-              <Radio.Group className="accountNum" onChange={this.numRadio} value={this.state.numRadio}>
-                <Radio value={0}>公司银行账户</Radio>
-                <Radio value={1}>法人账号</Radio>
+              <Radio.Group className="accountNum" onChange={this.numRadioTwo} value={this.state.numRadioTwo}>
+                <Radio style={this.state.value===1?{display:'none'}:{}} value={0}>场馆归属人账号</Radio>
+                <Radio value={1}>场馆负责人账号</Radio>
               </Radio.Group>
             </div>
+
+            <div className="listing" style={this.state.numRadioTwo===1?{display:'none'}:{}}>
+              <span>归属人性质:</span>
+              <Radio.Group className="accountNum" onChange={this.numRadio} value={this.state.numRadio}>
+                <Radio value={0}>公司</Radio>
+                <Radio value={1}>个人</Radio>
+              </Radio.Group>
+            </div>
+
+            <div className="listing" style={this.state.numRadio === 1 ? { display: 'none' } : {}}>
+              <span>公司名称:</span>
+              <Input className="listingInput" value={this.state.inCorName} maxLength={18} onChange={this.inCorName} />
+            </div>
+
+
             <div className="listing" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
-              <span>法人身份证号:</span>
+              <span>负责人姓名:</span>
+              <Input className="listingInput" value={this.state.inChargeNa} maxLength={18} onChange={this.inChargeNa} />
+            </div>
+
+            <div className="listing" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
+              <span>负责人身份证号:</span>
               <Input className="listingInput" value={this.state.corporateId} maxLength={18} onChange={this.corporateId} />
             </div>
             <div className="listing" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>

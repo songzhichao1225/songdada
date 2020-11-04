@@ -75,7 +75,7 @@ class siteSettings extends React.Component {
     chekedTwo: '',
     chekedTwoLen: 0,
     tagsTwoId: '',
-    tags_type:'',
+    tags_type: '',
     arrJoinTil: [],
     moneyId: '',
     pageOne: 1,
@@ -106,7 +106,8 @@ class siteSettings extends React.Component {
     appointmenttimeTwo: '',
     ListSportTwo: [{ name: '半场', id: 1 }, { name: '散场', id: 2 }],
     typeTwo: 0,
-    you:[]
+    you: [],
+    timeFalg: true,
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -465,7 +466,7 @@ class siteSettings extends React.Component {
   }
 
   submit = (e) => {
-    let { runIdTwo, runNameTwo, tagsTwo, openday, starttime, endtime, costperhour, chekedTwo, chekedTwoLen, maxScheduledDate, appointmenttime, comment, tagsTwoId,tags_type } = this.state
+    let { runIdTwo, runNameTwo, tagsTwo, openday, starttime, endtime, costperhour, chekedTwo, chekedTwoLen, maxScheduledDate, appointmenttime, comment, tagsTwoId, tags_type } = this.state
     if (runIdTwo === '') {
       message.warning('请选择场地类型')
     } else if (tagsTwo === '') {
@@ -496,10 +497,10 @@ class siteSettings extends React.Component {
         venueid: chekedTwo,
         sitenumber: chekedTwoLen,
         maxScheduledDate: maxScheduledDate,
-        appointmenttime: appointmenttime,
+        appointmenttime: appointmenttime === -1 ? 0 : appointmenttime,
         comment: comment,
         tags_id: tagsTwoId,
-        tags_type:tags_type,
+        tags_type: tags_type,
       }
       this.AddSiteSetting(obj)
     }
@@ -560,13 +561,18 @@ class siteSettings extends React.Component {
           dayTwo = "请选择";
       }
       this.setState({ maxScheduledDateName: dayTwo })
+      if (res.data.data[0].tags.indexOf('散')!==-1) {
+        this.setState({  appointmenttime: res.data.data[0].appointmenttime, starttime: '00:00', endtime: '24:00', timeFalg: false })
+      }else{
+        this.setState({  appointmenttime: res.data.data[0].appointmenttime, starttime: res.data.data[0].starttime, endtime: res.data.data[0].endtime, timeFalg: true })
+      }
       this.setState({
         runId: res.data.data[0].sportid, tags: res.data.data[0].tags,
         discount_sdate: res.data.data[0].discount_sdate, discount_edate: res.data.data[0].discount_edate, discount_start: res.data.data[0].discount_start,
         discount_end: res.data.data[0].discount_end, costperhourTwo: res.data.data[0].discount_costperhour === null ? res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')) : res.data.data[0].discount_costperhour.slice(0, res.data.data[0].discount_costperhour.indexOf('.')),
         runIdTwo: res.data.data[0].sportid, tagsTwo: res.data.data[0].tags, opendayname: attop, openday: res.data.data[0].openday.split(','), starttime: res.data.data[0].starttime,
-        endtime: res.data.data[0].endtime, costperhour: res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')), chekedTwo: res.data.data[0].venueid, chekedFour: res.data.data[0].venueid, chekedThree: res.data.data[0].venueid !== null ? res.data.data[0].venueid : res.data.data[0].venueid, chekedTwoLen: res.data.data[0].sitenumber, appointmenttime: res.data.data[0].appointmenttime,
-        tagsTwoId: res.data.data[0].tags_id,tags_type:res.data.data[0].tags_type, comment: res.data.data[0].comment, maxScheduledDate: res.data.data[0].maxScheduledDate, runNameTwo: res.data.data[0].sportname, Disid: res.data.data[0].uuid, appointmenttimeTwo: res.data.data[0].discount_appointment, dateArr: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(',')
+         costperhour: res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')), chekedTwo: res.data.data[0].venueid, chekedFour: res.data.data[0].venueid, chekedThree: res.data.data[0].venueid !== null ? res.data.data[0].venueid : res.data.data[0].venueid, chekedTwoLen: res.data.data[0].sitenumber, appointmenttime: res.data.data[0].appointmenttime,
+        tagsTwoId: res.data.data[0].tags_id, tags_type: res.data.data[0].tags_type, comment: res.data.data[0].comment, maxScheduledDate: res.data.data[0].maxScheduledDate, runNameTwo: res.data.data[0].sportname, Disid: res.data.data[0].uuid, appointmenttimeTwo: res.data.data[0].discount_appointment, dateArr: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(',')
       })
       if (this.state.runIdTwo !== '') {
         this.getVenueSportidTitle({ sportid: this.state.runIdTwo })
@@ -739,111 +745,111 @@ class siteSettings extends React.Component {
           message.error('请选择细分标签')
         } else {
           console.log(this.state.typeTwo)
-          if(this.state.typeTwo===1){
+          if (this.state.typeTwo === 1) {
             this.setState({
               arrNum: [
                 { id: '1A', cheked: false, num: 0 },
-                 { id: '1B', cheked: false, num: 1 },
-                  { id: '2A', cheked: false, num: 2 },
-                   { id: '2B', cheked: false, num: 3 },
-                    { id: '3A', cheked: false, num: 4 },
-                     { id: '3B', cheked: false, num: 5 },
-                      { id: '4A', cheked: false, num: 6 },
-                       { id: '4B', cheked: false, num: 7 },
-                        { id: '5A', cheked: false, num: 8 },
-                         { id: '5B', cheked: false, num: 9 },
-                          { id: '6A', cheked: false, num: 10 },
-                           { id: '6B', cheked: false, num: 11 },
-                            { id: '7A', cheked: false, num: 12 },
-                             { id: '7B', cheked: false, num: 13 },
-                              { id: '8A', cheked: false, num: 14 },
-                               { id: '8B', cheked: false, num: 15 },
-                                { id: '9A', cheked: false, num: 16 },
-                                 { id: '9B', cheked: false, num: 17 },
-                                  { id: '10A', cheked: false, num: 18 },
-                                   { id: '10B', cheked: false, num: 19 },
-                                    { id: '11A', cheked: false, num: 20 },
-                                     { id: '11B', cheked: false, num: 21 },
-                                      { id: '12A', cheked: false, num: 22 },
-                                       { id: '12B', cheked: false, num: 23 },
-                                       { id: '13A', cheked: false, num: 24 },
-                                       { id: '13B', cheked: false, num: 25 },
-                                       { id: '14A', cheked: false, num: 26 },
-                                       { id: '14B', cheked: false, num: 27 },
-                                       { id: '15A', cheked: false, num: 28 },
-                                       { id: '15B', cheked: false, num: 29 },
-                                       { id: '16A', cheked: false, num: 30 },
-                                       { id: '16B', cheked: false, num: 31 },
-                                       { id: '17A', cheked: false, num: 32 },
-                                       { id: '17B', cheked: false, num: 33 },
-                                       { id: '18A', cheked: false, num: 34 },
-                                       { id: '18B', cheked: false, num: 35 },
-                                       { id: '19A', cheked: false, num: 36 },
-                                       { id: '19B', cheked: false, num: 37 },
-                                       { id: '20A', cheked: false, num: 38 },
-                                       { id: '20B', cheked: false, num: 39 },
-                                       { id: '21A', cheked: false, num: 40 },
-                                       { id: '21B', cheked: false, num: 41 },
-                                       { id: '22A', cheked: false, num: 42 },
-                                       { id: '22B', cheked: false, num: 43 },
-                                       { id: '23A', cheked: false, num: 44 },
-                                       { id: '23B', cheked: false, num: 45 },
-                                       { id: '24A', cheked: false, num: 46 }]
+                { id: '1B', cheked: false, num: 1 },
+                { id: '2A', cheked: false, num: 2 },
+                { id: '2B', cheked: false, num: 3 },
+                { id: '3A', cheked: false, num: 4 },
+                { id: '3B', cheked: false, num: 5 },
+                { id: '4A', cheked: false, num: 6 },
+                { id: '4B', cheked: false, num: 7 },
+                { id: '5A', cheked: false, num: 8 },
+                { id: '5B', cheked: false, num: 9 },
+                { id: '6A', cheked: false, num: 10 },
+                { id: '6B', cheked: false, num: 11 },
+                { id: '7A', cheked: false, num: 12 },
+                { id: '7B', cheked: false, num: 13 },
+                { id: '8A', cheked: false, num: 14 },
+                { id: '8B', cheked: false, num: 15 },
+                { id: '9A', cheked: false, num: 16 },
+                { id: '9B', cheked: false, num: 17 },
+                { id: '10A', cheked: false, num: 18 },
+                { id: '10B', cheked: false, num: 19 },
+                { id: '11A', cheked: false, num: 20 },
+                { id: '11B', cheked: false, num: 21 },
+                { id: '12A', cheked: false, num: 22 },
+                { id: '12B', cheked: false, num: 23 },
+                { id: '13A', cheked: false, num: 24 },
+                { id: '13B', cheked: false, num: 25 },
+                { id: '14A', cheked: false, num: 26 },
+                { id: '14B', cheked: false, num: 27 },
+                { id: '15A', cheked: false, num: 28 },
+                { id: '15B', cheked: false, num: 29 },
+                { id: '16A', cheked: false, num: 30 },
+                { id: '16B', cheked: false, num: 31 },
+                { id: '17A', cheked: false, num: 32 },
+                { id: '17B', cheked: false, num: 33 },
+                { id: '18A', cheked: false, num: 34 },
+                { id: '18B', cheked: false, num: 35 },
+                { id: '19A', cheked: false, num: 36 },
+                { id: '19B', cheked: false, num: 37 },
+                { id: '20A', cheked: false, num: 38 },
+                { id: '20B', cheked: false, num: 39 },
+                { id: '21A', cheked: false, num: 40 },
+                { id: '21B', cheked: false, num: 41 },
+                { id: '22A', cheked: false, num: 42 },
+                { id: '22B', cheked: false, num: 43 },
+                { id: '23A', cheked: false, num: 44 },
+                { id: '23B', cheked: false, num: 45 },
+                { id: '24A', cheked: false, num: 46 }]
             })
-          }else if(this.state.typeTwo===2){
+          } else if (this.state.typeTwo === 2) {
             this.setState({
               arrNum: [
                 { id: '1A', cheked: false, num: 0 },
-                 { id: '1B', cheked: false, num: 1 },
-                  { id: '2A', cheked: false, num: 2 },
-                   { id: '2B', cheked: false, num: 3 },
-                    { id: '3A', cheked: false, num: 4 },
-                     { id: '3B', cheked: false, num: 5 },
-                      { id: '4A', cheked: false, num: 6 },
-                       { id: '4B', cheked: false, num: 7 },
-                        { id: '5A', cheked: false, num: 8 },
-                         { id: '5B', cheked: false, num: 9 },
-                          { id: '6A', cheked: false, num: 10 },
-                           { id: '6B', cheked: false, num: 11 },
-                            { id: '7A', cheked: false, num: 12 },
-                             { id: '7B', cheked: false, num: 13 },
-                              { id: '8A', cheked: false, num: 14 },
-                               { id: '8B', cheked: false, num: 15 },
-                                { id: '9A', cheked: false, num: 16 },
-                                 { id: '9B', cheked: false, num: 17 },
-                                  { id: '10A', cheked: false, num: 18 },
-                                   { id: '10B', cheked: false, num: 19 },
-                                    { id: '11A', cheked: false, num: 20 },
-                                     { id: '11B', cheked: false, num: 21 },
-                                      { id: '12A', cheked: false, num: 22 },
-                                       { id: '12B', cheked: false, num: 23 },
-                                       { id: '13A', cheked: false, num: 24 },
-                                       { id: '13B', cheked: false, num: 25 },
-                                       { id: '14A', cheked: false, num: 26 },
-                                       { id: '14B', cheked: false, num: 27 },
-                                       { id: '15A', cheked: false, num: 28 },
-                                       { id: '15B', cheked: false, num: 29 },
-                                       { id: '16A', cheked: false, num: 30 },
-                                       { id: '16B', cheked: false, num: 31 },
-                                       { id: '17A', cheked: false, num: 32 },
-                                       { id: '17B', cheked: false, num: 33 },
-                                       { id: '18A', cheked: false, num: 34 },
-                                       { id: '18B', cheked: false, num: 35 },
-                                       { id: '19A', cheked: false, num: 36 },
-                                       { id: '19B', cheked: false, num: 37 },
-                                       { id: '20A', cheked: false, num: 38 },
-                                       { id: '20B', cheked: false, num: 39 },
-                                       { id: '21A', cheked: false, num: 40 },
-                                       { id: '21B', cheked: false, num: 41 },
-                                       { id: '22A', cheked: false, num: 42 },
-                                       { id: '22B', cheked: false, num: 43 },
-                                       { id: '23A', cheked: false, num: 44 },
-                                       { id: '23B', cheked: false, num: 45 },
-                                       { id: '24A', cheked: false, num: 46 },
-                                       { id: '场地不固定', cheked: false, num: 47 }]
+                { id: '1B', cheked: false, num: 1 },
+                { id: '2A', cheked: false, num: 2 },
+                { id: '2B', cheked: false, num: 3 },
+                { id: '3A', cheked: false, num: 4 },
+                { id: '3B', cheked: false, num: 5 },
+                { id: '4A', cheked: false, num: 6 },
+                { id: '4B', cheked: false, num: 7 },
+                { id: '5A', cheked: false, num: 8 },
+                { id: '5B', cheked: false, num: 9 },
+                { id: '6A', cheked: false, num: 10 },
+                { id: '6B', cheked: false, num: 11 },
+                { id: '7A', cheked: false, num: 12 },
+                { id: '7B', cheked: false, num: 13 },
+                { id: '8A', cheked: false, num: 14 },
+                { id: '8B', cheked: false, num: 15 },
+                { id: '9A', cheked: false, num: 16 },
+                { id: '9B', cheked: false, num: 17 },
+                { id: '10A', cheked: false, num: 18 },
+                { id: '10B', cheked: false, num: 19 },
+                { id: '11A', cheked: false, num: 20 },
+                { id: '11B', cheked: false, num: 21 },
+                { id: '12A', cheked: false, num: 22 },
+                { id: '12B', cheked: false, num: 23 },
+                { id: '13A', cheked: false, num: 24 },
+                { id: '13B', cheked: false, num: 25 },
+                { id: '14A', cheked: false, num: 26 },
+                { id: '14B', cheked: false, num: 27 },
+                { id: '15A', cheked: false, num: 28 },
+                { id: '15B', cheked: false, num: 29 },
+                { id: '16A', cheked: false, num: 30 },
+                { id: '16B', cheked: false, num: 31 },
+                { id: '17A', cheked: false, num: 32 },
+                { id: '17B', cheked: false, num: 33 },
+                { id: '18A', cheked: false, num: 34 },
+                { id: '18B', cheked: false, num: 35 },
+                { id: '19A', cheked: false, num: 36 },
+                { id: '19B', cheked: false, num: 37 },
+                { id: '20A', cheked: false, num: 38 },
+                { id: '20B', cheked: false, num: 39 },
+                { id: '21A', cheked: false, num: 40 },
+                { id: '21B', cheked: false, num: 41 },
+                { id: '22A', cheked: false, num: 42 },
+                { id: '22B', cheked: false, num: 43 },
+                { id: '23A', cheked: false, num: 44 },
+                { id: '23B', cheked: false, num: 45 },
+                { id: '24A', cheked: false, num: 46 },
+                { id: '场地不固定', cheked: false, num: 47 }]
             })
           }
-          
+
           this.getSiteSelectedVenueid({ sportid: this.state.runId })
           this.setState({
             serialNumber: true
@@ -862,10 +868,10 @@ class siteSettings extends React.Component {
           }
           this.setState({
             serialNumber: true,
-            arrNum:arrNum
+            arrNum: arrNum
           })
           this.getSiteSelectedVenueid({ sportid: this.state.runId })
-          
+
         }
       }
     }
@@ -893,22 +899,22 @@ class siteSettings extends React.Component {
       } else if (arrNum[e.currentTarget.dataset.num].cheked === false) {
         arrNum[e.currentTarget.dataset.num].cheked = true
       }
-      if(e.currentTarget.dataset.id==='场地不固定'){
-        
-        if(arrNum[47].cheked===true ){
-          for(let i in arrNum){
-           arrNum[i].cheked='no'
-           arrNum[47].cheked=true
+      if (e.currentTarget.dataset.id === '场地不固定') {
+
+        if (arrNum[47].cheked === true) {
+          for (let i in arrNum) {
+            arrNum[i].cheked = 'no'
+            arrNum[47].cheked = true
           }
-         }else{
-           for(let i in this.state.arrNum){
-             arrNum[i].cheked=false
-           }
-           this.getSiteSelectedVenueidTwo({ sportid: this.state.runId })
-         }
+        } else {
+          for (let i in this.state.arrNum) {
+            arrNum[i].cheked = false
+          }
+          this.getSiteSelectedVenueidTwo({ sportid: this.state.runId })
+        }
       }
-      
-     
+
+
 
       this.setState({
         arrNum: arrNum
@@ -931,18 +937,18 @@ class siteSettings extends React.Component {
     if (this.state.runId === 6) {
       for (let j in res.data.data) {
         for (let i in this.state.arrNum) {
-            if (this.state.arrNum[i].id === res.data.data[j]) {
-              this.state.arrNum[parseInt(this.state.arrNum[i].num)].cheked = 'no'
+          if (this.state.arrNum[i].id === res.data.data[j]) {
+            this.state.arrNum[parseInt(this.state.arrNum[i].num)].cheked = 'no'
+          }
+          for (let k in this.state.arrChekedTwope) {
+            if (this.state.arrChekedTwope[k] === this.state.arrNum[i].id) {
+              this.state.arrNum[parseInt(this.state.arrNum[i].num)].cheked = false
             }
-          for(let k in this.state.arrChekedTwope){
-              if(this.state.arrChekedTwope[k]===this.state.arrNum[i].id){
-                this.state.arrNum[parseInt(this.state.arrNum[i].num)].cheked =false
-              }
           }
         }
       }
       this.setState({ arrNum: this.state.arrNum })
-    } 
+    }
 
 
 
@@ -957,7 +963,7 @@ class siteSettings extends React.Component {
   allOfThem = () => {
     let { arrNum } = this.state
     for (let i in arrNum) {
-      if (arrNum[i].cheked !== 'no'&&arrNum[i].id!=='场地不固定') {
+      if (arrNum[i].cheked !== 'no' && arrNum[i].id !== '场地不固定') {
         arrNum[i].cheked = true
       }
     }
@@ -968,9 +974,9 @@ class siteSettings extends React.Component {
   reverseElection = () => {
     let { arrNum } = this.state
     for (let i in arrNum) {
-      if (arrNum[i].cheked === true&&arrNum[i].id!=='场地不固定') {
+      if (arrNum[i].cheked === true && arrNum[i].id !== '场地不固定') {
         arrNum[i].cheked = false
-      } else if (arrNum[i].cheked === false&&arrNum[i].id!=='场地不固定') {
+      } else if (arrNum[i].cheked === false && arrNum[i].id !== '场地不固定') {
         arrNum[i].cheked = true
       }
     }
@@ -1002,7 +1008,7 @@ class siteSettings extends React.Component {
   async getVenueNumberTitleSave(data) {
     const res = await getVenueNumberTitleSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ joinXi: false, arrCheked: [],arrChekedTwope:[], lppd: 0, })
+      this.setState({ joinXi: false, arrCheked: [], arrChekedTwope: [], lppd: 0, })
       this.getVenueNumberTitleList({ sportid: this.state.nameChang, page: this.state.pageOne })
     } else if (res.data.code === 4002) {
       message.warning('请选择场地类型')
@@ -1015,7 +1021,7 @@ class siteSettings extends React.Component {
     let { runId, tags, arrCheked, typeTwo } = this.state
     let obj = {
       sportid: runId,
-      title:tags.indexOf('-')===-1?typeTwo===2? tags+'-散场':typeTwo===1?tags+'-半场':tags:tags,
+      title: tags.indexOf('-') === -1 ? typeTwo === 2 ? tags + '-散场' : typeTwo === 1 ? tags + '-半场' : tags : tags,
       venueid: typeof (arrCheked) === 'string' ? arrCheked : arrCheked.join(),
       number: arrCheked.length,
       uuid: e.currentTarget.dataset.id,
@@ -1071,7 +1077,7 @@ class siteSettings extends React.Component {
   showModal = () => {
     this.setState({
       joinXi: true,
-      runId: '', joinB: false, tags: '', arrCheked: [],arrChekedTwope:[], venNumid: '', typeDetel: 1
+      runId: '', joinB: false, tags: '', arrCheked: [], arrChekedTwope: [], venNumid: '', typeDetel: 1
     });
   };
 
@@ -1079,7 +1085,7 @@ class siteSettings extends React.Component {
     const res = await getVenueNumberTitleFirst(data, sessionStorage.getItem('venue_token'))
     this.getVenueSportidTitle({ sportid: res.data.data[0].sportid })
     this.setState({
-      runId: res.data.data[0].sportid, joinB: false, tags: res.data.data[0].title, arrCheked: res.data.data[0].venueid.split(','), arrChekedTwope: res.data.data[0].venueid.split(','), venNumid: res.data.data[0].uuid,typeTwo:res.data.data[0].type
+      runId: res.data.data[0].sportid, joinB: false, tags: res.data.data[0].title, arrCheked: res.data.data[0].venueid.split(','), arrChekedTwope: res.data.data[0].venueid.split(','), venNumid: res.data.data[0].uuid, typeTwo: res.data.data[0].type
     })
 
   }
@@ -1090,36 +1096,36 @@ class siteSettings extends React.Component {
     if (runId === 6) {
       for (let j in res.data.data) {
         for (let i in this.state.arrNum) {
-          if(this.state.arrNum.length===48){
-            if(this.state.arrNum[47].cheked===true){
-              this.state.arrNum[i].cheked='no'
-              this.state.arrNum[47].cheked=true
-             }else{
-               if (this.state.arrNum[i].id === res.data.data[j]) {
-                 this.state.arrNum[parseInt(this.state.arrNum[i].num)].cheked = 'no'
-               }
-             }
-          }else{
-               if (this.state.arrNum[i].id === res.data.data[j]) {
-                 this.state.arrNum[parseInt(this.state.arrNum[i].num)].cheked = 'no'
-               }
-          }
-          for(let k in this.state.arrChekedTwope){
-              if(this.state.arrChekedTwope[k]===this.state.arrNum[i].id){
-                this.state.arrNum[parseInt(this.state.arrNum[i].num)].cheked = true
+          if (this.state.arrNum.length === 48) {
+            if (this.state.arrNum[47].cheked === true) {
+              this.state.arrNum[i].cheked = 'no'
+              this.state.arrNum[47].cheked = true
+            } else {
+              if (this.state.arrNum[i].id === res.data.data[j]) {
+                this.state.arrNum[parseInt(this.state.arrNum[i].num)].cheked = 'no'
               }
+            }
+          } else {
+            if (this.state.arrNum[i].id === res.data.data[j]) {
+              this.state.arrNum[parseInt(this.state.arrNum[i].num)].cheked = 'no'
+            }
+          }
+          for (let k in this.state.arrChekedTwope) {
+            if (this.state.arrChekedTwope[k] === this.state.arrNum[i].id) {
+              this.state.arrNum[parseInt(this.state.arrNum[i].num)].cheked = true
+            }
           }
         }
       }
       this.setState({ arrNum: this.state.arrNum })
     } else {
       for (let i in res.data.data) {
-        this.state.arrNum[parseInt(res.data.data[i])-1].cheked = 'no'
+        this.state.arrNum[parseInt(res.data.data[i]) - 1].cheked = 'no'
       }
       this.setState({ arrNum: this.state.arrNum })
     }
 
-    if (this.state.lppd === 1&&runId !== 6) {
+    if (this.state.lppd === 1 && runId !== 6) {
       if (this.state.arrCheked.length > 0) {
         for (let k in this.state.arrChekedTwope) {
           this.state.arrNum[parseInt(this.state.arrChekedTwope[k]) - 1].cheked = false
@@ -1132,7 +1138,7 @@ class siteSettings extends React.Component {
           this.state.arrNum[i].cheked = false
         }
       }
-    } else if(this.state.lppd !== 1&&runId !== 6) {
+    } else if (this.state.lppd !== 1 && runId !== 6) {
       if (this.state.arrCheked.length > 0) {
         for (let j in this.state.arrCheked) {
           this.state.arrNum[parseInt(this.state.arrCheked[j]) - 1].cheked = true
@@ -1234,6 +1240,10 @@ class siteSettings extends React.Component {
     })
   }
   handleChangeTags = e => {
+    if (e.indexOf('散')!==1) {
+      this.setState({ appointmenttime: -1, starttime: '00:00', endtime: '24:00', timeFalg: false })
+    }
+
     if (this.state.arrTitle.indexOf(e) === -1) {
       this.setState({
         nosubdivisions: true
@@ -1241,7 +1251,7 @@ class siteSettings extends React.Component {
     } else {
       this.setState({
         tagsTwo: e,
-        tags_type:this.state.selecdTil[this.state.arrTitle.indexOf(e)].type,
+        tags_type: this.state.selecdTil[this.state.arrTitle.indexOf(e)].type,
         tagsTwoId: this.state.selecdTil[this.state.arrTitle.indexOf(e)].uuid,
         chekedTwo: this.state.selecdTil[this.state.arrTitle.indexOf(e)].venueid,
         chekedTwoLen: this.state.selecdTil[this.state.arrTitle.indexOf(e)].venueid.split(',').length
@@ -1284,7 +1294,7 @@ class siteSettings extends React.Component {
     this.setState({
       Preferential: false, runIdTwo: '', tagsTwo: '', opendayname: '', openday: '', starttime: '00:00',
       endtime: '', costperhour: '', chekedTwo: '', chekedTwoLen: '', appointmenttime: '',
-      tagsTwoId: '', comment: '', maxScheduledDate: '', maxScheduledDateName: [], runNameTwo: '', Disid: '', runId: '', tags: '', update: 0,tags_type:'',
+      tagsTwoId: '', comment: '', maxScheduledDate: '', maxScheduledDateName: [], runNameTwo: '', Disid: '', runId: '', tags: '', update: 0, tags_type: '',
     })
   }
 
@@ -1692,7 +1702,7 @@ class siteSettings extends React.Component {
                   <Popover content={(<span>{item.comment === '' ? '无' : item.comment}</span>)} title='详情' trigger="click">
                     <Col style={{ cursor: 'pointer' }} xs={{ span: 1 }}>{item.comment === '' ? '无' : item.comment}</Col>
                   </Popover>
-              <Col xs={{ span: 2 }}>{item.discount_edate === '' ? '无' : <span style={{ cursor: 'pointer' }} data-sd={item.discount_date}  data-app={item.discount_appointment} data-cos={item.discount_costperhour} onClick={item.discount_date===''?null:this.details}>{item.discount_date===''?'无':'查看'}</span>}</Col>
+                  <Col xs={{ span: 2 }}>{item.discount_edate === '' ? '无' : <span style={{ cursor: 'pointer' }} data-sd={item.discount_date} data-app={item.discount_appointment} data-cos={item.discount_costperhour} onClick={item.discount_date === '' ? null : this.details}>{item.discount_date === '' ? '无' : '查看'}</span>}</Col>
                   <Col xs={{ span: 1 }}>{item.operation === 1 ? '添加' : item.operation === 2 ? '修改' : item.operation === 3 ? '删除' : '无操作'}</Col>
                   <Popover content={(<span>{item.intime}</span>)} title='详情' trigger="click">
                     <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.intime}</Col>
@@ -1718,7 +1728,7 @@ class siteSettings extends React.Component {
             visible={this.state.detail}
           >
             <p>特定日期：{this.state.deData.sd}</p>
-            <p>最短提前预约时间：{this.state.deData.app/60}小时</p>
+            <p>最短提前预约时间：{this.state.deData.app / 60}小时</p>
             <p>特定日期价格：{this.state.deData.cos}(元/小时)</p>
           </Drawer>
 
@@ -1785,7 +1795,7 @@ class siteSettings extends React.Component {
             </div>
 
 
-            <div className="modelList" style={{ height: '32px' }}>
+            <div className="modelList" style={this.state.timeFalg === true ? { height: '32px' } : { display: 'none' }}>
               <span>时间范围</span>
               <Select style={{ width: 128, height: 'auto', marginLeft: 88, float: 'left' }} value={this.state.starttime === '' ? undefined : this.state.starttime} onChange={this.starttime} placeholder="开始时间">
                 {this.state.timer.map((item, i) => (
@@ -1816,20 +1826,21 @@ class siteSettings extends React.Component {
             </div>
             <div className="modelList" style={{ height: 32 }}>
               <span>最短提前预订时间</span>
-              <Select placeholder="请选择" className="selectModel"
+              <Select placeholder="请选择" disabled={this.state.appointmenttime === -1 ? true : false} className="selectModel"
                 defaultActiveFirstOption={false}
                 value={
-                  this.state.appointmenttime === 0 ? '0分钟' : []
-                    && this.state.appointmenttime === 30 ? '30分钟' : []
-                      && this.state.appointmenttime === 60 ? '60分钟' : []
-                        && this.state.appointmenttime === 120 ? '2小时' : []
-                          && this.state.appointmenttime === 180 ? '3小时' : []
-                            && this.state.appointmenttime === 240 ? '4小时' : []
-                              && this.state.appointmenttime === 300 ? '5小时' : []
-                                && this.state.appointmenttime === 360 ? '6小时' : []
-                                  && this.state.appointmenttime === 1440 ? '24小时' : []
-                                    && this.state.appointmenttime === 2880 ? '48小时' : []
-                                      && this.state.appointmenttime === 4320 ? '72小时' : []
+                  this.state.appointmenttime === -1 ? '不限' : []
+                    && this.state.appointmenttime === 0 ? '0分钟' : []
+                      && this.state.appointmenttime === 30 ? '30分钟' : []
+                        && this.state.appointmenttime === 60 ? '60分钟' : []
+                          && this.state.appointmenttime === 120 ? '2小时' : []
+                            && this.state.appointmenttime === 180 ? '3小时' : []
+                              && this.state.appointmenttime === 240 ? '4小时' : []
+                                && this.state.appointmenttime === 300 ? '5小时' : []
+                                  && this.state.appointmenttime === 360 ? '6小时' : []
+                                    && this.state.appointmenttime === 1440 ? '24小时' : []
+                                      && this.state.appointmenttime === 2880 ? '48小时' : []
+                                        && this.state.appointmenttime === 4320 ? '72小时' : []
                 }
                 style={{ width: 269, height: 32 }}
                 onChange={this.handleChangeFive}
@@ -1895,7 +1906,7 @@ class siteSettings extends React.Component {
                     {menu}
                     <Divider style={{ margin: '4px 0' }} />
                     <div style={{ display: 'flex', padding: 8 }}>
-                      <Input style={{ height: 32, background: '#fff' }} value={name} onChange={this.onNameChange} maxLength={5} />
+                      <Input style={{ height: 32, background: '#fff' }} value={name} onChange={this.onNameChange} maxLength={4} />
                       <span style={{ flex: 'none', padding: '8px', display: 'block', cursor: 'pointer' }} onClick={this.addItem}>
                         <PlusOutlined />自定义(5个汉字以内)
                   </span>
@@ -1950,7 +1961,7 @@ class siteSettings extends React.Component {
             <div style={{ clear: 'both' }}>
               {
                 this.state.arrNum.map((item, i) => (
-                  <div key={i} className={this.state.typeTwo===2?"serialSonTwo":"serialSon"} onClick={this.seriaSon} data-num={item.num} data-id={item.id} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', transition: '0.3s', opacity: '0.2' } :item.id==='场地不固定'?{width:'80px'}:{}}>{item.id}</div>
+                  <div key={i} className={this.state.typeTwo === 2 ? "serialSonTwo" : "serialSon"} onClick={this.seriaSon} data-num={item.num} data-id={item.id} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', transition: '0.3s', opacity: '0.2' } : item.id === '场地不固定' ? { width: '80px' } : {}}>{item.id}</div>
                 ))
               }
             </div>

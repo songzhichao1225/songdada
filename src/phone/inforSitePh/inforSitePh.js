@@ -46,6 +46,10 @@ class inforSitePh extends React.Component {
     faIdcard: '',
     corporatePhone: '',
     numRadio: 1,
+    numRadioFive:0,
+    inCorName:'',//公司名称
+    inChargeNa:'',//负责人姓名
+    corporateId:'',//收款身份证号
     cardId: '',
     flagOne: true,
     flagTwo: true,
@@ -143,8 +147,8 @@ class inforSitePh extends React.Component {
       this.setState({
         CorporateName: res.data.data.CorporateName, bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
         faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
-        numRadio: res.data.data.Settlement, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
-        legalBaseURL: res.data.data.legalBaseURL,
+        numRadio: res.data.data.Settlement,numRadioFive:res.data.data.account,inChargeNa:res.data.data.Bankname,inCorName:res.data.data.Bankcorporate, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
+        legalBaseURL: res.data.data.legalBaseURL,corporateId:res.data.data.Bankcard,
         filesThree: res.data.data.lisenceURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.lisenceURL }],
         filesThreeSon: res.data.data.lisenceURL === '' ? '' : res.data.data.lisenceURL,
         filesFourSon: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[0],
@@ -493,8 +497,23 @@ class inforSitePh extends React.Component {
     if (e.target.value === 1) {
       this.setState({ bank_id: '', province_id: '', city_id: '' })
     }
+  }
 
+  numRadioFive = e => {
+    this.setState({ numRadioFive: e.target.value,numRadio:e.target.value, cardId: '', openingLine: '' })
+    if (e.target.value === 1) {
+      this.setState({ bank_id: '', province_id: '', city_id: '' })
+    }
+  }
+  corporateId=e=>{
+    this.setState({corporateId:e.target.value})
+  }
+  inChargeNa=e=>{
+    this.setState({inChargeNa:e.target.value})
+  }
 
+  inCorName=e=>{
+    this.setState({inCorName:e.target.value})
   }
 
   corporateCardId = e => {
@@ -686,18 +705,24 @@ class inforSitePh extends React.Component {
 
 
   ziSubmitTwo = () => {
-    let { numRadio, filesFourSon, faIdcard, legalBaseURL, filesFiveSon, cardId, openingLine, bank_id, province_id, city_id } = this.state
+    let { numRadio, numRadioFive,inCorName,inChargeNa, filesFourSon, corporateId, legalBaseURL, filesFiveSon, cardId, openingLine, bank_id, province_id, city_id } = this.state
     let data = {
-      legalcard: numRadio === 0 ? '' : faIdcard,
-      legalBaseURL: numRadio === 0 ? '' : legalBaseURL,
-      legalFilesURL: numRadio === 0 ? '' : filesFourSon + '|' + filesFiveSon,
+      Bankcard: numRadio === 0 ? '' : corporateId,
+      legalBaseURL: numRadioFive === 1 ? legalBaseURL : numRadio === 1 ? legalBaseURL : '',
+      legalFilesURL: numRadioFive === 1 ? filesFourSon + '|' + filesFiveSon : numRadio === 1 ? filesFourSon + '|' + filesFiveSon : '',
       Settlement: numRadio,
+      Bankcorporate:numRadio===0?inCorName:'',
       Bankaccount: cardId,
+      Bankname:numRadio === 0?'':inChargeNa,
       OpeningBank: openingLine,
-      Banktype: typeof (bank_id) !== 'string' ? bank_id.join() : bank_id,
-      ProvinceBank: typeof (province_id) !== 'string' ? province_id.join() : province_id,
-      CityBank: typeof (city_id) !== 'string' ? city_id.join() : city_id,
+      account: numRadioFive,
+      Banktype: typeof (bank_id) !== 'string' ? bank_id : bank_id,
+      ProvinceBank: typeof (province_id) !== 'string' ? province_id : province_id,
+      CityBank: typeof (city_id) !== 'string' ? city_id : city_id,
     }
+
+    
+   
 
     if (this.state.loading === false) {
       Toast.loading('图片上传中', 1);
@@ -1279,17 +1304,43 @@ class inforSitePh extends React.Component {
 
 
         <div className="qualification" style={this.state.flag === 3 ? { display: 'block', height: '90%' } : { display: 'none' }}>
-          <div className="listSon">
+
+
+        <div className="listSon">
             <span style={{ float: 'left' }}>结算账号:</span>
-            <Radio.Group style={{ float: 'left', fontSize: '0.75rem', marginLeft: '10%' }} onChange={this.numRadio} value={this.state.numRadio}>
-              <Radio value={0}>公司账号</Radio>
-              <Radio value={1}>法人账号</Radio>
+            <Radio.Group style={{ float: 'left', fontSize: '0.75rem', marginLeft: '10%' }} onChange={this.numRadioFive} value={this.state.numRadioFive}>
+              <Radio value={0}>场馆归属人</Radio>
+              <Radio value={1}>场馆负责人</Radio>
             </Radio.Group>
           </div>
-          <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
-            <span style={{ float: 'left' }}>法人身份证号</span>
-            <Input className="right" style={{ width: '60%', paddingLeft: '0.5rem', float: 'left' }} maxLength={18} placeholder="请输入法人身份证号" value={this.state.faIdcard} onChange={this.corporateId} />
+
+
+          <div className="listSon" style={this.state.numRadioFive===1?{display:'none'}:{}}>
+            <span style={{ float: 'left' }}>归属人性质:</span>
+            <Radio.Group style={{ float: 'left', fontSize: '0.75rem', marginLeft: '7%' }} onChange={this.numRadio} value={this.state.numRadio}>
+              <Radio value={0}>公司</Radio>
+              <Radio value={1}>个人</Radio>
+            </Radio.Group>
           </div>
+
+          <div className="listSon" style={this.state.numRadio === 1 ? { display: 'none' } : {}}>
+            <span style={{ float: 'left' }}>公司名称</span>
+            <Input className="right" style={{ width: '80%', paddingLeft: '0.5rem', float: 'right' }} maxLength={18} placeholder="请输入公司名称" value={this.state.inCorName} onChange={this.inCorName} />
+          </div>
+
+          <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
+            <span style={{ float: 'left' }}>负责人姓名</span>
+            <Input className="right" style={{ width: '80%', paddingLeft: '0.5rem', float: 'right' }} maxLength={18} placeholder="请输入负责人姓名" value={this.state.inChargeNa} onChange={this.inChargeNa} />
+          </div>
+
+         
+
+
+          <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
+            <span style={{ float: 'left' }}>负责人身份证号</span>
+            <Input className="right" style={{ width: '75%', paddingLeft: '0.5rem', float: 'right' }} maxLength={18} placeholder="请输入法人身份证号" value={this.state.corporateId} onChange={this.corporateId} />
+          </div>
+
           <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
             <span style={{ float: 'left' }}>身份证照</span>
             <ImagePicker

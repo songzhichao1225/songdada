@@ -129,7 +129,7 @@ class appOrder extends React.Component {
 
         obj[key] = value
         let koTwo = parseInt(resData.data[i].a.slice(1, 2)) + 1 + ':00'
-        obj.lppd = <div style={{ color: '#F5A623' }}>{resData.data[i].a}<br />{resData.data[i].a.slice(3, resData.data[i].a.length) === '00' ? resData.data[i].a.slice(0, 2) + ':30' : koTwo === '10:00' && resData.data[i].a !== '19:30' ? '10:00' : resData.data[i].a === '19:30' ? '20:00' : resData.data[i].a.slice(0, 1) + koTwo}</div>
+        obj.lppd =this.state.sporttypeFive==='22'?'':<div style={{ color: '#F5A623' }}>{resData.data[i].a}<br />{resData.data[i].a.slice(3, resData.data[i].a.length) === '00' ? resData.data[i].a.slice(0, 2) + ':30' : koTwo === '10:00' && resData.data[i].a !== '19:30' ? '10:00' : resData.data[i].a === '19:30' ? '20:00' : resData.data[i].a.slice(0, 1) + koTwo}</div>
       }
       jood.push(obj)
     }
@@ -152,9 +152,8 @@ class appOrder extends React.Component {
 
   componentDidMount() {
     //测试数据
-    // let query = '?siteuid=f798e37b-644a-9846-fed9-72547a8ea90b&sportid=6&token=KtfJFfVmlqZtS1VyOZx4PpxtY2dVfqOOs9Tk4Z5rJp0NgpyReREOEmjDHVIfuZvX&sporttype=10&flag=1'
+    // let query = '?siteuid=f798e37b-644a-9846-fed9-72547a8ea90b&sportid=6&token=KtfJFfVmlqZtS1VyOZx4PpxtY2dVfqOOs9Tk4Z5rJp0NgpyReREOEmjDHVIfuZvX&sporttype=22&flag=1'
     let query = this.props.location.search
-
 
     let arr = query.split('&')
     let siteuid = arr[0].slice(9, arr[0].length)
@@ -392,7 +391,6 @@ class appOrder extends React.Component {
     if (res.data.code !== 2000) {
       Toast.fail(res.data.msg, 2, null, false);
     } else {
-      console.log(this.state.obj)
       var sUserAgent = navigator.userAgent;
       var mobileAgents = ['Android', 'iPhone', 'miniProgram'];
       for (let index = 0; index < mobileAgents.length; index++) {
@@ -425,65 +423,137 @@ class appOrder extends React.Component {
     let num = ''
     let original = 0
     if (this.state.flag === '1') {
-      let kopAd = this.state.lotime.sort()
-      let arr = []
-      for (let i in kopAd) {
-        time += kopAd[i].split('-')[0] + ','
-        let obj = {}
-        obj.time = kopAd[i].split('-')[0]
-        obj.num = kopAd[i].split('-')[1]
-        arr.push(obj)
+      for (let i in this.state.lotime.sort()) {
+        original += Number(this.state.lotime[i].split('-')[3])
       }
-
-      var result = {};
-
-      for (let i in arr) {
-        if (result[arr[i].time]) {
-          result[arr[i].time] += '-' + arr[i].num;
-        } else {
-          result[arr[i].time] = arr[i].num;
+      if(this.state.sporttypeFive==='22'){
+        let kopAd = this.state.lotime.sort()
+        let kop=[]
+        for(let i in kopAd){
+          
+          kop.push(kopAd[i].slice(6,kopAd[i].length))
         }
-      }
-
-      var keyvalue = [];
-      for (var key in result) {
-        keyvalue.push(result[key])
-      }
-      let youhood = time.slice(0, time.length - 1).split(',')
-      let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[youhood.length - 1])
-      let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[0])
-      let longTime = (Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1
-      let obj = {
-        placeNun: keyvalue.join(','),
-        placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
-        placeDate: Number(this.state.date.split('/')[0]) > 500 ? this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2] : this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1],
-        placeMoney: this.state.moneyCall,
-        placeMoneyTwo: original,
-        placeTimeLen: longTime * 0.5 + '小时'
-      }
-      this.setState({ obj: obj })
-
-      var sUserAgent = navigator.userAgent;
-      var mobileAgents = ['Android', 'iPhone', 'miniProgram'];
-      for (let index = 0; index < mobileAgents.length; index++) {
-        if (sUserAgent.indexOf('Android') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
-          let objT = JSON.stringify(this.state.obj)
-          window.JsAndroid.goTime(objT)
-        } else if (sUserAgent.indexOf('iPhone') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
-          try {
-            window.webkit.messageHandlers.ScanAction.postMessage(obj)
-          } catch (error) {
+        let arr = []
+        for (let i in kopAd) {
+          time += kop[i].split('-')[0] + ','
+          let obj = {}
+          obj.time = kop[i].split('-')[0]
+          obj.num = kop[i].split('-')[1]
+          arr.push(obj)
+        }
+  
+        let result = {};
+        for (let i in arr) {
+          if (result[arr[i].time]) {
+            result[arr[i].time] += '-' + arr[i].num;
+          } else {
+            result[arr[i].time] = arr[i].num;
           }
+        }
+        let numNa=Object.keys(result)
+        let ccj=[]
+        for(let i in numNa){
+          ccj.push(numNa[i]+'-'+result[numNa[i]].split('-').length+'-'+result[numNa[i]].split('-')[0])
+        }
+        console.log(this.state.lotime)
 
-        } else if (sUserAgent.indexOf('miniProgram') > -1) {
-          console.log('执行了')
-          //eslint-disable-next-line
-          wx.miniProgram.navigateBack({ delta: 1 })
-          //eslint-disable-next-line
-          wx.miniProgram.postMessage({ data: this.state.obj })
-          console.log('执行结束了')
+        let obj = {
+          placeNun: numNa.join('-'),
+          placeTime: '00:00:00',
+          placeDate: Number(this.state.date.split('/')[0]) > 500 ? this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2] : this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1],
+          placeMoney: this.state.moneyCall,
+          placeMoneyTwo: original,
+          placeTimeLen: this.state.lotime.length * 0.5 + '小时',
+          breakup:ccj.join(',')
+        }
+        this.setState({ obj: obj })
+  
+        let sUserAgent = navigator.userAgent;
+        let mobileAgents = ['Android', 'iPhone', 'miniProgram'];
+        for (let index = 0; index < mobileAgents.length; index++) {
+          if (sUserAgent.indexOf('Android') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
+            let objT = JSON.stringify(this.state.obj)
+            window.JsAndroid.goTime(objT)
+          } else if (sUserAgent.indexOf('iPhone') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
+            try {
+              window.webkit.messageHandlers.ScanAction.postMessage(obj)
+            } catch (error) {
+            }
+  
+          } else if (sUserAgent.indexOf('miniProgram') > -1) {
+            console.log('执行了')
+            //eslint-disable-next-line
+            wx.miniProgram.navigateBack({ delta: 1 })
+            //eslint-disable-next-line
+            wx.miniProgram.postMessage({ data: this.state.obj })
+            console.log('执行结束了')
+          }
+        }
+       
+
+      }else{
+        let kopAd = this.state.lotime.sort()
+        let arr = []
+        for (let i in kopAd) {
+          time += kopAd[i].split('-')[0] + ','
+          let obj = {}
+          obj.time = kopAd[i].split('-')[0]
+          obj.num = kopAd[i].split('-')[1]
+          arr.push(obj)
+        }
+  
+        let result = {};
+  
+        for (let i in arr) {
+          if (result[arr[i].time]) {
+            result[arr[i].time] += '-' + arr[i].num;
+          } else {
+            result[arr[i].time] = arr[i].num;
+          }
+        }
+  
+        let keyvalue = [];
+        for (let key in result) {
+          keyvalue.push(result[key])
+        }
+        let youhood = time.slice(0, time.length - 1).split(',')
+        let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[youhood.length - 1])
+        let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[0])
+        let longTime = (Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1
+        let obj = {
+          placeNun: keyvalue.join(','),
+          placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
+          placeDate: Number(this.state.date.split('/')[0]) > 500 ? this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2] : this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1],
+          placeMoney: this.state.moneyCall,
+          placeMoneyTwo: original,
+          placeTimeLen: longTime * 0.5 + '小时',
+          breakup:''
+        }
+        this.setState({ obj: obj })
+  
+        var sUserAgent = navigator.userAgent;
+        var mobileAgents = ['Android', 'iPhone', 'miniProgram'];
+        for (let index = 0; index < mobileAgents.length; index++) {
+          if (sUserAgent.indexOf('Android') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
+            let objT = JSON.stringify(this.state.obj)
+            window.JsAndroid.goTime(objT)
+          } else if (sUserAgent.indexOf('iPhone') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
+            try {
+              window.webkit.messageHandlers.ScanAction.postMessage(obj)
+            } catch (error) {
+            }
+  
+          } else if (sUserAgent.indexOf('miniProgram') > -1) {
+            console.log('执行了')
+            //eslint-disable-next-line
+            wx.miniProgram.navigateBack({ delta: 1 })
+            //eslint-disable-next-line
+            wx.miniProgram.postMessage({ data: this.state.obj })
+            console.log('执行结束了')
+          }
         }
       }
+      
     } else if (this.state.sporttypeFive === '10') {
       for (let i in this.state.lotime.sort()) {
         num += this.state.lotime[i].split('-')[1] + ','
@@ -530,7 +600,8 @@ class appOrder extends React.Component {
             placeDate: Number(this.state.date.split('/')[0]) > 500 ? this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2] : this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1],
             placeMoney: this.state.moneyCall,
             placeMoneyTwo: original,
-            placeTimeLen: this.state.lotime.length / 2 * 0.5 + '小时'
+            placeTimeLen: this.state.lotime.length / 2 * 0.5 + '小时',
+            breakup:''
           }
 
           this.setState({ obj: obj })
@@ -568,7 +639,8 @@ class appOrder extends React.Component {
             placeDate: Number(this.state.date.split('/')[0]) > 500 ? this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2] : this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1],
             placeMoney: this.state.moneyCall,
             placeMoneyTwo: original,
-            placeTimeLen: (time.split(',').length - 1) * 0.5 + '小时'
+            placeTimeLen: (time.split(',').length - 1) * 0.5 + '小时',
+            breakup:'',
           }
 
           this.setState({ obj: obj })
@@ -610,23 +682,24 @@ class appOrder extends React.Component {
   render() {
     return (
       <div className="homepage">
-        <ActivityIndicator toast animating={this.state.animating} />
+        <ActivityIndicator toast  animating={this.state.animating} />
 
         <div className="kog" style={this.state.animating === true ? { display: 'none' } : { display: 'block' }}>
           <div className="appOrder" onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
             <div className='bookingKanban'>
-              <div className="titleDiv">
+              <div className="titleDiv" style={this.state.sporttypeFive==='22'?{display:'none'}:{}}>
                 <div className="dayBefore" style={this.state.date === this.state.start ? { display: 'none' } : { display: 'block' }} onTouchStart={this.dayBefore}>前一天</div>
                 <div className="nextDay" onTouchStart={this.nextDay}>后一天</div>
-                <div className="titleDivTwo" onTouchStart={this.date}>{this.state.date}</div>
+                <div className="titleDivTwo"  onTouchStart={this.date}>{this.state.date}</div>
               </div>
+              <div className="titleDiv"><span className="fontSize">由于散场人数不可控，为了有更好的体验，出发之前可与场馆方联系。</span></div>
               <div className="modTitle">
 
                 <span className="blue"></span><span>可选</span>
 
-                <span className="white"></span><span>不可选</span>
+                <span className="white" style={this.state.sporttypeFive==='22'?{display:'none'}:{}}></span><span style={this.state.sporttypeFive==='22'?{display:'none'}:{}}>不可选</span>
 
-                <span className="yellow"></span><span>已占用</span>
+                <span className="yellow" style={this.state.sporttypeFive==='22'?{display:'none'}:{}}></span><span style={this.state.sporttypeFive==='22'?{display:'none'}:{}}>已占用</span>
 
                 <span className="red"></span><span>已选中</span>
               </div>
