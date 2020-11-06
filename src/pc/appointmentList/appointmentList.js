@@ -1,18 +1,19 @@
 import React from 'react';
 import './appointmentList.css';
 import 'antd/dist/antd.css';
-import { Input, Row, Col, Select, Pagination, Spin, message, DatePicker, Modal, Radio, Drawer, InputNumber, Popover } from 'antd';
-import { SyncOutlined, CloseCircleOutlined } from '@ant-design/icons';
-import { getReservationActivitieslist, getVenueReservation, getVenueSport, VenueSendMessage, VenueClickCancelPlace, getVenueComplainList, VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave } from '../../api';
+import { Input, Row, Col, Select, Pagination, Spin, message, DatePicker, Modal, Radio, Drawer, InputNumber, Popover,Popconfirm } from 'antd';
+import { CloseCircleOutlined } from '@ant-design/icons';
+import { getReservationActivitieslist, getVenueReservation, getVenueSport, VenueSendMessage, VenueClickCancelPlace, getVenueComplainList, VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave,DeductTheTimesOfClosing } from '../../api';
 import locale from 'antd/es/date-picker/locale/zh_CN';
+import moment from 'moment';
 import 'moment/locale/zh-cn';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
+const { Search } = Input;
 
 
 
-const antIcon = <SyncOutlined style={{ fontSize: 24, color: 'black' }} spin />
 
 class appointmentList extends React.Component {
 
@@ -30,7 +31,7 @@ class appointmentList extends React.Component {
     letterNum: [],
     activityNav: [],
     tabelFlag: false,
-    Oneloading: false,
+    Oneloading: true,
     other: '',
     visible: false,
     sendCheck: 2,
@@ -77,7 +78,9 @@ class appointmentList extends React.Component {
     sportName: '',
     Complaints: false,
     listComplain: [],
-    paied:'2'
+    paied: '2',
+    headTop: '0',
+    confirmUUid:'',
   };
 
   async getVenueSport(data) {
@@ -128,9 +131,9 @@ class appointmentList extends React.Component {
   componentDidMount() {
     this.getVenueSport()
     if (this.props.location.query !== undefined) {
-      this.getReservationActivitieslist({ page: 1, publicuid: this.props.location.query.uuid, sport: '', status: '',paied:this.state.paied })
+      this.getReservationActivitieslist({ page: 1, publicuid: this.props.location.query.uuid, sport: '', status: '', paied: this.state.paied, reserve: this.state.headTop })
     } else {
-      this.getReservationActivitieslist({ page: 1, sport: '', status: '',paied:this.state.paied })
+      this.getReservationActivitieslist({ page: 1, sport: '', status: '', paied: this.state.paied, reserve: this.state.headTop })
     }
 
 
@@ -146,16 +149,16 @@ class appointmentList extends React.Component {
   }
 
   dateonChangeS = (date, dateString) => {
-    this.setState({ start: dateString[0], end: dateString[1],page:1 })
-    this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: this.state.status, startdate: dateString[0], enddate: dateString[1],paied:this.state.paied })
+    this.setState({ start: dateString[0], end: dateString[1], page: 1 })
+    this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: this.state.status, startdate: dateString[0], enddate: dateString[1], paied: this.state.paied, reserve: this.state.headTop })
   }
 
   current = (page, pageSize) => {
     this.setState({ page: page })
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '',paied:this.state.paied })
+      this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '', paied: this.state.paied, reserve: this.state.headTop })
     } else {
-      this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end,paied:this.state.paied })
+      this.getReservationActivitieslist({ page: page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end, paied: this.state.paied, reserve: this.state.headTop })
     }
   }
 
@@ -214,30 +217,30 @@ class appointmentList extends React.Component {
     this.setState({ sport: e })
     this.setState({ page: 1 })
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page: 1, sport: e, status: this.state.status, startdate: '', enddate: '',paied:this.state.paied })
+      this.getReservationActivitieslist({ page: 1, sport: e, status: this.state.status, startdate: '', enddate: '', paied: this.state.paied, reserve: this.state.headTop })
     } else {
-      this.getReservationActivitieslist({ page: 1, sport: e, status: this.state.status, startdate: this.state.start, enddate: this.state.end,paied:this.state.paied })
+      this.getReservationActivitieslist({ page: 1, sport: e, status: this.state.status, startdate: this.state.start, enddate: this.state.end, paied: this.state.paied, reserve: this.state.headTop })
     }
   }
   activityChang = (e) => {
     this.setState({ status: e })
     this.setState({ page: 1 })
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e, startdate: '', enddate: '',paied:this.state.paied })
+      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e, startdate: '', enddate: '', paied: this.state.paied, reserve: this.state.headTop })
     } else {
-      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e, startdate: this.state.start, enddate: this.state.end,paied:this.state.paied })
+      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: e, startdate: this.state.start, enddate: this.state.end, paied: this.state.paied, reserve: this.state.headTop })
     }
   }
 
-  paied=e=>{
-    this.setState({paied: e,page:1})
-     
+  paied = e => {
+    this.setState({ paied: e, page: 1 })
+
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: this.state.status, startdate:'', enddate: '',paied: e })
+      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '', paied: e, reserve: this.state.headTop })
     } else {
-      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end,paied: e })
+      this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end, paied: e, reserve: this.state.headTop })
     }
- 
+
   }
 
 
@@ -255,9 +258,9 @@ class appointmentList extends React.Component {
   Oneloading = () => {
     this.setState({ Oneloading: true })
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '',paied:this.state.paied })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '', paied: this.state.paied, reserve: this.state.headTop })
     } else {
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end,paied:this.state.paied })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end, paied: this.state.paied, reserve: this.state.headTop })
     }
   }
   handleCancel = () => {
@@ -270,9 +273,9 @@ class appointmentList extends React.Component {
       message.success(res.data.msg)
       this.setState({ visible: false })
       if (this.state.start === '开始日期') {
-        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '',paied:this.state.paied })
+        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '', paied: this.state.paied, reserve: this.state.headTop })
       } else {
-        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end,paied:this.state.paied })
+        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end, paied: this.state.paied, reserve: this.state.headTop })
       }
     } else {
       message.error(res.data.msg)
@@ -283,7 +286,7 @@ class appointmentList extends React.Component {
     this.setState({ visible: true, publicUUID: e.currentTarget.dataset.uid, changNum: e.currentTarget.dataset.siteid, changName: e.currentTarget.dataset.sitenum })
   }
 
- 
+
   textArea = e => {
     this.setState({ textArea: e.target.value })
   }
@@ -331,7 +334,7 @@ class appointmentList extends React.Component {
         this.VenueRemarksLabel({ uuid: e.currentTarget.dataset.uuid })
       }
     } else if (e.currentTarget.dataset.type === "3") {
-      this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: '',paied:this.state.paied })
+      this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: '', paied: this.state.paied, reserve: this.state.headTop })
       this.setState({ informVisible: true })
     }
   }
@@ -442,7 +445,7 @@ class appointmentList extends React.Component {
     }
   }
 
- 
+
 
   tilBlur = e => {
     this.getVenueNumberTitleSave({ sportid: this.state.liNum, veneuid: e.currentTarget.dataset.num, title: e.target.value, uuid: e.currentTarget.dataset.uuid })
@@ -502,8 +505,47 @@ class appointmentList extends React.Component {
 
     }
   }
+  headTop = e => {
+    this.setState({ headTop: e.currentTarget.dataset.index, page: 1, sport: '', status: '', start: '开始日期', end: '结束日期', paied: '2', Oneloading: true })
+
+    setTimeout(() => {
+      if (this.state.start === '开始日期') {
+        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '', paied: this.state.paied, reserve: this.state.headTop })
+
+      } else {
+        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end, paied: this.state.paied, reserve: this.state.headTop })
+      }
+    }, 500)
 
 
+
+  }
+
+  onSearch = e => {
+    this.getReservationActivitieslist({ page: 1, sport: '', status: '', paied: '2', orderId: e, reserve: this.state.headTop })
+  }
+  confirmUUid=e=>{
+   this.setState({confirmUUid:e.currentTarget.dataset.uuid})
+  }
+  async DeductTheTimesOfClosing(data) {
+    const res = await DeductTheTimesOfClosing(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      setTimeout(() => {
+        if (this.state.start === '开始日期') {
+          this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '', paied: this.state.paied, reserve: this.state.headTop })
+  
+        } else {
+          this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end, paied: this.state.paied, reserve: this.state.headTop })
+        }
+      }, 500)
+    }else{
+      message.warning(res.data.msg)
+    }
+  }
+  confirm=()=>{
+    this.DeductTheTimesOfClosing({breakupid:this.state.confirmUUid})
+    
+  }
 
   render() {
     let userMessage;
@@ -514,19 +556,57 @@ class appointmentList extends React.Component {
             this.state.list.map((item, i) => (
               <Row key={i}>
                 <Popover content={(<span>{item.orderId}</span>)} title='详情' trigger="click">
-                  <Col xs={{ span: 3 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.orderId}</Col>
+                  <Col xs={{ span: 3 }}><span>{item.orderId}</span></Col>
                 </Popover>
-                <Col xs={{ span: 2 }}>{item.SportName}</Col>
-                <Col xs={{ span: 2 }}><div style={{ lineHeight: '25px' }}>{item.StartTime.slice(11, 16)}</div><div style={{ lineHeight: '25px' }}>{item.StartTime.slice(0, 10)}</div></Col>
-                <Col xs={{ span: 2 }}><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(11, 16)}</div><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(0, 10)}</div></Col>
-                <Col xs={{ span: 2 }}>{item.PlayTime}小时</Col>
-                <Col xs={{ span: 2 }}>{item.Shouldarrive}</Col>
-                <Col xs={{ span: 2 }}>{item.TrueTo}</Col>
-                <Col xs={{ span: 3 }} onClick={this.Complaints} data-id={item.uuid} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.PublicStatus}<span style={item.iscomplain === 1 ? { color: '#F6410C', fontSize: '12px' } : { display: 'none' }}>(有投诉)</span></Col>
-                <Col xs={{ span: 2 }}>￥{item.SiteMoney}</Col>
-                <Col xs={{ span: 2 }}>{item.SiteMoneyStatus}</Col>
+                <Popover content={(<span>{item.SportName}</span>)} title='详情' trigger="click">
+                  <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer' }}><span>{item.SportName}</span></Col>
+                </Popover>
+                <Col xs={{ span: 2 }} style={this.state.headTop === '1' ? { display: 'none' } : {}}><div style={{ lineHeight: '25px', fontSize: '10px' }}>{item.StartTime === 0 ? '00:00' : item.StartTime.slice(0, 10)}</div><div style={{ lineHeight: '25px' }}>{item.StartTime === 0 ? '00:00' : item.StartTime.slice(11, 16)}</div></Col>
+                <Col xs={{ span: 2 }}><div style={{ lineHeight: '25px', fontSize: '10px' }}>{item.FinishedTime.slice(0, 10)}</div><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(11, 16)}</div></Col>
+                <Col xs={{ span: 2 }}><span>{item.PlayTime}小时</span></Col>
+
+                <Col xs={{ span: 2 }} >{this.state.headTop === '1' ? item.breakup.length === 0 ? <Popover content={(<span>{item.venueid}</span>)} title='详情' trigger="click"><div>{item.venueid}</div> </Popover> : <div>
+                  {
+                    item.breakup.map((itemTwo, i) => (
+                      <div key={i} style={{ textAlign: 'center' }}>{itemTwo.venueid}</div>
+                    ))
+                  }
+                </div> : <span>{item.Shouldarrive}</span>}</Col>
+
                 <Col xs={{ span: 2 }}>
-                  <img className={item.PublicStatus === '匹配中' ? 'img' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'img' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'img' : 'circumstanceT'} data-uid={item.uuid} data-siteid={item.venueid} data-sitenum={item.venuenumber} onClick={this.sending} src={require("../../assets/icon_pc_faNews.png")} alt="发送消息" />
+                  <span>{this.state.headTop === '1' ? <div>
+                    {
+                      item.breakup.map((itemTwo, i) => (
+                        <div key={i} style={{ textAlign: 'center' }}>￥{itemTwo.price}/次</div>
+                      ))
+                    }
+                  </div> : item.TrueTo}</span>
+                </Col>
+                <Col xs={{ span: 2 }} style={this.state.headTop === '1' ? {} : { display: 'none' }}><span>
+                  {
+                    item.breakup.map((itemThree, i) => (
+                      <div key={i} style={{ overflow: 'hidden' }}><div style={{ float: 'left', marginLeft: '35%' }}>{itemThree.frequency}</div>
+                        <Popconfirm
+                          placement="top"
+                          title='您确定要扣除一次吗?'
+                          onConfirm={this.confirm}
+                          okText="确定"
+                          cancelText="取消"
+                        >
+                          <div className="sijn" onClick={this.confirmUUid} data-uuid={itemThree.uuid}>－</div>
+                        </Popconfirm>
+                        
+
+                      </div>
+                    ))
+                  }</span></Col>
+                <Col xs={{ span: 3 }} onClick={this.Complaints} data-id={item.uuid} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}><span>{item.PublicStatus}<span style={item.iscomplain === 1 ? { color: '#F6410C', fontSize: '12px' } : { display: 'none' }}>(有投诉)</span></span></Col>
+                <Col xs={{ span: 2 }}><span>￥{item.SiteMoney}</span></Col>
+                <Col xs={{ span: 2 }}><span>{item.SiteMoneyStatus}</span></Col>
+                <Col xs={{ span: 2 }}>
+                  <span>
+                    <img className={item.PublicStatus === '匹配中' ? 'img' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'img' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'img' : 'circumstanceT'} data-uid={item.uuid} data-siteid={item.venueid} data-sitenum={item.venuenumber} style={{ marginTop: '0' }} onClick={this.sending} src={require("../../assets/icon_pc_faNews.png")} alt="发送消息" />
+                  </span>
                 </Col>
               </Row>
             ))
@@ -540,231 +620,255 @@ class appointmentList extends React.Component {
       )
     }
     return (
-
-      <div className="orderList">
-        <div className="navTab">
-          <RangePicker
-            style={{ float: 'left', marginTop: '7px', marginRight: '40px' }}
-            onChange={this.dateonChangeS}
-            locale={locale}
-            allowClear={false}
-            placeholder={[this.state.start, this.state.end]}
-          />
-          <div className="sping"> <SyncOutlined className={this.state.Oneloading === true || this.state.number === '2' ? 'hidden' : 'block'} onClick={this.Oneloading} style={{ fontSize: 24, marginTop: 15 }} /><Spin indicator={antIcon} spinning={this.state.Oneloading} /></div>
-        </div>
-
-        <div className={this.state.number === '1' ? 'listName' : 'listNameT'} style={{ height: '90%' }}>
-
-
+      <Spin spinning={this.state.Oneloading} style={{ height: '100%' }}>
+        <div className="orderList">
+          <div className="headTop">
+            <div className="headTopBtn" onClick={this.headTop} data-index='0' style={this.state.headTop === '0' ? { color: '#fff', background: '#F5A623' } : {}}>找运动伙伴</div>
+            <div className="headTopBtn" onClick={this.headTop} data-index='1' style={this.state.headTop === '1' ? { color: '#fff', background: '#F5A623' } : {}}>仅预订场馆</div>
+          </div>
           <div className="xiange"></div>
-
-          <Row className="rowConten" style={{ background: '#FCF7EE', marginTop: 0 }}>
-            <Col xs={{ span: 3 }}>活动编号</Col>
-            <Col xs={{ span: 2 }}>
-              <Select className="selectName" defaultValue="项目名称" bordered={false} style={{ width: '100%', padding: 0 }} onChange={this.nameChang}>
-                <Option value="0">全部</Option>
-                <Option value="1">羽毛球</Option>
-                <Option value="2">兵乓球</Option>
-                <Option value="3">台球</Option>
-                <Option value="4">篮球</Option>
-                <Option value="5">足球</Option>
-                <Option value="6">排球</Option>
-                <Option value="7">网球</Option>
-              </Select>
-            </Col>
-            <Col xs={{ span: 2 }}>开始时间</Col>
-            <Col xs={{ span: 2 }}>结束时间</Col>
-            <Col xs={{ span: 2 }}>时长</Col>
-            <Col xs={{ span: 2 }}>应到人数</Col>
-            <Col xs={{ span: 2 }}>已报名人数</Col>
-            <Col xs={{ span: 3 }}>
-              <Select className="selectName" defaultValue="活动状态" bordered={false} listHeight={300} dropdownStyle={{ height: '300px', textAlign: 'center' }} style={{ width: '100%' }} onChange={this.activityChang} >
-                <Option value="0">全部</Option>
-                <Option value="1">匹配中</Option>
-                <Option value="2">待出发</Option>
-                <Option value="3">活动中</Option>
-                <Option value="9">投诉中</Option>
-                <Option value="4" title="待填写比赛结果">待填写比赛结果</Option>
-                <Option value="6">待评价</Option>
-                <Option value="5">已完成</Option>
-                <Option value="7">已取消</Option>
-              </Select>
-            </Col>
-            <Col xs={{ span: 2 }}>场地费用</Col>
-            <Col xs={{ span: 2 }}>
-            <Select className="selectName" defaultValue="支付状态" bordered={false} dropdownStyle={{textAlign: 'center' }} style={{ width: '100%' }} onChange={this.paied} >
-                <Option value="2">全部</Option>
-                <Option value="0">未到账</Option>
-                <Option value="1">已支付</Option>
-               
-              </Select>
-            </Col>
-            <Col xs={{ span: 2 }}>发消息</Col>
-          </Row>
-          <div className={this.state.hidden === true ? '' : 'hidden'} style={{ height: '90%', overflowY: 'auto' }}>
-            {userMessage}
-          </div>
-          <div style={this.state.hidden === true ? { display: 'none' } : { width: '100%' }}><img style={{ width: 84, height: 84, display: 'block', margin: '84px auto 0' }} src={require('../../assets/xifen (5).png')} alt="icon" /><span style={{ display: 'block', textAlign: 'center' }}>您的场馆没有相关活动!</span></div>
-
-
-        </div>
-
-        <Modal
-          title="给参与人员发送消息"
-          visible={this.state.visible}
-          onCancel={this.handleCancel}
-          className="mode"
-          closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
-        >
-          <Radio.Group onChange={this.sendCheck} value={this.state.sendCheck}>
-            <Radio value={2}>未预留场地</Radio>
-          </Radio.Group>
-          <div style={this.state.sendCheck === 1 ? {} : { display: 'none' }}>
-            <span>场馆号</span>
-            <Select className='changName' value={this.state.changName} onChange={this.changName} style={{ width: 100, height: 30 }}>
-              <Option value="0">0</Option>
-              <Option value="1">1</Option>
-              <Option value="2">2</Option>
-              <Option value="3">3</Option>
-              <Option value="4">4</Option>
-              <Option value="5">5</Option>
-              <Option value="6">6</Option>
-              <Option value="7">7</Option>
-              <Option value="8">8</Option>
-              <Option value="9">9</Option>
-            </Select>
-            <span style={{ paddingLeft: 20 }}>场地号</span> <InputNumber style={{ height: '30px' }} max={999} value={this.state.changNum} placeholder="场地号" onChange={this.changNum} className="changNum" />
-          </div>
-          <TextArea style={{ marginTop: '20px' }} className="sending" maxLength={50} placeholder="请说明未预留场地原因" onChange={this.textArea} rows={4} />
-          <div style={{ clear: 'both', height: '30px', marginTop: '10px' }}><span style={{ float: 'left' }}>还可以输入{50 - this.state.textArea.length}字</span>  </div>
-          <div className="sending">
-            <div onClick={this.handleCancel}>取消</div>
-            <div onClick={this.sendingMessage}>发送</div>
-          </div>
-        </Modal>
-        <Drawer
-          title="该活动详细信息"
-          placement="right"
-          closable={false}
-          width='400px'
-          onClose={this.informOnClose}
-          visible={this.state.informVisible}
-        >
-          <div className="informDrawer">
-            <span>活动编号：</span>
-            <span>{this.state.informList.length > 0 ? this.state.informList[0].orderId : ''}</span>
-          </div>
-          <div className="informDrawer">
-            <span>项目名称：</span>
-            <span>{this.state.informList.length > 0 ? this.state.informList[0].SportName : ''}</span>
-          </div>   
-          <div className="informDrawer">
-            <span>开始时间：</span>
-            <span>{this.state.informList.length > 0 ? this.state.informList[0].StartTime : ''}</span>
-          </div> 
-          <div className="informDrawer">
-            <span>结束时间：</span>
-            <span>{this.state.informList.length > 0 ? this.state.informList[0].FinishedTime : ''}</span>
-          </div>
-          <div className="informDrawer">
-            <span>时长：</span>
-            <span>{this.state.informList.length > 0 ? this.state.informList[0].PlayTime : ''}</span>
-          </div>
-          <div className="informDrawer" style={this.state.informList.length > 0 && this.state.informList[0].reserve === 0 ? {} : { display: 'none' }}>
-            <span>应到人数：</span>
-            <span>{this.state.informList.length > 0 ? this.state.informList[0].Shouldarrive : ''}</span>
-          </div>
-
-          <div className="informDrawer" style={this.state.informList.length > 0 && this.state.informList[0].reserve === 0 ? {} : { display: 'none' }}>
-            <span>已报名人数：</span>
-            <span>{this.state.informList.length > 0 ? this.state.informList[0].TrueTo : ''}</span>
-          </div>
-
-          <div className="informDrawer">
-            <span>场地费金额：</span>
-            <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoney : ''}</span>
-          </div>
-          <div className="informDrawer">
-            <span>场地费状态：</span>
-            <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoneyStatus : ''}</span>
-          </div>
-        </Drawer>
-        <Drawer
-          title={this.state.meun !== 1 ? '线下预订人信息' : '预约情况详情'}
-          placement="right"
-          closable={false}
-          width='400px'
-          onClose={this.historyClose}
-          visible={this.state.History}
-        >
-          <div style={this.state.menu !== 1 ? { display: 'block' } : { display: 'none' }}>
-            <div style={this.state.historyNews.length === 0 ? { display: 'block' } : { display: 'none' }}>没有历史记录...</div>
-            <div style={this.state.historyNews.length > 0 ? { display: 'block' } : { display: 'none' }}>
-              {
-                this.state.historyNews.map((item, i) => (
-                  <div key={i} style={{ marginTop: '15px' }}>
-                    <span style={{ display: 'block' }}>{item.comment}</span>
-                    <span style={{ display: 'block' }}>{item.intime}</span>
-                  </div>
-                ))
-              }
-            </div>
-          </div>
-          <div style={this.state.menu=== 1 ? { display: 'block' } : { display: 'none' }}>
-            {this.state.otherObj}
-          </div>
-        </Drawer>
-
-
-        <Modal
-          title="请输入线下预订人的相关信息"
-          visible={this.state.info}
-          onOk={this.handleOk}
-          className='mode'
-          onCancel={this.handleCancel}
-          closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
-        >
-          <div style={{ overflow: 'hidden' }}>
-            <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>姓名：  </span>
-            <Input style={{ width: 250, float: 'left' }} onChange={this.placeName} placeholder='(选填)' />
-          </div>
-          <div style={{ overflow: 'hidden', marginTop: '10px' }}>
-            <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>手机号：</span>
-            <Input style={{ width: 250, float: 'left' }} onChange={this.placePhone} placeholder="(选填)" />
-          </div>
-          <div style={{ overflow: 'hidden', marginTop: '10px' }}>
-            <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>会员卡卡号：</span>
-            <Input style={{ width: 250, float: 'left' }} onChange={this.placeHui} placeholder="(选填)" />
-          </div>
-          <div style={{ overflow: 'hidden', marginTop: '10px' }}>
-            <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>其他：</span>
-            <Input style={{ width: 250, float: 'left' }} onChange={this.placeQi} placeholder="(选填)" />
-          </div>
-          <span onClick={this.placeSubmit} style={{ cursor: 'pointer', padding: '4px 8px', background: '#F5A623', color: '#fff', float: 'right', marginRight: '125px', marginTop: '20px' }}>提交</span>
-        </Modal>
-
-        <Drawer
-          title='投诉详情'
-          placement="right"
-          closable={false}
-          width='400px'
-          onClose={this.ComplaintsTwo}
-          visible={this.state.Complaints}
-        >
-          {
-            this.state.listComplain.map((item, i) => (
-              <div key={i} style={{marginTop:'15px'}}>
-                <div><span style={{fontSize:'16px',fontWeight:'blod'}}>投诉类型:</span>{item.name}</div>
-                <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>处理结果:</span>{item.comment}({item.handle})</div>
-                <div style={{marginTop:'5px'}}><span style={{fontSize:'16px',fontWeight:'blod'}}>处理时间:</span>{item.date}</div>
+          <div className="withPartner">
+            <div className="navTab">
+              <RangePicker
+                style={{ float: 'left', marginTop: '7px', marginRight: '40px' }}
+                onChange={this.dateonChangeS}
+                locale={locale}
+                value={this.state.start==='开始日期'?'':[moment(this.state.start,'YYYY-MM-DD'), moment(this.state.end,'YYYY-MM-DD')]}
+                allowClear={false}
+                placeholder={[this.state.start, this.state.end]}
+              />
+              <div className="screening">
+                <Search
+                  placeholder="活动编号"
+                  allowClear
+                  enterButton="查询"
+                  size="large"
+                  onSearch={this.onSearch}
+                />
               </div>
-            ))
-          }
-        </Drawer>
+            </div>
+
+            <div className={this.state.number === '1' ? 'listName' : 'listNameT'} style={{ height: '90%' }}>
+              <div className="xiange"></div>
+
+              <Row className="rowConten" style={{ background: '#FCF7EE', marginTop: 0 }}>
+                <Col xs={{ span: 3 }}><span>活动编号</span></Col>
+                <Col xs={{ span: 2 }}>
+                  <span>
+                    <Select className="selectName" defaultValue="项目名称" bordered={false} style={{ width: '100%', padding: 0 }} onChange={this.nameChang}>
+                      <Option value="0">全部</Option>
+                      <Option value="1">羽毛球</Option>
+                      <Option value="2">兵乓球</Option>
+                      <Option value="3">台球</Option>
+                      <Option value="4">篮球</Option>
+                      <Option value="5">足球</Option>
+                      <Option value="6">排球</Option>
+                      <Option value="7">网球</Option>
+                    </Select>
+                  </span>
+                </Col>
+                <Col xs={{ span: 2 }} style={this.state.headTop === '1' ? { display: 'none' } : {}}><span>开始时间</span></Col>
+                <Col xs={{ span: 2 }}><span>结束时间</span></Col>
+                <Col xs={{ span: 2 }}><span>时长</span></Col>
+                <Col xs={{ span: 2 }}><span>{this.state.headTop === '1' ? '场地编号' : '应到人数'}</span></Col>
+                <Col xs={{ span: 2 }}><span>{this.state.headTop === '1' ? '单价' : '已报名人数'}</span></Col>
+                <Col style={this.state.headTop === '0' ? { display: 'none' } : {}} xs={{ span: 2 }}><span>剩余次数</span></Col>
+                <Col xs={{ span: 3 }}>
+                  <span>
+                    <Select className="selectName" defaultValue="活动状态" bordered={false} listHeight={300} dropdownStyle={{ height: '300px', textAlign: 'center' }} style={{ width: '100%' }} onChange={this.activityChang} >
+                      <Option value="0">全部</Option>
+                      <Option value="1">匹配中</Option>
+                      <Option value="2">待出发</Option>
+                      <Option value="3">活动中</Option>
+                      <Option value="9">投诉中</Option>
+                      <Option value="4" title="待填写比赛结果">待填写比赛结果</Option>
+                      <Option value="6">待评价</Option>
+                      <Option value="5">已完成</Option>
+                      <Option value="7">已取消</Option>
+                    </Select>
+                  </span>
+                </Col>
+                <Col xs={{ span: 2 }}><span>场地费用</span></Col>
+                <Col xs={{ span: 2 }}>
+                  <span>
+                    <Select className="selectName" defaultValue="支付状态" bordered={false} dropdownStyle={{ textAlign: 'center' }} style={{ width: '100%' }} onChange={this.paied} >
+                      <Option value="2">全部</Option>
+                      <Option value="0">未到账</Option>
+                      <Option value="1">已支付</Option>
+                    </Select>
+                  </span>
+                </Col>
+                <Col xs={{ span: 2 }}><span>发消息</span></Col>
+              </Row>
+              <div className={this.state.hidden === true ? '' : 'hidden'} style={{ height: '90%', overflowY: 'auto' }}>
+                {userMessage}
+              </div>
+              <div style={this.state.hidden === true ? { display: 'none' } : { width: '100%' }}><img style={{ width: 84, height: 84, display: 'block', margin: '84px auto 0' }} src={require('../../assets/xifen (5).png')} alt="icon" /><span style={{ display: 'block', textAlign: 'center' }}>您的场馆没有相关活动!</span></div>
+
+            </div>
+
+          </div>
 
 
 
-      </div>
+
+
+          <Modal
+            title="给参与人员发送消息"
+            visible={this.state.visible}
+            onCancel={this.handleCancel}
+            className="mode"
+            closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
+          >
+            <Radio.Group onChange={this.sendCheck} value={this.state.sendCheck}>
+              <Radio value={2}>未预留场地</Radio>
+            </Radio.Group>
+            <div style={this.state.sendCheck === 1 ? {} : { display: 'none' }}>
+              <span>场馆号</span>
+              <Select className='changName' value={this.state.changName} onChange={this.changName} style={{ width: 100, height: 30 }}>
+                <Option value="0">0</Option>
+                <Option value="1">1</Option>
+                <Option value="2">2</Option>
+                <Option value="3">3</Option>
+                <Option value="4">4</Option>
+                <Option value="5">5</Option>
+                <Option value="6">6</Option>
+                <Option value="7">7</Option>
+                <Option value="8">8</Option>
+                <Option value="9">9</Option>
+              </Select>
+              <span style={{ paddingLeft: 20 }}>场地号</span> <InputNumber style={{ height: '30px' }} max={999} value={this.state.changNum} placeholder="场地号" onChange={this.changNum} className="changNum" />
+            </div>
+            <TextArea style={{ marginTop: '20px' }} className="sending" maxLength={50} placeholder="请说明未预留场地原因" onChange={this.textArea} rows={4} />
+            <div style={{ clear: 'both', height: '30px', marginTop: '10px' }}><span style={{ float: 'left' }}>还可以输入{50 - this.state.textArea.length}字</span>  </div>
+            <div className="sending">
+              <div onClick={this.handleCancel}>取消</div>
+              <div onClick={this.sendingMessage}>发送</div>
+            </div>
+          </Modal>
+          <Drawer
+            title="该活动详细信息"
+            placement="right"
+            closable={false}
+            width='400px'
+            onClose={this.informOnClose}
+            visible={this.state.informVisible}
+          >
+            <div className="informDrawer">
+              <span>活动编号：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].orderId : ''}</span>
+            </div>
+            <div className="informDrawer">
+              <span>项目名称：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].SportName : ''}</span>
+            </div>
+            <div className="informDrawer">
+              <span>开始时间：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].StartTime : ''}</span>
+            </div>
+            <div className="informDrawer">
+              <span>结束时间：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].FinishedTime : ''}</span>
+            </div>
+            <div className="informDrawer">
+              <span>时长：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].PlayTime : ''}</span>
+            </div>
+            <div className="informDrawer" style={this.state.informList.length > 0 && this.state.informList[0].reserve === 0 ? {} : { display: 'none' }}>
+              <span>应到人数：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].Shouldarrive : ''}</span>
+            </div>
+
+            <div className="informDrawer" style={this.state.informList.length > 0 && this.state.informList[0].reserve === 0 ? {} : { display: 'none' }}>
+              <span>已报名人数：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].TrueTo : ''}</span>
+            </div>
+
+            <div className="informDrawer">
+              <span>场地费金额：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoney : ''}</span>
+            </div>
+            <div className="informDrawer">
+              <span>场地费状态：</span>
+              <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoneyStatus : ''}</span>
+            </div>
+          </Drawer>
+          <Drawer
+            title={this.state.meun !== 1 ? '线下预订人信息' : '预约情况详情'}
+            placement="right"
+            closable={false}
+            width='400px'
+            onClose={this.historyClose}
+            visible={this.state.History}
+          >
+            <div style={this.state.menu !== 1 ? { display: 'block' } : { display: 'none' }}>
+              <div style={this.state.historyNews.length === 0 ? { display: 'block' } : { display: 'none' }}>没有历史记录...</div>
+              <div style={this.state.historyNews.length > 0 ? { display: 'block' } : { display: 'none' }}>
+                {
+                  this.state.historyNews.map((item, i) => (
+                    <div key={i} style={{ marginTop: '15px' }}>
+                      <span style={{ display: 'block' }}>{item.comment}</span>
+                      <span style={{ display: 'block' }}>{item.intime}</span>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+            <div style={this.state.menu === 1 ? { display: 'block' } : { display: 'none' }}>
+              {this.state.otherObj}
+            </div>
+          </Drawer>
+
+
+          <Modal
+            title="请输入线下预订人的相关信息"
+            visible={this.state.info}
+            onOk={this.handleOk}
+            className='mode'
+            onCancel={this.handleCancel}
+            closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
+          >
+            <div style={{ overflow: 'hidden' }}>
+              <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>姓名：  </span>
+              <Input style={{ width: 250, float: 'left' }} onChange={this.placeName} placeholder='(选填)' />
+            </div>
+            <div style={{ overflow: 'hidden', marginTop: '10px' }}>
+              <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>手机号：</span>
+              <Input style={{ width: 250, float: 'left' }} onChange={this.placePhone} placeholder="(选填)" />
+            </div>
+            <div style={{ overflow: 'hidden', marginTop: '10px' }}>
+              <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>会员卡卡号：</span>
+              <Input style={{ width: 250, float: 'left' }} onChange={this.placeHui} placeholder="(选填)" />
+            </div>
+            <div style={{ overflow: 'hidden', marginTop: '10px' }}>
+              <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>其他：</span>
+              <Input style={{ width: 250, float: 'left' }} onChange={this.placeQi} placeholder="(选填)" />
+            </div>
+            <span onClick={this.placeSubmit} style={{ cursor: 'pointer', padding: '4px 8px', background: '#F5A623', color: '#fff', float: 'right', marginRight: '125px', marginTop: '20px' }}>提交</span>
+          </Modal>
+
+          <Drawer
+            title='投诉详情'
+            placement="right"
+            closable={false}
+            width='400px'
+            onClose={this.ComplaintsTwo}
+            visible={this.state.Complaints}
+          >
+            {
+              this.state.listComplain.map((item, i) => (
+                <div key={i} style={{ marginTop: '15px' }}>
+                  <div><span style={{ fontSize: '16px', fontWeight: 'blod' }}>投诉类型:</span>{item.name}</div>
+                  <div style={{ marginTop: '5px' }}><span style={{ fontSize: '16px', fontWeight: 'blod' }}>处理结果:</span>{item.comment}({item.handle})</div>
+                  <div style={{ marginTop: '5px' }}><span style={{ fontSize: '16px', fontWeight: 'blod' }}>处理时间:</span>{item.date}</div>
+                </div>
+              ))
+            }
+          </Drawer>
+
+
+
+        </div></Spin>
     )
   }
 }

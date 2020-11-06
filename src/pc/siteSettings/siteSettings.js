@@ -1240,8 +1240,10 @@ class siteSettings extends React.Component {
     })
   }
   handleChangeTags = e => {
-    if (e.indexOf('散')!==1) {
+    if (e.indexOf('散')!==-1) {
       this.setState({ appointmenttime: -1, starttime: '00:00', endtime: '24:00', timeFalg: false })
+    }else{
+      this.setState({ appointmenttime: '', starttime: '', endtime: '', timeFalg: true })
     }
 
     if (this.state.arrTitle.indexOf(e) === -1) {
@@ -1811,7 +1813,7 @@ class siteSettings extends React.Component {
             </div>
 
             <div className="modelList" style={{ height: '32px' }}>
-              <span>价格</span><span>（元/小时）</span>
+                <span>价格</span><span>{this.state.timeFalg===true?'（元/小时）':'（元/次）'}</span>
               <InputNumber className="startTime" value={this.state.costperhour} formatter={limitNumber} parser={limitNumber} defaultValue={1} min={1} style={{ height: 32, width: 269, paddingLeft: '11px' }} placeholder="请输入" onChange={this.money} />
             </div>
             <div className="modelList" style={{ height: 32 }}>
@@ -1826,11 +1828,11 @@ class siteSettings extends React.Component {
             </div>
             <div className="modelList" style={{ height: 32 }}>
               <span>最短提前预订时间</span>
-              <Select placeholder="请选择" disabled={this.state.appointmenttime === -1 ? true : false} className="selectModel"
+              <Select placeholder="请选择" disabled={this.state.appointmenttime === -1||this.state.appointmenttime === 0 ? true : false} className="selectModel"
                 defaultActiveFirstOption={false}
                 value={
                   this.state.appointmenttime === -1 ? '不限' : []
-                    && this.state.appointmenttime === 0 ? '0分钟' : []
+                    && this.state.appointmenttime === 0 ? '不限' : []
                       && this.state.appointmenttime === 30 ? '30分钟' : []
                         && this.state.appointmenttime === 60 ? '60分钟' : []
                           && this.state.appointmenttime === 120 ? '2小时' : []

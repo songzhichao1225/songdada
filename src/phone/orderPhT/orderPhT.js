@@ -4,11 +4,11 @@ import './orderPhT.css';
 import { Toast, Card, Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Pagination, Drawer, Spin } from 'antd';
-import { getReservationActivitieslist, VenueSendMessage, getVenueSport, getVenueNumberTitleList, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave, getVenueSporttypelist } from '../../api';
+import { getReservationActivitieslist, VenueSendMessage, getVenueSport, getVenueNumberTitleList, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave, getVenueSporttypelist,DeductTheTimesOfClosing } from '../../api';
 import { LoadingOutlined, } from '@ant-design/icons';
 import moment from 'moment';
 const prompt = Modal.prompt;
-
+const alert = Modal.alert;
 
 
 
@@ -98,7 +98,9 @@ class orderPhT extends React.Component {
 
     modalTwo: false,
     timeOutEvent: 0,
-    paied:2
+    paied:2,
+    headTop:'0',
+    onSearchInput:'',
   }
 
 
@@ -174,7 +176,7 @@ class orderPhT extends React.Component {
           endT = end[2] + '-' + end[0] + '-' + end[1]
         }
         this.setState({ start: startT, end: endT })
-        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: startT, enddate: endT,paied:2 })
+        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: startT, enddate: endT,paied:2,reserve: this.state.headTop })
 
       } else if (sessionStorage.getItem('modl') === '2') {
         let myDate = new Date()
@@ -190,9 +192,9 @@ class orderPhT extends React.Component {
           endT = end[2] + '-' + end[0] + '-' + end[1]
         }
         this.setState({ start: startT, end: endT })
-        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: startT, enddate: endT,paied:2 })
+        this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: startT, enddate: endT,paied:2,reserve: this.state.headTop })
       }else if(this.props.history.location.query!==undefined){
-        this.getReservationActivitieslist({ page: 1, publicuid:this.props.history.location.query.uuid,paied:2 })
+        this.getReservationActivitieslist({ page: 1, publicuid:this.props.history.location.query.uuid,paied:2,reserve: this.state.headTop })
       }else{
         this.setState({ activeSon: [], informList:[], total:[], flag: false, spin: false })
       }
@@ -213,7 +215,7 @@ class orderPhT extends React.Component {
 
   activityList = () => {
     this.setState({ activityList: true })
-    this.getReservationActivitieslist({ page: 1, sport: '', status: 10, publicuid: '',paied:2 })
+    this.getReservationActivitieslist({ page: 1, sport: '', status: 10, publicuid: '',paied:2,reserve: this.state.headTop })
   }
   bookingKanban = () => {
     this.setState({ activityList: false })
@@ -229,7 +231,7 @@ class orderPhT extends React.Component {
     this.setState({ page: page })
     this.getReservationActivitieslist({
       page: page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '',
-      startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end,paied:this.state.paied
+      startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end,paied:this.state.paied,reserve: this.state.headTop
     })
   }
 
@@ -258,7 +260,7 @@ class orderPhT extends React.Component {
     if (res.data.code === 2000) {
       Toast.success(res.data.msg, 1)
       this.setState({ visible: false })
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end,paied:this.state.paied })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end,paied:this.state.paied,reserve: this.state.headTop })
     }
   }
 
@@ -318,7 +320,7 @@ class orderPhT extends React.Component {
 
     this.getReservationActivitieslist({
       page: 1, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '' ? '' : this.state.start,
-      enddate: this.state.end === '' ? '' : this.state.end,paied:this.state.paied
+      enddate: this.state.end === '' ? '' : this.state.end,paied:this.state.paied,reserve: this.state.headTop
     })
     this.setState({
       Drawervisible: false, page: 1
@@ -455,7 +457,7 @@ class orderPhT extends React.Component {
   refResh = () => {
     this.setState({ refreshing: true })
     setTimeout(() => {
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end,paied:this.state.paied })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end,paied:this.state.paied,reserve: this.state.headTop })
     }, 1000)
   }
 
@@ -479,6 +481,39 @@ class orderPhT extends React.Component {
     }
   }
 
+  headTop = e => {
+    this.setState({ headTop: e.currentTarget.dataset.index, page: 1, sportIdVal: '', statusIdVal: '', start: '', end: '', paied: '2' })
+    setTimeout(() => {
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end, paied: this.state.paied, reserve: this.state.headTop })
+    }, 500)
+  }
+  onSearchInput=e=>{
+    this.setState({onSearchInput:e.target.value})
+  }
+
+  onSearch = e => {
+    this.getReservationActivitieslist({ page: 1, sport: '', status: '', paied: '2', orderId: this.state.onSearchInput, reserve: this.state.headTop })
+  }
+
+  async DeductTheTimesOfClosing(data) {
+    const res = await DeductTheTimesOfClosing(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      setTimeout(() => {
+        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end, paied: this.state.paied, reserve:'1' })
+      }, 500)
+    }else{
+      Toast.fail(res.data.msg)
+    }
+  }
+
+  confirm=e=>{
+    let ko=e.currentTarget.dataset.uuid
+    alert('提示', '您确定要扣除一次吗?', [
+      { text: '取消', onPress: () => console.log('cancel'), style: 'default' },
+      { text: '确定', onPress: () => this.DeductTheTimesOfClosing({breakupid:ko}) },
+    ]);
+  }
+
 
 
 
@@ -488,20 +523,26 @@ class orderPhT extends React.Component {
         <div className="headerNav">
           <div style={this.state.activityList === true ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>预约活动列表</div>
         </div>
+
         <div className='headSelect' style={this.state.spinFlag === false ? { display: 'none' } : { display: 'block', height: this.state.clenTop, transition: '0.3s', position: 'relative' }} ><LoadingOutlined className='loadingY' style={{ top: this.state.clenTop / 4 }} /></div>
         <div style={{ height: '0.5rem', background: '#f5f5f5' }}></div>
+        <div className="head" style={this.state.activityList===true?{}:{display:'none'}}>
+          <div className="headTop" onTouchStart={this.headTop} data-index='0' style={this.state.headTop === '0' ? { color: '#fff', background: '#F5A623' } : {}}>找运动伙伴</div>
+          <div className="headTop" onTouchStart={this.headTop} data-index='1' style={this.state.headTop === '1' ? { color: '#fff', background: '#F5A623' } : {}}>仅预订场馆</div>
+          <div><input type="number" style={{width:'7rem',height:'1.6rem',marginLeft:'0.5rem'}} onChange={this.onSearchInput}/><button onTouchStart={this.onSearch}>查询</button></div>
+        </div>
         <div className={this.state.activityList === true ? 'activityList' : 'hidden'}>
           <div className="screen" onClick={this.showDrawer}><span style={{ paddingRight: '0.2rem' }}>筛选</span><img style={{ marginTop: '-0.2rem' }} src={require('../../assets/shaixuan.png')} alt="筛选" /></div>
 
 
 
           <div style={this.state.activeSon.length === 0 ? { display: 'none' } : { height: '100%', overflow: 'scroll', paddingBottom: '4rem' }}>
-            {
+          {
               this.state.activeSon.map((item, i) => (
-                <div key={i} >
+                <div key={i}>
                   <Card>
                     <Card.Header
-                      title={'**' + item.orderId.slice(-4) + item.SportName}
+                      title={'**' + item.orderId.slice(-10) + item.SportName}
                       thumb={
                         item.PublicStatus === '匹配中' ? require('../../assets/pipei.png') : ''
                           || item.PublicStatus === '待评价' ? require('../../assets/pinjia.png') : ''
@@ -512,13 +553,49 @@ class orderPhT extends React.Component {
                                     || item.PublicStatus === '已完成' ? require('../../assets/wancheng.png') : ''
                                       || item.PublicStatus === '待出发' ? require('../../assets/dai.png') : ''
                                         || item.PublicStatus === '投诉中' ? require('../../assets/tousua.png') : ''}
-                      extra={<div style={{ fontSize: '12px', lineHeight: '13px', paddingRight: '0.5rem', textAlign: 'right' }}>{item.StartTime.slice(0, 10)}<br />{item.StartTime.slice(10, item.StartTime.length)} -{item.FinishedTime.slice(10, item.FinishedTime.length)}</div>}
+                      extra={<div className="cardHeader">{item.StartTime === 0 ? item.FinishedTime.slice(0, 10) : item.StartTime.slice(0, 10)}<br />{item.StartTime === 0 ? '' : item.StartTime.slice(10, item.StartTime.length) + ' -'}{item.FinishedTime.slice(10, item.FinishedTime.length)}</div>}
                     />
-                    <Card.Body style={{ fontSize: '12px' }}>
-                      <div><span style={{ display: 'block', width: '90px', float: 'left', marginLeft: '0.5rem' }}>金额:{item.SiteMoney}</span><span style={{ marginLeft: '5%' }}>支付状态:{item.SiteMoneyStatus}</span><span style={item.reserve === 1 ? { display: 'none' } : { display: 'block', width: '90px', float: 'left' }}>应到人数:{item.Shouldarrive}人</span></div>
-                      <div><span style={{ display: 'block', width: '90px', float: 'left', marginLeft: '0.5rem' }}>时长:{item.PlayTime}小时</span><span style={item.reserve === 1 ? { display: 'none' } : {}}>报名人数:{item.TrueTo}人</span><i onClick={this.showModal} data-venueid={item.venueid} data-uid={item.uuid} className={item.PublicStatus === '匹配中' ? 'sendingTwo' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'sendingTwo' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'sendingTwo' : 'circumstanceT'} >
-                        <svg t="1577274065679" className="icon" viewBox="0 0 1235 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15123" width="30" height="30"><path d="M899.65056 979.48672c-120.35072 0-218.2656-97.95584-218.2656-218.35776s97.91488-218.35776 218.2656-218.35776 218.2656 97.95584 218.2656 218.35776S1020.00128 979.48672 899.65056 979.48672M899.65056 498.25792c-144.88576 0-262.76352 117.92384-262.76352 262.87104S754.75968 1024 899.65056 1024s262.76352-117.92384 262.76352-262.87104S1045.53984 498.25792 899.65056 498.25792M586.60864 862.70976 130.58048 862.70976c-17.21344 0-31.21152-14.53568-31.21152-32.41472L99.36896 112.66048c0-17.86368 14.0032-32.39936 31.21152-32.39936l926.38208 0c17.21344 0 31.2064 14.53568 31.2064 32.39936l0 377.84576c0 12.29824 9.6 22.25664 21.43744 22.25664 11.83232 0 21.43744-9.9584 21.43744-22.25664L1131.04384 112.66048c0-42.40896-33.23392-76.91264-74.08128-76.91264L130.58048 35.74784c-40.84736 0-74.0864 34.50368-74.0864 76.91264l0 717.63456c0 42.41408 33.23904 76.928 74.0864 76.928l456.02816 0c11.83744 0 21.43744-9.96352 21.43744-22.25664S598.44608 862.70976 586.60864 862.70976M1042.52928 95.83616l-448.768 343.95648c-0.87552 0.24064-2.25792 0.24576-3.10272 0.03072l-445.5936-343.936c-8.63232-8.74496-22.72256-8.832-31.4624-0.18944-8.74496 8.6272-8.82688 22.72768-0.19456 31.47264l447.42144 345.7792c0.7168 0.73216 1.48992 1.41312 2.30912 2.03264 8.28416 6.33856 18.6624 9.51296 29.05088 9.51296 10.37824 0 20.76672-3.1744 29.05088-9.50784 0.79872-0.60928 1.55136-1.26976 2.25792-1.98144l450.5856-345.7792c8.66304-8.71936 8.6272-22.8096-0.08704-31.47776C1065.27232 87.08608 1051.17696 87.11168 1042.52928 95.83616M779.74016 783.3856l186.10176 0-44.78976 44.8c-8.68864 8.69376-8.68864 22.784 0 31.47776 8.68352 8.69376 22.76864 8.69376 31.4624 0.00512l82.7648-82.79552c0.16384-0.16384 0.27136-0.36352 0.43008-0.52736 0.83456-0.88576 1.63328-1.81248 2.31424-2.82112 0.26624-0.39936 0.44544-0.83968 0.68096-1.2544 0.49152-0.83968 0.9984-1.67424 1.37216-2.57536 0.20992-0.50176 0.31232-1.03424 0.48128-1.55136 0.28672-0.86528 0.60928-1.70496 0.7936-2.60608 0.29184-1.43872 0.44544-2.91328 0.44544-4.40832l0 0 0 0c0-0.05632-0.02048-0.11264-0.02048-0.17408-0.01024-1.42848-0.14848-2.8416-0.42496-4.224-0.20992-1.024-0.55808-1.99168-0.896-2.95936-0.13824-0.39424-0.21504-0.80896-0.37376-1.19296-0.44544-1.07008-1.024-2.05824-1.62304-3.03104-0.1536-0.26112-0.26112-0.54272-0.42496-0.78848-0.81408-1.21344-1.7408-2.3552-2.76992-3.38432l-82.75456-98.23232c-4.34688-4.34176-10.0352-6.51776-15.73376-6.51776-5.68832 0-11.392 2.176-15.73376 6.51776-8.68864 8.69376-8.68864 38.23616 0 46.92992l44.78976 44.8-186.10176 0c-12.288 0-22.2464 9.96352-22.2464 22.25664S767.45216 783.3856 779.74016 783.3856" p-id="15124" fill='#888'></path></svg>
-                      </i></div>
+                    <Card.Body className="cardBody">
+                      <div>
+                        <span className="footerOne" >金额:￥{item.SiteMoney}</span>
+                        <span style={{ marginLeft: '5%' }}>支付状态:{item.SiteMoneyStatus}</span>
+                        <span style={item.reserve === 1 ? { display: 'none' } : { display: 'block', width: '90px', float: 'left' }}>应到人数:{item.Shouldarrive}人</span>
+                        <span className="footerOne" style={this.state.headTop === '1' ? {} : { display: 'none' }}>时长:{item.PlayTime}小时</span>
+                      </div>
+                      <div style={item.breakup.length===0&&item.reserve === 1 ?{}:{display:'none'}}>场地编号:{item.venueid}</div>
+                      <div style={item.breakup.length === 0 ? { display: 'none' } : {}}>
+                        <div style={{ width: '25%', marginLeft: '0.5rem', float: 'left' }}>
+                          <div>场地编号</div>
+                          {
+                            item.breakup.map((itemTwo, i) => (
+                              <div key={i}>{itemTwo.venueid}</div>
+                            ))
+                          }
+                        </div>
+                        <div style={{ width: '25%', marginLeft: '0.5rem', float: 'left',textAlign:'center' }}>
+                          <div>单价</div>
+                          {
+                            item.breakup.map((itemTwo, i) => (
+                              <div key={i}>{itemTwo.price}/次</div>
+                            ))
+                          }
+                        </div>
+
+                        <div style={{ width: '25%', marginLeft: '0.5rem', float: 'left',textAlign:'center' }}>
+                          <div>剩余次数</div>
+                          {
+                            item.breakup.map((itemTwo, i) => (
+                              <div key={i}>{itemTwo.frequency}<button style={{marginLeft:"0.5rem"}} onTouchStart={this.confirm} data-uuid={itemTwo.uuid}>－</button></div>
+                            ))
+                          }
+                        </div>
+                      </div>
+                      <div>
+                        <span className="footerOne" style={this.state.headTop === '0' ? {} : { display: 'none' }}>时长:{item.PlayTime}小时</span>
+                        <span style={item.reserve === 1 ? { display: 'none' } : {}}>报名人数:{item.TrueTo}人</span>
+                        <i onClick={this.showModal} data-venueid={item.venueid} data-uid={item.uuid} className={item.PublicStatus === '匹配中' ? 'sendingTwo' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'sendingTwo' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'sendingTwo' : 'circumstanceT'} >
+                          <svg t="1577274065679" className="icon" viewBox="0 0 1235 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15123" width="30" height="30"><path d="M899.65056 979.48672c-120.35072 0-218.2656-97.95584-218.2656-218.35776s97.91488-218.35776 218.2656-218.35776 218.2656 97.95584 218.2656 218.35776S1020.00128 979.48672 899.65056 979.48672M899.65056 498.25792c-144.88576 0-262.76352 117.92384-262.76352 262.87104S754.75968 1024 899.65056 1024s262.76352-117.92384 262.76352-262.87104S1045.53984 498.25792 899.65056 498.25792M586.60864 862.70976 130.58048 862.70976c-17.21344 0-31.21152-14.53568-31.21152-32.41472L99.36896 112.66048c0-17.86368 14.0032-32.39936 31.21152-32.39936l926.38208 0c17.21344 0 31.2064 14.53568 31.2064 32.39936l0 377.84576c0 12.29824 9.6 22.25664 21.43744 22.25664 11.83232 0 21.43744-9.9584 21.43744-22.25664L1131.04384 112.66048c0-42.40896-33.23392-76.91264-74.08128-76.91264L130.58048 35.74784c-40.84736 0-74.0864 34.50368-74.0864 76.91264l0 717.63456c0 42.41408 33.23904 76.928 74.0864 76.928l456.02816 0c11.83744 0 21.43744-9.96352 21.43744-22.25664S598.44608 862.70976 586.60864 862.70976M1042.52928 95.83616l-448.768 343.95648c-0.87552 0.24064-2.25792 0.24576-3.10272 0.03072l-445.5936-343.936c-8.63232-8.74496-22.72256-8.832-31.4624-0.18944-8.74496 8.6272-8.82688 22.72768-0.19456 31.47264l447.42144 345.7792c0.7168 0.73216 1.48992 1.41312 2.30912 2.03264 8.28416 6.33856 18.6624 9.51296 29.05088 9.51296 10.37824 0 20.76672-3.1744 29.05088-9.50784 0.79872-0.60928 1.55136-1.26976 2.25792-1.98144l450.5856-345.7792c8.66304-8.71936 8.6272-22.8096-0.08704-31.47776C1065.27232 87.08608 1051.17696 87.11168 1042.52928 95.83616M779.74016 783.3856l186.10176 0-44.78976 44.8c-8.68864 8.69376-8.68864 22.784 0 31.47776 8.68352 8.69376 22.76864 8.69376 31.4624 0.00512l82.7648-82.79552c0.16384-0.16384 0.27136-0.36352 0.43008-0.52736 0.83456-0.88576 1.63328-1.81248 2.31424-2.82112 0.26624-0.39936 0.44544-0.83968 0.68096-1.2544 0.49152-0.83968 0.9984-1.67424 1.37216-2.57536 0.20992-0.50176 0.31232-1.03424 0.48128-1.55136 0.28672-0.86528 0.60928-1.70496 0.7936-2.60608 0.29184-1.43872 0.44544-2.91328 0.44544-4.40832l0 0 0 0c0-0.05632-0.02048-0.11264-0.02048-0.17408-0.01024-1.42848-0.14848-2.8416-0.42496-4.224-0.20992-1.024-0.55808-1.99168-0.896-2.95936-0.13824-0.39424-0.21504-0.80896-0.37376-1.19296-0.44544-1.07008-1.024-2.05824-1.62304-3.03104-0.1536-0.26112-0.26112-0.54272-0.42496-0.78848-0.81408-1.21344-1.7408-2.3552-2.76992-3.38432l-82.75456-98.23232c-4.34688-4.34176-10.0352-6.51776-15.73376-6.51776-5.68832 0-11.392 2.176-15.73376 6.51776-8.68864 8.69376-8.68864 38.23616 0 46.92992l44.78976 44.8-186.10176 0c-12.288 0-22.2464 9.96352-22.2464 22.25664S767.45216 783.3856 779.74016 783.3856" p-id="15124" fill='#888'></path></svg>
+                        </i></div>
                     </Card.Body>
                     <Card.Footer />
                   </Card>
@@ -526,6 +603,8 @@ class orderPhT extends React.Component {
 
               ))
             }
+
+
 
             <Pagination className={this.state.activeSon.length > 0 ? 'fenye' : 'hidden'} hideOnSinglePage={true} showSizeChanger={false} size="small" defaultCurrent={1} onChange={this.current} current={this.state.page} total={this.state.total} />
 

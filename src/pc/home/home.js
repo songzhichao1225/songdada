@@ -418,7 +418,8 @@ class home extends React.Component {
           <div className="xian"></div>
           <Content style={{
             background: '#fff',
-            height: '100%'
+            height: '100%',
+            overflowY:'auto'
           }}>
             <div className={this.state.path !== '/home' ? 'homePageT' : 'homePage'} >
               <span className="title" style={this.state.nookod !== '' ? { opacity: '1' } : { opacity: '0' }}>{this.state.nookod}! 欢迎使用找对手场馆端</span>

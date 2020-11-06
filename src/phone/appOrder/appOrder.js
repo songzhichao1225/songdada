@@ -41,6 +41,8 @@ class appOrder extends React.Component {
     otherNum: '',
     flag: '1',
     selectedTwo: [],
+    selectId:[],
+    timeArr: ['00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30', '24:00']
   };
 
 
@@ -56,10 +58,52 @@ class appOrder extends React.Component {
           }
         }
       }
-      let arrVen = []
-      for (let i in res.data.other) {
-        arrVen.push(parseInt(res.data.other[i].venueid))
+
+      if (this.state.sporttypeFive === '10') {
+        let arrVen = []
+        for (let i in res.data.other.bq) {
+          arrVen.push(parseInt(res.data.other.bq[i].venueid))
+        }
+        
+        
+          let newArr = [];
+          for (let i = 0; i < arrVen.length; i++) {
+            if (newArr.indexOf(arrVen[i]) === -1) {
+              newArr.push(arrVen[i])
+            }
+          }
+          let newarr2 = new Array(newArr.length);
+          for (let t = 0; t < newarr2.length; t++) {
+            newarr2[t] = 0;
+          }
+          for (let p = 0; p < newArr.length; p++) {
+            for (let j = 0; j < arrVen.length; j++) {
+              if (newArr[p] === arrVen[j]) {
+                newarr2[p]++;
+              }
+            }
+
+          }
+          let lo = []
+          for (let m = 0; m < newArr.length; m++) {
+            if (newarr2[m] === 1) {
+              for(let i in res.data.data){
+                for(let j in res.data.data[i].c){
+                   if(newArr[m]===parseInt(res.data.data[i].c[j].venueid)){
+                    if(res.data.data[i].c[j].type===1){
+                      res.data.data[i].c[j].type=3
+                    }
+                   }
+                }
+              }
+            }
+          }
+
+      
+      
       }
+
+
 
       let arrTime = []
       for (let i in res.data.data) {
@@ -116,11 +160,15 @@ class appOrder extends React.Component {
           data-time={resData.data[i].a}
           data-num={resData.data[i].c[j].venueid}
           data-uuid={resData.data[i].c[j].uuid}
-          onClick={this.state.flag === '1' ? this.lookPlateTwo : this.state.sporttypeFive === '10' ? this.lookPlateFive : this.lookPlate}
+          onClick={this.state.flag === '1' ? this.state.sporttypeFive === '10' ? this.lookPlateFive : this.lookPlateTwo : this.state.sporttypeFive === '10' ? this.lookPlateFive : this.lookPlate}
           data-money={resData.data[i].c[j].money}
           data-summoney={resData.data[i].c[j].summoney}
           data-lo={resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney}
-          style={resData.data[i].c[j].type === 1 && this.state.lotime.indexOf(resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney) === -1 ? { background: '#6FB2FF', height: 40, lineHeight: 3, color: '#fff' } : {} && resData.data[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 40, lineHeight: 3 } : {} && resData.data[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 40, lineHeight: 3 } : {} && resData.data[i].c[j].type === 4 ? { background: 'red', height: 40, lineHeight: 3 } : { background: 'red', height: 40, lineHeight: 3, color: '#fff' }}
+          style={resData.data[i].c[j].type === 1 
+            && this.state.lotime.indexOf(resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney) === -1 ? { background: '#6FB2FF', height: 40, lineHeight: 3, color: '#fff' } : {} 
+            && resData.data[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 40, lineHeight: 3 } : {} 
+            && resData.data[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 40, lineHeight: 3 } : {} 
+            && resData.data[i].c[j].type === 4 ? { background: 'red', height: 40, lineHeight: 3 } : { background: 'red', height: 40, lineHeight: 3, color: '#fff' }}
         > {resData.data[i].c[j].money}</div>
         if (resData.data[i].c[j].type === 3) {
           this.setState({ selectedTwo: [...this.state.selectedTwo, resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney] })
@@ -129,7 +177,7 @@ class appOrder extends React.Component {
 
         obj[key] = value
         let koTwo = parseInt(resData.data[i].a.slice(1, 2)) + 1 + ':00'
-        obj.lppd =this.state.sporttypeFive==='22'?'':<div style={{ color: '#F5A623' }}>{resData.data[i].a}<br />{resData.data[i].a.slice(3, resData.data[i].a.length) === '00' ? resData.data[i].a.slice(0, 2) + ':30' : koTwo === '10:00' && resData.data[i].a !== '19:30' ? '10:00' : resData.data[i].a === '19:30' ? '20:00' : resData.data[i].a.slice(0, 1) + koTwo}</div>
+        obj.lppd = this.state.sporttypeFive === '22' ? '' : <div style={{ color: '#F5A623' }}>{resData.data[i].a}<br />{resData.data[i].a.slice(3, resData.data[i].a.length) === '00' ? resData.data[i].a.slice(0, 2) + ':30' : koTwo === '10:00' && resData.data[i].a !== '19:30' ? '10:00' : resData.data[i].a === '19:30' ? '20:00' : resData.data[i].a.slice(0, 1) + koTwo}</div>
       }
       jood.push(obj)
     }
@@ -152,7 +200,7 @@ class appOrder extends React.Component {
 
   componentDidMount() {
     //测试数据
-    // let query = '?siteuid=f798e37b-644a-9846-fed9-72547a8ea90b&sportid=6&token=KtfJFfVmlqZtS1VyOZx4PpxtY2dVfqOOs9Tk4Z5rJp0NgpyReREOEmjDHVIfuZvX&sporttype=22&flag=1'
+    // let query = '?siteuid=f798e37b-644a-9846-fed9-72547a8ea90b&sportid=6&token=KtfJFfVmlqZtS1VyOZx4PpxtY2dVfqOOs9Tk4Z5rJp0NgpyReREOEmjDHVIfuZvX&sporttype=11&flag=1'
     let query = this.props.location.search
 
     let arr = query.split('&')
@@ -403,7 +451,6 @@ class appOrder extends React.Component {
             window.webkit.messageHandlers.ScanAction.postMessage(this.state.obj)
           } catch (error) {
           }
-
         } else if (sUserAgent.indexOf('miniProgram') > -1) {
           console.log('执行了')
           //eslint-disable-next-line
@@ -426,12 +473,12 @@ class appOrder extends React.Component {
       for (let i in this.state.lotime.sort()) {
         original += Number(this.state.lotime[i].split('-')[3])
       }
-      if(this.state.sporttypeFive==='22'){
+      if (this.state.sporttypeFive === '22') {
         let kopAd = this.state.lotime.sort()
-        let kop=[]
-        for(let i in kopAd){
-          
-          kop.push(kopAd[i].slice(6,kopAd[i].length))
+        let kop = []
+        for (let i in kopAd) {
+
+          kop.push(kopAd[i].slice(6, kopAd[i].length))
         }
         let arr = []
         for (let i in kopAd) {
@@ -439,23 +486,22 @@ class appOrder extends React.Component {
           let obj = {}
           obj.time = kop[i].split('-')[0]
           obj.num = kop[i].split('-')[1]
+          obj.numTwo = kop[i].split('-')[2]
           arr.push(obj)
         }
-  
         let result = {};
         for (let i in arr) {
           if (result[arr[i].time]) {
-            result[arr[i].time] += '-' + arr[i].num;
+            result[arr[i].time] += '-' + arr[i].num + '-' + arr[i].numTwo;
           } else {
-            result[arr[i].time] = arr[i].num;
+            result[arr[i].time] = arr[i].num + '-' + arr[i].numTwo;
           }
         }
-        let numNa=Object.keys(result)
-        let ccj=[]
-        for(let i in numNa){
-          ccj.push(numNa[i]+'-'+result[numNa[i]].split('-').length+'-'+result[numNa[i]].split('-')[0])
+        let numNa = Object.keys(result)
+        let ccj = []
+        for (let i in numNa) {
+          ccj.push(numNa[i] + '-' + result[numNa[i]].split('-').length / 2 + '-' + result[numNa[i]].split('-')[0] + '-' + result[numNa[i]].split('-')[result[numNa[i]].split('-').length - 1])
         }
-        console.log(this.state.lotime)
 
         let obj = {
           placeNun: numNa.join('-'),
@@ -464,10 +510,10 @@ class appOrder extends React.Component {
           placeMoney: this.state.moneyCall,
           placeMoneyTwo: original,
           placeTimeLen: this.state.lotime.length * 0.5 + '小时',
-          breakup:ccj.join(',')
+          breakup: ccj.join(',')
         }
         this.setState({ obj: obj })
-  
+
         let sUserAgent = navigator.userAgent;
         let mobileAgents = ['Android', 'iPhone', 'miniProgram'];
         for (let index = 0; index < mobileAgents.length; index++) {
@@ -479,7 +525,7 @@ class appOrder extends React.Component {
               window.webkit.messageHandlers.ScanAction.postMessage(obj)
             } catch (error) {
             }
-  
+
           } else if (sUserAgent.indexOf('miniProgram') > -1) {
             console.log('执行了')
             //eslint-disable-next-line
@@ -489,9 +535,10 @@ class appOrder extends React.Component {
             console.log('执行结束了')
           }
         }
-       
 
-      }else{
+
+      } else if (this.state.sporttypeFive === '10') {
+
         let kopAd = this.state.lotime.sort()
         let arr = []
         for (let i in kopAd) {
@@ -501,9 +548,9 @@ class appOrder extends React.Component {
           obj.num = kopAd[i].split('-')[1]
           arr.push(obj)
         }
-  
+
         let result = {};
-  
+
         for (let i in arr) {
           if (result[arr[i].time]) {
             result[arr[i].time] += '-' + arr[i].num;
@@ -511,15 +558,90 @@ class appOrder extends React.Component {
             result[arr[i].time] = arr[i].num;
           }
         }
-  
+
         let keyvalue = [];
         for (let key in result) {
           keyvalue.push(result[key])
         }
+
+        if (this.state.lotime.length > 0) {
+          let youhood = time.slice(0, time.length - 1).split(',').sort()
+          let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[youhood.length - 1])
+          let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[0])
+          let longTime = (Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1
+          let timeOne = time.slice(0, time.length - 1).split(',')[0]
+          let arrTime = this.state.timeArr.slice(this.state.timeArr.indexOf(timeOne), this.state.timeArr.indexOf(timeOne) + longTime)
+
+          for (let i in arrTime) {
+            if (youhood.indexOf(arrTime[i]) === -1) {
+              keyvalue.splice(Number(i), 0, ' ')
+            }
+          }
+          let obj = {
+            placeNun: keyvalue.join(','),
+            placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
+            placeDate: Number(this.state.date.split('/')[0]) > 500 ? this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2] : this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1],
+            placeMoney: this.state.moneyCall,
+            placeMoneyTwo: original,
+            placeTimeLen: longTime * 0.5 + '小时',
+            breakup: ''
+          }
+          this.setState({ obj: obj })
+          if (this.state.date.split('/')[0].length === 4) {
+            let mood = this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2]
+            this.getAPPVenueSelectSite({ startTime: mood + ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5, siteUid: this.state.siteid })
+          } else {
+            let mood = this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1]
+            this.getAPPVenueSelectSite({ startTime: mood + ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5, siteUid: this.state.siteid })
+          }
+
+        } else {
+          Toast.fail('请选择场地', 2, null, false);
+        }
+
+      } else {
+        let kopAd = this.state.lotime.sort()
+        let arr = []
+        for (let i in kopAd) {
+          time += kopAd[i].split('-')[0] + ','
+          let obj = {}
+          obj.time = kopAd[i].split('-')[0]
+          obj.num = kopAd[i].split('-')[1]
+          arr.push(obj)
+        }
+
+        let result = {};
+
+        for (let i in arr) {
+          if (result[arr[i].time]) {
+            result[arr[i].time] += '-' + arr[i].num;
+          } else {
+            result[arr[i].time] = arr[i].num;
+          }
+        }
+
+        let keyvalue = []
+        for (let key in result) {
+          keyvalue.push(result[key])
+        }
+
+
+
+
         let youhood = time.slice(0, time.length - 1).split(',')
         let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[youhood.length - 1])
         let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[0])
         let longTime = (Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1
+
+        let timeOne = time.slice(0, time.length - 1).split(',')[0]
+        let arrTime = this.state.timeArr.slice(this.state.timeArr.indexOf(timeOne), this.state.timeArr.indexOf(timeOne) + longTime)
+
+        for (let i in arrTime) {
+          if (youhood.indexOf(arrTime[i]) === -1) {
+            keyvalue.splice(Number(i), 0, ' ')
+          }
+        }
+
         let obj = {
           placeNun: keyvalue.join(','),
           placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
@@ -527,10 +649,10 @@ class appOrder extends React.Component {
           placeMoney: this.state.moneyCall,
           placeMoneyTwo: original,
           placeTimeLen: longTime * 0.5 + '小时',
-          breakup:''
+          breakup: ''
         }
         this.setState({ obj: obj })
-  
+
         var sUserAgent = navigator.userAgent;
         var mobileAgents = ['Android', 'iPhone', 'miniProgram'];
         for (let index = 0; index < mobileAgents.length; index++) {
@@ -542,7 +664,7 @@ class appOrder extends React.Component {
               window.webkit.messageHandlers.ScanAction.postMessage(obj)
             } catch (error) {
             }
-  
+
           } else if (sUserAgent.indexOf('miniProgram') > -1) {
             console.log('执行了')
             //eslint-disable-next-line
@@ -553,7 +675,7 @@ class appOrder extends React.Component {
           }
         }
       }
-      
+
     } else if (this.state.sporttypeFive === '10') {
       for (let i in this.state.lotime.sort()) {
         num += this.state.lotime[i].split('-')[1] + ','
@@ -601,7 +723,7 @@ class appOrder extends React.Component {
             placeMoney: this.state.moneyCall,
             placeMoneyTwo: original,
             placeTimeLen: this.state.lotime.length / 2 * 0.5 + '小时',
-            breakup:''
+            breakup: ''
           }
 
           this.setState({ obj: obj })
@@ -640,8 +762,10 @@ class appOrder extends React.Component {
             placeMoney: this.state.moneyCall,
             placeMoneyTwo: original,
             placeTimeLen: (time.split(',').length - 1) * 0.5 + '小时',
-            breakup:'',
+            breakup: '',
           }
+
+
 
           this.setState({ obj: obj })
           if (this.state.date.split('/')[0].length === 4) {
@@ -682,28 +806,28 @@ class appOrder extends React.Component {
   render() {
     return (
       <div className="homepage">
-        <ActivityIndicator toast  animating={this.state.animating} />
+        <ActivityIndicator toast animating={this.state.animating} />
 
         <div className="kog" style={this.state.animating === true ? { display: 'none' } : { display: 'block' }}>
           <div className="appOrder" onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
             <div className='bookingKanban'>
-              <div className="titleDiv" style={this.state.sporttypeFive==='22'?{display:'none'}:{}}>
+              <div className="titleDiv" style={this.state.sporttypeFive === '22' ? { display: 'none' } : {}}>
                 <div className="dayBefore" style={this.state.date === this.state.start ? { display: 'none' } : { display: 'block' }} onTouchStart={this.dayBefore}>前一天</div>
                 <div className="nextDay" onTouchStart={this.nextDay}>后一天</div>
-                <div className="titleDivTwo"  onTouchStart={this.date}>{this.state.date}</div>
+                <div className="titleDivTwo" onTouchStart={this.date}>{this.state.date}</div>
               </div>
-              <div className="titleDiv"><span className="fontSize">由于散场人数不可控，为了有更好的体验，出发之前可与场馆方联系。</span></div>
+              <div className="titleDiv" style={this.state.sporttypeFive === '22' ? {} : { display: 'none' }}><span className="fontSize">由于散场人数不可控，为了有更好的体验，出发之前可与场馆方联系。</span></div>
               <div className="modTitle">
 
                 <span className="blue"></span><span>可选</span>
 
-                <span className="white" style={this.state.sporttypeFive==='22'?{display:'none'}:{}}></span><span style={this.state.sporttypeFive==='22'?{display:'none'}:{}}>不可选</span>
+                <span className="white" style={this.state.sporttypeFive === '22' ? { display: 'none' } : {}}></span><span style={this.state.sporttypeFive === '22' ? { display: 'none' } : {}}>不可选</span>
 
-                <span className="yellow" style={this.state.sporttypeFive==='22'?{display:'none'}:{}}></span><span style={this.state.sporttypeFive==='22'?{display:'none'}:{}}>已占用</span>
+                <span className="yellow" style={this.state.sporttypeFive === '22' ? { display: 'none' } : {}}></span><span style={this.state.sporttypeFive === '22' ? { display: 'none' } : {}}>已占用</span>
 
                 <span className="red"></span><span>已选中</span>
               </div>
-              <Table loading={false} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '93%' }} />,
+              <Table loading={false} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '92%' }} />,
               <Result
                 style={this.state.otherType.length === 0 ? { display: 'block' } : { display: 'none' }}
                 img={<Icon type="cross-circle-o" style={{ fill: 'rgba(245,166,35,1)', width: '4rem', height: '4rem' }} />}

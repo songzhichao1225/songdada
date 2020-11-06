@@ -14,8 +14,9 @@ export function _login(data){    //登录
     return axios.post('/api/getVenueLogin',data)
 }
 export function _register(data){   //注册
-    return axios.post('/api/venueregister',data)
+    return axios.post('/api/venueregister',data) 
 }
+
 export function VenueChangePassword(data,headers){   //重置密码
     return axios.post('/api/VenueChangePassword',data,{headers: {'token': headers}})
 }
@@ -480,7 +481,9 @@ export function TemporaryQualificationInformation_another(data,headers){    //�
     return axios.post('/api/TemporaryQualificationInformation_another',data,{headers: {'token': headers}})
 }
 
-
+export function DeductTheTimesOfClosing(data,headers){    //场馆端~扣除篮球散场次数 
+    return axios.post('/api/DeductTheTimesOfClosing',data,{headers: {'token': headers}})
+}
   
 
 

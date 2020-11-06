@@ -42,6 +42,7 @@ class myWallet extends React.Component {
     moneyYuan: '',
     allNow: '',
     sumMoney: '0',
+    DiscountMoney:'0',
     whereMoney: '0',
     start: '',
     end: '',
@@ -116,7 +117,7 @@ class myWallet extends React.Component {
       this.props.history.push('/')
       message.error('登录超时请重新登录!')
     } else {
-      this.setState({ moneyList: res.data.data.data, sumMoney: res.data.data.sumMoney, whereMoney: res.data.data.whereMoney, other: parseInt(res.data.data.count), loading: false, hidden: true })
+      this.setState({ moneyList: res.data.data.data, sumMoney: res.data.data.sumMoney,DiscountMoney:res.data.data.DiscountMoney, whereMoney: res.data.data.whereMoney, other: parseInt(res.data.data.count), loading: false, hidden: true })
     }
   }
 
@@ -282,7 +283,7 @@ class myWallet extends React.Component {
     }
   }
   all = () => {
-    this.setState({ moneyYuan: this.state.walletList.money })
+    this.setState({ moneyYuan: this.state.walletList.DiscountMoney })
   }
   allNow = e => {
     this.setState({ moneyYuan: e.target.value })
@@ -591,7 +592,7 @@ class myWallet extends React.Component {
               />
               <span className="query" style={this.state.kod === 1 ? { display: 'block' } : { display: 'none' }} onClick={this.search}>查询</span>
               <div className="rightMoney">
-                <span className="sum">钱包余额(元): ￥{this.state.sumMoney} </span>
+    <span className="sum">钱包余额(元): ￥{this.state.sumMoney}</span>
                 <span className="withdrawal" onClick={this.withdrawal}>申请提现</span>
                 <span className="withdrawal" onClick={this.record}>提现记录</span>
               </div>
@@ -657,8 +658,11 @@ class myWallet extends React.Component {
             </div>
             <div className="xiange"></div>
             <div className="balance">
-              <span>钱包余额</span> <span>{this.state.walletList.money}</span><span>元</span>
+
+              <span>钱包余额</span> <span>{this.state.walletList.money}元</span><span></span><span style={{fontSize:'16px',paddingLeft:'20px'}}>扣除8%平台服务费后余额:<span style={{color:'#F64A0C'}}>{this.state.walletList.DiscountMoney}元</span>(可提现金额)</span>
+
             </div>
+            
             <div className="home">
               <span style={{ marginLeft: -15 }}>提现银行卡:</span><span className="textNext">{'******' + this.state.walletList.Bankaccount} {this.state.walletList.OpeningBank}</span>
               <div className="listSon">

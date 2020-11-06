@@ -24,18 +24,12 @@
     background: #F5A623;
     border-color: transparent;
 }
-.orderList .navTab Button:last-child{
-    margin-left: 27px;
-}
+
 .colorGo{
     color: #fff;
     background: #F5A623;
 }
-.ant-col{
-    height: 50px;
-    line-height: 50px;
-  text-align: center;
-}
+
 .orderList .rowConten{
     height: 50px;
     margin-top: 10px;
