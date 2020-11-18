@@ -27,9 +27,7 @@ class news extends React.Component {
 
   componentDidMount() {
     this.getVenueNewsList({ page: 1 })
-   console.log(666)
   }
-
 
 
 
@@ -232,15 +230,18 @@ class news extends React.Component {
       this.setState({kod:1 })
     }
   }
+  myWallt=()=>{
+    this.props.history.push('/home/myWallt')
+  }
 
   locad=e=>{
-    this.props.history.push({pathname:'/home/appointmentList',query:{uuid:e.currentTarget.dataset.uuid}})
+    this.props.history.push({pathname:'/home/appointmentList',query:{uuid:e.currentTarget.dataset.uuid,typeid:e.currentTarget.dataset.typeid}})
   }
   stamic=()=>{
     if(sessionStorage.getItem('ismethod')==='1'){
       this.props.history.push('/home/stadiums')
     }else{
-     message.warning('请使用法人手机号登录后前往修改')
+     message.warning('请使用负责人手机号登录后前往修改')
     }
   }
 
@@ -296,11 +297,12 @@ class news extends React.Component {
             <div>{this.state.newsDetail.intime_chk}</div>
             <div>{this.state.newsDetail.comment}</div>
             <div>{this.state.newsDetail.intime}</div>
-            <div onClick={this.locad} style={this.state.newsDetail.publicuuid===''?{display:'none'}:{color:'#F5A623',cursor:'pointer'}} data-uuid={this.state.newsDetail.publicuuid}>前往活动列表</div>
-            <div style={this.state.newsDetail.type===6?{color:'#9b9b9b'}:{display:'none'}} >请使用法人手机号登录修改</div>
+            <div onClick={this.locad} style={this.state.newsDetail.publicuuid===''?{display:'none'}:{color:'#F5A623',cursor:'pointer'}} data-uuid={this.state.newsDetail.publicuuid} data-typeid={this.state.newsDetail.public_type}>前往活动列表</div>
+            <div style={this.state.newsDetail.type===7?{color:'#9b9b9b'}:{display:'none'}} onClick={this.myWallt}>前往查看</div>
+            <div style={this.state.newsDetail.type===6?{color:'#9b9b9b'}:{display:'none'}} >请使用负责人手机号登录修改</div>
             <div onClick={this.stamic} style={this.state.newsDetail.type===6?{color:'#F5A623',cursor:'pointer'}:{display:'none'}} data-uuid={this.state.newsDetail.publicuuid}>前往修改</div>
           </Drawer>
-        </div> 
+        </div>
         <Modal
           title="给找对手平台发消息"
           visible={this.state.visibleTwo}

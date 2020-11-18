@@ -229,14 +229,14 @@ class stadiums extends React.Component {
         this.getVenueOpenBankCity({ province_id: res.data.data.ProvinceBank })
       }
       if(res.data.data.ascription===1){
-      this.setState({numRadioTwo:1})
+      this.setState({numRadio:1,numRadioTwo:1})
       }else{
-        this.setState({numRadioTwo: res.data.data.account})
+        this.setState({numRadio: res.data.data.Settlement,numRadioTwo: res.data.data.account,})
       }
       this.setState({
         CorporateName: res.data.data.CorporateName, bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
         faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
-        numRadio: res.data.data.Settlement,inCorName:res.data.data.Bankcorporate,corporateOpen:res.data.data.OpeningBank,corporateId:res.data.data.Bankcard,corporateCardId:res.data.data.Bankaccount, inChargeNa:res.data.data.Bankname, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
+        inCorName:res.data.data.Bankcorporate,corporateOpen:res.data.data.OpeningBank,corporateId:res.data.data.Bankcard,corporateCardId:res.data.data.Bankaccount, inChargeNa:res.data.data.Bankname, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
         legalBaseURL: res.data.data.legalBaseURL,
         filesThree: res.data.data.lisenceURL === '' ? [] : [{ url: imgUrlTwo + res.data.data.lisenceURL }],
         filesThreeSon: res.data.data.lisenceURL === '' ? '' : res.data.data.lisenceURL,
@@ -767,7 +767,7 @@ class stadiums extends React.Component {
     } else {
       this.setState({ valueTwo: 2 })
     }
-    this.setState({ value: e.target.value })
+    this.setState({ value: e.target.value,numRadioTwo:e.target.value,numRadio:e.target.value })
   }
 
 
@@ -969,6 +969,15 @@ class stadiums extends React.Component {
     this.setState({ valueThree: e.target.value })
   }
 
+  handleNameTwo=e=>{
+    this.setState({faName:e.target.value})
+  }
+  handlePhone=e=>{
+    this.setState({faPhone:e.target.value})
+  }
+  facard=e=>{
+    this.setState({faIdcard:e.target.value})
+  }
 
   render() {
     const { files, filesTwo, filesThree, filesFive, BelongingFour, filesFour, BelongingOne, BelongingTwo, BelongingThree, BelongingFive, BelongingSix } = this.state;
@@ -1170,7 +1179,7 @@ class stadiums extends React.Component {
 
             <div className="listing">
               <span>姓名:</span>
-              <Input className="listingInput" disabled={this.state.flagDis} onChange={this.handleName} value={this.state.faName} placeholder="请输入法人姓名" />
+              <Input className="listingInput" disabled={this.state.flagDis} onChange={this.handleNameTwo} value={this.state.faName} placeholder="请输入负责人姓名" />
             </div>
 
 

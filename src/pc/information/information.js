@@ -543,7 +543,7 @@ class information extends React.Component {
   }
 
   onSearch = e => {
-    this.getReservationActivitieslist({ page: 1, sport: '', status: 10, paied: '2', orderId: e, reserve: this.state.headTop })
+    this.getReservationActivitieslist({ page: 1, sport: '', status: 10, paied: '2', startdate: this.state.start, enddate: this.state.end, orderId: e, reserve: this.state.headTop })
   }
   confirmUUid = e => {
     this.setState({ confirmUUid: e.currentTarget.dataset.uuid })
@@ -587,16 +587,27 @@ class information extends React.Component {
                 <Col xs={{ span: 2 }}><div style={{ lineHeight: '25px', fontSize: '10px' }}>{item.FinishedTime.slice(0, 10)}</div><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(11, 16)}</div></Col>
                 <Col xs={{ span: 2 }}><span>{item.PlayTime}小时</span></Col>
 
-                <Col xs={{ span: 2 }} >{this.state.headTop === '1' ? item.breakup.length === 0 ? <Popover content={(<span>{item.venueid}</span>)} title='详情' trigger="click"><div>{item.venueid}</div> </Popover> : <div>
+                <Col xs={{ span: 2 }} >{this.state.headTop === '1' ? item.breakup.length === 0 ? <Popover content={(<span>{item.venueid}</span>)} title='详情' trigger="click">
+                <div>{
+                  item.venueid_details.map((itemKo,i)=>(
+                  <div key={i}>{itemKo.venueid}</div>
+                  ))
+                  }</div> </Popover> : <span><div>
                   {
                     item.breakup.map((itemTwo, i) => (
                       <div key={i} style={{ textAlign: 'center' }}>{itemTwo.venueid}</div>
                     ))
                   }
-                </div> : <span>{item.Shouldarrive}</span>}</Col>
+                </div></span> : <span>{item.Shouldarrive}</span>}</Col>
 
                 <Col xs={{ span: 2 }}>
-                  <span>{this.state.headTop === '1' ? <div>
+                  <span>{this.state.headTop === '1' ?item.breakup.length === 0 ?<div>
+                    {
+                      item.venueid_details.map((itemHo,i)=>(
+                      <div key={i}>{itemHo.time}</div>
+                      ))
+                    }
+                  </div>:<div>
                     {
                       item.breakup.map((itemTwo, i) => (
                         <div key={i} style={{ textAlign: 'center' }}>￥{itemTwo.price}/次</div>
@@ -615,13 +626,11 @@ class information extends React.Component {
                           okText="确定"
                           cancelText="取消"
                         >
-                          <div className="sijn" onClick={this.confirmUUid} data-uuid={itemThree.uuid}>－</div>
-                        </Popconfirm>
-
-
-                      </div>
+                          <div className="sijn" onClick={this.confirmUUid} data-uuid={itemThree.uuid}>—</div> 
+                        </Popconfirm>  
+                      </div> 
                     ))
-                  }</span></Col>
+                  }</span><span style={item.breakup.length===0?{}:{display:'none'}}>非散场</span></Col>
                 <Col xs={{ span: 3 }} onClick={this.Complaints} data-id={item.uuid} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}><span>{item.PublicStatus}<span style={item.iscomplain === 1 ? { color: '#F6410C', fontSize: '12px' } : { display: 'none' }}>(有投诉)</span></span></Col>
                 <Col xs={{ span: 2 }}><span>￥{item.SiteMoney}</span></Col>
                 <Col xs={{ span: 2 }}><span>{item.SiteMoneyStatus}</span></Col>

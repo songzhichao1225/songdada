@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { Toast, Card, PullToRefresh } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import {  Pagination, Drawer, Spin, Checkbox } from 'antd';
-import { getVenueNewsList, getVenueNewsReceivedList, getVenueNewsFirst,gerVenueName, delVenueNews } from '../../api';
+import { getVenueNewsList, getVenueNewsReceivedList, getVenueNewsFirst,gerVenueName, delVenueNews,imgUrlTwo } from '../../api';
 import {  LoadingOutlined, UnorderedListOutlined, DeleteOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 function genData() {
@@ -78,7 +78,7 @@ class newsPh extends React.Component {
 
   async gerVenueName(data) {
     const res = await gerVenueName(data, localStorage.getItem('venue_token'))
-    localStorage.setItem('avatar', "https://app.tiaozhanmeiyitian.com/" + res.data.data.siteimg)
+    localStorage.setItem('avatar', imgUrlTwo + res.data.data.siteimg)
   }
 
   componentDidMount() {
@@ -223,13 +223,13 @@ class newsPh extends React.Component {
   }
   locad=e=>{
     sessionStorage.setItem('modl',null)
-    this.props.history.push({pathname:'/homePh/orderPhT',query:{uuid:e.currentTarget.dataset.uuid}})
+    this.props.history.push({pathname:'/homePh/orderPhT',query:{uuid:e.currentTarget.dataset.uuid,typeid:e.currentTarget.dataset.typeid}})
   }
   inforsite=()=>{
     if(localStorage.getItem('ismethod')==='1'){
       this.props.history.push('/homePh/inforSitePh')
     }else{
-     Toast.fail('请使用法人手机号登录后前往修改', 1);
+     Toast.fail('请使用负责人手机号登录后前往修改', 1);
     }
   }
 
@@ -299,9 +299,9 @@ class newsPh extends React.Component {
           <span style={this.state.newsDetails.intime_chk !== undefined ? { display: 'block', fontSize: '0.6rem', color: '#888' } : { display: 'none' }}>{this.state.newsDetails.intime_chk}</span>
           <span style={{ display: 'block' }}>{this.state.newsDetails.comment}</span>
           <span style={{ display: 'block', fontSize: '0.6rem', color: '#888' }}>{this.state.newsDetails.intime}</span>
-          <div style={this.state.newsDetails.type===6?{color:'#9b9b9b'}:{display:'none'}}>请使用法人手机号登录修改</div>
+          <div style={this.state.newsDetails.type===6?{color:'#9b9b9b'}:{display:'none'}}>请使用负责人手机号登录修改</div>
           <div onClick={this.inforsite} style={this.state.newsDetails.type===6?{color:'#F5A623',cursor:'pointer'}:{display:'none'}}>再次前往修改</div>
-          <div onClick={this.locad} style={this.state.newsDetails.publicuuid===''?{display:'none'}:{color:'#F5A623',cursor:'pointer'}} data-uuid={this.state.newsDetails.publicuuid}>前往活动列表</div>
+          <div onClick={this.locad} style={this.state.newsDetails.publicuuid===''?{display:'none'}:{color:'#F5A623',cursor:'pointer'}} data-uuid={this.state.newsDetails.publicuuid} data-typeid={this.state.newsDetails.public_type}>前往活动列表</div>
         </Drawer>
         <div className="publish" style={this.state.flag === 2 ? { display: 'block' } : { display: 'none' }} onTouchMove={this.touMoveTwo} onTouchStart={this.touClickTwo} onTouchEnd={this.touEndTwo}>
           <PullToRefresh

@@ -471,7 +471,7 @@ class systemSettings extends React.Component {
             <li onClick={this.help}>帮助中心</li>
             <li><span style={{ marginTop: 0 }} onClick={this.feedBack}>意见反馈</span>
               <div className='feedback' style={this.state.bot === true ? { display: 'block' } : { display: 'none' }}>
-                <TextArea style={{ width: '300px', minHeight: '60px' }} maxLength={200}  placeholder='输入意见反馈' onChange={this.text} />
+                <TextArea style={{ width: '300px', minHeight: '80px' }} maxLength={200}  placeholder='您的意见对我们非常重要，以便我们不断提升场馆端的用户体验，被采纳后会有200元奖励' onChange={this.text} />
                 <span style={{ marginLeft: '10px', padding: '4px 20px', background: '#F5A623', color: '#fff', fontSize: '16px' }} onClick={this.subfeed}>提交</span>
                 <div>{this.state.textNum}/200</div>
               </div>
@@ -521,7 +521,7 @@ class systemSettings extends React.Component {
         <div className={this.state.flagUntie === false ? 'Untie' : 'listNone'}>
           <div className="resetSon">
             <div className="inputSon">
-              <span style={{ width: 145, marginLeft: -28, textAlign: 'right' }}>法人手机号</span>
+              <span style={{ width: 145, marginLeft: -42, textAlign: 'right' }}>负责人手机号</span>
               <Input maxLength={11} value={this.state.corporatePhone} disabled={true} prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.corporatePhone} placeholder="请输入手机号" />
             </div>
 

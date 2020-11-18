@@ -4,7 +4,7 @@ import './withdrawalPh.css';
 import { Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { getVenueWithdrawalOneList, getVenueMoney, VenueWithdrawal } from '../../api';
-import {LeftOutlined} from '@ant-design/icons';
+import { LeftOutlined } from '@ant-design/icons';
 
 class withdrawalPh extends React.Component {
 
@@ -12,15 +12,15 @@ class withdrawalPh extends React.Component {
     withdrawalPh: '',
     money: 0.00,
     value: '',
-    flag:0
+    flag: 0
   };
 
   async getVenueWithdrawalOneList(data) {
     const res = await getVenueWithdrawalOneList(data, localStorage.getItem('venue_token'))
-     if (res.data.code === 2000) {
-      res.data.data.Bankaccount=res.data.data.Bankaccount.slice(res.data.data.Bankaccount.length-4,res.data.data.Bankaccount.length)
-      res.data.data.legalname='***'+res.data.data.legalname.slice(-1)
-      this.setState({ withdrawalPh: res.data.data,flag:1 })
+    if (res.data.code === 2000) {
+      res.data.data.Bankaccount = res.data.data.Bankaccount.slice(res.data.data.Bankaccount.length - 6, res.data.data.Bankaccount.length)
+      res.data.data.legalname = '***' + res.data.data.legalname.slice(-1)
+      this.setState({ withdrawalPh: res.data.data, flag: 1 })
     }
   }
 
@@ -38,7 +38,7 @@ class withdrawalPh extends React.Component {
     this.setState({ value: e.target.value })
   }
   all = () => {
-    this.setState({ value: this.state.money })
+    this.setState({ value: this.state.withdrawalPh.DiscountMoney })
   }
   async VenueWithdrawal(data) {
     const res = await VenueWithdrawal(data, localStorage.getItem('venue_token'))
@@ -60,13 +60,12 @@ class withdrawalPh extends React.Component {
 
   render() {
     return (
-      <div className="withdrawalPh" style={this.state.flag===1?{}:{display:'none'}}>
-        <div className="headTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', width:'48px',height:'48px',left:'0',lineHeight:'48px'}}/>提现</div>
+      <div className="withdrawalPh" style={this.state.flag === 1 ? {} : { display: 'none' }}>
+        <div className="headTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', width: '48px', height: '48px', left: '0', lineHeight: '48px' }} />提现</div>
         <div className="white"></div>
         <div className="bankCards">
-          <span>{this.state.withdrawalPh.Settlement === 1 ? '法人账户' : '公司银行账户'}</span>
-          <span>{this.state.withdrawalPh.legalname}</span>
-          <span>{this.state.withdrawalPh.OpeningBank} | {'*****'+this.state.withdrawalPh.Bankaccount}</span>
+          <span>{this.state.withdrawalPh.Settlement === 1 ? '负责人账户' : '公司银行账户'}</span>
+          <span>{this.state.withdrawalPh.OpeningBank} <br/> {'*****' + this.state.withdrawalPh.Bankaccount}</span>
         </div>
         <div className="white"></div>
         <div className="money">
@@ -75,7 +74,8 @@ class withdrawalPh extends React.Component {
             <span className="moneySon">￥</span><input value={this.state.value} onChange={this.inputValue} type="number" style={{ float: 'left', width: '80%', background: 'transparent' }} />
           </div>
           <div className="bottomSpan">
-            <span style={{ display: 'block' }}>{'可用金额' + this.state.money + '元'}</span>
+            <span>扣除8%平台服务费后余额:￥{this.state.withdrawalPh.DiscountMoney}(可提现金额)</span>
+            {/* <span style={{ display: 'block' }}>{'可用金额' + this.state.withdrawalPh.DiscountMoney + '元'}</span> */}
             <span>到账时间 预计2-3个工作日</span>
             <span>提现时间 每月1号、15号</span>
             <div className="all" onClick={this.all}>全部提现</div>

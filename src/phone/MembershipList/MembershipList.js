@@ -26,11 +26,23 @@ class MembershipList extends React.Component {
 
   componentDidMount() {
     let myDate = new Date()
-    let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString()
-    let end = moment().endOf('day')._d.toLocaleDateString()
-    console.log(start, end)
-    this.getVenueMembershipCardConsumptionList({ page: this.state.pageTwo, type: this.state.index, startdate: start, enddate: end })
-    this.setState({ qiStart: start, qiEnd: end })
+   
+
+    if(sessionStorage.getItem('income')==='day'){
+      let start = moment().startOf('day')._d.toLocaleDateString()
+      let end = moment().endOf('day')._d.toLocaleDateString()
+      this.setState({ qiStart: start, qiEnd: end })
+      this.getVenueMembershipCardConsumptionList({ page: this.state.pageTwo, type: this.state.index, startdate: start, enddate: end })
+
+    }else{
+      let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString()
+      let end = moment().endOf('day')._d.toLocaleDateString()
+      this.setState({ qiStart: start, qiEnd: end })
+      this.getVenueMembershipCardConsumptionList({ page: this.state.pageTwo, type: this.state.index, startdate: start, enddate: end })
+    }
+    
+    
+    
   }
 
   Income = () => {
@@ -49,7 +61,8 @@ class MembershipList extends React.Component {
  }
 
  qiStart=e=>{
-   this.setState({qiStart: e.toLocaleDateString()})
+   
+   this.setState({qiStart: e.toLocaleDateString(),qiEnd:e.toLocaleDateString()})
    this.getVenueMembershipCardConsumptionList({ page: this.state.pageTwo, type: this.state.index, startdate: e.toLocaleDateString().replace(/\//g, "-"), enddate: this.state.qiEnd })
  }
 
@@ -84,6 +97,7 @@ class MembershipList extends React.Component {
             mode="date"
             title="选择日期"
             extra="Optional"
+            minDate={new Date(this.state.qiStart)}
             value={new Date(this.state.qiEnd)}
             onChange={this.qiEnd}
           >
@@ -111,7 +125,6 @@ class MembershipList extends React.Component {
             <div style={this.state.sumptionList.length===0?{textAlign:'center',padding:'20px 0',borderTop:'1px solid #e1e0e1'}:{display:'none'}}>暂无{this.state.index===1?'支出':'收入'}明细</div>
             <Pagination className={this.state.sumptionList.length!==0 ? 'fenye' : 'hidden'} current={this.state.pageTwo} showSizeChanger={false} hideOnSinglePage={true} onChange={this.sumptionListNumPage} total={this.state.sumptionListNum === '' ? 0 : this.state.sumptionListNum} />
           
-
 
 
 

@@ -482,6 +482,8 @@ class stadiumInformationPh extends React.Component {
     }
     if (stadiumName === '') {
       Toast.fail('请填写场馆名称', 1)
+    }else if(lat===''){
+      Toast.fail('请选择场馆位置', 1)
     } else if (addressXian === '' || addressXian === null) {
       Toast.fail('场馆详细地址不能为空', 1)
     } else if (linkMan === '') {

@@ -219,7 +219,7 @@ class Login extends React.Component {
                 <Form layout="inline"  className="form">
                   <Form.Item className="input">
 
-                    <Input onBlur={this.phoneOne}  maxLength={11} onInput={this.iphoneInput} placeholder="法人手机号" />
+                    <Input onBlur={this.phoneOne}  maxLength={11} onInput={this.iphoneInput} placeholder="负责人手机号" />
 
                   </Form.Item>
                   <Form.Item className="code">

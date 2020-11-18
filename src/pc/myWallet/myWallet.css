@@ -388,6 +388,10 @@
     display: block;
     cursor: pointer;
 }
+.lpkji .ant-col{
+    height: 50px;
+    line-height: 50px;
+}
 
 .lpkji .masking{
     width: 100%;

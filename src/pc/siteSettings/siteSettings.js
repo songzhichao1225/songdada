@@ -168,6 +168,8 @@ class siteSettings extends React.Component {
   }
 
   componentDidMount() {
+   
+    
 
     this.getVenueSport()
     this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
@@ -561,18 +563,18 @@ class siteSettings extends React.Component {
           dayTwo = "请选择";
       }
       this.setState({ maxScheduledDateName: dayTwo })
-      if (res.data.data[0].tags.indexOf('散')!==-1) {
-        this.setState({  appointmenttime: res.data.data[0].appointmenttime, starttime: '00:00', endtime: '24:00', timeFalg: false })
-      }else{
-        this.setState({  appointmenttime: res.data.data[0].appointmenttime, starttime: res.data.data[0].starttime, endtime: res.data.data[0].endtime, timeFalg: true })
+      if (res.data.data[0].tags.indexOf('散') !== -1) {
+        this.setState({ appointmenttime: res.data.data[0].appointmenttime, starttime: '00:00', endtime: '24:00', timeFalg: false })
+      } else {
+        this.setState({ appointmenttime: res.data.data[0].appointmenttime, starttime: res.data.data[0].starttime, endtime: res.data.data[0].endtime, timeFalg: true })
       }
       this.setState({
         runId: res.data.data[0].sportid, tags: res.data.data[0].tags,
         discount_sdate: res.data.data[0].discount_sdate, discount_edate: res.data.data[0].discount_edate, discount_start: res.data.data[0].discount_start,
         discount_end: res.data.data[0].discount_end, costperhourTwo: res.data.data[0].discount_costperhour === null ? res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')) : res.data.data[0].discount_costperhour.slice(0, res.data.data[0].discount_costperhour.indexOf('.')),
         runIdTwo: res.data.data[0].sportid, tagsTwo: res.data.data[0].tags, opendayname: attop, openday: res.data.data[0].openday.split(','), starttime: res.data.data[0].starttime,
-         costperhour: res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')), chekedTwo: res.data.data[0].venueid, chekedFour: res.data.data[0].venueid, chekedThree: res.data.data[0].venueid !== null ? res.data.data[0].venueid : res.data.data[0].venueid, chekedTwoLen: res.data.data[0].sitenumber, appointmenttime: res.data.data[0].appointmenttime,
-        tagsTwoId: res.data.data[0].tags_id, tags_type: res.data.data[0].tags_type, comment: res.data.data[0].comment, maxScheduledDate: res.data.data[0].maxScheduledDate, runNameTwo: res.data.data[0].sportname, Disid: res.data.data[0].uuid, appointmenttimeTwo: res.data.data[0].discount_appointment, dateArr: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(',')
+        costperhour: res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')), chekedTwo: res.data.data[0].venueid, chekedFour: res.data.data[0].venueid, chekedThree: res.data.data[0].venueid !== null ? res.data.data[0].venueid : res.data.data[0].venueid, chekedTwoLen: res.data.data[0].sitenumber, appointmenttime: res.data.data[0].appointmenttime,
+        tagsTwoId: res.data.data[0].tags_id, tags_type: res.data.data[0].tags_type, comment: res.data.data[0].comment, maxScheduledDate: res.data.data[0].maxScheduledDate, runNameTwo: res.data.data[0].sportname, Disid: res.data.data[0].uuid, appointmenttimeTwo: res.data.data[0].discount_appointment === null ? 0 : res.data.data[0].discount_appointment, dateArr: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(',')
       })
       if (this.state.runIdTwo !== '') {
         this.getVenueSportidTitle({ sportid: this.state.runIdTwo })
@@ -1240,9 +1242,9 @@ class siteSettings extends React.Component {
     })
   }
   handleChangeTags = e => {
-    if (e.indexOf('散')!==-1) {
+    if (e.indexOf('散') !== -1) {
       this.setState({ appointmenttime: -1, starttime: '00:00', endtime: '24:00', timeFalg: false })
-    }else{
+    } else {
       this.setState({ appointmenttime: '', starttime: '', endtime: '', timeFalg: true })
     }
 
@@ -1596,7 +1598,7 @@ class siteSettings extends React.Component {
                       <Popover content={(<span>{item.comment === '' ? '无' : item.comment}</span>)} title='详情' trigger="click">
                         <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer' }}>{item.comment === '' ? '无' : item.comment}</Col>
                       </Popover>
-                      <Col xs={{ span: 2 }} ><span style={{ cursor: 'pointer', padding: '3px 6px', color: 'blue' }} data-uid={item.uuid} data-type={item.discount_date} onClick={this.preferential}>{item.discount_date === null ? '添加' : '查看'}</span></Col>
+                      <Col xs={{ span: 2 }} ><span style={item.tags.indexOf('散') !== -1 ? {} : { display: 'none' }}>不可设置</span><span style={item.tags.indexOf('散') !== -1 ? { display: 'none' } : { cursor: 'pointer', padding: '3px 6px', color: 'blue' }} data-uid={item.uuid} data-type={item.discount_date} onClick={this.preferential}>{item.discount_date === null ? '添加' : '查看'}</span></Col>
                       <Col xs={{ span: 2 }}>
                         <img onClick={this.update} style={{ cursor: 'pointer' }} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;
                       <Popconfirm
@@ -1813,7 +1815,7 @@ class siteSettings extends React.Component {
             </div>
 
             <div className="modelList" style={{ height: '32px' }}>
-                <span>价格</span><span>{this.state.timeFalg===true?'（元/小时）':'（元/次）'}</span>
+              <span>价格</span><span>{this.state.timeFalg === true ? '（元/小时）' : '（元/次）'}</span>
               <InputNumber className="startTime" value={this.state.costperhour} formatter={limitNumber} parser={limitNumber} defaultValue={1} min={1} style={{ height: 32, width: 269, paddingLeft: '11px' }} placeholder="请输入" onChange={this.money} />
             </div>
             <div className="modelList" style={{ height: 32 }}>
@@ -1828,7 +1830,7 @@ class siteSettings extends React.Component {
             </div>
             <div className="modelList" style={{ height: 32 }}>
               <span>最短提前预订时间</span>
-              <Select placeholder="请选择" disabled={this.state.appointmenttime === -1||this.state.appointmenttime === 0 ? true : false} className="selectModel"
+              <Select placeholder="请选择" disabled={this.state.timeFalg === false ? true : false} className="selectModel"
                 defaultActiveFirstOption={false}
                 value={
                   this.state.appointmenttime === -1 ? '不限' : []
@@ -1922,7 +1924,7 @@ class siteSettings extends React.Component {
               </Select>
             </div>
 
-            <div className="modelList" style={{ height: '32px' }} style={this.state.runId === 6 ? {} : { display: 'none' }}>
+            <div className="modelList" style={this.state.runId === 6 ? { height: '32px' } : { display: 'none' }}>
               <span>场地类型</span>
               <Select placeholder="请选择" className="selectModel" showArrow={this.state.typeDetel === 0 ? false : true} disabled={this.state.typeDetel === 0 ? true : false} value={this.state.typeTwo === 0 ? [] : this.state.typeTwo} style={{ width: 249, height: 32, marginRight: 100 }} onChange={this.handleChangeType}>
                 {
@@ -2002,9 +2004,6 @@ class siteSettings extends React.Component {
           </Modal>
 
 
-
-
-
           <Modal
             title="添加/修改特定日期价格设置"
             visible={this.state.Preferential}
@@ -2036,20 +2035,7 @@ class siteSettings extends React.Component {
               </Select>
             </div>
 
-            {/* <div className="modelList" style={{ height: 'auto' }}>
-              <span>星期</span>
-              <Select placeholder="请选择" disabled={true} showArrow={false} mode='multiple' className="selectModel"
-                value={this.state.openday === '' ? [] : this.state.openday}
-                style={{ width: 330, height: 'auto', marginRight: 100 }} onChange={this.handleChangeTwo}>
-                <Option value="1">周一</Option>
-                <Option value="2">周二</Option>
-                <Option value="3">周三</Option>
-                <Option value="4">周四</Option>
-                <Option value="5">周五</Option>
-                <Option value="6">周六</Option>
-                <Option value="7">周日</Option>
-              </Select>
-            </div> */}
+
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>时间范围</span>
@@ -2070,19 +2056,7 @@ class siteSettings extends React.Component {
               <span>场地号</span>
               <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 330, cursor: 'pointer', marginRight: 100 }} disabled={true} value={this.state.chekedThree === '' ? [] : this.state.chekedThree} placeholder="点击进行添加" />
             </div>
-            {/* <div className="modelList" style={{ height: '32px' }}>
-              <span>优惠期限</span>
-              <RangePicker
-                showTime={{ defaultValue: [moment('00:00', 'HH:mm'), moment('00:00', 'HH:mm')] }}
-                locale={locale}
-                style={{ float: 'left', marginLeft: 78, width: 330 }}
-                format="YYYY-MM-DD HH:mm"
-                minuteStep={30}
-                allowClear={false}
-                value={this.state.discount_sdate === null ? '' : [moment(this.state.discount_sdate + this.state.discount_start, 'YYYY-MM-DD HH:mm'), moment(this.state.discount_edate + this.state.discount_end, 'YYYY-MM-DD HH:mm')]}
-                onChange={this.startDate}
-              />
-            </div> */}
+
             <div className="modelList" style={{ height: 32 }}>
               <span>最短提前预订时间</span>
               <Select placeholder="请选择" className="selectModel"
@@ -2114,13 +2088,12 @@ class siteSettings extends React.Component {
                 <Option value="1440">24小时</Option>
                 <Option value="2880">48小时</Option>
                 <Option value="4320">72小时</Option>
-
               </Select>
             </div>
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>价格</span><span style={{ marginLeft: 0 }}>(元/小时)</span>
-              <Input type="number" className="startTime" formatter={limitNumber} parser={limitNumber} value={String(this.state.costperhourTwo).replace('.', '')} min={0} style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 100 }} placeholder="请输入" onChange={this.moneyTwo} />
+              <Input type="number" className="startTime" value={String(this.state.costperhourTwo).replace('.', '')} min={0} style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 100 }} placeholder="请输入" onChange={this.moneyTwo} />
             </div>
 
             <div className="modelList" style={{ height: 'auto' }}>

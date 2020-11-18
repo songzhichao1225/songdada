@@ -131,7 +131,8 @@ class appointmentList extends React.Component {
   componentDidMount() {
     this.getVenueSport()
     if (this.props.location.query !== undefined) {
-      this.getReservationActivitieslist({ page: 1, publicuid: this.props.location.query.uuid, sport: '', status: '', paied: this.state.paied, reserve: this.state.headTop })
+      this.setState({headTop:this.props.location.query.typeid})
+      this.getReservationActivitieslist({ page: 1, publicuid: this.props.location.query.uuid, sport: '', status: '', paied: this.state.paied, reserve: this.props.location.query.typeid})
     } else {
       this.getReservationActivitieslist({ page: 1, sport: '', status: '', paied: this.state.paied, reserve: this.state.headTop })
     }
@@ -516,9 +517,6 @@ class appointmentList extends React.Component {
         this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end, paied: this.state.paied, reserve: this.state.headTop })
       }
     }, 500)
-
-
-
   }
 
   onSearch = e => {
@@ -533,7 +531,6 @@ class appointmentList extends React.Component {
       setTimeout(() => {
         if (this.state.start === '开始日期') {
           this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: '', enddate: '', paied: this.state.paied, reserve: this.state.headTop })
-  
         } else {
           this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end, paied: this.state.paied, reserve: this.state.headTop })
         }
@@ -565,16 +562,27 @@ class appointmentList extends React.Component {
                 <Col xs={{ span: 2 }}><div style={{ lineHeight: '25px', fontSize: '10px' }}>{item.FinishedTime.slice(0, 10)}</div><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(11, 16)}</div></Col>
                 <Col xs={{ span: 2 }}><span>{item.PlayTime}小时</span></Col>
 
-                <Col xs={{ span: 2 }} >{this.state.headTop === '1' ? item.breakup.length === 0 ? <Popover content={(<span>{item.venueid}</span>)} title='详情' trigger="click"><div>{item.venueid}</div> </Popover> : <div>
+                <Col xs={{ span: 2 }} >{this.state.headTop === '1' ? item.breakup.length === 0 ? <Popover content={(<span>{item.venueid}</span>)} title='详情' trigger="click">
+                  <div>{
+                  item.venueid_details.map((itemKo,i)=>(
+                  <div key={i}>{itemKo.venueid}</div>
+                  ))
+                  }</div> </Popover> : <span><div>
                   {
                     item.breakup.map((itemTwo, i) => (
                       <div key={i} style={{ textAlign: 'center' }}>{itemTwo.venueid}</div>
                     ))
                   }
-                </div> : <span>{item.Shouldarrive}</span>}</Col>
+                </div></span> : <span>{item.Shouldarrive}</span>}</Col>
 
                 <Col xs={{ span: 2 }}>
-                  <span>{this.state.headTop === '1' ? <div>
+                  <span>{this.state.headTop === '1' ?item.breakup.length === 0 ?<div>
+                    {
+                      item.venueid_details.map((itemHo,i)=>(
+                      <div key={i}>{itemHo.time}</div>
+                      ))
+                    }
+                  </div>:<div>
                     {
                       item.breakup.map((itemTwo, i) => (
                         <div key={i} style={{ textAlign: 'center' }}>￥{itemTwo.price}/次</div>
@@ -593,13 +601,11 @@ class appointmentList extends React.Component {
                           okText="确定"
                           cancelText="取消"
                         >
-                          <div className="sijn" onClick={this.confirmUUid} data-uuid={itemThree.uuid}>－</div>
+                          <div className="sijn" onClick={this.confirmUUid} data-uuid={itemThree.uuid}>—</div>
                         </Popconfirm>
-                        
-
                       </div>
                     ))
-                  }</span></Col>
+                  }</span><span style={item.breakup.length===0?{}:{display:'none'}}>非散场</span></Col>
                 <Col xs={{ span: 3 }} onClick={this.Complaints} data-id={item.uuid} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}><span>{item.PublicStatus}<span style={item.iscomplain === 1 ? { color: '#F6410C', fontSize: '12px' } : { display: 'none' }}>(有投诉)</span></span></Col>
                 <Col xs={{ span: 2 }}><span>￥{item.SiteMoney}</span></Col>
                 <Col xs={{ span: 2 }}><span>{item.SiteMoneyStatus}</span></Col>
@@ -671,7 +677,7 @@ class appointmentList extends React.Component {
                 <Col xs={{ span: 2 }}><span>结束时间</span></Col>
                 <Col xs={{ span: 2 }}><span>时长</span></Col>
                 <Col xs={{ span: 2 }}><span>{this.state.headTop === '1' ? '场地编号' : '应到人数'}</span></Col>
-                <Col xs={{ span: 2 }}><span>{this.state.headTop === '1' ? '单价' : '已报名人数'}</span></Col>
+                <Col xs={{ span: 2 }}><span>{this.state.headTop === '1' ? '单价/时间段' : '已报名人数'}</span></Col>
                 <Col style={this.state.headTop === '0' ? { display: 'none' } : {}} xs={{ span: 2 }}><span>剩余次数</span></Col>
                 <Col xs={{ span: 3 }}>
                   <span>

@@ -422,6 +422,10 @@
     float:left;
     padding:0 5px;
     margin-left:10px;
+    font-size: 14px;
+    background-color: #ccc;
+    border-bottom: 1px solid #000;
+    border-radius: 3px;
 
 }
 .orderList .sijn:hover{
@@ -439,6 +443,7 @@
 }
 .orderList .screening .ant-input-affix-wrapper > input.ant-input{
     padding-left: 5px;
+    font-size: 14px;
 }
 .orderList .screening .ant-btn-lg{
     height: 32px;

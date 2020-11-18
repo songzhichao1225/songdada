@@ -98,3 +98,8 @@
   color: #888;
   opacity:1
  }
+ .temporaryPh .ant-col{
+     height: 50px;
+     text-align: center;
+     line-height: 50px;
+ }

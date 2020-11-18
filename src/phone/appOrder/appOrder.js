@@ -36,12 +36,10 @@ class appOrder extends React.Component {
     sportName: '',
     lookBan: [],
     resData: '',
-    touchMove: 1,
-    touchEnd: 1,
     otherNum: '',
     flag: '1',
     selectedTwo: [],
-    selectId:[],
+    selectId: [],
     timeArr: ['00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30', '24:00']
   };
 
@@ -64,63 +62,64 @@ class appOrder extends React.Component {
         for (let i in res.data.other.bq) {
           arrVen.push(parseInt(res.data.other.bq[i].venueid))
         }
-        
-        
-          let newArr = [];
-          for (let i = 0; i < arrVen.length; i++) {
-            if (newArr.indexOf(arrVen[i]) === -1) {
-              newArr.push(arrVen[i])
-            }
-          }
-          let newarr2 = new Array(newArr.length);
-          for (let t = 0; t < newarr2.length; t++) {
-            newarr2[t] = 0;
-          }
-          for (let p = 0; p < newArr.length; p++) {
-            for (let j = 0; j < arrVen.length; j++) {
-              if (newArr[p] === arrVen[j]) {
-                newarr2[p]++;
-              }
-            }
 
+
+        let newArr = [];
+        for (let i = 0; i < arrVen.length; i++) {
+          if (newArr.indexOf(arrVen[i]) === -1) {
+            newArr.push(arrVen[i])
           }
-          let lo = []
-          for (let m = 0; m < newArr.length; m++) {
-            if (newarr2[m] === 1) {
-              for(let i in res.data.data){
-                for(let j in res.data.data[i].c){
-                   if(newArr[m]===parseInt(res.data.data[i].c[j].venueid)){
-                    if(res.data.data[i].c[j].type===1){
-                      res.data.data[i].c[j].type=3
-                    }
-                   }
+        }
+        let newarr2 = new Array(newArr.length);
+        for (let t = 0; t < newarr2.length; t++) {
+          newarr2[t] = 0;
+        }
+        for (let p = 0; p < newArr.length; p++) {
+          for (let j = 0; j < arrVen.length; j++) {
+            if (newArr[p] === arrVen[j]) {
+              newarr2[p]++;
+            }
+          }
+
+        }
+        for (let m = 0; m < newArr.length; m++) {
+          if (newarr2[m] === 1) {
+            for (let i in res.data.data) {
+              for (let j in res.data.data[i].c) {
+                if (newArr[m] === parseInt(res.data.data[i].c[j].venueid)) {
+                  if (res.data.data[i].c[j].type === 1) {
+                    res.data.data[i].c[j].type = 3
+                  }
                 }
               }
             }
           }
-
-      
-      
+        }
       }
-
 
 
       let arrTime = []
       for (let i in res.data.data) {
         arrTime.push(res.data.data[i].a)
       }
-
       let ko = ''
       if (new Date().getMinutes() >= 30) {
-        ko = new Date().getHours() + ':' + '30'
+        ko = new Date().getHours() + ':30'
       } else {
-        ko = new Date().getHours() + ':' + '00'
+        ko = new Date().getHours() + ':00'
       }
-      setTimeout(() => {
-        if (document.querySelector('.ant-table-body') !== null) {
-          document.querySelector('.ant-table-body').scrollTo(0, arrTime.indexOf(ko) * 45)
-        }
-      }, 50)
+      if(new Date().getDate()===Number(this.state.date.split('/')[2])){
+        setTimeout(() => {
+          if (document.querySelector('.ant-table-body') !== null) {
+            document.querySelector('.ant-table-body').scrollTo(0, arrTime.indexOf(ko) * 45)
+          }
+        }, 50)
+      }else{
+        document.querySelector('.ant-table-body').scrollTo(0,0)
+      }
+
+      
+
       this.setState({
         resData: res.data
       })
@@ -164,17 +163,15 @@ class appOrder extends React.Component {
           data-money={resData.data[i].c[j].money}
           data-summoney={resData.data[i].c[j].summoney}
           data-lo={resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney}
-          style={resData.data[i].c[j].type === 1 
-            && this.state.lotime.indexOf(resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney) === -1 ? { background: '#6FB2FF', height: 40, lineHeight: 3, color: '#fff' } : {} 
-            && resData.data[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 40, lineHeight: 3 } : {} 
-            && resData.data[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 40, lineHeight: 3 } : {} 
-            && resData.data[i].c[j].type === 4 ? { background: 'red', height: 40, lineHeight: 3 } : { background: 'red', height: 40, lineHeight: 3, color: '#fff' }}
-        > {resData.data[i].c[j].money}</div>
+          style={resData.data[i].c[j].type === 1
+            && this.state.lotime.indexOf(resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney) === -1 ? { background: '#6FB2FF', height: 40, lineHeight: 3, color: '#fff' } : {}
+              && resData.data[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 40, lineHeight: 3 } : {}
+                && resData.data[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 40, lineHeight: 3 } : {}
+                  && resData.data[i].c[j].type === 4 ? { background: 'red', height: 40, lineHeight: 3 } : { background: 'red', height: 40, lineHeight: 3, color: '#fff' }}
+        > <span style={{fontSize:'12px'}}>{resData.data[i].c[j].money}{this.state.sporttypeFive === '22' ? '/次' : ''}</span></div>
         if (resData.data[i].c[j].type === 3) {
           this.setState({ selectedTwo: [...this.state.selectedTwo, resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney] })
         }
-
-
         obj[key] = value
         let koTwo = parseInt(resData.data[i].a.slice(1, 2)) + 1 + ':00'
         obj.lppd = this.state.sporttypeFive === '22' ? '' : <div style={{ color: '#F5A623' }}>{resData.data[i].a}<br />{resData.data[i].a.slice(3, resData.data[i].a.length) === '00' ? resData.data[i].a.slice(0, 2) + ':30' : koTwo === '10:00' && resData.data[i].a !== '19:30' ? '10:00' : resData.data[i].a === '19:30' ? '20:00' : resData.data[i].a.slice(0, 1) + koTwo}</div>
@@ -200,7 +197,7 @@ class appOrder extends React.Component {
 
   componentDidMount() {
     //测试数据
-    // let query = '?siteuid=f798e37b-644a-9846-fed9-72547a8ea90b&sportid=6&token=KtfJFfVmlqZtS1VyOZx4PpxtY2dVfqOOs9Tk4Z5rJp0NgpyReREOEmjDHVIfuZvX&sporttype=11&flag=1'
+    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=4&token=KtfJFfVmlqZtS1VyOZx4PpxtY2dVfqOOs9Tk4Z5rJp0NgpyReREOEmjDHVIfuZvX&sporttype=10&flag=1'
     let query = this.props.location.search
 
     let arr = query.split('&')
@@ -230,28 +227,7 @@ class appOrder extends React.Component {
     let scrollLeft = this.scrollRef.scrollLeft;
     this.setState({ left: scrollLeft, top: scrollTop })
   }
-  touClick = (e) => {
-    this.setState({ clickY: e.targetTouches[0].clientY })
-  }
-  touMove = (e) => {
-    if (this.state.clickY < e.targetTouches[0].clientY && this.state.clickY < 130) {
-      this.setState({ moveY: e.targetTouches[0].clientY })
-      if (e.targetTouches[0].clientY - this.state.clickY < 80) {
-        this.setState({ spinFlag: true })
-        this.setState({ clenTop: e.targetTouches[0].clientY - this.state.clickY })
-      }
-    }
-  }
 
-  touEnd = () => {
-    if (this.state.moveY > this.state.clickY + 10) {
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal })
-      if (this.state.spinFlag === false) {
-        this.setState({ moveY: 0, clickY: 0 })
-        this.setState({ clenTop: 0 })
-      }
-    }
-  }
 
   date = () => {
     this.setState({ show: true })
@@ -307,7 +283,6 @@ class appOrder extends React.Component {
     let time = e.currentTarget.dataset.time
     let num = e.currentTarget.dataset.num
     let lotime = e.currentTarget.dataset.lo
-
     if (e.currentTarget.dataset.type === '1') {
       if (this.state.lotime.length > 0) {
         if (this.state.lotime.indexOf(lotime) !== -1) {
@@ -374,11 +349,8 @@ class appOrder extends React.Component {
 
 
     if (e.currentTarget.dataset.type === '1') {
-
       if (this.state.lotime.length > 0) {
-
         if (this.state.lotime.indexOf(lotime) !== -1) {
-
           this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
           this.state.lotime.splice(this.state.lotime.indexOf(lotimeTwo), 1)
           this.state.time.splice(this.state.time.indexOf(time), 1)
@@ -391,13 +363,17 @@ class appOrder extends React.Component {
         } else if (this.state.time.sort().indexOf(time) !== -1) {
           let numTwo = ''
           if (num.slice(num.length - 1, num.length) === 'A') {
-            numTwo = num.replace(/A/, 'B')
-            this.state.lotime.splice(this.state.time.indexOf(timeTwo), 1, time + '-' + numTwo + '-' + money + '-' + summoney)
-            this.state.lotime.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney)
+            numTwo = num.replace(/A/,'B')
+            let lo=this.state.lotime.sort()
+            lo.splice(this.state.time.indexOf(timeTwo), 1, time + '-' + numTwo + '-' + money + '-' + summoney)
+            lo.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney)
+            this.setState({lotime:lo})
           } else {
-            numTwo = num.replace(/B/, 'A')
-            this.state.lotime.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney)
-            this.state.lotime.splice(this.state.time.indexOf(timeTwo), 1, time + '-' + numTwo + '-' + money + '-' + summoney)
+            numTwo = num.replace(/B/,'A')
+            let lo=this.state.lotime.sort()
+            lo.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney)
+            lo.splice(this.state.time.indexOf(timeTwo), 1, time + '-' + numTwo + '-' + money + '-' + summoney)
+            this.setState({lotime:lo})
           }
           this.setState({ lotime: this.state.lotime })
           let moneyCall = 0
@@ -413,9 +389,6 @@ class appOrder extends React.Component {
 
           this.setState({ lotime: [...this.state.lotime, lotime, lotimeTwo], time: [...this.state.time, time, timeTwo], moneyCall: pop })
         }
-
-
-
       } else {
         let pop = (Number(this.state.moneyCall) + Number(money) * 2).toString()
         if (pop.indexOf('.') !== -1) {
@@ -434,6 +407,7 @@ class appOrder extends React.Component {
 
 
 
+
   async getAPPVenueSelectSite(data) {
     const res = await getAPPVenueSelectSite(data, this.state.token)
     if (res.data.code !== 2000) {
@@ -445,12 +419,13 @@ class appOrder extends React.Component {
         if (sUserAgent.indexOf('Android') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
           let objT = JSON.stringify(this.state.obj)
           window.JsAndroid.goTime(objT)
-
+          return false
         } else if (sUserAgent.indexOf('iPhone') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
           try {
             window.webkit.messageHandlers.ScanAction.postMessage(this.state.obj)
           } catch (error) {
           }
+          return false
         } else if (sUserAgent.indexOf('miniProgram') > -1) {
           console.log('执行了')
           //eslint-disable-next-line
@@ -458,6 +433,7 @@ class appOrder extends React.Component {
           //eslint-disable-next-line
           wx.miniProgram.postMessage({ data: this.state.obj })
           console.log('执行结束了')
+          return false
         }
       }
     }
@@ -469,7 +445,9 @@ class appOrder extends React.Component {
     let time = ''
     let num = ''
     let original = 0
+    console.log(this.state.lotime)
     if (this.state.flag === '1') {
+      
       for (let i in this.state.lotime.sort()) {
         original += Number(this.state.lotime[i].split('-')[3])
       }
@@ -512,29 +490,38 @@ class appOrder extends React.Component {
           placeTimeLen: this.state.lotime.length * 0.5 + '小时',
           breakup: ccj.join(',')
         }
-        this.setState({ obj: obj })
 
-        let sUserAgent = navigator.userAgent;
-        let mobileAgents = ['Android', 'iPhone', 'miniProgram'];
-        for (let index = 0; index < mobileAgents.length; index++) {
-          if (sUserAgent.indexOf('Android') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
-            let objT = JSON.stringify(this.state.obj)
-            window.JsAndroid.goTime(objT)
-          } else if (sUserAgent.indexOf('iPhone') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
-            try {
-              window.webkit.messageHandlers.ScanAction.postMessage(obj)
-            } catch (error) {
+        if (obj.placeNun === '') {
+          Toast.fail('请选择场地', 2, null, false);
+        } else {
+          this.setState({ obj: obj })
+          let sUserAgent = navigator.userAgent;
+          let mobileAgents = ['Android', 'iPhone', 'miniProgram'];
+          for (let index = 0; index < mobileAgents.length; index++) {
+            if (sUserAgent.indexOf('Android') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
+              let objT = JSON.stringify(this.state.obj)
+              window.JsAndroid.goTime(objT)
+              return false
+            } else if (sUserAgent.indexOf('iPhone') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
+              try {
+                window.webkit.messageHandlers.ScanAction.postMessage(obj)
+              } catch (error) {
+                console.log(error)
+              }
+              return false
+            } else if (sUserAgent.indexOf('miniProgram') > -1) {
+              console.log('执行了')
+              //eslint-disable-next-line
+              wx.miniProgram.navigateBack({ delta: 1 })
+              //eslint-disable-next-line
+              wx.miniProgram.postMessage({ data:obj })
+              console.log('执行结束了')
+              return false
             }
-
-          } else if (sUserAgent.indexOf('miniProgram') > -1) {
-            console.log('执行了')
-            //eslint-disable-next-line
-            wx.miniProgram.navigateBack({ delta: 1 })
-            //eslint-disable-next-line
-            wx.miniProgram.postMessage({ data: this.state.obj })
-            console.log('执行结束了')
           }
         }
+
+
 
 
       } else if (this.state.sporttypeFive === '10') {
@@ -638,7 +625,7 @@ class appOrder extends React.Component {
 
         for (let i in arrTime) {
           if (youhood.indexOf(arrTime[i]) === -1) {
-            keyvalue.splice(Number(i), 0, ' ')
+            keyvalue.splice(Number(i), 0, '')
           }
         }
 
@@ -651,32 +638,38 @@ class appOrder extends React.Component {
           placeTimeLen: longTime * 0.5 + '小时',
           breakup: ''
         }
-        this.setState({ obj: obj })
-
-        var sUserAgent = navigator.userAgent;
-        var mobileAgents = ['Android', 'iPhone', 'miniProgram'];
-        for (let index = 0; index < mobileAgents.length; index++) {
-          if (sUserAgent.indexOf('Android') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
-            let objT = JSON.stringify(this.state.obj)
-            window.JsAndroid.goTime(objT)
-          } else if (sUserAgent.indexOf('iPhone') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
-            try {
-              window.webkit.messageHandlers.ScanAction.postMessage(obj)
-            } catch (error) {
+        if (obj.placeNun === '') {
+          Toast.fail('请选择场地', 2, null, false);
+        } else {
+          this.setState({ obj: obj })
+          var sUserAgent = navigator.userAgent;
+          var mobileAgents = ['Android', 'iPhone', 'miniProgram'];
+          for (let index = 0; index < mobileAgents.length; index++) {
+            if (sUserAgent.indexOf('Android') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
+              let objT = JSON.stringify(this.state.obj)
+              window.JsAndroid.goTime(objT)
+              return false
+            } else if (sUserAgent.indexOf('iPhone') > -1 && sUserAgent.indexOf('miniProgram') === -1) {
+              try {
+                window.webkit.messageHandlers.ScanAction.postMessage(obj)
+              } catch (error) {
+              }
+              return false
+            } else if (sUserAgent.indexOf('miniProgram') > -1) {
+              console.log('执行了')
+              //eslint-disable-next-line
+              wx.miniProgram.navigateBack({ delta: 1 })
+              //eslint-disable-next-line
+              wx.miniProgram.postMessage({ data:obj })
+              console.log('执行结束了')
+              return false
             }
-
-          } else if (sUserAgent.indexOf('miniProgram') > -1) {
-            console.log('执行了')
-            //eslint-disable-next-line
-            wx.miniProgram.navigateBack({ delta: 1 })
-            //eslint-disable-next-line
-            wx.miniProgram.postMessage({ data: this.state.obj })
-            console.log('执行结束了')
           }
         }
+
       }
 
-    } else if (this.state.sporttypeFive === '10') {
+    } else if (this.state.flag === '0'&&this.state.sporttypeFive === '10') {
       for (let i in this.state.lotime.sort()) {
         num += this.state.lotime[i].split('-')[1] + ','
         time += this.state.lotime[i].split('-')[0] + ','
@@ -787,20 +780,47 @@ class appOrder extends React.Component {
     this.setState({
       date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(),
       lotime: [],
+      time:[],
       moneyCall: 0
     })
     this.getAppVenueReservations({ date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo })
   }
+
+
   nextDay = e => {
     let myDate = new Date(this.state.date)
     myDate.setDate(myDate.getDate() + 1)
     this.setState({
       date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(),
       lotime: [],
+      time:[],
       moneyCall: 0
     })
     this.getAppVenueReservations({ date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo })
   }
+  touClick = (e) => {
+    this.setState({ clickY: e.targetTouches[0].clientY })
+  }
+  touMove = (e) => {
+    if (this.state.clickY < e.targetTouches[0].clientY && this.state.clickY < 130) {
+      this.setState({ moveY: e.targetTouches[0].clientY })
+      if (e.targetTouches[0].clientY - this.state.clickY < 80) {
+        this.setState({ spinFlag: true })
+        this.setState({ clenTop: e.targetTouches[0].clientY - this.state.clickY })
+      }
+    }
+  }
+
+  touEnd = () => {
+    if (this.state.moveY > this.state.clickY + 10) {
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal })
+      if (this.state.spinFlag === false) {
+        this.setState({ moveY: 0, clickY: 0 })
+        this.setState({ clenTop: 0 })
+      }
+    }
+  }
+
 
 
   render() {
@@ -810,7 +830,7 @@ class appOrder extends React.Component {
 
         <div className="kog" style={this.state.animating === true ? { display: 'none' } : { display: 'block' }}>
           <div className="appOrder" onTouchMove={this.touMove} onTouchStart={this.touClick} onTouchEnd={this.touEnd}>
-            <div className='bookingKanban'>
+            <div className='bookingKanban' >
               <div className="titleDiv" style={this.state.sporttypeFive === '22' ? { display: 'none' } : {}}>
                 <div className="dayBefore" style={this.state.date === this.state.start ? { display: 'none' } : { display: 'block' }} onTouchStart={this.dayBefore}>前一天</div>
                 <div className="nextDay" onTouchStart={this.nextDay}>后一天</div>
@@ -846,9 +866,9 @@ class appOrder extends React.Component {
               />
             </div>
             <div className="footerKo">
-              <div style={{ float: 'left', lineHeight: '3', marginLeft: '1rem' }}>场地费合计：{this.state.moneyCall.toString().indexOf('.') === -1 ? this.state.moneyCall + '.00' : this.state.moneyCall + '0'}</div>
+              <div style={{ float: 'left', lineHeight: '3', marginLeft: '1rem' }}>场地费合计：{this.state.moneyCall.toString().indexOf('.') === -1 ? this.state.moneyCall + '.00' : this.state.moneyCall + '0'} <span style={this.state.sporttypeFive === '22' ? { paddingLeft: '4rem' } : { display: 'none' }}>次数{this.state.lotime.length}</span></div>
               <div
-                onTouchStart={this.onSubmit}
+                onClick={this.onSubmit}
                 style={{ width: '30%', height: '3rem', textAlign: 'center', float: 'right', lineHeight: '2.5', fontSize: '1.2rem', color: '#fff', background: 'rgba(216,93,39,1)' }}>
                 确定
            </div>

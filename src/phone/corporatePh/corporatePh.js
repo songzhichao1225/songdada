@@ -219,7 +219,7 @@ class corporatePh extends React.Component {
           <div className="name">
             <InputItem 
               type='phone'
-              placeholder="法人手机号"
+              placeholder="负责人手机号"
               clear={true}
               style={{fontSize: '0.8rem' }}
               onChange={this.phone}
@@ -230,7 +230,6 @@ class corporatePh extends React.Component {
 
           </div>
           <div className="name">
-
             <InputItem
               type='number'
               placeholder="手机验证码"

@@ -1,7 +1,7 @@
 import React from 'react';
 import './comment.css';
 import 'antd/dist/antd.css';
-import { getCommentList, VenueCommentReply, getOverallScore } from '../../api';
+import { getCommentList, VenueCommentReply, getOverallScore,imgUrlTwo } from '../../api';
 import { Spin, Input, message, Pagination, Modal } from 'antd';
 import {  SyncOutlined } from '@ant-design/icons';
 const { TextArea } = Input;
@@ -171,7 +171,7 @@ class comment extends React.Component {
                       <div className={item.imgnames.length === 0 ? 'hidden' : 'imgA'}>
                         {
                           item.imgnames.map((idx, i) => (
-                            <img key={i} onClick={this.visible} data-url={'https://app.tiaozhanmeiyitian.com/' + item.imgbaseurl + idx} src={'https://app.tiaozhanmeiyitian.com/' + item.imgbaseurl + idx} alt="img" />
+                            <img key={i} onClick={this.visible} data-url={imgUrlTwo + item.imgbaseurl + idx} src={imgUrlTwo + item.imgbaseurl + idx} alt="img" />
                           ))
                         }
                       </div>

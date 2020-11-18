@@ -194,7 +194,8 @@ class orderPhT extends React.Component {
         this.setState({ start: startT, end: endT })
         this.getReservationActivitieslist({ page: 1, sport: '', status: 10, startdate: startT, enddate: endT,paied:2,reserve: this.state.headTop })
       }else if(this.props.history.location.query!==undefined){
-        this.getReservationActivitieslist({ page: 1, publicuid:this.props.history.location.query.uuid,paied:2,reserve: this.state.headTop })
+        this.setState({headTop:this.props.history.location.query.typeid})
+        this.getReservationActivitieslist({ page: 1, publicuid:this.props.history.location.query.uuid,paied:2,reserve: this.props.history.location.query.typeid })
       }else{
         this.setState({ activeSon: [], informList:[], total:[], flag: false, spin: false })
       }
@@ -231,7 +232,7 @@ class orderPhT extends React.Component {
     this.setState({ page: page })
     this.getReservationActivitieslist({
       page: page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '',
-      startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end,paied:this.state.paied,reserve: this.state.headTop
+      startdate: this.state.start, enddate: this.state.end,paied:this.state.paied,reserve: this.state.headTop
     })
   }
 
@@ -260,7 +261,7 @@ class orderPhT extends React.Component {
     if (res.data.code === 2000) {
       Toast.success(res.data.msg, 1)
       this.setState({ visible: false })
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end,paied:this.state.paied,reserve: this.state.headTop })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start , enddate:this.state.end,paied:this.state.paied,reserve: this.state.headTop })
     }
   }
 
@@ -457,7 +458,7 @@ class orderPhT extends React.Component {
   refResh = () => {
     this.setState({ refreshing: true })
     setTimeout(() => {
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end,paied:this.state.paied,reserve: this.state.headTop })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate:  this.state.start, enddate: this.state.end,paied:this.state.paied,reserve: this.state.headTop })
     }, 1000)
   }
 
@@ -482,9 +483,9 @@ class orderPhT extends React.Component {
   }
 
   headTop = e => {
-    this.setState({ headTop: e.currentTarget.dataset.index, page: 1, sportIdVal: '', statusIdVal: '', start: '', end: '', paied: '2' })
+    this.setState({ headTop: e.currentTarget.dataset.index, page: 1, sportIdVal: '', statusIdVal: 10, paied: '2' })
     setTimeout(() => {
-      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end, paied: this.state.paied, reserve: this.state.headTop })
+      this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate:  this.state.start, enddate:  this.state.end, paied: this.state.paied, reserve: this.state.headTop })
     }, 500)
   }
   onSearchInput=e=>{
@@ -492,14 +493,14 @@ class orderPhT extends React.Component {
   }
 
   onSearch = e => {
-    this.getReservationActivitieslist({ page: 1, sport: '', status: '', paied: '2', orderId: this.state.onSearchInput, reserve: this.state.headTop })
+    this.getReservationActivitieslist({ page: 1, sport: '', status: 10, paied: '2',startdate: this.state.start, enddate: this.state.end, orderId: this.state.onSearchInput, reserve: this.state.headTop })
   }
 
   async DeductTheTimesOfClosing(data) {
     const res = await DeductTheTimesOfClosing(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       setTimeout(() => {
-        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end, paied: this.state.paied, reserve:'1' })
+        this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start, enddate: this.state.end, paied: this.state.paied, reserve:'1' })
       }, 500)
     }else{
       Toast.fail(res.data.msg)
@@ -529,12 +530,10 @@ class orderPhT extends React.Component {
         <div className="head" style={this.state.activityList===true?{}:{display:'none'}}>
           <div className="headTop" onTouchStart={this.headTop} data-index='0' style={this.state.headTop === '0' ? { color: '#fff', background: '#F5A623' } : {}}>找运动伙伴</div>
           <div className="headTop" onTouchStart={this.headTop} data-index='1' style={this.state.headTop === '1' ? { color: '#fff', background: '#F5A623' } : {}}>仅预订场馆</div>
-          <div><input type="number" style={{width:'7rem',height:'1.6rem',marginLeft:'0.5rem'}} onChange={this.onSearchInput}/><button onTouchStart={this.onSearch}>查询</button></div>
+          {/* <div><input type="number" style={{width:'7rem',height:'1.6rem',marginLeft:'0.5rem',paddingLeft:"0.3rem"}} placeholder="活动编号" onChange={this.onSearchInput}/><button onTouchStart={this.onSearch}>查询</button></div> */}
         </div>
         <div className={this.state.activityList === true ? 'activityList' : 'hidden'}>
           <div className="screen" onClick={this.showDrawer}><span style={{ paddingRight: '0.2rem' }}>筛选</span><img style={{ marginTop: '-0.2rem' }} src={require('../../assets/shaixuan.png')} alt="筛选" /></div>
-
-
 
           <div style={this.state.activeSon.length === 0 ? { display: 'none' } : { height: '100%', overflow: 'scroll', paddingBottom: '4rem' }}>
           {
@@ -562,7 +561,20 @@ class orderPhT extends React.Component {
                         <span style={item.reserve === 1 ? { display: 'none' } : { display: 'block', width: '90px', float: 'left' }}>应到人数:{item.Shouldarrive}人</span>
                         <span className="footerOne" style={this.state.headTop === '1' ? {} : { display: 'none' }}>时长:{item.PlayTime}小时</span>
                       </div>
-                      <div style={item.breakup.length===0&&item.reserve === 1 ?{}:{display:'none'}}>场地编号:{item.venueid}</div>
+                      <div style={item.breakup.length === 0 && item.reserve === 1 ? { width:'25%', marginLeft: '0.5rem', float: 'left' } : { display: 'none' }}>场地编号
+                        {
+                          item.venueid_details.map((itemKo, i) => (
+                            <div key={i}>{itemKo.venueid}</div>
+                          ))
+                        }</div>
+
+                      <div style={item.breakup.length === 0 && item.reserve === 1 ? { width: '25%', marginLeft: '0.5rem', float: 'left' } : { display: 'none' }}>
+                        <div style={{textAlign:'center'}}>时间段</div>
+                      {
+                          item.venueid_details.map((itemKo, i) => (
+                            <div style={{textAlign:'center'}} key={i}>{itemKo.time}</div>
+                          ))
+                        }</div>
                       <div style={item.breakup.length === 0 ? { display: 'none' } : {}}>
                         <div style={{ width: '25%', marginLeft: '0.5rem', float: 'left' }}>
                           <div>场地编号</div>

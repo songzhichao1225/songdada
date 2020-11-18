@@ -279,7 +279,7 @@ class minePh extends React.Component {
           placement="top"
           onClose={this.onClose}
           visible={this.state.fanKui}>
-          <TextArea rows={3} placeholder="请输入您的反馈信息" maxLength={200} onChange={this.TextArea} /><span>{this.state.TextAreaLen}/200</span>
+          <TextArea rows={3} placeholder="您的意见对我们非常重要，以便我们不断提升场馆端的用户体验，被采纳后会有200元奖励" maxLength={200} onChange={this.TextArea} /><span>{this.state.TextAreaLen}/200</span>
           <div onClick={this.submit} style={{ width: '3rem', height: '1.5rem', background: 'rgba(245,166,35,1)', fontSize: '0.8rem', color: '#fff', textAlign: 'center', float: 'right', marginTop: '0.2rem' }}>提交</div>
         </Drawer>
 

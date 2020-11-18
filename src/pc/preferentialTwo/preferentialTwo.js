@@ -169,9 +169,9 @@ class appointmentList extends React.Component {
       
       let ko=''
       if(new Date().getMinutes()>=30){
-        ko=new Date().getHours()+':'+'30'
+        ko=new Date().getHours()+':30'
       }else{
-        ko=new Date().getHours()+':'+'00'
+        ko=new Date().getHours()+':00'
       }
       setTimeout(()=>{
         if(document.querySelector('.ant-table-body')!==null){

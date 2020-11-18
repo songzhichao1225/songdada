@@ -116,7 +116,6 @@ class myWalletPh extends React.Component {
   }
 
   walletDetailsPh = () => {
-    sessionStorage.setItem('income', 'all')
     this.props.history.push('/homePh/monthlyIncomePh')
   }
 
@@ -613,7 +612,7 @@ class myWalletPh extends React.Component {
 
             <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
               <span style={{ float: 'left' }}>负责人身份证号</span>
-              <Input className="right" style={{ width: '70%', paddingLeft: '0.5rem' }} placeholder="请输入法人身份证号" maxLength={18} value={this.state.corporateId} onChange={this.corporateId} />
+              <Input className="right" style={{ width: '70%', paddingLeft: '0.5rem' }} placeholder="请输入负责人身份证号" maxLength={18} value={this.state.corporateId} onChange={this.corporateId} />
             </div>
 
             <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : { paddingTop: '15px' }}>

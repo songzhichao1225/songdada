@@ -294,7 +294,7 @@ class qualification extends React.Component {
 
   provinceChange = e => {
 
-    this.setState({ province_id: e, backList: [] })
+    this.setState({ province_id: e.toString(), backList: [] })
     if (e !== this.state.province_id) {
       this.setState({ city_id: '', openingLine: '' })
     }
@@ -303,7 +303,7 @@ class qualification extends React.Component {
   }
 
   typeChange = e => {
-    this.setState({ bank_id: e, backList: [] })
+    this.setState({ bank_id: e.toString(), backList: [] })
     this.getVenueOpenBankProvince()
     if (e !== this.state.bank_id) {
       this.setState({ openingLine: '' })
@@ -311,7 +311,7 @@ class qualification extends React.Component {
   }
 
   cityChange = e => {
-    this.setState({ city_id: e, backList: [] })
+    this.setState({ city_id: e.toString(), backList: [] })
   }
 
   handleSearch = e => {
@@ -544,9 +544,7 @@ class qualification extends React.Component {
     const res = await VenueVerifyThatAllAreFilledIn(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       let { siteUUID, filesThreeSon, legalBaseURL, value, valueTwo, valueThree, CorporateName, filesFourSon, Radiovalue,RadiovalueTwo, BelongingOneSon, BelongingFourSon, BelongingFiveSon, BelongingSixSon, legalhourBaseURL, filesFiveSon, ascrBaceUrl, BelongingTwoSon, BelongingThreeSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, cardId, openingLine,handleCardId,inChargeNa,bankcorporate } = this.state
-
       if (this.state.isqult === 0) {
-        console.log(bank_id)
         let data = {
           siteUUID: siteUUID,
           ascription: value,
@@ -576,18 +574,13 @@ class qualification extends React.Component {
           ProvinceBank: typeof (province_id) !== 'string' ? province_id.join() : province_id,
           CityBank: typeof (city_id) !== 'string' ? city_id.join() : city_id,
         }
-
+       
         if (this.state.loading === false || this.state.loadingTwo === false || this.state.loadingThree === false || this.state.loadingSix === false) {
           message.warning('图片上传中...');
         } else {
-         
             this.VenueQualifications_another(data)
-          
-          
         }
-
       } else {
-        console.log(bank_id)
         let data = {
           ascription: value,
           CorporateName: value === 1 ? '' : CorporateName,
@@ -864,7 +857,7 @@ class qualification extends React.Component {
     }else{
      this.setState({ valueTwo: 2})
     }
-    this.setState({ value: e.target.value, RadiovalueTwo:e.target.value })
+    this.setState({ value: e.target.value, RadiovalueTwo:e.target.value,Radiovalue:e.target.value })
   }
 
   async BelongingOneLisen(data) {
@@ -1207,7 +1200,7 @@ class qualification extends React.Component {
               <div className="nameSonTle">
                 <span className="boTitle">姓名</span><span className="symbol">*</span>
               </div>
-              <Input className="nameINput" disabled={this.state.flagDis} onChange={this.handleName} value={this.state.faName} placeholder="请输入法人姓名" />
+              <Input className="nameINput" disabled={this.state.flagDis} onChange={this.handleName} value={this.state.faName} placeholder="请输入负责人姓名" />
             </div>
 
 
@@ -1301,7 +1294,7 @@ class qualification extends React.Component {
 
             <div className="name" style={this.state.Radiovalue === 1 ? {} : { display: 'none' }}>
               <div className="nameSonTle">
-                <span className="boTitle">法人身份证照</span>
+                <span className="boTitle">负责人身份证照</span>
               </div>
               <ImagePicker
                 files={filesFour}
@@ -1402,13 +1395,13 @@ class qualification extends React.Component {
           className="mode"
           onCancel={this.handleCancel}
         >
-          <div><span style={{ float: 'left', lineHeight: '42px', width: '70px' }}>法人手机号</span><Input value={this.state.legePhone} disabled={true} style={{ width: '270px', float: 'left', marginLeft: '20px' }} /></div>
+          <div><span style={{ float: 'left', lineHeight: '42px', width: '100px' }}>负责人手机号</span><Input value={this.state.legePhone} disabled={true} style={{ width: '270px', float: 'left', marginLeft: '20px' }} /></div>
           <div style={{ float: 'left', marginTop: "10px" }}>
-            <span style={{ float: 'left', lineHeight: '42px', width: '70px' }} >验证码</span>
+            <span style={{ float: 'left', lineHeight: '42px', width: '100px' }} >验证码</span>
             <Input style={{ width: '190px', float: 'left', marginLeft: '20px' }} onChange={this.codeNum} />
             <span style={{ width: '80px', height: '47px', color: '#fff', background: '#F5A623', textAlign: 'center', lineHeight: '47px', float: 'left', cursor: 'pointer' }} onClick={this.code}>{this.state.textT}</span>
           </div>
-          <div style={{ width: '80px', height: '30px', color: '#fff', background: '#F5A623', cursor: 'pointer', clear: 'both', textAlign: 'center', lineHeight: '30px', marginLeft: '90px', marginTop: '120px' }} onClick={this.get}>获取</div>
+          <div style={{ width: '80px', height: '30px', color: '#fff', background: '#F5A623', cursor: 'pointer', clear: 'both', textAlign: 'center', lineHeight: '30px', marginLeft: '120px', marginTop: '120px' }} onClick={this.get}>获取</div>
         </Modal>
 
 

@@ -36,40 +36,21 @@ class monthlyIncomePh extends React.Component {
     if (sessionStorage.getItem('income') === undefined) {
       this.props.history.goBack()
     } else {
-      if (sessionStorage.getItem('income') === 'month') {
-
+      if (sessionStorage.getItem('income') === 'day') {
+        let start = moment().startOf('day')._d.toLocaleDateString()
+        let end = moment().endOf('day')._d.toLocaleDateString()
+        console.log(start)
+          this.setState({ qiStart: start, qiEnd: end })
+          this.getVenueMoneyList({ start: start, end: end, page: 1 })
+      }else  {
         let myDate = new Date()
-        let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d
-        let end = moment().endOf('day')._d
-        if (sessionStorage.getItem('qiStart') !== null) {
-          this.setState({ qiStart: new Date(sessionStorage.getItem('qiStart')), qiEnd: new Date(sessionStorage.getItem('qiEnd')), current: sessionStorage.getItem('qiPage') })
-          this.getVenueMoneyList({ start: new Date(sessionStorage.getItem('qiStart')), end: new Date(sessionStorage.getItem('qiEnd')), page: sessionStorage.getItem('qiPage') })
-        } else {
-          this.setState({ qiStart: new Date(start), qiEnd: new Date(end) })
+        let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString()
+        let end = moment().endOf('day')._d.toLocaleDateString()
+        
+          this.setState({ qiStart: start, qiEnd: end })
           this.getVenueMoneyList({ start: start, end: end, page: 1 })
-        }
+        
 
-      } else if (sessionStorage.getItem('income') === 'day') {
-        let start = moment().startOf('day')._d
-        let end = moment().endOf('day')._d
-        if (sessionStorage.getItem('qiStart') !== null) {
-          this.setState({ qiStart: new Date(sessionStorage.getItem('qiStart')), qiEnd: new Date(sessionStorage.getItem('qiEnd')), current: sessionStorage.getItem('qiPage') })
-          this.getVenueMoneyList({ start: new Date(sessionStorage.getItem('qiStart')), end: new Date(sessionStorage.getItem('qiEnd')), page: sessionStorage.getItem('qiPage') })
-        } else {
-          this.setState({ qiStart: new Date(start), qiEnd: new Date(end) })
-          this.getVenueMoneyList({ start: start, end: end, page: 1 })
-        }
-      } else {
-        let myDate = new Date()
-        let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d
-        let end = moment().endOf('day')._d
-        if (sessionStorage.getItem('qiStart') !== null) {
-          this.setState({ qiStart: new Date(sessionStorage.getItem('qiStart')), qiEnd: new Date(sessionStorage.getItem('qiEnd')), current: sessionStorage.getItem('qiPage') })
-          this.getVenueMoneyList({ start: new Date(sessionStorage.getItem('qiStart')), end: new Date(sessionStorage.getItem('qiEnd')), page: sessionStorage.getItem('qiPage') })
-        } else {
-          this.getVenueMoneyList({ start: start, end: end, page: 1 })
-          this.setState({ qiStart: new Date(start), qiEnd: new Date(end) })
-        }
       }
     }
   }
@@ -107,13 +88,12 @@ class monthlyIncomePh extends React.Component {
     }, 1000)
   }
   qiEnd = e => {
-    this.setState({ qiEnd: e, current: 1 })
-    this.getVenueMoneyList({ start: this.state.qiStart, end: e, page: 1 })
-
+    this.setState({ qiEnd: e.toLocaleDateString(), current: 1 })
+    this.getVenueMoneyList({ start: this.state.qiStart, end: e.toLocaleDateString(), page: 1 })
   }
   qiStart = e => {
-    this.setState({ qiStart: e, current: 1 })
-    this.getVenueMoneyList({ start: e, end: this.state.qiEnd, page: 1 })
+    this.setState({ qiStart: e.toLocaleDateString(), current: 1 })
+    this.getVenueMoneyList({ start: e.toLocaleDateString(), end: this.state.qiEnd, page: 1 })
   }
 
   render() {
@@ -121,7 +101,7 @@ class monthlyIncomePh extends React.Component {
       <div className="monthlyIncomePh">
         <div className="headerTitle">
           <LeftOutlined onClick={this.reture} style={{ position: 'absolute', left: '0', width: '48px', height: '48px', lineHeight: '48px' }} />
-        钱包明细
+         钱包明细
         </div>
         <div className="timer">
           <div>
@@ -129,7 +109,7 @@ class monthlyIncomePh extends React.Component {
               mode="date"
               title="选择日期"
               extra="Optional"
-              value={this.state.qiStart}
+              value={new Date(this.state.qiStart)}
               onChange={this.qiStart}
             >
               <List.Item className="start" ></List.Item>
@@ -139,7 +119,7 @@ class monthlyIncomePh extends React.Component {
               mode="date"
               title="选择日期"
               extra="Optional"
-              value={this.state.qiEnd}
+              value={new Date(this.state.qiEnd)}
               onChange={this.qiEnd}
             >
               <List.Item className="start" ></List.Item>

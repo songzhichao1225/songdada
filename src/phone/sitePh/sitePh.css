@@ -457,3 +457,6 @@
     margin-left: 0.3rem;
     margin-top: 0.6rem;
 }
+.ant-picker-calendar-header .ant-picker-calendar-mode-switch{
+    display: none;
+}

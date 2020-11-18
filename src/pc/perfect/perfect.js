@@ -384,9 +384,13 @@ class perfect extends React.Component {
         linkMan: handelPerson,
         telephone: handleTelephone,
       }
-      if (localStorage.getItem('handleName') === 'null') {
+      if(data.lat===''){
+        message.warning('请选择场馆位置')
+      }else if(handleAddress===''){
+        message.warning('请填写场馆详细地址')
+      } else if (localStorage.getItem('handleName') === 'null') {
         message.warning('请填写场馆名称')
-      } else if (handelPerson === '') {
+      }else if (handelPerson === '') {
         message.warning('请填写联系人')
       } else if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(handelPerson) === false) {
         message.warning('联系人只允许输入文字/字母')

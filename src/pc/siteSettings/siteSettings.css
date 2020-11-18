@@ -349,3 +349,6 @@ img{
     height: 39px;
     line-height: 39px;
 }
+.ant-picker-calendar-header .ant-picker-calendar-mode-switch{
+     display:none
+}

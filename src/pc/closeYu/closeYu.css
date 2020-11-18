@@ -21,6 +21,11 @@
     line-height: 30px;
     cursor: pointer;
 }
+.closeYu .ant-col{
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+}
 .hidden{
     display: none;
 }

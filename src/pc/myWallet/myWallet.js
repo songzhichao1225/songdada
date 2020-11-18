@@ -789,7 +789,7 @@ class myWallet extends React.Component {
               <span>归属人性质:</span>
               <Radio.Group className="accountNum" onChange={this.numRadio} value={this.state.numRadio}>
                 <Radio value={0}>公司</Radio>
-                <Radio value={1}>法人</Radio>
+                <Radio value={1}>个人</Radio>
               </Radio.Group>
             </div>
 

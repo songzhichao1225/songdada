@@ -91,7 +91,7 @@ class sitePh extends React.Component {
     appointmenttimeTwo: [],
     comment: '',
     tagId: '',
-    tags_type:0,
+    tags_type: 0,
     LiturgycheNum: '',
     jiageUUid: '',
     specialOffer: false,
@@ -109,7 +109,7 @@ class sitePh extends React.Component {
     detail: false,
     details: [],
     dateArr: [],
-    timeFalg:true,
+    timeFalg: true,
   }
 
   header = e => {
@@ -320,29 +320,39 @@ class sitePh extends React.Component {
       if (this.state.pickerValue[0] === 6) {
         for (let j in res.data.data) {
           for (let i in this.state.numArr) {
-            if(this.state.numArr.length===48){
-              if(this.state.numArr[47].cheked===true){
-                this.state.numArr[i].cheked='no'
-                this.state.numArr[47].cheked=true
-               }else{
+            if (this.state.numArr.length === 48) {
+              if (this.state.numArr[47].cheked === true) {
+                this.state.numArr[i].cheked = 'no'
+                this.state.numArr[47].cheked = true
+              } else {
                 if (this.state.numArr[i].num === res.data.data[j]) {
                   this.state.numArr[parseInt(this.state.numArr[i].id)].cheked = 'no'
                 }
-               }
-            }else{
+              }
+            } else {
               if (this.state.numArr[i].num === res.data.data[j]) {
                 this.state.numArr[parseInt(this.state.numArr[i].id)].cheked = 'no'
               }
             }
-            for(let k in this.state.chekedArr){
-              if(this.state.chekedArr[k]===this.state.numArr[i].num){
+            for (let k in this.state.chekedArr) {
+              if (this.state.chekedArr[k] === this.state.numArr[i].num) {
                 this.state.numArr[parseInt(this.state.numArr[i].id)].cheked = true
               }
-          }
+            }
           }
         }
         this.setState({ numArr: this.state.numArr })
       } else {
+        for(let j in res.data.data){
+          for (let i in this.state.numArr) {
+            if (this.state.numArr[i].num === Number(res.data.data[j])) {
+              console.log( )
+              this.state.numArr[this.state.numArr[i].num-1].cheked = 'no'
+            }
+          }
+        }
+       
+
         if (this.state.chekedArr.length !== 0) {
           for (let j in this.state.koArr) {
             this.state.numArr[this.state.koArr[j] - 1].cheked = false
@@ -364,116 +374,116 @@ class sitePh extends React.Component {
   Serial = () => {
     if (this.state.idxTitleTwo === '' || this.state.idxTitleTwo === '请选择/添加') {
       Toast.fail('请选择细分标签', 1);
-    } else if (this.state.pickerValue[0] === 6&&this.state.typeTwo[0] === 0) {
+    } else if (this.state.pickerValue[0] === 6 && this.state.typeTwo[0] === 0) {
       Toast.fail('请选择场地类型', 1);
     } else {
       if (this.state.pickerValue[0] === 6) {
-        if(this.state.typeTwo[0]===2){
+        if (this.state.typeTwo[0] === 2) {
           this.setState({
             numArr: [
               { num: '1A', cheked: false, id: 0 },
-               { num: '1B', cheked: false, id: 1 },
-                { num: '2A', cheked: false, id: 2 },
-                 { num: '2B', cheked: false, id: 3 },
-                  { num: '3A', cheked: false, id: 4 },
-                   { num: '3B', cheked: false, id: 5 },
-                    { num: '4A', cheked: false, id: 6 },
-                     { num: '4B', cheked: false, id: 7 },
-                      { num: '5A', cheked: false, id: 8 },
-                       { num: '5B', cheked: false, id: 9 },
-                        { num: '6A', cheked: false, id: 10 },
-                         { num: '6B', cheked: false, id: 11 },
-                          { num: '7A', cheked: false, id: 12 },
-                           { num: '7B', cheked: false, id: 13 },
-                            { num: '8A', cheked: false, id: 14 },
-                             { num: '8B', cheked: false, id: 15 },
-                              { num: '9A', cheked: false, id: 16 },
-                               { num: '9B', cheked: false, id: 17 },
-                                { num: '10A', cheked: false, id: 18 },
-                                 { num: '10B', cheked: false, id: 19 },
-                                  { num: '11A', cheked: false, id: 20 },
-                                   { num: '11B', cheked: false, id: 21 },
-                                    { num: '12A', cheked: false, id: 22 },
-                                     { num: '12B', cheked: false, id: 23 },
-                                     { num: '13A', cheked: false, id: 24 },
-                                     { num: '13B', cheked: false, id: 25 },
-                                     { num: '14A', cheked: false, id: 26 },
-                                     { num: '14B', cheked: false, id: 27 },
-                                     { num: '15A', cheked: false, id: 28 },
-                                     { num: '15B', cheked: false, id: 29 },
-                                     { num: '16A', cheked: false, id: 30 },
-                                     { num: '16B', cheked: false, id: 31 },
-                                     { num: '17A', cheked: false, id: 32 },
-                                     { num: '17B', cheked: false, id: 33 },
-                                     { num: '18A', cheked: false, id: 34 },
-                                     { num: '18B', cheked: false, id: 35 },
-                                     { num: '19A', cheked: false, id: 36 },
-                                     { num: '19B', cheked: false, id: 37 },
-                                     { num: '20A', cheked: false, id: 38 },
-                                     { num: '20B', cheked: false, id: 39 },
-                                     { num: '21A', cheked: false, id: 40 },
-                                     { num: '21B', cheked: false, id: 41 },
-                                     { num: '22A', cheked: false, id: 42 },
-                                     { num: '22B', cheked: false, id: 43 },
-                                     { num: '23A', cheked: false, id: 44 },
-                                     { num: '23B', cheked: false, id: 45 },
-                                     { num: '24A', cheked: false, id: 46 },
-                                     { num: '场地不固定', cheked: false, id: 47 }]
+              { num: '1B', cheked: false, id: 1 },
+              { num: '2A', cheked: false, id: 2 },
+              { num: '2B', cheked: false, id: 3 },
+              { num: '3A', cheked: false, id: 4 },
+              { num: '3B', cheked: false, id: 5 },
+              { num: '4A', cheked: false, id: 6 },
+              { num: '4B', cheked: false, id: 7 },
+              { num: '5A', cheked: false, id: 8 },
+              { num: '5B', cheked: false, id: 9 },
+              { num: '6A', cheked: false, id: 10 },
+              { num: '6B', cheked: false, id: 11 },
+              { num: '7A', cheked: false, id: 12 },
+              { num: '7B', cheked: false, id: 13 },
+              { num: '8A', cheked: false, id: 14 },
+              { num: '8B', cheked: false, id: 15 },
+              { num: '9A', cheked: false, id: 16 },
+              { num: '9B', cheked: false, id: 17 },
+              { num: '10A', cheked: false, id: 18 },
+              { num: '10B', cheked: false, id: 19 },
+              { num: '11A', cheked: false, id: 20 },
+              { num: '11B', cheked: false, id: 21 },
+              { num: '12A', cheked: false, id: 22 },
+              { num: '12B', cheked: false, id: 23 },
+              { num: '13A', cheked: false, id: 24 },
+              { num: '13B', cheked: false, id: 25 },
+              { num: '14A', cheked: false, id: 26 },
+              { num: '14B', cheked: false, id: 27 },
+              { num: '15A', cheked: false, id: 28 },
+              { num: '15B', cheked: false, id: 29 },
+              { num: '16A', cheked: false, id: 30 },
+              { num: '16B', cheked: false, id: 31 },
+              { num: '17A', cheked: false, id: 32 },
+              { num: '17B', cheked: false, id: 33 },
+              { num: '18A', cheked: false, id: 34 },
+              { num: '18B', cheked: false, id: 35 },
+              { num: '19A', cheked: false, id: 36 },
+              { num: '19B', cheked: false, id: 37 },
+              { num: '20A', cheked: false, id: 38 },
+              { num: '20B', cheked: false, id: 39 },
+              { num: '21A', cheked: false, id: 40 },
+              { num: '21B', cheked: false, id: 41 },
+              { num: '22A', cheked: false, id: 42 },
+              { num: '22B', cheked: false, id: 43 },
+              { num: '23A', cheked: false, id: 44 },
+              { num: '23B', cheked: false, id: 45 },
+              { num: '24A', cheked: false, id: 46 },
+              { num: '场地不固定', cheked: false, id: 47 }]
           })
-        }else if(this.state.typeTwo[0]===1){
+        } else if (this.state.typeTwo[0] === 1) {
           this.setState({
             numArr: [
               { num: '1A', cheked: false, id: 0 },
-               { num: '1B', cheked: false, id: 1 },
-                { num: '2A', cheked: false, id: 2 },
-                 { num: '2B', cheked: false, id: 3 },
-                  { num: '3A', cheked: false, id: 4 },
-                   { num: '3B', cheked: false, id: 5 },
-                    { num: '4A', cheked: false, id: 6 },
-                     { num: '4B', cheked: false, id: 7 },
-                      { num: '5A', cheked: false, id: 8 },
-                       { num: '5B', cheked: false, id: 9 },
-                        { num: '6A', cheked: false, id: 10 },
-                         { num: '6B', cheked: false, id: 11 },
-                          { num: '7A', cheked: false, id: 12 },
-                           { num: '7B', cheked: false, id: 13 },
-                            { num: '8A', cheked: false, id: 14 },
-                             { num: '8B', cheked: false, id: 15 },
-                              { num: '9A', cheked: false, id: 16 },
-                               { num: '9B', cheked: false, id: 17 },
-                                { num: '10A', cheked: false, id: 18 },
-                                 { num: '10B', cheked: false, id: 19 },
-                                  { num: '11A', cheked: false, id: 20 },
-                                   { num: '11B', cheked: false, id: 21 },
-                                    { num: '12A', cheked: false, id: 22 },
-                                     { num: '12B', cheked: false, id: 23 },
-                                     { num: '13A', cheked: false, id: 24 },
-                                     { num: '13B', cheked: false, id: 25 },
-                                     { num: '14A', cheked: false, id: 26 },
-                                     { num: '14B', cheked: false, id: 27 },
-                                     { num: '15A', cheked: false, id: 28 },
-                                     { num: '15B', cheked: false, id: 29 },
-                                     { num: '16A', cheked: false, id: 30 },
-                                     { num: '16B', cheked: false, id: 31 },
-                                     { num: '17A', cheked: false, id: 32 },
-                                     { num: '17B', cheked: false, id: 33 },
-                                     { num: '18A', cheked: false, id: 34 },
-                                     { num: '18B', cheked: false, id: 35 },
-                                     { num: '19A', cheked: false, id: 36 },
-                                     { num: '19B', cheked: false, id: 37 },
-                                     { num: '20A', cheked: false, id: 38 },
-                                     { num: '20B', cheked: false, id: 39 },
-                                     { num: '21A', cheked: false, id: 40 },
-                                     { num: '21B', cheked: false, id: 41 },
-                                     { num: '22A', cheked: false, id: 42 },
-                                     { num: '22B', cheked: false, id: 43 },
-                                     { num: '23A', cheked: false, id: 44 },
-                                     { num: '23B', cheked: false, id: 45 },
-                                     { num: '24A', cheked: false, id: 46 },
-                                     ]
+              { num: '1B', cheked: false, id: 1 },
+              { num: '2A', cheked: false, id: 2 },
+              { num: '2B', cheked: false, id: 3 },
+              { num: '3A', cheked: false, id: 4 },
+              { num: '3B', cheked: false, id: 5 },
+              { num: '4A', cheked: false, id: 6 },
+              { num: '4B', cheked: false, id: 7 },
+              { num: '5A', cheked: false, id: 8 },
+              { num: '5B', cheked: false, id: 9 },
+              { num: '6A', cheked: false, id: 10 },
+              { num: '6B', cheked: false, id: 11 },
+              { num: '7A', cheked: false, id: 12 },
+              { num: '7B', cheked: false, id: 13 },
+              { num: '8A', cheked: false, id: 14 },
+              { num: '8B', cheked: false, id: 15 },
+              { num: '9A', cheked: false, id: 16 },
+              { num: '9B', cheked: false, id: 17 },
+              { num: '10A', cheked: false, id: 18 },
+              { num: '10B', cheked: false, id: 19 },
+              { num: '11A', cheked: false, id: 20 },
+              { num: '11B', cheked: false, id: 21 },
+              { num: '12A', cheked: false, id: 22 },
+              { num: '12B', cheked: false, id: 23 },
+              { num: '13A', cheked: false, id: 24 },
+              { num: '13B', cheked: false, id: 25 },
+              { num: '14A', cheked: false, id: 26 },
+              { num: '14B', cheked: false, id: 27 },
+              { num: '15A', cheked: false, id: 28 },
+              { num: '15B', cheked: false, id: 29 },
+              { num: '16A', cheked: false, id: 30 },
+              { num: '16B', cheked: false, id: 31 },
+              { num: '17A', cheked: false, id: 32 },
+              { num: '17B', cheked: false, id: 33 },
+              { num: '18A', cheked: false, id: 34 },
+              { num: '18B', cheked: false, id: 35 },
+              { num: '19A', cheked: false, id: 36 },
+              { num: '19B', cheked: false, id: 37 },
+              { num: '20A', cheked: false, id: 38 },
+              { num: '20B', cheked: false, id: 39 },
+              { num: '21A', cheked: false, id: 40 },
+              { num: '21B', cheked: false, id: 41 },
+              { num: '22A', cheked: false, id: 42 },
+              { num: '22B', cheked: false, id: 43 },
+              { num: '23A', cheked: false, id: 44 },
+              { num: '23B', cheked: false, id: 45 },
+              { num: '24A', cheked: false, id: 46 },
+            ]
           })
         }
-        
+
         this.getSiteSelectedVenueid({ sportid: this.state.pickerValue[0] })
         this.setState({
           Serial: true
@@ -518,19 +528,19 @@ class sitePh extends React.Component {
       } else if (items[e.currentTarget.dataset.id].cheked === false) {
         items[e.currentTarget.dataset.id].cheked = true
       }
-      if(e.currentTarget.dataset.num==='场地不固定'){
-        
-        if(items[47].cheked===true ){
-          for(let i in items){
-            items[i].cheked='no'
-            items[47].cheked=true
+      if (e.currentTarget.dataset.num === '场地不固定') {
+
+        if (items[47].cheked === true) {
+          for (let i in items) {
+            items[i].cheked = 'no'
+            items[47].cheked = true
           }
-         }else{
-           for(let i in items){
-            items[i].cheked=false
-           }
-           this.getSiteSelectedVenueidTwo({ sportid: this.state.pickerValue[0] })
-         }
+        } else {
+          for (let i in items) {
+            items[i].cheked = false
+          }
+          this.getSiteSelectedVenueidTwo({ sportid: this.state.pickerValue[0] })
+        }
       }
       this.setState({
         numArr: items
@@ -548,18 +558,18 @@ class sitePh extends React.Component {
     if (this.state.pickerValue[0] === 6) {
       for (let j in res.data.data) {
         for (let i in this.state.numArr) {
-            if (this.state.numArr[i].num === res.data.data[j]) {
-              this.state.numArr[parseInt(this.state.numArr[i].id)].cheked = 'no'
+          if (this.state.numArr[i].num === res.data.data[j]) {
+            this.state.numArr[parseInt(this.state.numArr[i].id)].cheked = 'no'
+          }
+          for (let k in this.state.chekedArr) {
+            if (this.state.chekedArr[k] === this.state.numArr[i].num) {
+              this.state.numArr[parseInt(this.state.numArr[i].id)].cheked = false
             }
-            for(let k in this.state.chekedArr){
-              if(this.state.chekedArr[k]===this.state.numArr[i].num){
-                this.state.numArr[parseInt(this.state.numArr[i].id)].cheked = false
-              }
           }
         }
       }
       this.setState({ numArr: this.state.numArr })
-    } 
+    }
 
 
 
@@ -571,10 +581,10 @@ class sitePh extends React.Component {
   reverseC = () => {
     let items = this.state.numArr
     for (let i in items) {
-      if (items[i].cheked === false&&items[i].num!=='场地不固定') {
+      if (items[i].cheked === false && items[i].num !== '场地不固定') {
         items[i].cheked = true
         this.setState({ numArr: items })
-      } else if (items[i].cheked === true&&items[i].num!=='场地不固定') {
+      } else if (items[i].cheked === true && items[i].num !== '场地不固定') {
         items[i].cheked = false
         this.setState({ numArr: items })
       }
@@ -585,7 +595,7 @@ class sitePh extends React.Component {
   allThem = () => {
     let items = this.state.numArr
     for (let i in items) {
-      if (items[i].cheked === false&&items[i].num!=='场地不固定') {
+      if (items[i].cheked === false && items[i].num !== '场地不固定') {
         items[i].cheked = true
         this.setState({ numArr: items })
       }
@@ -655,18 +665,18 @@ class sitePh extends React.Component {
       Toast.fail('请选择细分标签', 1);
     } else if (chekedArr.length === 0) {
       Toast.fail('请选择场地编号', 1);
-    }else if(this.state.pickerValue[0] === 6&&this.state.typeTwo[0] === 0){
+    } else if (this.state.pickerValue[0] === 6 && this.state.typeTwo[0] === 0) {
       Toast.fail('请选择场地类型', 1);
     } else {
-      let title=idxTitleTwo.indexOf('-')===-1?idxTitleTwo:this.state.typeTwo[0]===2?idxTitleTwo+'-散场':this.state.typeTwo[0]===1?idxTitleTwo+'-半场':idxTitleTwo
-      this.getVenueNumberTitleSave({ sportid: pickerValue[0], title:title, venueid: chekedArr.join(','), number: chekedArr.length, uuid: this.state.firstUUid,type:this.state.typeTwo[0] })
+      let title=idxTitleTwo.indexOf('-') === -1 ? this.state.typeTwo[0] === 2 ? idxTitleTwo + '-散场' : this.state.typeTwo[0] === 1 ? idxTitleTwo + '-半场' : idxTitleTwo : idxTitleTwo
+      this.getVenueNumberTitleSave({ sportid: pickerValue[0], title: title, venueid: chekedArr.join(','), number: chekedArr.length, uuid: this.state.firstUUid, type: this.state.typeTwo[0] })
     }
   }
 
   async getVenueNumberTitleFirst(data) {
     const res = await getVenueNumberTitleFirst(data, localStorage.getItem('venue_token'))
     this.setState({
-      pickerValue: [res.data.data[0].sportid], idxTitleTwo: res.data.data[0].title, chekedArr: res.data.data[0].venueid.split(','), koArr: res.data.data[0].venueid.split(','), firstUUid: res.data.data[0].uuid,typeTwo:[res.data.data[0].type]
+      pickerValue: [res.data.data[0].sportid], idxTitleTwo: res.data.data[0].title, chekedArr: res.data.data[0].venueid.split(','), koArr: res.data.data[0].venueid.split(','), firstUUid: res.data.data[0].uuid, typeTwo: [res.data.data[0].type]
     })
   }
 
@@ -820,18 +830,19 @@ class sitePh extends React.Component {
   pickerValueThree = v => {
     for (let i in this.state.titleArrFoter) {
       if (this.state.titleArrFoter[i].title === this.state.titleArr[v].label) {
-        this.setState({ cheStr: this.state.titleArrFoter[i].venueid, titleArrFoterNum: this.state.titleArrFoter[i].number, tagId: this.state.titleArrFoter[i].uuid,
-          tags_type:this.state.titleArrFoter[i].type,
+        this.setState({
+          cheStr: this.state.titleArrFoter[i].venueid, titleArrFoterNum: this.state.titleArrFoter[i].number, tagId: this.state.titleArrFoter[i].uuid,
+          tags_type: this.state.titleArrFoter[i].type,
         })
       }
     }
-    if (this.state.titleArr[v].label.indexOf('散')!==-1) {
+    if (this.state.titleArr[v].label.indexOf('散') !== -1) {
       this.setState({ pickerValueFive: -1, starttime: '00:00', endtime: '24:00', timeFalg: false })
-    }else{
+    } else {
       this.setState({ pickerValueFive: '', timeFalg: true })
     }
     this.setState({ pickerValueThree: v })
-    
+
   }
 
   Liturgy = () => {
@@ -887,7 +898,7 @@ class sitePh extends React.Component {
 
   jiageSub = () => {
 
-    let { pickerValueTwo, pickerValueThree, Liturgyche, starttime, endtime, money, cheStr, titleArrFoterNum, pickerValueFour, pickerValueFive,tags_type, comment, tagId, titleArr, LiturgycheNum, jiageUUid } = this.state
+    let { pickerValueTwo, pickerValueThree, Liturgyche, starttime, endtime, money, cheStr, titleArrFoterNum, pickerValueFour, pickerValueFive, tags_type, comment, tagId, titleArr, LiturgycheNum, jiageUUid } = this.state
     if (pickerValueTwo === '') {
       Toast.fail('请选择场地类型', 1);
     } else if (pickerValueThree.length === 0) {
@@ -919,10 +930,10 @@ class sitePh extends React.Component {
         venueid: cheStr,
         sitenumber: titleArrFoterNum,
         maxScheduledDate: pickerValueFour[0],
-        appointmenttime: pickerValueFive[0],
+        appointmenttime: pickerValueFive[0] === undefined ? 0 : pickerValueFive[0],
         comment: comment,
         tags_id: tagId,
-        tags_type:tags_type
+        tags_type: tags_type
       }
       this.AddSiteSetting(obj)
     }
@@ -938,10 +949,10 @@ class sitePh extends React.Component {
           for (let i in that.state.titleArr) {
 
             if (that.state.titleArr[i].label === res.data.data[0].tags) {
-              if (that.state.titleArr[i].label.indexOf('散')!==-1) {
+              if (that.state.titleArr[i].label.indexOf('散') !== -1) {
                 this.setState({ pickerValueFive: -1, starttime: ['00:00'], endtime: ['24:00'], timeFalg: false })
-              }else{
-              this.setState({pickerValueFive: [res.data.data[0].appointmenttime],starttime: [res.data.data[0].starttime], endtime: [res.data.data[0].endtime],timeFalg:true})
+              } else {
+                this.setState({ pickerValueFive: [res.data.data[0].appointmenttime], starttime: [res.data.data[0].starttime], endtime: [res.data.data[0].endtime], timeFalg: true })
               }
               that.setState({ pickerValueThree: [that.state.titleArr[i].value] })
             }
@@ -976,7 +987,7 @@ class sitePh extends React.Component {
           }
         }
 
-       
+
 
 
         this.setState({
@@ -985,7 +996,7 @@ class sitePh extends React.Component {
           LiturgycheNum: res.data.data[0].openday, Liturgyche: p.join(','),
           money: res.data.data[0].costperhour, pickerValueFour: [Number(res.data.data[0].maxScheduledDate)],
           tagId: res.data.data[0].tags_id,
-          tags_type:res.data.data[0].tags_type,
+          tags_type: res.data.data[0].tags_type,
           comment: res.data.data[0].comment
         })
 
@@ -1037,7 +1048,7 @@ class sitePh extends React.Component {
           startDate: res.data.data[0].discount_sdate === null ? this.state.startDate : new Date(res.data.data[0].discount_sdate + ' ' + res.data.data[0].discount_start),
           endDate: res.data.data[0].discount_edate === null ? this.state.endDate : new Date(res.data.data[0].discount_edate + ' ' + res.data.data[0].discount_end),
           starttimeSiscount: res.data.data[0].starttime, endtimeSiscount: res.data.data[0].endtime, venueidSiscount: kol, venueidSiscountTwo: res.data.data[0].venueid === null ? '请选择' : res.data.data[0].venueid,
-          appointmenttimeTwo: [res.data.data[0].discount_appointment], dateArr: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(','),
+          appointmenttimeTwo: [res.data.data[0].discount_appointment === null ? 0 : res.data.data[0].discount_appointment], dateArr: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(','),
         })
       }
     }
@@ -1243,7 +1254,7 @@ class sitePh extends React.Component {
                       <div onClick={item.comment === null ? '' : this.venDuo} data-venueid={item.comment === '' ? '无' : item.comment}>备注：{item.comment === '' ? '无' : item.comment}</div>
                     </div>
                   </Card.Body>
-                  <Card.Footer content={<div className="lookYou" onClick={this.specialOffer} data-uuid={item.uuid}>{item.discount_venueid !== null ? '查看特定' : '添加特定'}</div>} extra={<div className="capzuo"><img style={{ marginRight: '10px' }} onClick={this.jiaUpdata} data-uuid={item.uuid} src={require('../../assets/upLoad.png')} alt="img" /><img onClick={() =>
+                  <Card.Footer content={<div><div style={item.tags.indexOf('散') !== -1 ? {} : { display: "none" }}></div><div style={item.tags.indexOf('散') === -1 ? {} : { display: "none" }} className="lookYou" onClick={this.specialOffer} data-uuid={item.uuid}>{item.discount_date !== null ? '查看特定' : '添加特定'}</div></div>} extra={<div className="capzuo"><img style={{ marginRight: '10px' }} onClick={this.jiaUpdata} data-uuid={item.uuid} src={require('../../assets/upLoad.png')} alt="img" /><img onClick={() =>
                     alert('提示', '您确定要删除该条价格设置么？删除后用户将无法预订该时间段' + item.sportname + '的' + item.tags + '场地。', [
                       { text: '取消', onPress: () => console.log('cancel') },
                       { text: '确定', onPress: () => this.DelSiteSetting({ uuid: item.uuid }) },
@@ -1285,7 +1296,7 @@ class sitePh extends React.Component {
                       <div onClick={this.venDuo} data-venueid={item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}>最长提前预定时间：{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</div>
                       <div onClick={this.venDuo} data-venueid={item.appointmenttime / 60 + '小时'}>最短提前预定时间：{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</div>
                       <div onClick={item.comment === null ? '' : this.venDuo} data-venueid={item.comment === '' ? '无' : item.comment}>备注：{item.comment === '' ? '无' : item.comment}</div>
-                      <div>特定日期:{item.discount_date === '' ? '无' : <span style={{ color: '#D85D27', cursor: 'pointer' }} data-sd={item.discount_date}   data-app={item.discount_appointment} data-cos={item.discount_costperhour} onClick={this.detail}>查看</span>}</div>
+                      <div>特定日期:{item.discount_date === '' ? '无' : <span style={{ color: '#D85D27', cursor: 'pointer' }} data-sd={item.discount_date} data-app={item.discount_appointment} data-cos={item.discount_costperhour} onClick={this.detail}>查看</span>}</div>
                       <div>操作:{item.operation === 1 ? '添加' : item.operation === 2 ? '修改' : item.operation === 3 ? '删除' : '无'}</div>
                       <div style={{ width: '100%' }}>操作时间:{item.intime}</div>
                     </div>
@@ -1411,7 +1422,7 @@ class sitePh extends React.Component {
           <div className="sitePhSerial">
             {
               this.state.numArr.map((item, i) => (
-                <div key={i} className={this.state.typeTwo[0]===2?'serialSon':'serialSonTwo'} onClick={this.numArrSon} data-num={item.num} data-id={item.id} style={item.cheked === true ? { background: '#F5A623', color: '#fff' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', opacity: '0.2' } :item.num==='场地不固定'?{width:'5rem'}:{}}>{item.num}</div>
+                <div key={i} className={this.state.typeTwo[0] === 2 ? 'serialSon' : 'serialSonTwo'} onClick={this.numArrSon} data-num={item.num} data-id={item.id} style={item.cheked === true ? { background: '#F5A623', color: '#fff' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', opacity: '0.2' } : item.num === '场地不固定' ? { width: '5rem' } : {}}>{item.num}</div>
               ))
             }
           </div>
@@ -1454,7 +1465,7 @@ class sitePh extends React.Component {
             value={this.state.starttime}
             cols={1}
           >
-            <List.Item arrow="horizontal" style={this.state.timeFalg===true?{ borderBottom: '1px solid #E9E9E9' }:{display:'none'}}>开始时间</List.Item>
+            <List.Item arrow="horizontal" style={this.state.timeFalg === true ? { borderBottom: '1px solid #E9E9E9' } : { display: 'none' }}>开始时间</List.Item>
           </Picker>
 
 
@@ -1464,7 +1475,7 @@ class sitePh extends React.Component {
             value={this.state.endtime}
             cols={1}
           >
-            <List.Item arrow="horizontal" style={this.state.timeFalg===true?{ borderBottom: '1px solid #E9E9E9' }:{display:'none'}}>结束时间</List.Item>
+            <List.Item arrow="horizontal" style={this.state.timeFalg === true ? { borderBottom: '1px solid #E9E9E9' } : { display: 'none' }}>结束时间</List.Item>
           </Picker>
 
 
@@ -1490,11 +1501,11 @@ class sitePh extends React.Component {
 
           <Picker
             data={this.state.Shortest}
-            value={this.state.pickerValueFive===-1?[0]:this.state.pickerValueFive}
+            value={this.state.pickerValueFive === -1 ? [0] : this.state.pickerValueFive}
             onOk={this.pickerValueFive}
-            disabled={this.state.pickerValueFive===-1?true:false}
+            disabled={this.state.pickerValueFive === -1 ? true : false}
             cols={1} className="forss">
-            <List.Item arrow={this.state.pickerValueFive===-1?'empty':'horizontal'} style={{ borderBottom: '1px solid #E9E9E9' }}>最短提前预定时间</List.Item>
+            <List.Item arrow={this.state.pickerValueFive === -1 ? 'empty' : 'horizontal'} style={{ borderBottom: '1px solid #E9E9E9' }}>最短提前预定时间</List.Item>
           </Picker>
 
           <TextareaItem
@@ -1568,7 +1579,7 @@ class sitePh extends React.Component {
               placeholder="请选择特定日期"
               data-seed="logId"
               value={this.state.dateArr.sort().join(',')}
-              style={{ fontSize: '0.75rem', color: '#888', paddingLeft: '0' }}
+              style={{ fontSize: '0.75rem', color: '#888', paddingLeft: '0', minHeight: '55px' }}
               disabled={true}
               autoHeight
             /><span style={{ float: 'right', background: '#F5A623', color: '#fff', padding: '0.1rem 0.2rem', borderRadius: '0.2rem', cursor: 'pointer' }} onClick={this.deletDate}>回删</span></List.Item>
@@ -1628,9 +1639,9 @@ class sitePh extends React.Component {
           title="特定日期详情"
 
         >
-          <div style={{ textAlign: 'left' }}>
+          <div style={{ textAlign: 'left', height: '10rem', overflowY: 'auto' }}>
             <p>特定日期:{this.state.details.sd}</p>
-            <p style={{ wordBreak: 'break-all' }}>最短提前预定时间:{this.state.details.app/60}小时</p>
+            <p style={{ wordBreak: 'break-all' }}>最短提前预定时间:{this.state.details.app / 60}小时</p>
             <p>特定日期价格:{this.state.details.cos}(元/小时)</p>
           </div>
 

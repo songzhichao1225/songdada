@@ -175,7 +175,7 @@ eyes=()=>{
           <div className="name">
             <InputItem
               type='text'
-              placeholder="用户名/手机号"
+              placeholder="用户名/操作员手机号"
               clear={true}
               style={{ fontSize: '0.88rem',border:'none'  }}
               onChange={this.phone}
@@ -203,7 +203,7 @@ eyes=()=>{
           
           <div className="loginBtn" onClick={this.submit}>登录</div>
           <div className="footer" style={{ marginTop: '1rem' }}>  
-            <span onClick={this.corporatePh}>负责人登录</span>
+            <span onClick={this.corporatePh}>负责人手机号登录</span>
             <span onClick={this.registerPh}>新用户注册</span>  
           </div>
         </div>

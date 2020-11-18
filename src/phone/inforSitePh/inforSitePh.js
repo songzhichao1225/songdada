@@ -147,7 +147,7 @@ class inforSitePh extends React.Component {
       this.setState({
         CorporateName: res.data.data.CorporateName, bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
         faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
-        numRadio: res.data.data.Settlement,numRadioFive:res.data.data.account,inChargeNa:res.data.data.Bankname,inCorName:res.data.data.Bankcorporate, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
+        numRadio: res.data.data.Settlement,numRadioFive:res.data.data.ascription===1?1:res.data.data.account,inChargeNa:res.data.data.Bankname,inCorName:res.data.data.Bankcorporate, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
         legalBaseURL: res.data.data.legalBaseURL,corporateId:res.data.data.Bankcard,
         filesThree: res.data.data.lisenceURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.lisenceURL }],
         filesThreeSon: res.data.data.lisenceURL === '' ? '' : res.data.data.lisenceURL,
@@ -590,13 +590,13 @@ class inforSitePh extends React.Component {
 
 
   typeChange = e => {
-    this.setState({ bank_id: e, openingLine: '', backList: [] })
+    this.setState({ bank_id: e.toString(), openingLine: '', backList: [] })
   }
   cityChange = e => {
-    this.setState({ city_id: e, openingLine: '', backList: [] })
+    this.setState({ city_id: e.toString(), openingLine: '', backList: [] })
   }
   provinceChange = e => {
-    this.setState({ province_id: e, openingLine: '', backList: [] })
+    this.setState({ province_id: e.toString(), openingLine: '', backList: [] })
     this.getVenueOpenBankCity({ province_id: e })
   }
 
@@ -720,10 +720,6 @@ class inforSitePh extends React.Component {
       ProvinceBank: typeof (province_id) !== 'string' ? province_id : province_id,
       CityBank: typeof (city_id) !== 'string' ? city_id : city_id,
     }
-
-    
-   
-
     if (this.state.loading === false) {
       Toast.loading('图片上传中', 1);
     } else {
@@ -921,7 +917,7 @@ class inforSitePh extends React.Component {
     }else{
       this.setState({ valueTwo: 2 })
     }
-    this.setState({ value: e.target.value })
+    this.setState({ value: e.target.value,numRadioFive:e.target.value,numRadio:e.target.value })
   }
   numRadioThree = e => {
     this.setState({ valueTwo: e.target.value })
@@ -1240,12 +1236,12 @@ class inforSitePh extends React.Component {
           <div>
             <div className="listSon">
               <span>姓名</span>
-              <Input className="right" value={this.state.faName} placeholder="请输入法人姓名" onChange={this.faName} />
+              <Input className="right" value={this.state.faName} placeholder="请输入负责人姓名" onChange={this.faName} />
             </div>
 
             <div className="listSon">
               <span>手机号</span>
-              <Input className="right" value={this.state.faPhone} placeholder="请输入法人手机号" onChange={this.faPhone} />
+              <Input className="right" value={this.state.faPhone} placeholder="请输入负责人手机号" onChange={this.faPhone} />
             </div>
             <div className="listSon" style={this.state.valueThree === 2 ? {} : {display: 'none'}}>
               <span>身份证号</span>
@@ -1309,7 +1305,7 @@ class inforSitePh extends React.Component {
         <div className="listSon">
             <span style={{ float: 'left' }}>结算账号:</span>
             <Radio.Group style={{ float: 'left', fontSize: '0.75rem', marginLeft: '10%' }} onChange={this.numRadioFive} value={this.state.numRadioFive}>
-              <Radio value={0}>场馆归属人</Radio>
+              <Radio style={this.state.value===1?{display:'none'}:{}} value={0}>场馆归属人</Radio>
               <Radio value={1}>场馆负责人</Radio>
             </Radio.Group>
           </div>
@@ -1325,12 +1321,12 @@ class inforSitePh extends React.Component {
 
           <div className="listSon" style={this.state.numRadio === 1 ? { display: 'none' } : {}}>
             <span style={{ float: 'left' }}>公司名称</span>
-            <Input className="right" style={{ width: '80%', paddingLeft: '0.5rem', float: 'right' }} maxLength={18} placeholder="请输入公司名称" value={this.state.inCorName} onChange={this.inCorName} />
+            <Input className="right" style={{ width: '75%', paddingLeft: '0.5rem', float: 'right' }} maxLength={18} placeholder="请输入公司名称" value={this.state.inCorName} onChange={this.inCorName} />
           </div>
 
           <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
             <span style={{ float: 'left' }}>负责人姓名</span>
-            <Input className="right" style={{ width: '80%', paddingLeft: '0.5rem', float: 'right' }} maxLength={18} placeholder="请输入负责人姓名" value={this.state.inChargeNa} onChange={this.inChargeNa} />
+            <Input className="right" style={{ width: '75%', paddingLeft: '0.5rem', float: 'right' }} maxLength={18} placeholder="请输入负责人姓名" value={this.state.inChargeNa} onChange={this.inChargeNa} />
           </div>
 
          
@@ -1338,7 +1334,7 @@ class inforSitePh extends React.Component {
 
           <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
             <span style={{ float: 'left' }}>负责人身份证号</span>
-            <Input className="right" style={{ width: '75%', paddingLeft: '0.5rem', float: 'right' }} maxLength={18} placeholder="请输入法人身份证号" value={this.state.corporateId} onChange={this.corporateId} />
+            <Input className="right" style={{ width: '75%', paddingLeft: '0.5rem', float: 'right' }} maxLength={18} placeholder="请输入负责人身份证号" value={this.state.corporateId} onChange={this.corporateId} />
           </div>
 
           <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>

@@ -22,12 +22,13 @@ import temporaryPh from './phone/temporaryPh/temporaryPh';
 import untiePhonePh from './phone/untiePhonePh/untiePhonePh';
 import resetPasswordPh from './phone/resetPasswordPh/resetPasswordPh';
 import inforSitePh from './phone/inforSitePh/inforSitePh';
-import appOrder from './phone/appOrder/appOrder';
 import Agreement from './phone/Agreement/Agreement';
 import phone from './phone/phone/phone';
 import homePagePh from './phone/homePagePh/homePagePh';
 import Membership from './phone/Membership/Membership';
 import MembershipList from './phone/MembershipList/MembershipList';
+import lazyLoad from './lazyLoad';
+const appOrder = lazyLoad(() => import('./phone/appOrder/appOrder'));
 
 const BasicRoute = () => (
     <HashRouter>

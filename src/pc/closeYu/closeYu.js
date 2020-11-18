@@ -361,7 +361,7 @@ class closeYu extends React.Component {
             okText="确定"
             cancelText="取消"
           >
-            <div className="submit" style={{ lineHeight: '28px', marginLeft: '70px' }} onClick={this.modelSubmit}>确认</div>
+            <div className="submit" style={{ lineHeight: '28px', marginLeft: '70px',textAlign:'center' }} onClick={this.modelSubmit}>确认</div>
           </Popconfirm>
         </Modal>
       </div>

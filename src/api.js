@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 //本地全部隐去
-// axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
+axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
 // axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
 
 // export let imgUrlTwo='https://app.tiaozhanmeiyitian.com/'  //正式图片路径
@@ -13,6 +13,7 @@ export let wsFn = new WebSocket("wss://cgstg.zhaoduishou.com/socket");//测试so
 export function _login(data){    //登录
     return axios.post('/api/getVenueLogin',data)
 }
+
 export function _register(data){   //注册
     return axios.post('/api/venueregister',data) 
 }
