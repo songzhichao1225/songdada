@@ -1,14 +1,14 @@
 import axios from 'axios';
 
 //本地全部隐去
-axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
-// axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
+// axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
+axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
 
-// export let imgUrlTwo='https://app.tiaozhanmeiyitian.com/'  //正式图片路径
-export let imgUrlTwo='https://appstg.tiaozhanmeiyitian.com/'  //测试图片路径
+export let imgUrlTwo='https://app.tiaozhanmeiyitian.com/'  //正式图片路径
+// export let imgUrlTwo='https://appstg.tiaozhanmeiyitian.com/'  //测试图片路径
 
-// export let wsFn = new WebSocket("wss://www.cg.zhaoduishou.com/socket");//正式socket
-export let wsFn = new WebSocket("wss://cgstg.zhaoduishou.com/socket");//测试socket
+export let wsFn = new WebSocket("wss://www.cg.zhaoduishou.com/socket");//正式socket
+// export let wsFn = new WebSocket("wss://cgstg.zhaoduishou.com/socket");//测试socket
 
 export function _login(data){    //登录
     return axios.post('/api/getVenueLogin',data)
@@ -20,7 +20,7 @@ export function _register(data){   //注册
 
 export function VenueChangePassword(data,headers){   //重置密码
     return axios.post('/api/VenueChangePassword',data,{headers: {'token': headers}})
-}
+} 
 
 
 export function getPromoteName(data){   //输入推广专员id号显示其姓名
@@ -179,6 +179,7 @@ export function VenueInformationSave(data,headers){    //修改场馆基本信�
 export function getVenueNewsList(data,headers){    //消息中心列表
     return axios.post('/api/getVenueNewsList',data, {headers: {'token': headers}})
 }
+
 
 export function getVenueNewsReceivedList(data,headers){    //我发布的消息
     return axios.post('/api/getVenueNewsReceivedList',data, {headers: {'token': headers}})
@@ -485,6 +486,19 @@ export function TemporaryQualificationInformation_another(data,headers){    //�
 export function DeductTheTimesOfClosing(data,headers){    //场馆端~扣除篮球散场次数 
     return axios.post('/api/DeductTheTimesOfClosing',data,{headers: {'token': headers}})
 }
+
+export function BreakUpConsumptionDetails(data,headers){    //获取散场的扣除记录
+    return axios.post('/api/BreakUpConsumptionDetails',data,{headers: {'token': headers}})
+}
+
+export function VenueAdvertiseFirst(data,headers){    //查询某个场馆设置的广告宣传图片
+    return axios.post('/api/VenueAdvertiseFirst',data,{headers: {'token': headers}})
+}
+
+export function VenueAdvertiseSave(data,headers){    //在场馆端添加app端显示的广告图片
+    return axios.post('/api/VenueAdvertiseSave',data,{headers: {'token': headers}})
+}
+
   
 
 

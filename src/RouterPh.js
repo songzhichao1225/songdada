@@ -27,6 +27,7 @@ import phone from './phone/phone/phone';
 import homePagePh from './phone/homePagePh/homePagePh';
 import Membership from './phone/Membership/Membership';
 import MembershipList from './phone/MembershipList/MembershipList';
+import advertisingPh from './phone/advertisingPh/advertisingPh';
 import lazyLoad from './lazyLoad';
 const appOrder = lazyLoad(() => import('./phone/appOrder/appOrder'));
 
@@ -55,12 +56,14 @@ const BasicRoute = () => (
             <Route exact path="/homePh/untiePhonePh" component={untiePhonePh}/>
             <Route exact path="/homePh/resetPasswordPh" component={resetPasswordPh}/>
             <Route exact path="/homePh/inforSitePh" component={inforSitePh}/>
+            <Route exact path="/homePh/advertisingPh" component={advertisingPh}/>
             <Route  path="/homePh" component={homePagePh}/>
             <Route exact path="/appOrder" component={appOrder}/>
             <Route exact path="/phone" component={phone}/>
             <Route exact path="/Agreement" component={Agreement}/>
             <Route exact path="/Membership" component={Membership}/>
             <Route exact path="/MembershipList" component={MembershipList}/>
+            
             
         </Switch>
     </HashRouter>

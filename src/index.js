@@ -8,6 +8,7 @@ import * as serviceWorker from './serviceWorker';
 import { message } from 'antd';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/es/locale/zh_CN';
+
 message.config({
   top: 100,
   duration:1,

@@ -106,7 +106,8 @@ class minePh extends React.Component {
     this.setState({ page: page })
   }
   Agreement=()=>{
-    this.props.history.push('/Agreement')
+    this.props.history.push({ pathname: '/Agreement', query: { flag:1} })
+    
   }
 
   render() {

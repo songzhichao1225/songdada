@@ -66,6 +66,10 @@
     justify-content: center;
     background: #fff;
 }
+.ko .ant-modal-footer{
+    display: none;
+}
+
 .orderList .ant-row{
     background: #fff;
     border-bottom:1px solid #f5f5f5;
@@ -415,9 +419,11 @@
     padding:0 5px;
     margin-left:10px;
     font-size: 14px;
-    background-color: #ccc;
+    color: #fff;
+    background-color: #1890ff;
     border-bottom: 1px solid #000;
     border-radius: 3px;
+    font-weight: bold;
 
 }
 .orderList .sijn:hover{

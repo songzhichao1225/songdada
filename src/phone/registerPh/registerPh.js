@@ -295,7 +295,7 @@ Agreement=()=>{
           <div className="input">
             <InputItem
               type='text'
-              placeholder="用户名只能包含数字、字母、数字+字母"
+              placeholder="只能包含数字、字母、数字+字母"
               clear={false}
               style={{ fontSize: '0.8rem'}}
               value={this.state.name}

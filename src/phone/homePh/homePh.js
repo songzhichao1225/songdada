@@ -134,8 +134,8 @@ class homePh extends React.Component {
               <div className="homeScroll" >
                 <div onTouchStart={this.yuYue}><span className="title" >今日成功预约</span><div className="content"><span>{this.state.getVenue.today_count}</span><span>单</span></div></div>
                 <div onTouchStart={this.yuYueTwo}><span className="title">本月成功预约</span><div className="content"><span>{this.state.getVenue.month_count}</span><span>单</span></div></div>
-                <div onClick={this.dayIncomePh}><span className="title" >今日收入</span><div className="content"><span>￥{this.state.getVenue.today_money}</span></div></div>
-                <div onClick={this.monthlyIncomePh}><span className="title" >本月收入</span><div className="content"><span>￥{this.state.getVenue.month_money}</span></div></div>
+            <div onClick={this.dayIncomePh}><span className="title" >今日收入</span><div className="content"><span style={{display:'block',fontSize:'0.75rem',fontWeight:500}}>会员卡扣款：￥{this.state.getVenue.today_member_money}</span><span style={{display:'block',fontSize:'0.75rem'}}>钱包到账：￥{this.state.getVenue.today_money}</span></div></div>
+                <div onClick={this.monthlyIncomePh}><span className="title" >本月收入</span><div className="content"><span style={{display:'block',fontSize:'0.75rem',fontWeight:500}}>会员卡扣款：￥{this.state.getVenue.month_member_money}</span><span style={{display:'block',fontSize:'0.75rem'}}>钱包到账：￥{this.state.getVenue.month_money}</span></div></div>
                 <div onTouchStart={this.commentPh}><span className="title" >场馆评分  {this.state.getVenue.score}分</span>
                   <div className="content">
                     <div className="img">
@@ -148,7 +148,7 @@ class homePh extends React.Component {
                       <img src={this.state.getVenue.score >= 3 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 3 && this.state.getVenue.score > 2 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
                     </div>
                     <div className="img">
-                      <img src={this.state.getVenue.score >= 4 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 4 && this.state.getVenue.score > 3 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
+                      <img src={this.state.getVenue.score >= 4 ? require ("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 4 && this.state.getVenue.score > 3 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
                     </div>
                     <div className="img">
                       <img src={this.state.getVenue.score >= 5 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 5 && this.state.getVenue.score > 4 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />

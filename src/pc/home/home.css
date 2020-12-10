@@ -141,7 +141,7 @@ clear: left;
  margin-left: 0;
 }
 .homePage .divContent>div{
-    width: 18%;
+    width: 280px;
     height: 120px;
     margin-left:2%;
     float: left;
@@ -192,11 +192,11 @@ clear: left;
     font-size: 22px;
     display: block;
     color: #FFFFFF;
-    margin-top: 23%;
+    margin-top: 5%;
     margin-left: 17px;
 }
-.homePage .divContent .left span:last-child{
-    font-size: 25px;
+.homePage .divContent .left span{
+    font-size: 17px;
     display: block;
     color: #FFFFFF;
     margin-left: 17px;

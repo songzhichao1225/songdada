@@ -3,7 +3,7 @@ import './myWallet.css';
 import 'antd/dist/antd.css';
 import { getVenueMoneyList, getVenueWithdrawalList, imgUrlTwo,getVenueWithdrawalOneList, VenueWithdrawal, getReceivingBankQualifications, gerVenueName, getVenueMembershipCardConsumptionList, MembershipCollectionAgreeToRefuse, getCompleteMembershipRechargeDetails, getMembershipCollectionDetails, MembershipRechargeAgreeToRefuse, getMembershipRechargeDetails, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankList, getVenueOpenBankCity, VenueReceivingBankInformation } from '../../api';
 import { DatePicker, Row, Col, Pagination, message, Input, Modal, Radio, Upload, Select, Popconfirm, Button } from 'antd';
-import { } from '@ant-design/icons';
+import { CloseCircleOutlined} from '@ant-design/icons';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import locale from 'antd/es/date-picker/locale/zh_CN';
@@ -88,14 +88,15 @@ class myWallet extends React.Component {
     sumptionListNum: 0,
     numRadioTwo: 0,//结算账号
     inCorName:'',
-    inChargeNa:'',//负责人姓名
+    inChargeNa:'',//负责人姓名,
+    pageTwo:1,
   }
 
   dateChange = (data, dateString) => {
     this.setState({ dateString: dateString, start: dateString[0], end: dateString[1], kod: 1 })
   }
   search = () => {
-    this.setState({ kod: 0 })
+    this.setState({ kod: 0,page:1 })
     this.getVenueMoneyList({ start: this.state.dateString[0], end: this.state.dateString[1], page: 1 })
   }
 
@@ -264,8 +265,6 @@ class myWallet extends React.Component {
       this.props.history.push('/')
       message.error('登录超时请重新登录!')
     } else {
-      res.data.data.Bankaccount = res.data.data.Bankaccount.slice(res.data.data.Bankaccount.length - 4, res.data.data.Bankaccount.length)
-      res.data.data.legalname = '***' + res.data.data.legalname.slice(-1)
       this.setState({ walletList: res.data.data })
     }
   }
@@ -664,7 +663,10 @@ class myWallet extends React.Component {
             </div>
             
             <div className="home">
-              <span style={{ marginLeft: -15 }}>提现银行卡:</span><span className="textNext">{'******' + this.state.walletList.Bankaccount} {this.state.walletList.OpeningBank}</span>
+            <div><span style={{ marginLeft: -2}}></span>银行账户:<span className="textNext">{this.state.walletList.Settlement===0?'公司账户':'个人账户'}</span></div>
+            <div><span style={{ marginLeft: -30 }}>提现银行卡号:</span><span className="textNext">{'******' + this.state.walletList.Bankaccount}</span></div>
+            <div><span style={{ marginLeft: -42 }}>提现银行卡支行:</span><span className="textNext">{this.state.walletList.OpeningBank}</span></div>
+             
               <div className="listSon">
                 <span>提现金额:</span>
                 <Input className="input" onChange={this.allNow} value={this.state.moneyYuan} />&nbsp;&nbsp;&nbsp;元
@@ -746,6 +748,7 @@ class myWallet extends React.Component {
           onOk={this.handleOk}
           className="mode"
           onCancel={this.handleCancelOne}
+          closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
         >
           <p><span className="vipLeft">持卡人</span>北京甲乙电子商务有限公司(找对手平台)</p>
           <p><span className="vipLeft">会员卡余额</span>￥{this.state.vipList.balance}</p>
@@ -762,6 +765,7 @@ class myWallet extends React.Component {
           onOk={this.handleOk}
           className="mode"
           onCancel={this.handleCancelThree}
+          closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
         >
           <p><span className="vipLeft">持卡人</span>北京甲乙电子商务有限公司(找对手平台)</p>
           <p><span className="vipLeft">充值金额</span>￥{this.state.vipListTwo.PlanRecharge}</p>
@@ -776,6 +780,7 @@ class myWallet extends React.Component {
           className="mode"
           width={600}
           onCancel={this.handleCancelTwo}
+          closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
         >
          <div className="listing">
               <span>结算账号:</span>
@@ -815,7 +820,7 @@ class myWallet extends React.Component {
               listType="picture-card"
               className="avatar-uploader addImg"
               showUploadList={false}
-              action="/api/UploadVenueImgs?type=Venue"
+              action={imgUrlTwo+"api/UploadVenueImgs?type=VenueIdCardImgs"}
               beforeUpload={beforeUpload}
               onChange={this.handleChangeTwo}
               accept=".jpg, .jpeg, .png"
@@ -827,7 +832,7 @@ class myWallet extends React.Component {
               listType="picture-card"
               className="avatar-uploader addImg ko"
               showUploadList={false}
-              action="/api/UploadVenueImgs?type=Venue"
+              action={imgUrlTwo+"api/UploadVenueImgs?type=VenueIdCardImgs"}
               beforeUpload={beforeUpload}
               onChange={this.handleChangeThree}
               accept=".jpg, .jpeg, .png"

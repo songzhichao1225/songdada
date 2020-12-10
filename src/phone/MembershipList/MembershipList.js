@@ -46,12 +46,12 @@ class MembershipList extends React.Component {
   }
 
   Income = () => {
-    this.setState({ index: 2, sumptionList: [] })
-    this.getVenueMembershipCardConsumptionList({ page: this.state.pageTwo, type: 2, startdate: this.state.qiStart, enddate: this.state.qiEnd })
+    this.setState({ index: 2, sumptionList: [],pageTwo:1 })
+    this.getVenueMembershipCardConsumptionList({ page:1, type: 2, startdate: this.state.qiStart, enddate: this.state.qiEnd })
   }
   Outlay = () => {
-    this.setState({ index: 1, sumptionList: [] })
-    this.getVenueMembershipCardConsumptionList({ page: this.state.pageTwo, type: 1, startdate: this.state.qiStart, enddate: this.state.qiEnd })
+    this.setState({ index: 1, sumptionList: [],pageTwo:1 })
+    this.getVenueMembershipCardConsumptionList({ page:1, type: 1, startdate: this.state.qiStart, enddate: this.state.qiEnd })
   }
 
 
@@ -62,7 +62,7 @@ class MembershipList extends React.Component {
 
  qiStart=e=>{
    
-   this.setState({qiStart: e.toLocaleDateString(),qiEnd:e.toLocaleDateString()})
+   this.setState({qiStart: e.toLocaleDateString()})
    this.getVenueMembershipCardConsumptionList({ page: this.state.pageTwo, type: this.state.index, startdate: e.toLocaleDateString().replace(/\//g, "-"), enddate: this.state.qiEnd })
  }
 

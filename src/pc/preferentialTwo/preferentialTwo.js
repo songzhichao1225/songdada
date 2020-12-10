@@ -252,7 +252,6 @@ class appointmentList extends React.Component {
     })
 
 
-
   }
 
 
@@ -370,11 +369,7 @@ class appointmentList extends React.Component {
 
   placeSubmit = () => {
     let { venueidids, dtime, placeHui, placeName, placePhone, placeQi } = this.state
-    if((/^1[3|4|5|8][0-9]\d{4,8}$/.test(placePhone)) === false){
-      message.error('请输入正确手机号')
-    }else if(placePhone.length!==11){
-      message.error('请输入正确手机号')
-    }else{
+   
       let obj = {
         placeHui: placeHui,
         placeName: placeName,
@@ -384,7 +379,7 @@ class appointmentList extends React.Component {
 
       this.VenueClickCancelPlace({ uuid: '', date: this.state.dateString, venueid: venueidids, other: JSON.stringify(obj), time: dtime, sportid: this.state.liNum, type: 1 })
     
-    }
+    
  
   }
 
@@ -594,7 +589,7 @@ class appointmentList extends React.Component {
           onOk={this.handleOk}
           className="mode"
           onCancel={this.handleCancelInFo}
-          closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
+          closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px',lineHeight:'30px' }} />}
         >
           <div style={{ overflow: 'hidden' }}>
             <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>姓名：</span>
@@ -602,7 +597,7 @@ class appointmentList extends React.Component {
           </div>
           <div style={{ overflow: 'hidden', marginTop: '10px' }}>
             <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>手机号：</span>
-            <Input style={{ width: 250, float: 'left' }} maxLength={11} value={this.state.placePhone} onChange={this.placePhone} placeholder="(必填)" />
+            <Input style={{ width: 250, float: 'left' }} maxLength={11} value={this.state.placePhone} onChange={this.placePhone} placeholder="(选填)" />
           </div>
           <div style={{ overflow: 'hidden', marginTop: '10px' }}>
             <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>会员卡卡号：</span>

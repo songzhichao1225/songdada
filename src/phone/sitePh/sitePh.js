@@ -48,6 +48,7 @@ class sitePh extends React.Component {
       { label: '网球', value: 12 }
     ],
     ListSportTwo: [{ label: '半场', value: 1 }, { label: '散场', value: 2 }],
+    ListSportThree: [{ label: '按时(收费)', value: 3 }, { label: '按次(收费)', value: 4 }],
     timeRtArr: [{ label: '00:00', value: '00:00' }, { label: '00:30', value: '00:30' }, { label: '01:00', value: '01:00' }, { label: '01:30', value: '01:30' }, { label: '02:00', value: '02:00' }, { label: '02:30', value: '02:30' }, { label: '03:00', value: '03:00' }, { label: '03:30', value: '03:30' }, { label: '04:00', value: '04:00' }, { label: '04:30', value: '04:30' }, { label: '05:00', value: '05:00' }, { label: '05:30', value: '05:30' }, { label: '06:00', value: '06:00' }, { label: '06:30', value: '06:30' }, { label: '07:00', value: '07:00' }, { label: '07:30', value: '07:30' }, { label: '08:00', value: '08:00' }, { label: '08:30', value: '08:30' }, { label: '09:00', value: '09:00' }, { label: '09:30', value: '09:30' }, { label: '10:00', value: '10:00' }, { label: '10:30', value: '10:30' }, { label: '11:00', value: '11:00' }, { label: '11:30', value: '11:30' }, { label: '12:00', value: '12:00' }, { label: '12:30', value: '12:30' }, { label: '13:00', value: '13:00' }, { label: '13:30', value: '13:30' }, { label: '14:00', value: '14:00' }, { label: '14:30', value: '14:30' }, { label: '15:00', value: '15:00' }, { label: '15:30', value: '15:30' }, { label: '16:00', value: '16:00' }, { label: '16:30', value: '16:30' }, { label: '17:00', value: '17:00' }, { label: '17:30', value: '17:30' }, { label: '18:00', value: '18:00' }, { label: '18:30', value: '18:30' }, { label: '19:00', value: '19:00' }, { label: '19:30', value: '19:30' }, { label: '20:00', value: '20:00' }, { label: '20:30', value: '20:30' }, { label: '21:00', value: '21:00' }, { label: '21:30', value: '21:30' }, { label: '22:00', value: '22:00' }, { label: '22:30', value: '22:30' }, { label: '23:00', value: '23:00' }, { label: '23:30', value: '23:30' }, { label: '24:00', value: '24:00' }],
     Longest: [{ label: '一周', value: 0.1 }, { label: '两周', value: 0.2 }, { label: '三周', value: 0.3 }, { label: '一个月', value: 1 }, { label: '两个月', value: 2 },],
     Shortest: [{ label: '不限', value: 0 }, { label: '30分钟', value: 30 }, { label: '60分钟', value: 60 }, { label: '2小时', value: 120 }, { label: '3小时', value: 180 }, { label: '4小时', value: 240 }, { label: '6小时', value: 360 }, { label: '24小时', value: 1440 }, { label: '48小时', value: 2280 }, { label: '72小时', value: 4320 },],
@@ -650,7 +651,7 @@ class sitePh extends React.Component {
   async getVenueNumberTitleSave(data) {
     const res = await getVenueNumberTitleSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ visibleXi: false, firstUUid: '', upData: 0, page: this.state.page })
+      this.setState({ visibleXi: false, firstUUid: '', upData: 0, page: this.state.page,typeTwo:[0] })
       this.getVenueNumberTitleList({ page: this.state.page, sportid: this.state.asyncValue })
     } else {
       Toast.fail(res.data.msg, 1);
@@ -665,10 +666,10 @@ class sitePh extends React.Component {
       Toast.fail('请选择细分标签', 1);
     } else if (chekedArr.length === 0) {
       Toast.fail('请选择场地编号', 1);
-    } else if (this.state.pickerValue[0] === 6 && this.state.typeTwo[0] === 0) {
+    } else if (this.state.pickerValue[0] === 6&&this.state.pickerValue[0] === 2 && this.state.typeTwo[0] === 0) {
       Toast.fail('请选择场地类型', 1);
     } else {
-      let title=idxTitleTwo.indexOf('-') === -1 ? this.state.typeTwo[0] === 2 ? idxTitleTwo + '-散场' : this.state.typeTwo[0] === 1 ? idxTitleTwo + '-半场' : idxTitleTwo : idxTitleTwo
+      let title=idxTitleTwo.indexOf('-') === -1 ? this.state.typeTwo[0] === 2 ? idxTitleTwo + '-散场' : this.state.typeTwo[0] === 1 ? idxTitleTwo + '-半场' :this.state.typeTwo[0] === 3 ? idxTitleTwo + '-按时':this.state.typeTwo[0] === 4 ? idxTitleTwo + '-按次': idxTitleTwo : idxTitleTwo
       this.getVenueNumberTitleSave({ sportid: pickerValue[0], title: title, venueid: chekedArr.join(','), number: chekedArr.length, uuid: this.state.firstUUid, type: this.state.typeTwo[0] })
     }
   }
@@ -836,8 +837,8 @@ class sitePh extends React.Component {
         })
       }
     }
-    if (this.state.titleArr[v].label.indexOf('散') !== -1) {
-      this.setState({ pickerValueFive: -1, starttime: '00:00', endtime: '24:00', timeFalg: false })
+    if (this.state.titleArr[v].label.indexOf('散') !== -1||this.state.titleArr[v].label.indexOf('按次') !== -1) {
+      this.setState({ pickerValueFive: -1, starttime: ['00:00'], endtime: ['24:00'], timeFalg: false })
     } else {
       this.setState({ pickerValueFive: '', timeFalg: true })
     }
@@ -903,7 +904,7 @@ class sitePh extends React.Component {
       Toast.fail('请选择场地类型', 1);
     } else if (pickerValueThree.length === 0) {
       Toast.fail('请选择细分标签', 1);
-    } else if (Liturgyche === '请选择') {
+    } else if (titleArr[pickerValueThree].label.indexOf('散场')===-1&&titleArr[pickerValueThree].label.indexOf('按次')===-1&&Liturgyche === '请选择') {
       Toast.fail('请选择星期', 1);
     } else if (starttime.length === undefined) {
       Toast.fail('请选择开始时间', 1);
@@ -922,7 +923,7 @@ class sitePh extends React.Component {
         sportid: pickerValueTwo,
         sportname: pickerValueTwo === 1 ? '羽毛球' : pickerValueTwo === 2 ? '乒乓球' : pickerValueTwo === 3 ? '台球中式黑八' : pickerValueTwo === 4 ? '台球美式九球' : pickerValueTwo === 5 ? '台球斯诺克' : pickerValueTwo === 6 ? '篮球' : pickerValueTwo === 7 ? '足球11人制' : pickerValueTwo === 8 ? '足球8人制' : pickerValueTwo === 9 ? '足球7人制' : pickerValueTwo === 10 ? '足球5人制' : pickerValueTwo === 11 ? '排球' : pickerValueTwo === 12 ? '网球' : '',
         tags: titleArr[pickerValueThree].label,
-        openday: LiturgycheNum,
+        openday:titleArr[pickerValueThree].label.indexOf('散场')!==-1||titleArr[pickerValueThree].label.indexOf('按次')!==-1?'1,2,3,4,5,6,7': LiturgycheNum,
         opendayname: Liturgyche,
         starttime: starttime[0],
         endtime: endtime[0],
@@ -949,7 +950,7 @@ class sitePh extends React.Component {
           for (let i in that.state.titleArr) {
 
             if (that.state.titleArr[i].label === res.data.data[0].tags) {
-              if (that.state.titleArr[i].label.indexOf('散') !== -1) {
+              if (that.state.titleArr[i].label.indexOf('散') !== -1||that.state.titleArr[i].label.indexOf('按次') !== -1) {
                 this.setState({ pickerValueFive: -1, starttime: ['00:00'], endtime: ['24:00'], timeFalg: false })
               } else {
                 this.setState({ pickerValueFive: [res.data.data[0].appointmenttime], starttime: [res.data.data[0].starttime], endtime: [res.data.data[0].endtime], timeFalg: true })
@@ -1248,13 +1249,13 @@ class sitePh extends React.Component {
                       <div>场地数量：{item.sitenumber}</div>
                       <div onClick={this.venDuo} data-venueid={item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}>星期：{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</div>
                       <div onClick={this.venDuo} data-venueid={item.starttime + '~' + item.endtime}>时间范围：{item.starttime}~{item.endtime}</div>
-                      <div>价格：{item.costperhour}元/时</div>
+                      <div>价格：{item.tags.indexOf('散') === -1||item.tags.indexOf('按次') === -1?item.costperhour+'元/时':item.costperhour+'元/次'}</div>
                       <div onClick={this.venDuo} data-venueid={item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}>最长提前预定时间：{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</div>
                       <div onClick={this.venDuo} data-venueid={item.appointmenttime / 60 + '小时'}>最短提前预定时间：{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</div>
                       <div onClick={item.comment === null ? '' : this.venDuo} data-venueid={item.comment === '' ? '无' : item.comment}>备注：{item.comment === '' ? '无' : item.comment}</div>
                     </div>
                   </Card.Body>
-                  <Card.Footer content={<div><div style={item.tags.indexOf('散') !== -1 ? {} : { display: "none" }}></div><div style={item.tags.indexOf('散') === -1 ? {} : { display: "none" }} className="lookYou" onClick={this.specialOffer} data-uuid={item.uuid}>{item.discount_date !== null ? '查看特定' : '添加特定'}</div></div>} extra={<div className="capzuo"><img style={{ marginRight: '10px' }} onClick={this.jiaUpdata} data-uuid={item.uuid} src={require('../../assets/upLoad.png')} alt="img" /><img onClick={() =>
+                  <Card.Footer content={<div><div style={item.tags.indexOf('散') !== -1||item.tags.indexOf('按次') !== -1 ? {} : { display: "none" }}></div><div style={item.tags.indexOf('散') === -1||item.tags.indexOf('按次') === -1 ? {} : { display: "none" }} className="lookYou" onClick={this.specialOffer} data-uuid={item.uuid}>{item.discount_date !== null ? '查看特定' : '添加特定'}</div></div>} extra={<div className="capzuo"><img style={{ marginRight: '10px' }} onClick={this.jiaUpdata} data-uuid={item.uuid} src={require('../../assets/upLoad.png')} alt="img" /><img onClick={() =>
                     alert('提示', '您确定要删除该条价格设置么？删除后用户将无法预订该时间段' + item.sportname + '的' + item.tags + '场地。', [
                       { text: '取消', onPress: () => console.log('cancel') },
                       { text: '确定', onPress: () => this.DelSiteSetting({ uuid: item.uuid }) },
@@ -1343,15 +1344,15 @@ class sitePh extends React.Component {
           <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} onClick={this.state.upData === 1 ? '' : this.visibleTitle} extra={this.state.idxTitleTwo} style={{ borderBottom: '1px solid #E9E9E9' }}>细分标签</List.Item>
 
           <Picker
-            data={this.state.ListSportTwo}
+            data={this.state.pickerValue[0] === 6?this.state.ListSportTwo:this.state.ListSportThree}
             value={this.state.typeTwo}
             disabled={this.state.upData === 1 ? true : false}
-            onOk={v => this.setState({ typeTwo: v })}
+            onOk={v => this.setState({ typeTwo: v,chekedArr:v[0]===4?['场地不固定']:[] }) }
             cols={1} className="forss">
-            <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} style={this.state.pickerValue[0] === 6 ? { borderBottom: '1px solid #E9E9E9' } : { display: 'none' }}>场地类型</List.Item>
+            <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} style={this.state.pickerValue[0] === 6||this.state.pickerValue[0] === 2 ? { borderBottom: '1px solid #E9E9E9' } : { display: 'none' }}>收费类型</List.Item>
           </Picker>
 
-          <List.Item arrow="horizontal" onClick={this.Serial} extra={this.state.chekedArr.length === 0 ? '请选择' : this.state.chekedArr.join(',')} style={{ borderBottom: '1px solid #E9E9E9' }}>场地编号</List.Item>
+          <List.Item arrow="horizontal" onClick={this.state.typeTwo[0]!==4?this.Serial:this.sdkgfjisdhjugus} extra={this.state.chekedArr.length === 0 ? '请选择' : this.state.chekedArr.join(',')} style={{ borderBottom: '1px solid #E9E9E9' }}>场地编号</List.Item>
           <List.Item arrow="empty" extra={this.state.chekedArr.length} style={{ borderBottom: '1px solid #E9E9E9' }}>场地数量</List.Item>
           <div className="btnSub" onTouchStart={this.xifenPush}>提交</div>
 
@@ -1398,7 +1399,7 @@ class sitePh extends React.Component {
           <div className="sitePhtitle">
 
             <div className="titleHead">
-              <InputItem style={{ fontSize: '0.75rem' }} maxLength={4} placeholder-style={{ fontSize: '0.75rem' }} onChange={this.joinTitleC} placeholder="新增标签最多输入5个字符"></InputItem>
+              <InputItem style={{ fontSize: '0.75rem' }} maxLength={4} placeholder-style={{ fontSize: '0.75rem' }} onChange={this.joinTitleC} placeholder="新增标签最多输入4个字符"></InputItem>
             </div>
             <div className="btnComfir" onTouchStart={this.joinTitleTwo}>确定</div>
 
@@ -1456,7 +1457,7 @@ class sitePh extends React.Component {
 
           <List.Item arrow={this.state.jiageUUid !== '' ? 'empty' : 'horizontal'} extra={<span className="bianhao">{this.state.cheStr === '' ? '无' : this.state.cheStr}</span>} style={{ borderBottom: '1px solid #E9E9E9' }}>场地编号</List.Item>
           <List.Item arrow="empty" extra={this.state.titleArrFoterNum} style={{ borderBottom: '1px solid #E9E9E9' }} >场地数量</List.Item>
-          <List.Item arrow="horizontal" extra={this.state.Liturgyche} className="lpko" onClick={this.Liturgy} style={{ borderBottom: '1px solid #E9E9E9' }} >星期</List.Item>
+          <List.Item arrow="horizontal" extra={this.state.Liturgyche} className="lpko" onClick={this.Liturgy} style={this.state.timeFalg === true ?{ borderBottom: '1px solid #E9E9E9' }:{display:'none'}} >星期</List.Item>
 
 
           <Picker

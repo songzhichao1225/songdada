@@ -4,7 +4,7 @@ import './orderPhT.css';
 import { Toast, Card, Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Pagination, Drawer, Spin } from 'antd';
-import { getReservationActivitieslist, VenueSendMessage, getVenueSport, getVenueNumberTitleList, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave, getVenueSporttypelist,DeductTheTimesOfClosing } from '../../api';
+import { getReservationActivitieslist, VenueSendMessage, getVenueSport, getVenueNumberTitleList, VenueNumberSporttypeSave, DelVenueNumberTitle,BreakUpConsumptionDetails, getVenueNumberTitleSave, getVenueSporttypelist,DeductTheTimesOfClosing } from '../../api';
 import { LoadingOutlined, } from '@ant-design/icons';
 import moment from 'moment';
 const prompt = Modal.prompt;
@@ -101,6 +101,9 @@ class orderPhT extends React.Component {
     paied:2,
     headTop:'0',
     onSearchInput:'',
+    deducting:false,
+    deductingdetails: [],
+    isfinsh:0,
   }
 
 
@@ -110,11 +113,6 @@ class orderPhT extends React.Component {
       this.setState({ topNumList: res.data.data })
     }
   }
-
-
-
-
-
 
 
   async getReservationActivitieslist(data) {
@@ -483,7 +481,7 @@ class orderPhT extends React.Component {
   }
 
   headTop = e => {
-    this.setState({ headTop: e.currentTarget.dataset.index, page: 1, sportIdVal: '', statusIdVal: 10, paied: '2' })
+    this.setState({ headTop: e.currentTarget.dataset.index, page: 1, sportIdVal: 0, statusIdVal: 10, paied: '2' })
     setTimeout(() => {
       this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate:  this.state.start, enddate:  this.state.end, paied: this.state.paied, reserve: this.state.headTop })
     }, 500)
@@ -515,6 +513,23 @@ class orderPhT extends React.Component {
     ]);
   }
 
+  async BreakUpConsumptionDetails(data) {
+    const res = await BreakUpConsumptionDetails(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ deductingdetails: res.data.data.details,isfinsh:res.data.data.isfinsh })
+    } 
+  }
+
+
+
+  deducting=e=>{
+    this.setState({deducting:true})
+    this.BreakUpConsumptionDetails({publicuuid:e.currentTarget.dataset.uuid})
+  }
+
+  deductingTwo=()=>{
+    this.setState({deducting:false})
+  }
 
 
 
@@ -601,6 +616,7 @@ class orderPhT extends React.Component {
                             ))
                           }
                         </div>
+                        <div style={{color:'#4A90E2'}} data-uuid={item.uuid} onClick={this.deducting}>扣除<br/>记录</div>
                       </div>
                       <div>
                         <span className="footerOne" style={this.state.headTop === '0' ? {} : { display: 'none' }}>时长:{item.PlayTime}小时</span>
@@ -626,6 +642,21 @@ class orderPhT extends React.Component {
           <div style={this.state.spin === false && this.state.activeSon.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (5).png')} alt="444" /><span style={{ display: 'block', textAlign: 'center' }}>没有相关预约活动!</span></div>
         </div>
 
+        <Modal
+          visible={this.state.deducting}
+          transparent
+          onClose={this.deductingTwo}
+          title="扣除记录"
+          style={{width:'90%',minHeight:'10rem'}}
+        >
+          <div style={this.state.isfinsh===0?{display:'none'}:{fontSize:'14px',fontWeight:'bold',color:'#333'}}>所有散场次数已消费完</div>
+          {
+            this.state.deductingdetails.map((item,i)=>(
+            <div key={i} style={{fontSize:'12px',clear:'both',lineHeight:'25px'}}><span style={{float:'left',width:'60%',textAlign:'left'}}>{item.comment}</span><span style={{float:'right'}}>{item.time}</span></div>
+            ))
+          }
+        </Modal>
+
 
 
 
@@ -644,7 +675,7 @@ class orderPhT extends React.Component {
           <div className="drawerBoss">
             {
               this.state.sport.map((item, i) => (
-                <div key={i} onClick={this.sport} data-index={i} data-id={item.id} style={parseInt(this.state.sportIdVal) === item.id ? { background: '#D85D27', color: '#fff' } : {}}>{item.name}</div>
+                <div key={i} onClick={this.sport} data-index={i} data-id={item.id} style={parseInt(this.state.sportIdVal)=== item.id ? { background: '#D85D27', color: '#fff' } : {}}>{item.name}</div>
               ))
             }
           </div>

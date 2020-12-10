@@ -80,6 +80,8 @@ class home extends React.Component {
     getVenueToday_count: '',
     getVenueScore: '',
     ishaverecharge:0,
+    month_member_money:'',
+    today_member_money:'',
   };
 
 
@@ -250,6 +252,7 @@ class home extends React.Component {
     if (res.data.code === 2000) {
       this.setState({
         getVenueMonth_money: res.data.data.month_money, getVenueToday_money: res.data.data.today_money, getVenueMonth_count: res.data.data.month_count,
+        month_member_money:res.data.data.month_member_money,today_member_money:res.data.data.today_member_money,
         getVenueToday_count: res.data.data.today_count, getVenueScore: res.data.data.score
 
       })
@@ -426,11 +429,11 @@ class home extends React.Component {
               <div style={{ height: 8, background: '#F5F5F5', width: '100%' }}></div>
               <div className="divContent">
                 <div onClick={this.income}>
-                  <div className="left"><span>本月收入</span><span>￥{this.state.getVenueMonth_money}</span></div>
+                  <div className="left"><span>本月收入</span><span>会员卡扣款:￥{this.state.month_member_money}</span><span>钱包到账:￥{this.state.getVenueMonth_money}</span></div>
                   <div className="right"><img src={require("../../assets/icon_pc_money.png")} alt="icon" /></div>
                 </div>
                 <div onClick={this.daysIncome}>
-                  <div className="left"><span>今日收入</span><span>￥{this.state.getVenueToday_money}</span></div>
+        <div className="left"><span>今日收入</span><span>会员卡扣款:￥{this.state.today_member_money}</span><span>钱包到账:￥{this.state.getVenueToday_money}</span></div>
                   <div className="right" ><img src={require("../../assets/icon_pc_money.png")} alt="icon" /></div>
                 </div>
                 <div onClick={this.mounthOrderTwo}>

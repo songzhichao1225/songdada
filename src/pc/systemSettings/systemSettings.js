@@ -1,10 +1,11 @@
 import React from 'react';
 import './systemSettings.css';
 import 'antd/dist/antd.css';
-import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport, VenueTemporarilyClosed, gerVenueName, VenueIsClose, getVenueIsClose, VenueFeedback, getVenueHelpCenter } from '../../api';
-import { Input, message, Checkbox, Drawer, Pagination, Popconfirm } from 'antd';
+import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport, VenueTemporarilyClosed,VenueAdvertiseSave, VenueAdvertiseFirst, gerVenueName, imgUrlTwo, VenueIsClose, getVenueIsClose, VenueFeedback, getVenueHelpCenter } from '../../api';
+import { Input, message, Checkbox, Drawer, Pagination, Popconfirm, Upload } from 'antd';
 import Icon from '@ant-design/icons';
 import 'moment/locale/zh-cn';
+import ImgCrop from 'antd-img-crop';
 
 const { TextArea } = Input
 
@@ -16,6 +17,7 @@ class systemSettings extends React.Component {
     flagList: true,
     flagUntie: true,
     flagListOne: true,
+    flagUntieTwo: true,
     text: '',
     textT: '获取验证码',
     textTwo: '获取验证码',
@@ -43,7 +45,12 @@ class systemSettings extends React.Component {
     help: false,
     helpList: [],
     other: 0,
-    page: 1
+    page: 1,
+    advertising: '',
+    advertisingTwo: '',
+    cgName: '',
+    btnList: 1,
+    advertise_uuid:'',
   }
 
   showDrawer = () => {
@@ -55,7 +62,7 @@ class systemSettings extends React.Component {
     this.setState({
       Drawervisible: false,
       help: false,
-      page:1
+      page: 1
     });
   }
 
@@ -82,6 +89,7 @@ class systemSettings extends React.Component {
           flagList: true,
           flagUntie: true,
           flagListOne: true,
+          flagUntieTwo: true,
         })
         sessionStorage.setItem('sitew', true)
       }
@@ -97,7 +105,8 @@ class systemSettings extends React.Component {
       message.error('登录超时请重新登录!')
     } else {
       sessionStorage.setItem('phone', res.data.data.phone)
-      sessionStorage.setItem('legalphone',res.data.data.legalphone)
+      sessionStorage.setItem('legalphone', res.data.data.legalphone)
+      this.setState({ cgName: res.data.data.name })
     }
   }
 
@@ -127,7 +136,7 @@ class systemSettings extends React.Component {
 
 
   agreement = () => {
-    this.props.history.push('/Agreement')
+    this.props.history.push({ pathname: '/Agreement', query: { flag: 1 } })
   }
   reset = () => {
     this.setState({ text: '>重置密码', flagList: false, flagListOne: false })
@@ -137,7 +146,32 @@ class systemSettings extends React.Component {
     this.gerVenueName()
   }
   resetNot = () => {
-    this.setState({ flagListOne: true, flagList: true, flagUntie: true })
+    this.setState({ flagListOne: true, flagList: true, flagUntie: true, flagUntieTwo: true })
+  }
+
+
+
+  async VenueAdvertiseFirst(data) {
+    const res = await VenueAdvertiseFirst(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+
+      if (res.data.data.length !== 0) {
+        if(res.data.data.imgURL.indexOf('|')!==-1){
+          this.setState({advertising:res.data.data.imgURL.split('|')[0],advertisingTwo:res.data.data.imgURL.split('|')[1]})
+        }else{
+          this.setState({advertising:res.data.data.imgURL})
+        }
+        this.setState({ btnList: res.data.data.status,advertise_uuid:res.data.data.uuid,})
+      }
+
+    }
+  }
+
+
+
+  advertisingOne = () => {
+    this.setState({ text: '>设置广告宣传图片', flagUntieTwo: false, flagUntie: false, flagListOne: false })
+    this.VenueAdvertiseFirst()
   }
 
   async nacode(data) {
@@ -164,12 +198,13 @@ class systemSettings extends React.Component {
   passWord = e => {
     this.setState({ passWord: e.target.value })
   }
+
   passWordT = e => {
     this.setState({ passWordT: e.target.value })
   }
 
   naCode = () => {
-    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone)) && this.state.phone.length === 11) {
+    if (this.state.phone !== '' && (/^1[3|4|5|8|7][0-9]\d{4,8}$/.test(this.state.phone)) && this.state.phone.length === 11) {
       this.nacode({ "mobile": this.state.phone, "type": 'venuesavepass', "uuid": sessionStorage.getItem('uuid') })
     } else {
       message.error('请输入正确手机号')
@@ -197,7 +232,7 @@ class systemSettings extends React.Component {
 
 
   naCodeOutie = () => {
-    if (this.state.corporatePhone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.corporatePhone)) && this.state.corporatePhone.length === 11) {
+    if (this.state.corporatePhone !== '' && (/^1[3|4|5|8|7][0-9]\d{4,8}$/.test(this.state.corporatePhone)) && this.state.corporatePhone.length === 11) {
       this.nacodeOned({ "mobile": this.state.corporatePhone, "type": 'venuebindingfr', "uuid": sessionStorage.getItem('uuid') })
     } else {
       message.error('请输入正确手机号')
@@ -238,8 +273,7 @@ class systemSettings extends React.Component {
   }
 
   naCodeOutieTwo = () => {
-    if (this.state.operationPhone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.operationPhone)) && this.state.operationPhone.length === 11) {
-
+    if (this.state.operationPhone !== '' && (/^1[3|4|5|8|7][0-9]\d{4,8}$/.test(this.state.operationPhone)) && this.state.operationPhone.length === 11) {
       this.nacodeTwo({ "mobile": this.state.operationPhone, "type": 'venuebindingczy' })
     } else {
       message.error('请输入正确手机号')
@@ -249,19 +283,19 @@ class systemSettings extends React.Component {
 
   submit = () => {
     let { phone, code, passWord, passWordT, } = this.state
-    if(phone===''){
+    if (phone === '') {
       message.error('请输入操作员手机号')
-    }else if(code===''){
+    } else if (code === '') {
       message.error('请输入验证码')
-    }else if(passWord===''){
+    } else if (passWord === '') {
       message.error('请输入密码')
-    }else if(passWordT===''){
-     message.error('请再次输入密码')
-    }else if(/^[^\s]*$/.test(this.state.passWord)===false){
+    } else if (passWordT === '') {
+      message.error('请再次输入密码')
+    } else if (/^[^\s]*$/.test(this.state.passWord) === false) {
       message.error('密码输入有误')
-    }else if(/^[^\s]*$/.test(this.state.passWordT)===false){
+    } else if (/^[^\s]*$/.test(this.state.passWordT) === false) {
       message.error('密码输入有误')
-    }else if (passWord === passWordT) {
+    } else if (passWord === passWordT) {
       this.VenueChangePassword({ phone: phone, code: code, pass: passWordT })
     } else {
       message.error('两次密码输入不一致')
@@ -294,11 +328,11 @@ class systemSettings extends React.Component {
     } else {
       message.success('修改成功')
       this.gerVenueName()
-      this.setState({ flagListOne: true, flagList: true, flagUntie: true })
+      this.setState({ flagListOne: true, flagList: true, flagUntie: true, flagUntieTwo: true })
     }
   }
 
-  
+
 
   UoiteSubimt = () => {
     let { corporatePhone, corporateCode, operationPhone, operationCode } = this.state
@@ -409,7 +443,7 @@ class systemSettings extends React.Component {
     } else {
       message.error(res.data.msg)
     }
-    
+
   }
 
   subfeed = () => {
@@ -435,9 +469,77 @@ class systemSettings extends React.Component {
     this.getVenueHelpCenter({ page: page })
   }
 
+  advertising = info => {
+
+    if (info.file.status === 'uploading') {
+      this.setState({ loading: true })
+      return
+    }
+    if (info.file.status === 'done') {
+      if (this.state.imgFileTwo !== '') {
+        this.setState({ advertising: info.file.response.data.baseURL + info.file.response.data.filesURL, imageUrlThree: '', imgHood: info.file.response.data.baseURL, imgFile: info.file.response.data.filesURL, imgFileTwo: '' })
+      } else {
+        this.setState({ advertising: info.file.response.data.baseURL + info.file.response.data.filesURL, imgHood: info.file.response.data.baseURL, imgFile: info.file.response.data.filesURL })
+      }
+    }
+    if (info.file.response.code === 4004) {
+      message.error(info.file.response.msg)
+    }
+  };
+  advertisingTwo = info => {
+    if (info.file.status === 'uploading') {
+      this.setState({ loading: true })
+      return
+    }
+    if (info.file.status === 'done') {
+      if (this.state.imgFileTwo !== '') {
+        this.setState({ advertisingTwo: info.file.response.data.baseURL + info.file.response.data.filesURL, imageUrlThree: '', imgHood: info.file.response.data.baseURL, imgFile: info.file.response.data.filesURL, imgFileTwo: '' })
+      } else {
+        this.setState({ advertisingTwo: info.file.response.data.baseURL + info.file.response.data.filesURL, imgHood: info.file.response.data.baseURL, imgFile: info.file.response.data.filesURL })
+      }
+    }
+    if (info.file.response.code === 4004) {
+      message.error(info.file.response.msg)
+    }
+  };
+
+
+  async VenueAdvertiseSave(data) {
+    const res = await VenueAdvertiseSave(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      message.success(res.data.msg)
+      this.VenueAdvertiseFirst()
+    }else{
+      message.error(res.data.msg)
+    }
+  }
+
+
+  addBtn=()=>{
+    let imgurl=''
+    let {advertising,advertisingTwo}=this.state
+    if(advertising!==''&&advertisingTwo!==''){
+       imgurl=advertising+'|'+advertisingTwo
+    }else if(advertising===''&&advertisingTwo!==''){
+      imgurl=advertisingTwo
+    }else if(advertisingTwo===''&&advertising!==''){
+      imgurl=advertising
+    }else{
+      imgurl=''
+    }
+    this.VenueAdvertiseSave({imgurl:imgurl,advertise_uuid:this.state.advertise_uuid})
+  }
+
 
 
   render() {
+    const { advertising, advertisingTwo } = this.state
+    const uploadButtonThree = (
+      <div>
+        <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
+      </div>
+    )
+    
     return (
       <div className="systemSettings">
         <div className="title"><span style={{ cursor: 'pointer' }} onClick={this.resetNot}>系统设置</span> <span className={this.state.flagListOne === false ? 'titleSpan' : 'listNone'}>{this.state.text}</span></div>
@@ -460,9 +562,10 @@ class systemSettings extends React.Component {
           <ul className="ul">
             <li onClick={this.Untie}>解除/更换绑定手机号</li>
             <li onClick={this.reset}>重置密码</li>
+            <li onClick={this.advertisingOne}>设置广告宣传图片</li>
           </ul>
 
-          <ul className="ul"> 
+          <ul className="ul">
             <li>
               <span onClick={this.agreement}>用户协议</span>
             </li>
@@ -471,12 +574,55 @@ class systemSettings extends React.Component {
             <li onClick={this.help}>帮助中心</li>
             <li><span style={{ marginTop: 0 }} onClick={this.feedBack}>意见反馈</span>
               <div className='feedback' style={this.state.bot === true ? { display: 'block' } : { display: 'none' }}>
-                <TextArea style={{ width: '300px', minHeight: '80px' }} maxLength={200}  placeholder='您的意见对我们非常重要，以便我们不断提升场馆端的用户体验，被采纳后会有200元奖励' onChange={this.text} />
+                <TextArea style={{ width: '300px', minHeight: '80px' }} maxLength={200} placeholder='您的意见对我们非常重要，以便我们不断提升场馆端的用户体验，被采纳后会有200元奖励' onChange={this.text} />
                 <span style={{ marginLeft: '10px', padding: '4px 20px', background: '#F5A623', color: '#fff', fontSize: '16px' }} onClick={this.subfeed}>提交</span>
                 <div>{this.state.textNum}/200</div>
               </div>
             </li>
           </ul>
+        </div>
+
+        <div className={this.state.flagUntieTwo === false ? 'reset' : 'listNone'}>
+          <div className="advertising">
+            <div style={{ fontSize: '14x' }}>请上传广告宣传图片(最多2张)</div>
+            <div style={{ fontSize: '12x', color: '#D85D27' }}>在“找对手”平台做广告时提供，图片上须能体现出场馆名字</div>
+            <div className="name">
+              <div className="clearfix">
+                <ImgCrop aspect={20 / 9} quality={1} width={200} height={90}>
+                  <Upload
+                    name="files"
+                    listType="picture-card"
+                    className="avatar-uploader addImg"
+                    showUploadList={false}
+                    action={imgUrlTwo+"api/UploadVenueImgs?type=Venue"}
+                    onChange={this.advertising}
+                    accept=".jpg, .jpeg, .png"
+                  >
+                    {advertising ? <img src={imgUrlTwo + advertising} style={{ width: '200px', height: '90px' }} alt="avatar" /> : uploadButtonThree}
+                  </Upload>
+                </ImgCrop>
+              </div>
+
+              <div className="clearfix">
+                <ImgCrop aspect={20 / 9} quality={1} width={200} height={90}>
+                  <Upload
+                    name="files"
+                    listType="picture-card"
+                    className="avatar-uploader addImg"
+                    showUploadList={false}
+                    action={imgUrlTwo+"api/UploadVenueImgs?type=Venue"}
+                    onChange={this.advertisingTwo}
+                    accept=".jpg, .jpeg, .png"
+                  >
+                    {advertisingTwo ? <img src={imgUrlTwo + advertisingTwo} style={{ width: '200px', height: '90px' }} alt="avatar" /> : uploadButtonThree}
+                  </Upload>
+                </ImgCrop>
+              </div>
+            </div>
+            <div className="submit" style={{ margin: 0 }} onClick={this.state.btnList===0?this.lokomook:this.addBtn}>{this.state.btnList === 0 ? '待审核' : '确定'}</div>
+
+
+          </div>
         </div>
 
         <div className={this.state.flagList === false ? 'reset' : 'listNone'}>
@@ -502,17 +648,17 @@ class systemSettings extends React.Component {
 
             <div className="inputSon" style={{ opacity: 0, position: 'absolute' }}>
               <span>重置密码</span>
-              <Input.Password maxLength={15}  onChange={this.passWord} placeholder="请输入重置密码" />
+              <Input.Password maxLength={15} onChange={this.passWord} placeholder="请输入重置密码" />
             </div>
 
             <div className="inputSon" >
               <span>重置密码</span>
-              <Input.Password maxLength={15}  onChange={this.passWord} placeholder="请输入重置密码" />
+              <Input.Password maxLength={15} onChange={this.passWord} placeholder="请输入重置密码" />
             </div>
 
             <div className="inputSon">
               <span>确认密码</span>
-              <Input.Password maxLength={15}  onChange={this.passWordT} placeholder="请输入确认密码" />
+              <Input.Password maxLength={15} onChange={this.passWordT} placeholder="请输入确认密码" />
             </div>
             <div className="submit" style={{ marginLeft: 72 }} onClick={this.submit}>确定</div>
           </div>

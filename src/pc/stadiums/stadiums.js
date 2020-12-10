@@ -5,6 +5,7 @@ import { getVenueInformation, VenueInformationSave, getVenueIssecondaudit, getVe
 import { Input, message, Checkbox, Button, Popconfirm, Radio, Select, Spin } from 'antd';
 import { ImagePicker } from 'antd-mobile';
 import lrz from 'lrz';
+
 const { Option } = Select;
 const { TextArea } = Input;
 
@@ -53,8 +54,8 @@ class stadiums extends React.Component {
     corporatePhone: '',//法人手机号
     numRadio: 1,//账号类型
     numRadioTwo: 0,//结算账号
-    inCorName:'',
-    inChargeNa:'',//负责人姓名
+    inCorName: '',
+    inChargeNa: '',//负责人姓名
     corporateCardId: '',//法人银行卡号
     corporateOpen: '',//开户行
     imgFile: '',
@@ -228,15 +229,15 @@ class stadiums extends React.Component {
       if (res.data.data.ProvinceBank !== '') {
         this.getVenueOpenBankCity({ province_id: res.data.data.ProvinceBank })
       }
-      if(res.data.data.ascription===1){
-      this.setState({numRadio:1,numRadioTwo:1})
-      }else{
-        this.setState({numRadio: res.data.data.Settlement,numRadioTwo: res.data.data.account,})
+      if (res.data.data.ascription === 1) {
+        this.setState({ numRadio: 1, numRadioTwo: 1 })
+      } else {
+        this.setState({ numRadio: res.data.data.Settlement, numRadioTwo: res.data.data.account, })
       }
       this.setState({
         CorporateName: res.data.data.CorporateName, bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
         faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
-        inCorName:res.data.data.Bankcorporate,corporateOpen:res.data.data.OpeningBank,corporateId:res.data.data.Bankcard,corporateCardId:res.data.data.Bankaccount, inChargeNa:res.data.data.Bankname, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
+        inCorName: res.data.data.Bankcorporate, corporateOpen: res.data.data.OpeningBank, corporateId: res.data.data.Bankcard, corporateCardId: res.data.data.Bankaccount, inChargeNa: res.data.data.Bankname, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
         legalBaseURL: res.data.data.legalBaseURL,
         filesThree: res.data.data.lisenceURL === '' ? [] : [{ url: imgUrlTwo + res.data.data.lisenceURL }],
         filesThreeSon: res.data.data.lisenceURL === '' ? '' : res.data.data.lisenceURL,
@@ -500,15 +501,15 @@ class stadiums extends React.Component {
   }
 
   numRadioTwo = e => {
-    this.setState({ numRadioTwo: e.target.value,numRadio:e.target.value })
+    this.setState({ numRadioTwo: e.target.value, numRadio: e.target.value })
   }
-  inCorName= e => {
+  inCorName = e => {
     this.setState({ inCorName: e.target.value })
   }
   inChargeNa = e => {
     this.setState({ inChargeNa: e.target.value })
   }
-  
+
 
 
   async UploadVenueImgsLisenTwo(data) {
@@ -723,12 +724,12 @@ class stadiums extends React.Component {
   }
 
   ziSubmitTwo = () => {
-    let { numRadio, numRadioTwo,inCorName,inChargeNa, legalBaseURL, imageUrlTwo, corporateId, imageUrlThree, filesFiveSon, filesFourSon, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
+    let { numRadio, numRadioTwo, inCorName, inChargeNa, legalBaseURL, imageUrlTwo, corporateId, imageUrlThree, filesFiveSon, filesFourSon, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
     let data = {
       legalBaseURL: numRadioTwo === 1 ? legalBaseURL : numRadio === 1 ? legalBaseURL : '',
       legalFilesURL: numRadioTwo === 1 ? filesFourSon + '|' + filesFiveSon : numRadio === 1 ? filesFourSon + '|' + filesFiveSon : '',
       Bankcard: numRadio === 0 ? '' : corporateId,
-      Bankname:numRadio === 0?'':inChargeNa,
+      Bankname: numRadio === 0 ? '' : inChargeNa,
       Settlement: numRadio,
       Bankaccount: corporateCardId,
       OpeningBank: corporateOpen,
@@ -736,7 +737,7 @@ class stadiums extends React.Component {
       ProvinceBank: province_id,
       CityBank: city_id,
       account: numRadioTwo,
-      Bankcorporate:numRadio===0?inCorName:'',
+      Bankcorporate: numRadio === 0 ? inCorName : '',
     }
     if (numRadio && imageUrlTwo === 1) {
       message.error('图片违规请重新上传')
@@ -767,7 +768,7 @@ class stadiums extends React.Component {
     } else {
       this.setState({ valueTwo: 2 })
     }
-    this.setState({ value: e.target.value,numRadioTwo:e.target.value,numRadio:e.target.value })
+    this.setState({ value: e.target.value, numRadioTwo: e.target.value, numRadio: e.target.value })
   }
 
 
@@ -969,18 +970,23 @@ class stadiums extends React.Component {
     this.setState({ valueThree: e.target.value })
   }
 
-  handleNameTwo=e=>{
-    this.setState({faName:e.target.value})
+  handleNameTwo = e => {
+    this.setState({ faName: e.target.value })
   }
-  handlePhone=e=>{
-    this.setState({faPhone:e.target.value})
+  handlePhone = e => {
+    this.setState({ faPhone: e.target.value })
   }
-  facard=e=>{
-    this.setState({faIdcard:e.target.value})
+  facard = e => {
+    this.setState({ faIdcard: e.target.value })
   }
+
+  
+
 
   render() {
     const { files, filesTwo, filesThree, filesFive, BelongingFour, filesFour, BelongingOne, BelongingTwo, BelongingThree, BelongingFive, BelongingSix } = this.state;
+    
+
 
     return (
       <div className="stadiums">
@@ -1050,6 +1056,8 @@ class stadiums extends React.Component {
                 />
               </div>
             </div>
+
+            
             <div className="name" style={{ overflow: 'hidden' }}>
               <span className="boTitle">场地类型:</span><span className="kong"></span>
               <Checkbox.Group style={{ float: 'left', width: '50%', marginLeft: '26.8px' }} className="chekkoh" options={this.state.plainOptions} value={this.state.sport} onChange={this.onChangeCheck} /><br /><span className="kong"></span>
@@ -1218,9 +1226,6 @@ class stadiums extends React.Component {
             </div>
 
 
-
-
-
             <Popconfirm
               title="您确定本次修改吗?"
               onConfirm={this.ziSubmit}
@@ -1239,12 +1244,12 @@ class stadiums extends React.Component {
             <div className="listing">
               <span>结算账号:</span>
               <Radio.Group className="accountNum" onChange={this.numRadioTwo} value={this.state.numRadioTwo}>
-                <Radio style={this.state.value===1?{display:'none'}:{}} value={0}>场馆归属人账号</Radio>
+                <Radio style={this.state.value === 1 ? { display: 'none' } : {}} value={0}>场馆归属人账号</Radio>
                 <Radio value={1}>场馆负责人账号</Radio>
               </Radio.Group>
             </div>
 
-            <div className="listing" style={this.state.numRadioTwo===1?{display:'none'}:{}}>
+            <div className="listing" style={this.state.numRadioTwo === 1 ? { display: 'none' } : {}}>
               <span>归属人性质:</span>
               <Radio.Group className="accountNum" onChange={this.numRadio} value={this.state.numRadio}>
                 <Radio value={0}>公司</Radio>

@@ -383,6 +383,9 @@
     display: none;
  }
 
+ .ko .ant-modal-footer{
+     display: none;
+ }
 
 .lookFir .ant-select-selection__placeholder, .ant-select-search__field__placeholder{
     right: 0;
@@ -423,9 +426,11 @@
     padding:0 5px;
     margin-left:10px;
     font-size: 14px;
-    background-color: #ccc;
+    color: #fff;
+    background-color: #1890ff;
     border-bottom: 1px solid #000;
     border-radius: 3px;
+    font-weight: bold;
 
 }
 .orderList .sijn:hover{

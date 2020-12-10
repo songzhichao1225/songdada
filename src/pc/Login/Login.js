@@ -48,7 +48,7 @@ class Login extends React.Component {
       this.setState({ phone: e.target.value.slice(0, e.target.value.length - 1) })
     } else {
       this.setState({ phone: e.target.value })
-      if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(e.target.value))) {
+      if (!(/^1[3|4|5|8|7][0-9]\d{4,8}$/.test(e.target.value))) {
         this.setState({ visiblePhone: true })
       } else if (e.target.value === '') {
         this.setState({ visiblePhone: true })
@@ -136,7 +136,7 @@ class Login extends React.Component {
   }
 
   naCode = () => {
-    if (this.state.phoneTwo!== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phoneTwo)) && this.state.phoneTwo.length === 11) {
+    if (this.state.phoneTwo!== '' && (/^1[3|4|5|8|7][0-9]\d{4,8}$/.test(this.state.phoneTwo)) && this.state.phoneTwo.length === 11) {
       this.VenueSelectSiteName({ phone: this.state.phoneTwo })
       this.nacode({ "mobile": this.state.phoneTwo, "type": 'venuelogin' })
     } else {

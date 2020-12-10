@@ -56,6 +56,9 @@ class sittingPh extends React.Component {
   resetPasswordPh = () => {
     this.props.history.push('/homePh/resetPasswordPh')
   }
+  advertisingPh=()=>{
+    this.props.history.push('/homePh/advertisingPh')
+  }
   reture = () => {
     this.props.history.goBack()
   }
@@ -113,7 +116,7 @@ class sittingPh extends React.Component {
         </div>
 
         <div className="siteSon" onClick={this.untiePhonePh}>
-          <svg width="16px" height="16px" style={{float:'left'}} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <svg width="16px" height="16px" style={{ float: 'left' }} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
             <title>icon/合作场馆/我的/解绑手机</title>
             <desc>Created with Sketch.</desc>
             <g id="icon/合作场馆/我的/解绑手机" stroke="none" fill="none">
@@ -148,6 +151,26 @@ class sittingPh extends React.Component {
           <img className="switch" style={{ width: '0.44rem', height: '0.6rem', marginTop: '0.5rem' }} src={require("../../assets/right.png")} alt="arrow" />
         </div>
 
+        <div className="siteSon" onClick={this.advertisingPh}>
+          <svg width="16px" height="16px" style={{ float: 'left' }} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <title>icon_合作场馆_我的_照片</title>
+            <g id="7-合作场馆" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g id="54-|-我的设置" transform="translate(-12.000000, -305.000000)" fill="#6FB2FF">
+                <g id="表单-/-列表-/-输入框-/-图标文字备份" transform="translate(12.000000, 287.000000)">
+                  <g id="表单/输入框/右箭头" transform="translate(0.000000, 16.000000)">
+                    <g id="编组" transform="translate(0.000000, 2.000000)">
+                      <path d="M15.9694831,14.1972399 L15.9694831,1.79001038 C15.9661062,0.812266875 15.1745021,0.020381375 14.1967586,0.0166719 L1.78830112,0.0166719 C0.810557625,0.020381375 0.01895355,0.812266875 0.01557665,1.79001038 L0.01557665,14.1972399 C0.01895355,15.1749834 0.81055765,15.9668689 1.78830112,15.9705784 L14.1967586,15.9705784 C15.1745021,15.9668689 15.9661062,15.1749834 15.9694831,14.1972399 L15.9694831,14.1972399 Z M4.89009572,9.32517673 L7.10644902,11.9882544 L10.2082436,7.9936507 L14.1967586,13.3136406 L1.78830112,13.3136406 L4.89009572,9.32517673 Z M5.33375012,2.6736097 C6.43513457,2.6736097 7.32799482,3.56646995 7.32799482,4.6678544 C7.32799482,5.76923885 6.43513457,6.6620991 5.33375012,6.6620991 C4.23236567,6.6620991 3.33950542,5.76923885 3.33950542,4.6678544 C3.34052872,3.56687925 4.232775,2.674633 5.33375012,2.6736097 Z" id="形状"></path>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </svg>
+
+          <span>设置广告宣传图片</span>
+          <img className="switch" style={{ width: '0.44rem', height: '0.6rem', marginTop: '0.5rem' }} src={require("../../assets/right.png")} alt="arrow" />
+        </div>
+
         <div className="siteSon" onClick={() =>
           alert('提示', '您确定退出该账号么?', [
             { text: '取消', onPress: () => console.log('cancel') },
@@ -157,7 +180,7 @@ class sittingPh extends React.Component {
           <span>退出登录</span>
           <img className="switch" style={{ width: '0.44rem', height: '0.6rem', marginTop: '0.5rem' }} src={require("../../assets/right.png")} alt="arrow" />
         </div>
-      </div>
+      </div >
     )
   }
 }

@@ -46,10 +46,8 @@ class forgetPassword extends React.Component {
  
   naCode = () => {
     if (this.state.phone === '') {
-     
       message.error('请输入手机号')
-    }else if((/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))===false){
-
+    }else if((/^1[3|4|5|8|7][0-9]\d{4,8}$/.test(this.state.phone))===false){
       message.error('请输入正确手机号')
     } else {
       this._code({ mobile: this.state.phone,type:'venueforgetpass' })

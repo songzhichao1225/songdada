@@ -4,7 +4,7 @@ import 'antd/dist/antd.css';
 import ReactDOM from 'react-dom';
 import { Toast, PullToRefresh, Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { getCommentList, getOverallScore, VenueCommentReply } from '../../api';
+import { getCommentList, getOverallScore, VenueCommentReply,imgUrlTwo } from '../../api';
 import { Pagination, Input } from 'antd';
 import {  LeftOutlined } from '@ant-design/icons';
 
@@ -191,7 +191,7 @@ class commentPh extends React.Component {
                   <div style={item.imgnames.length===0?{display:'none'}:{ display: 'block', clear: 'both' }} className="commentImg">
                    {
                      item.imgnames.map((ko,j)=>(
-                       <img key={j} onClick={this.previewing} data-src={"https://app.tiaozhanmeiyitian.com/"+item.imgbaseurl+ko+""} src={"https://app.tiaozhanmeiyitian.com/"+item.imgbaseurl+ko+""} alt="uimg"/>
+                       <img key={j} onClick={this.previewing} data-src={imgUrlTwo+item.imgbaseurl+ko+""} src={imgUrlTwo+item.imgbaseurl+ko+""} alt="uimg"/>
                      ))
                    }
                   </div>

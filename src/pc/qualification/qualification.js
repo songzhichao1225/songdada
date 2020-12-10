@@ -1242,13 +1242,7 @@ class qualification extends React.Component {
                 multiple={false}
                 disableDelete={this.state.flagDis}
               />
-
             </div>
-
-
-
-
-
 
             <div className="titile" style={{ marginTop: '38px', marginLeft: '-10px', textAlign: 'left', width: '450px' }}>场馆收款银行信息<span style={{ color: '#9B9B9B', fontWeight: '400' }}>(也可在提现前填写)</span></div>
             <div className="name">
@@ -1370,12 +1364,9 @@ class qualification extends React.Component {
                 {
                   this.state.backList.map((item, i) => (
                     <Option key={i} value={item.name} alt={item.name}>
-
                       <span>{item.nameT}</span>
-
                     </Option>
                   ))
-
                 }
               </Select>
 

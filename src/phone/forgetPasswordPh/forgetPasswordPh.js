@@ -48,8 +48,7 @@ class forgetPasswordPh extends React.Component {
     }
   }
   naCode = () => {
-    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
-     
+    if (this.state.phone !== ''&&(/^1[3|4|5|8|7][0-9]\d{4,8}$/.test(this.state.phone))) {
       this.nacode({ "mobile": this.state.phone, "type": 'venueforgetpass' })
     } else {
       Toast.fail('请输入手机号', 1)

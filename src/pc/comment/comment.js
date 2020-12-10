@@ -25,6 +25,8 @@ class comment extends React.Component {
     page: 1,
     visible: false,
     url: '',
+    imgMasking:'',
+    masking:false,
   };
 
 
@@ -36,9 +38,6 @@ class comment extends React.Component {
   componentDidMount() {
     this.getCommentList({ page: 1 })
     this.getOverallScore()
-
-
-
   }
 
 
@@ -60,8 +59,6 @@ class comment extends React.Component {
         this.setState({ commentList: res.data.data, imgArr: imgArr, other: res.data.other, loading: false, hidden: false, Oneloading: false })
       }
     } else if (res.data.code === 4001) {
-
-
       this.props.history.push('/')
       message.error('登录超时请重新登录!')
     } else {
@@ -71,9 +68,11 @@ class comment extends React.Component {
   textValue = e => {
     this.setState({ textValue: e.target.value })
   }
+
   clear = () => {
     this.setState({ textValue: '' })
   }
+
   pullOut = (e) => {
     this.setState({ flag: parseInt(e.currentTarget.dataset.index) })
     if (parseInt(e.currentTarget.dataset.index) === this.state.flag) {
@@ -81,12 +80,9 @@ class comment extends React.Component {
     }
   }
 
-
-
   async VenueCommentReply(data) {
     const res = await VenueCommentReply(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-
       this.getCommentList({ page: this.state.page })
       this.setState({ flag: null })
     } else if (res.data.code === 4001) {
@@ -96,11 +92,11 @@ class comment extends React.Component {
       message.error(res.data.msg)
     }
   }
+
   operation = (e) => {
     this.VenueCommentReply({ commentid: e.target.dataset.uid, comment: this.state.textValue })
-
-
   }
+  
   sping = () => {
     this.getCommentList({ page: this.state.page })
     this.setState({ loading: true, hidden: true })
@@ -113,6 +109,7 @@ class comment extends React.Component {
   handleCancel = () => {
     this.setState({ visible: false })
   }
+
   visible = e => {
     this.setState({
       visible: true,
@@ -121,6 +118,13 @@ class comment extends React.Component {
   }
 
 
+  previewing = (e) => {
+      this.setState({imgMasking:e.currentTarget.dataset.url,masking:true})
+    
+  }
+  maskingF=()=>{
+    this.setState({masking:false})
+  }
 
 
 
@@ -171,7 +175,7 @@ class comment extends React.Component {
                       <div className={item.imgnames.length === 0 ? 'hidden' : 'imgA'}>
                         {
                           item.imgnames.map((idx, i) => (
-                            <img key={i} onClick={this.visible} data-url={imgUrlTwo + item.imgbaseurl + idx} src={imgUrlTwo + item.imgbaseurl + idx} alt="img" />
+                            <img key={i} onClick={this.previewing} data-url={imgUrlTwo + item.imgbaseurl + idx} src={imgUrlTwo + item.imgbaseurl + idx} alt="img" />
                           ))
                         }
                       </div>
@@ -210,9 +214,14 @@ class comment extends React.Component {
           width="300px"
           className="mode modeGo"
           onCancel={this.handleCancel}
+          
         >
           <img style={{ width: '100%' }} src={this.state.url} alt="img" />
         </Modal>
+
+        <div className={this.state.masking === true ? 'masking' : 'hidden'} onClick={this.maskingF}>
+          <img src={this.state.imgMasking} alt="img" />
+        </div>
 
 
 

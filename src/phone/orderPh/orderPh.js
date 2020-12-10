@@ -4,7 +4,7 @@ import './orderPh.css';
 import { DatePicker, Toast, Card, Modal, InputItem, List } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Pagination, Drawer, Spin, Table, Checkbox } from 'antd';
-import { getReservationActivitieslist, VenueSendMessage, getVenueReservation, getVenueSport, VenueClickCancelPlace, getVenueNumberTitleList, VenueRemarksLabel, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave, DeductTheTimesOfClosing } from '../../api';
+import { getReservationActivitieslist, VenueSendMessage, getVenueReservation, getVenueSport, VenueClickCancelPlace,BreakUpConsumptionDetails, getVenueNumberTitleList, VenueRemarksLabel, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave, DeductTheTimesOfClosing } from '../../api';
 const prompt = Modal.prompt;
 const alert = Modal.alert;
 
@@ -139,6 +139,9 @@ class orderPh extends React.Component {
     textNuma: '您还没有进行场地设置,请前往设置',
     headTop: '0',
     onSearchInput: '',
+    deducting:false,
+    deductingdetails: [],
+    isfinsh:0,
   }
 
 
@@ -276,6 +279,7 @@ class orderPh extends React.Component {
   async getVenueSport(data) {
     const res = await getVenueSport(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
+      this.setState({liNum:res.data.data[0].id})
       this.getReservationActivitieslist({ page: 1, sport: 0, status: 0, paied: 2, reserve: this.state.headTop })
       if (res.data.data.length > 0) {
         this.setState({ remList: res.data.data })
@@ -298,7 +302,9 @@ class orderPh extends React.Component {
 
 
   componentDidMount() {
+   
     this.setState({ qiDate: new Date(), nowDate: new Date().toLocaleDateString().replace(/\//g, "-") })
+   
     this.getVenueSport()
     if (this.props.location.query !== undefined) {
       this.setState({
@@ -586,11 +592,7 @@ class orderPh extends React.Component {
 
   placeSubmit = () => {
     let { venueidids, dtime, vIpChang, nameChang, phoneChang, qitaChang } = this.state
-    if ((/^1[3|4|5|8][0-9]\d{4,8}$/.test(phoneChang)) === false) {
-      Toast.fail('请输入正确手机号', 1)
-    } else if (phoneChang.length !== 11) {
-      Toast.fail('请输入正确手机号', 1)
-    } else {
+   
       let obj = {
         placeHui: vIpChang,
         placeName: nameChang,
@@ -599,7 +601,7 @@ class orderPh extends React.Component {
       }
       this.VenueClickCancelPlace({ uuid: '', date: this.state.qiDate, venueid: venueidids, other: JSON.stringify(obj), time: dtime, sportid: this.state.liNum, type: 1 })
 
-    }
+    
 
 
   }
@@ -772,7 +774,7 @@ class orderPh extends React.Component {
     this.setState({ info: false })
   }
   headTop = e => {
-    this.setState({ headTop: e.currentTarget.dataset.index, page: 1, sportIdVal: '', statusIdVal: '', start: '', end: '', paied: '2' })
+    this.setState({ headTop: e.currentTarget.dataset.index, page: 1, sportIdVal: '', statusIdVal: '', start: '', end: '', paied: '2',onSearchInput:'' })
     setTimeout(() => {
       this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end, paied: this.state.paied, reserve: this.state.headTop })
     }, 500)
@@ -782,6 +784,7 @@ class orderPh extends React.Component {
   }
 
   onSearch = e => {
+    this.setState({page:1})
     this.getReservationActivitieslist({ page: 1, sport: '', status: '', paied: '2', orderId: this.state.onSearchInput, reserve: this.state.headTop })
   }
 
@@ -804,6 +807,25 @@ class orderPh extends React.Component {
     ]);
   }
 
+
+  async BreakUpConsumptionDetails(data) {
+    const res = await BreakUpConsumptionDetails(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ deductingdetails: res.data.data.details,isfinsh:res.data.data.isfinsh })
+    } 
+  }
+
+
+
+  deducting=e=>{
+    this.setState({deducting:true})
+    this.BreakUpConsumptionDetails({publicuuid:e.currentTarget.dataset.uuid})
+  }
+
+  deductingTwo=()=>{
+    this.setState({deducting:false})
+  }
+
   render() {
     return (
       <div className="orderPh">
@@ -814,7 +836,7 @@ class orderPh extends React.Component {
         <div className="head" style={this.state.activityList === true ? {} : { display: 'none' }}>
           <div className="headTop" onTouchStart={this.headTop} data-index='0' style={this.state.headTop === '0' ? { color: '#fff', background: '#F5A623' } : {}}>找运动伙伴</div>
           <div className="headTop" onTouchStart={this.headTop} data-index='1' style={this.state.headTop === '1' ? { color: '#fff', background: '#F5A623' } : {}}>仅预订场馆</div>
-          <div><input type="number" style={{ width: '7rem', height: '1.6rem', marginLeft: '0.5rem', paddingLeft: '0.3rem' }} placeholder="活动编号" onChange={this.onSearchInput} /><button onTouchStart={this.onSearch}>查询</button></div>
+          <div><input type="number" style={{ width: '7rem', height: '1.6rem', marginLeft: '0.5rem', paddingLeft: '0.3rem' }} value={this.state.onSearchInput} placeholder="活动编号" onChange={this.onSearchInput} /><button onTouchStart={this.onSearch}>查询</button></div>
         </div>
 
         <div className={this.state.activityList === true ? 'activityList' : 'hidden'}>
@@ -846,7 +868,7 @@ class orderPh extends React.Component {
                           <span className="footerOne" >金额:￥{item.SiteMoney}</span>
                           <span style={{ marginLeft: '5%' }}>支付状态:{item.SiteMoneyStatus}</span>
                           <span style={item.reserve === 1 ? { display: 'none' } : { display: 'block', width: '90px', float: 'left' }}>应到人数:{item.Shouldarrive}人</span>
-                          <span className="footerOne" style={this.state.headTop === '1' ? {} : { display: 'none' }}>时长:{item.PlayTime}小时</span>
+                          <span className="footerOne" style={this.state.headTop === '0' ? {} : { display: 'none' }}>时长:{item.PlayTime}小时</span>
                         </div>
                         <div style={item.breakup.length === 0 && item.reserve === 1 ? { width: '25%', marginLeft: '0.5rem', float: 'left' } : { display: 'none' }}>场地编号
                       {
@@ -890,6 +912,7 @@ class orderPh extends React.Component {
                               ))
                             }
                           </div>
+                          <div style={{color:'#4A90E2'}} data-uuid={item.uuid} onClick={this.deducting}>扣除<br/>记录</div>
                         </div>
                         <div>
                           <span className="footerOne" style={this.state.headTop === '0' ? {} : { display: 'none' }}>时长:{item.PlayTime}小时</span>
@@ -907,11 +930,28 @@ class orderPh extends React.Component {
 
               <Pagination hideOnSinglePage={true} showSizeChanger={false} current={this.state.page} className={this.state.activeSon.length > 0 ? 'fenye' : 'hidden'} style={{ marginTop: '10px' }} size="small" defaultCurrent={1} onChange={this.current} total={this.state.total} />
             </div>
-
-
             <div style={this.state.spin === false && this.state.activeSon.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (5).png')} alt="444" /><span style={{ display: 'block', textAlign: 'center' }}>没有预约活动!</span></div>
           </Spin>
         </div>
+
+
+        <Modal
+          visible={this.state.deducting}
+          transparent
+          onClose={this.deductingTwo}
+          title="扣除记录"
+          style={{width:'90%',minHeight:'10rem'}}
+        >
+          <div style={this.state.isfinsh===0?{display:'none'}:{fontSize:'14px',fontWeight:'bold',color:'#333'}}>所有散场次数已消费完</div>
+          {
+            this.state.deductingdetails.map((item,i)=>(
+            <div key={i} style={{fontSize:'12px',clear:'both',lineHeight:'25px'}}><span style={{float:'left',width:'60%',textAlign:'left'}}>{item.comment}</span><span style={{float:'right'}}>{item.time}</span></div>
+            ))
+          }
+        </Modal>
+
+
+
         <div className={this.state.activityList === false ? 'bookingKanban' : 'hidden'}>
           <DatePicker
             mode="date"
@@ -1040,7 +1080,7 @@ class orderPh extends React.Component {
           wrapProps={{ onTouchStart: this.onWrapTouchStart }}
         >
           <InputItem className="inputModel" style={{ fontSize: '12px' }} placeholder="(选填)" value={this.state.nameChang} maxLength={20} onChange={this.nameChang} ><span style={{ fontSize: '12px' }}>姓名:</span></InputItem>
-          <InputItem className="inputModel" style={{ fontSize: '12px' }} placeholder="(必填)" value={this.state.phoneChang} maxLength={11} onChange={this.phoneChang}  ><span style={{ fontSize: '12px' }}>手机号:</span></InputItem>
+          <InputItem className="inputModel" style={{ fontSize: '12px' }} placeholder="(选填)" value={this.state.phoneChang} maxLength={11} onChange={this.phoneChang}  ><span style={{ fontSize: '12px' }}>手机号:</span></InputItem>
           <InputItem className="inputModel" style={{ fontSize: '12px' }} placeholder="(选填)" value={this.state.vIpChang} maxLength={20} onChange={this.vIpChang}  ><span style={{ fontSize: '12px' }}>会员卡:</span></InputItem>
           <InputItem className="inputModel" style={{ fontSize: '12px' }} placeholder="(选填)" value={this.state.qitaChang} maxLength={50} onChange={this.qitaChang}  ><span style={{ fontSize: '12px' }}>其他:</span></InputItem>
 

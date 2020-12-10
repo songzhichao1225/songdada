@@ -33,7 +33,7 @@ class corporatePh extends React.Component {
 
   phone = (e) => {
     this.setState({ phone: e.replace(/\s*/g, "") })
-    if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(e))) {
+    if (!(/^1[3|4|5|8|7][0-9]\d{4,8}$/.test(e))) {
       this.setState({ visiblePhone: true })
     } else if (e === '') {
       this.setState({ visiblePhone: true })
@@ -134,7 +134,7 @@ class corporatePh extends React.Component {
 
 
   naCode = () => {
-    if (this.state.phone !== '' && (/^1[3|4|5|8][0-9]\d{4,8}$/.test(this.state.phone))) {
+    if (this.state.phone !== '' && (/^1[3|4|5|8|7][0-9]\d{4,8}$/.test(this.state.phone))) {
       this.nacode({ "mobile": this.state.phone, "type": 'venuelogin' })
     } else {
       Toast.fail('请输入手机号', 1);
@@ -217,13 +217,13 @@ class corporatePh extends React.Component {
         ><span style={{ fontSize: '1rem' }}>负责人登录</span></NavBar>
         <div className="loginInput">
           <div className="name">
-            <InputItem 
+            <InputItem
               type='phone'
               placeholder="负责人手机号"
               clear={true}
               style={{fontSize: '0.8rem' }}
               onChange={this.phone}
-              autoFocus 
+              autoFocus
               className="phone"
             >
             </InputItem>

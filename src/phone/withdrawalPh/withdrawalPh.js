@@ -18,8 +18,6 @@ class withdrawalPh extends React.Component {
   async getVenueWithdrawalOneList(data) {
     const res = await getVenueWithdrawalOneList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      res.data.data.Bankaccount = res.data.data.Bankaccount.slice(res.data.data.Bankaccount.length - 6, res.data.data.Bankaccount.length)
-      res.data.data.legalname = '***' + res.data.data.legalname.slice(-1)
       this.setState({ withdrawalPh: res.data.data, flag: 1 })
     }
   }
@@ -64,8 +62,8 @@ class withdrawalPh extends React.Component {
         <div className="headTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', width: '48px', height: '48px', left: '0', lineHeight: '48px' }} />提现</div>
         <div className="white"></div>
         <div className="bankCards">
-          <span>{this.state.withdrawalPh.Settlement === 1 ? '负责人账户' : '公司银行账户'}</span>
-          <span>{this.state.withdrawalPh.OpeningBank} <br/> {'*****' + this.state.withdrawalPh.Bankaccount}</span>
+          <span>{this.state.withdrawalPh.Settlement === 1 ? '个人账户' : '公司银行账户'}</span>
+    <span>{this.state.withdrawalPh.Bankcorporate===null?this.state.withdrawalPh.Bankname:this.state.withdrawalPh.Bankcorporate}<br/>{this.state.withdrawalPh.OpeningBank} <br/> {'*****' + this.state.withdrawalPh.Bankaccount}</span>
         </div>
         <div className="white"></div>
         <div className="money">
