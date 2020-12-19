@@ -1,9 +1,9 @@
 import React from 'react';
 import './myWallet.css';
 import 'antd/dist/antd.css';
-import { getVenueMoneyList, getVenueWithdrawalList, imgUrlTwo,getVenueWithdrawalOneList, VenueWithdrawal, getReceivingBankQualifications, gerVenueName, getVenueMembershipCardConsumptionList, MembershipCollectionAgreeToRefuse, getCompleteMembershipRechargeDetails, getMembershipCollectionDetails, MembershipRechargeAgreeToRefuse, getMembershipRechargeDetails, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankList, getVenueOpenBankCity, VenueReceivingBankInformation } from '../../api';
+import { getVenueMoneyList, getVenueWithdrawalList, imgUrlTwo, getVenueWithdrawalOneList, VenueWithdrawal, getReceivingBankQualifications, gerVenueName, getVenueMembershipCardConsumptionList, MembershipCollectionAgreeToRefuse, getCompleteMembershipRechargeDetails, getMembershipCollectionDetails, MembershipRechargeAgreeToRefuse, getMembershipRechargeDetails, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankList, getVenueOpenBankCity, VenueReceivingBankInformation } from '../../api';
 import { DatePicker, Row, Col, Pagination, message, Input, Modal, Radio, Upload, Select, Popconfirm, Button } from 'antd';
-import { CloseCircleOutlined} from '@ant-design/icons';
+import { CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import locale from 'antd/es/date-picker/locale/zh_CN';
@@ -42,7 +42,7 @@ class myWallet extends React.Component {
     moneyYuan: '',
     allNow: '',
     sumMoney: '0',
-    DiscountMoney:'0',
+    DiscountMoney: '0',
     whereMoney: '0',
     start: '',
     end: '',
@@ -87,16 +87,16 @@ class myWallet extends React.Component {
     koTwo: 0,
     sumptionListNum: 0,
     numRadioTwo: 0,//结算账号
-    inCorName:'',
-    inChargeNa:'',//负责人姓名,
-    pageTwo:1,
+    inCorName: '',
+    inChargeNa: '',//负责人姓名,
+    pageTwo: 1,
   }
 
   dateChange = (data, dateString) => {
     this.setState({ dateString: dateString, start: dateString[0], end: dateString[1], kod: 1 })
   }
   search = () => {
-    this.setState({ kod: 0,page:1 })
+    this.setState({ kod: 0, page: 1 })
     this.getVenueMoneyList({ start: this.state.dateString[0], end: this.state.dateString[1], page: 1 })
   }
 
@@ -118,7 +118,7 @@ class myWallet extends React.Component {
       this.props.history.push('/')
       message.error('登录超时请重新登录!')
     } else {
-      this.setState({ moneyList: res.data.data.data, sumMoney: res.data.data.sumMoney,DiscountMoney:res.data.data.DiscountMoney, whereMoney: res.data.data.whereMoney, other: parseInt(res.data.data.count), loading: false, hidden: true })
+      this.setState({ moneyList: res.data.data.data, sumMoney: res.data.data.sumMoney, DiscountMoney: res.data.data.DiscountMoney, whereMoney: res.data.data.whereMoney, other: parseInt(res.data.data.count), loading: false, hidden: true })
     }
   }
 
@@ -204,44 +204,35 @@ class myWallet extends React.Component {
       }
     }, 50)
     this.gerVenueName()
-    let myDate = new Date()
-    let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
-    let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-    this.setState({ startSump: start, endSump: end })
-    this.getVenueMembershipCardConsumptionList({ page: 1, type: this.state.index, startdate: start, enddate: end })
     this.getCompleteMembershipRechargeDetails()
     this.getVenueOpenBankProvince()
     this.getVenueOpenBank()
-
-
-
-
     if (sessionStorage.getItem('incomtime') !== 'null' && sessionStorage.getItem('incomtime') !== null) {
       if (sessionStorage.getItem('incomtime') === '1') {
         let myDate = new Date()
         let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-        this.setState({ start: start, end: end, dateString: [start, end], koL: false })
+        this.setState({ startSump: start, endSump: end, start: start, end: end, dateString: [start, end], koL: false })
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
+        this.getVenueMembershipCardConsumptionList({ page: 1, type: this.state.index, startdate: start, enddate: end })
       } else if (sessionStorage.getItem('incomtime') === '2') {
         let start = moment().startOf('day')._d.toLocaleDateString().replace(/\//g, "-")
         let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-        this.setState({ start: start, end: end, dateString: [start, end], koL: false })
-
+        this.setState({ startSump: start, endSump: end, start: start, end: end, dateString: [start, end], koL: false })
         this.getVenueMoneyList({ start: start, end: end, page: 1 })
+        this.getVenueMembershipCardConsumptionList({ page: 1, type: this.state.index, startdate: start, enddate: end })
       }
     } else if (sessionStorage.getItem('incomtime') === 'null') {
       let start = moment().startOf('day').subtract(6, 'days')._d.toLocaleDateString().replace(/\//g, "-")
       let end = moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-")
-      this.setState({ start: start, end: end, dateString: [start, end], koL: true })
+      this.setState({ startSump: start, endSump: end, start: start, end: end, dateString: [start, end], koL: true })
       this.getVenueMoneyList({ start: start, end: end, page: 1 })
+      this.getVenueMembershipCardConsumptionList({ page: 1, type: this.state.index, startdate: start, enddate: end })
     }
-
   }
   record = () => {
     this.setState({ flag: 2, pageOne: 1 })
     this.getVenueWithdrawalList({ page: 1 })
-
   }
   returnN = () => {
     this.setState({ flag: 1 })
@@ -282,7 +273,7 @@ class myWallet extends React.Component {
     }
   }
   all = () => {
-    this.setState({ moneyYuan: this.state.walletList.DiscountMoney })
+    this.setState({ moneyYuan: this.state.walletList.money })
   }
   allNow = e => {
     this.setState({ moneyYuan: e.target.value })
@@ -351,13 +342,13 @@ class myWallet extends React.Component {
     }
   }
   numRadio = e => {
-    this.setState({ numRadio: e.target.value})
+    this.setState({ numRadio: e.target.value })
   }
 
   numRadioTwo = e => {
-    this.setState({ numRadioTwo: e.target.value,numRadio:e.target.value })
+    this.setState({ numRadioTwo: e.target.value, numRadio: e.target.value })
   }
-  inCorName= e => {
+  inCorName = e => {
     this.setState({ inCorName: e.target.value })
   }
   inChargeNa = e => {
@@ -439,12 +430,12 @@ class myWallet extends React.Component {
 
 
   ziSubmitTwo = () => {
-    let { numRadio, numRadioTwo,inCorName,inChargeNa, imgHood, imgFile, corporateId, imgFileTwo, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
+    let { numRadio, numRadioTwo, inCorName, inChargeNa, imgHood, imgFile, corporateId, imgFileTwo, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
     let data = {
       Bankcard: numRadio === 0 ? '' : corporateId,
       legalBaseURL: numRadioTwo === 1 ? imgHood : numRadio === 1 ? imgHood : '',
-      legalFilesURL: numRadioTwo === 1 ?  imgFile + '|' + imgFileTwo : numRadio === 1 ?  imgFile + '|' + imgFileTwo : '',
-      Bankname:numRadio === 0?'':inChargeNa,
+      legalFilesURL: numRadioTwo === 1 ? imgFile + '|' + imgFileTwo : numRadio === 1 ? imgFile + '|' + imgFileTwo : '',
+      Bankname: numRadio === 0 ? '' : inChargeNa,
       Settlement: numRadio,
       Bankaccount: corporateCardId,
       OpeningBank: corporateOpen,
@@ -452,7 +443,7 @@ class myWallet extends React.Component {
       ProvinceBank: province_id,
       CityBank: city_id,
       account: numRadioTwo,
-      Bankcorporate:numRadio===0?inCorName:'',
+      Bankcorporate: numRadio === 0 ? inCorName : '',
     }
 
     if (numRadio && imgFile === undefined) {
@@ -476,7 +467,7 @@ class myWallet extends React.Component {
     this.setState({ vipVisible: false })
   }
   handleCancelThree = () => {
-    this.setState({vipVisibleTwo: false })
+    this.setState({ vipVisibleTwo: false })
   }
 
   vipNot = e => {
@@ -591,7 +582,7 @@ class myWallet extends React.Component {
               />
               <span className="query" style={this.state.kod === 1 ? { display: 'block' } : { display: 'none' }} onClick={this.search}>查询</span>
               <div className="rightMoney">
-    <span className="sum">钱包余额(元): ￥{this.state.sumMoney}</span>
+                <span className="sum">钱包余额(元): ￥{this.state.sumMoney}</span>
                 <span className="withdrawal" onClick={this.withdrawal}>申请提现</span>
                 <span className="withdrawal" onClick={this.record}>提现记录</span>
               </div>
@@ -621,7 +612,6 @@ class myWallet extends React.Component {
 
           </div>
           <div className={this.state.flag === 2 ? 'record myWallet' : 'myWalletNone'}>
-
             <div className="header">
               <span className="previousStep" onClick={this.returnN}>钱包到账 ></span><span style={{ color: '#F5A623' }}>提现记录</span>
               <div style={{ float: 'right', fontSize: '16px', marginRight: '130px', lineHeight: '46px' }}>总计:￥{this.state.maxmoney}</div>
@@ -639,7 +629,7 @@ class myWallet extends React.Component {
                 this.state.recordList.map((item, i) => (
                   <Row key={i} >
                     <Col className="oneText" xs={{ span: 5 }}>{item.SubmitDate}</Col>
-                    <Col xs={{ span: 7, offset: 0 }}>{item.OpeningBank}|{'*' + item.BankCard.slice(-4)}|{'*' + item.BankName.slice(-1)}</Col>
+                    <Col xs={{ span: 7, offset: 0 }}>{item.OpeningBank}|{'*' + item.BankCard.slice(-4)}|{item.BankName !== null ? '*' + item.BankName.slice(-1) : ''}</Col>
                     <Col xs={{ span: 4, offset: 0 }}>{item.FinishedDate === null ? '---' : item.FinishedDate}</Col>
                     <Col xs={{ span: 4, offset: 0 }}>￥{item.RequestMoney}</Col>
                     <Col xs={{ span: 4, offset: 0 }}>{item.status === 1 ? '待处理' : '' || item.status === 2 ? '已处理' : '' || item.status === 3 ? '未通过' : ''}</Col>
@@ -657,36 +647,33 @@ class myWallet extends React.Component {
             </div>
             <div className="xiange"></div>
             <div className="balance">
-
-              <span>钱包余额</span> <span>{this.state.walletList.money}元</span><span></span><span style={{fontSize:'16px',paddingLeft:'20px'}}>扣除8%平台服务费后余额:<span style={{color:'#F64A0C'}}>{this.state.walletList.DiscountMoney}元</span>(可提现金额)</span>
-
+              <span>钱包余额</span> <span>{this.state.walletList.money}元</span><span></span>
             </div>
-            
+
             <div className="home">
-            <div><span style={{ marginLeft: -2}}></span>银行账户:<span className="textNext">{this.state.walletList.Settlement===0?'公司账户':'个人账户'}</span></div>
-            <div><span style={{ marginLeft: -30 }}>提现银行卡号:</span><span className="textNext">{'******' + this.state.walletList.Bankaccount}</span></div>
-            <div><span style={{ marginLeft: -42 }}>提现银行卡支行:</span><span className="textNext">{this.state.walletList.OpeningBank}</span></div>
-             
+              <div><span style={{ marginLeft: -2 }}></span>银行账户:<span className="textNext">{this.state.walletList.Settlement === 0 ? '公司账户' : '个人账户'}</span></div>
+              <div><span style={{ marginLeft: -30 }}>提现银行卡号:</span><span className="textNext">{this.state.walletList.Bankaccount}</span></div>
+              <div><span style={{ marginLeft: -42 }}>提现银行卡支行:</span><span className="textNext">{this.state.walletList.OpeningBank}</span></div>
+
               <div className="listSon">
                 <span>提现金额:</span>
                 <Input className="input" onChange={this.allNow} value={this.state.moneyYuan} />&nbsp;&nbsp;&nbsp;元
-              <span className="all" onClick={this.all}>全部提现</span>
+                <span className="all" onClick={this.all}>全部提现</span>
+              </div>
+
+              <div className="listSon">
+                <span>实际金额:</span>
+                <span className="textNext">{(this.state.moneyYuan - (this.state.moneyYuan * 0.08).toFixed(2)).toFixed(2)}</span><span style={{ paddingLeft: '30px' }}>扣除8%平台服务费</span>
               </div>
               <div className="listSon">
                 <span>到账时间:</span>
                 <span className="textNext">预计 2-3 个工作日到账</span>
               </div>
-              <div className="listSon">
-                <span>提现时间:</span>
-                <span className="textNext">每月1号、15号</span>
-              </div>
               <div className="comfir" onClick={this.comfir}>确定</div>
             </div>
           </div>
         </div>
-
         <div className="vipContent" style={this.state.flagHead === 0 ? {} : { display: 'none' }}>
-
           <div className="content">
             <div>
               <div className="backVip">
@@ -696,10 +683,10 @@ class myWallet extends React.Component {
                 <span className="h1" style={{ textAlign: 'right', paddingRight: '6px' }}>当前余额：¥{this.state.chargeDetailsNum}</span>
               </div>
               <div className="backVipTwo" style={this.state.chargeDetails.cardJustURL === '' || this.state.chargeDetails.length === 0 ? { display: 'none' } : {}}>
-                <img src={imgUrlTwo+ this.state.chargeDetails.cardJustURL} alt="img" />
+                <img src={imgUrlTwo + this.state.chargeDetails.cardJustURL} alt="img" />
               </div>
               <div className="backVipTwo" style={this.state.chargeDetails.cardBackURL === '' || this.state.chargeDetails.length === 0 ? { display: 'none' } : {}}>
-                <img src={imgUrlTwo+ this.state.chargeDetails.cardBackURL} alt="img" />
+                <img src={imgUrlTwo + this.state.chargeDetails.cardBackURL} alt="img" />
               </div>
             </div>
             <div className="textContent">
@@ -730,7 +717,7 @@ class myWallet extends React.Component {
                       <Col className="oneText" xs={{ span: 6 }} style={{ textAlign: 'left', height: '35px', lineHeight: '35px' }}>{item.date}</Col>
                       <Col xs={{ span: 6, offset: 0 }} style={{ height: '35px', lineHeight: '35px' }}>{this.state.index === 1 ? 'ID：' + item.orderid : '充值' + item.PlanRecharge + ',赠送' + item.givemoney}</Col>
                       <Col xs={{ span: 6, offset: 0 }} style={{ height: '35px', lineHeight: '35px' }}>{this.state.index === 1 ? '支出' : '收入'}</Col>
-                      <Col xs={{ span: 6, offset: 0 }} style={{ height: '35px', lineHeight: '35px' }}>￥{this.state.index === 1 ? item.money : Number(item.PlanRecharge) + Number(item.givemoney)+'.00'}</Col>
+                      <Col xs={{ span: 6, offset: 0 }} style={{ height: '35px', lineHeight: '35px' }}>￥{this.state.index === 1 ? item.money : Number(item.PlanRecharge) + Number(item.givemoney) + '.00'}</Col>
                     </Row>
                   ))
                 }
@@ -782,45 +769,45 @@ class myWallet extends React.Component {
           onCancel={this.handleCancelTwo}
           closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
         >
-         <div className="listing">
-              <span>结算账号:</span>
-              <Radio.Group className="accountNum" onChange={this.numRadioTwo} value={this.state.numRadioTwo}>
-                <Radio value={0}>场馆归属人账号</Radio>
-                <Radio value={1}>场馆负责人账号</Radio>
-              </Radio.Group>
-            </div>
+          <div className="listing">
+            <span>结算账号:</span>
+            <Radio.Group className="accountNum" onChange={this.numRadioTwo} value={this.state.numRadioTwo}>
+              <Radio value={0}>场馆归属人账号</Radio>
+              <Radio value={1}>场馆负责人账号</Radio>
+            </Radio.Group>
+          </div>
 
-            <div className="listing" style={this.state.numRadioTwo===1?{display:'none'}:{}}>
-              <span>归属人性质:</span>
-              <Radio.Group className="accountNum" onChange={this.numRadio} value={this.state.numRadio}>
-                <Radio value={0}>公司</Radio>
-                <Radio value={1}>个人</Radio>
-              </Radio.Group>
-            </div>
+          <div className="listing" style={this.state.numRadioTwo === 1 ? { display: 'none' } : {}}>
+            <span>归属人性质:</span>
+            <Radio.Group className="accountNum" onChange={this.numRadio} value={this.state.numRadio}>
+              <Radio value={0}>公司</Radio>
+              <Radio value={1}>个人</Radio>
+            </Radio.Group>
+          </div>
 
-            <div className="listing" style={this.state.numRadio === 1 ? { display: 'none' } : {}}>
-              <span>公司名称:</span>
-              <Input className="listingInput" value={this.state.inCorName} maxLength={18} placeholder="请输入公司名称"  onChange={this.inCorName} />
-            </div>
+          <div className="listing" style={this.state.numRadio === 1 ? { display: 'none' } : {}}>
+            <span>公司名称:</span>
+            <Input className="listingInput" value={this.state.inCorName} maxLength={18} placeholder="请输入公司名称" onChange={this.inCorName} />
+          </div>
 
 
-            <div className="listing" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
-              <span>负责人姓名:</span>
-              <Input className="listingInput" value={this.state.inChargeNa} maxLength={18} placeholder="请输入姓名"  onChange={this.inChargeNa} />
-            </div>
+          <div className="listing" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
+            <span>负责人姓名:</span>
+            <Input className="listingInput" value={this.state.inChargeNa} maxLength={18} placeholder="请输入姓名" onChange={this.inChargeNa} />
+          </div>
 
-            <div className="listing" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
-              <span>负责人身份证号:</span>
-              <Input className="listingInput" value={this.state.corporateId} maxLength={18} placeholder="请输入身份证号"  onChange={this.corporateId} />
-            </div>
-            <div className="listing" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
+          <div className="listing" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
+            <span>负责人身份证号:</span>
+            <Input className="listingInput" value={this.state.corporateId} maxLength={18} placeholder="请输入身份证号" onChange={this.corporateId} />
+          </div>
+          <div className="listing" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
             <span>身份证照:</span>
             <Upload
               name="files"
               listType="picture-card"
               className="avatar-uploader addImg"
               showUploadList={false}
-              action={imgUrlTwo+"api/UploadVenueImgs?type=VenueIdCardImgs"}
+              action={imgUrlTwo + "api/UploadVenueImgs?type=VenueIdCardImgs"}
               beforeUpload={beforeUpload}
               onChange={this.handleChangeTwo}
               accept=".jpg, .jpeg, .png"
@@ -832,7 +819,7 @@ class myWallet extends React.Component {
               listType="picture-card"
               className="avatar-uploader addImg ko"
               showUploadList={false}
-              action={imgUrlTwo+"api/UploadVenueImgs?type=VenueIdCardImgs"}
+              action={imgUrlTwo + "api/UploadVenueImgs?type=VenueIdCardImgs"}
               beforeUpload={beforeUpload}
               onChange={this.handleChangeThree}
               accept=".jpg, .jpeg, .png"
@@ -840,60 +827,60 @@ class myWallet extends React.Component {
               {imageUrlThree ? <img src={imgUrlTwo + imageUrlThree} alt="avatar" style={{ width: '128px', height: '70px' }} /> : uploadButtonThree}
             </Upload>
           </div>
-            <div className="listing">
-              <span>银行卡号:</span>
-              <Input className="listingInput"  placeholder="请输入银行卡号" value={this.state.corporateCardId} onChange={this.corporateCardId} />
-            </div>
+          <div className="listing">
+            <span>银行卡号:</span>
+            <Input className="listingInput" placeholder="请输入银行卡号" value={this.state.corporateCardId} onChange={this.corporateCardId} />
+          </div>
 
-            <div className="listing">
-              <span>开户所在地</span>
-              <Select placeholder="银行类型" style={{ width: 120, height: '35px', marginLeft: '18px' }} value={this.state.bank_id === '' ? null : Number(this.state.bank_id)} loading={this.state.flagOne} onChange={this.typeChange}>
-                {
-                  this.state.type.map((item, i) => (
-                    <Option key={i} value={item.bank_id}>{item.bank_name}</Option>
-                  ))
-                }
-              </Select>
-              <Select placeholder="所在省" style={{ width: 120, height: '35px', marginLeft: '18px' }} value={this.state.province_id === '' ? null : Number(this.state.province_id)} loading={this.state.flagTwo} onChange={this.provinceChange}>
-                {
-                  this.state.backProvince.map((item, i) => (
-                    <Option key={i} value={item.province_id}>{item.province}</Option>
-                  ))
-                }
-              </Select>
-              <Select placeholder="所在市" style={{ width: 120, height: '35px', marginLeft: '18px' }} value={this.state.city_id === '' ? null : Number(this.state.city_id)} loading={this.state.flagThree} onChange={this.cityChange}>
-                {
-                  this.state.backCity.map((item, i) => (
-                    <Option key={i} value={item.city_id}>{item.city}</Option>
-                  ))
-                }
-              </Select>
-            </div>
+          <div className="listing">
+            <span>开户所在地</span>
+            <Select placeholder="银行类型" style={{ width: 120, height: '35px', marginLeft: '18px' }} value={this.state.bank_id === '' ? null : Number(this.state.bank_id)} loading={this.state.flagOne} onChange={this.typeChange}>
+              {
+                this.state.type.map((item, i) => (
+                  <Option key={i} value={item.bank_id}>{item.bank_name}</Option>
+                ))
+              }
+            </Select>
+            <Select placeholder="所在省" style={{ width: 120, height: '35px', marginLeft: '18px' }} value={this.state.province_id === '' ? null : Number(this.state.province_id)} loading={this.state.flagTwo} onChange={this.provinceChange}>
+              {
+                this.state.backProvince.map((item, i) => (
+                  <Option key={i} value={item.province_id}>{item.province}</Option>
+                ))
+              }
+            </Select>
+            <Select placeholder="所在市" style={{ width: 120, height: '35px', marginLeft: '18px' }} value={this.state.city_id === '' ? null : Number(this.state.city_id)} loading={this.state.flagThree} onChange={this.cityChange}>
+              {
+                this.state.backCity.map((item, i) => (
+                  <Option key={i} value={item.city_id}>{item.city}</Option>
+                ))
+              }
+            </Select>
+          </div>
 
 
 
-            <div className="listing">
-              <span>开户行:</span>
-              <Select
-                showSearch
-                style={{ width: 395, height: '36px', marginLeft: '18px', float: 'left' }}
-                onSearch={this.handleSearch}
-                onChange={this.corporateOpen}
-                defaultActiveFirstOption={false}
-                showArrow={false}
-                notFoundContent={null}
-                value={this.state.corporateOpen === '' ? null : this.state.corporateOpen}
-                placeholder="请输入支行关键字"
-              >
-                {
-                  this.state.backList.map((item, i) => (
-                    <Option key={i} value={item.name} alt={item.name}>
-                      <span>{item.nameT}</span>
-                    </Option>
-                  ))
-                }
-              </Select>
-            </div>
+          <div className="listing">
+            <span>开户行:</span>
+            <Select
+              showSearch
+              style={{ width: 395, height: '36px', marginLeft: '18px', float: 'left' }}
+              onSearch={this.handleSearch}
+              onChange={this.corporateOpen}
+              defaultActiveFirstOption={false}
+              showArrow={false}
+              notFoundContent={null}
+              value={this.state.corporateOpen === '' ? null : this.state.corporateOpen}
+              placeholder="请输入支行关键字"
+            >
+              {
+                this.state.backList.map((item, i) => (
+                  <Option key={i} value={item.name} alt={item.name}>
+                    <span>{item.nameT}</span>
+                  </Option>
+                ))
+              }
+            </Select>
+          </div>
 
           <Popconfirm
             title="您确定信息无误?"

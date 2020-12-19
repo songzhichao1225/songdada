@@ -585,12 +585,12 @@ class systemSettings extends React.Component {
         <div className={this.state.flagUntieTwo === false ? 'reset' : 'listNone'}>
           <div className="advertising">
             <div style={{ fontSize: '14x' }}>请上传广告宣传图片(最多2张)</div>
-            <div style={{ fontSize: '12x', color: '#D85D27' }}>在“找对手”平台做广告时提供，图片上须能体现出场馆名字</div>
+            <div style={{ fontSize: '12x', color: '#D85D27' }}>在“找对手”平台做广告时提供</div>
             <div className="name">
               <div className="clearfix">
                 <ImgCrop aspect={20 / 9} quality={1} width={200} height={90}>
                   <Upload
-                    name="files"
+                    name="files" 
                     listType="picture-card"
                     className="avatar-uploader addImg"
                     showUploadList={false}

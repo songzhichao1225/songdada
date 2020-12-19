@@ -173,3 +173,52 @@
   margin: 0.5rem auto 0.5rem;
   
 }
+
+.koshone .headTop{
+  overflow: hidden;
+  border-bottom: 0.06rem solid #e9e9e9;
+}
+.koshone .headTop .left{
+  width: 3.69rem;
+  height: 3.69rem;
+  float: left;
+}
+.koshone .headTop .left>img{
+  width: 100%;
+  height: 100%;
+}
+.koshone .headTop .right{
+  float: left;
+  margin-top: 0.6rem;
+}
+.koshone .headTop .right>span{
+  display: block;
+  font-size:0.8rem;
+  text-align: left;
+}
+.koshone .startRota{
+  text-align: left;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+.koshone .textAre{
+  font-size: 0.8rem;
+  color: #9b9b9b;
+  text-align: left;
+  margin-top: 0.5rem;
+}
+.koshone .select{
+  width: 7.75rem;
+  height: 1.81rem;
+  float: left;
+  line-height: 1.81rem;
+  border: 0.06rem solid #9b9b9b;
+  margin-top: 0.8rem;
+  text-align: center;
+}
+.koshone .select:nth-child(2n+1){
+  margin-left: 1rem;
+}
+.koshone .ant-modal-close-x{
+  line-height: 36px;
+}

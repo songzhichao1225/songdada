@@ -115,7 +115,7 @@
 }
 .orderList .circumstance .prompt>div{
    float: left;
-   margin-left: 20px;
+   margin-left: 10px;
    height: 32px;
 }
 .orderList .ant-table-ping-right:not(.ant-table-has-fix-right) .ant-table-container{
@@ -147,7 +147,7 @@
  .orderList .circumstance .prompt>div>span:last-child{
     display: block;
     float: left;
-    margin-left: 15px;
+    margin-left: 5px;
     line-height: 16px;
     font-size: 16px;
   }
@@ -454,4 +454,46 @@
 }
 .ant-modal-footer{
     display: none;
+}
+.moBtn{
+    width: 35px;
+    height: 20px;
+    background-color: #F5A623;
+    color: #fff;
+    cursor: pointer;
+    text-align: center;
+    line-height: 20px;
+    float: left;
+    margin-top: 20px;
+}
+.moBtn:last-child{
+    margin-left: 20px;
+}
+.orderList .weekList{
+     width: 600px;
+     height: 46px;
+     position: absolute;
+     top: -55px;
+     left: 230px;
+}
+.orderList .moTimeBtn{
+    width: 80px;
+    height: 35px;
+    margin-left: 5px;
+    border-radius: 5px;
+    border:1px solid #9B9B9B;
+    text-align: center;
+    float: left;
+    font-size: 12px;
+    margin-top: 5px;
+    line-height: 15px;
+}
+.orderList .moTimeBtn:hover{
+    background-color: #56A5FF;
+    color: #fff;
+    border-color: #fff;
+}
+
+.orderList .moTimeBtn:first-child{
+    margin-left: 0;
 }

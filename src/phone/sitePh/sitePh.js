@@ -318,7 +318,7 @@ class sitePh extends React.Component {
   async getSiteSelectedVenueid(data) {
     const res = await getSiteSelectedVenueid(data, localStorage.getItem('venue_token'))
     if (this.state.Serial === true) {
-      if (this.state.pickerValue[0] === 6) {
+      if (this.state.pickerValue[0] === 6||this.state.pickerValue[0] === 2) {
         for (let j in res.data.data) {
           for (let i in this.state.numArr) {
             if (this.state.numArr.length === 48) {
@@ -378,7 +378,7 @@ class sitePh extends React.Component {
     } else if (this.state.pickerValue[0] === 6 && this.state.typeTwo[0] === 0) {
       Toast.fail('请选择场地类型', 1);
     } else {
-      if (this.state.pickerValue[0] === 6) {
+      if (this.state.pickerValue[0] === 6||this.state.pickerValue[0] === 2) {
         if (this.state.typeTwo[0] === 2) {
           this.setState({
             numArr: [
@@ -483,7 +483,113 @@ class sitePh extends React.Component {
               { num: '24A', cheked: false, id: 46 },
             ]
           })
+        }else if (this.state.typeTwo[0] === 3) {
+          this.setState({
+            numArr: [
+              { num: '1', cheked: false, id: 0 },
+              { num: '2', cheked: false, id: 1 },
+              { num: '3', cheked: false, id: 2 },
+              { num: '4', cheked: false, id: 3 },
+              { num: '5', cheked: false, id: 4 },
+              { num: '6', cheked: false, id: 5 },
+              { num: '7', cheked: false, id: 6 },
+              { num: '8', cheked: false, id: 7 },
+              { num: '9', cheked: false, id: 8 },
+              { num: '10', cheked: false, id: 9 },
+              { num: '11', cheked: false, id: 10 },
+              { num: '12', cheked: false, id: 11 },
+              { num: '13', cheked: false, id: 12 },
+              { num: '14', cheked: false, id: 13 },
+              { num: '15', cheked: false, id: 14 },
+              { num: '16', cheked: false, id: 15 },
+              { num: '17', cheked: false, id: 16 },
+              { num: '18', cheked: false, id: 17 },
+              { num: '19', cheked: false, id: 18 },
+              { num: '20', cheked: false, id: 19 },
+              { num: '21', cheked: false, id: 20 },
+              { num: '22', cheked: false, id: 21 },
+              { num: '23', cheked: false, id: 22 },
+              { num: '24', cheked: false, id: 23 },
+              { num: '25', cheked: false, id: 24 },
+              { num: '26', cheked: false, id: 25 },
+              { num: '27', cheked: false, id: 26 },
+              { num: '28', cheked: false, id: 27 },
+              { num: '29', cheked: false, id: 28 },
+              { num: '30', cheked: false, id: 29 },
+              { num: '31', cheked: false, id: 30 },
+              { num: '32', cheked: false, id: 31 },
+              { num: '33', cheked: false, id: 32 },
+              { num: '34', cheked: false, id: 33 },
+              { num: '35', cheked: false, id: 34 },
+              { num: '36', cheked: false, id: 35 },
+              { num: '37', cheked: false, id: 36 },
+              { num: '38', cheked: false, id: 37 },
+              { num: '39', cheked: false, id: 38 },
+              { num: '40', cheked: false, id: 39 },
+              { num: '41', cheked: false, id: 40 },
+              { num: '42', cheked: false, id: 41 },
+              { num: '43', cheked: false, id: 42 },
+              { num: '44', cheked: false, id: 43 },
+              { num: '45', cheked: false, id: 44 },
+              { num: '46', cheked: false, id: 45 },
+              { num: '47', cheked: false, id: 46 },
+            ]
+          })
+        }else if (this.state.typeTwo[0] === 4) {
+          this.setState({
+            numArr: [
+              { num: '1', cheked: false, id: 0 },
+              { num: '2', cheked: false, id: 1 },
+              { num: '3', cheked: false, id: 2 },
+              { num: '4', cheked: false, id: 3 },
+              { num: '5', cheked: false, id: 4 },
+              { num: '6', cheked: false, id: 5 },
+              { num: '7', cheked: false, id: 6 },
+              { num: '8', cheked: false, id: 7 },
+              { num: '9', cheked: false, id: 8 },
+              { num: '10', cheked: false, id: 9 },
+              { num: '11', cheked: false, id: 10 },
+              { num: '12', cheked: false, id: 11 },
+              { num: '13', cheked: false, id: 12 },
+              { num: '14', cheked: false, id: 13 },
+              { num: '15', cheked: false, id: 14 },
+              { num: '16', cheked: false, id: 15 },
+              { num: '17', cheked: false, id: 16 },
+              { num: '18', cheked: false, id: 17 },
+              { num: '19', cheked: false, id: 18 },
+              { num: '20', cheked: false, id: 19 },
+              { num: '21', cheked: false, id: 20 },
+              { num: '22', cheked: false, id: 21 },
+              { num: '23', cheked: false, id: 22 },
+              { num: '24', cheked: false, id: 23 },
+              { num: '25', cheked: false, id: 24 },
+              { num: '26', cheked: false, id: 25 },
+              { num: '27', cheked: false, id: 26 },
+              { num: '28', cheked: false, id: 27 },
+              { num: '29', cheked: false, id: 28 },
+              { num: '30', cheked: false, id: 29 },
+              { num: '31', cheked: false, id: 30 },
+              { num: '32', cheked: false, id: 31 },
+              { num: '33', cheked: false, id: 32 },
+              { num: '34', cheked: false, id: 33 },
+              { num: '35', cheked: false, id: 34 },
+              { num: '36', cheked: false, id: 35 },
+              { num: '37', cheked: false, id: 36 },
+              { num: '38', cheked: false, id: 37 },
+              { num: '39', cheked: false, id: 38 },
+              { num: '40', cheked: false, id: 39 },
+              { num: '41', cheked: false, id: 40 },
+              { num: '42', cheked: false, id: 41 },
+              { num: '43', cheked: false, id: 42 },
+              { num: '44', cheked: false, id: 43 },
+              { num: '45', cheked: false, id: 44 },
+              { num: '46', cheked: false, id: 45 },
+              { num: '47', cheked: false, id: 46 },
+              { num: '场地不固定', cheked: false, id: 47 }
+            ]
+          })
         }
+
 
         this.getSiteSelectedVenueid({ sportid: this.state.pickerValue[0] })
         this.setState({
@@ -523,14 +629,14 @@ class sitePh extends React.Component {
   numArrSon = e => {
     let items = this.state.numArr
 
-    if (this.state.pickerValue[0] === 6) {
+    if (this.state.pickerValue[0] === 6||this.state.pickerValue[0] === 2) {
       if (items[e.currentTarget.dataset.id].cheked === true) {
         items[e.currentTarget.dataset.id].cheked = false
       } else if (items[e.currentTarget.dataset.id].cheked === false) {
         items[e.currentTarget.dataset.id].cheked = true
       }
       if (e.currentTarget.dataset.num === '场地不固定') {
-
+ 
         if (items[47].cheked === true) {
           for (let i in items) {
             items[i].cheked = 'no'
@@ -571,9 +677,6 @@ class sitePh extends React.Component {
       }
       this.setState({ numArr: this.state.numArr })
     }
-
-
-
   }
 
 
@@ -1049,11 +1152,10 @@ class sitePh extends React.Component {
           startDate: res.data.data[0].discount_sdate === null ? this.state.startDate : new Date(res.data.data[0].discount_sdate + ' ' + res.data.data[0].discount_start),
           endDate: res.data.data[0].discount_edate === null ? this.state.endDate : new Date(res.data.data[0].discount_edate + ' ' + res.data.data[0].discount_end),
           starttimeSiscount: res.data.data[0].starttime, endtimeSiscount: res.data.data[0].endtime, venueidSiscount: kol, venueidSiscountTwo: res.data.data[0].venueid === null ? '请选择' : res.data.data[0].venueid,
-          appointmenttimeTwo: [res.data.data[0].discount_appointment === null ? 0 : res.data.data[0].discount_appointment], dateArr: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(','),
+          appointmenttimeTwo: [res.data.data[0].discount_appointment === null ? res.data.data[0].appointmenttime : res.data.data[0].discount_appointment], dateArr: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(','),
         })
       }
     }
-
   }
 
   jiaUpdata = e => {
@@ -1338,7 +1440,7 @@ class sitePh extends React.Component {
             disabled={this.state.upData === 1 ? true : false}
             onOk={v => this.setState({ pickerValue: v, idxTitleTwo: '请选择/添加', chekedArr: [] })}
             cols={1} className="forss">
-            <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} style={{ borderBottom: '1px solid #E9E9E9' }}>运动项目</List.Item>
+            <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} style={{ borderBottom: '1px solid #E9E9E9' }}>场地类型</List.Item>
           </Picker>
 
           <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} onClick={this.state.upData === 1 ? '' : this.visibleTitle} extra={this.state.idxTitleTwo} style={{ borderBottom: '1px solid #E9E9E9' }}>细分标签</List.Item>
@@ -1347,12 +1449,12 @@ class sitePh extends React.Component {
             data={this.state.pickerValue[0] === 6?this.state.ListSportTwo:this.state.ListSportThree}
             value={this.state.typeTwo}
             disabled={this.state.upData === 1 ? true : false}
-            onOk={v => this.setState({ typeTwo: v,chekedArr:v[0]===4?['场地不固定']:[] }) }
+            onOk={v => this.setState({ typeTwo: v,chekedArr:[] }) }
             cols={1} className="forss">
             <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} style={this.state.pickerValue[0] === 6||this.state.pickerValue[0] === 2 ? { borderBottom: '1px solid #E9E9E9' } : { display: 'none' }}>收费类型</List.Item>
           </Picker>
 
-          <List.Item arrow="horizontal" onClick={this.state.typeTwo[0]!==4?this.Serial:this.sdkgfjisdhjugus} extra={this.state.chekedArr.length === 0 ? '请选择' : this.state.chekedArr.join(',')} style={{ borderBottom: '1px solid #E9E9E9' }}>场地编号</List.Item>
+          <List.Item arrow="horizontal" onClick={this.Serial} extra={this.state.chekedArr.length === 0 ? '请选择' : this.state.chekedArr.join(',')} style={{ borderBottom: '1px solid #E9E9E9' }}>场地编号</List.Item>
           <List.Item arrow="empty" extra={this.state.chekedArr.length} style={{ borderBottom: '1px solid #E9E9E9' }}>场地数量</List.Item>
           <div className="btnSub" onTouchStart={this.xifenPush}>提交</div>
 
@@ -1423,7 +1525,7 @@ class sitePh extends React.Component {
           <div className="sitePhSerial">
             {
               this.state.numArr.map((item, i) => (
-                <div key={i} className={this.state.typeTwo[0] === 2 ? 'serialSon' : 'serialSonTwo'} onClick={this.numArrSon} data-num={item.num} data-id={item.id} style={item.cheked === true ? { background: '#F5A623', color: '#fff' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', opacity: '0.2' } : item.num === '场地不固定' ? { width: '5rem' } : {}}>{item.num}</div>
+                <div key={i} className={this.state.typeTwo[0] === 2||this.state.typeTwo[0] === 4 ? 'serialSon' : 'serialSonTwo'} onClick={this.numArrSon} data-num={item.num} data-id={item.id} style={item.cheked === true ? { background: '#F5A623', color: '#fff' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', opacity: '0.2' } : item.num === '场地不固定' ? { width: '5rem' } : {}}>{item.num}</div>
               ))
             }
           </div>
@@ -1490,7 +1592,7 @@ class sitePh extends React.Component {
               style={{ padding: '0' }}
               disabledKeys={['.']}
               moneyKeyboardWrapProps={moneyKeyboardWrapProps}
-            ><span style={{ fontSize: '0.88rem', border: 'none' }}>价格(元/时)</span></InputItem></List.Item>
+          ><span style={{ fontSize: '0.88rem', border: 'none' }}>{this.state.timeFalg === false?'价格(元/次)':'价格(元/时)'}</span></InputItem></List.Item>
 
           <Picker
             data={this.state.Longest}

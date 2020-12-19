@@ -1,9 +1,9 @@
 import React from 'react';
 import './homePh.css';
 import 'antd/dist/antd.css';
-import {getVenueIndex } from '../../api';
-
-import { PullToRefresh } from 'antd-mobile';
+import {getVenueIndex,VenueEvaluationOfOperation,VenueEvaluationSave } from '../../api';
+import {Rate,Modal } from 'antd';
+import { PullToRefresh, Toast } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { LoadingOutlined } from '@ant-design/icons';
 
@@ -32,13 +32,22 @@ class homePh extends React.Component {
     visible: false,
     mode: false,
     flag: false,
-    flagK: false
+    flagK: false,
+    Selabel: [],
+    detail: [],
+    SelabelTwo: [],
+    isModalVisible: false,
+    rate: 1,
+    labelId:[],
   };
   async getVenueIndex(data) {
     const res = await getVenueIndex(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ getVenue: res.data.data, spin: false, spinFlag: false })
       sessionStorage.setItem('score', res.data.data.score)
+      if(res.data.data.isevaluate===0){
+        // this.VenueEvaluationOfOperation()
+      }
     }
   }
 
@@ -74,11 +83,26 @@ class homePh extends React.Component {
   }
 
 
+  async VenueEvaluationOfOperation(data) {
+    const res = await VenueEvaluationOfOperation(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      let object = res.data.data.label
+      var arr = []
+      for (let i in object) {
+        arr.push(object[i]);
+      }
+
+      this.setState({ detail: res.data.data, Selabel: arr, SelabelTwo: arr[0], isModalVisible: true })
+    }
+  }
+
+
 
 
   componentDidMount() {
     sessionStorage.setItem('kood', 1)
     this.getVenueIndex()
+    
   }
 
   reture = () => {
@@ -108,6 +132,41 @@ class homePh extends React.Component {
     setTimeout(() => {
       this.getVenueIndex()
     }, 1000)
+  }
+
+  rate = (e) => {
+    this.setState({ rate: e,SelabelTwo: this.state.Selabel[e - 1], labelId: [] })
+  }
+
+  select = (e) => {
+   
+    if (this.state.labelId.indexOf(Number(e.currentTarget.dataset.id)) !== -1) {
+      let pop = this.state.labelId
+      pop.splice(this.state.labelId.indexOf(Number(e.currentTarget.dataset.id)), 1);
+      this.setState({ labelId: pop })
+      
+    } else {
+      this.setState({ labelId: [...this.state.labelId, Number(e.currentTarget.dataset.id)] })
+    }
+  }
+
+  async VenueEvaluationSave(data) {
+    const res = await VenueEvaluationSave(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      if(data.star!==''){
+        Toast.success('评价成功')
+      }
+        this.setState({isModalVisible:false})
+    }else{
+      Toast.fail(res.data.msg)
+    }
+  }
+
+  handleOk = () => {
+    this.VenueEvaluationSave({star:this.state.rate,label:this.state.labelId.join('')})
+  }
+  handleCancel=()=>{
+    this.VenueEvaluationSave({star:'',label:''})
   }
 
 
@@ -159,6 +218,34 @@ class homePh extends React.Component {
             </PullToRefresh>
           </div>
         </div>
+
+        <Modal
+          visible={this.state.isModalVisible}
+          className="koshone"
+          title="请对运营专员上一周的表现做个评价吧!"
+          okText="匿名评价" 
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+        >
+          <div style={{ height: '15rem' }}>
+            <div className="headTop">
+              <div className="left"><img src={require("../../assets/operations.png")} alt="" /></div>
+              <div className="right">
+                <span>ID:{this.state.detail.promoteid}</span>
+                <span>{this.state.detail.promotename}</span>
+              </div>
+            </div>
+            <div className="startRota">整体评分:<Rate defaultValue={1} allowClear={false} onChange={this.rate} />  {this.state.rate}分</div>
+            <div className="textAre">基于对ta的印象点击下方标签评价吧！</div>
+             {
+               this.state.SelabelTwo.map((item,i)=>(
+               <div className="select"  style={this.state.labelId.indexOf(item.id) !== -1 ? { background: 'rgba(216,93,39,0.12)', border: '1px solid #D85D27', color: '#D85D27' } : {}} onClick={this.select} key={i} data-id={item.id}>{item.name}</div>
+               ))
+             }
+          </div>
+        </Modal>
+
+
       </div>
     )
   }

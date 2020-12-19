@@ -587,7 +587,7 @@ class appointmentList extends React.Component {
                 </Popover>
                 <Col xs={{ span: 2 }} style={this.state.headTop === '1' ? { display: 'none' } : {}}><div style={{ lineHeight: '25px', fontSize: '10px' }}>{item.StartTime === 0 ? '00:00' : item.StartTime.slice(0, 10)}</div><div style={{ lineHeight: '25px' }}>{item.StartTime === 0 ? '00:00' : item.StartTime.slice(11, 16)}</div></Col>
                 <Col xs={{ span: 2 }}><div style={{ lineHeight: '25px', fontSize: '10px' }}>{item.FinishedTime.slice(0, 10)}</div><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(11, 16)}</div></Col>
-                <Col xs={{ span: 2 }}><span>{item.PlayTime}小时</span></Col>
+                <Col xs={{ span: 2 }}><span>{item.breakup.length===0?item.PlayTime+'小时':'无'}</span></Col>
 
                 <Col xs={{ span: 2 }} >{this.state.headTop === '1' ? item.breakup.length === 0 ? <Popover content={(<span>{item.venueid}</span>)} title='详情' trigger="click">
                   <div>{
@@ -612,7 +612,7 @@ class appointmentList extends React.Component {
                   </div> : <div>
                       {
                         item.breakup.map((itemTwo, i) => (
-                          <div key={i} style={{ textAlign: 'center' }}>￥{itemTwo.price}/次</div>
+                          <div key={i} style={{ textAlign: 'center',lineHeight:'30px' }}>￥{itemTwo.price}/次</div>
                         ))
                       }
                     </div> : item.TrueTo}</span>
@@ -620,7 +620,11 @@ class appointmentList extends React.Component {
                 <Col xs={{ span: 3 }} style={this.state.headTop === '1' ? {} : { display: 'none' }}><span>
                   {
                     item.breakup.map((itemThree, i) => (
-                      <div key={i} style={{ overflow: 'hidden' }}><div style={{ float: 'left', marginLeft: '35%' }}>{itemThree.frequency}</div>
+                      <div key={i} style={{ overflow: 'hidden',marginTop:'6px' }}><div style={{ float: 'left', marginLeft: '35%' }}>{itemThree.frequency}</div>
+                      {
+                        itemThree.frequency===0||item.PublicStatus ==='已完成'?
+                          <div className="sijn" style={itemThree.frequency===0||item.PublicStatus ==='已完成'?{background:'#9b9b9b'}:{}} onClick={this.confirmUUid} data-uuid={itemThree.uuid}>—</div>
+                        :
                         <Popconfirm
                           placement="top"
                           title='您确定要扣除一次吗?'
@@ -628,8 +632,10 @@ class appointmentList extends React.Component {
                           okText="确定"
                           cancelText="取消"
                         >
-                          <div className="sijn" onClick={this.confirmUUid} data-uuid={itemThree.uuid}>—</div>
+                          <div className="sijn" style={itemThree.frequency===0||item.PublicStatus==='已完成'?{background:'#9b9b9b'}:{}} onClick={this.confirmUUid} data-uuid={itemThree.uuid}>—</div>
                         </Popconfirm>
+                      }
+                        
                       </div>
                     ))
                   }</span> <span onClick={this.deducting} data-uuid={item.uuid} data-sportName={item.SportName} style={item.breakup.length === 0 ? { display: 'none' } : { float: 'left', color: '#4A90E2' }}>扣除<br />记录</span><span style={item.breakup.length === 0 ? {} : { display: 'none' }}>非散场</span></Col>

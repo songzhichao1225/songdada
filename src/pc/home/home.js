@@ -2,8 +2,8 @@ import React from 'react';
 import { Route, Link } from 'react-router-dom';
 import './home.css';
 import 'antd/dist/antd.css';
-import { getVenueIndex, gerVenueName,wsFn } from '../../api';
-import { Layout, Menu, message, notification } from 'antd';
+import { getVenueIndex, gerVenueName, wsFn, VenueEvaluationOfOperation,VenueEvaluationSave } from '../../api';
+import { Layout, Menu, message, notification, Modal, Rate } from 'antd';
 import { } from '@ant-design/icons';
 // import homePage from '../homePage/homePage';
 // import information from '../information/information';
@@ -38,12 +38,11 @@ const { Header, Sider, Content } = Layout;
 
 
 function jo() {
-
-  let ws=wsFn
+  let ws = wsFn
   ws.onopen = function () {
     ws.send(sessionStorage.getItem('siteuid'))
   }
-  
+
   ws.onmessage = function (e) {
     let message_info = JSON.parse(e.data)
     let msg = new SpeechSynthesisUtterance(message_info.percent)
@@ -79,18 +78,38 @@ class home extends React.Component {
     getVenueMonth_count: '',
     getVenueToday_count: '',
     getVenueScore: '',
-    ishaverecharge:0,
-    month_member_money:'',
-    today_member_money:'',
+    ishaverecharge: 0,
+    month_member_money: '',
+    today_member_money: '',
+    isModalVisible: false,
+    detail: [],
+    Selabel: [],
+    SelabelTwo: [],
+    rate: 1,
+    labelId: [],
+    isevaluate:0,
   };
+
+
+  async VenueEvaluationOfOperation(data) {
+    const res = await VenueEvaluationOfOperation(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      let object = res.data.data.label
+      var arr = []
+      for (let i in object) {
+        arr.push(object[i]);
+      }
+      this.setState({ detail: res.data.data, Selabel: arr, SelabelTwo: arr[0],isModalVisible:true })
+    }
+  }
 
 
 
   componentDidMount() {
     sessionStorage.setItem('kood', 1)
     sessionStorage.setItem('loodSo', '0')
-    sessionStorage.setItem('sitew',true)
-    sessionStorage.setItem('wallet',true)
+    sessionStorage.setItem('sitew', true)
+    sessionStorage.setItem('wallet', true)
     this.setState({ minheight: document.body.scrollHeight, path: this.props.history.location.pathname })
     this.getVenueIndex()
     this.gerVenueName()
@@ -120,23 +139,18 @@ class home extends React.Component {
       sessionStorage.setItem('path', '8');
     }
     jo()
-
-    if (sessionStorage.getItem('islegal') === '0'||sessionStorage.getItem('islegal') === '2') {
+    if (sessionStorage.getItem('islegal') === '0' || sessionStorage.getItem('islegal') === '2') {
       this.props.history.push('/statusAudits')
     }
-    if(sessionStorage.getItem('issite') === '0'){
+    if (sessionStorage.getItem('issite') === '0') {
       this.props.history.push('/perfect')
     }
-     if(sessionStorage.getItem('isqult') === '0'){
+    if (sessionStorage.getItem('isqult') === '0') {
       this.props.history.push('/qualification')
     }
-
-
-
-
   }
 
- 
+
 
 
   componentWillReceiveProps() {
@@ -164,8 +178,6 @@ class home extends React.Component {
     } else if (this.props.history.location.pathname === '/home/special') {
       sessionStorage.setItem('path', '8');
     }
-
-  
   }
 
   lppd = () => {
@@ -250,11 +262,14 @@ class home extends React.Component {
   async getVenueIndex(data) {
     const res = await getVenueIndex(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
+      if(res.data.data.isevaluate===0){
+        // this.VenueEvaluationOfOperation()
+      } 
       this.setState({
+        isevaluate:res.data.data.dataisevaluate,
         getVenueMonth_money: res.data.data.month_money, getVenueToday_money: res.data.data.today_money, getVenueMonth_count: res.data.data.month_count,
-        month_member_money:res.data.data.month_member_money,today_member_money:res.data.data.today_member_money,
+        month_member_money: res.data.data.month_member_money, today_member_money: res.data.data.today_member_money,
         getVenueToday_count: res.data.data.today_count, getVenueScore: res.data.data.score
-
       })
       sessionStorage.setItem('score', res.data.data.score)
     }
@@ -266,53 +281,85 @@ class home extends React.Component {
       this.props.history.push('/')
       message.error('登录超时请重新登录!')
     } else {
-      this.setState({ gerVenueNameName: res.data.data.name, gerVenueNameRate: res.data.data.rate,ishaverecharge:res.data.data.ishaverecharge })
+      this.setState({ gerVenueNameName: res.data.data.name, gerVenueNameRate: res.data.data.rate, ishaverecharge: res.data.data.ishaverecharge })
       sessionStorage.setItem('mess', res.data.data.mess)
-      sessionStorage.setItem('siteuid',res.data.data.siteuid)
-      sessionStorage.setItem('ishaverecharge',res.data.data.ishaverecharge)
+      sessionStorage.setItem('siteuid', res.data.data.siteuid)
+      sessionStorage.setItem('ishaverecharge', res.data.data.ishaverecharge)
     }
   }
 
 
   income = () => {
     this.props.history.push({ pathname: '/home/myWallet', query: { time: 1 } })
-    sessionStorage.setItem('incomtime',1)
+    sessionStorage.setItem('incomtime', 1)
   }
   daysIncome = () => {
     this.props.history.push({ pathname: '/home/myWallet', query: { time: 2 } })
-    sessionStorage.setItem('incomtime',2)
+    sessionStorage.setItem('incomtime', 2)
   }
   mounthOrder = () => {
     this.props.history.push({ pathname: '/home/information', query: { time: 1 } })
-    sessionStorage.setItem('iconmInfor',1)
+    sessionStorage.setItem('iconmInfor', 1)
   }
   mounthOrderTwo = () => {
     this.props.history.push({ pathname: '/home/information', query: { time: 2 } })
-    sessionStorage.setItem('iconmInfor',2)
+    sessionStorage.setItem('iconmInfor', 2)
   }
   news = () => {
     this.gerVenueName()
     this.props.history.push("/home/news")
   }
-  sitew=()=>{
-    sessionStorage.setItem('sitew',false) 
+  sitew = () => {
+    sessionStorage.setItem('sitew', false)
   }
-  wallet=()=>{
-    sessionStorage.setItem('wallet',false)
-    sessionStorage.setItem('incomtime',null)
+  wallet = () => {
+    sessionStorage.setItem('wallet', false)
+    sessionStorage.setItem('incomtime', null)
     this.props.history.push('/home/myWallet')
+  }
+
+  rate = (e) => {
+    this.setState({ rate: e, SelabelTwo: this.state.Selabel[e - 1], labelId: [] })
+  }
+  select = (e) => {
+    if (this.state.labelId.indexOf(Number(e.currentTarget.dataset.id)) !== -1) {
+      let pop = this.state.labelId
+      pop.splice(this.state.labelId.indexOf(Number(e.currentTarget.dataset.id)), 1);
+      this.setState({ labelId: pop })
+    } else {
+      this.setState({ labelId: [...this.state.labelId, Number(e.currentTarget.dataset.id)] })
+    }
+  }
+
+  async VenueEvaluationSave(data) {
+    const res = await VenueEvaluationSave(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      if(data.star!==''){
+        message.success('提交成功')
+      }
+        this.setState({isModalVisible:false})
+    }else{
+      message.warning(res.data.msg)
+    }
+  }
+
+  handleOk = () => {
+    this.VenueEvaluationSave({star:this.state.rate,label:this.state.labelId.join(',')})
+  }
+  handleCancel=()=>{
+    this.VenueEvaluationSave({star:'',label:''})
   }
   render() {
     return (
       <Layout style={{ height: '100%' }}>
         <Sider trigger={null} collapsible collapsed={this.state.collapsed} width={170} className="sider">
           <div className="logo" >
-          <Link to="/home">
-            <img style={{ height: 40, margin: '0 auto', marginTop: 8, display: 'block',cursor:'pointer' }}
-              src={require("../../assets/tiaozhanicon.png")} alt="logo" />
-              </Link>
+            <Link to="/home">
+              <img style={{ height: 40, margin: '0 auto', marginTop: 8, display: 'block', cursor: 'pointer' }}
+                src={require("../../assets/tiaozhanicon.png")} alt="logo" />
+            </Link>
           </div>
-          <Menu theme="dark" selectedKeys={[sessionStorage.getItem('path')]} onSelect={this.kood} style={{marginTop:'-5px'}}>
+          <Menu theme="dark" selectedKeys={[sessionStorage.getItem('path')]} onSelect={this.kood} style={{ marginTop: '-5px' }}>
             <Menu.Item key="1">
               <Link to="/home">
                 <i className="anticon anticon-gift">
@@ -385,7 +432,7 @@ class home extends React.Component {
             <Menu.Item key="7" onClick={this.wallet}>
               <Link to="/home/myWallet">
                 <i className="anticon anticon-gift" >
-                  <svg width="1.3em" height="1.3em" viewBox="0 0 22 22" version="1.1" fill="currentColor"  xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink">
+                  <svg width="1.3em" height="1.3em" viewBox="0 0 22 22" version="1.1" fill="currentColor" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink">
 
                     <path d="M19.4056638,0.00192437358 L2.59433622,0.00192437358 C1.15233895,0.00192437358 0.0233731207,1.03852027 0.0233731207,2.36248929 L0.0233731207,19.2815818 C0.0233731207,20.6055508 1.15233895,21.6421467 2.59433622,21.6421467 L19.4107954,21.6421467 C20.8527927,21.6421467 21.9817585,20.6055508 21.9817585,19.2815818 L21.9817585,2.31117267 C21.9766269,1.01799362 20.847661,0.00192437358 19.4056638,0.00192437358 Z M20.2934415,19.2251335 C20.2934415,19.6356665 19.8469868,19.8460647 19.4107954,19.8460647 L2.59433622,19.8460647 C2.10682825,19.8460647 1.71169021,19.5432966 1.71169021,19.1738169 L1.71169021,4.96424237 C3.784882,6.51400456 7.45402096,7.54033713 11,7.54033713 C14.4279508,7.54033713 18.1740647,6.48834624 20.2934415,4.95397904 L20.2934415,19.2251335 Z M20.2934415,2.36248929 C20.2934415,3.40421686 16.3677194,5.85715171 11,5.85715171 C5.63228064,5.85715171 1.70655854,3.40934852 1.70655854,2.36248929 L1.70655854,2.31117267 C1.70655854,1.94169294 2.10169658,1.63892483 2.58920456,1.63892483 L19.4056638,1.63892483 C19.8931718,1.63892483 20.2883098,1.94169294 20.2883098,2.31117267 L20.2883098,2.36248929 L20.2934415,2.36248929 Z" id="Shape"></path>
                     <polygon id="Shape" points="8.08521549 9.97274533 9.88129749 11.8150123 7.94152893 11.8150123 7.94152893 13.5033294 10.1789339 13.5033294 10.1789339 14.421897 7.78757904 14.421897 7.78757904 16.1102141 10.1789339 16.1102141 10.1789339 18.3989358 11.867251 18.3989358 11.867251 16.1102141 14.2586059 16.1102141 14.2586059 14.421897 11.867251 14.421897 11.867251 13.5033294 14.1559727 13.5033294 14.1559727 11.8150123 12.1700191 11.8150123 14.0174178 9.96761367 12.8063453 8.81812118 11.0513166 10.5731499 9.23983964 8.81812118"></polygon>
@@ -394,11 +441,11 @@ class home extends React.Component {
                   {/* <svg t="1590991655506" className="icon" viewBox="64 64 896 896" version="1.1" fill="currentColor" xmlns="http://www.w3.org/2000/svg" p-id="8007" width="1.5em" height="1.5em"><path d="M911.5 700.7c-1.5-4.2-6.1-6.3-10.3-4.8L840 718.2V180c0-37.6-30.4-68-68-68H252c-37.6 0-68 30.4-68 68v538.2l-61.3-22.3c-0.9-0.3-1.8-0.5-2.7-0.5-4.4 0-8 3.6-8 8V763c0 3.3 2.1 6.3 5.3 7.5L501 910.1c7.1 2.6 14.8 2.6 21.9 0l383.8-139.5c3.2-1.2 5.3-4.2 5.3-7.5v-59.6c0-1-0.2-1.9-0.5-2.8zM512 837.5l-256-93.1V184h512v560.4l-256 93.1z" p-id="8008"></path><path d="M660.6 312h-54.5c-3 0-5.8 1.7-7.1 4.4l-84.7 168.8H511l-84.7-168.8c-1.4-2.7-4.1-4.4-7.1-4.4h-55.7c-1.3 0-2.6 0.3-3.8 1-3.9 2.1-5.3 7-3.2 10.8l103.9 191.6h-57c-4.4 0-8 3.6-8 8v27.1c0 4.4 3.6 8 8 8h76v39h-76c-4.4 0-8 3.6-8 8v27.1c0 4.4 3.6 8 8 8h76V704c0 4.4 3.6 8 8 8h49.9c4.4 0 8-3.6 8-8v-63.5h76.3c4.4 0 8-3.6 8-8v-27.1c0-4.4-3.6-8-8-8h-76.3v-39h76.3c4.4 0 8-3.6 8-8v-27.1c0-4.4-3.6-8-8-8H564l103.7-191.6c0.6-1.2 1-2.5 1-3.8-0.1-4.3-3.7-7.9-8.1-7.9z" p-id="8009"></path></svg> */}
                   {/* <svg t="1571136536735" className="icon" viewBox="64 64 896 896" version="1.1" fill="currentColor" p-id="1831" width="1em" height="1em"><path d="M840.343655 349.106026l-27.863604 0 0-100.252285c0-30.971385-25.197892-56.169277-56.171324-56.169277L605.645308 192.684464l-19.203364-30.931476c-9.496282-15.275915-27.768437-20.521383-41.597397-11.938913l-69.061912 42.871413-262.416642 0c-1.456165 0-2.867304 0.182149-4.227278 0.497327-21.928429 0.335644-42.249243 10.832719-57.32152 29.659507-14.343683 17.916045-22.242584 41.49302-22.242584 66.389036 0 12.885472 2.131547 25.408693 6.161327 36.985356-0.394996 1.514493-0.627287 3.095501-0.627287 4.733814l0 511.199775c0 30.972409 25.197892 56.170301 56.169277 56.170301l649.066749 0c30.972409 0 56.169277-25.197892 56.169277-56.170301L896.513956 405.276327C896.512932 374.303918 871.316064 349.106026 840.343655 349.106026zM859.066065 649.071865l-74.087369 0c-21.157879 0-38.370913-17.207917-38.370913-38.359656 0-21.148669 17.213034-38.353516 38.370913-38.353516l74.087369 0L859.066065 649.071865zM756.308727 230.131331c10.32516 0 18.724457 8.399297 18.724457 18.72241l0 100.252285-72.281233 0-73.861218-118.974695L756.308727 230.131331zM557.456796 186.05958l101.219309 163.046447-344.526731 0c-2.077312-0.795109-4.324492-1.249457-6.681166-1.249457l-10.658757 0L557.456796 186.05958zM181.048961 246.24431c8.070816-10.080589 18.430768-15.632025 29.17139-15.632025l97.248881 0c1.433652 0 2.824325-0.176009 4.16588-0.480954l103.823624 0L227.114113 347.046111c-0.407276 0.252757-0.788969 0.532119-1.169639 0.810459l-15.725146 0c-10.741645 0-21.100574-5.551436-29.170366-15.632025-9.046027-11.30037-14.028505-26.569122-14.028505-42.993187C167.020456 272.810363 172.001911 257.543657 181.048961 246.24431zM840.343655 860.872712 191.276906 860.872712c-10.323113 0-18.72241-8.399297-18.72241-18.723434L172.554496 385.993145c1.459235 0.36532 2.986007 0.558725 4.558829 0.558725l663.23033 0c10.324136 0 18.72241 8.399297 18.72241 18.723434l0 129.635499-74.087369 0c-41.806151 0-75.81778 34.003442-75.81778 75.800383 0 41.800012 34.011628 75.806523 75.81778 75.806523l74.087369 0 0 155.630546C859.066065 852.473415 850.667791 860.872712 840.343655 860.872712z" p-id="4157"></path><path d="M798.753421 628.39801c10.042727 0 18.185174-8.147564 18.185174-18.198477 0-10.057053-8.141424-18.204617-18.185174-18.204617-10.070356 0-18.21178 8.147564-18.21178 18.204617C780.542664 620.250446 788.684088 628.39801 798.753421 628.39801z" p-id="4158"></path></svg> */}
                 </i>
-                <span>场地费支付<span style={sessionStorage.getItem('ishaverecharge')==='1'||sessionStorage.getItem('ishaverecharge')==='2'?{display:'block',width:'10px',height:'10px',float:'right',marginTop:'10px',borderRadius:'50%',background:'red'}:{display:'none'}}></span></span>
+                <span>场地费支付<span style={sessionStorage.getItem('ishaverecharge') === '1' || sessionStorage.getItem('ishaverecharge') === '2' ? { display: 'block', width: '10px', height: '10px', float: 'right', marginTop: '10px', borderRadius: '50%', background: 'red' } : { display: 'none' }}></span></span>
               </Link>
             </Menu.Item>
           </Menu>
-         
+
         </Sider>
         <Layout>
           <Header className="headerTor">
@@ -410,8 +457,8 @@ class home extends React.Component {
 
               <div className="new">
                 <div onClick={this.news}>
-                  <img src={require("../../assets/icon_pc_new2.png")} style={{cursor:'pointer'}} alt="message" />
-                  <div className="number"><span>{Number(sessionStorage.getItem('mess')) >999 ? '999+' : sessionStorage.getItem('mess')}</span></div>
+                  <img src={require("../../assets/icon_pc_new2.png")} style={{ cursor: 'pointer' }} alt="message" />
+                  <div className="number"><span>{Number(sessionStorage.getItem('mess')) > 999 ? '999+' : sessionStorage.getItem('mess')}</span></div>
                 </div>
               </div>
               <div className="lvyue">场地履约率：{this.state.gerVenueNameRate}%</div>
@@ -422,10 +469,10 @@ class home extends React.Component {
           <Content style={{
             background: '#fff',
             height: '100%',
-            overflowY:'auto'
+            overflowY: 'auto'
           }}>
             <div className={this.state.path !== '/home' ? 'homePageT' : 'homePage'} >
-              <span className="title" style={this.state.nookod !== '' ? { opacity: '1' } : { opacity: '0' }}>{this.state.nookod}! 欢迎使用找对手场馆端</span>
+              <span className="titledsfgdj" style={this.state.nookod !== '' ? { opacity: '1' } : { opacity: '0' }}>{this.state.nookod}! 欢迎使用找对手场馆端</span>
               <div style={{ height: 8, background: '#F5F5F5', width: '100%' }}></div>
               <div className="divContent">
                 <div onClick={this.income}>
@@ -433,7 +480,7 @@ class home extends React.Component {
                   <div className="right"><img src={require("../../assets/icon_pc_money.png")} alt="icon" /></div>
                 </div>
                 <div onClick={this.daysIncome}>
-        <div className="left"><span>今日收入</span><span>会员卡扣款:￥{this.state.today_member_money}</span><span>钱包到账:￥{this.state.getVenueToday_money}</span></div>
+                  <div className="left"><span>今日收入</span><span>会员卡扣款:￥{this.state.today_member_money}</span><span>钱包到账:￥{this.state.getVenueToday_money}</span></div>
                   <div className="right" ><img src={require("../../assets/icon_pc_money.png")} alt="icon" /></div>
                 </div>
                 <div onClick={this.mounthOrderTwo}>
@@ -458,6 +505,27 @@ class home extends React.Component {
                 </div>
               </div>
             </div>
+
+            <Modal title="请对运营专员上一周的表现做个评价吧!" visible={this.state.isModalVisible} okText="匿名评价" onOk={this.handleOk} className="koTwoSjok" onCancel={this.handleCancel}>
+              <div className="content">
+                <div className="left">
+                  <img src={require("../../assets/operations.png")} alt="icon" />
+                </div>
+                <div className="right">
+                  <span>ID:{this.state.detail.promoteid}</span>
+                  <span>{this.state.detail.promotename}</span>
+                </div>
+              </div>
+              <div className="Choose">
+                <div className="start">整体评分   <Rate defaultValue={1} allowClear={false} onChange={this.rate} /> {this.state.rate}分</div>
+                <span className="text">基于对ta的印象点击下方标签评价吧!</span>
+                {
+                  this.state.SelabelTwo.map((item, i) => (
+                    <div key={i} className="select" style={this.state.labelId.indexOf(item.id) !== -1 ? { background: 'rgba(216,93,39,0.12)', border: '1px solid #D85D27', color: '#D85D27' } : {}} onClick={this.select} data-id={item.id}>{item.name}</div>
+                  ))
+                }
+              </div>
+            </Modal>
 
 
             <Route path="/home/homePage" component={homePage} />

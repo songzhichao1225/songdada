@@ -31,9 +31,9 @@ class siteSettings extends React.Component {
     visible: false,
     ListSport: [],
     list: [],
-    runId: '',//运动项目id
-    runIdTwo: '',//运动项目id设置价格
-    runName: '',//运动项目名称
+    runId: '',//场地类型id
+    runIdTwo: '',//场地类型id设置价格
+    runName: '',//场地类型名称
     tags: '',
     openday: '',//营业时间段Id
     opendayname: '',//营业时间端名称
@@ -104,8 +104,8 @@ class siteSettings extends React.Component {
     deData: [],
     dateArr: [],
     appointmenttimeTwo: '',
-    ListSportTwo: [{ name: '半场', id: 1 }, { name: '散场', id: 2 }],
-    ListSportThree:[{name:'按时(收费)',id:3},{name:'按次(收费)',id:4}],
+    ListSportTwoLO: [{ name: '半场', id: 1 },{ name: '散场', id: 2 }],
+    ListSportThreeLO:[{name:'按时(收费)',id:3},{name:'按次(收费)',id:4}],
     typeTwo: 0,
     you: [],
     timeFalg: true,
@@ -192,10 +192,7 @@ class siteSettings extends React.Component {
       arrNum: arrNum,
       headerData: sessionStorage.getItem('headerData')
     })
-
-
     this.getVenueNumberTitleList({ sportid: this.state.nameChang })
-
   }
 
   nameChang = e => {
@@ -233,6 +230,15 @@ class siteSettings extends React.Component {
   }
   handleChangeOne = e => {
     this.setState({ runId: e, joinB: false, tags: '' })
+    if(e===6){
+      this.setState({
+        ListSportTwoLO: [{ name: '半场', id: 1 },{ name: '散场', id: 2 }]
+      })
+    }else if(e===2){
+      this.setState({
+        ListSportTwoLO: [{name:'按时(收费)',id:3},{name:'按次(收费)',id:4}]
+      })
+    }
     this.getVenueSportidTitle({ sportid: e })
     let day = ''
     switch (parseInt(e)) {
@@ -476,7 +482,7 @@ class siteSettings extends React.Component {
   submit = (e) => {
     let { runIdTwo, runNameTwo, tagsTwo, openday, starttime, endtime, costperhour, chekedTwo, chekedTwoLen, maxScheduledDate, appointmenttime, comment, tagsTwoId, tags_type } = this.state
     if (runIdTwo === '') {
-      message.warning('请选择运动项目')
+      message.warning('请选择场地类型')
     } else if (tagsTwo === '') {
       message.warning('请选择细分标签类型')
     } else if (tagsTwo.indexOf('散场')===-1&&tagsTwo.indexOf('按次')===-1&&openday.length === 0) {
@@ -716,7 +722,7 @@ class siteSettings extends React.Component {
     if (res.data.code === 2000) {
       this.getVenueSportidTitle({ sportid: this.state.runId })
     } else if (res.data.code === 4002) {
-      message.warning('请选择运动项目')
+      message.warning('请选择场地类型')
     } else {
       message.warning(res.data.msg)
     }
@@ -744,15 +750,14 @@ class siteSettings extends React.Component {
   }
   serial = () => {
     if (this.state.runId === '') {
-      message.error('请选择运动项目')
+      message.error('请选择场地类型')
     } else {
-      if (this.state.runId === 6) {
+      if (this.state.runId === 6||this.state.runId === 2) {
         if (this.state.typeTwo === 0) {
           message.error('请选择收费类型')
         } else if (this.state.tags === '') {
           message.error('请选择细分标签')
         } else {
-          console.log(this.state.typeTwo)
           if (this.state.typeTwo === 1) {
             this.setState({
               arrNum: [
@@ -856,6 +861,111 @@ class siteSettings extends React.Component {
                 { id: '24A', cheked: false, num: 46 },
                 { id: '场地不固定', cheked: false, num: 47 }]
             })
+          }else if(this.state.typeTwo === 3){
+            this.setState({
+              arrNum: [
+                { id: '1', cheked: false, num: 0 },
+                { id: '2', cheked: false, num: 1 },
+                { id: '3', cheked: false, num: 2 },
+                { id: '4', cheked: false, num: 3 },
+                { id: '5', cheked: false, num: 4 },
+                { id: '6', cheked: false, num: 5 },
+                { id: '7', cheked: false, num: 6 },
+                { id: '8', cheked: false, num: 7 },
+                { id: '9', cheked: false, num: 8 },
+                { id: '10', cheked: false, num: 9 },
+                { id: '11', cheked: false, num: 10 },
+                { id: '12', cheked: false, num: 11 },
+                { id: '13', cheked: false, num: 12 },
+                { id: '14', cheked: false, num: 13 },
+                { id: '15', cheked: false, num: 14 },
+                { id: '16', cheked: false, num: 15 },
+                { id: '17', cheked: false, num: 16 },
+                { id: '18', cheked: false, num: 17 },
+                { id: '19', cheked: false, num: 18 },
+                { id: '20', cheked: false, num: 19 },
+                { id: '21', cheked: false, num: 20 },
+                { id: '22', cheked: false, num: 21 },
+                { id: '23', cheked: false, num: 22 },
+                { id: '24', cheked: false, num: 23 },
+                { id: '25', cheked: false, num: 24 },
+                { id: '26', cheked: false, num: 25 },
+                { id: '27', cheked: false, num: 26 },
+                { id: '28', cheked: false, num: 27 },
+                { id: '29', cheked: false, num: 28 },
+                { id: '30', cheked: false, num: 29 },
+                { id: '31', cheked: false, num: 30 },
+                { id: '32', cheked: false, num: 31 },
+                { id: '33', cheked: false, num: 32 },
+                { id: '34', cheked: false, num: 33 },
+                { id: '35', cheked: false, num: 34 },
+                { id: '36', cheked: false, num: 35 },
+                { id: '37', cheked: false, num: 36 },
+                { id: '38', cheked: false, num: 37 },
+                { id: '39', cheked: false, num: 38 },
+                { id: '40', cheked: false, num: 39 },
+                { id: '41', cheked: false, num: 40 },
+                { id: '42', cheked: false, num: 41 },
+                { id: '43', cheked: false, num: 42 },
+                { id: '44', cheked: false, num: 43 },
+                { id: '45', cheked: false, num: 44 },
+                { id: '46', cheked: false, num: 45 },
+                { id: '47', cheked: false, num: 46 },]
+            })
+         
+          }else if(this.state.typeTwo === 4){
+            this.setState({
+              arrNum: [
+                { id: '1', cheked: false, num: 0 },
+                { id: '2', cheked: false, num: 1 },
+                { id: '3', cheked: false, num: 2 },
+                { id: '4', cheked: false, num: 3 },
+                { id: '5', cheked: false, num: 4 },
+                { id: '6', cheked: false, num: 5 },
+                { id: '7', cheked: false, num: 6 },
+                { id: '8', cheked: false, num: 7 },
+                { id: '9', cheked: false, num: 8 },
+                { id: '10', cheked: false, num: 9 },
+                { id: '11', cheked: false, num: 10 },
+                { id: '12', cheked: false, num: 11 },
+                { id: '13', cheked: false, num: 12 },
+                { id: '14', cheked: false, num: 13 },
+                { id: '15', cheked: false, num: 14 },
+                { id: '16', cheked: false, num: 15 },
+                { id: '17', cheked: false, num: 16 },
+                { id: '18', cheked: false, num: 17 },
+                { id: '19', cheked: false, num: 18 },
+                { id: '20', cheked: false, num: 19 },
+                { id: '21', cheked: false, num: 20 },
+                { id: '22', cheked: false, num: 21 },
+                { id: '23', cheked: false, num: 22 },
+                { id: '24', cheked: false, num: 23 },
+                { id: '25', cheked: false, num: 24 },
+                { id: '26', cheked: false, num: 25 },
+                { id: '27', cheked: false, num: 26 },
+                { id: '28', cheked: false, num: 27 },
+                { id: '29', cheked: false, num: 28 },
+                { id: '30', cheked: false, num: 29 },
+                { id: '31', cheked: false, num: 30 },
+                { id: '32', cheked: false, num: 31 },
+                { id: '33', cheked: false, num: 32 },
+                { id: '34', cheked: false, num: 33 },
+                { id: '35', cheked: false, num: 34 },
+                { id: '36', cheked: false, num: 35 },
+                { id: '37', cheked: false, num: 36 },
+                { id: '38', cheked: false, num: 37 },
+                { id: '39', cheked: false, num: 38 },
+                { id: '40', cheked: false, num: 39 },
+                { id: '41', cheked: false, num: 40 },
+                { id: '42', cheked: false, num: 41 },
+                { id: '43', cheked: false, num: 42 },
+                { id: '44', cheked: false, num: 43 },
+                { id: '45', cheked: false, num: 44 },
+                { id: '46', cheked: false, num: 45 },
+                { id: '47', cheked: false, num: 46 },
+                { id: '场地不固定', cheked: false, num: 47 }]
+            })
+         
           }
 
           this.getSiteSelectedVenueid({ sportid: this.state.runId })
@@ -901,7 +1011,7 @@ class siteSettings extends React.Component {
 
   seriaSon = e => {
     let { arrNum, runId } = this.state
-    if (runId === 6) {
+    if (runId === 6||runId === 2) {
       if (arrNum[e.currentTarget.dataset.num].cheked === true) {
         arrNum[e.currentTarget.dataset.num].cheked = false
       } else if (arrNum[e.currentTarget.dataset.num].cheked === false) {
@@ -1019,7 +1129,7 @@ class siteSettings extends React.Component {
       this.setState({ joinXi: false, arrCheked: [], arrChekedTwope: [], lppd: 0,typeTwo:0 })
       this.getVenueNumberTitleList({ sportid: this.state.nameChang, page: this.state.pageOne })
     } else if (res.data.code === 4002) {
-      message.warning('请选择运动项目')
+      message.warning('请选择场地类型')
     } else {
       message.warning(res.data.msg)
     }
@@ -1103,7 +1213,7 @@ class siteSettings extends React.Component {
   async getSiteSelectedVenueid(data) {
     let { arrNum, runId } = this.state
     const res = await getSiteSelectedVenueid(data, sessionStorage.getItem('venue_token'))
-    if (runId === 6) {
+    if (runId === 6||runId === 2) {
       for (let j in res.data.data) {
         for (let i in this.state.arrNum) {
           if (this.state.arrNum.length === 48) {
@@ -1135,7 +1245,7 @@ class siteSettings extends React.Component {
       this.setState({ arrNum: this.state.arrNum })
     }
 
-    if (this.state.lppd === 1 && runId !== 6) {
+    if (this.state.lppd === 1 && runId !== 6&& runId !== 2) {
       if (this.state.arrCheked.length > 0) {
         for (let k in this.state.arrChekedTwope) {
           this.state.arrNum[parseInt(this.state.arrChekedTwope[k]) - 1].cheked = false
@@ -1148,7 +1258,7 @@ class siteSettings extends React.Component {
           this.state.arrNum[i].cheked = false
         }
       }
-    } else if (this.state.lppd !== 1 && runId !== 6) {
+    } else if (this.state.lppd !== 1 && runId !== 6&& runId !== 2) {
       if (this.state.arrCheked.length > 0) {
         for (let j in this.state.arrCheked) {
           this.state.arrNum[parseInt(this.state.arrCheked[j]) - 1].cheked = true
@@ -1536,10 +1646,8 @@ class siteSettings extends React.Component {
     this.setState({ appointmenttimeTwo: parseInt(e) })
   }
   handleChangeType = e => {
-    this.setState({ typeTwo: e })
-    if(e===4){
-      this.setState({arrCheked:['场地不固定']})
-    }
+    this.setState({ typeTwo: e,arrCheked:[] })
+    
   }
   render() {
     const { name } = this.state;
@@ -1550,7 +1658,7 @@ class siteSettings extends React.Component {
             <div className="left" style={this.state.headerData === '1' ? { color: '#fff', background: '#F5A623', border: '1px solid #F5A623' } : {}} onClick={this.headerCli} data-id='1'>场地细分</div>
             <div className="left" style={this.state.headerData === '2' ? { color: '#fff', background: '#F5A623', border: '1px solid #F5A623' } : {}} onClick={this.headerCli} data-id='2'>价格设置</div>
             <div className="left" style={this.state.headerData === '3' ? { color: '#fff', background: '#F5A623', border: '1px solid #F5A623' } : {}} onClick={this.headerCli} data-id='3'>历史设置</div>
-            <div className="right"><span>运动项目</span>
+            <div className="right"><span>场地类型</span>
               <Select className="selectName" defaultValue="类型名称" value={this.state.nameChang === '' ? '全部' : this.state.nameChang} style={{ width: 130, padding: 0, textAlign: 'center' }} onChange={this.nameChang}>
                 <Option value="0">全部</Option>
                 <Option value="1">羽毛球</Option>
@@ -1562,10 +1670,11 @@ class siteSettings extends React.Component {
                 <Option value="7">足球11人制</Option>
                 <Option value="8">足球8人制</Option>
                 <Option value="9">足球7人制</Option>
+                <Option value="13">足球6人制</Option>
                 <Option value="10">足球5人制</Option>
                 <Option value="11">排球</Option>
                 <Option value="12">网球</Option>
-                <Option value="13">足球6人制</Option>
+                
               </Select>
             </div>
           </div>
@@ -1573,7 +1682,7 @@ class siteSettings extends React.Component {
           <div style={this.state.headerData === '2' ? { overflowY: 'auto', height: '89%' } : { display: 'none' }}>
             <div className='siteList' style={{ paddingBottom: 0 }}>
               <Row className="rowConten" style={{ background: '#FCF7EE' }}>
-                <Col xs={{ span: 2 }}>运动项目</Col>
+                <Col xs={{ span: 2 }}>场地类型</Col>
                 <Col xs={{ span: 2 }}>细分标签</Col>
                 <Col xs={{ span: 2 }}>场地编号</Col>
                 <Col xs={{ span: 2 }}>场地数量</Col>
@@ -1636,7 +1745,7 @@ class siteSettings extends React.Component {
           <div className="join" style={this.state.headerData === '2' ? {} : { display: 'none' }} onClick={this.showModalTwo}><div id="join" style={{ textAlign: 'center', width: '150px', margin: '0 auto' }}>+添加价格设置</div></div>
           <div style={this.state.headerData === '1' ? { overflowY: 'auto', height: '89%' } : { display: 'none' }}>
             <Row className="rowConten" style={{ background: '#FCF7EE', borderBottom: '1px solid #E1E0E1' }}>
-              <Col xs={{ span: 5 }}>运动项目</Col>
+              <Col xs={{ span: 5 }}>场地类型</Col>
               <Col xs={{ span: 5 }}>细分标签</Col>
               <Col xs={{ span: 5 }}>场地编号</Col>
               <Col xs={{ span: 5 }}>场地数量</Col>
@@ -1675,7 +1784,7 @@ class siteSettings extends React.Component {
           <div style={this.state.headerData === '3' ? { overflowY: 'auto', height: '95%' } : { display: 'none' }}>
 
             <Row className="rowConten" style={{ background: '#FCF7EE', borderBottom: '1px solid #E1E0E1' }}>
-              <Col xs={{ span: 2 }}>运动项目</Col>
+              <Col xs={{ span: 2 }}>场地类型</Col>
               <Col xs={{ span: 2 }}>细分标签</Col>
               <Col xs={{ span: 2 }}>场地编号</Col>
               <Col xs={{ span: 1 }}>场地数量</Col>
@@ -1766,7 +1875,7 @@ class siteSettings extends React.Component {
             <div className="group" onClick={this.getPosition} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} onMouseMove={this.onMouseMove}>
             </div>
             <div className="modelList" style={{ height: '32px' }}>
-              <span>运动项目</span>
+              <span>场地类型</span>
               <Select placeholder="请选择" onInputKeyDown={this.ko} disabled={this.state.update === 1 ? true : false} showArrow={this.state.update === 1 ? false : true} value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 269, height: 32 }} onChange={this.handleChangeOneTwo}>
                 {
                   this.state.ListSport.map((item, i) => (
@@ -1896,7 +2005,7 @@ class siteSettings extends React.Component {
           >
             <span style={{ position: 'absolute', bottom: 70, left: 45, color: '#F5A623', cursor: 'pointer' }} onClick={this.interpretation}>什么是细分标签?</span>
             <div className="modelList" style={{ height: '32px' }}>
-              <span>运动项目</span>
+              <span>场地类型</span>
               <Select placeholder="请选择" className="selectModel" showArrow={this.state.typeDetel === 0 ? false : true} disabled={this.state.typeDetel === 0 ? true : false} value={this.state.runId === '' ? [] : this.state.runId} style={{ width: 249, height: 32, marginRight: 100 }} onChange={this.handleChangeOne}>
                 {
                   this.state.ListSport.map((item, i) => (
@@ -1935,18 +2044,18 @@ class siteSettings extends React.Component {
                 ))}
               </Select>
             </div>
-
+            
             <div className="modelList" style={this.state.runId === 6||this.state.runId===2 ? { height: '32px' } : { display: 'none' }}>
               <span>收费类型</span>
               <Select placeholder="请选择" className="selectModel" showArrow={this.state.typeDetel === 0 ? false : true} disabled={this.state.typeDetel === 0 ? true : false} value={this.state.typeTwo === 0 ? [] : this.state.typeTwo} style={{ width: 249, height: 32, marginRight: 100 }} onChange={this.handleChangeType}>
                 {
-                  this.state.runId === 6?this.state.ListSportTwo:this.state.ListSportThree.map((item, i) => (
+                  this.state.ListSportTwoLO.map((item, i) => (
                     <Option key={i} value={item.id}>{item.name}</Option>
                   ))
                 }
               </Select>
             </div>
-            <div className="modelList" style={{ height: '32px' }} onClick={this.state.typeTwo!==4?this.serial:this.xsdmgdimfj}>
+            <div className="modelList" style={{ height: '32px' }} onClick={this.serial}>
               <span>场地编号</span>
               <Input className="startTime" value={this.state.arrCheked.length !== 0 ? this.state.arrCheked : []} style={{ paddingLeft: '10px', height: 32, background: '#fff', color: '#333', cursor: 'pointer', marginRight: 100 }} disabled={true} placeholder="点击进行添加" />
             </div>
@@ -1976,7 +2085,7 @@ class siteSettings extends React.Component {
             <div style={{ clear: 'both' }}>
               {
                 this.state.arrNum.map((item, i) => (
-                  <div key={i} className={this.state.typeTwo === 2 ? "serialSonTwo" : "serialSon"} onClick={this.seriaSon} data-num={item.num} data-id={item.id} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', transition: '0.3s', opacity: '0.2' } : item.id === '场地不固定' ? { width: '80px' } : {}}>{item.id}</div>
+                  <div key={i} className={this.state.typeTwo === 2||this.state.typeTwo === 4 ? "serialSonTwo" : "serialSon"} onClick={this.seriaSon} data-num={item.num} data-id={item.id} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', transition: '0.3s', opacity: '0.2' } : item.id === '场地不固定' ? { width: '80px' } : {}}>{item.id}</div>
                 ))
               }
             </div>
@@ -1997,7 +2106,7 @@ class siteSettings extends React.Component {
             className='model'
             closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
           >
-            <div>请对所选运动项目进行再细分，如运动项目选择的是羽毛球，贵场馆羽毛球场地是否有普通场、VIP场等之分? 如没有，则所有场地选择一个标签即可，如有，则分开设置标签及对应的“场地编号”。总之，同一时刻，不同价格的场地须细分并给出标签。</div>
+            <div>请对所选场地类型进行再细分，如场地类型选择的是羽毛球，贵场馆羽毛球场地是否有普通场、VIP场等之分? 如没有，则所有场地选择一个标签即可，如有，则分开设置标签及对应的“场地编号”。总之，同一时刻，不同价格的场地须细分并给出标签。</div>
           </Modal>
 
 
@@ -2025,7 +2134,7 @@ class siteSettings extends React.Component {
             closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
           >
             <div className="modelList" style={{ height: '32px' }}>
-              <span>运动项目</span>
+              <span>场地类型</span>
               <Select placeholder="请选择" disabled={true} showArrow={false} value={this.state.runIdTwo === '' ? [] : this.state.runIdTwo} className="selectModel" style={{ width: 330, height: 32, marginRight: 100, cursor: 'pointer' }} onChange={this.handleChangeOneTwo}>
                 {
                   this.state.ListSport.map((item, i) => (

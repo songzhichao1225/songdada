@@ -63,12 +63,14 @@ class MembershipList extends React.Component {
  qiStart=e=>{
    
    this.setState({qiStart: e.toLocaleDateString()})
-   this.getVenueMembershipCardConsumptionList({ page: this.state.pageTwo, type: this.state.index, startdate: e.toLocaleDateString().replace(/\//g, "-"), enddate: this.state.qiEnd })
+   this.setState({pageTwo:1})
+   this.getVenueMembershipCardConsumptionList({ page: 1, type: this.state.index, startdate: e.toLocaleDateString().replace(/\//g, "-"), enddate: this.state.qiEnd })
  }
 
  qiEnd=e=>{
    this.setState({qiEnd:e.toLocaleDateString()})
-  this.getVenueMembershipCardConsumptionList({ page: this.state.pageTwo, type: this.state.index, startdate: this.state.qiStart, enddate: e.toLocaleDateString().replace(/\//g, "-")})
+   this.setState({pageTwo:1})
+  this.getVenueMembershipCardConsumptionList({ page: 1, type: this.state.index, startdate: this.state.qiStart, enddate: e.toLocaleDateString().replace(/\//g, "-")})
 }
 
   reture = () => {

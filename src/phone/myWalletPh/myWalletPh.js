@@ -93,10 +93,7 @@ class myWalletPh extends React.Component {
     this.getVenueOpenBank()
     this.gerVenueName()
     this.getCompleteMembershipRechargeDetails()
-    this.setState({
-      flag: Number(sessionStorage.getItem('flaghood'))
-    })
-
+    
   }
 
   async getReceivingBankQualifications(data) {

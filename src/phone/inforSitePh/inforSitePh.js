@@ -1004,6 +1004,7 @@ class inforSitePh extends React.Component {
       { label: '足球11人制', value: '7' },
       { label: '足球8人制', value: '8' },
       { label: '足球7人制', value: '9' },
+      { label: '足球6人制', value: '13' },
       { label: '足球5人制', value: '10' },
       { label: '排球', value: '11' },
       { label: '网球', value: '12' }

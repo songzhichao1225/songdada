@@ -3,7 +3,7 @@ import './preferentialTwo.css';
 import 'antd/dist/antd.css';
 import { Input, Spin, message, DatePicker, Modal, Drawer, Table, Checkbox } from 'antd';
 import { SyncOutlined, CloseCircleOutlined } from '@ant-design/icons';
-import { getVenueReservation, getVenueSport, VenueNumberSporttypeSave, getVenueNumberTitleList, VenueClickCancelPlace, getReservationActivitieslist, VenueNewsHistoricalRecord, VenueRemarksLabel } from '../../api';
+import { getVenueReservation, getVenueSport, VenueNumberSporttypeSave, getVenueNumberTitleList, VenueClickCancelPlace,getDateAndDayOfWeek, getReservationActivitieslist, VenueNewsHistoricalRecord, VenueRemarksLabel } from '../../api';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -97,7 +97,11 @@ class appointmentList extends React.Component {
     arrTimeuid: [],
     lppding: true,
     textNuma:'您还没有进行场地设置,请前往设置！',
-    paied:'2'
+    paied:'2',
+    week:'',
+    isloop:0,
+    isModalVisible:false,
+    weekList:[],
   };
 
   async getVenueSport(data) {
@@ -126,8 +130,15 @@ class appointmentList extends React.Component {
     }
   }
 
+  async getDateAndDayOfWeek(data) {
+    const res =await getDateAndDayOfWeek(data, sessionStorage.getItem('venue_token'))
+    this.setState({weekList:res.data.data})
+
+  }
+
 
   componentDidMount() {
+    this.getDateAndDayOfWeek()
     this.getVenueSport()
     if (this.props.location.query !== undefined) {
       this.setState({
@@ -136,7 +147,9 @@ class appointmentList extends React.Component {
       this.setState({ dianIndex: this.props.location.query.dataIndex, liNum: this.props.location.query.id.toString(), spinningTwo: true })
       this.getVenueNumberTitleList({ sportid: this.props.location.query.id })
     }
-    this.setState({ dateString: new Date().toLocaleDateString().replace(/\//g, "-") })
+    let week=['周日','周一','周二','周三','周四','周五','周六']
+    
+    this.setState({ dateString: new Date().toLocaleDateString().replace(/\//g, "-"),week:week[new Date().getDay()] })
   }
 
 
@@ -272,9 +285,19 @@ class appointmentList extends React.Component {
 
   }
   dateChange = (data, datatring) => {
-    this.setState({ dateString: datatring })
+    let week=['周日','周一','周二','周三','周四','周五','周六']
+    this.setState({ dateString: datatring,week:week[new Date(datatring).getDay()] })
     this.getVenueReservation({ sportid: this.state.liNum, date: datatring })
   }
+
+  dateStingTwo=(e)=>{
+    let week=['周日','周一','周二','周三','周四','周五','周六']
+    this.setState({ dateString: e.currentTarget.dataset.date,week:week[new Date(e.currentTarget.dataset.date).getDay()] })
+    this.getVenueReservation({ sportid: this.state.liNum, date: e.currentTarget.dataset.date })
+  }
+
+
+
   checkbox = e => {
     if (this.state.resData[e.target.idx].c[e.target.jdx].checked === false) {
       let item=this.state.resData
@@ -350,7 +373,7 @@ class appointmentList extends React.Component {
   async VenueClickCancelPlace(data) {
     const res = await VenueClickCancelPlace(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ cofirmZ: 0, venueidids: [], dtime: [], Cancels: 0 })
+      this.setState({ cofirmZ: 0, venueidids: [], dtime: [], Cancels: 0,isloop:2 })
       this.getVenueReservation({ sportid: this.state.liNum, date: this.state.dateString })
       if (data.type === 1) {
         message.success('该场地该时间段已标记为线下占用')
@@ -359,12 +382,19 @@ class appointmentList extends React.Component {
         this.setState({ flagClick: 0 })
         message.success('该场地该时间段已向找对手线上释放')
       }
-      this.setState({ info: false, lotime: [], arrTimeuid: [] })
+      this.setState({ info: false, lotime: [], arrTimeuid: [],isloop:2,isModalVisible:false })
     } else {
       message.error('操作失败')
     }
 
 
+  }
+  CheckboxOnChange=(e)=>{
+   if(e.target.checked===true){
+     this.setState({isloop:1})
+   }else{
+    this.setState({isloop:2})
+   }
   }
 
   placeSubmit = () => {
@@ -377,7 +407,7 @@ class appointmentList extends React.Component {
         placeQi: placeQi,
       }
 
-      this.VenueClickCancelPlace({ uuid: '', date: this.state.dateString, venueid: venueidids, other: JSON.stringify(obj), time: dtime, sportid: this.state.liNum, type: 1 })
+      this.VenueClickCancelPlace({ uuid: '', date: this.state.dateString, venueid: venueidids, other: JSON.stringify(obj), time: dtime, sportid: this.state.liNum, type: 1,isloop:this.state.isloop })
     
     
  
@@ -393,7 +423,7 @@ class appointmentList extends React.Component {
   }
 
   Cancelsshour = () => {
-    let { arrTimeuid, dateString, liNum } = this.state
+    let { arrTimeuid } = this.state
     let venueidids = []
     let dtime = []
     let duuid = []
@@ -403,8 +433,14 @@ class appointmentList extends React.Component {
       dtime.push(arrTimeuid[i].split('#')[1])
       duuid.push(arrTimeuid[i].split('#')[0])
     }
-    if (venueidids.length !== 0) {
-      this.VenueClickCancelPlace({ date: dateString, sportid: liNum, type: 2, time: dtime.join(','), venueid: venueidids.join(','), uuid: duuid.join(','), other: '' })
+    this.setState({isModalVisible:true,venueidids:venueidids,dtime:dtime,duuid:duuid})
+
+    
+  }
+
+  moBtn=()=>{
+    if (this.state.venueidids.length !== 0) {
+      this.VenueClickCancelPlace({ date: this.state.dateString, sportid: this.state.liNum, type: 2, time: this.state.dtime.join(','), venueid: this.state.venueidids.join(','), uuid: this.state.duuid.join(','), other: '',isloop:this.state.isloop })
     } else {
       message.error('请选择需要释放的场地')
     }
@@ -458,8 +494,12 @@ class appointmentList extends React.Component {
   }
   handleCancelInFo = () => {
     this.setState({
-      info: false
+      info: false,
+      
     })
+  }
+  handleCancel=()=>{
+    this.setState({isModalVisible:false})
   }
 
   render() {
@@ -475,9 +515,17 @@ class appointmentList extends React.Component {
         <div className={this.state.number === '2' ? 'circumstance' : 'circumstanceT'} style={{ height: '92%' }} >
           <ul className="rightNav" style={{ top: '-48px', left: '-20px' }}>
             <li className="dateSelect">
-              <DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={locale} placeholder="请选择日期" className="DatePicker" onChange={this.dateChange} />
+              <DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={locale} value={moment(this.state.dateString, 'YYYY-MM-DD')} placeholder="请选择日期" className="DatePicker" onPanelChange={this.dateChangeTwo} onChange={this.dateChange} />
             </li>
           </ul>
+          
+          <div className="weekList">
+            {
+              this.state.weekList.map((item,i)=>(
+              <div className="moTimeBtn" onClick={this.dateStingTwo} data-date={item.date} style={this.state.dateString===item.date?{background:'#F5A623',color:'#fff',borderColor:'#fff'}:{}}  key={i}>{item.week}<br/>{item.date}</div>
+              ))
+            }
+          </div>
           <div className="prompt">
             <div><span></span><span>空闲</span></div>
             <div><span style={{ background: '#E9E9E9'}}></span><span>不可选</span></div>
@@ -516,6 +564,7 @@ class appointmentList extends React.Component {
           onClose={this.informOnClose}
           visible={this.state.informVisible}
         >
+          <div style={this.state.informList.length > 0?{}:{display:'none'}}>
           <div className="informDrawer">
             <span>活动编号：</span>
             <span>{this.state.informList.length > 0 ? this.state.informList[0].orderId : ''}</span>
@@ -554,6 +603,8 @@ class appointmentList extends React.Component {
             <span>场地费状态：</span>
             <span>{this.state.informList.length > 0 ? this.state.informList[0].SiteMoneyStatus : ''}</span>
           </div>
+          </div>
+          <div style={this.state.informList.length > 0?{display:'none'}:{}}>无</div>
         </Drawer>
         <Drawer
           title='线下预订人信息'
@@ -607,8 +658,22 @@ class appointmentList extends React.Component {
             <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>其他：</span>
             <Input style={{ width: 250, float: 'left' }} maxLength={50} value={this.state.placeQi} onChange={this.placeQi} placeholder="(选填)" />
           </div>
+            <Checkbox style={{marginLeft:'50px',marginTop:'20px'}} checked={this.state.isloop===2?false:true} onChange={this.CheckboxOnChange}>将所选场地时间段在每{this.state.week}都预留给该线下用户</Checkbox>
           <span onClick={this.placeSubmit} style={{ cursor: 'pointer', padding: '4px 8px', background: '#F5A623', color: '#fff', float: 'right', marginRight: '125px', marginTop: '20px' }}>提交</span>
         </Modal>
+
+        <Modal
+        title="提示"
+        visible={this.state.isModalVisible}
+        onOk={this.handleOk}
+        className="mode"
+        onCancel={this.handleCancel}
+      >
+        <span style={{fontSize:'20px',fontWeight:'bold'}}>将所选线下占用场地时间段释放到线上？</span>
+        <Checkbox style={{marginTop:'20px'}} checked={this.state.isloop===2?false:true} onChange={this.CheckboxOnChange}>将所选场地时间段在每{this.state.week}都释放</Checkbox>
+        <div style={{clear:'both'}}></div>
+        <div className="moBtn" onClick={this.handleCancel}>取消</div> <div className="moBtn" onClick={this.moBtn}>确定</div>
+      </Modal>
 
 
       </div>

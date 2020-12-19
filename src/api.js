@@ -2,13 +2,13 @@ import axios from 'axios';
 
 //本地全部隐去
 // axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
-axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
+// axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
 
-export let imgUrlTwo='https://app.tiaozhanmeiyitian.com/'  //正式图片路径
-// export let imgUrlTwo='https://appstg.tiaozhanmeiyitian.com/'  //测试图片路径
+// export let imgUrlTwo='https://app.tiaozhanmeiyitian.com/'  //正式图片路径
+export let imgUrlTwo='https://appstg.tiaozhanmeiyitian.com/'  //测试图片路径
 
-export let wsFn = new WebSocket("wss://www.cg.zhaoduishou.com/socket");//正式socket
-// export let wsFn = new WebSocket("wss://cgstg.zhaoduishou.com/socket");//测试socket
+// export let wsFn = new WebSocket("wss://www.cg.zhaoduishou.com/socket");//正式socket
+export let wsFn = new WebSocket("wss://cgstg.zhaoduishou.com/socket");//测试socket
 
 export function _login(data){    //登录
     return axios.post('/api/getVenueLogin',data)
@@ -20,7 +20,7 @@ export function _register(data){   //注册
 
 export function VenueChangePassword(data,headers){   //重置密码
     return axios.post('/api/VenueChangePassword',data,{headers: {'token': headers}})
-} 
+}
 
 
 export function getPromoteName(data){   //输入推广专员id号显示其姓名
@@ -499,8 +499,18 @@ export function VenueAdvertiseSave(data,headers){    //在场馆端添加app端�
     return axios.post('/api/VenueAdvertiseSave',data,{headers: {'token': headers}})
 }
 
+export function getDateAndDayOfWeek(data,headers){    //场馆端~获取指定日期所在的这一周的日期与周几（场地占用使用）
+    return axios.post('/api/getDateAndDayOfWeek',data,{headers: {'token': headers}})
+}
   
+export function VenueEvaluationOfOperation(data,headers){    //场馆端~场馆端对运营专员的评价页面显示信息
+    return axios.post('/api/VenueEvaluationOfOperation',data,{headers: {'token': headers}})
+}
 
+export function VenueEvaluationSave(data,headers){    //场馆端~添加场馆端对运营专员的评价记录
+    return axios.post('/api/VenueEvaluationSave',data,{headers: {'token': headers}})
+}
+  
 
 
 
