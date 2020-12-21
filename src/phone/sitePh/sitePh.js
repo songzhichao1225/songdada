@@ -49,6 +49,8 @@ class sitePh extends React.Component {
     ],
     ListSportTwo: [{ label: '半场', value: 1 }, { label: '散场', value: 2 }],
     ListSportThree: [{ label: '按时(收费)', value: 3 }, { label: '按次(收费)', value: 4 }],
+    timeLimitList:[{label:'不限',value:1},{label:'整点',value:2},{label:'单数整点',value:3},{label:'双数整点',value:4}],
+    timeLimitListTwo:[{label:'一小时',value:1},{label:'二小时',value:2},{label:'四小时',value:4},{label:'六小时',value:6}],
     timeRtArr: [{ label: '00:00', value: '00:00' }, { label: '00:30', value: '00:30' }, { label: '01:00', value: '01:00' }, { label: '01:30', value: '01:30' }, { label: '02:00', value: '02:00' }, { label: '02:30', value: '02:30' }, { label: '03:00', value: '03:00' }, { label: '03:30', value: '03:30' }, { label: '04:00', value: '04:00' }, { label: '04:30', value: '04:30' }, { label: '05:00', value: '05:00' }, { label: '05:30', value: '05:30' }, { label: '06:00', value: '06:00' }, { label: '06:30', value: '06:30' }, { label: '07:00', value: '07:00' }, { label: '07:30', value: '07:30' }, { label: '08:00', value: '08:00' }, { label: '08:30', value: '08:30' }, { label: '09:00', value: '09:00' }, { label: '09:30', value: '09:30' }, { label: '10:00', value: '10:00' }, { label: '10:30', value: '10:30' }, { label: '11:00', value: '11:00' }, { label: '11:30', value: '11:30' }, { label: '12:00', value: '12:00' }, { label: '12:30', value: '12:30' }, { label: '13:00', value: '13:00' }, { label: '13:30', value: '13:30' }, { label: '14:00', value: '14:00' }, { label: '14:30', value: '14:30' }, { label: '15:00', value: '15:00' }, { label: '15:30', value: '15:30' }, { label: '16:00', value: '16:00' }, { label: '16:30', value: '16:30' }, { label: '17:00', value: '17:00' }, { label: '17:30', value: '17:30' }, { label: '18:00', value: '18:00' }, { label: '18:30', value: '18:30' }, { label: '19:00', value: '19:00' }, { label: '19:30', value: '19:30' }, { label: '20:00', value: '20:00' }, { label: '20:30', value: '20:30' }, { label: '21:00', value: '21:00' }, { label: '21:30', value: '21:30' }, { label: '22:00', value: '22:00' }, { label: '22:30', value: '22:30' }, { label: '23:00', value: '23:00' }, { label: '23:30', value: '23:30' }, { label: '24:00', value: '24:00' }],
     Longest: [{ label: '一周', value: 0.1 }, { label: '两周', value: 0.2 }, { label: '三周', value: 0.3 }, { label: '一个月', value: 1 }, { label: '两个月', value: 2 },],
     Shortest: [{ label: '不限', value: 0 }, { label: '30分钟', value: 30 }, { label: '60分钟', value: 60 }, { label: '2小时', value: 120 }, { label: '3小时', value: 180 }, { label: '4小时', value: 240 }, { label: '6小时', value: 360 }, { label: '24小时', value: 1440 }, { label: '48小时', value: 2280 }, { label: '72小时', value: 4320 },],
@@ -111,6 +113,8 @@ class sitePh extends React.Component {
     details: [],
     dateArr: [],
     timeFalg: true,
+    timeLimit:[1],
+    timeLimitTwo:[1],
   }
 
   header = e => {
@@ -1002,7 +1006,7 @@ class sitePh extends React.Component {
 
   jiageSub = () => {
 
-    let { pickerValueTwo, pickerValueThree, Liturgyche, starttime, endtime, money, cheStr, titleArrFoterNum, pickerValueFour, pickerValueFive, tags_type, comment, tagId, titleArr, LiturgycheNum, jiageUUid } = this.state
+    let { pickerValueTwo, pickerValueThree,timeLimit,timeLimitTwo, Liturgyche, starttime, endtime, money, cheStr, titleArrFoterNum, pickerValueFour, pickerValueFive, tags_type, comment, tagId, titleArr, LiturgycheNum, jiageUUid } = this.state
     if (pickerValueTwo === '') {
       Toast.fail('请选择场地类型', 1);
     } else if (pickerValueThree.length === 0) {
@@ -1037,7 +1041,9 @@ class sitePh extends React.Component {
         appointmenttime: pickerValueFive[0] === undefined ? 0 : pickerValueFive[0],
         comment: comment,
         tags_id: tagId,
-        tags_type: tags_type
+        tags_type: tags_type,
+        timeLimit:timeLimit[0],
+        durationlimit:timeLimitTwo[0]
       }
       this.AddSiteSetting(obj)
     }
@@ -1091,9 +1097,6 @@ class sitePh extends React.Component {
           }
         }
 
-
-
-
         this.setState({
           Price: true, pickerValueTwo: res.data.data[0].sportid,
           cheStr: res.data.data[0].venueid, titleArrFoterNum: res.data.data[0].sitenumber,
@@ -1101,7 +1104,9 @@ class sitePh extends React.Component {
           money: res.data.data[0].costperhour, pickerValueFour: [Number(res.data.data[0].maxScheduledDate)],
           tagId: res.data.data[0].tags_id,
           tags_type: res.data.data[0].tags_type,
-          comment: res.data.data[0].comment
+          comment: res.data.data[0].comment,
+          timeLimit:[res.data.data[0].timelimit],
+          timeLimitTwo:[res.data.data[0].durationlimit]
         })
 
       } else {
@@ -1291,6 +1296,13 @@ class sitePh extends React.Component {
   }
   deletDate = () => {
     this.setState({ dateArr: this.state.dateArr.slice(0, this.state.dateArr.length - 1) })
+  }
+
+  timeLimit=(e)=>{
+    this.setState({ timeLimit: e })
+  }
+  timeLimitTwo=(e)=>{
+    this.setState({ timeLimitTwo: e })
   }
   render() {
     return (
@@ -1580,6 +1592,27 @@ class sitePh extends React.Component {
           >
             <List.Item arrow="horizontal" style={this.state.timeFalg === true ? { borderBottom: '1px solid #E9E9E9' } : { display: 'none' }}>结束时间</List.Item>
           </Picker>
+
+          <Picker
+            data={this.state.timeLimitList}
+            onOk={this.timeLimit}
+            value={this.state.timeLimit}
+            cols={1}
+          >
+            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>开始时间限制</List.Item>
+          </Picker>
+
+
+          <Picker
+            data={this.state.timeLimitListTwo}
+            onOk={this.timeLimitTwo}
+            value={this.state.timeLimitTwo}
+            cols={1}
+          >
+            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>时长限制</List.Item>
+          </Picker>
+
+
 
 
           <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>

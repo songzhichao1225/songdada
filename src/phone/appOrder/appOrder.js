@@ -46,6 +46,7 @@ class appOrder extends React.Component {
     moveGo: false,
     StartEndTime: 0,
     week: '',
+    durationlimit:1,
     timeArr: ['00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30', '24:00']
   };
 
@@ -167,7 +168,8 @@ class appOrder extends React.Component {
         dataIndex: 'lppd',
       }
       res.data.other.bq.unshift(ploboj)
-      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c, otherType: res.data.other.bq, value: 'l', spinningTwo: false, loadingTwo: false, animating: false })
+
+      this.setState({ lookList: res.data.data,durationlimit:res.data.data[0].c[0].durationlimit, macNum: res.data.data[0].c, otherType: res.data.other.bq, value: 'l', spinningTwo: false, loadingTwo: false, animating: false })
     } else {
       this.setState({ resData: [], animating: false, otherType: [] })
     }
@@ -194,6 +196,7 @@ class appOrder extends React.Component {
           onTouchStart={this.onStart}
           onTouchEnd={this.state.flag === '1' ? this.state.sporttypeFive === '10' ? this.lookPlateFive : this.lookPlateTwo : this.state.sporttypeFive === '10' ? this.lookPlateFive : this.lookPlate}
           data-money={resData.data[i].c[j].money}
+          data-timelimit={resData.data[i].c[j].timelimit}
           data-summoney={resData.data[i].c[j].summoney}
           data-lo={resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney}
           style={resData.data[i].c[j].type === 1
@@ -226,7 +229,7 @@ class appOrder extends React.Component {
   componentDidMount() {
 
     //测试数据
-    // let query = '?siteuid=f798e37b-644a-9846-fed9-72547a8ea90b&sportid=4&token=KtfJFfVmlqZtS1VyOZx4PpxtY2dVfqOOs9Tk4Z5rJp0NgpyReREOEmjDHVIfuZvX&sporttype=10&flag=1'
+    // let query = '?siteuid=f798e37b-644a-9846-fed9-72547a8ea90b&sportid=4&token=KtfJFfVmlqZtS1VyOZx4PpxtY2dVfqOOs9Tk4Z5rJp0NgpyReREOEmjDHVIfuZvX&sporttype=11&flag=0'
     let query = this.props.location.search
 
     let arr = query.split('&')
@@ -281,9 +284,33 @@ class appOrder extends React.Component {
     if (e.timeStamp - this.state.StartEndTime > 150) {
       return false
     }
+
+
     let money = e.currentTarget.dataset.money
     let time = e.currentTarget.dataset.time
     let lotime = e.currentTarget.dataset.lo
+    let timelimit=e.currentTarget.dataset.timelimit
+
+   if(this.state.flag==='0'){
+    if(this.state.moneyCall===0&&timelimit==='2'&&time.indexOf('30')!==-1){
+      Toast.fail('请选择整点场地', 2, null, false);
+      return false
+    }else if(this.state.moneyCall===0&&timelimit==='3'&&time.indexOf('30')!==-1){
+      Toast.fail('请选择单数整点场地', 2, null, false);
+      return false
+    }else if(this.state.moneyCall===0&&timelimit==='3'&&Number(time.slice(0,2))%2===0){
+      Toast.fail('请选择单数整点场地', 2, null, false);
+      return false
+    }else if(this.state.moneyCall===0&&timelimit==='4'&&time.indexOf('30')!==-1){
+      Toast.fail('请选择双数整点场地', 2, null, false);
+      return false
+    }else if(this.state.moneyCall===0&&timelimit==='4'&&Number(time.slice(0,2))%2!==0){
+      Toast.fail('请选择双数整点场地', 2, null, false);
+      return false
+    }
+   }
+
+
     if (e.currentTarget.dataset.type === '1') {
       if (this.state.lotime.length > 0) {
         if (this.state.lotime.indexOf(lotime) !== -1) {
@@ -321,11 +348,37 @@ class appOrder extends React.Component {
     if (e.timeStamp - this.state.StartEndTime > 150) {
       return false
     }
+
+  
+
     let money = e.currentTarget.dataset.money
     let summoney = e.currentTarget.dataset.summoney
     let time = e.currentTarget.dataset.time
     let num = e.currentTarget.dataset.num
     let lotime = e.currentTarget.dataset.lo
+    let timelimit=e.currentTarget.dataset.timelimit
+
+  if(this.state.flag==='0'){
+    if(this.state.moneyCall===0&&timelimit==='2'&&time.indexOf('30')!==-1){
+      Toast.fail('请选择整点场地', 2, null, false);
+      return false
+    }else if(this.state.moneyCall===0&&timelimit==='3'&&time.indexOf('30')!==-1){
+      Toast.fail('请选择单数整点场地', 2, null, false);
+      return false
+    }else if(this.state.moneyCall===0&&timelimit==='3'&&Number(time.slice(0,2))%2===0){
+      Toast.fail('请选择单数整点场地', 2, null, false);
+      return false
+    }else if(this.state.moneyCall===0&&timelimit==='4'&&time.indexOf('30')!==-1){
+      Toast.fail('请选择双数整点场地', 2, null, false);
+      return false
+    }else if(this.state.moneyCall===0&&timelimit==='4'&&Number(time.slice(0,2))%2!==0){
+      Toast.fail('请选择双数整点场地', 2, null, false);
+      return false
+    }
+  }
+    
+
+
     if (e.currentTarget.dataset.type === '1') {
       if (this.state.lotime.length > 0) {
         if (this.state.lotime.indexOf(lotime) !== -1) {
@@ -374,12 +427,18 @@ class appOrder extends React.Component {
       return false
     }
 
+
+
+
     let money = e.currentTarget.dataset.money
     let summoney = e.currentTarget.dataset.summoney
     let time = e.currentTarget.dataset.time
     let timeTwo = e.currentTarget.dataset.time + 's'
     let num = e.currentTarget.dataset.num
     let lotime = e.currentTarget.dataset.lo
+    let timelimit = e.currentTarget.dataset.timelimit
+
+  
     let lotimeTwo = ''
     if (lotime.split('-')[1].slice(lotime.split('-')[1].length - 1, lotime.split('-')[1].length) === 'A') {
       lotimeTwo = lotime.replace(/A/, 'B')
@@ -394,6 +453,7 @@ class appOrder extends React.Component {
       return
     }
     if (this.state.flag === '1') {
+      
       if (e.currentTarget.dataset.type === '1') {
         if (this.state.lotime.length > 0) {
           if (this.state.lotime.indexOf(lotime) !== -1) {
@@ -423,6 +483,22 @@ class appOrder extends React.Component {
       }
 
     } else {
+      if(this.state.moneyCall===0&&timelimit==='2'&&time.indexOf('30')!==-1){
+        Toast.fail('请选择整点场地', 2, null, false);
+        return false
+      }else if(this.state.moneyCall===0&&timelimit==='3'&&time.indexOf('30')!==-1){
+        Toast.fail('请选择单数整点场地', 2, null, false);
+        return false
+      }else if(this.state.moneyCall===0&&timelimit==='3'&&Number(time.slice(0,2))%2===0){
+        Toast.fail('请选择单数整点场地', 2, null, false);
+        return false
+      }else if(this.state.moneyCall===0&&timelimit==='4'&&time.indexOf('30')!==-1){
+        Toast.fail('请选择双数整点场地', 2, null, false);
+        return false
+      }else if(this.state.moneyCall===0&&timelimit==='4'&&Number(time.slice(0,2))%2!==0){
+        Toast.fail('请选择双数整点场地', 2, null, false);
+        return false
+      }
       if (e.currentTarget.dataset.type === '1') {
         if (this.state.lotime.length > 0) {
           if (this.state.lotime.indexOf(lotime) !== -1) {
@@ -809,8 +885,9 @@ class appOrder extends React.Component {
         let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[0])
         if ((Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1 !== this.state.lotime.length / 2 && this.state.flag !== '1') {
           Toast.fail('时间必须连贯', 2, null, false);
-        } else if (this.state.lotime.length < 4) {
-          Toast.fail('最少选择1小时场地', 2, null, false);
+        } else if (this.state.lotime.length<this.state.durationlimit*2) {
+          let durationlimit='最少选择'+this.state.durationlimit+'小时场地'
+          Toast.fail(durationlimit, 2, null, false);
         } else {
           let obj = {
             placeNun: keyvalue.join(','),
@@ -845,11 +922,11 @@ class appOrder extends React.Component {
       if (this.state.lotime.length > 0) {
         let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[this.state.lotime.length - 1])
         let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[0])
-
         if ((Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1 !== this.state.lotime.length && this.state.flag !== '1') {
           Toast.fail('时间必须连贯', 2, null, false);
-        } else if (this.state.lotime.length < 2) {
-          Toast.fail('最少选择1小时场地', 2, null, false);
+        }  else if (this.state.lotime.length<this.state.durationlimit*2) {
+          let durationlimit='最少选择'+this.state.durationlimit+'小时场地'
+          Toast.fail(durationlimit, 2, null, false);
         } else {
           let obj = {
             placeNun: num,

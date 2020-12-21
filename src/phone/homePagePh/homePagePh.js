@@ -82,7 +82,7 @@ class homePagePh extends React.Component {
       this.props.history.push('/login')
       localStorage.clear()
       this.setState({ flagK: true })
-      alert('强制下线', <div>{res.data.msg}</div>, [
+      alert('强制下线', <div>登录超时请重新登录</div>, [
         { text: '确定', onPress: () => this.setState({ flagK: true }) },
       ])
     }

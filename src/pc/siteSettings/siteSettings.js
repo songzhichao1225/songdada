@@ -109,6 +109,8 @@ class siteSettings extends React.Component {
     typeTwo: 0,
     you: [],
     timeFalg: true,
+    timeLimit:1,
+    timeLimitTwo:1,
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -480,7 +482,7 @@ class siteSettings extends React.Component {
   }
 
   submit = (e) => {
-    let { runIdTwo, runNameTwo, tagsTwo, openday, starttime, endtime, costperhour, chekedTwo, chekedTwoLen, maxScheduledDate, appointmenttime, comment, tagsTwoId, tags_type } = this.state
+    let { runIdTwo, runNameTwo, tagsTwo, openday, starttime,timeLimit,timeLimitTwo, endtime, costperhour, chekedTwo, chekedTwoLen, maxScheduledDate, appointmenttime, comment, tagsTwoId, tags_type } = this.state
     if (runIdTwo === '') {
       message.warning('请选择场地类型')
     } else if (tagsTwo === '') {
@@ -515,6 +517,8 @@ class siteSettings extends React.Component {
         comment: comment,
         tags_id: tagsTwoId,
         tags_type: tags_type,
+        timelimit:timeLimit,
+        durationlimit:timeLimitTwo
       }
       this.AddSiteSetting(obj)
     }
@@ -586,7 +590,8 @@ class siteSettings extends React.Component {
         discount_end: res.data.data[0].discount_end, costperhourTwo: res.data.data[0].discount_costperhour === null ? res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')) : res.data.data[0].discount_costperhour.slice(0, res.data.data[0].discount_costperhour.indexOf('.')),
         runIdTwo: res.data.data[0].sportid, tagsTwo: res.data.data[0].tags, opendayname: attop, openday: res.data.data[0].openday.split(','), starttime: res.data.data[0].starttime,
         costperhour: res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')), chekedTwo: res.data.data[0].venueid, chekedFour: res.data.data[0].venueid, chekedThree: res.data.data[0].venueid !== null ? res.data.data[0].venueid : res.data.data[0].venueid, chekedTwoLen: res.data.data[0].sitenumber, appointmenttime: res.data.data[0].appointmenttime,
-        tagsTwoId: res.data.data[0].tags_id, tags_type: res.data.data[0].tags_type, comment: res.data.data[0].comment, maxScheduledDate: res.data.data[0].maxScheduledDate, runNameTwo: res.data.data[0].sportname, Disid: res.data.data[0].uuid, appointmenttimeTwo: res.data.data[0].discount_appointment === null ? 0 : res.data.data[0].discount_appointment, dateArr: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(',')
+        tagsTwoId: res.data.data[0].tags_id, tags_type: res.data.data[0].tags_type, comment: res.data.data[0].comment, maxScheduledDate: res.data.data[0].maxScheduledDate, runNameTwo: res.data.data[0].sportname, Disid: res.data.data[0].uuid, appointmenttimeTwo: res.data.data[0].discount_appointment === null ? 0 : res.data.data[0].discount_appointment, dateArr: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(','),
+        timeLimit:res.data.data[0].timelimit,timeLimitTwo:res.data.data[0].durationlimit
       })
       if (this.state.runIdTwo !== '') {
         this.getVenueSportidTitle({ sportid: this.state.runIdTwo })
@@ -1647,8 +1652,17 @@ class siteSettings extends React.Component {
   }
   handleChangeType = e => {
     this.setState({ typeTwo: e,arrCheked:[] })
-    
   }
+ 
+  timeLimit=e=>{
+    console.log(e)
+    this.setState({timeLimit:Number(e)})
+  }
+
+  timeLimitTwo=e=>{
+    this.setState({timeLimitTwo:Number(e)})
+  }
+
   render() {
     const { name } = this.state;
     return (
@@ -1934,6 +1948,29 @@ class siteSettings extends React.Component {
                 ))}
               </Select>
             </div>
+
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>开始时间限制</span>
+              <Select style={{ width: 269, height: 'auto', marginLeft: 60, float: 'left' }} value={this.state.timeLimit===1?'不限':this.state.timeLimit===2?'整点':this.state.timeLimit===3?'单数整点':this.state.timeLimit===4?'双数整点':'不限'} onChange={this.timeLimit} placeholder="开始时间限制">
+                  <Option value='1'>不限</Option>
+                  <Option value='2'>整点</Option>
+                  <Option value='3'>单数整点</Option>
+                  <Option value='4'>双数整点</Option>
+              </Select>
+            </div>
+
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>时长限制</span>
+              <Select style={{ width: 269, height: 'auto', marginLeft: 88, float: 'left' }} value={this.state.timeLimitTwo===1?'一小时':this.state.timeLimitTwo===2?'二小时':this.state.timeLimitTwo===4?'四小时':this.state.timeLimitTwo===6?'六小时':'一小时'}  onChange={this.timeLimitTwo} placeholder="时长限制">
+                  <Option value='1'>一小时</Option>
+                  <Option value='2'>二小时</Option>
+                  <Option value='4'>四小时</Option>
+                  <Option value='6'>六小时</Option>
+              </Select>
+            </div>
+
+
+
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>价格</span><span>{this.state.timeFalg === true ? '（元/小时）' : '（元/次）'}</span>

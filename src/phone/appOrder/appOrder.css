@@ -47,7 +47,7 @@
     text-align: center;
     line-height: 2;
     color: #fff;
-    margin-left: 2.5rem;
+    margin-left: 2rem;
 }
 .appOrder .bookingKanban  .titleDiv  .nextDay{
     float: right;
@@ -59,7 +59,7 @@
     text-align: center;
     line-height: 2;
     color: #fff;
-    margin-right: 2.5rem;
+    margin-right: 2rem;
 }
 .appOrder .bookingKanban  .titleDiv .dayBefore>span{
     display: block;
