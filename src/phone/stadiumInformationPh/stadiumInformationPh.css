@@ -153,8 +153,8 @@
 .stadiumInformationPh .am-list-item .am-list-line .am-list-extra{
     font-size: 0.8rem;
     flex-basis:60%;
-    text-align: left;
-    color: #c0c0c0;
+    text-align: right;
+    color: #000;
     
 }
 .stadiumInformationPh .am-list-item .am-list-line{

@@ -1,12 +1,12 @@
 import React from 'react';
 import './perfect.css';
 import 'antd/dist/antd.css';
-import { PerfectingVenueInformation, getVenueInformation, getVenueSportList, VenueInformationSave,imgUrlTwo, TemporaryVenueInformation, UploadVenueImgs } from '../../api';
-import { Input, Checkbox, Button, message } from 'antd';
+import { PerfectingVenueInformation, getVenueInformation, getVenueSportList, VenueInformationSave, imgUrlTwo, TemporaryVenueInformation, UploadVenueImgs } from '../../api';
+import { Input, Checkbox, Button, message,Select } from 'antd';
 import { ImagePicker } from 'antd-mobile';
 import lrz from 'lrz';
 const { TextArea } = Input;
-
+const { Option } = Select;
 
 
 
@@ -46,8 +46,12 @@ class perfect extends React.Component {
     filesSon: '',//门脸照
     filesTwo: [],
     filesTwoSon: '',//场地照
-    imgMasking:'',
-    masking:false,
+    imgMasking: '',
+    masking: false,
+    starttime:'',
+    endtime:'',
+    timer: [{ name: '00:00' }, { name: '00:30' }, { name: '01:00' }, { name: '01:30' }, { name: '02:00' }, { name: '02:30' }, { name: '03:00' }, { name: '03:30' }, { name: '04:00' }, { name: '04:30' }, { name: '05:00' }, { name: '05:30' }, { name: '06:00' }, { name: '06:30' }, { name: '07:00' }, { name: '07:30' }, { name: '08:00' }, { name: '08:30' }, { name: '09:00' }, { name: '09:30' }, { name: '10:00' }, { name: '10:30' }, { name: '11:00' }, { name: '11:30' }, { name: '12:00' }, { name: '12:30' }, { name: '13:00' }, { name: '13:30' }, { name: '14:00' }, { name: '14:30' }, { name: '15:00' }, { name: '15:30' }, { name: '16:00' }, { name: '16:30' }, { name: '17:00' }, { name: '17:30' }, { name: '18:00' }, { name: '18:30' }, { name: '19:00' }, { name: '19:30' }, { name: '20:00' }, { name: '20:30' }, { name: '21:00' }, { name: '21:30' }, { name: '22:00' }, { name: '22:30' }, { name: '23:00' }, { name: '23:30' }, { name: '24:00' }],
+    
   };
 
 
@@ -67,7 +71,7 @@ class perfect extends React.Component {
           arrImg = []
         } else {
           for (let i in imgS) {
-            arrImg.push({ url:imgUrlTwo+imgS[i] })
+            arrImg.push({ url: imgUrlTwo + imgS[i] })
           }
         }
 
@@ -85,8 +89,9 @@ class perfect extends React.Component {
         onChangeCheck: arrjo, onChangeSite: res.data.data.facilities === ',,,' ? '' : res.data.data.facilities, onChangeText: res.data.data.siteInfo, lat: res.data.data.lat, lng: res.data.data.lng,
         province: res.data.data.province, city: res.data.data.city, area: res.data.data.area, siteUid: res.data.data.uid,
         filesSon: res.data.data.firstURL !== null && res.data.data.firstURL !== '' ? res.data.data.firstURL : '',
-        files: res.data.data.firstURL !== null && res.data.data.firstURL !== '' ? [{ url:imgUrlTwo+res.data.data.firstURL }] : [],
-        handelPerson: res.data.data.linkMan, handleTelephone: res.data.data.telephone, click: true
+        files: res.data.data.firstURL !== null && res.data.data.firstURL !== '' ? [{ url: imgUrlTwo + res.data.data.firstURL }] : [],
+        handelPerson: res.data.data.linkMan, handleTelephone: res.data.data.telephone, click: true,
+        starttime:res.data.data.openingtime,endtime:res.data.data.closingtime
       })
 
     }
@@ -221,7 +226,7 @@ class perfect extends React.Component {
   }
 
   onClickNex = () => {
-    let { filesSon, handleAddress, handelPerson, filesTwoSon, handleTelephone, onChangeSite, onChangeCheck } = this.state
+    let { filesSon, handleAddress, handelPerson, filesTwoSon, handleTelephone, onChangeSite, onChangeCheck,starttime,endtime } = this.state
 
     if (this.state.siteUid !== '' && this.state.siteUid !== null) {
 
@@ -244,6 +249,8 @@ class perfect extends React.Component {
         type: 1,
         linkMan: handelPerson,
         telephone: handleTelephone,
+        openingtime:starttime,
+        closingtime:endtime
       }
       if (data.lat === '') {
         message.warning('请选择场馆位置')
@@ -296,6 +303,8 @@ class perfect extends React.Component {
         position: this.props.location.query === undefined ? this.state.position : this.props.location.query.title,
         linkMan: handelPerson,
         telephone: handleTelephone,
+        openingtime:starttime,
+        closingtime:endtime
       }
 
       if (data.lat === null || data.lat === '') {
@@ -362,7 +371,7 @@ class perfect extends React.Component {
     if (this.state.click === true) {
 
 
-      let { filesSon, filesTwoSon, handleAddress, handelPerson, handleTelephone, onChangeCheck, onChangeSite } = this.state
+      let { filesSon, filesTwoSon, handleAddress, handelPerson, handleTelephone, onChangeCheck, onChangeSite,starttime,endtime } = this.state
 
 
       let data = {
@@ -383,14 +392,17 @@ class perfect extends React.Component {
         position: this.props.location.query === undefined ? this.state.position : this.props.location.query.title,
         linkMan: handelPerson,
         telephone: handleTelephone,
+        openingtime:starttime,
+        closingtime:endtime
+
       }
-      if(data.lat===''){
+      if (data.lat === '') {
         message.warning('请选择场馆位置')
-      }else if(handleAddress===''){
+      } else if (handleAddress === '') {
         message.warning('请填写场馆详细地址')
       } else if (localStorage.getItem('handleName') === 'null') {
         message.warning('请填写场馆名称')
-      }else if (handelPerson === '') {
+      } else if (handelPerson === '') {
         message.warning('请填写联系人')
       } else if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(handelPerson) === false) {
         message.warning('联系人只允许输入文字/字母')
@@ -404,14 +416,21 @@ class perfect extends React.Component {
     }
   }
   previewing = (files, index) => {
-    if(this.state.loading===false){
-     message.warning('图片上传中...', 1)
-    }else{
-      this.setState({imgMasking:index[files].url,masking:true})
+    if (this.state.loading === false) {
+      message.warning('图片上传中...', 1)
+    } else {
+      this.setState({ imgMasking: index[files].url, masking: true })
     }
   }
-  maskingF=()=>{
-    this.setState({masking:false})
+  maskingF = () => {
+    this.setState({ masking: false })
+  }
+
+  starttime=(e)=>{
+    this.setState({starttime:e})
+  }
+  endtime=(e)=>{
+    this.setState({endtime:e})
   }
 
 
@@ -496,6 +515,19 @@ class perfect extends React.Component {
               <Checkbox.Group style={{ float: 'left', width: '80%', marginLeft: '26.8px' }} className="chekkoh" options={this.state.plainOptions} onChange={this.onChangeCheck} value={this.state.onChangeCheck} /><br /><span className="kong"></span>
             </div>
 
+            <div className="name" style={{ overflow: 'hidden' }}>
+              <span className="symbol">*</span><span className="boTitle">营业时间</span><span className="kong"></span>
+              <Select style={{ width: 128, height: 'auto', marginLeft: 28, float: 'left' }} value={this.state.starttime === '' ? '00:00' : this.state.starttime} onChange={this.starttime} placeholder="开始时间">
+                {this.state.timer.map((item, i) => (
+                  <Option key={i} value={item.name}>{item.name}</Option>
+                ))}
+              </Select><span style={{float:'left',marginLeft:'25px',lineHeight:'32px'}}>至</span><Select style={{ width: 130, height: 'auto' }} value={this.state.endtime === '' ? '24:00' : this.state.endtime} onChange={this.endtime} placeholder="结束时间">
+                {this.state.timer.map((item, i) => (
+                  <Option key={i} value={item.name}>{item.name}</Option>
+                ))}
+              </Select>
+             
+            </div>
 
 
             <div className="name" >

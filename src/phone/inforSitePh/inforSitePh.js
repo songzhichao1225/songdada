@@ -97,6 +97,10 @@ class inforSitePh extends React.Component {
     BelongingSixSon: '',
     ascrBaceUrl:'',
     legalhourBaseURL:'',
+    starttime:['00:00'],
+    endtime:['24:00'],
+    timeRtArr: [{ label: '00:00', value: '00:00' }, { label: '00:30', value: '00:30' }, { label: '01:00', value: '01:00' }, { label: '01:30', value: '01:30' }, { label: '02:00', value: '02:00' }, { label: '02:30', value: '02:30' }, { label: '03:00', value: '03:00' }, { label: '03:30', value: '03:30' }, { label: '04:00', value: '04:00' }, { label: '04:30', value: '04:30' }, { label: '05:00', value: '05:00' }, { label: '05:30', value: '05:30' }, { label: '06:00', value: '06:00' }, { label: '06:30', value: '06:30' }, { label: '07:00', value: '07:00' }, { label: '07:30', value: '07:30' }, { label: '08:00', value: '08:00' }, { label: '08:30', value: '08:30' }, { label: '09:00', value: '09:00' }, { label: '09:30', value: '09:30' }, { label: '10:00', value: '10:00' }, { label: '10:30', value: '10:30' }, { label: '11:00', value: '11:00' }, { label: '11:30', value: '11:30' }, { label: '12:00', value: '12:00' }, { label: '12:30', value: '12:30' }, { label: '13:00', value: '13:00' }, { label: '13:30', value: '13:30' }, { label: '14:00', value: '14:00' }, { label: '14:30', value: '14:30' }, { label: '15:00', value: '15:00' }, { label: '15:30', value: '15:30' }, { label: '16:00', value: '16:00' }, { label: '16:30', value: '16:30' }, { label: '17:00', value: '17:00' }, { label: '17:30', value: '17:30' }, { label: '18:00', value: '18:00' }, { label: '18:30', value: '18:30' }, { label: '19:00', value: '19:00' }, { label: '19:30', value: '19:30' }, { label: '20:00', value: '20:00' }, { label: '20:30', value: '20:30' }, { label: '21:00', value: '21:00' }, { label: '21:30', value: '21:30' }, { label: '22:00', value: '22:00' }, { label: '22:30', value: '22:30' }, { label: '23:00', value: '23:00' }, { label: '23:30', value: '23:30' }, { label: '24:00', value: '24:00' }],
+    
   };
 
   async getVenueInformation(data) {
@@ -113,13 +117,14 @@ class inforSitePh extends React.Component {
           listSon: res.data.data, sport: res.data.data.sport.split(','), facilities: res.data.data.facilities.split(','),
           files: [{ url:imgUrlTwo+res.data.data.firstURL }], filesSon: res.data.data.firstURL,
           province: this.props.history.location.query.province, city: this.props.history.location.query.city, area: this.props.history.location.query.district,
+          starttime:[res.data.data.openingtime],endtime:[res.data.data.closingtime],
           cgName: res.data.data.name, address: this.props.history.location.query.adddress, linkMan: res.data.data.linkMan, telephone: res.data.data.telephone, siteInfo: res.data.data.siteInfo,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, comment: res.data.data.siteInfo, lat: this.props.history.location.query.lat, lng: this.props.history.location.query.lng, position: this.props.history.location.query.title, spin: false
         })
       } else {
         this.setState({
           listSon: res.data.data, sport: res.data.data.sport.split(','), facilities: res.data.data.facilities.split(','), files: [{ url:imgUrlTwo+res.data.data.firstURL }], filesSon: res.data.data.firstURL,
-          province: res.data.data.province, city: res.data.data.city, area: res.data.data.area,
+          province: res.data.data.province, city: res.data.data.city, area: res.data.data.area,starttime:[res.data.data.openingtime],endtime:[res.data.data.closingtime],
           cgName: res.data.data.name, address: res.data.data.address, linkMan: res.data.data.linkMan, telephone: res.data.data.telephone, siteInfo: res.data.data.siteInfo,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, comment: res.data.data.siteInfo, lat: res.data.data.lat, lng: res.data.data.lng, position: res.data.data.position, spin: false
         })
@@ -376,7 +381,7 @@ class inforSitePh extends React.Component {
   }
 
   confirm = () => {
-    let { cgName, address, linkMan, telephone, filesTwoSon, filesSon, sport, facilities, comment, lat, lng, position, province, city, area } = this.state
+    let { cgName, address, linkMan, telephone, filesTwoSon, filesSon, sport,starttime,endtime, facilities, comment, lat, lng, position, province, city, area } = this.state
     if (filesTwoSon.slice(1, filesTwoSon.length).split('|').length > 1) {
       let data = {
         venuename: cgName,
@@ -396,6 +401,8 @@ class inforSitePh extends React.Component {
         position: position,
         comment: comment,
         sporttype: '',
+        openingtime:starttime[0],
+        closingtime:endtime[0],
         type: 2
       }
 
@@ -990,6 +997,14 @@ class inforSitePh extends React.Component {
     }
   }
 
+  starttime=(e)=>{
+    this.setState({starttime:e})
+  }
+
+  endtime=(e)=>{
+    this.setState({endtime:e})
+  }
+
 
 
   render() {
@@ -1110,6 +1125,30 @@ class inforSitePh extends React.Component {
               <Checkbox.Group options={options} value={this.state.sport} onChange={this.onChangeCheck} />
             </div>
           </div>
+
+          <div className="listSon">
+          <Picker
+            data={this.state.timeRtArr}
+            onOk={this.starttime}
+            value={this.state.starttime}
+            cols={1}
+          >
+            <List.Item arrow="horizontal">营业开始时间</List.Item>
+          </Picker>
+          </div>
+
+          <div className="listSon">
+          <Picker
+            data={this.state.timeRtArr}
+            onOk={this.endtime}
+            value={this.state.endtime}
+            cols={1}
+          >
+            <List.Item arrow="horizontal">营业结束时间</List.Item>
+          </Picker>
+          </div>
+
+
           <div className="listSon">
             <span>场馆介绍</span>
             <Input className="right" value={this.state.comment} placeholder='场馆介绍如：比赛等' onChange={this.comment} />

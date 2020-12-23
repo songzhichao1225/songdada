@@ -99,7 +99,7 @@ class appointmentList extends React.Component {
     textNuma:'您还没有进行场地设置,请前往设置！',
     paied:'2',
     week:'',
-    isloop:0,
+    isloop:2,
     isModalVisible:false,
     weekList:[],
   };
@@ -502,6 +502,66 @@ class appointmentList extends React.Component {
     this.setState({isModalVisible:false})
   }
 
+
+
+
+
+
+
+
+   getDay=(day)=>{
+    　　var today = new Date(this.state.dateString);
+    
+    　　var targetday_milliseconds=today.getTime() + 1000*60*60*24*day;
+    
+    
+    
+    　　today.setTime(targetday_milliseconds); //注意，这行是关键代码
+    
+    
+    
+    　　var tYear = today.getFullYear();
+    
+    　　var tMonth = today.getMonth();
+    
+    　　var tDate = today.getDate();
+    
+    　　tMonth = this.doHandleMonth(tMonth + 1);
+    
+    　　tDate = this.doHandleMonth(tDate);
+    
+    　　return tYear+"-"+tMonth+"-"+tDate;
+    
+    }
+    
+   doHandleMonth=(month)=>{
+    
+    　　var m = month;
+    
+    　　if(month.toString().length === 1){
+    
+    　　　　m = "0" + month;
+    
+    　　}
+    
+    　　return m;
+    
+    }
+
+  riLeft=()=>{
+    let week=['周日','周一','周二','周三','周四','周五','周六']
+    this.setState({ dateString: this.getDay(-7),week:week[new Date(this.getDay(-7)).getDay()] })
+    this.getDateAndDayOfWeek({date:this.getDay(-7)})
+    this.getVenueReservation({ sportid: this.state.liNum, date: this.getDay(-7) })
+  }
+
+  riRight=()=>{
+    let week=['周日','周一','周二','周三','周四','周五','周六']
+    this.setState({ dateString: this.getDay(7),week:week[new Date(this.getDay(7)).getDay()] })
+    this.getDateAndDayOfWeek({date:this.getDay(7)})
+    this.getVenueReservation({ sportid: this.state.liNum, date: this.getDay(7) })
+  }
+
   render() {
 
     return (
@@ -518,14 +578,17 @@ class appointmentList extends React.Component {
               <DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={locale} value={moment(this.state.dateString, 'YYYY-MM-DD')} placeholder="请选择日期" className="DatePicker" onPanelChange={this.dateChangeTwo} onChange={this.dateChange} />
             </li>
           </ul>
-          
+           
           <div className="weekList">
+          <div className="riLeft"><img onClick={this.riLeft} src={require('../../assets/left.png')} alt="icon" / ></div>
             {
               this.state.weekList.map((item,i)=>(
               <div className="moTimeBtn" onClick={this.dateStingTwo} data-date={item.date} style={this.state.dateString===item.date?{background:'#F5A623',color:'#fff',borderColor:'#fff'}:{}}  key={i}>{item.week}<br/>{item.date}</div>
               ))
             }
+             <div  className="riRight"><img onClick={this.riRight} src={require('../../assets/right.png')} alt="icon" / ></div>
           </div>
+         
           <div className="prompt">
             <div><span></span><span>空闲</span></div>
             <div><span style={{ background: '#E9E9E9'}}></span><span>不可选</span></div>
@@ -658,7 +721,7 @@ class appointmentList extends React.Component {
             <span style={{ width: '100px', lineHeight: '30px', textAlign: 'right', display: 'block', float: 'left' }}>其他：</span>
             <Input style={{ width: 250, float: 'left' }} maxLength={50} value={this.state.placeQi} onChange={this.placeQi} placeholder="(选填)" />
           </div>
-            <Checkbox style={{marginLeft:'50px',marginTop:'20px'}} checked={this.state.isloop===2?false:true} onChange={this.CheckboxOnChange}>将所选场地时间段在每{this.state.week}都预留给该线下用户</Checkbox>
+            <Checkbox style={{marginLeft:'50px',marginTop:'20px'}} defaultChecked={false} checked={this.state.isloop===2?false:true} onChange={this.CheckboxOnChange}>将所选场地时间段在每{this.state.week}都预留给该线下用户</Checkbox>
           <span onClick={this.placeSubmit} style={{ cursor: 'pointer', padding: '4px 8px', background: '#F5A623', color: '#fff', float: 'right', marginRight: '125px', marginTop: '20px' }}>提交</span>
         </Modal>
 

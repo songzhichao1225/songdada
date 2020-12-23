@@ -115,22 +115,22 @@ class homePagePh extends React.Component {
       that.jo()
     }
 
-    setInterval(() => {
-      if (this.state.koFlag === 1) {
-        let url = 'https://appstg.tiaozhanmeiyitian.com//uploads/Audio/2020-06-30/20200630103615656.mp3';
-        let audio = new Audio(url);
-        audio.src = url;
-        audio.play();
-        document.addEventListener("WeixinJSBridgeReady", function () {
-          audio.play();
-        }, false);
-        document.addEventListener('YixinJSBridgeReady', function () {
-          audio.play();
-        }, false);
-        document.addEventListener("touchstart", audio.play(), false);
-        this.setState({ koFlag: 0 })
-      }
-    }, 500)
+    // setInterval(() => {
+    //   if (this.state.koFlag === 1) {
+    //     let url = 'https://appstg.tiaozhanmeiyitian.com//uploads/Audio/2020-06-30/20200630103615656.mp3';
+    //     let audio = new Audio(url);
+    //     audio.src = url;
+    //     audio.play();
+    //     document.addEventListener("WeixinJSBridgeReady", function () {
+    //       audio.play();
+    //     }, false);
+    //     document.addEventListener('YixinJSBridgeReady', function () {
+    //       audio.play();
+    //     }, false);
+    //     document.addEventListener("touchstart", audio.play(), false);
+    //     this.setState({ koFlag: 0 })
+    //   }
+    // }, 500)
 
 
 

@@ -885,8 +885,14 @@ class appOrder extends React.Component {
         let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[0])
         if ((Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1 !== this.state.lotime.length / 2 && this.state.flag !== '1') {
           Toast.fail('时间必须连贯', 2, null, false);
-        } else if (this.state.lotime.length<this.state.durationlimit*2) {
-          let durationlimit='最少选择'+this.state.durationlimit+'小时场地'
+        } else if (this.state.durationlimit===1&&this.state.lotime.length<2) {
+          let durationlimit='最少选择1小时以上场地'
+          Toast.fail(durationlimit, 2, null, false);
+        }else if (this.state.durationlimit===2&&this.state.lotime.length/2%2===0) {
+          let durationlimit='请选择1小时整数倍场地 '
+          Toast.fail(durationlimit, 2, null, false);
+        }else if (this.state.durationlimit===3&&this.state.lotime.length/2%2!==0) {
+          let durationlimit='请选择2小时整数倍场地 '
           Toast.fail(durationlimit, 2, null, false);
         } else {
           let obj = {
@@ -924,8 +930,14 @@ class appOrder extends React.Component {
         let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[0])
         if ((Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1 !== this.state.lotime.length && this.state.flag !== '1') {
           Toast.fail('时间必须连贯', 2, null, false);
-        }  else if (this.state.lotime.length<this.state.durationlimit*2) {
-          let durationlimit='最少选择'+this.state.durationlimit+'小时场地'
+        } else if (this.state.durationlimit===1&&this.state.lotime.length<2) {
+          let durationlimit='最少选择1小时以上场地'
+          Toast.fail(durationlimit, 2, null, false);
+        }else if (this.state.durationlimit===2&&this.state.lotime.length/2%2===0) {
+          let durationlimit='请选择1小时整数倍场地 '
+          Toast.fail(durationlimit, 2, null, false);
+        }else if (this.state.durationlimit===3&&this.state.lotime.length/2%2!==0) {
+          let durationlimit='请选择2小时整数倍场地 '
           Toast.fail(durationlimit, 2, null, false);
         } else {
           let obj = {

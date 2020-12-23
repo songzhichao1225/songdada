@@ -104,13 +104,13 @@ class siteSettings extends React.Component {
     deData: [],
     dateArr: [],
     appointmenttimeTwo: '',
-    ListSportTwoLO: [{ name: '半场', id: 1 },{ name: '散场', id: 2 }],
-    ListSportThreeLO:[{name:'按时(收费)',id:3},{name:'按次(收费)',id:4}],
+    ListSportTwoLO: [{ name: '半场', id: 1 }, { name: '散场', id: 2 }],
+    ListSportThreeLO: [{ name: '按时(收费)', id: 3 }, { name: '按次(收费)', id: 4 }],
     typeTwo: 0,
     you: [],
     timeFalg: true,
-    timeLimit:1,
-    timeLimitTwo:1,
+    timeLimit: 1,
+    timeLimitTwo: 1,
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -171,8 +171,8 @@ class siteSettings extends React.Component {
   }
 
   componentDidMount() {
-   
-    
+
+
 
     this.getVenueSport()
     this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
@@ -232,13 +232,13 @@ class siteSettings extends React.Component {
   }
   handleChangeOne = e => {
     this.setState({ runId: e, joinB: false, tags: '' })
-    if(e===6){
+    if (e === 6) {
       this.setState({
-        ListSportTwoLO: [{ name: '半场', id: 1 },{ name: '散场', id: 2 }]
+        ListSportTwoLO: [{ name: '半场', id: 1 }, { name: '散场', id: 2 }]
       })
-    }else if(e===2){
+    } else if (e === 2) {
       this.setState({
-        ListSportTwoLO: [{name:'按时(收费)',id:3},{name:'按次(收费)',id:4}]
+        ListSportTwoLO: [{ name: '按时(收费)', id: 3 }, { name: '按次(收费)', id: 4 }]
       })
     }
     this.getVenueSportidTitle({ sportid: e })
@@ -280,7 +280,7 @@ class siteSettings extends React.Component {
       case 12:
         day = "网球";
         break;
-        case 13:
+      case 13:
         day = "足球6人制";
         break;
       default:
@@ -332,7 +332,7 @@ class siteSettings extends React.Component {
       case 12:
         day = "网球";
         break;
-        case 13:
+      case 13:
         day = "足球6人制";
         break;
       default:
@@ -482,12 +482,12 @@ class siteSettings extends React.Component {
   }
 
   submit = (e) => {
-    let { runIdTwo, runNameTwo, tagsTwo, openday, starttime,timeLimit,timeLimitTwo, endtime, costperhour, chekedTwo, chekedTwoLen, maxScheduledDate, appointmenttime, comment, tagsTwoId, tags_type } = this.state
+    let { runIdTwo, runNameTwo, tagsTwo, openday, starttime, timeLimit, timeLimitTwo, endtime, costperhour, chekedTwo, chekedTwoLen, maxScheduledDate, appointmenttime, comment, tagsTwoId, tags_type } = this.state
     if (runIdTwo === '') {
       message.warning('请选择场地类型')
     } else if (tagsTwo === '') {
       message.warning('请选择细分标签类型')
-    } else if (tagsTwo.indexOf('散场')===-1&&tagsTwo.indexOf('按次')===-1&&openday.length === 0) {
+    } else if (tagsTwo.indexOf('散场') === -1 && tagsTwo.indexOf('按次') === -1 && openday.length === 0) {
       message.warning('请选择星期')
     } else if (starttime === '') {
       message.warning('请选择时间范围（开始时间）')
@@ -505,7 +505,7 @@ class siteSettings extends React.Component {
         sportid: runIdTwo,
         sportname: runNameTwo,
         tags: tagsTwo,
-        openday: tagsTwo.indexOf('散场')!==-1||tagsTwo.indexOf('按次')!==-1?'1,2,3,4,5,6,7':typeof (openday) === 'string' ? openday : openday.join(','),
+        openday: tagsTwo.indexOf('散场') !== -1 || tagsTwo.indexOf('按次') !== -1 ? '1,2,3,4,5,6,7' : typeof (openday) === 'string' ? openday : openday.join(','),
         opendayname: '',
         starttime: starttime,
         endtime: endtime,
@@ -517,8 +517,8 @@ class siteSettings extends React.Component {
         comment: comment,
         tags_id: tagsTwoId,
         tags_type: tags_type,
-        timelimit:timeLimit,
-        durationlimit:timeLimitTwo
+        timelimit: timeLimit,
+        durationlimit: timeLimitTwo
       }
       this.AddSiteSetting(obj)
     }
@@ -579,7 +579,7 @@ class siteSettings extends React.Component {
           dayTwo = "请选择";
       }
       this.setState({ maxScheduledDateName: dayTwo })
-      if (res.data.data[0].tags.indexOf('散') !== -1||res.data.data[0].tags.indexOf('按次') !== -1) {
+      if (res.data.data[0].tags.indexOf('散') !== -1 || res.data.data[0].tags.indexOf('按次') !== -1) {
         this.setState({ appointmenttime: res.data.data[0].appointmenttime, starttime: '00:00', endtime: '24:00', timeFalg: false })
       } else {
         this.setState({ appointmenttime: res.data.data[0].appointmenttime, starttime: res.data.data[0].starttime, endtime: res.data.data[0].endtime, timeFalg: true })
@@ -591,7 +591,7 @@ class siteSettings extends React.Component {
         runIdTwo: res.data.data[0].sportid, tagsTwo: res.data.data[0].tags, opendayname: attop, openday: res.data.data[0].openday.split(','), starttime: res.data.data[0].starttime,
         costperhour: res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')), chekedTwo: res.data.data[0].venueid, chekedFour: res.data.data[0].venueid, chekedThree: res.data.data[0].venueid !== null ? res.data.data[0].venueid : res.data.data[0].venueid, chekedTwoLen: res.data.data[0].sitenumber, appointmenttime: res.data.data[0].appointmenttime,
         tagsTwoId: res.data.data[0].tags_id, tags_type: res.data.data[0].tags_type, comment: res.data.data[0].comment, maxScheduledDate: res.data.data[0].maxScheduledDate, runNameTwo: res.data.data[0].sportname, Disid: res.data.data[0].uuid, appointmenttimeTwo: res.data.data[0].discount_appointment === null ? 0 : res.data.data[0].discount_appointment, dateArr: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(','),
-        timeLimit:res.data.data[0].timelimit,timeLimitTwo:res.data.data[0].durationlimit
+        timeLimit: res.data.data[0].timelimit, timeLimitTwo: res.data.data[0].durationlimit
       })
       if (this.state.runIdTwo !== '') {
         this.getVenueSportidTitle({ sportid: this.state.runIdTwo })
@@ -757,7 +757,7 @@ class siteSettings extends React.Component {
     if (this.state.runId === '') {
       message.error('请选择场地类型')
     } else {
-      if (this.state.runId === 6||this.state.runId === 2) {
+      if (this.state.runId === 6 || this.state.runId === 2) {
         if (this.state.typeTwo === 0) {
           message.error('请选择收费类型')
         } else if (this.state.tags === '') {
@@ -866,7 +866,7 @@ class siteSettings extends React.Component {
                 { id: '24A', cheked: false, num: 46 },
                 { id: '场地不固定', cheked: false, num: 47 }]
             })
-          }else if(this.state.typeTwo === 3){
+          } else if (this.state.typeTwo === 3) {
             this.setState({
               arrNum: [
                 { id: '1', cheked: false, num: 0 },
@@ -917,8 +917,8 @@ class siteSettings extends React.Component {
                 { id: '46', cheked: false, num: 45 },
                 { id: '47', cheked: false, num: 46 },]
             })
-         
-          }else if(this.state.typeTwo === 4){
+
+          } else if (this.state.typeTwo === 4) {
             this.setState({
               arrNum: [
                 { id: '1', cheked: false, num: 0 },
@@ -970,7 +970,7 @@ class siteSettings extends React.Component {
                 { id: '47', cheked: false, num: 46 },
                 { id: '场地不固定', cheked: false, num: 47 }]
             })
-         
+
           }
 
           this.getSiteSelectedVenueid({ sportid: this.state.runId })
@@ -1016,7 +1016,7 @@ class siteSettings extends React.Component {
 
   seriaSon = e => {
     let { arrNum, runId } = this.state
-    if (runId === 6||runId === 2) {
+    if (runId === 6 || runId === 2) {
       if (arrNum[e.currentTarget.dataset.num].cheked === true) {
         arrNum[e.currentTarget.dataset.num].cheked = false
       } else if (arrNum[e.currentTarget.dataset.num].cheked === false) {
@@ -1131,7 +1131,7 @@ class siteSettings extends React.Component {
   async getVenueNumberTitleSave(data) {
     const res = await getVenueNumberTitleSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ joinXi: false, arrCheked: [], arrChekedTwope: [], lppd: 0,typeTwo:0 })
+      this.setState({ joinXi: false, arrCheked: [], arrChekedTwope: [], lppd: 0, typeTwo: 0 })
       this.getVenueNumberTitleList({ sportid: this.state.nameChang, page: this.state.pageOne })
     } else if (res.data.code === 4002) {
       message.warning('请选择场地类型')
@@ -1144,7 +1144,7 @@ class siteSettings extends React.Component {
     let { runId, tags, arrCheked, typeTwo } = this.state
     let obj = {
       sportid: runId,
-      title: tags.indexOf('-') === -1 ? typeTwo === 2 ? tags + '-散场' : typeTwo === 1 ? tags + '-半场' : typeTwo === 3 ? tags + '-按时':typeTwo === 4 ? tags + '-按次':tags : tags,
+      title: tags.indexOf('-') === -1 ? typeTwo === 2 ? tags + '-散场' : typeTwo === 1 ? tags + '-半场' : typeTwo === 3 ? tags + '-按时' : typeTwo === 4 ? tags + '-按次' : tags : tags,
       venueid: typeof (arrCheked) === 'string' ? arrCheked : arrCheked.join(),
       number: arrCheked.length,
       uuid: e.currentTarget.dataset.id,
@@ -1190,7 +1190,7 @@ class siteSettings extends React.Component {
           res.data.data[i].sportid = '排球'
         } else if (res.data.data[i].sportid === 12) {
           res.data.data[i].sportid = '网球'
-        }else if (res.data.data[i].sportid === 13) {
+        } else if (res.data.data[i].sportid === 13) {
           res.data.data[i].sportid = '足球6人制'
         }
       }
@@ -1218,7 +1218,7 @@ class siteSettings extends React.Component {
   async getSiteSelectedVenueid(data) {
     let { arrNum, runId } = this.state
     const res = await getSiteSelectedVenueid(data, sessionStorage.getItem('venue_token'))
-    if (runId === 6||runId === 2) {
+    if (runId === 6 || runId === 2) {
       for (let j in res.data.data) {
         for (let i in this.state.arrNum) {
           if (this.state.arrNum.length === 48) {
@@ -1250,7 +1250,7 @@ class siteSettings extends React.Component {
       this.setState({ arrNum: this.state.arrNum })
     }
 
-    if (this.state.lppd === 1 && runId !== 6&& runId !== 2) {
+    if (this.state.lppd === 1 && runId !== 6 && runId !== 2) {
       if (this.state.arrCheked.length > 0) {
         for (let k in this.state.arrChekedTwope) {
           this.state.arrNum[parseInt(this.state.arrChekedTwope[k]) - 1].cheked = false
@@ -1263,7 +1263,7 @@ class siteSettings extends React.Component {
           this.state.arrNum[i].cheked = false
         }
       }
-    } else if (this.state.lppd !== 1 && runId !== 6&& runId !== 2) {
+    } else if (this.state.lppd !== 1 && runId !== 6 && runId !== 2) {
       if (this.state.arrCheked.length > 0) {
         for (let j in this.state.arrCheked) {
           this.state.arrNum[parseInt(this.state.arrCheked[j]) - 1].cheked = true
@@ -1365,7 +1365,7 @@ class siteSettings extends React.Component {
     })
   }
   handleChangeTags = e => {
-    if (e.indexOf('散') !== -1||e.indexOf('按次') !== -1) {
+    if (e.indexOf('散') !== -1 || e.indexOf('按次') !== -1) {
       this.setState({ appointmenttime: -1, starttime: '00:00', endtime: '24:00', timeFalg: false })
     } else {
       this.setState({ appointmenttime: '', starttime: '', endtime: '', timeFalg: true })
@@ -1651,16 +1651,16 @@ class siteSettings extends React.Component {
     this.setState({ appointmenttimeTwo: parseInt(e) })
   }
   handleChangeType = e => {
-    this.setState({ typeTwo: e,arrCheked:[] })
-  }
- 
-  timeLimit=e=>{
-    console.log(e)
-    this.setState({timeLimit:Number(e)})
+    this.setState({ typeTwo: e, arrCheked: [] })
   }
 
-  timeLimitTwo=e=>{
-    this.setState({timeLimitTwo:Number(e)})
+  timeLimit = e => {
+    console.log(e)
+    this.setState({ timeLimit: Number(e) })
+  }
+
+  timeLimitTwo = e => {
+    this.setState({ timeLimitTwo: Number(e) })
   }
 
   render() {
@@ -1688,7 +1688,7 @@ class siteSettings extends React.Component {
                 <Option value="10">足球5人制</Option>
                 <Option value="11">排球</Option>
                 <Option value="12">网球</Option>
-                
+
               </Select>
             </div>
           </div>
@@ -1699,18 +1699,24 @@ class siteSettings extends React.Component {
                 <Col xs={{ span: 2 }}>场地类型</Col>
                 <Col xs={{ span: 2 }}>细分标签</Col>
                 <Col xs={{ span: 2 }}>场地编号</Col>
-                <Col xs={{ span: 2 }}>场地数量</Col>
+                <Col xs={{ span: 1 }}>场地数量</Col>
                 <Col xs={{ span: 2 }}>星期</Col>
                 <Col xs={{ span: 2 }}>时间范围</Col>
-                <Col xs={{ span: 2 }}>价格</Col>
+                <Col xs={{ span: 1 }}>价格</Col>
                 <Popover content={(<span>最长提前预订时间</span>)} title='详情' trigger="click">
-                  <Col xs={{ span: 2 }}>最长提前预订时间</Col>
+                  <Col xs={{ span: 1 }}>最长提前预订时间</Col>
                 </Popover>
                 <Popover content={(<span>最短提前预订时间</span>)} title='详情' trigger="click">
-                  <Col xs={{ span: 2 }}>最短提前预订时间</Col>
+                  <Col xs={{ span: 1 }}>最短提前预订时间</Col>
+                </Popover>
+                <Popover content={(<span>开始时间限制</span>)} title='详情' trigger="click">
+                  <Col xs={{ span: 2 }}>开始时间限制</Col>
+                </Popover>
+                <Popover content={(<span>时长限制</span>)} title='详情' trigger="click">
+                  <Col xs={{ span: 2 }}>时长限制</Col>
                 </Popover>
                 <Col xs={{ span: 2 }}>备注</Col>
-                <Col xs={{ span: 2 }}>特定日期价格设置</Col>
+                <Col xs={{ span: 2 }}>特定日期</Col>
                 <Col xs={{ span: 2, }}>操作</Col>
               </Row>
               <div className="dataList">
@@ -1722,18 +1728,20 @@ class siteSettings extends React.Component {
                       <Popover content={(<div style={{ maxWidth: '200px', wordBreak: 'break-all' }}>{item.venueid}</div>)} title='详情' trigger="click">
                         <Col xs={{ span: 2 }} style={{ cursor: 'pointer' }}>{item.venueid}</Col>
                       </Popover>
-                      <Col xs={{ span: 2 }}>{item.sitenumber}</Col>
+                      <Col xs={{ span: 1 }}>{item.sitenumber}</Col>
                       <Popover content={(<span>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</span>)} title='详情' trigger="click">
                         <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</Col>
                       </Popover>
                       <Col xs={{ span: 2 }} style={{ lineHeight: '24px' }}>{item.starttime}<br />{item.endtime}</Col>
-                      <Col xs={{ span: 2 }}>{item.tags.indexOf('散') === -1||item.tags.indexOf('按次') === -1?item.costperhour+'(元/时)':item.costperhour+'.00(元/次)'}</Col>
-                      <Col xs={{ span: 2 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
-                      <Col xs={{ span: 2 }}>{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</Col>
+                      <Col xs={{ span: 1 }}>{item.tags.indexOf('散') === -1 || item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '.00(元/次)'}</Col>
+                      <Col xs={{ span: 1 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
+                      <Col xs={{ span: 1 }}>{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</Col>
+                      <Col xs={{ span: 2 }}>{item.timelimit === 1 ? '不限' : item.timelimit === 2 ? '整点' : item.timelimit === 3 ? '单数整点' : item.timelimit === 4 ? '双数整点' : '不限'}</Col>
+                      <Col xs={{ span: 2 }}>{item.durationlimit === 1 ? '1小时以上' : item.durationlimit === 2 ? '1小时整数倍' : item.durationlimit === 3 ? '2小时整数倍' : '1小时以上'}</Col>
                       <Popover content={(<span>{item.comment === '' ? '无' : item.comment}</span>)} title='详情' trigger="click">
                         <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer' }}>{item.comment === '' ? '无' : item.comment}</Col>
                       </Popover>
-                      <Col xs={{ span: 2 }} ><span style={item.tags.indexOf('散') !== -1||item.tags.indexOf('按次') !== -1 ? {} : { display: 'none' }}>不可设置</span><span style={item.tags.indexOf('散') !== -1||item.tags.indexOf('按次') !== -1 ? { display: 'none' } : { cursor: 'pointer', padding: '3px 6px', color: 'blue' }} data-uid={item.uuid} data-type={item.discount_date} onClick={this.preferential}>{item.discount_date === null ? '添加' : '查看'}</span></Col>
+                      <Col xs={{ span: 1 }} ><span style={item.tags.indexOf('散') !== -1 || item.tags.indexOf('按次') !== -1 ? {} : { display: 'none' }}>不可设置</span><span style={item.tags.indexOf('散') !== -1 || item.tags.indexOf('按次') !== -1 ? { display: 'none' } : { cursor: 'pointer', padding: '3px 6px', color: 'blue' }} data-uid={item.uuid} data-type={item.discount_date} onClick={this.preferential}>{item.discount_date === null ? '添加' : '查看'}</span></Col>
                       <Col xs={{ span: 2 }}>
                         <img onClick={this.update} style={{ cursor: 'pointer' }} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;
                       <Popconfirm
@@ -1804,16 +1812,22 @@ class siteSettings extends React.Component {
               <Col xs={{ span: 1 }}>场地数量</Col>
               <Col xs={{ span: 2 }}>星期</Col>
               <Col xs={{ span: 2 }}>时间范围</Col>
-              <Col xs={{ span: 2 }}>价格<span style={{ fontSize: '12px', color: '#9b9b9b' }}>(元/时)</span></Col>
+              <Col xs={{ span: 1 }}>价格<span style={{ fontSize: '12px', color: '#9b9b9b' }}>(元/时)</span></Col>
               <Popover content={(<span>最长提前预订时间</span>)} title='详情' trigger="click">
-                <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>最长提前预订时间</Col>
+                <Col style={{ cursor: 'pointer' }} xs={{ span: 1 }}>最长提前预订时间</Col>
               </Popover>
               <Popover content={(<span>最短提前预订时间</span>)} title='详情' trigger="click">
-                <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>最短提前预订时间</Col>
+                <Col style={{ cursor: 'pointer' }} xs={{ span: 1 }}>最短提前预订时间</Col>
+              </Popover>
+              <Popover content={(<span>开始时间限制</span>)} title='详情' trigger="click">
+                <Col xs={{ span: 2 }}>开始时间限制</Col>
+              </Popover>
+              <Popover content={(<span>时长限制</span>)} title='详情' trigger="click">
+                <Col xs={{ span: 2 }}>时长限制</Col>
               </Popover>
               <Col xs={{ span: 1 }}>备注</Col>
-              <Popover content={(<span>特定日期价格</span>)} title='详情' trigger="click">
-                <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>特定日期价格</Col>
+              <Popover content={(<span>特定日期</span>)} title='详情' trigger="click">
+                <Col style={{ cursor: 'pointer' }} xs={{ span: 1 }}>特定日期价格</Col>
               </Popover>
               <Col xs={{ span: 1 }}>操作</Col>
               <Col xs={{ span: 2 }}>操作时间</Col>
@@ -1835,13 +1849,16 @@ class siteSettings extends React.Component {
                   <Popover content={(<span>{item.starttime}-{item.endtime}</span>)} title='详情' trigger="click">
                     <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.starttime}-{item.endtime}</Col>
                   </Popover>
-                  <Col xs={{ span: 2 }}>{item.costperhour}</Col>
-                  <Col xs={{ span: 2 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
-                  <Col xs={{ span: 2 }}>{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</Col>
+                  <Col xs={{ span: 1 }}>{item.costperhour}</Col>
+                  <Col xs={{ span: 1 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
+                  <Col xs={{ span: 1 }}>{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</Col>
+                  <Col xs={{ span: 2 }}>{item.timelimit === 1 ? '不限' : item.timelimit === 2 ? '整点' : item.timelimit === 3 ? '单数整点' : item.timelimit === 4 ? '双数整点' : '不限'}</Col>
+                  <Col xs={{ span: 2 }}>{item.durationlimit === 1 ? '1小时以上' : item.durationlimit === 2 ? '1小时整数倍' : item.durationlimit === 3 ? '2小时整数倍' : '1小时以上'}</Col>
+
                   <Popover content={(<span>{item.comment === '' ? '无' : item.comment}</span>)} title='详情' trigger="click">
                     <Col style={{ cursor: 'pointer' }} xs={{ span: 1 }}>{item.comment === '' ? '无' : item.comment}</Col>
                   </Popover>
-                  <Col xs={{ span: 2 }}>{item.discount_edate === '' ? '无' : <span style={{ cursor: 'pointer' }} data-sd={item.discount_date} data-app={item.discount_appointment} data-cos={item.discount_costperhour} onClick={item.discount_date === '' ? null : this.details}>{item.discount_date === '' ? '无' : '查看'}</span>}</Col>
+                  <Col xs={{ span: 1 }}>{item.discount_edate === '' ? '无' : <span style={{ cursor: 'pointer' }} data-sd={item.discount_date} data-app={item.discount_appointment} data-cos={item.discount_costperhour} onClick={item.discount_date === '' ? null : this.details}>{item.discount_date === '' ? '无' : '查看'}</span>}</Col>
                   <Col xs={{ span: 1 }}>{item.operation === 1 ? '添加' : item.operation === 2 ? '修改' : item.operation === 3 ? '删除' : '无操作'}</Col>
                   <Popover content={(<span>{item.intime}</span>)} title='详情' trigger="click">
                     <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.intime}</Col>
@@ -1918,7 +1935,7 @@ class siteSettings extends React.Component {
               <div className="startTime" style={{ marginRight: 168 }}>{this.state.chekedTwoLen}</div>
             </div>
 
-            <div className="modelList" style={this.state.tagsTwo.indexOf('散场')!==-1||this.state.tagsTwo.indexOf('按次')!==-1?{display:'none'}:{ height: 'auto' }}>
+            <div className="modelList" style={this.state.tagsTwo.indexOf('散场') !== -1 || this.state.tagsTwo.indexOf('按次') !== -1 ? { display: 'none' } : { height: 'auto' }}>
               <span>星期</span>
               <Select placeholder="请选择" mode='multiple' className="selectModel"
                 value={this.state.openday === '' ? [] : this.state.openday}
@@ -1951,21 +1968,20 @@ class siteSettings extends React.Component {
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>开始时间限制</span>
-              <Select style={{ width: 269, height: 'auto', marginLeft: 60, float: 'left' }} value={this.state.timeLimit===1?'不限':this.state.timeLimit===2?'整点':this.state.timeLimit===3?'单数整点':this.state.timeLimit===4?'双数整点':'不限'} onChange={this.timeLimit} placeholder="开始时间限制">
-                  <Option value='1'>不限</Option>
-                  <Option value='2'>整点</Option>
-                  <Option value='3'>单数整点</Option>
-                  <Option value='4'>双数整点</Option>
+              <Select style={{ width: 269, height: 'auto', marginLeft: 60, float: 'left' }} value={this.state.timeLimit === 1 ? '不限' : this.state.timeLimit === 2 ? '整点' : this.state.timeLimit === 3 ? '单数整点' : this.state.timeLimit === 4 ? '双数整点' : '不限'} onChange={this.timeLimit} placeholder="开始时间限制">
+                <Option value='1'>不限</Option>
+                <Option value='2'>整点</Option>
+                <Option value='3'>单数整点</Option>
+                <Option value='4'>双数整点</Option>
               </Select>
             </div>
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>时长限制</span>
-              <Select style={{ width: 269, height: 'auto', marginLeft: 88, float: 'left' }} value={this.state.timeLimitTwo===1?'一小时':this.state.timeLimitTwo===2?'二小时':this.state.timeLimitTwo===4?'四小时':this.state.timeLimitTwo===6?'六小时':'一小时'}  onChange={this.timeLimitTwo} placeholder="时长限制">
-                  <Option value='1'>一小时</Option>
-                  <Option value='2'>二小时</Option>
-                  <Option value='4'>四小时</Option>
-                  <Option value='6'>六小时</Option>
+              <Select style={{ width: 269, height: 'auto', marginLeft: 88, float: 'left' }} value={this.state.timeLimitTwo === 1 ? '一小时以上' : this.state.timeLimitTwo === 2 ? '一小时整数倍' : this.state.timeLimitTwo === 3? '二小时整数倍' : '一小时以上'} onChange={this.timeLimitTwo} placeholder="时长限制">
+                <Option value='1'>一小时以上</Option>
+                <Option value='2'>一小时整数倍</Option>
+                <Option value='3'>二小时整数倍</Option>
               </Select>
             </div>
 
@@ -2081,8 +2097,8 @@ class siteSettings extends React.Component {
                 ))}
               </Select>
             </div>
-            
-            <div className="modelList" style={this.state.runId === 6||this.state.runId===2 ? { height: '32px' } : { display: 'none' }}>
+
+            <div className="modelList" style={this.state.runId === 6 || this.state.runId === 2 ? { height: '32px' } : { display: 'none' }}>
               <span>收费类型</span>
               <Select placeholder="请选择" className="selectModel" showArrow={this.state.typeDetel === 0 ? false : true} disabled={this.state.typeDetel === 0 ? true : false} value={this.state.typeTwo === 0 ? [] : this.state.typeTwo} style={{ width: 249, height: 32, marginRight: 100 }} onChange={this.handleChangeType}>
                 {
@@ -2122,7 +2138,7 @@ class siteSettings extends React.Component {
             <div style={{ clear: 'both' }}>
               {
                 this.state.arrNum.map((item, i) => (
-                  <div key={i} className={this.state.typeTwo === 2||this.state.typeTwo === 4 ? "serialSonTwo" : "serialSon"} onClick={this.seriaSon} data-num={item.num} data-id={item.id} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', transition: '0.3s', opacity: '0.2' } : item.id === '场地不固定' ? { width: '80px' } : {}}>{item.id}</div>
+                  <div key={i} className={this.state.typeTwo === 2 || this.state.typeTwo === 4 ? "serialSonTwo" : "serialSon"} onClick={this.seriaSon} data-num={item.num} data-id={item.id} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', transition: '0.3s', opacity: '0.2' } : item.id === '场地不固定' ? { width: '80px' } : {}}>{item.id}</div>
                 ))
               }
             </div>

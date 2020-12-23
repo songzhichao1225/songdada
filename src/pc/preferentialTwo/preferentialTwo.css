@@ -470,11 +470,11 @@
     margin-left: 20px;
 }
 .orderList .weekList{
-     width: 600px;
+     width: 630px;
      height: 46px;
      position: absolute;
      top: -55px;
-     left: 230px;
+     left: 330px;
 }
 .orderList .moTimeBtn{
     width: 80px;
@@ -496,4 +496,15 @@
 
 .orderList .moTimeBtn:first-child{
     margin-left: 0;
+}
+.orderList .weekList .riLeft{
+    float: left;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.orderList .weekList .riRight{
+    float: right;
+    margin-top: 10px;
+    cursor: pointer;
 }

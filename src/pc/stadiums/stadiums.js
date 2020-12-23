@@ -66,6 +66,10 @@ class stadiums extends React.Component {
     imgHood: '',
     imgHoodTwo: '',
     zuo: 0,
+    starttime:'',
+    endtime:'',
+    timer: [{ name: '00:00' }, { name: '00:30' }, { name: '01:00' }, { name: '01:30' }, { name: '02:00' }, { name: '02:30' }, { name: '03:00' }, { name: '03:30' }, { name: '04:00' }, { name: '04:30' }, { name: '05:00' }, { name: '05:30' }, { name: '06:00' }, { name: '06:30' }, { name: '07:00' }, { name: '07:30' }, { name: '08:00' }, { name: '08:30' }, { name: '09:00' }, { name: '09:30' }, { name: '10:00' }, { name: '10:30' }, { name: '11:00' }, { name: '11:30' }, { name: '12:00' }, { name: '12:30' }, { name: '13:00' }, { name: '13:30' }, { name: '14:00' }, { name: '14:30' }, { name: '15:00' }, { name: '15:30' }, { name: '16:00' }, { name: '16:30' }, { name: '17:00' }, { name: '17:30' }, { name: '18:00' }, { name: '18:30' }, { name: '19:00' }, { name: '19:30' }, { name: '20:00' }, { name: '20:30' }, { name: '21:00' }, { name: '21:30' }, { name: '22:00' }, { name: '22:30' }, { name: '23:00' }, { name: '23:30' }, { name: '24:00' }],
+    
 
     flagOne: true,
     flagTwo: true,
@@ -147,6 +151,7 @@ class stadiums extends React.Component {
           informationList: res.data.data, name: res.data.data.name,
           contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone,
           files: [{ url: imgUrlTwo + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
+          starttime:res.data.data.openingtime,endtime:res.data.data.closingtime,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, sport: lo, facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
         })
       } else if (this.props.location.query === undefined || this.props.location.query.name === 'sunny') {
@@ -160,6 +165,7 @@ class stadiums extends React.Component {
           informationList: res.data.data, name: res.data.data.name, handleAddress: res.data.data.address,
           contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, adddress: res.data.data.position,
           files: [{ url: imgUrlTwo + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
+          starttime:res.data.data.openingtime,endtime:res.data.data.closingtime,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, sport: lo, facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
         })
       }
@@ -980,6 +986,13 @@ class stadiums extends React.Component {
     this.setState({ faIdcard: e.target.value })
   }
 
+  starttime=(e)=>{
+    this.setState({starttime:e})
+  }
+  endtime=(e)=>{
+    this.setState({endtime:e})
+  }
+
   
 
 
@@ -1062,6 +1075,22 @@ class stadiums extends React.Component {
               <span className="boTitle">场地类型:</span><span className="kong"></span>
               <Checkbox.Group style={{ float: 'left', width: '50%', marginLeft: '26.8px' }} className="chekkoh" options={this.state.plainOptions} value={this.state.sport} onChange={this.onChangeCheck} /><br /><span className="kong"></span>
             </div>
+
+            <div className="name" style={{ overflow: 'hidden' }}>
+              <span className="boTitle">营业时间:</span><span className="kong"></span>
+              <Select style={{ width: 128, height: 'auto', marginLeft: 28, float: 'left' }} value={this.state.starttime === '' ? '00:00' : this.state.starttime} onChange={this.starttime} placeholder="开始时间">
+                {this.state.timer.map((item, i) => (
+                  <Option key={i} value={item.name}>{item.name}</Option>
+                ))}
+              </Select><span style={{float:'left',marginLeft:'25px',lineHeight:'32px'}}>至</span><Select style={{ width: 130, height: 'auto' }} value={this.state.endtime === '' ? '24:00' : this.state.endtime} onChange={this.endtime} placeholder="结束时间">
+                {this.state.timer.map((item, i) => (
+                  <Option key={i} value={item.name}>{item.name}</Option>
+                ))}
+              </Select>
+           </div>
+
+
+
             <div className="name">
               <span className="boTitle">场馆设施:</span><span className="kong"></span>
               <Checkbox.Group options={options} value={this.state.facilities} onChange={this.onChangeSite} />
