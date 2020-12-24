@@ -286,7 +286,9 @@ class appointmentList extends React.Component {
   }
   dateChange = (data, datatring) => {
     let week=['周日','周一','周二','周三','周四','周五','周六']
+
     this.setState({ dateString: datatring,week:week[new Date(datatring).getDay()] })
+    this.getDateAndDayOfWeek({date:datatring})
     this.getVenueReservation({ sportid: this.state.liNum, date: datatring })
   }
 
@@ -575,18 +577,18 @@ class appointmentList extends React.Component {
         <div className={this.state.number === '2' ? 'circumstance' : 'circumstanceT'} style={{ height: '92%' }} >
           <ul className="rightNav" style={{ top: '-48px', left: '-20px' }}>
             <li className="dateSelect">
-              <DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={locale} value={moment(this.state.dateString, 'YYYY-MM-DD')} placeholder="请选择日期" className="DatePicker" onPanelChange={this.dateChangeTwo} onChange={this.dateChange} />
+              <DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={locale} value={moment(this.state.dateString, 'YYYY-MM-DD')} allowClear={false} placeholder="请选择日期" className="DatePicker" onPanelChange={this.dateChangeTwo} onChange={this.dateChange} />
             </li>
           </ul>
            
           <div className="weekList">
-          <div className="riLeft"><img onClick={this.riLeft} src={require('../../assets/left.png')} alt="icon" / ></div>
+          <div className="riLeft" onClick={this.riLeft}>上一周</div>
             {
               this.state.weekList.map((item,i)=>(
               <div className="moTimeBtn" onClick={this.dateStingTwo} data-date={item.date} style={this.state.dateString===item.date?{background:'#F5A623',color:'#fff',borderColor:'#fff'}:{}}  key={i}>{item.week}<br/>{item.date}</div>
               ))
             }
-             <div  className="riRight"><img onClick={this.riRight} src={require('../../assets/right.png')} alt="icon" / ></div>
+             <div  className="riRight" onClick={this.riRight}>下一周</div>
           </div>
          
           <div className="prompt">

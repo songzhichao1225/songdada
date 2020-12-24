@@ -9,25 +9,16 @@ import locale from 'antd/es/date-picker/locale/zh_CN';
 const { Option } = Select;
 const { TextArea } = Input;
 
-const limitNumber = value => {
-  if (typeof value === 'string') {
-    return !isNaN(Number(value)) ? value.replace(/^(0+)|[^\d]/g, '') : ''
-  } else if (typeof value === 'number') {
-    return !isNaN(value) ? String(value).replace(/^(0+)|[^\d]/g, '') : ''
-  } else {
-    return ''
-  }
-}
 
 
 
 
-
+ 
 
 
 class siteSettings extends React.Component {
 
-  state = {
+  state = {  
     visible: false,
     ListSport: [],
     list: [],
@@ -509,7 +500,7 @@ class siteSettings extends React.Component {
         opendayname: '',
         starttime: starttime,
         endtime: endtime,
-        costperhour: costperhour,
+        costperhour: Number(costperhour).toFixed(2),
         venueid: chekedTwo,
         sitenumber: chekedTwoLen,
         maxScheduledDate: maxScheduledDate,
@@ -695,6 +686,7 @@ class siteSettings extends React.Component {
   }
 
   onNameChange = event => {
+    
     this.setState({
       name: event.target.value,
     })
@@ -742,6 +734,8 @@ class siteSettings extends React.Component {
       message.warning('该标签已存在')
     } else if (name.replace(/\s*/g, "").toUpperCase() === 'VIP') {
       message.warning('该标签已存在')
+    } else if (name === '半场'||name === '散场'||name === '按次'||name === '按时') {
+      message.warning('该标签不可设置')
     } else {
       this.getVenueTitleSave({ sportid: this.state.runId, title: name })
     }
@@ -1733,7 +1727,9 @@ class siteSettings extends React.Component {
                         <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</Col>
                       </Popover>
                       <Col xs={{ span: 2 }} style={{ lineHeight: '24px' }}>{item.starttime}<br />{item.endtime}</Col>
-                      <Col xs={{ span: 1 }}>{item.tags.indexOf('散') === -1 || item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '.00(元/次)'}</Col>
+                      <Popover content={(<span>{item.tags.indexOf('散') === -1 || item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '.00(元/次)'}</span>)} title='详情' trigger="click">
+                      <Col xs={{ span: 1 }} style={{cursor:'pointer'}}>{item.tags.indexOf('散') === -1 || item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '.00(元/次)'}</Col>
+                      </Popover>
                       <Col xs={{ span: 1 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
                       <Col xs={{ span: 1 }}>{item.appointmenttime === null ? '' : item.appointmenttime / 60 + '小时'}</Col>
                       <Col xs={{ span: 2 }}>{item.timelimit === 1 ? '不限' : item.timelimit === 2 ? '整点' : item.timelimit === 3 ? '单数整点' : item.timelimit === 4 ? '双数整点' : '不限'}</Col>
@@ -1741,7 +1737,7 @@ class siteSettings extends React.Component {
                       <Popover content={(<span>{item.comment === '' ? '无' : item.comment}</span>)} title='详情' trigger="click">
                         <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer' }}>{item.comment === '' ? '无' : item.comment}</Col>
                       </Popover>
-                      <Col xs={{ span: 1 }} ><span style={item.tags.indexOf('散') !== -1 || item.tags.indexOf('按次') !== -1 ? {} : { display: 'none' }}>不可设置</span><span style={item.tags.indexOf('散') !== -1 || item.tags.indexOf('按次') !== -1 ? { display: 'none' } : { cursor: 'pointer', padding: '3px 6px', color: 'blue' }} data-uid={item.uuid} data-type={item.discount_date} onClick={this.preferential}>{item.discount_date === null ? '添加' : '查看'}</span></Col>
+                      <Col xs={{ span: 2 }} ><span style={item.tags.indexOf('散') !== -1 || item.tags.indexOf('按次') !== -1 ? {} : { display: 'none' }}>不可设置</span><span style={item.tags.indexOf('散') !== -1 || item.tags.indexOf('按次') !== -1 ? { display: 'none' } : { cursor: 'pointer', padding: '3px 6px', color: 'blue' }} data-uid={item.uuid} data-type={item.discount_date} onClick={this.preferential}>{item.discount_date === null ? '添加' : '查看'}</span></Col>
                       <Col xs={{ span: 2 }}>
                         <img onClick={this.update} style={{ cursor: 'pointer' }} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;
                       <Popconfirm
@@ -1858,7 +1854,7 @@ class siteSettings extends React.Component {
                   <Popover content={(<span>{item.comment === '' ? '无' : item.comment}</span>)} title='详情' trigger="click">
                     <Col style={{ cursor: 'pointer' }} xs={{ span: 1 }}>{item.comment === '' ? '无' : item.comment}</Col>
                   </Popover>
-                  <Col xs={{ span: 1 }}>{item.discount_edate === '' ? '无' : <span style={{ cursor: 'pointer' }} data-sd={item.discount_date} data-app={item.discount_appointment} data-cos={item.discount_costperhour} onClick={item.discount_date === '' ? null : this.details}>{item.discount_date === '' ? '无' : '查看'}</span>}</Col>
+                  <Col xs={{ span: 1}}>{item.discount_edate === '' ? '无' : <span style={{ cursor: 'pointer' }} data-sd={item.discount_date} data-app={item.discount_appointment} data-cos={item.discount_costperhour} onClick={item.discount_date === '' ? null : this.details}>{item.discount_date === '' ? '无' : '查看'}</span>}</Col>
                   <Col xs={{ span: 1 }}>{item.operation === 1 ? '添加' : item.operation === 2 ? '修改' : item.operation === 3 ? '删除' : '无操作'}</Col>
                   <Popover content={(<span>{item.intime}</span>)} title='详情' trigger="click">
                     <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.intime}</Col>
@@ -1968,7 +1964,7 @@ class siteSettings extends React.Component {
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>开始时间限制</span>
-              <Select style={{ width: 269, height: 'auto', marginLeft: 60, float: 'left' }} value={this.state.timeLimit === 1 ? '不限' : this.state.timeLimit === 2 ? '整点' : this.state.timeLimit === 3 ? '单数整点' : this.state.timeLimit === 4 ? '双数整点' : '不限'} onChange={this.timeLimit} placeholder="开始时间限制">
+              <Select style={{ width: 269, height: 'auto', marginLeft: 60, float: 'left' }} disabled={this.state.timeFalg===true?false:true} value={this.state.timeLimit === 1 ? '不限' : this.state.timeLimit === 2 ? '整点' : this.state.timeLimit === 3 ? '单数整点' : this.state.timeLimit === 4 ? '双数整点' : '不限'} onChange={this.timeLimit} placeholder="开始时间限制">
                 <Option value='1'>不限</Option>
                 <Option value='2'>整点</Option>
                 <Option value='3'>单数整点</Option>
@@ -1978,7 +1974,7 @@ class siteSettings extends React.Component {
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>时长限制</span>
-              <Select style={{ width: 269, height: 'auto', marginLeft: 88, float: 'left' }} value={this.state.timeLimitTwo === 1 ? '一小时以上' : this.state.timeLimitTwo === 2 ? '一小时整数倍' : this.state.timeLimitTwo === 3? '二小时整数倍' : '一小时以上'} onChange={this.timeLimitTwo} placeholder="时长限制">
+              <Select style={{ width: 269, height: 'auto', marginLeft: 88, float: 'left' }} disabled={this.state.timeFalg===true?false:true} value={this.state.timeFalg===false?'不限':this.state.timeLimitTwo === 1 ? '一小时以上' : this.state.timeLimitTwo === 2 ? '一小时整数倍' : this.state.timeLimitTwo === 3? '二小时整数倍' : '一小时以上'} onChange={this.timeLimitTwo} placeholder="时长限制">
                 <Option value='1'>一小时以上</Option>
                 <Option value='2'>一小时整数倍</Option>
                 <Option value='3'>二小时整数倍</Option>
@@ -1990,7 +1986,7 @@ class siteSettings extends React.Component {
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>价格</span><span>{this.state.timeFalg === true ? '（元/小时）' : '（元/次）'}</span>
-              <InputNumber className="startTime" value={this.state.costperhour} formatter={limitNumber} parser={limitNumber} defaultValue={1} min={1} style={{ height: 32, width: 269, paddingLeft: '11px' }} placeholder="请输入" onChange={this.money} />
+              <InputNumber className="startTime" value={this.state.costperhour} defaultValue={1} min={1} style={{ height: 32, width: 269, paddingLeft: '11px' }} placeholder="请输入" onChange={this.money} />
             </div>
             <div className="modelList" style={{ height: 32 }}>
               <span>最长提前预订时间</span>

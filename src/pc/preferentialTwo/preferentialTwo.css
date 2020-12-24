@@ -470,7 +470,7 @@
     margin-left: 20px;
 }
 .orderList .weekList{
-     width: 630px;
+     width: 720px;
      height: 46px;
      position: absolute;
      top: -55px;
@@ -479,7 +479,7 @@
 .orderList .moTimeBtn{
     width: 80px;
     height: 35px;
-    margin-left: 5px;
+    margin-left: 10px;
     border-radius: 5px;
     border:1px solid #9B9B9B;
     text-align: center;
@@ -501,10 +501,14 @@
     float: left;
     margin-top: 10px;
     cursor: pointer;
+    color: #56A5FF;
+    border-bottom: 1px solid #56A5FF;
 }
 
 .orderList .weekList .riRight{
     float: right;
     margin-top: 10px;
     cursor: pointer;
+    color: #56A5FF;
+    border-bottom: 1px solid #56A5FF;
 }

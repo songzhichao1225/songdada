@@ -301,6 +301,8 @@ class sitePh extends React.Component {
       Toast.fail('该标签已存在', 1);
     } else if (this.state.joinTitleC.replace(/\s*/g, "").toUpperCase() === 'VIP') {
       Toast.fail('该标签已存在', 1);
+    } else if (this.state.joinTitleC === '半场'||this.state.joinTitleC === '散场'||this.state.joinTitleC === '按次'||this.state.joinTitleC === '按时') {
+      Toast.fail('该标签不可设置', 1);
     } else {
       this.getVenueTitleSave({ sportid: this.state.pickerValue[0], title: this.state.joinTitleC, uuid: '' })
     }
@@ -758,7 +760,7 @@ class sitePh extends React.Component {
   async getVenueNumberTitleSave(data) {
     const res = await getVenueNumberTitleSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ visibleXi: false, firstUUid: '', upData: 0, page: this.state.page,typeTwo:[0] })
+      this.setState({ visibleXi: false, firstUUid: '', upData: 0, page: this.state.page,typeTwo:[0],idxTitleTwo:'请选择/添加' })
       this.getVenueNumberTitleList({ page: this.state.page, sportid: this.state.asyncValue })
     } else {
       Toast.fail(res.data.msg, 1);
@@ -993,7 +995,7 @@ class sitePh extends React.Component {
   async AddSiteSetting(data) {
     const res = await AddSiteSetting(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ Price: false, jiageUUid: '' })
+      this.setState({ Price: false, jiageUUid: '',pickerValueThree:[],cheStr:'' })
       this.getSiteSettingList({ page: this.state.pageTwo, sportid: this.state.asyncValueTwo })
     } else {
       Toast.fail(res.data.msg, 2);
@@ -1034,7 +1036,7 @@ class sitePh extends React.Component {
         opendayname: Liturgyche,
         starttime: starttime[0],
         endtime: endtime[0],
-        costperhour: money,
+        costperhour: Number(money).toFixed(2),
         venueid: cheStr,
         sitenumber: titleArrFoterNum,
         maxScheduledDate: pickerValueFour[0],
@@ -1602,8 +1604,9 @@ class sitePh extends React.Component {
             onOk={this.timeLimit}
             value={this.state.timeLimit}
             cols={1}
+            disabled={this.state.timeFalg === false?true:false}
           >
-            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>开始时间限制</List.Item>
+            <List.Item arrow={this.state.timeFalg === false?'empty':'horizontal'} style={{ borderBottom: '1px solid #E9E9E9' }}>开始时间限制</List.Item>
           </Picker>
 
 
@@ -1612,8 +1615,9 @@ class sitePh extends React.Component {
             onOk={this.timeLimitTwo}
             value={this.state.timeLimitTwo}
             cols={1}
+            disabled={this.state.timeFalg === false?true:false}
           >
-            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>时长限制</List.Item>
+            <List.Item arrow={this.state.timeFalg === false?'empty':'horizontal'} style={{ borderBottom: '1px solid #E9E9E9' }}>时长限制</List.Item>
           </Picker>
 
 
@@ -1627,7 +1631,6 @@ class sitePh extends React.Component {
               onChange={(v) => { this.setState({ money: v }) }}
               onBlur={(v) => { console.log('onBlur', v); }}
               style={{ padding: '0' }}
-              disabledKeys={['.']}
               moneyKeyboardWrapProps={moneyKeyboardWrapProps}
           ><span style={{ fontSize: '0.88rem', border: 'none' }}>{this.state.timeFalg === false?'价格(元/次)':'价格(元/时)'}</span></InputItem></List.Item>
 

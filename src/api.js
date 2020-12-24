@@ -512,6 +512,11 @@ export function VenueEvaluationSave(data,headers){    //场馆端~添加场馆�
 }
   
 
+export function getAudio(data,headers){    //场馆端~添加场馆端对运营专员的评价记录
+    return axios.post('/api/getAudio',data,{headers: {'token': headers}})
+}
+  
+
 
 
 

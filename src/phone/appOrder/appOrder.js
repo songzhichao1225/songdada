@@ -46,7 +46,7 @@ class appOrder extends React.Component {
     moveGo: false,
     StartEndTime: 0,
     week: '',
-    durationlimit:1,
+    durationlimit: 1,
     timeArr: ['00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30', '24:00']
   };
 
@@ -158,18 +158,20 @@ class appOrder extends React.Component {
 
       for (let i in res.data.other.bq) {
         res.data.other.bq[i].dataIndex = res.data.other.bq[i].venueid
-        res.data.other.bq[i].title = <div style={{ textAlign: 'center' }}>{res.data.other.bq[i].venueid}<br />{res.data.other.bq[i].title}</div>
-        res.data.other.bq[i].width = 80
+        res.data.other.bq[i].title = <div className="titleScale" style={{ textAlign: 'center', fontSize: '10px' }}>{res.data.other.bq[i].venueid}<br />{res.data.other.bq[i].title}</div>
+        res.data.other.bq[i].width = 54
+        res.data.other.bq[i].maxWidth = 54
       }
       let ploboj = {
-        title: <div>场地号<br />标签</div>,
+        title: <div style={{ fontSize: '10px' }}>场地号<br />标签</div>,
         fixed: 'left',
-        width: 80,
+        width: 54,
+        maxWidth: 54,
         dataIndex: 'lppd',
       }
       res.data.other.bq.unshift(ploboj)
 
-      this.setState({ lookList: res.data.data,durationlimit:res.data.data[0].c[0].durationlimit, macNum: res.data.data[0].c, otherType: res.data.other.bq, value: 'l', spinningTwo: false, loadingTwo: false, animating: false })
+      this.setState({ lookList: res.data.data, durationlimit: res.data.data[0].c[0].durationlimit, macNum: res.data.data[0].c, otherType: res.data.other.bq, value: 'l', spinningTwo: false, loadingTwo: false, animating: false })
     } else {
       this.setState({ resData: [], animating: false, otherType: [] })
     }
@@ -182,6 +184,32 @@ class appOrder extends React.Component {
   }
 
   loodp = (resData) => {
+    let kopAd = this.state.lotime
+    let arr = []
+    for (let i in kopAd) {
+      let obj = {}
+      obj.time = kopAd[i].split('-')[0]
+      obj.num = kopAd[i].split('-')[1]
+      arr.push(obj)
+    }
+
+    let result = {};
+
+    for (let i in arr) {
+      if (result[arr[i].time]) {
+        result[arr[i].time] = Number(result[arr[i].time]) + 1;
+      } else {
+        result[arr[i].time] = 1;
+      }
+    }
+    let keyvalue = []
+    for (let i in result) {
+      let obj = {}
+      obj.name = i
+      obj.num = result[i]
+      keyvalue.push(obj)
+    }
+
     let jood = []
     for (let i in resData.data) {
       let obj = {}
@@ -198,24 +226,29 @@ class appOrder extends React.Component {
           data-money={resData.data[i].c[j].money}
           data-timelimit={resData.data[i].c[j].timelimit}
           data-summoney={resData.data[i].c[j].summoney}
-          data-lo={resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney}
+          data-lo={resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney + '-' + resData.data[i].c[j].timelimit}
           style={resData.data[i].c[j].type === 1
-            && this.state.lotime.indexOf(resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney) === -1 ? { background: '#6FB2FF', height: 40, lineHeight: 3, color: '#fff' } : {}
+            && this.state.lotime.indexOf(resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney + '-' + resData.data[i].c[j].timelimit) === -1 ? { background: '#6FB2FF', height: 40, lineHeight: 3, color: '#fff' } : {}
               && resData.data[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 40, lineHeight: 3 } : {}
                 && resData.data[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 40, lineHeight: 3 } : {}
                   && resData.data[i].c[j].type === 4 ? { background: 'red', height: 40, lineHeight: 3 } : { background: 'red', height: 40, lineHeight: 3, color: '#fff' }}
-        > <span style={{ fontSize: '12px' }}>{resData.data[i].c[j].money}{this.state.sporttypeFive === '22' || this.state.sporttypeFive === '24' ? '/次' : ''}</span></div>
+        > <span>{resData.data[i].c[j].money}{this.state.sporttypeFive === '22' || this.state.sporttypeFive === '24' ? '' : ''}</span></div>
         if (resData.data[i].c[j].type === 3) {
           this.setState({ selectedTwo: [...this.state.selectedTwo, resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney] })
         }
         obj[key] = value
-        let koTwo = parseInt(resData.data[i].a.slice(1, 2)) + 1 + ':00'
-        obj.lppd = this.state.sporttypeFive === '22' || this.state.sporttypeFive === '24' ? '' : <div style={{ color: '#F5A623' }}>{resData.data[i].a}<br />{resData.data[i].a.slice(3, resData.data[i].a.length) === '00' ? resData.data[i].a.slice(0, 2) + ':30' : koTwo === '10:00' && resData.data[i].a !== '19:30' ? '10:00' : resData.data[i].a === '19:30' ? '20:00' : resData.data[i].a.slice(0, 1) + koTwo}</div>
+
       }
+      let lo = resData.data[i].a
+      let resuLo=''
+      if (result.hasOwnProperty(lo)) {
+        resuLo=result[lo]
+      }
+      obj.lppd = this.state.sporttypeFive === '22' || this.state.sporttypeFive === '24' ? '' : <div><div style={{ color: '#F5A623', marginTop: '-1.4rem' }}>{resData.data[i].a}<div style={resData.data[i].a==='23:30'?{width:'100%',position:'absolute',bottom:0,textAlign:'center'}:{display:'none'}}>{resData.data[i].a==='23:30'?'24:00':''}</div></div><div className="btnAutoi" style={result.hasOwnProperty(lo)?{opacity:1}:{opacity:0}}>{ resData.data[i].a===lo?resuLo:''}</div></div>
       jood.push(obj)
     }
     this.setState({
-      lookBan: jood
+      lookBan: jood 
     })
   }
 
@@ -289,26 +322,26 @@ class appOrder extends React.Component {
     let money = e.currentTarget.dataset.money
     let time = e.currentTarget.dataset.time
     let lotime = e.currentTarget.dataset.lo
-    let timelimit=e.currentTarget.dataset.timelimit
+    let timelimit = e.currentTarget.dataset.timelimit
 
-   if(this.state.flag==='0'){
-    if(this.state.moneyCall===0&&timelimit==='2'&&time.indexOf('30')!==-1){
+
+    if (this.state.moneyCall === 0 && timelimit === '2' && time.indexOf('30') !== -1) {
       Toast.fail('请选择整点场地', 2, null, false);
       return false
-    }else if(this.state.moneyCall===0&&timelimit==='3'&&time.indexOf('30')!==-1){
+    } else if (this.state.moneyCall === 0 && timelimit === '3' && time.indexOf('30') !== -1) {
       Toast.fail('请选择单数整点场地', 2, null, false);
       return false
-    }else if(this.state.moneyCall===0&&timelimit==='3'&&Number(time.slice(0,2))%2===0){
+    } else if (this.state.moneyCall === 0 && timelimit === '3' && Number(time.slice(0, 2)) % 2 === 0) {
       Toast.fail('请选择单数整点场地', 2, null, false);
       return false
-    }else if(this.state.moneyCall===0&&timelimit==='4'&&time.indexOf('30')!==-1){
+    } else if (this.state.moneyCall === 0 && timelimit === '4' && time.indexOf('30') !== -1) {
       Toast.fail('请选择双数整点场地', 2, null, false);
       return false
-    }else if(this.state.moneyCall===0&&timelimit==='4'&&Number(time.slice(0,2))%2!==0){
+    } else if (this.state.moneyCall === 0 && timelimit === '4' && Number(time.slice(0, 2)) % 2 !== 0) {
       Toast.fail('请选择双数整点场地', 2, null, false);
       return false
     }
-   }
+
 
 
     if (e.currentTarget.dataset.type === '1') {
@@ -349,34 +382,34 @@ class appOrder extends React.Component {
       return false
     }
 
-  
+
 
     let money = e.currentTarget.dataset.money
     let summoney = e.currentTarget.dataset.summoney
     let time = e.currentTarget.dataset.time
     let num = e.currentTarget.dataset.num
     let lotime = e.currentTarget.dataset.lo
-    let timelimit=e.currentTarget.dataset.timelimit
+    let timelimit = e.currentTarget.dataset.timelimit
 
-  if(this.state.flag==='0'){
-    if(this.state.moneyCall===0&&timelimit==='2'&&time.indexOf('30')!==-1){
+
+    if (this.state.moneyCall === 0 && timelimit === '2' && time.indexOf('30') !== -1) {
       Toast.fail('请选择整点场地', 2, null, false);
       return false
-    }else if(this.state.moneyCall===0&&timelimit==='3'&&time.indexOf('30')!==-1){
+    } else if (this.state.moneyCall === 0 && timelimit === '3' && time.indexOf('30') !== -1) {
       Toast.fail('请选择单数整点场地', 2, null, false);
       return false
-    }else if(this.state.moneyCall===0&&timelimit==='3'&&Number(time.slice(0,2))%2===0){
+    } else if (this.state.moneyCall === 0 && timelimit === '3' && Number(time.slice(0, 2)) % 2 === 0) {
       Toast.fail('请选择单数整点场地', 2, null, false);
       return false
-    }else if(this.state.moneyCall===0&&timelimit==='4'&&time.indexOf('30')!==-1){
+    } else if (this.state.moneyCall === 0 && timelimit === '4' && time.indexOf('30') !== -1) {
       Toast.fail('请选择双数整点场地', 2, null, false);
       return false
-    }else if(this.state.moneyCall===0&&timelimit==='4'&&Number(time.slice(0,2))%2!==0){
+    } else if (this.state.moneyCall === 0 && timelimit === '4' && Number(time.slice(0, 2)) % 2 !== 0) {
       Toast.fail('请选择双数整点场地', 2, null, false);
       return false
     }
-  }
-    
+
+
 
 
     if (e.currentTarget.dataset.type === '1') {
@@ -390,7 +423,7 @@ class appOrder extends React.Component {
           }
           this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
         } else if (this.state.time.sort().indexOf(time) !== -1) {
-          this.state.lotime.sort().splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney)
+          this.state.lotime.sort().splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney+'-'+timelimit)
           this.setState({ lotime: this.state.lotime })
           let moneyCall = 0
           for (let i in this.state.lotime) {
@@ -438,7 +471,7 @@ class appOrder extends React.Component {
     let lotime = e.currentTarget.dataset.lo
     let timelimit = e.currentTarget.dataset.timelimit
 
-  
+
     let lotimeTwo = ''
     if (lotime.split('-')[1].slice(lotime.split('-')[1].length - 1, lotime.split('-')[1].length) === 'A') {
       lotimeTwo = lotime.replace(/A/, 'B')
@@ -453,7 +486,22 @@ class appOrder extends React.Component {
       return
     }
     if (this.state.flag === '1') {
-      
+      if (this.state.moneyCall === 0 && timelimit === '2' && time.indexOf('30') !== -1) {
+        Toast.fail('请选择整点场地', 2, null, false);
+        return false
+      } else if (this.state.moneyCall === 0 && timelimit === '3' && time.indexOf('30') !== -1) {
+        Toast.fail('请选择单数整点场地', 2, null, false);
+        return false
+      } else if (this.state.moneyCall === 0 && timelimit === '3' && Number(time.slice(0, 2)) % 2 === 0) {
+        Toast.fail('请选择单数整点场地', 2, null, false);
+        return false
+      } else if (this.state.moneyCall === 0 && timelimit === '4' && time.indexOf('30') !== -1) {
+        Toast.fail('请选择双数整点场地', 2, null, false);
+        return false
+      } else if (this.state.moneyCall === 0 && timelimit === '4' && Number(time.slice(0, 2)) % 2 !== 0) {
+        Toast.fail('请选择双数整点场地', 2, null, false);
+        return false
+      }
       if (e.currentTarget.dataset.type === '1') {
         if (this.state.lotime.length > 0) {
           if (this.state.lotime.indexOf(lotime) !== -1) {
@@ -483,19 +531,19 @@ class appOrder extends React.Component {
       }
 
     } else {
-      if(this.state.moneyCall===0&&timelimit==='2'&&time.indexOf('30')!==-1){
+      if (this.state.moneyCall === 0 && timelimit === '2' && time.indexOf('30') !== -1) {
         Toast.fail('请选择整点场地', 2, null, false);
         return false
-      }else if(this.state.moneyCall===0&&timelimit==='3'&&time.indexOf('30')!==-1){
+      } else if (this.state.moneyCall === 0 && timelimit === '3' && time.indexOf('30') !== -1) {
         Toast.fail('请选择单数整点场地', 2, null, false);
         return false
-      }else if(this.state.moneyCall===0&&timelimit==='3'&&Number(time.slice(0,2))%2===0){
+      } else if (this.state.moneyCall === 0 && timelimit === '3' && Number(time.slice(0, 2)) % 2 === 0) {
         Toast.fail('请选择单数整点场地', 2, null, false);
         return false
-      }else if(this.state.moneyCall===0&&timelimit==='4'&&time.indexOf('30')!==-1){
+      } else if (this.state.moneyCall === 0 && timelimit === '4' && time.indexOf('30') !== -1) {
         Toast.fail('请选择双数整点场地', 2, null, false);
         return false
-      }else if(this.state.moneyCall===0&&timelimit==='4'&&Number(time.slice(0,2))%2!==0){
+      } else if (this.state.moneyCall === 0 && timelimit === '4' && Number(time.slice(0, 2)) % 2 !== 0) {
         Toast.fail('请选择双数整点场地', 2, null, false);
         return false
       }
@@ -516,14 +564,14 @@ class appOrder extends React.Component {
             if (num.slice(num.length - 1, num.length) === 'A') {
               numTwo = num.replace(/A/, 'B')
               let lo = this.state.lotime.sort()
-              lo.splice(this.state.time.indexOf(timeTwo), 1, time + '-' + numTwo + '-' + money + '-' + summoney)
-              lo.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney)
+              lo.splice(this.state.time.indexOf(timeTwo), 1, time + '-' + numTwo + '-' + money + '-' + summoney+'-'+timelimit)
+              lo.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney+'-'+timelimit)
               this.setState({ lotime: lo })
             } else {
               numTwo = num.replace(/B/, 'A')
               let lo = this.state.lotime.sort()
-              lo.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney)
-              lo.splice(this.state.time.indexOf(timeTwo), 1, time + '-' + numTwo + '-' + money + '-' + summoney)
+              lo.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney+'-'+timelimit)
+              lo.splice(this.state.time.indexOf(timeTwo), 1, time + '-' + numTwo + '-' + money + '-' + summoney+'-'+timelimit)
               this.setState({ lotime: lo })
             }
             this.setState({ lotime: this.state.lotime })
@@ -728,10 +776,31 @@ class appOrder extends React.Component {
           breakup: '',
           realData: arrGo.length * 0.5 + '小时'
         }
+        let timelimit = this.state.lotime.sort()[0].split('-')[4]
+        let timeTwo = this.state.lotime.sort()[0].split('-')[0]
 
         this.setState({ obj: obj })
         if (obj.placeNun === '') {
           Toast.fail('请选择场地', 2, null, false)
+        } else if (timelimit === '2' && timeTwo.indexOf('30') !== -1) {
+          Toast.fail('请选择开始时间为整点场地', 2, null, false);
+        } else if (timelimit === '3' && timeTwo.indexOf('30') !== -1) {
+          Toast.fail('请选择开始时间为单数整点场地', 2, null, false);
+        } else if (timelimit === '3' && Number(timeTwo.slice(0, 2)) % 2 === 0) {
+          Toast.fail('请选择开始时间为单数整点场地', 2, null, false);
+        } else if (timelimit === '4' && timeTwo.indexOf('30') !== -1) {
+          Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
+        } else if (timelimit === '4' && Number(timeTwo.slice(0, 2)) % 2 !== 0) {
+          Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
+        }else if (this.state.durationlimit === 1 && this.state.lotime.length < 2) {
+          let durationlimit = '最少选择1小时以上场地'
+          Toast.fail(durationlimit, 2, null, false);
+        } else if (this.state.durationlimit === 2 && this.state.lotime.length / 2 % 2 !== 1&& this.state.lotime.length / 2 % 2 !== 0) {
+          let durationlimit = '请选择1小时整数倍场地'
+          Toast.fail(durationlimit, 2, null, false);
+        } else if (this.state.durationlimit === 3 && this.state.lotime.length / 2 % 2 !== 0) {
+          let durationlimit = '请选择2小时整数倍场地 '
+          Toast.fail(durationlimit, 2, null, false);
         } else {
           let sUserAgent = navigator.userAgent
           let mobileAgents = ['Android', 'iPhone', 'miniProgram'];
@@ -818,8 +887,30 @@ class appOrder extends React.Component {
           breakup: '',
           realData: arrGo.length * 0.5 + '小时'
         }
+
+        let timelimit = this.state.lotime.sort()[0].split('-')[4]
+        let timeTwo = this.state.lotime.sort()[0].split('-')[0]
         if (obj.placeNun === '') {
           Toast.fail('请选择场地', 2, null, false);
+        } else if (timelimit === '2' && timeTwo.indexOf('30') !== -1) {
+          Toast.fail('请选择开始时间为整点场地', 2, null, false);
+        } else if (timelimit === '3' && timeTwo.indexOf('30') !== -1) {
+          Toast.fail('请选择开始时间为单数整点场地', 2, null, false);
+        } else if (timelimit === '3' && Number(timeTwo.slice(0, 2)) % 2 === 0) {
+          Toast.fail('请选择开始时间为单数整点场地', 2, null, false);
+        } else if (timelimit === '4' && timeTwo.indexOf('30') !== -1) {
+          Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
+        } else if (timelimit === '4' && Number(timeTwo.slice(0, 2)) % 2 !== 0) {
+          Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
+        }else if (this.state.durationlimit === 1 && this.state.lotime.length < 2) {
+          let durationlimit = '最少选择1小时以上场地'
+          Toast.fail(durationlimit, 2, null, false);
+        } else if (this.state.durationlimit === 2 && this.state.lotime.length / 2 % 2 !== 1&& this.state.lotime.length / 2 % 2 !== 0) {
+          let durationlimit = '请选择1小时整数倍场地'
+          Toast.fail(durationlimit, 2, null, false);
+        } else if (this.state.durationlimit === 3 && this.state.lotime.length / 2 % 2 !== 0) {
+          let durationlimit = '请选择2小时整数倍场地 '
+          Toast.fail(durationlimit, 2, null, false);
         } else {
           var sUserAgent = navigator.userAgent;
           var mobileAgents = ['Android', 'iPhone', 'miniProgram'];
@@ -878,23 +969,34 @@ class appOrder extends React.Component {
       for (let key in result) {
         keyvalue.push(result[key])
       }
-
+      let timelimit = this.state.lotime.sort()[0].split('-')[4]
+      let timeTwo = this.state.lotime.sort()[0].split('-')[0]
       if (this.state.lotime.length > 0) {
         let youhood = time.slice(0, time.length - 1).split(',').sort()
         let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[youhood.length - 1])
         let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[0])
         if ((Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1 !== this.state.lotime.length / 2 && this.state.flag !== '1') {
           Toast.fail('时间必须连贯', 2, null, false);
-        } else if (this.state.durationlimit===1&&this.state.lotime.length<2) {
-          let durationlimit='最少选择1小时以上场地'
+        } else if (timelimit === '2' && timeTwo.indexOf('30') !== -1) {
+          Toast.fail('请选择开始时间为整点场地', 2, null, false);
+        } else if (timelimit === '3' && timeTwo.indexOf('30') !== -1) {
+          Toast.fail('请选择开始时间为单数整点场地', 2, null, false);
+        } else if (timelimit === '3' && Number(timeTwo.slice(0, 2)) % 2 === 0) {
+          Toast.fail('请选择开始时间为单数整点场地', 2, null, false);
+        } else if (timelimit === '4' && timeTwo.indexOf('30') !== -1) {
+          Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
+        } else if (timelimit === '4' && Number(timeTwo.slice(0, 2)) % 2 !== 0) {
+          Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
+        }else if (this.state.durationlimit === 1 && this.state.lotime.length < 2) {
+          let durationlimit = '最少选择1小时以上场地'
           Toast.fail(durationlimit, 2, null, false);
-        }else if (this.state.durationlimit===2&&this.state.lotime.length/2%2===0) {
-          let durationlimit='请选择1小时整数倍场地 '
+        } else if (this.state.durationlimit === 2 && this.state.lotime.length / 2 % 2 !== 1&& this.state.lotime.length / 2 % 2 !== 0) {
+          let durationlimit = '请选择1小时整数倍场地'
           Toast.fail(durationlimit, 2, null, false);
-        }else if (this.state.durationlimit===3&&this.state.lotime.length/2%2!==0) {
-          let durationlimit='请选择2小时整数倍场地 '
+        } else if (this.state.durationlimit === 3 && this.state.lotime.length / 2 % 2 !== 0) {
+          let durationlimit = '请选择2小时整数倍场地 '
           Toast.fail(durationlimit, 2, null, false);
-        } else {
+        }else {
           let obj = {
             placeNun: keyvalue.join(','),
             placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
@@ -924,20 +1026,31 @@ class appOrder extends React.Component {
         time += this.state.lotime[i].split('-')[0] + ','
         original += Number(this.state.lotime[i].split('-')[3])
       }
-
+      let timelimit = this.state.lotime.sort()[0].split('-')[4]
+      let timeTwo = this.state.lotime.sort()[0].split('-')[0]
       if (this.state.lotime.length > 0) {
         let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[this.state.lotime.length - 1])
         let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[0])
         if ((Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1 !== this.state.lotime.length && this.state.flag !== '1') {
           Toast.fail('时间必须连贯', 2, null, false);
-        } else if (this.state.durationlimit===1&&this.state.lotime.length<2) {
-          let durationlimit='最少选择1小时以上场地'
+        }else if (timelimit === '2' && timeTwo.indexOf('30') !== -1) {
+          Toast.fail('请选择开始时间为整点场地', 2, null, false);
+        } else if (timelimit === '3' && timeTwo.indexOf('30') !== -1) {
+          Toast.fail('请选择开始时间为单数整点场地', 2, null, false);
+        } else if (timelimit === '3' && Number(timeTwo.slice(0, 2)) % 2 === 0) {
+          Toast.fail('请选择开始时间为单数整点场地', 2, null, false);
+        } else if (timelimit === '4' && timeTwo.indexOf('30') !== -1) {
+          Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
+        } else if (timelimit === '4' && Number(timeTwo.slice(0, 2)) % 2 !== 0) {
+          Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
+        } else if (this.state.durationlimit === 1 && this.state.lotime.length < 2) {
+          let durationlimit = '最少选择1小时以上场地'
           Toast.fail(durationlimit, 2, null, false);
-        }else if (this.state.durationlimit===2&&this.state.lotime.length/2%2===0) {
-          let durationlimit='请选择1小时整数倍场地 '
+        } else if (this.state.durationlimit === 2 && this.state.lotime.length / 2 % 2 !== 1&& this.state.lotime.length / 2 % 2 !== 0) {
+          let durationlimit = '请选择1小时整数倍场地'
           Toast.fail(durationlimit, 2, null, false);
-        }else if (this.state.durationlimit===3&&this.state.lotime.length/2%2!==0) {
-          let durationlimit='请选择2小时整数倍场地 '
+        } else if (this.state.durationlimit === 3 && this.state.lotime.length / 2 % 2 !== 0) {
+          let durationlimit = '请选择2小时整数倍场地 '
           Toast.fail(durationlimit, 2, null, false);
         } else {
           let obj = {
@@ -950,8 +1063,6 @@ class appOrder extends React.Component {
             breakup: '',
             realData: ''
           }
-
-
 
           this.setState({ obj: obj })
           if (this.state.date.split('/')[0].length === 4) {
@@ -1027,7 +1138,7 @@ class appOrder extends React.Component {
 
                 <span className="red"></span><span>已选中</span>
               </div>
-              <Table loading={false} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '92%' }} />,
+              <Table loading={false} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '92%' }} />
               <Result
                 style={this.state.otherType.length === 0 ? { display: 'block' } : { display: 'none' }}
                 img={<Icon type="cross-circle-o" style={{ fill: 'rgba(245,166,35,1)', width: '4rem', height: '4rem' }} />}

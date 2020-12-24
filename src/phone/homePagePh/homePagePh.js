@@ -11,7 +11,7 @@ import newsPh from '../newsPh/newsPh';
 import minePh from '../minePh/minePh';
 import orderPhT from '../orderPhT/orderPhT';
 import { notification } from 'antd';
-import { getIsStatus, getIsSignOut, wsFn } from '../../api';
+import { getIsStatus, getIsSignOut,getAudio, wsFn } from '../../api';
 import { EllipsisOutlined } from '@ant-design/icons';
 
 
@@ -95,6 +95,9 @@ class homePagePh extends React.Component {
     sessionStorage.setItem('kood', 1)
     this.getIsStatus()
     
+      // this.getAudio({txt:'找对手提醒您:有用户发布活动初步预订了。11月20日,07:30-09:30,7号场地'})
+    
+    
     if (this.props.history.location.pathname === '/homePh/homePh') {
       this.setState({ title: '首页' })
     } else if (this.props.history.location.pathname === '/homePh/orderPh') {
@@ -117,6 +120,7 @@ class homePagePh extends React.Component {
 
     // setInterval(() => {
     //   if (this.state.koFlag === 1) {
+      
     //     let url = 'https://appstg.tiaozhanmeiyitian.com//uploads/Audio/2020-06-30/20200630103615656.mp3';
     //     let audio = new Audio(url);
     //     audio.src = url;
@@ -131,7 +135,7 @@ class homePagePh extends React.Component {
     //     this.setState({ koFlag: 0 })
     //   }
     // }, 500)
-
+ 
 
 
     setInterval(() => {
@@ -139,6 +143,8 @@ class homePagePh extends React.Component {
     }, 86400000)
 
   }
+
+
 
 
   jo = () => {
@@ -150,6 +156,7 @@ class homePagePh extends React.Component {
     ws.onmessage = function (e) {
       let message_info = JSON.parse(e.data)
       let percent = message_info.percent
+      
       that.setState({ koFlag: 1, percent: percent })
       notification.open({ description: message_info.percent, duration: 5 })
       sessionStorage.setItem('kood', 2)
@@ -157,6 +164,26 @@ class homePagePh extends React.Component {
 
   }
 
+  
+  async getAudio(data) {
+    const res = await getAudio(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+        let url = res.data.data.path;
+        let audio = new Audio(url);
+        audio.src = url;
+        audio.preload='load'
+        audio.play();
+        document.addEventListener("WeixinJSBridgeReady", function () {
+          audio.play();
+        }, false);
+        document.addEventListener('YixinJSBridgeReady', function () {
+          audio.play();
+        }, false);
+        document.addEventListener("touchstart", audio.play(), false);
+        this.setState({ koFlag: 0 })
+      }
+    }
+  
 
 
 

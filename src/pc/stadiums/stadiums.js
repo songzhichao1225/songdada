@@ -456,7 +456,7 @@ class stadiums extends React.Component {
   }
 
   confirm = () => {
-    let { informationList, name, handleAddress, contacts, contactNumber, filesTwoSon, adddress, filesSon, sport, facilities, siteInfo, comment } = this.state
+    let { informationList, name, handleAddress, contacts, contactNumber,starttime,endtime, filesTwoSon, adddress, filesSon, sport, facilities, siteInfo, comment } = this.state
     if (filesTwoSon.slice(1, filesTwoSon.length).split('|').length < 2) {
       message.error('至少上传两张场地照')
     } else {
@@ -477,6 +477,8 @@ class stadiums extends React.Component {
         siteInfo: siteInfo,
         position: adddress,
         comment: comment,
+        openingtime:starttime,
+        closingtime:endtime,
         type: 2
       }
       if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(contacts) === false) {
