@@ -1,0 +1,70 @@
+.commandPh{
+   background: #fff;
+   height: 100%;
+}
+.commandPh .headTitle{
+    height: 3rem;
+    text-align: center;
+    line-height: 3rem;
+    font-size: 1rem;
+    border-bottom: 0.06rem solid #f5f5f5;
+    position: relative;
+    background: #374D66;
+    color:#fff
+}
+.commandPh .listSon{
+    width: 90%;
+    min-height: 2rem;
+    margin:1rem auto 0;
+    border-bottom: 0.06rem solid #f5f5f5;    
+    overflow: hidden;
+}
+.commandPh .ant-input{
+    width: 13rem;
+    height: 2rem;
+    margin-top: -0.1rem;
+    border:none;
+    box-shadow: none;
+    float: left;
+    background: transparent;
+}
+.commandPh .listSon>span{
+    display: block;
+    width: 6rem;
+    height: 1.8rem;
+    background:rgba(216,93,39,1);
+    border-radius:1.8rem;
+    font-size:0.75rem;
+    font-family:PingFang-SC;
+    font-weight:500;
+    color:rgba(255,255,255,1);
+    line-height:1.8rem;
+    text-align: center;
+    float: right;
+}
+.commandPh .btn{
+    width: 90%;
+    height: 2.69rem;
+    background:rgba(216,93,39,1);
+    border-radius:1.34rem;
+    margin: 2rem auto 0;
+    font-size:1.06rem;
+    font-family:PingFangSC;
+    color:rgba(255,255,255,1);
+    line-height:2.69rem;
+    text-align: center;
+}
+.commandPh .phoneRight{
+   float: left;
+   margin-left: 1rem;
+   overflow: hidden;
+}
+.commandPh .phoneRight>div:first-child{
+    margin-top: 0;
+}
+.commandPh .phoneRight>div{
+    margin-top: 0.5rem;
+}
+.commandPh .phoneRight>div>span{
+    padding-left: 0.8rem;
+}

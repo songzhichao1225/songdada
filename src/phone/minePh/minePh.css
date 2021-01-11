@@ -102,3 +102,19 @@
     float: left;
     margin-top: 0.8rem;
 }
+.minePh .selectEd{
+    background-color: transparent;
+}
+.minePh .am-list-item{
+    padding-left: 0;
+}
+.minePh .am-list-item .am-list-line .am-list-extra{
+    flex-basis:80%
+}
+.minePh .am-list-item .am-list-line .am-list-extra{
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    text-align: left;
+    padding-left: 0;
+}

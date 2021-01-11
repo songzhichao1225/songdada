@@ -539,3 +539,6 @@ html:not([data-scale]) .am-card-body::before{
     border: 1px solid #E1E0E1;
     margin-left: 0.5rem;
 }
+.momo .ant-drawer-body{
+    padding: 7px;
+}

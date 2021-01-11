@@ -26,11 +26,10 @@ class map extends React.Component {
       map.setZoom(14);   
     }, 2000);  //2秒后放大到14级
     map.enableScrollWheelZoom(true);
-    myGeo.getPoint("北京市", function (point) {
+    myGeo.getPoint(sessionStorage.getItem('nowCity'), function (point) {
       if (point) {
         that.setState({pointLng:point.lng,pointLat:point.lat})
         map.centerAndZoom(new BMap.Point(point.lng,point.lat ), 13)
-      
       }
     }) 
         

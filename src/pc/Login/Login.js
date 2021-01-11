@@ -2,9 +2,8 @@ import React from 'react';
 import './Login.css';
 import 'antd/dist/antd.css';
 import { _code, _login, VenueSelectSiteName } from '../../api';
-import { Form, Input, Button, message, Select } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import { } from '@ant-design/icons';
-const { Option } = Select;
 class Login extends React.Component {
 
   state = {
@@ -233,13 +232,7 @@ class Login extends React.Component {
                       {this.state.textT}
                     </div>
                   </Form.Item>
-                  <Select className={this.state.selectVeun.length > 0 ? 'input' : 'selectVeunNone'} onChange={this.onChange} value={this.state.value}>
-                    {
-                      this.state.selectVeun.map((item, i) => (
-                        <Option key={i} value={item.venueloginuuid}>{item.name}</Option>
-                      ))
-                    }
-                  </Select>
+                 
 
                   <Form.Item className="bind">
                     <Button className="btnSubmit" onClick={this.onSubmit} htmlType="submit">

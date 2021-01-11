@@ -1,0 +1,108 @@
+.command .headTitle{
+    height: 46px;
+    line-height: 46px;
+    padding-left: 25px;
+    font-size: 16px;
+    
+}
+.command .headTitle>span{
+    cursor: pointer;
+}
+
+.command .resetSon{
+    width: 350px;
+    height: 400px;
+    margin:100px auto 0;
+}
+.command .ant-input{
+    height: 35px;
+    width: 250px;
+}
+.command .inputSon{
+    margin-bottom: 21px;
+}
+
+
+.command .inputSon>span{
+    width: 65px;
+    line-height: 43px;
+    
+}
+
+.command .inputSon .ant-input-affix-wrapper{
+    width: 250px;
+    margin-left: 15px;
+    padding: 0px;
+    
+}
+.command .inputSon .ant-input-affix-wrapper > input.ant-input{
+    height: 43px;
+    padding-left: 5px;
+}
+.command .inputSonT .ant-input-affix-wrapper{
+    width: 160px;
+    margin-left: 15px;
+}
+.command .obtainCode{
+  width: 85px;
+  height: 43px;
+  background: #F5A623;
+  border-radius: 2px;
+  float: right;
+  text-align: center;
+  line-height: 43px;
+  color: #fff;
+  display: block;
+  margin-right: 43px;
+  cursor: pointer;
+}
+.command  .koohidden{
+    width: 85px;
+    height: 43px;
+    background: #F5A623;
+    border-radius: 2px;
+    float: right;
+    text-align: center;
+    line-height: 43px;
+    color: #fff;
+    display: none;
+    margin-right: 43px;
+}
+.command .ant-input-suffix{
+    line-height: 43px;
+    margin-right: 10px;
+}
+.command .submit{
+    width: 94px;
+    height: 32px;
+    background: #F5A623;
+    border-radius: 2px;
+    font-size: 14px;
+    color: #fff;
+    text-align: center;
+    line-height: 32px;
+    float: left;
+    margin: 0 0 0 60px;
+    cursor: pointer;
+}
+.command .Untie{
+    display: block;
+    height: 100%;
+    overflow: hidden;
+    background: #fff;
+}
+.command .one .selectN{
+    width: 249px;
+}
+.command .advertising{
+    padding: 10px  25px;
+}
+.command .phoneRight{
+    float: left;
+    margin-top: 10px;
+}
+.command .phoneRight>span:last-child{
+    padding-left: 10px;
+    cursor: pointer;
+    color: #D0021B;
+}

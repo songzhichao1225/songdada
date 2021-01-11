@@ -1,13 +1,11 @@
 import React from 'react';
 import './corporatePh.css';
 import 'antd/dist/antd.css';
-import { Toast, InputItem, NavBar, Popover, Modal } from 'antd-mobile';
+import { Toast, InputItem, NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { _login, VenueSelectSiteName, _code } from '../../api';
-import { Radio } from 'antd';
 import {EllipsisOutlined} from '@ant-design/icons';
 const Item = Popover.Item;
-const alert = Modal.alert;
 class corporatePh extends React.Component {
 
   state = {
@@ -105,18 +103,7 @@ class corporatePh extends React.Component {
 
     if (res.data.code === 2000) {
       this.setState({ selectVeun: res.data.data, value: res.data.data[0].venueloginuuid })
-      alert('提示',
-        (<Radio.Group onChange={this.onChange} className="ko" defaultValue={this.state.value}>
-          {
-            this.state.selectVeun.map((item,i)=>(
-            <Radio key={i} value={item.venueloginuuid}>{item.name}</Radio>
-            ))
-          }
-        </Radio.Group>),
-        [
-          { text: '取消', onPress: () => console.log('cancel'), style: 'default' },
-          { text: '确定', onPress: () => this.ploo() }
-        ])
+      this.ploo()
     } else {
       Toast.fail(res.data.msg, 1);
     }
@@ -148,7 +135,6 @@ class corporatePh extends React.Component {
     let data = {
       username: this.state.phone, usercode: this.state.code, userpass:'', type: 2, Logintype: 'mobile', venueloginuuid: this.state.value
     }
- 
     this.login(data)
   }
 

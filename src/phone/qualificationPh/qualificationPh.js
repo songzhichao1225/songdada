@@ -1454,18 +1454,18 @@ class qualificationPh extends React.Component {
             />
 
           </div>
-
+ 
 
           <div className="input">
             <span>银行卡号</span>
-            <Input className="select" maxLength={21} style={{ paddingLeft: '4.5%' }} disabled={this.state.flagDis} onChange={this.cardId} value={this.state.cardId} placeholder="请输入银行卡号" />
+            <Input className="select"  style={{ paddingLeft: '4.5%' }} disabled={this.state.flagDis} onChange={this.cardId} value={this.state.cardId} placeholder="请输入银行卡号" />
           </div>
 
           <div className="input">
             <Picker data={this.state.type} cols={1} onChange={this.typeChange} disabled={this.state.flagDis} value={[Number(this.state.bank_id)]} className="forss">
               <List.Item arrow="horizontal" style={{ borderBottom: 'none' }}>银行类型</List.Item>
             </Picker>
-          </div>
+          </div>   
 
           <div className="input" style={{ marginTop: '0.2rem' }}>
             <Picker data={this.state.backProvince} cols={1} onChange={this.provinceChange} indicatorStyle={{ color: '#c0c0c0' }} disabled={this.state.flagDis} value={[Number(this.state.province_id)]} className="forss">

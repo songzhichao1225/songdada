@@ -1,10 +1,10 @@
 import React from 'react';
 import './minePh.css';
 
-import { Toast } from 'antd-mobile';
+import { Toast, Picker, List, } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Drawer, Input, Pagination } from 'antd';
-import { VenueFeedback, getVenueHelpCenter,gerVenueName,imgUrlTwo } from '../../api';
+import { VenueFeedback, getVenueHelpCenter, gerVenueName, imgUrlTwo, getMobilePhoneBindingVenues, _login } from '../../api';
 
 const { TextArea } = Input
 
@@ -21,25 +21,45 @@ class minePh extends React.Component {
     helpList: [],
     other: 0,
     page: 1,
-    ishaverecharge:0,
+    ishaverecharge: 0,
+    selectEdList: [],
+    phone: ''
   }
 
 
   async gerVenueName(data) {
     const res = await gerVenueName(data, localStorage.getItem('venue_token'))
-  
+
     localStorage.setItem('name', res.data.data.name)
-    localStorage.setItem('avatar', imgUrlTwo+ res.data.data.siteimg)
+    localStorage.setItem('avatar', imgUrlTwo + res.data.data.siteimg)
     localStorage.setItem('lyv', res.data.data.rate)
     localStorage.setItem('siteUid', res.data.data.siteuid)
-    this.setState({ gerVenueName: res.data.data, refreshing: false,ishaverecharge:res.data.data.ishaverecharge })
+    this.setState({ gerVenueName: res.data.data, refreshing: false, ishaverecharge: res.data.data.ishaverecharge })
 
   }
- 
+
+
+  async getMobilePhoneBindingVenues(data) {
+    const res = await getMobilePhoneBindingVenues(data, localStorage.getItem('venue_token'))
+    let list = res.data.data
+    let arrList = []
+    for (let i in list) {
+      let obj = {}
+      obj.label = list[i].name
+      obj.value = list[i].venueuuid
+      arrList.push(obj)
+      if (list[i].venueuuid === localStorage.getItem('uuid')) {
+        this.setState({ asyncValue: [list[i].venueuuid] })
+      }
+    }
+    this.setState({ selectEdList: arrList, phone: res.data.other.phone })
+
+  }
 
   componentDidMount() {
-     this.gerVenueName()
-     sessionStorage.setItem('flaghood',1)
+    this.gerVenueName()
+    this.getMobilePhoneBindingVenues()
+    sessionStorage.setItem('flaghood', 1)
   }
 
   myWalletPh = () => {
@@ -105,22 +125,54 @@ class minePh extends React.Component {
     this.getVenueHelpCenter({ page: page })
     this.setState({ page: page })
   }
-  Agreement=()=>{
-    this.props.history.push({ pathname: '/Agreement', query: { flag:1} })
-    
+  Agreement = () => {
+    this.props.history.push({ pathname: '/Agreement', query: { flag: 1 } })
   }
 
+  async login(data) {
+    const res = await _login(data)
+    if (res.data.code !== 2000) {
+      Toast.fail(res.data.msg, 1)
+    } else {
+      localStorage.clear()
+      localStorage.setItem('uuid', res.data.data.uuid);
+      localStorage.setItem('name', res.data.data.name);
+      localStorage.setItem('islegal', res.data.data.islegal);
+      localStorage.setItem('venue_token', res.data.data.venue_token);
+      localStorage.setItem('issite', res.data.data.issite);
+      localStorage.setItem('isqult', res.data.data.isqult);
+      localStorage.setItem('ismethod', res.data.data.ismethod);
+      window.location.reload()
+    }
+  }
+
+  onchangList = (e) => {
+    let data = {
+      username: this.state.phone, usercode: '', userpass: '', type: 5, Logintype: 'mobile', venueloginuuid: e[0]
+    }
+    this.login(data)
+
+  }
   render() {
     return (
       <div className="minePh">
         <div className="headerbanner">
           <div className="headContent">
             <div className="avatar">
-            <img  src={localStorage.getItem('avatar')} alt='头像' />
+              <img src={localStorage.getItem('avatar')} alt='头像' />
             </div>
-            
+
             <div className="right">
-              <span>{localStorage.getItem('name')}</span>
+              <Picker
+                data={this.state.selectEdList}
+                cols={1}
+                value={this.state.asyncValue}
+                onPickerChange={this.onPickerChange}
+                onOk={this.onchangList}
+              >
+                <List.Item arrow="horizontal" className="selectEd" onClick={this.onClick}></List.Item>
+              </Picker>
+
               <span>场地履约率{localStorage.getItem('lyv')}%</span>
             </div>
           </div>
@@ -133,7 +185,7 @@ class minePh extends React.Component {
             <svg width="16px" height="16px" style={{ float: 'left', marginTop: '1rem' }} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/设置</title>
               <desc>Created with Sketch.</desc>
-              <g id="合作场馆" stroke="none"  fill="none">
+              <g id="合作场馆" stroke="none" fill="none">
                 <g id="53-|-我的" transform="translate(-13.000000, -196.000000)" fill="#D85D27">
                   <g id="编组2" transform="translate(1.000000, 178.000000)">
                     <g id="编组-3" transform="translate(12.000000, 0.000000)">
@@ -151,10 +203,10 @@ class minePh extends React.Component {
             </svg>
             <span>场馆信息</span><img src={require("../../assets/right.png")} alt="arrow" /></li>
           <li onClick={this.myWalletPh}>
-            <svg width="16px" height="16px" style={{float:'left',marginTop:'1rem'}} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <svg width="16px" height="16px" style={{ float: 'left', marginTop: '1rem' }} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/设置</title>
               <desc>Created with Sketch.</desc>
-              <g id="合作场馆" stroke="none"  fill="none">
+              <g id="合作场馆" stroke="none" fill="none">
                 <g id="53-|-我的" transform="translate(-13.000000, -249.000000)" fill="#F5A623">
                   <g id="编组2" transform="translate(1.000000, 178.000000)">
                     <g id="编组-3" transform="translate(12.000000, 53.000000)">
@@ -170,12 +222,12 @@ class minePh extends React.Component {
                 </g>
               </g>
             </svg>
-            <span>场地费支付</span><span className="redQuan" style={this.state.ishaverecharge===1||this.state.ishaverecharge===1?{marginLeft:'0.3rem'}:{display:'none'}}></span><img  src={require("../../assets/right.png")} alt="arrow" /></li>
+            <span>场地费支付</span><span className="redQuan" style={this.state.ishaverecharge === 1 || this.state.ishaverecharge === 1 ? { marginLeft: '0.3rem' } : { display: 'none' }}></span><img src={require("../../assets/right.png")} alt="arrow" /></li>
           <li onClick={this.Agreement}>
             <svg width="14px" height="16px" viewBox="0 0 14 16" style={{ float: 'left', marginTop: '1rem' }} version="1.1" xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/设置</title>
               <desc>Created with Sketch.</desc>
-              <g id="合作场馆" stroke="none"  fill="none">
+              <g id="合作场馆" stroke="none" fill="none">
                 <g id="53-|-我的" transform="translate(-14.000000, -367.000000)" fill="#D85D27">
                   <g id="2" transform="translate(1.000000,349.000000)">
                     <g id="编组-3" transform="translate(12.000000, 0.000000)">
@@ -205,7 +257,7 @@ class minePh extends React.Component {
             <svg width="16px" height="16px" style={{ float: 'left', marginTop: '1rem' }} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" >
               <title>icon/合作场馆/我的/客服电话</title>
               <desc>Created with Sketch.</desc>
-              <g id="icon/合作场馆/我的/客服电话" stroke="none"  fill="none" >
+              <g id="icon/合作场馆/我的/客服电话" stroke="none" fill="none" >
                 <path d="M14.7454448,11.8793018 C14.7454448,14.3988484 13.5856535,14.3988484 7.9866612,14.3988484 C2.38766887,14.3988484 1.2278776,14.3988484 1.2278776,11.8793018 C1.2278776,9.11979847 4.26733058,3.60079174 7.9866612,3.60079174 C11.7459846,3.60079174 14.7454448,9.11979847 14.7454448,11.8793018 Z M8.026654,4.80057581 C6.42694191,4.80057581 5.14717223,6.08034549 5.14717223,7.68005758 C5.14717223,9.27976968 6.42694191,10.5595394 8.026654,10.5595394 C9.6263661,10.5595394 10.9061358,9.27976968 10.9061358,7.68005758 C10.9061358,6.08034549 9.6263661,4.80057581 8.026654,4.80057581 L8.026654,4.80057581 Z M2.02773365,6.92019434 C3.18752492,5.04053262 5.22715784,3.0008997 8.026654,3.0008997 C10.8261502,3.0008997 12.9457687,5.20050383 13.9455888,6.92019434 C14.4654952,7.76004319 15.4253224,7.68005758 15.8652433,6.92019434 C16.1052001,6.3602951 16.9450489,1.60115162 7.9866612,1.60115162 C-1.05171213,1.60115162 -0.13187768,6.52026631 0.188064739,6.92019434 C0.747963972,7.76004319 1.82776964,7.32012236 2.02773365,6.92019434 Z" id="icon_合作场馆_我的_客服电话" fill="#6FB2FF"></path>
               </g>
             </svg>
@@ -214,7 +266,7 @@ class minePh extends React.Component {
             <svg width="16px" height="16px" style={{ float: 'left', marginTop: '1rem' }} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/设置</title>
               <desc>Created with Sketch.</desc>
-              <g id="合作场馆" stroke="none"  fill="none" >
+              <g id="合作场馆" stroke="none" fill="none" >
                 <g id="53-|-我的" transform="translate(-13.000000, -526.000000)" fill="#6FB2FF">
                   <g id="2" transform="translate(1.000000, 349.000000)">
                     <g id="编组-3" transform="translate(12.000000, 159.000000)">
@@ -235,7 +287,7 @@ class minePh extends React.Component {
             <svg width="16px" height="14px" style={{ float: "left", marginTop: '1rem' }} viewBox="0 0 16 14" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/设置</title>
               <desc>Created with Sketch.</desc>
-              <g id="合作场馆" stroke="none"  fill="none">
+              <g id="合作场馆" stroke="none" fill="none">
                 <g id="53-|-我的" transform="translate(-13.000000, -580.000000)" fill="#6FB2FF">
                   <g id="2" transform="translate(1.000000, 349.000000)">
                     <g id="编组-3" transform="translate(12.000000, 212.000000)">
@@ -256,7 +308,7 @@ class minePh extends React.Component {
             <svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" style={{ float: 'left', marginTop: '1rem' }} xmlns="http://www.w3.org/2000/svg">
               <title>icon/合作场馆/我的/设置</title>
               <desc>Created with Sketch.</desc>
-              <g id="icon/合作场馆/我的/设置" stroke="none"  fill="none">
+              <g id="icon/合作场馆/我的/设置" stroke="none" fill="none">
                 <path d="M15.9400881,6.90301479 C15.876652,6.55940245 15.5418502,6.20786061 15.1920705,6.13208969 L14.9321586,6.07217779 C14.3016445,5.88615868 13.7655237,5.4672159 13.4325991,4.90037163 C13.1002208,4.33317639 13.0010349,3.65909131 13.1559471,3.02019541 L13.2378855,2.77790466 C13.3427313,2.44310289 13.2070485,1.98142889 12.9339207,1.75147295 C12.9339207,1.75147295 12.6889868,1.54706767 12,1.15411611 C11.3101322,0.763807748 11.0132159,0.654556639 11.0132159,0.654556639 C10.6784141,0.533851797 10.2070485,0.649270291 9.96211455,0.90653903 L9.78061674,1.09860951 C9.2984998,1.54901564 8.66240902,1.79803037 8.00264318,1.79464475 C7.3403465,1.79733968 6.70207172,1.54675773 6.21850221,1.09420422 L6.04229075,0.907420083 C5.80088105,0.650151359 5.32863436,0.53649497 4.99207049,0.655437706 C4.99207049,0.655437706 4.69162997,0.764688801 4.00088106,1.15499718 C3.31101323,1.55147295 3.06872248,1.7567593 3.06872246,1.75675928 C2.79559471,1.98230994 2.66079295,2.44045972 2.76475771,2.77878573 L2.84052863,3.02371964 C2.98678414,3.64045973 2.9092511,4.31006324 2.56387665,4.90213373 C2.23024954,5.47287879 1.68984408,5.89340447 1.05462555,6.07658307 L0.803524226,6.13208969 C0.459911887,6.20962273 0.120704842,6.55764035 0.0563876678,6.90301479 C0.0563876678,6.90301479 0,7.21226589 0,7.9999311 C0,8.78671525 0.0563876678,9.0968474 0.0563876678,9.0968474 C0.118061683,9.44398397 0.453744501,9.79200158 0.803524226,9.86777251 L1.0493392,9.92327912 C1.68645912,10.1061354 2.2280027,10.5286341 2.56035243,11.1021337 C2.90396477,11.6942042 2.98678414,12.367332 2.83612335,12.98231 L2.76563876,13.2210765 C2.6599119,13.5558782 2.79647576,14.0175522 3.06872246,14.2475082 C3.06872246,14.2475082 3.31453744,14.4519135 4.00264317,14.844865 C4.69339207,15.2378166 4.9894273,15.3444245 4.98942732,15.3444245 C5.32511014,15.4660104 5.79559472,15.3497108 6.0414097,15.0933232 L6.21321586,14.9100633 C6.68017621,14.4739399 7.30837005,14.2052174 8.00088106,14.2052174 C8.69251102,14.2052174 9.32511013,14.475702 9.78766519,14.9118254 L9.96035242,15.0950853 C10.2017621,15.351473 10.6740088,15.4651293 11.0114537,15.3461866 C11.0114537,15.3461866 11.3110132,15.2378166 12.0017621,14.8466271 C12.692511,14.4536756 12.9339207,14.2492703 12.9339207,14.2492703 C13.2070485,14.0228386 13.3427313,13.5620456 13.2378855,13.2228386 L13.1629956,12.9752615 C13.008774,12.339212 13.1079851,11.6681151 13.4396476,11.1038959 C13.7742553,10.5325524 14.3149486,10.1110323 14.9506608,9.92592228 L15.1955947,9.86953463 C15.5400881,9.79200158 15.8792952,9.44398397 15.9427313,9.09860951 C15.9427313,9.09860951 16,8.78847734 16,8.00169321 C15.9964758,7.21402801 15.9392071,6.90301479 15.9392071,6.90301479 L15.9400881,6.90301479 Z M8.00176211,11.152354 C6.24229075,11.152354 4.81233481,9.74266237 4.81233481,7.9999311 C4.81233481,6.26072405 6.23964758,4.85015136 8.00176211,4.85015136 C9.76211454,4.85015136 11.1929516,6.259843 11.1929516,8.00345533 C11.1885463,9.74266238 9.76211454,11.152354 8.00264318,11.152354 L8.00176211,11.152354 Z" id="icon_合作场馆_我的_设置" fill="#F5A623"></path>
               </g>
             </svg>
@@ -264,7 +316,7 @@ class minePh extends React.Component {
         </ul>
         <Drawer
           title="关于我们"
-          placement="right" 
+          placement="right"
           onClose={this.onClose}
           visible={this.state.visible}>
           <span style={{ fontSize: '0.75rem', display: 'block' }}>北京甲乙电子商务有限公司，成立于2015年，位于北京市城市副中心。</span>

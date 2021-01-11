@@ -2,9 +2,9 @@ import React from 'react';
 import { Route, Link } from 'react-router-dom';
 import './home.css';
 import 'antd/dist/antd.css';
-import { getVenueIndex, gerVenueName, wsFn, VenueEvaluationOfOperation,VenueEvaluationSave } from '../../api';
-import { Layout, Menu, message, notification, Modal, Rate } from 'antd';
-import { } from '@ant-design/icons';
+import { getVenueIndex, gerVenueName, wsFn, VenueEvaluationOfOperation,_login, VenueEvaluationSave, getMobilePhoneBindingVenues } from '../../api';
+import { Layout, Menu, message, notification, Modal, Rate, Select } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 // import homePage from '../homePage/homePage';
 // import information from '../information/information';
 // import siteSettings from '../siteSettings/siteSettings';
@@ -31,11 +31,12 @@ const systemSettings = lazyLoad(() => import('../systemSettings/systemSettings')
 const comment = lazyLoad(() => import('../comment/comment'));
 const news = lazyLoad(() => import('../news/news'));
 const closeYu = lazyLoad(() => import('../closeYu/closeYu'));
+const command = lazyLoad(() => import('../command/command'));
 const appointmentList = lazyLoad(() => import('../appointmentList/appointmentList'));
 const special = lazyLoad(() => import('../special/special'));
 
 const { Header, Sider, Content } = Layout;
-
+const { Option } = Select;
 
 function jo() {
   let ws = wsFn
@@ -87,7 +88,10 @@ class home extends React.Component {
     SelabelTwo: [],
     rate: 1,
     labelId: [],
-    isevaluate:0,
+    isevaluate: 0,
+    selectEd: [],
+    defaultValue:'',
+    phone:'',
   };
 
 
@@ -99,7 +103,21 @@ class home extends React.Component {
       for (let i in object) {
         arr.push(object[i]);
       }
-      this.setState({ detail: res.data.data, Selabel: arr, SelabelTwo: arr[0],isModalVisible:true })
+      this.setState({ detail: res.data.data, Selabel: arr, SelabelTwo: arr[0], isModalVisible: true })
+    }
+  }
+
+
+  async getMobilePhoneBindingVenues(data) {
+    const res = await getMobilePhoneBindingVenues(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      let data=res.data.data
+      for(let i in data){
+        if(data[i].venueuuid===sessionStorage.getItem('uuid')){
+         this.setState({defaultValue:data[i].name})
+        }
+      }
+      this.setState({ selectEd: res.data.data,phone:res.data.other.phone })
     }
   }
 
@@ -113,6 +131,7 @@ class home extends React.Component {
     this.setState({ minheight: document.body.scrollHeight, path: this.props.history.location.pathname })
     this.getVenueIndex()
     this.gerVenueName()
+    this.getMobilePhoneBindingVenues()
     setInterval(() => {
       this.timer()
     }, 1000)
@@ -134,6 +153,8 @@ class home extends React.Component {
     } else if (this.props.history.location.pathname === '/home/myWallet') {
       sessionStorage.setItem('path', '7');
     } else if (this.props.history.location.pathname === '/home/closeYu') {
+      sessionStorage.setItem('path', '6');
+    } else if (this.props.history.location.pathname === '/home/command') {
       sessionStorage.setItem('path', '6');
     } else if (this.props.history.location.pathname === '/home/special') {
       sessionStorage.setItem('path', '8');
@@ -157,6 +178,7 @@ class home extends React.Component {
     this.setState({ path: this.props.history.location.pathname })
     this.getVenueIndex()
     this.gerVenueName()
+
     if (this.props.history.location.pathname === '/home') {
       sessionStorage.setItem('path', '1');
     } else if (this.props.history.location.pathname === '/homenews') {
@@ -174,6 +196,8 @@ class home extends React.Component {
     } else if (this.props.history.location.pathname === '/home/myWallet') {
       sessionStorage.setItem('path', '7');
     } else if (this.props.history.location.pathname === '/home/closeYu') {
+      sessionStorage.setItem('path', '6');
+    } else if (this.props.history.location.pathname === '/home/command') {
       sessionStorage.setItem('path', '6');
     } else if (this.props.history.location.pathname === '/home/special') {
       sessionStorage.setItem('path', '8');
@@ -262,11 +286,11 @@ class home extends React.Component {
   async getVenueIndex(data) {
     const res = await getVenueIndex(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      if(res.data.data.isevaluate===0){
+      if (res.data.data.isevaluate === 0) {
         // this.VenueEvaluationOfOperation()
-      } 
+      }
       this.setState({
-        isevaluate:res.data.data.dataisevaluate,
+        isevaluate: res.data.data.dataisevaluate,
         getVenueMonth_money: res.data.data.month_money, getVenueToday_money: res.data.data.today_money, getVenueMonth_count: res.data.data.month_count,
         month_member_money: res.data.data.month_member_money, today_member_money: res.data.data.today_member_money,
         getVenueToday_count: res.data.data.today_count, getVenueScore: res.data.data.score
@@ -285,6 +309,10 @@ class home extends React.Component {
       sessionStorage.setItem('mess', res.data.data.mess)
       sessionStorage.setItem('siteuid', res.data.data.siteuid)
       sessionStorage.setItem('ishaverecharge', res.data.data.ishaverecharge)
+      if (res.data.data.ishaverecharge === 1 || res.data.data.ishaverecharge === 2) {
+        this.props.history.push({ pathname: '/home/myWallet', query: { time: 2 } })
+        sessionStorage.setItem('incomtime', 2)
+      }
     }
   }
 
@@ -334,20 +362,55 @@ class home extends React.Component {
   async VenueEvaluationSave(data) {
     const res = await VenueEvaluationSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      if(data.star!==''){
+      if (data.star !== '') {
         message.success('提交成功')
       }
-        this.setState({isModalVisible:false})
-    }else{
+      this.setState({ isModalVisible: false })
+    } else {
       message.warning(res.data.msg)
     }
   }
 
   handleOk = () => {
-    this.VenueEvaluationSave({star:this.state.rate,label:this.state.labelId.join(',')})
+    this.VenueEvaluationSave({ star: this.state.rate, label: this.state.labelId.join(',') })
   }
-  handleCancel=()=>{
-    this.VenueEvaluationSave({star:'',label:''})
+  handleCancel = () => {
+    this.VenueEvaluationSave({ star: '', label: '' })
+  }
+
+ 
+  async login(data) {
+    const res = await _login(data)
+    if (res.data.code !== 2000) {
+      message.error(res.data.msg)
+    } else {
+      sessionStorage.setItem('uuid', res.data.data.uuid);
+      sessionStorage.setItem('name', res.data.data.name);
+      sessionStorage.setItem('islegal', res.data.data.islegal);
+      sessionStorage.setItem('venue_token', res.data.data.venue_token);
+      sessionStorage.setItem('issite', res.data.data.issite);
+      sessionStorage.setItem('isqult', res.data.data.isqult);
+      sessionStorage.setItem('ismethod', res.data.data.ismethod);
+      sessionStorage.setItem('issecondaudit', res.data.data.issecondaudit);
+      sessionStorage.setItem('issportid', res.data.data.issportid);
+      sessionStorage.setItem('legalphone', res.data.data.legalphone);
+      sessionStorage.setItem('phone', res.data.data.phone);
+      localStorage.setItem('nickName', res.data.data.name)
+      sessionStorage.removeItem('qualifData')
+      sessionStorage.setItem('headerData',1)
+      window.location.reload()
+    }
+  }
+
+  selectEd=e=>{
+    if(this.state.selectEd.length!==1){
+      let data = {
+        username: this.state.phone, usercode: '', userpass: '', type: 5, Logintype: 'pc', venueloginuuid:e
+      }
+      this.login(data)
+    }
+   
+    
   }
   render() {
     return (
@@ -451,7 +514,15 @@ class home extends React.Component {
           <Header className="headerTor">
             <div className="Gname">
               <img src={require("../../assets/icon_logo_Gname (2).png")} alt="logo" />
-              <span>{this.state.gerVenueNameName}</span>
+             
+              <Select value={this.state.defaultValue} className="selectEd" onChange={this.selectEd} suffixIcon={<DownOutlined style={{ color: '#fff' }} />}>
+                {
+                  this.state.selectEd.map((item,i) => (
+                    <Option key={i} value={item.venueuuid}>{item.name}</Option>
+                  ))
+                }
+
+              </Select>
             </div>
             <div className="time">
 
@@ -538,6 +609,7 @@ class home extends React.Component {
             <Route path="/home/comment" component={comment} />
             <Route path="/home/news" component={news} />
             <Route path="/home/closeYu" component={closeYu} />
+            <Route path="/home/command" component={command} />
             <Route path="/home/appointmentList" component={appointmentList} />
             <Route path="/home/special" component={special} />
 

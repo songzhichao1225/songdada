@@ -93,13 +93,17 @@ class myWalletPh extends React.Component {
     this.getVenueOpenBank()
     this.gerVenueName()
     this.getCompleteMembershipRechargeDetails()
-    
+    if(sessionStorage.getItem('flaghood')!==undefined){
+      this.setState({flag:Number(sessionStorage.getItem('flaghood'))})
+    }else{
+      this.setState({flag:1})
+    }
   }
 
   async getReceivingBankQualifications(data) {
     const res = await getReceivingBankQualifications(data, localStorage.getItem('venue_token'))
     if (res.data.code === 4004) {
-      Toast.fail(res.data.msg, 1);
+      Toast.fail(res.data.msg, 1)
     } else if (res.data.code !== 2000 && res.data.code !== 4004) {
       this.setState({ visible: true })
     } else if (res.data.code === 2000) {

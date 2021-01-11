@@ -231,7 +231,7 @@ class news extends React.Component {
     }
   }
   myWallt=()=>{
-    this.props.history.push('/home/myWallt')
+    this.props.history.push('/home/myWallet')
   }
 
   locad=e=>{
@@ -298,8 +298,8 @@ class news extends React.Component {
             <div>{this.state.newsDetail.comment}</div>
             <div>{this.state.newsDetail.intime}</div>
             <div onClick={this.locad} style={this.state.newsDetail.publicuuid===''?{display:'none'}:{color:'#F5A623',cursor:'pointer'}} data-uuid={this.state.newsDetail.publicuuid} data-typeid={this.state.newsDetail.public_type}>前往活动列表</div>
-            <div style={this.state.newsDetail.type===7?{color:'#9b9b9b'}:{display:'none'}} onClick={this.myWallt}>前往查看</div>
-            <div style={this.state.newsDetail.type===6?{color:'#9b9b9b'}:{display:'none'}} >请使用负责人手机号登录修改</div>
+            <div style={this.state.newsDetail.type===7?{color:'#9b9b9b',cursor:'pointer'}:{display:'none'}} onClick={this.myWallt}>前往查看</div>
+            <div style={this.state.newsDetail.type===6?{color:'#9b9b9b',cursor:'pointer'}:{display:'none'}} >请使用负责人手机号登录修改</div>
             <div onClick={this.stamic} style={this.state.newsDetail.type===6?{color:'#F5A623',cursor:'pointer'}:{display:'none'}} data-uuid={this.state.newsDetail.publicuuid}>前往修改</div>
           </Drawer>
         </div>
@@ -307,7 +307,7 @@ class news extends React.Component {
           title="给找对手平台发消息"
           visible={this.state.visibleTwo}
           onCancel={this.handleCancel}
-          
+          className="ko"
           closeIcon={<CloseCircleOutlined style={{color:'#fff',fontSize:'20px'}} />}
         >
           <TextArea rows={3} placeholder="请输入您推送的消息" value={this.state.textArea} onChange={this.textArea} maxLength={200} />

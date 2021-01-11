@@ -515,6 +515,31 @@ export function VenueEvaluationSave(data,headers){    //场馆端~添加场馆�
 export function getAudio(data,headers){    //场馆端~添加场馆端对运营专员的评价记录
     return axios.post('/api/getAudio',data,{headers: {'token': headers}})
 }
+
+export function ContinuationRecord(data,headers){    //~续时记录
+    return axios.post('/api/ContinuationRecord',data,{headers: {'token': headers}})
+}
+
+export function getSecondSupervisorList(data,headers){    //~获取当前场馆第二负责人列表
+    return axios.post('/api/getSecondSupervisorList',data,{headers: {'token': headers}})
+}
+
+export function AddSecondSupervisor(data,headers){    //场馆端~添加第二负责人 
+    return axios.post('/api/AddSecondSupervisor',data,{headers: {'token': headers}})
+}
+
+export function RelieveSecondSupervisor(data,headers){    //场馆端~解除第二负责人 
+    return axios.post('/api/RelieveSecondSupervisor',data,{headers: {'token': headers}})
+}
+
+export function getSpecialDaysForVenue(data,headers){    //场馆端——获取工作日、节假日、周六周日
+    return axios.post('/api/getSpecialDaysForVenue',data,{headers: {'token': headers}})
+}
+  
+  
+export function getMobilePhoneBindingVenues(data,headers){    //场馆端~根据token获取与当前token下的手机号有关的场馆（操作员绑定的场馆，负责人绑定的场馆，第二负责人绑定的场馆）
+    return axios.post('/api/getMobilePhoneBindingVenues',data,{headers: {'token': headers}})
+}
   
 
 

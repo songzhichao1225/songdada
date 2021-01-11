@@ -51,6 +51,7 @@ class systemSettings extends React.Component {
     cgName: '',
     btnList: 1,
     advertise_uuid:'',
+    ismethod:0,
   }
 
   showDrawer = () => {
@@ -81,7 +82,7 @@ class systemSettings extends React.Component {
 
   componentDidMount() {
     this.getVenueIsClose()
-    this.setState({ corporatePhone: sessionStorage.getItem('legalphone') })
+    this.setState({ corporatePhone: sessionStorage.getItem('legalphone'),ismethod:Number(sessionStorage.getItem('ismethod'))})
     setInterval(() => {
       if (sessionStorage.getItem('sitew') === 'false') {
         this.setState({
@@ -95,6 +96,7 @@ class systemSettings extends React.Component {
       }
     }, 50)
     this.gerVenueName()
+
 
   }
 
@@ -154,7 +156,6 @@ class systemSettings extends React.Component {
   async VenueAdvertiseFirst(data) {
     const res = await VenueAdvertiseFirst(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-
       if (res.data.data.length !== 0) {
         if(res.data.data.imgURL.indexOf('|')!==-1){
           this.setState({advertising:res.data.data.imgURL.split('|')[0],advertisingTwo:res.data.data.imgURL.split('|')[1]})
@@ -163,7 +164,6 @@ class systemSettings extends React.Component {
         }
         this.setState({ btnList: res.data.data.status,advertise_uuid:res.data.data.uuid,})
       }
-
     }
   }
 
@@ -428,6 +428,9 @@ class systemSettings extends React.Component {
   closeYu = () => {
     this.props.history.push("/home/closeYu")
   }
+  command=()=>{
+    this.props.history.push("/home/command")
+  }
   feedBack = () => {
     this.setState({ bot: !this.state.bot })
   }
@@ -560,7 +563,8 @@ class systemSettings extends React.Component {
 
 
           <ul className="ul">
-            <li onClick={this.Untie}>解除/更换绑定手机号</li>
+            <li onClick={this.Untie}>更换操作员</li>
+            <li onClick={this.command} style={this.state.ismethod===1?{}:{display:'none'}}>添加/解除第二负责人</li>
             <li onClick={this.reset}>重置密码</li>
             <li onClick={this.advertisingOne}>设置广告宣传图片</li>
           </ul>

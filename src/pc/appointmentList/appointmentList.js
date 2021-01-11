@@ -3,7 +3,7 @@ import './appointmentList.css';
 import 'antd/dist/antd.css';
 import { Input, Row, Col, Select, Pagination, Spin, message, DatePicker, Modal, Radio, Drawer, InputNumber, Popover, Popconfirm } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
-import { getReservationActivitieslist, getVenueReservation, getVenueSport, VenueSendMessage, VenueClickCancelPlace, getVenueComplainList, BreakUpConsumptionDetails, VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave, DeductTheTimesOfClosing } from '../../api';
+import { getReservationActivitieslist, getVenueReservation, getVenueSport, VenueSendMessage, VenueClickCancelPlace, getVenueComplainList, ContinuationRecord, BreakUpConsumptionDetails, VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave, DeductTheTimesOfClosing } from '../../api';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -84,8 +84,10 @@ class appointmentList extends React.Component {
     orderId: '',
     deducting: false,
     deductingdetails: [],
-    isfinsh:0,
-    sportNameTwoyou:'',
+    isfinsh: 0,
+    sportNameTwoyou: '',
+    duration: false,
+    Record: []
   };
 
   async getVenueSport(data) {
@@ -162,9 +164,9 @@ class appointmentList extends React.Component {
   current = (page, pageSize) => {
     this.setState({ page: page })
     if (this.state.start === '开始日期') {
-      this.getReservationActivitieslist({ page: page, sport: this.state.sport,orderId:this.state.orderId, status: this.state.status, startdate: '', enddate: '', paied: this.state.paied, reserve: this.state.headTop })
+      this.getReservationActivitieslist({ page: page, sport: this.state.sport, orderId: this.state.orderId, status: this.state.status, startdate: '', enddate: '', paied: this.state.paied, reserve: this.state.headTop })
     } else {
-      this.getReservationActivitieslist({ page: page, sport: this.state.sport,orderId:this.state.orderId, status: this.state.status, startdate: this.state.start, enddate: this.state.end, paied: this.state.paied, reserve: this.state.headTop })
+      this.getReservationActivitieslist({ page: page, sport: this.state.sport, orderId: this.state.orderId, status: this.state.status, startdate: this.state.start, enddate: this.state.end, paied: this.state.paied, reserve: this.state.headTop })
     }
   }
 
@@ -270,7 +272,7 @@ class appointmentList extends React.Component {
     }
   }
   handleCancel = () => {
-    this.setState({ visible: false, info: false })
+    this.setState({ visible: false, info: false, duration: false })
   }
 
   async VenueSendMessage(data) {
@@ -557,18 +559,32 @@ class appointmentList extends React.Component {
   async BreakUpConsumptionDetails(data) {
     const res = await BreakUpConsumptionDetails(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ deductingdetails: res.data.data.details,isfinsh:res.data.data.isfinsh })
+      this.setState({ deductingdetails: res.data.data.details, isfinsh: res.data.data.isfinsh })
     }
   }
 
 
   deducting = (e) => {
-    this.setState({ deducting: true,sportNameTwoyou:e.currentTarget.dataset.sportname })
-    
+    this.setState({ deducting: true, sportNameTwoyou: e.currentTarget.dataset.sportname })
+
     this.BreakUpConsumptionDetails({ publicuuid: e.currentTarget.dataset.uuid })
   }
   deductingCel = () => {
     this.setState({ deducting: false })
+  }
+
+
+  async ContinuationRecord(data) {
+    const res = await ContinuationRecord(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ Record: res.data.data, duration: true })
+    } else {
+      this.setState({ Record: [] })
+    }
+  }
+  duration = (e) => {
+    this.ContinuationRecord({ type: 2, publicuuid: e.currentTarget.dataset.uuid })
+
   }
 
   render() {
@@ -587,7 +603,8 @@ class appointmentList extends React.Component {
                 </Popover>
                 <Col xs={{ span: 2 }} style={this.state.headTop === '1' ? { display: 'none' } : {}}><div style={{ lineHeight: '25px', fontSize: '10px' }}>{item.StartTime === 0 ? '00:00' : item.StartTime.slice(0, 10)}</div><div style={{ lineHeight: '25px' }}>{item.StartTime === 0 ? '00:00' : item.StartTime.slice(11, 16)}</div></Col>
                 <Col xs={{ span: 2 }}><div style={{ lineHeight: '25px', fontSize: '10px' }}>{item.FinishedTime.slice(0, 10)}</div><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(11, 16)}</div></Col>
-                <Col xs={{ span: 2 }}><span>{item.breakup.length===0?item.PlayTime+'小时':'无'}</span></Col>
+                <Col xs={{ span: 2 }}><span>{item.breakup.length === 0 ? item.PlayTime + '小时' : '无'}</span></Col>
+                <Col xs={{ span: 1 }}><span style={{ color: '#4A90E2' }} onClick={this.duration} data-uuid={item.uuid}>查看详情</span></Col>
 
                 <Col xs={{ span: 2 }} >{this.state.headTop === '1' ? item.breakup.length === 0 ? <Popover content={(<span>{item.venueid}</span>)} title='详情' trigger="click">
                   <div>{
@@ -612,7 +629,7 @@ class appointmentList extends React.Component {
                   </div> : <div>
                       {
                         item.breakup.map((itemTwo, i) => (
-                          <div key={i} style={{ textAlign: 'center',lineHeight:'30px' }}>￥{itemTwo.price}/次</div>
+                          <div key={i} style={{ textAlign: 'center', lineHeight: '30px' }}>￥{itemTwo.price}/次</div>
                         ))
                       }
                     </div> : item.TrueTo}</span>
@@ -620,26 +637,26 @@ class appointmentList extends React.Component {
                 <Col xs={{ span: 3 }} style={this.state.headTop === '1' ? {} : { display: 'none' }}><span>
                   {
                     item.breakup.map((itemThree, i) => (
-                      <div key={i} style={{ overflow: 'hidden',marginTop:'6px' }}><div style={{ float: 'left', marginLeft: '35%' }}>{itemThree.frequency}</div>
-                      {
-                        itemThree.frequency===0||item.PublicStatus ==='已完成'?
-                          <div className="sijn" style={itemThree.frequency===0||item.PublicStatus ==='已完成'?{background:'#9b9b9b'}:{}} onClick={this.confirmUUid} data-uuid={itemThree.uuid}>—</div>
-                        :
-                        <Popconfirm
-                          placement="top"
-                          title='您确定要扣除一次吗?'
-                          onConfirm={this.confirm}
-                          okText="确定"
-                          cancelText="取消"
-                        >
-                          <div className="sijn" style={itemThree.frequency===0||item.PublicStatus==='已完成'?{background:'#9b9b9b'}:{}} onClick={this.confirmUUid} data-uuid={itemThree.uuid}>—</div>
-                        </Popconfirm>
-                      }
-                        
+                      <div key={i} style={{ overflow: 'hidden', marginTop: '6px' }}><div style={{ float: 'left', marginLeft: '35%' }}>{itemThree.frequency}</div>
+                        {
+                          itemThree.frequency === 0 || item.PublicStatus === '已完成' ?
+                            <div className="sijn" style={itemThree.frequency === 0 || item.PublicStatus === '已完成' ? { background: '#9b9b9b' } : {}} onClick={this.confirmUUid} data-uuid={itemThree.uuid}>—</div>
+                            :
+                            <Popconfirm
+                              placement="top"
+                              title='您确定要扣除一次吗?'
+                              onConfirm={this.confirm}
+                              okText="确定"
+                              cancelText="取消"
+                            >
+                              <div className="sijn" style={itemThree.frequency === 0 || item.PublicStatus === '已完成' ? { background: '#9b9b9b' } : {}} onClick={this.confirmUUid} data-uuid={itemThree.uuid}>—</div>
+                            </Popconfirm>
+                        }
+
                       </div>
                     ))
                   }</span> <span onClick={this.deducting} data-uuid={item.uuid} data-sportName={item.SportName} style={item.breakup.length === 0 ? { display: 'none' } : { float: 'left', color: '#4A90E2' }}>扣除<br />记录</span><span style={item.breakup.length === 0 ? {} : { display: 'none' }}>非散场</span></Col>
-                <Col xs={{ span: 3 }} onClick={this.Complaints} data-id={item.uuid} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}><span>{item.PublicStatus}<span style={item.iscomplain === 1 ? { color: '#F6410C', fontSize: '12px' } : { display: 'none' }}>(有投诉)</span></span></Col>
+                <Col xs={{ span: 2 }}  style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}><span>{item.PublicStatus}<span onClick={this.Complaints} data-id={item.uuid} style={item.iscomplain === 1 ? { color: '#F6410C', fontSize: '12px' } : { display: 'none' }}>(有投诉)</span></span></Col>
                 <Col xs={{ span: 2 }}><span>￥{item.SiteMoney}</span></Col>
                 <Col xs={{ span: 2 }}><span>{item.SiteMoneyStatus}</span></Col>
                 <Col xs={{ span: 2 }}>
@@ -711,10 +728,11 @@ class appointmentList extends React.Component {
                 <Col xs={{ span: 2 }} style={this.state.headTop === '1' ? { display: 'none' } : {}}><span>开始时间</span></Col>
                 <Col xs={{ span: 2 }}><span>结束时间</span></Col>
                 <Col xs={{ span: 2 }}><span>时长</span></Col>
+                <Col xs={{ span: 1 }}><span>续时</span></Col>
                 <Col xs={{ span: 2 }}><span>{this.state.headTop === '1' ? '场地编号' : '应到人数'}</span></Col>
                 <Col xs={{ span: 2 }}><span>{this.state.headTop === '1' ? '单价/时间段' : '已报名人数'}</span></Col>
                 <Col style={this.state.headTop === '0' ? { display: 'none' } : {}} xs={{ span: 3 }}><span>剩余次数</span></Col>
-                <Col xs={{ span: 3 }}>
+                <Col xs={{ span: 2 }}>
                   <span>
                     <Select className="selectName" defaultValue="活动状态" bordered={false} listHeight={300} dropdownStyle={{ height: '300px', textAlign: 'center' }} style={{ width: '100%' }} onChange={this.activityChang} >
                       <Option value="0">全部</Option>
@@ -757,8 +775,8 @@ class appointmentList extends React.Component {
           >
             <div className="Mtitle" style={this.state.isfinsh === 0 ? { display: 'none' } : { fontWeight: 'bold', fontSize: '14px' }}>所有次数已消费完</div>
             {
-              this.state.deductingdetails.map((item,i) => (
-              <div style={{clear:'both'}} key={i}><span style={{float:'left',width:'70%'}}>{item.comment}</span><span style={{float:'right'}}>{item.time}</span></div>
+              this.state.deductingdetails.map((item, i) => (
+                <div style={{ clear: 'both' }} key={i}><span style={{ float: 'left', width: '70%' }}>{item.comment}</span><span style={{ float: 'right' }}>{item.time}</span></div>
               ))
             }
 
@@ -873,6 +891,38 @@ class appointmentList extends React.Component {
               {this.state.otherObj}
             </div>
           </Drawer>
+
+
+          <Modal
+            title="续时记录"
+            visible={this.state.duration}
+            onOk={this.handleOk}
+            className='mode'
+            onCancel={this.handleCancel}
+            closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
+          >
+            <div style={this.state.Record.length!==0?{}:{display:'none'}}>
+              <Row>
+                <Col span={8}>开始时间</Col>
+                <Col span={4}>时长</Col>
+                <Col span={6}>操作时间</Col>
+                <Col span={6}>价格</Col>
+              </Row>
+              {
+                this.state.Record.map((item, i) => (
+                  <Row key={i}>
+                    <Col span={8}>{item.datetime}</Col>
+                    <Col span={4}>{item.playtime}</Col>
+                    <Col span={6}>{item.time}</Col>
+                    <Col span={6}>￥{item.mone}</Col>
+                  </Row>
+                ))
+              }
+            </div>
+            <div style={this.state.Record.length===0?{textAlign:'center'}:{display:'none'}}>暂无续时~</div>
+
+          </Modal>
+
 
 
           <Modal

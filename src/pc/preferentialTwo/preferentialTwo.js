@@ -575,12 +575,13 @@ class appointmentList extends React.Component {
         <div className="xiange"></div>
 
         <div className={this.state.number === '2' ? 'circumstance' : 'circumstanceT'} style={{ height: '92%' }} >
-          <ul className="rightNav" style={{ top: '-48px', left: '-20px' }}>
+          <ul className="rightNav" style={{ top: '-63px', left: '-20px' }}>
             <li className="dateSelect">
               <DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={locale} value={moment(this.state.dateString, 'YYYY-MM-DD')} allowClear={false} placeholder="请选择日期" className="DatePicker" onPanelChange={this.dateChangeTwo} onChange={this.dateChange} />
             </li>
           </ul>
            
+           <div className="weekListBos">
           <div className="weekList">
           <div className="riLeft" onClick={this.riLeft}>上一周</div>
             {
@@ -589,6 +590,7 @@ class appointmentList extends React.Component {
               ))
             }
              <div  className="riRight" onClick={this.riRight}>下一周</div>
+          </div>
           </div>
          
           <div className="prompt">

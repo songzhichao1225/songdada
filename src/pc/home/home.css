@@ -310,3 +310,37 @@ clear: left;
  .koTwoSjok .Choose .select:nth-child(3){
      margin-left: 0;
  }
+
+ .koTwoSjok .masking{
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1001;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.koTwoSjok .hidden{
+    display: none;
+}
+.koTwoSjok .masking img{
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+.Gname .selectEd{
+    font-size: 24px;
+    color: #fff;
+    background-color: transparent;
+    margin-top: 10px;
+    min-width: 150px;
+}
+.Gname .ant-select-single:not(.ant-select-customize-input) .ant-select-selector{
+    background-color: transparent;
+    border:none;
+    
+}

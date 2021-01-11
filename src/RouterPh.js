@@ -20,6 +20,7 @@ import recordPh from './phone/recordPh/recordPh';
 import sittingPh from './phone/sittingPh/sittingPh';
 import temporaryPh from './phone/temporaryPh/temporaryPh';
 import untiePhonePh from './phone/untiePhonePh/untiePhonePh';
+import commandPh from './phone/commandPh/commandPh';
 import resetPasswordPh from './phone/resetPasswordPh/resetPasswordPh';
 import inforSitePh from './phone/inforSitePh/inforSitePh';
 import Agreement from './phone/Agreement/Agreement';
@@ -54,6 +55,7 @@ const BasicRoute = () => (
             <Route exact path="/homePh/sittingPh" component={sittingPh}/>
             <Route exact path="/homePh/temporaryPh" component={temporaryPh}/>
             <Route exact path="/homePh/untiePhonePh" component={untiePhonePh}/>
+            <Route exact path="/homePh/commandPh" component={commandPh}/>
             <Route exact path="/homePh/resetPasswordPh" component={resetPasswordPh}/>
             <Route exact path="/homePh/inforSitePh" component={inforSitePh}/>
             <Route exact path="/homePh/advertisingPh" component={advertisingPh}/>
@@ -64,7 +66,7 @@ const BasicRoute = () => (
             <Route exact path="/Membership" component={Membership}/>
             <Route exact path="/MembershipList" component={MembershipList}/>
             
-            
+           
         </Switch>
     </HashRouter>
 );

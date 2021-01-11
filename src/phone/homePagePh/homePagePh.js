@@ -11,7 +11,7 @@ import newsPh from '../newsPh/newsPh';
 import minePh from '../minePh/minePh';
 import orderPhT from '../orderPhT/orderPhT';
 import { notification } from 'antd';
-import { getIsStatus, getIsSignOut,getAudio, wsFn } from '../../api';
+import { getIsStatus, getIsSignOut,getAudio, wsFn,gerVenueName } from '../../api';
 import { EllipsisOutlined } from '@ant-design/icons';
 
 
@@ -89,12 +89,26 @@ class homePagePh extends React.Component {
   }
 
 
+
+  async gerVenueName(data) {
+    const res = await gerVenueName(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 4001) {
+      this.props.history.push('/login')
+      localStorage.clear()
+    } else {
+    
+      if (res.data.data.ishaverecharge === 1 || res.data.data.ishaverecharge === 2) {
+        this.props.history.push('/homePh/myWalletPh')
+      }
+    }
+  }
+
   
 
   componentDidMount() {
     sessionStorage.setItem('kood', 1)
     this.getIsStatus()
-    
+    this.gerVenueName()
       // this.getAudio({txt:'找对手提醒您:有用户发布活动初步预订了。11月20日,07:30-09:30,7号场地'})
     
     

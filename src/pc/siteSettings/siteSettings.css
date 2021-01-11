@@ -352,3 +352,76 @@ img{
 .ant-picker-calendar-header .ant-picker-calendar-mode-switch{
      display:none
 }
+.specificList{
+    float: left;
+    height: 110px;
+    width: 400px;
+    margin-left: 78px;
+  
+    
+}
+.specificList .specificListSon{
+    height: 70px;
+    overflow-y: auto;
+    border:1px solid #ddd;
+    border-radius: 10px; 
+}
+.specificList>.footer{
+    overflow: hidden;
+    width: 100%;
+    margin-top: 10px;
+}
+.specificList>.footer>div{
+    width: 120px;
+    height: 30px;
+    float: left;
+    text-align: center;
+    background: #ddd;
+    color: #fff;
+    line-height: 30px;
+    margin-left: 9px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.specificList>.footer>div:hover{
+   background: #40a9ff;
+}
+
+
+.specificListSon{
+    padding: 8px;
+}
+.specificList .small{
+   width: 78px;
+   height: 27px;
+   display: block;
+   background: #ddd;
+   border-radius: 3px;
+   font-size: 12px;
+   cursor: pointer;
+   position: relative;
+   margin-left: 15px;
+   float: left;
+   text-align: center;
+   line-height: 27px;
+   margin-top: 5px;
+
+}
+.specificList .small:nth-child(4n+1){
+    margin-left: 0;
+}
+.specificList .small>span{
+    font-size: 14px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #000;
+    position: absolute;
+    right: -4px;
+    top: -8px;
+    display: block;
+    text-align: center;
+    line-height: 16px;
+    color: #fff;
+    z-index: 999;
+}

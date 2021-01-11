@@ -102,4 +102,7 @@
 .btnModel>div:last-child{
     background: #F5A623;
 }
+.ko .ant-modal-footer{
+  display:none;
+}
 
