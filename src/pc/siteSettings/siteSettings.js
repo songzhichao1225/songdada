@@ -289,6 +289,7 @@ class siteSettings extends React.Component {
 
 
   handleChangeOneTwo = e => {
+    console.log(e)
     this.getSiteSelectedTitle({ sportid: e })
     this.setState({ runIdTwo: e, joinB: false, tagsTwo: '', chekedTwo: '', chekedTwoLen: 0 })
     this.getVenueSportidTitle({ sportid: e })
@@ -336,6 +337,7 @@ class siteSettings extends React.Component {
       default:
         day = "";
     }
+    console.log(day)
     this.setState({ runNameTwo: day })
   }
 
@@ -602,8 +604,8 @@ class siteSettings extends React.Component {
         discount_end: res.data.data[0].discount_end, costperhourTwo: res.data.data[0].discount_costperhour === null ? res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')) : res.data.data[0].discount_costperhour.slice(0, res.data.data[0].discount_costperhour.indexOf('.')),
         runIdTwo: res.data.data[0].sportid, tagsTwo: res.data.data[0].tags, opendayname: attop, openday: res.data.data[0].openday.split(','), starttime: res.data.data[0].starttime,
         costperhour: res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')), chekedTwo: res.data.data[0].venueid, chekedFour: res.data.data[0].venueid, chekedThree: res.data.data[0].venueid !== null ? res.data.data[0].venueid : res.data.data[0].venueid, chekedTwoLen: res.data.data[0].sitenumber, appointmenttime: res.data.data[0].appointmenttime,
-        tagsTwoId: res.data.data[0].tags_id, tags_type: res.data.data[0].tags_type, comment: res.data.data[0].comment, maxScheduledDate: res.data.data[0].maxScheduledDate, runNameTwo: res.data.data[0].sportname, Disid: res.data.data[0].uuid, appointmenttimeTwo: res.data.data[0].discount_appointment === null ? 0 : res.data.data[0].discount_appointment, dateArr: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(','),
-        timeLimit: res.data.data[0].timelimit, timeLimitTwo: res.data.data[0].durationlimit,selectDA:res.data.data[0].priceunit
+        tagsTwoId: res.data.data[0].tags_id, tags_type: res.data.data[0].tags_type, comment: res.data.data[0].comment, maxScheduledDate: res.data.data[0].maxScheduledDate, runNameTwo: res.data.data[0].sportname, Disid: res.data.data[0].uuid, appointmenttimeTwo: res.data.data[0].discount_appointment === null ? 0 : res.data.data[0].discount_appointment, workingDayList: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(','),
+        timeLimit: res.data.data[0].timelimit, timeLimitTwo: res.data.data[0].durationlimit,selectDA:res.data.data[0].priceunit,
       })
       if (this.state.runIdTwo !== '') {
         this.getVenueSportidTitle({ sportid: this.state.runIdTwo })
@@ -1591,12 +1593,12 @@ class siteSettings extends React.Component {
   }
 
   PreferentialComfir = (e) => {
-    let { siteListId, dateArr, costperhourTwo, appointmenttimeTwo } = this.state
+    let { siteListId, workingDayList, costperhourTwo, appointmenttimeTwo } = this.state
 
 
     let obj = {
       uuid: siteListId,
-      discount_date: dateArr.join(','),
+      discount_date: workingDayList.join(','),
       discount_costperhour: costperhourTwo,
       discount_appointment: appointmenttimeTwo
     }

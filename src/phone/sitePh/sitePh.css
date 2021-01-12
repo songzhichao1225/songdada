@@ -460,3 +460,68 @@
 .ant-picker-calendar-header .ant-picker-calendar-mode-switch{
     display: none;
 }
+ .listSonSSS{
+    border-bottom: 1px solid rgb(233, 233, 233);
+    min-height: 45px;
+    overflow: hidden;
+}
+.listSonSSS .left{
+    font-size: 0.75rem;
+    color: #333;
+    padding-left: 15px;
+    display: block;
+    float: left;
+    line-height: 45px;
+}
+.listSonSSS .right{
+    width: 80%;
+    height: 5rem;
+    float: left;
+    margin-left: 1.5rem;
+    padding: 0.4rem;
+    overflow-y: auto;
+
+}
+.footerBtnSel{
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+.footerBtnSel>div{
+    width: 6.5rem;
+    height: 1.5rem;
+    float: left;
+    margin-left: 0.3rem;
+    text-align: center;
+    line-height: 1.5rem;
+    background-color: #ddd;
+    border-radius: 0.3rem;
+    color: #fff;
+    font-size: 0.75rem;
+}
+.listSonSSS .right .rightSon{ 
+    width: 5.5rem;
+    height: 1.5rem;
+    text-align: center;
+    line-height: 1.5rem; 
+    font-size: 0.75rem;
+    background-color: #e0e0e0;
+    border-radius: 0.3rem;
+    position: relative;
+    margin-top: 0.5rem;
+    float: left;
+    margin-left: 1rem;
+}
+.listSonSSS .right .rightSon>span{
+    width: 1rem;
+    height: 1rem;
+    font-size: 0.75rem;
+    border-radius: 50%;
+    background: #333;
+    display: block;
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    text-align: center;
+    line-height: 1rem;
+    color: #fff;
+}

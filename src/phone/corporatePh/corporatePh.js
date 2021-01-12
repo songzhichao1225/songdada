@@ -3,7 +3,7 @@ import './corporatePh.css';
 import 'antd/dist/antd.css';
 import { Toast, InputItem, NavBar, Popover } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { _login, VenueSelectSiteName, _code } from '../../api';
+import { _login, _code } from '../../api';
 import {EllipsisOutlined} from '@ant-design/icons';
 const Item = Popover.Item;
 class corporatePh extends React.Component {
@@ -98,16 +98,7 @@ class corporatePh extends React.Component {
   password = e => {
     this.setState({ pass: e })
   }
-  async VenueSelectSiteName(data) {
-    const res = await VenueSelectSiteName(data)
-
-    if (res.data.code === 2000) {
-      this.setState({ selectVeun: res.data.data, value: res.data.data[0].venueloginuuid })
-      this.ploo()
-    } else {
-      Toast.fail(res.data.msg, 1);
-    }
-  }
+  
   
   loginPhTeo = () => {
     this.props.history.goBack();
@@ -139,7 +130,7 @@ class corporatePh extends React.Component {
   }
 
   onSubmit = () => {
-    this.VenueSelectSiteName({ phone: this.state.phone })
+    this.ploo()
   }
 
   close = () => {

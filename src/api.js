@@ -168,9 +168,6 @@ export function VenueForgetPass(data){    //忘记密码
     return axios.post('/api/VenueForgetPass',data)
 }
 
-export function VenueSelectSiteName(data,headers){    //一个法人多个场馆情况将查询出来的场馆显示让用户自己选修改哪个场馆的 
-    return axios.post('/api/VenueSelectSiteName',data, {headers: {'token': headers}})
-}
 
 export function VenueInformationSave(data,headers){    //修改场馆基本信息
     return axios.post('/api/VenueInformationSave',data, {headers: {'token': headers}})

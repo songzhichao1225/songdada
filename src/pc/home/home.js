@@ -392,7 +392,6 @@ class home extends React.Component {
       sessionStorage.setItem('isqult', res.data.data.isqult);
       sessionStorage.setItem('ismethod', res.data.data.ismethod);
       sessionStorage.setItem('issecondaudit', res.data.data.issecondaudit);
-      sessionStorage.setItem('issportid', res.data.data.issportid);
       sessionStorage.setItem('legalphone', res.data.data.legalphone);
       sessionStorage.setItem('phone', res.data.data.phone);
       localStorage.setItem('nickName', res.data.data.name)

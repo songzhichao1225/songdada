@@ -4,7 +4,7 @@ import { Card, Picker, List, Toast, InputItem, Modal, TextareaItem } from 'antd-
 import 'antd-mobile/dist/antd-mobile.css';
 import { Pagination, Drawer, Spin, Calendar } from 'antd';
 import { } from '@ant-design/icons';
-import { getVenueNumberTitleList, getVenueSportidTitle, getVenueSport, DelVenueTitle, getVenueTitleSave, getSiteSelectedVenueid, DelVenueNumberTitle, getSiteSettingHistoryList, DelSiteSetting, AddSiteSetting, getVenueNumberTitleSave, getVenueNumberTitleFirst, getSiteSettingList, getSiteSelectedTitle, getSiteSettingFirst, DelSiteSettingDiscount, SiteSettingDiscountSave } from '../../api';
+import { getVenueNumberTitleList, getVenueSportidTitle, getVenueSport, DelVenueTitle, getVenueTitleSave, getSpecialDaysForVenue, getSiteSelectedVenueid, DelVenueNumberTitle, getSiteSettingHistoryList, DelSiteSetting, AddSiteSetting, getVenueNumberTitleSave, getVenueNumberTitleFirst, getSiteSettingList, getSiteSelectedTitle, getSiteSettingFirst, DelSiteSettingDiscount, SiteSettingDiscountSave } from '../../api';
 import 'moment/locale/zh-cn';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 const alert = Modal.alert;
@@ -29,6 +29,7 @@ class sitePh extends React.Component {
       { label: '足球11人制', value: 7 },
       { label: '足球8人制', value: 8 },
       { label: '足球7人制', value: 9 },
+      { label: '足球6人制', value: 13 },
       { label: '足球5人制', value: 10 },
       { label: '排球', value: 11 },
       { label: '网球', value: 12 }
@@ -43,18 +44,19 @@ class sitePh extends React.Component {
       { label: '足球11人制', value: 7 },
       { label: '足球8人制', value: 8 },
       { label: '足球7人制', value: 9 },
+      { label: '足球6人制', value: 13 },
       { label: '足球5人制', value: 10 },
       { label: '排球', value: 11 },
       { label: '网球', value: 12 }
     ],
-    selectDaArr:[{ label: '次', value: '次' }, { label: '/H', value: '/H' }, { label: '2H', value: '2H' },{ label: '3H', value: '3H' },{ label: '4H', value: '4H' },{ label: '5H', value: '5H' },{ label: '6H', value: '6H' }],
+    selectDaArr: [{ label: '次', value: '次' }, { label: '/H', value: '/H' }, { label: '2H', value: '2H' }, { label: '3H', value: '3H' }, { label: '4H', value: '4H' }, { label: '5H', value: '5H' }, { label: '6H', value: '6H' }],
     ListSportTwo: [{ label: '半场', value: 1 }, { label: '散场', value: 2 }, { label: '全场', value: 5 }],
     ListSportThree: [{ label: '按时(收费)', value: 3 }, { label: '按次(收费)', value: 4 }],
-    timeLimitList:[{label:'不限',value:1},{label:'整点',value:2},{label:'单数整点',value:3},{label:'双数整点',value:4}],
-    timeLimitListTwo:[{label:'一小时以上',value:1},{label:'一小时整数倍',value:2},{label:'二小时整数倍',value:3}],
+    timeLimitList: [{ label: '不限', value: 1 }, { label: '整点', value: 2 }, { label: '单数整点', value: 3 }, { label: '双数整点', value: 4 }],
+    timeLimitListTwo: [{ label: '一小时以上', value: 1 }, { label: '一小时整数倍', value: 2 }, { label: '二小时整数倍', value: 3 }],
     timeRtArr: [{ label: '00:00', value: '00:00' }, { label: '00:30', value: '00:30' }, { label: '01:00', value: '01:00' }, { label: '01:30', value: '01:30' }, { label: '02:00', value: '02:00' }, { label: '02:30', value: '02:30' }, { label: '03:00', value: '03:00' }, { label: '03:30', value: '03:30' }, { label: '04:00', value: '04:00' }, { label: '04:30', value: '04:30' }, { label: '05:00', value: '05:00' }, { label: '05:30', value: '05:30' }, { label: '06:00', value: '06:00' }, { label: '06:30', value: '06:30' }, { label: '07:00', value: '07:00' }, { label: '07:30', value: '07:30' }, { label: '08:00', value: '08:00' }, { label: '08:30', value: '08:30' }, { label: '09:00', value: '09:00' }, { label: '09:30', value: '09:30' }, { label: '10:00', value: '10:00' }, { label: '10:30', value: '10:30' }, { label: '11:00', value: '11:00' }, { label: '11:30', value: '11:30' }, { label: '12:00', value: '12:00' }, { label: '12:30', value: '12:30' }, { label: '13:00', value: '13:00' }, { label: '13:30', value: '13:30' }, { label: '14:00', value: '14:00' }, { label: '14:30', value: '14:30' }, { label: '15:00', value: '15:00' }, { label: '15:30', value: '15:30' }, { label: '16:00', value: '16:00' }, { label: '16:30', value: '16:30' }, { label: '17:00', value: '17:00' }, { label: '17:30', value: '17:30' }, { label: '18:00', value: '18:00' }, { label: '18:30', value: '18:30' }, { label: '19:00', value: '19:00' }, { label: '19:30', value: '19:30' }, { label: '20:00', value: '20:00' }, { label: '20:30', value: '20:30' }, { label: '21:00', value: '21:00' }, { label: '21:30', value: '21:30' }, { label: '22:00', value: '22:00' }, { label: '22:30', value: '22:30' }, { label: '23:00', value: '23:00' }, { label: '23:30', value: '23:30' }, { label: '24:00', value: '24:00' }],
     Longest: [{ label: '一周', value: 0.1 }, { label: '两周', value: 0.2 }, { label: '三周', value: 0.3 }, { label: '一个月', value: 1 }, { label: '两个月', value: 2 },],
-    Shortest: [{ label: '不限', value: 0 }, { label: '30分钟', value: 30 }, { label: '60分钟', value: 60 }, { label: '2小时', value: 120 }, { label: '3小时', value: 180 }, { label: '4小时', value: 240 }, { label: '6小时', value: 360 }, { label: '24小时', value: 1440 }, { label: '2天', value: 2280 }, { label: '3天', value: 4320 }, { label: '4天', value: 5760 },{ label: '5天', value: 7200 },{ label: '6天', value: 8640 },{ label: '7天', value: 10080 },{ label: '8天', value: 11520 },{ label: '9天', value: 12960 },{ label: '10天', value: 14400 },{ label: '11天', value: 15840 },{ label: '12天', value: 17280 },{ label: '13天', value: 18720 },{ label: '14天', value: 20160 },{ label: '15天', value: 21600 },],
+    Shortest: [{ label: '不限', value: 0 }, { label: '30分钟', value: 30 }, { label: '60分钟', value: 60 }, { label: '2小时', value: 120 }, { label: '3小时', value: 180 }, { label: '4小时', value: 240 }, { label: '6小时', value: 360 }, { label: '24小时', value: 1440 }, { label: '2天', value: 2280 }, { label: '3天', value: 4320 }, { label: '4天', value: 5760 }, { label: '5天', value: 7200 }, { label: '6天', value: 8640 }, { label: '7天', value: 10080 }, { label: '8天', value: 11520 }, { label: '9天', value: 12960 }, { label: '10天', value: 14400 }, { label: '11天', value: 15840 }, { label: '12天', value: 17280 }, { label: '13天', value: 18720 }, { label: '14天', value: 20160 }, { label: '15天', value: 21600 },],
     LiturgyArr: [{ name: "周一", idx: 1, cheked: false }, { name: "周二", idx: 2, cheked: false }, { name: "周三", idx: 3, cheked: false }, { name: "周四", idx: 4, cheked: false }, { name: "周五", idx: 5, cheked: false }, { name: "周六", idx: 6, cheked: false, }, { name: "周日", idx: 7, cheked: false }],
     asyncValue: 0,
     index: '1',
@@ -69,7 +71,7 @@ class sitePh extends React.Component {
     Serial: false,
     numArr: [],
     chekedArr: [],
-    chekedArrLen:0,
+    chekedArrLen: 0,
     upData: 0,
     firstUUid: '',
     siteList: [],
@@ -115,9 +117,11 @@ class sitePh extends React.Component {
     details: [],
     dateArr: [],
     timeFalg: true,
-    timeLimit:[1],
-    timeLimitTwo:[1],
-    selectDa:['']
+    timeLimit: [1],
+    timeLimitTwo: [1],
+    selectDa: [''],
+    withDayIndex: '0',
+    withDayList: []
   }
 
   header = e => {
@@ -147,9 +151,6 @@ class sitePh extends React.Component {
       arr.push(obj)
     }
     this.setState({ sportArrTwo: arr })
-
-
-
   }
 
   componentDidMount() {
@@ -188,6 +189,8 @@ class sitePh extends React.Component {
           res.data.data[i].sportid = '足球8人制'
         } else if (res.data.data[i].sportid === 9) {
           res.data.data[i].sportid = '足球7人制'
+        }else if (res.data.data[i].sportid === 13) {
+          res.data.data[i].sportid = '足球6人制'
         } else if (res.data.data[i].sportid === 10) {
           res.data.data[i].sportid = '足球5人制'
         } else if (res.data.data[i].sportid === 11) {
@@ -220,7 +223,7 @@ class sitePh extends React.Component {
     this.getSiteSettingHistoryList({ page: page, sportid: this.state.asyncValueThree })
   }
   visibleXi = () => {
-    this.setState({ visibleXi: true, chekedArr: [],chekedArrLen:0 })
+    this.setState({ visibleXi: true, chekedArr: [], chekedArrLen: 0 })
   }
   onClose = () => {
     this.setState({ visibleXi: false, upData: 0, firstUUid: '', detail: false })
@@ -304,7 +307,7 @@ class sitePh extends React.Component {
       Toast.fail('该标签已存在', 1);
     } else if (this.state.joinTitleC.replace(/\s*/g, "").toUpperCase() === 'VIP') {
       Toast.fail('该标签已存在', 1);
-    } else if (this.state.joinTitleC === '半场'||this.state.joinTitleC === '散场'||this.state.joinTitleC === '按次'||this.state.joinTitleC === '按时'||this.state.joinTitleC === '全场') {
+    } else if (this.state.joinTitleC === '半场' || this.state.joinTitleC === '散场' || this.state.joinTitleC === '按次' || this.state.joinTitleC === '按时' || this.state.joinTitleC === '全场') {
       Toast.fail('该标签不可设置', 1);
     } else {
       this.getVenueTitleSave({ sportid: this.state.pickerValue[0], title: this.state.joinTitleC, uuid: '' })
@@ -320,14 +323,14 @@ class sitePh extends React.Component {
     if (this.state.idxTitle === '') {
       Toast.fail('请选择标签', 1);
     } else {
-      this.setState({ visibleTitle: false, idxTitleTwo: this.state.idxTitle, chekedArr: [],chekedArrLen:0 })
+      this.setState({ visibleTitle: false, idxTitleTwo: this.state.idxTitle, chekedArr: [], chekedArrLen: 0 })
     }
   }
 
   async getSiteSelectedVenueid(data) {
     const res = await getSiteSelectedVenueid(data, localStorage.getItem('venue_token'))
     if (this.state.Serial === true) {
-      if (this.state.pickerValue[0] === 6||this.state.pickerValue[0] === 2) {
+      if (this.state.pickerValue[0] === 6 || this.state.pickerValue[0] === 2) {
         for (let j in res.data.data) {
           for (let i in this.state.numArr) {
             if (this.state.numArr.length === 48) {
@@ -353,15 +356,15 @@ class sitePh extends React.Component {
         }
         this.setState({ numArr: this.state.numArr })
       } else {
-        for(let j in res.data.data){
+        for (let j in res.data.data) {
           for (let i in this.state.numArr) {
             if (this.state.numArr[i].num === Number(res.data.data[j])) {
-              console.log( )
-              this.state.numArr[this.state.numArr[i].num-1].cheked = 'no'
+              console.log()
+              this.state.numArr[this.state.numArr[i].num - 1].cheked = 'no'
             }
           }
         }
-       
+
 
         if (this.state.chekedArr.length !== 0) {
           for (let j in this.state.koArr) {
@@ -387,7 +390,7 @@ class sitePh extends React.Component {
     } else if (this.state.pickerValue[0] === 6 && this.state.typeTwo[0] === 0) {
       Toast.fail('请选择场地类型', 1);
     } else {
-      if (this.state.pickerValue[0] === 6||this.state.pickerValue[0] === 2) {
+      if (this.state.pickerValue[0] === 6 || this.state.pickerValue[0] === 2) {
         if (this.state.typeTwo[0] === 2) {
           this.setState({
             numArr: [
@@ -440,7 +443,7 @@ class sitePh extends React.Component {
               { num: '24A', cheked: false, id: 46 },
               { num: '场地不固定', cheked: false, id: 47 }]
           })
-        } else if (this.state.typeTwo[0] === 1||this.state.typeTwo[0] === 5) {
+        } else if (this.state.typeTwo[0] === 1 || this.state.typeTwo[0] === 5) {
           this.setState({
             numArr: [
               { num: '1A', cheked: false, id: 0 },
@@ -492,7 +495,7 @@ class sitePh extends React.Component {
               { num: '24A', cheked: false, id: 46 },
             ]
           })
-        }else if (this.state.typeTwo[0] === 3) {
+        } else if (this.state.typeTwo[0] === 3) {
           this.setState({
             numArr: [
               { num: '1', cheked: false, id: 0 },
@@ -544,7 +547,7 @@ class sitePh extends React.Component {
               { num: '47', cheked: false, id: 46 },
             ]
           })
-        }else if (this.state.typeTwo[0] === 4) {
+        } else if (this.state.typeTwo[0] === 4) {
           this.setState({
             numArr: [
               { num: '1', cheked: false, id: 0 },
@@ -638,14 +641,14 @@ class sitePh extends React.Component {
   numArrSon = e => {
     let items = this.state.numArr
 
-    if (this.state.pickerValue[0] === 6||this.state.pickerValue[0] === 2) {
+    if (this.state.pickerValue[0] === 6 || this.state.pickerValue[0] === 2) {
       if (items[e.currentTarget.dataset.id].cheked === true) {
         items[e.currentTarget.dataset.id].cheked = false
       } else if (items[e.currentTarget.dataset.id].cheked === false) {
         items[e.currentTarget.dataset.id].cheked = true
       }
       if (e.currentTarget.dataset.num === '场地不固定') {
- 
+
         if (items[47].cheked === true) {
           for (let i in items) {
             items[i].cheked = 'no'
@@ -727,55 +730,55 @@ class sitePh extends React.Component {
     if (chekedArr.length === 0) {
       Toast.fail('请选择场地编号', 1)
     } else {
-        if(this.state.typeTwo[0]=== 5){
-          let arrChekedSon = []
-          for (let i in chekedArr) {
-            arrChekedSon.push(chekedArr[i].slice(0, -1))
-          }
-  
-  
-          let _res = []; // 
-          arrChekedSon.sort();
-          for (let i = 0; i < arrChekedSon.length;) {
-            let count = 0;
-            for (let j = i; j < arrChekedSon.length; j++) {
-              if (arrChekedSon[i] === arrChekedSon[j]) {
-                count++;
-              }
-            }
-            _res.push([arrChekedSon[i], count]);
-            i += count;
-          }
-          let _newArr = [];
-          for (let i = 0; i < _res.length; i++) {
-            if(_res[i][1]===1){
-              _newArr.push(_res[i][0])
+      if (this.state.typeTwo[0] === 5) {
+        let arrChekedSon = []
+        for (let i in chekedArr) {
+          arrChekedSon.push(chekedArr[i].slice(0, -1))
+        }
+
+
+        let _res = []; // 
+        arrChekedSon.sort();
+        for (let i = 0; i < arrChekedSon.length;) {
+          let count = 0;
+          for (let j = i; j < arrChekedSon.length; j++) {
+            if (arrChekedSon[i] === arrChekedSon[j]) {
+              count++;
             }
           }
-          
-          if (chekedArr.length % 2 !== 0) {
-            Toast.fail('请选择全场', 1)
-          }else if(_newArr.length!==0){
-            Toast.fail('请选择'+_newArr.join(',')+'的另一半场', 1)
-          }else{
+          _res.push([arrChekedSon[i], count]);
+          i += count;
+        }
+        let _newArr = [];
+        for (let i = 0; i < _res.length; i++) {
+          if (_res[i][1] === 1) {
+            _newArr.push(_res[i][0])
+          }
+        }
+
+        if (chekedArr.length % 2 !== 0) {
+          Toast.fail('请选择全场', 1)
+        } else if (_newArr.length !== 0) {
+          Toast.fail('请选择' + _newArr.join(',') + '的另一半场', 1)
+        } else {
+          this.setState({
+            Serial: false, chekedArr: chekedArr, chekedArrLen: (chekedArr.length) / 2
+          })
+        }
+
+
+      } else {
+        let items = this.state.numArr
+        for (let i in items) {
+          if (items[i].cheked === true) {
+            items[i].cheked = false
             this.setState({
-              Serial: false, chekedArr: chekedArr ,chekedArrLen:(chekedArr.length)/2
+              numArr: items
             })
           }
-
-
-        }else{
-          let items = this.state.numArr
-          for (let i in items) {
-            if (items[i].cheked === true) {
-              items[i].cheked = false
-              this.setState({
-                numArr: items
-              })
-            }
-          }
-          this.setState({ Serial: false, chekedArr: chekedArr,chekedArrLen:chekedArr.length })
         }
+        this.setState({ Serial: false, chekedArr: chekedArr, chekedArrLen: chekedArr.length })
+      }
     }
   }
 
@@ -803,7 +806,7 @@ class sitePh extends React.Component {
   async getVenueNumberTitleSave(data) {
     const res = await getVenueNumberTitleSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ visibleXi: false, firstUUid: '', upData: 0, page: this.state.page,typeTwo:[0],idxTitleTwo:'请选择/添加' })
+      this.setState({ visibleXi: false, firstUUid: '', upData: 0, page: this.state.page, typeTwo: [0], idxTitleTwo: '请选择/添加' })
       this.getVenueNumberTitleList({ page: this.state.page, sportid: this.state.asyncValue })
     } else {
       Toast.fail(res.data.msg, 1);
@@ -811,17 +814,17 @@ class sitePh extends React.Component {
   }
 
   xifenPush = () => {
-    let { pickerValue, idxTitleTwo, chekedArr ,chekedArrLen} = this.state
+    let { pickerValue, idxTitleTwo, chekedArr, chekedArrLen } = this.state
     if (pickerValue.length === 0) {
       Toast.fail('请选择场地类型', 1);
     } else if (idxTitleTwo === '' || idxTitleTwo === '请选择/添加') {
       Toast.fail('请选择细分标签', 1);
     } else if (chekedArr.length === 0) {
       Toast.fail('请选择场地编号', 1);
-    } else if (this.state.pickerValue[0] === 6&&this.state.pickerValue[0] === 2 && this.state.typeTwo[0] === 0) {
+    } else if (this.state.pickerValue[0] === 6 && this.state.pickerValue[0] === 2 && this.state.typeTwo[0] === 0) {
       Toast.fail('请选择场地类型', 1);
     } else {
-      let title=idxTitleTwo.indexOf('-') === -1 ? this.state.typeTwo[0] === 2 ? idxTitleTwo + '-散场' : this.state.typeTwo[0] === 1 ? idxTitleTwo + '-半场' :this.state.typeTwo[0] === 3 ? idxTitleTwo + '-按时':this.state.typeTwo[0] === 4 ? idxTitleTwo + '-按次': this.state.typeTwo[0] === 5 ? idxTitleTwo + '-全场':idxTitleTwo : idxTitleTwo
+      let title = idxTitleTwo.indexOf('-') === -1 ? this.state.typeTwo[0] === 2 ? idxTitleTwo + '-散场' : this.state.typeTwo[0] === 1 ? idxTitleTwo + '-半场' : this.state.typeTwo[0] === 3 ? idxTitleTwo + '-按时' : this.state.typeTwo[0] === 4 ? idxTitleTwo + '-按次' : this.state.typeTwo[0] === 5 ? idxTitleTwo + '-全场' : idxTitleTwo : idxTitleTwo
       this.getVenueNumberTitleSave({ sportid: pickerValue[0], title: title, venueid: chekedArr.join(','), number: chekedArrLen, uuid: this.state.firstUUid, type: this.state.typeTwo[0] })
     }
   }
@@ -829,7 +832,7 @@ class sitePh extends React.Component {
   async getVenueNumberTitleFirst(data) {
     const res = await getVenueNumberTitleFirst(data, localStorage.getItem('venue_token'))
     this.setState({
-      pickerValue: [res.data.data[0].sportid], idxTitleTwo: res.data.data[0].title, chekedArr: res.data.data[0].venueid.split(','),chekedArrLen:res.data.data[0].venueid.split(',').length, koArr: res.data.data[0].venueid.split(','), firstUUid: res.data.data[0].uuid, typeTwo: [res.data.data[0].type]
+      pickerValue: [res.data.data[0].sportid], idxTitleTwo: res.data.data[0].title, chekedArr: res.data.data[0].venueid.split(','), chekedArrLen: res.data.data[0].venueid.split(',').length, koArr: res.data.data[0].venueid.split(','), firstUUid: res.data.data[0].uuid, typeTwo: [res.data.data[0].type]
     })
   }
 
@@ -989,19 +992,19 @@ class sitePh extends React.Component {
         })
       }
     }
-     
+
     if (this.state.titleArr[v].label.indexOf('散') !== -1) {
-      this.setState({ timeFalg: 'no' ,starttime: ['00:00'], endtime: ['24:00'], })
+      this.setState({ timeFalg: 'no', starttime: ['00:00'], endtime: ['24:00'], })
     } else if (this.state.titleArr[v].label.indexOf('按次') !== -1) {
       this.setState({ timeFalg: 'yes', starttime: ['00:00'], endtime: ['24:00'], })
-    } else if (this.state.titleArr[v].label.indexOf('散') !== -1||this.state.titleArr[v].label.indexOf('按次') !== -1) {
+    } else if (this.state.titleArr[v].label.indexOf('散') !== -1 || this.state.titleArr[v].label.indexOf('按次') !== -1) {
       this.setState({ pickerValueFive: -1, starttime: ['00:00'], endtime: ['24:00'], timeFalg: false })
     } else {
       this.setState({ pickerValueFive: '', timeFalg: true })
     }
 
 
-    
+
     this.setState({ pickerValueThree: v })
 
   }
@@ -1046,7 +1049,7 @@ class sitePh extends React.Component {
   async AddSiteSetting(data) {
     const res = await AddSiteSetting(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ Price: false, jiageUUid: '',pickerValueThree:[],cheStr:'' })
+      this.setState({ Price: false, jiageUUid: '', pickerValueThree: [], cheStr: '' })
       this.getSiteSettingList({ page: this.state.pageTwo, sportid: this.state.asyncValueTwo })
     } else {
       Toast.fail(res.data.msg, 2);
@@ -1059,19 +1062,19 @@ class sitePh extends React.Component {
 
   jiageSub = () => {
 
-    let { pickerValueTwo, pickerValueThree,timeLimit,timeLimitTwo,selectDa, Liturgyche, starttime, endtime, money, cheStr, titleArrFoterNum, pickerValueFour, pickerValueFive, tags_type, comment, tagId, titleArr, LiturgycheNum, jiageUUid } = this.state
+    let { pickerValueTwo, pickerValueThree, timeLimit, timeLimitTwo, selectDa, Liturgyche, starttime, endtime, money, cheStr, titleArrFoterNum, pickerValueFour, pickerValueFive, tags_type, comment, tagId, titleArr, LiturgycheNum, jiageUUid } = this.state
     if (pickerValueTwo === '') {
       Toast.fail('请选择场地类型', 1);
     } else if (pickerValueThree.length === 0) {
       Toast.fail('请选择细分标签', 1);
-    } else if (titleArr[pickerValueThree].label.indexOf('散场')===-1&&titleArr[pickerValueThree].label.indexOf('按次')===-1&&Liturgyche === '请选择') {
+    } else if (titleArr[pickerValueThree].label.indexOf('散场') === -1 && titleArr[pickerValueThree].label.indexOf('按次') === -1 && Liturgyche === '请选择') {
       Toast.fail('请选择星期', 1);
     } else if (starttime.length === undefined) {
       Toast.fail('请选择开始时间', 1);
     } else if (endtime.length === undefined) {
       Toast.fail('请选择结束时间', 1);
     } else if (money === '') {
-      Toast.fail('请输入价格', 1);
+      Toast.fail('请输入价格', 1); 
     } else if (pickerValueFour.length === 0) {
       Toast.fail('请选择最长提前预定时间', 1);
     } else if (pickerValueFive.length === 0) {
@@ -1081,9 +1084,9 @@ class sitePh extends React.Component {
       let obj = {
         uuid: jiageUUid,
         sportid: pickerValueTwo,
-        sportname: pickerValueTwo === 1 ? '羽毛球' : pickerValueTwo === 2 ? '乒乓球' : pickerValueTwo === 3 ? '台球中式黑八' : pickerValueTwo === 4 ? '台球美式九球' : pickerValueTwo === 5 ? '台球斯诺克' : pickerValueTwo === 6 ? '篮球' : pickerValueTwo === 7 ? '足球11人制' : pickerValueTwo === 8 ? '足球8人制' : pickerValueTwo === 9 ? '足球7人制' : pickerValueTwo === 10 ? '足球5人制' : pickerValueTwo === 11 ? '排球' : pickerValueTwo === 12 ? '网球' : '',
+        sportname: pickerValueTwo === 1 ? '羽毛球' : pickerValueTwo === 2 ? '乒乓球' : pickerValueTwo === 3 ? '台球中式黑八' : pickerValueTwo === 4 ? '台球美式九球' : pickerValueTwo === 5 ? '台球斯诺克' : pickerValueTwo === 6 ? '篮球' : pickerValueTwo === 7 ? '足球11人制' : pickerValueTwo === 8 ? '足球8人制' : pickerValueTwo === 9 ? '足球7人制':pickerValueTwo === 13 ? '足球6人制' : pickerValueTwo === 10 ? '足球5人制' : pickerValueTwo === 11 ? '排球' : pickerValueTwo === 12 ? '网球' : '',
         tags: titleArr[pickerValueThree].label,
-        openday:titleArr[pickerValueThree].label.indexOf('散场')!==-1||titleArr[pickerValueThree].label.indexOf('按次')!==-1?'1,2,3,4,5,6,7': LiturgycheNum,
+        openday: titleArr[pickerValueThree].label.indexOf('散场') !== -1 || titleArr[pickerValueThree].label.indexOf('按次') !== -1 ? '1,2,3,4,5,6,7' : LiturgycheNum,
         opendayname: Liturgyche,
         starttime: starttime[0],
         endtime: endtime[0],
@@ -1095,9 +1098,9 @@ class sitePh extends React.Component {
         comment: comment,
         tags_id: tagId,
         tags_type: tags_type,
-        timelimit:timeLimit[0],
-        durationlimit:timeLimitTwo[0],
-        priceunit:selectDa[0]
+        timelimit: timeLimit[0],
+        durationlimit: timeLimitTwo[0],
+        priceunit: selectDa[0]
       }
       this.AddSiteSetting(obj)
     }
@@ -1111,25 +1114,17 @@ class sitePh extends React.Component {
 
         setTimeout(() => {
           for (let i in that.state.titleArr) {
-
             if (that.state.titleArr[i].label === res.data.data[0].tags) {
-
-
               if (that.state.titleArr[i].label.indexOf('散') !== -1) {
-                this.setState({ timeFalg: 'no' ,starttime: ['00:00'], endtime: ['24:00'],pickerValueFive: -1, })
+                this.setState({ timeFalg: 'no', starttime: ['00:00'], endtime: ['24:00'], pickerValueFive: -1, })
               } else if (that.state.titleArr[i].label.indexOf('按次') !== -1) {
-                this.setState({ timeFalg: 'yes', starttime: ['00:00'], endtime: ['24:00'],pickerValueFive: -1, })
-              }else  if (that.state.titleArr[i].label.indexOf('散') !== -1||that.state.titleArr[i].label.indexOf('按次') !== -1) {
+                this.setState({ timeFalg: 'yes', starttime: ['00:00'], endtime: ['24:00'], pickerValueFive: -1, })
+              } else if (that.state.titleArr[i].label.indexOf('散') !== -1 || that.state.titleArr[i].label.indexOf('按次') !== -1) {
                 this.setState({ pickerValueFive: -1, starttime: ['00:00'], endtime: ['24:00'], timeFalg: false })
               } else {
                 this.setState({ pickerValueFive: [res.data.data[0].appointmenttime], starttime: [res.data.data[0].starttime], endtime: [res.data.data[0].endtime], timeFalg: true })
               }
-
-
-
-
-
-              that.setState({ pickerValueThree: [that.state.titleArr[i].value] })
+              that.setState({ pickerValueThree: [that.state.titleArr[i].value]})
             }
           }
         }, 1000)
@@ -1170,10 +1165,9 @@ class sitePh extends React.Component {
           tagId: res.data.data[0].tags_id,
           tags_type: res.data.data[0].tags_type,
           comment: res.data.data[0].comment,
-          timeLimit:[res.data.data[0].timelimit],
-          timeLimitTwo:[res.data.data[0].durationlimit],
-          selectDa:[res.data.data[0].priceunit]
-
+          timeLimit: [res.data.data[0].timelimit],
+          timeLimitTwo: [res.data.data[0].durationlimit],
+          selectDa: [res.data.data[0].priceunit]
         })
 
       } else {
@@ -1224,7 +1218,7 @@ class sitePh extends React.Component {
           startDate: res.data.data[0].discount_sdate === null ? this.state.startDate : new Date(res.data.data[0].discount_sdate + ' ' + res.data.data[0].discount_start),
           endDate: res.data.data[0].discount_edate === null ? this.state.endDate : new Date(res.data.data[0].discount_edate + ' ' + res.data.data[0].discount_end),
           starttimeSiscount: res.data.data[0].starttime, endtimeSiscount: res.data.data[0].endtime, venueidSiscount: kol, venueidSiscountTwo: res.data.data[0].venueid === null ? '请选择' : res.data.data[0].venueid,
-          appointmenttimeTwo: [res.data.data[0].discount_appointment === null ? res.data.data[0].appointmenttime : res.data.data[0].discount_appointment], dateArr: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(','),
+          appointmenttimeTwo: [res.data.data[0].discount_appointment === null ? res.data.data[0].appointmenttime : res.data.data[0].discount_appointment], withDayList: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(','),
         })
       }
     }
@@ -1319,11 +1313,11 @@ class sitePh extends React.Component {
   }
 
   joinSiscount = () => {
-    let { SiscountUUid, dateArr, appointmenttimeTwo, moneySiscount } = this.state
+    let { SiscountUUid, withDayList, appointmenttimeTwo, moneySiscount } = this.state
 
     let obj = {
       uuid: SiscountUUid,
-      discount_date: dateArr.join(','),
+      discount_date: withDayList.join(','),
       discount_costperhour: moneySiscount,
       discount_appointment: appointmenttimeTwo[0]
     }
@@ -1356,24 +1350,44 @@ class sitePh extends React.Component {
   onPanelChange = (date) => {
     let dateSelect = date.format('YYYY-MM-DD')
     let dateArr = []
-    if (this.state.dateArr.indexOf(dateSelect) === -1) {
+    if (this.state.withDayList.indexOf(dateSelect) === -1) {
       dateArr.push(dateSelect)
-      this.setState({ dateArr: [...this.state.dateArr, ...dateArr] })
+      this.setState({ withDayList: [...this.state.withDayList, ...dateArr] })
     }
   }
   deletDate = () => {
     this.setState({ dateArr: this.state.dateArr.slice(0, this.state.dateArr.length - 1) })
   }
 
-  timeLimit=(e)=>{
+  timeLimit = (e) => {
     this.setState({ timeLimit: e })
   }
-  timeLimitTwo=(e)=>{
+  timeLimitTwo = (e) => {
     this.setState({ timeLimitTwo: e })
   }
-  selectDa=e=>{
-    this.setState({selectDa:e})
+  selectDa = e => {
+    this.setState({ selectDa: e })
   }
+
+  async getSpecialDaysForVenue(data) {
+    const res = await getSpecialDaysForVenue(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ withDayList: res.data.data })
+    } else {
+      Toast.fail(res.data.msg, 2);
+    }
+  }
+  withDay = e => {
+    this.getSpecialDaysForVenue({ type: e.currentTarget.dataset.date })
+    this.setState({ withDayIndex: e.currentTarget.dataset.date })
+  }
+
+  colseWithDay=e=>{
+    let p=this.state.withDayList
+    p.splice(p.indexOf(e.currentTarget.dataset.date),1)
+    this.setState({withDayList:p})
+  }
+
   render() {
     return (
       <div className="sitePh">
@@ -1433,15 +1447,15 @@ class sitePh extends React.Component {
                       <div>场地数量：{item.sitenumber}</div>
                       <div onClick={this.venDuo} data-venueid={item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}>星期：{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</div>
                       <div onClick={this.venDuo} data-venueid={item.starttime + '~' + item.endtime}>时间范围：{item.starttime}~{item.endtime}</div>
-                      <div>价格：{item.tags.indexOf('散') === -1||item.tags.indexOf('按次') === -1?item.costperhour+'元/时':item.costperhour+'元/次'}</div>
-                      <div>开始时间限制：{item.timelimit===1?'不限':item.timelimit===2?'整点':item.timelimit===3?'单数整点':item.timelimit===4?'双数整点':'不限'}</div>
-                      <div>时长限制：{item.durationlimit===1?'一小时以上':item.durationlimit===2?'一小时整数倍':item.durationlimit===3?'二小时整数倍':'一小时以上'}</div>
+                      <div>价格：{item.tags.indexOf('散') === -1 || item.tags.indexOf('按次') === -1 ? item.costperhour + '元/时' : item.costperhour + '元/次'}</div>
+                      <div>开始时间限制：{item.timelimit === 1 ? '不限' : item.timelimit === 2 ? '整点' : item.timelimit === 3 ? '单数整点' : item.timelimit === 4 ? '双数整点' : '不限'}</div>
+                      <div>时长限制：{item.durationlimit === 1 ? '一小时以上' : item.durationlimit === 2 ? '一小时整数倍' : item.durationlimit === 3 ? '二小时整数倍' : '一小时以上'}</div>
                       <div onClick={this.venDuo} data-venueid={item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}>最长提前预定时间：{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</div>
-                      <div onClick={this.venDuo} data-venueid={item.appointmenttime === null ?'': item.appointmenttime>2879?item.appointmenttime / 60/24+'天':item.appointmenttime / 60 + '小时'}>最短提前预定时间：{item.appointmenttime === null ?'': item.appointmenttime>2879?item.appointmenttime / 60/24+'天':item.appointmenttime / 60 + '小时'}</div>
+                      <div onClick={this.venDuo} data-venueid={item.appointmenttime === null ? '' : item.appointmenttime > 2879 ? item.appointmenttime / 60 / 24 + '天' : item.appointmenttime / 60 + '小时'}>最短提前预定时间：{item.appointmenttime === null ? '' : item.appointmenttime > 2879 ? item.appointmenttime / 60 / 24 + '天' : item.appointmenttime / 60 + '小时'}</div>
                       <div onClick={item.comment === null ? '' : this.venDuo} data-venueid={item.comment === '' ? '无' : item.comment}>备注：{item.comment === '' ? '无' : item.comment}</div>
                     </div>
                   </Card.Body>
-                  <Card.Footer content={<div><div style={item.tags.indexOf('散') !== -1||item.tags.indexOf('按次') !== -1 ? {} : { display: "none" }}></div><div style={item.tags.indexOf('散') === -1||item.tags.indexOf('按次') === -1 ? {} : { display: "none" }} className="lookYou" onClick={this.specialOffer} data-uuid={item.uuid}>{item.discount_date !== null ? '查看特定' : '添加特定'}</div></div>} extra={<div className="capzuo"><img style={{ marginRight: '10px' }} onClick={this.jiaUpdata} data-uuid={item.uuid} src={require('../../assets/upLoad.png')} alt="img" /><img onClick={() =>
+                  <Card.Footer content={<div><div style={item.tags.indexOf('散') !== -1 || item.tags.indexOf('按次') !== -1 ? {} : { display: "none" }}></div><div style={item.tags.indexOf('散') === -1 || item.tags.indexOf('按次') === -1 ? {} : { display: "none" }} className="lookYou" onClick={this.specialOffer} data-uuid={item.uuid}>{item.discount_date !== null ? '查看特定' : '添加特定'}</div></div>} extra={<div className="capzuo"><img style={{ marginRight: '10px' }} onClick={this.jiaUpdata} data-uuid={item.uuid} src={require('../../assets/upLoad.png')} alt="img" /><img onClick={() =>
                     alert('提示', '您确定要删除该条价格设置么？删除后用户将无法预订该时间段' + item.sportname + '的' + item.tags + '场地。', [
                       { text: '取消', onPress: () => console.log('cancel') },
                       { text: '确定', onPress: () => this.DelSiteSetting({ uuid: item.uuid }) },
@@ -1480,10 +1494,10 @@ class sitePh extends React.Component {
                       <div onClick={this.venDuo} data-venueid={item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}>星期：{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</div>
                       <div onClick={this.venDuo} data-venueid={item.starttime + '~' + item.endtime}>时间范围：{item.starttime}~{item.endtime}</div>
                       <div>价格：{item.costperhour}元/时</div>
-                      <div>开始时间限制：{item.timelimit===1?'不限':item.timelimit===2?'整点':item.timelimit===3?'单数整点':item.timelimit===4?'双数整点':'不限'}</div>
-                      <div>时长限制：{item.durationlimit===1?'一小时以上':item.durationlimit===2?'一小时整数倍':item.durationlimit===3?'二小时整数倍':'一小时以上'}</div>
+                      <div>开始时间限制：{item.timelimit === 1 ? '不限' : item.timelimit === 2 ? '整点' : item.timelimit === 3 ? '单数整点' : item.timelimit === 4 ? '双数整点' : '不限'}</div>
+                      <div>时长限制：{item.durationlimit === 1 ? '一小时以上' : item.durationlimit === 2 ? '一小时整数倍' : item.durationlimit === 3 ? '二小时整数倍' : '一小时以上'}</div>
                       <div onClick={this.venDuo} data-venueid={item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}>最长提前预定时间：{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</div>
-                      <div onClick={this.venDuo} data-venueid={item.appointmenttime === null ?'': item.appointmenttime>2879?item.appointmenttime / 60/24+'天':item.appointmenttime / 60 + '小时'}>最短提前预定时间：{item.appointmenttime === null ?'': item.appointmenttime>2879?item.appointmenttime / 60/24+'天':item.appointmenttime / 60 + '小时'}</div>
+                      <div onClick={this.venDuo} data-venueid={item.appointmenttime === null ? '' : item.appointmenttime > 2879 ? item.appointmenttime / 60 / 24 + '天' : item.appointmenttime / 60 + '小时'}>最短提前预定时间：{item.appointmenttime === null ? '' : item.appointmenttime > 2879 ? item.appointmenttime / 60 / 24 + '天' : item.appointmenttime / 60 + '小时'}</div>
                       <div onClick={item.comment === null ? '' : this.venDuo} data-venueid={item.comment === '' ? '无' : item.comment}>备注：{item.comment === '' ? '无' : item.comment}</div>
                       <div>特定日期:{item.discount_date === '' ? '无' : <span style={{ color: '#D85D27', cursor: 'pointer' }} data-sd={item.discount_date} data-app={item.discount_appointment} data-cos={item.discount_costperhour} onClick={this.detail}>查看</span>}</div>
                       <div>操作:{item.operation === 1 ? '添加' : item.operation === 2 ? '修改' : item.operation === 3 ? '删除' : '无'}</div>
@@ -1532,12 +1546,12 @@ class sitePh extends React.Component {
           <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} onClick={this.state.upData === 1 ? '' : this.visibleTitle} extra={this.state.idxTitleTwo} style={{ borderBottom: '1px solid #E9E9E9' }}>细分标签</List.Item>
 
           <Picker
-            data={this.state.pickerValue[0] === 6?this.state.ListSportTwo:this.state.ListSportThree}
+            data={this.state.pickerValue[0] === 6 ? this.state.ListSportTwo : this.state.ListSportThree}
             value={this.state.typeTwo}
             disabled={this.state.upData === 1 ? true : false}
-            onOk={v => this.setState({ typeTwo: v,chekedArr:[] }) }
+            onOk={v => this.setState({ typeTwo: v, chekedArr: [] })}
             cols={1} className="forss">
-            <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} style={this.state.pickerValue[0] === 6||this.state.pickerValue[0] === 2 ? { borderBottom: '1px solid #E9E9E9' } : { display: 'none' }}>收费类型</List.Item>
+            <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} style={this.state.pickerValue[0] === 6 || this.state.pickerValue[0] === 2 ? { borderBottom: '1px solid #E9E9E9' } : { display: 'none' }}>收费类型</List.Item>
           </Picker>
 
           <List.Item arrow="horizontal" onClick={this.Serial} extra={this.state.chekedArr.length === 0 ? '请选择' : this.state.chekedArr.join(',')} style={{ borderBottom: '1px solid #E9E9E9' }}>场地编号</List.Item>
@@ -1611,7 +1625,7 @@ class sitePh extends React.Component {
           <div className="sitePhSerial">
             {
               this.state.numArr.map((item, i) => (
-                <div key={i} className={this.state.typeTwo[0] === 2||this.state.typeTwo[0] === 4 ? 'serialSon' : 'serialSonTwo'} onClick={this.numArrSon} data-num={item.num} data-id={item.id} style={item.cheked === true ? { background: '#F5A623', color: '#fff' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', opacity: '0.2' } : item.num === '场地不固定' ? { width: '5rem' } : {}}>{item.num}</div>
+                <div key={i} className={this.state.typeTwo[0] === 2 || this.state.typeTwo[0] === 4 ? 'serialSon' : 'serialSonTwo'} onClick={this.numArrSon} data-num={item.num} data-id={item.id} style={item.cheked === true ? { background: '#F5A623', color: '#fff' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', opacity: '0.2' } : item.num === '场地不固定' ? { width: '5rem' } : {}}>{item.num}</div>
               ))
             }
           </div>
@@ -1645,7 +1659,7 @@ class sitePh extends React.Component {
 
           <List.Item arrow={this.state.jiageUUid !== '' ? 'empty' : 'horizontal'} extra={<span className="bianhao">{this.state.cheStr === '' ? '无' : this.state.cheStr}</span>} style={{ borderBottom: '1px solid #E9E9E9' }}>场地编号</List.Item>
           <List.Item arrow="empty" extra={this.state.titleArrFoterNum} style={{ borderBottom: '1px solid #E9E9E9' }} >场地数量</List.Item>
-          <List.Item arrow="horizontal" extra={this.state.Liturgyche} className="lpko" onClick={this.Liturgy} style={this.state.timeFalg === true ?{ borderBottom: '1px solid #E9E9E9' }:{display:'none'}} >星期</List.Item>
+          <List.Item arrow="horizontal" extra={this.state.Liturgyche} className="lpko" onClick={this.Liturgy} style={this.state.timeFalg === true ? { borderBottom: '1px solid #E9E9E9' } : { display: 'none' }} >星期</List.Item>
 
 
           <Picker
@@ -1672,9 +1686,9 @@ class sitePh extends React.Component {
             onOk={this.timeLimit}
             value={this.state.timeLimit}
             cols={1}
-            disabled={this.state.timeFalg === false?true:false}
+            disabled={this.state.timeFalg === false ? true : false}
           >
-            <List.Item arrow={this.state.timeFalg === false?'empty':'horizontal'} style={{ borderBottom: '1px solid #E9E9E9' }}>开始时间限制</List.Item>
+            <List.Item arrow={this.state.timeFalg === false ? 'empty' : 'horizontal'} style={{ borderBottom: '1px solid #E9E9E9' }}>开始时间限制</List.Item>
           </Picker>
 
 
@@ -1683,9 +1697,9 @@ class sitePh extends React.Component {
             onOk={this.timeLimitTwo}
             value={this.state.timeLimitTwo}
             cols={1}
-            disabled={this.state.timeFalg === false?true:false}
+            disabled={this.state.timeFalg === false ? true : false}
           >
-            <List.Item arrow={this.state.timeFalg === false?'empty':'horizontal'} style={{ borderBottom: '1px solid #E9E9E9' }}>时长限制</List.Item>
+            <List.Item arrow={this.state.timeFalg === false ? 'empty' : 'horizontal'} style={{ borderBottom: '1px solid #E9E9E9' }}>时长限制</List.Item>
           </Picker>
 
 
@@ -1698,19 +1712,19 @@ class sitePh extends React.Component {
               value={this.state.money}
               onChange={(v) => { this.setState({ money: v }) }}
               onBlur={(v) => { console.log('onBlur', v); }}
-              style={{ padding: '0',width:'40%',float:'right' }}
+              style={{ padding: '0', width: '40%', float: 'right' }}
               moneyKeyboardWrapProps={moneyKeyboardWrapProps}
-          ><span style={{ fontSize: '0.88rem', border: 'none' }}>价格{this.state.timeFalg === 'no' ? '' : this.state.timeFalg === 'yes' ? '(元/次)' : '(元/时)'}</span></InputItem>
-           <Picker
-            data={this.state.selectDaArr}
-            onOk={this.selectDa}
-            value={this.state.selectDa}
-            cols={1}
-          
-          >
-            <List.Item arrow='empty' style={this.state.timeFalg === 'no'?{width:'40%',position:'absolute',top:0,left:'11%'}:{display:'none'}}></List.Item>
-          </Picker>
-          
+            ><span style={{ fontSize: '0.88rem', border: 'none' }}>价格{this.state.timeFalg === 'no' ? '' : this.state.timeFalg === 'yes' ? '(元/次)' : '(元/时)'}</span></InputItem>
+            <Picker
+              data={this.state.selectDaArr}
+              onOk={this.selectDa}
+              value={this.state.selectDa}
+              cols={1}
+
+            >
+              <List.Item arrow='empty' style={this.state.timeFalg === 'no' ? { width: '40%', position: 'absolute', top: 0, left: '11%' } : { display: 'none' }}></List.Item>
+            </Picker>
+
           </List.Item>
 
           <Picker
@@ -1794,21 +1808,27 @@ class sitePh extends React.Component {
             ><span style={{ fontSize: '0.75rem' }}>价格(元/时)</span></InputItem></List.Item>
 
 
+          <div className="listSonSSS">
+            <span className="left">日期</span>
+            <div className="right">
+              {
+                this.state.withDayList.map((item, i) => (
+                  <div className="rightSon" key={i}>{item}<span onClick={this.colseWithDay} data-date={item}>×</span></div>
+                ))
+              }
+            </div>
+          </div>
 
-          <List.Item style={{ borderBottom: '1px solid #E9E9E9', paddingLeft: '0' }} arrow="empty">
-            <TextareaItem
-              title={<div style={{ fontSize: '0.75rem' }}>日期</div>}
-              placeholder="请选择特定日期"
-              data-seed="logId"
-              value={this.state.dateArr.sort().join(',')}
-              style={{ fontSize: '0.75rem', color: '#888', paddingLeft: '0', minHeight: '55px' }}
-              disabled={true}
-              autoHeight
-            /><span style={{ float: 'right', background: '#F5A623', color: '#fff', padding: '0.1rem 0.2rem', borderRadius: '0.2rem', cursor: 'pointer' }} onClick={this.deletDate}>回删</span></List.Item>
+          <div className="footerBtnSel">
+            <div onClick={this.withDay} data-date="1" style={this.state.withDayIndex === '1' ? { background: '#D85D27' } : {}}>当前年工作日</div>
+            <div onClick={this.withDay} data-date="2" style={this.state.withDayIndex === '2' ? { background: '#D85D27' } : {}}>当前年周六、日</div>
+            <div onClick={this.withDay} data-date="3" style={this.state.withDayIndex === '3' ? { background: '#D85D27' } : {}}>当前年法定节假日</div>
+          </div>
 
+        
           <div className="site-calendar-demo-card" style={{ border: '1px solid #e9e9e9', marginTop: 15 }}>
             <Calendar fullscreen={false} className="startTime" dateCellRender={this.dateCellRender} locale={locale} mode='month' onChange={this.onPanelChange} />
-          </div>
+          </div> 
 
 
 

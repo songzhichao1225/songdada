@@ -624,8 +624,6 @@ class systemSettings extends React.Component {
               </div>
             </div>
             <div className="submit" style={{ margin: 0 }} onClick={this.state.btnList===0?this.lokomook:this.addBtn}>{this.state.btnList === 0 ? '待审核' : '确定'}</div>
-
-
           </div>
         </div>
 
