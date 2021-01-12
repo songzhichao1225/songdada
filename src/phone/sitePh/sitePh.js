@@ -923,7 +923,9 @@ class sitePh extends React.Component {
       otherThree: res.data.other
     })
   }
+  
 
+  
   asyncValueTwo = e => {
     this.setState({ asyncValue: e[0], asyncValueTwo: e[0], pageTwo: 1 })
     this.getSiteSettingList({ page: 1, sportid: e[0] })
