@@ -96,7 +96,6 @@ class homePagePh extends React.Component {
       this.props.history.push('/login')
       localStorage.clear()
     } else {
-    
       if (res.data.data.ishaverecharge === 1 || res.data.data.ishaverecharge === 2) {
         this.props.history.push('/homePh/myWalletPh')
       }

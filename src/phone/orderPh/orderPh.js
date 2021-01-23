@@ -1043,16 +1043,16 @@ class orderPh extends React.Component {
         <div style={this.state.Record.length!==0?{}:{display:'none'}}>
               <Row>
                 <Col span={8}>开始时间</Col>
-                <Col span={4}>时长</Col>
-                <Col span={8}>操作时间</Col>
+                <Col span={5}>时长</Col>
+                <Col span={7}>操作时间</Col>
                 <Col span={4}>价格</Col>
               </Row>
               {
                 this.state.Record.map((item, i) => (
-                  <Row key={i}>
+                  <Row key={i} style={{fontSize:'0.75rem'}}>
                     <Col span={8}>{item.datetime}</Col>
-                    <Col span={4}>{item.playtime}</Col>
-                    <Col span={8}>{item.time}</Col>
+                    <Col span={5}>{item.playtime}</Col>
+                    <Col span={7}>{item.time}</Col>
                     <Col span={4}>￥{item.mone}</Col>
                   </Row>
                 ))

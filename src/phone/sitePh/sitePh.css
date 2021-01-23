@@ -6,7 +6,7 @@
     border-bottom: 1px solid #E9E9E9;
 }
 .sitePh .header>div{
-    width: 33.33%;
+    width: 25%;
     float: left;
     text-align: center;
     font-size: 1rem;
@@ -498,6 +498,10 @@
     color: #fff;
     font-size: 0.75rem;
 }
+
+.footerBtnSel>div:first-child{
+    margin-left: 0;
+}
 .listSonSSS .right .rightSon{ 
     width: 5.5rem;
     height: 1.5rem;
@@ -524,4 +528,7 @@
     text-align: center;
     line-height: 1rem;
     color: #fff;
+}
+.am-list-item .am-input-control .fake-input-container{
+    margin-right: 105px;
 }

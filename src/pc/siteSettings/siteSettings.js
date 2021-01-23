@@ -1,7 +1,7 @@
 import React from 'react';
 import './siteSettings.css';
 import 'antd/dist/antd.css';
-import { getSiteSettingList, addVenueField, getVenueSport, AddSiteSetting, DelSiteSetting, getVenueSportidTitle, DelVenueTitle,getSpecialDaysForVenue, SiteSettingDiscountSave, getSiteSettingHistoryList, getVenueNumberTitleFirst, getSiteSettingFirst, getSiteSelectedTitle, DelVenueNumberTitle, getSiteSelectedVenueid, getVenueTitleSave, getVenueNumberTitleSave, getVenueNumberTitleList, DelSiteSettingDiscount } from '../../api';
+import { getSiteSettingList, addVenueField, getVenueSport, AddSiteSetting, DelSiteSetting, getVenueSportidTitle, VenueRelatSave, getVenueRelatList, VenueRelatRelieve, getLabelRelatVenueNumber, DelVenueTitle, getSpecialDaysForVenue, SiteSettingDiscountSave, getSiteSettingHistoryList, getVenueNumberTitleFirst, getSiteSettingFirst, getSiteSelectedTitle, DelVenueNumberTitle, getSiteSelectedVenueid, getVenueTitleSave, getVenueNumberTitleSave, getVenueNumberTitleList, DelSiteSettingDiscount } from '../../api';
 import { Select, Row, Col, Modal, Input, message, Pagination, Popconfirm, Divider, Popover, Spin, Drawer, InputNumber, Calendar } from 'antd';
 import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import 'moment/locale/zh-cn';
@@ -91,6 +91,7 @@ class siteSettings extends React.Component {
     open: false,
     historyArr: [],
     pageThree: 1,
+    pageFour: 1,
     detail: false,
     deData: [],
     dateArr: [],
@@ -102,9 +103,23 @@ class siteSettings extends React.Component {
     timeFalg: true,
     timeLimit: 1,
     timeLimitTwo: 1,
-    selectDA:'',
-    indexBtnSon:'0',
-    workingDayList:[],
+    selectDA: '',
+    indexBtnSon: '0',
+    workingDayList: [],
+    relatedness: false,
+    relatednessRunid: '',
+    connected: false,
+    connectedName: '',
+    connectedOne: '',
+    connectedOneLen: 0,
+    relatednessRunidTwo: '',
+    connectedTwo: false,
+    connectedNameTwo: '',
+    connectedOneTwo: '',
+    connectedOneLenTwo: 0,
+    relatList: [],
+    otherFour: 1,
+    relatUuid: '',
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -166,7 +181,7 @@ class siteSettings extends React.Component {
 
 
 
-  
+
 
 
   componentDidMount() {
@@ -175,6 +190,7 @@ class siteSettings extends React.Component {
     this.getVenueSport()
     this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page })
     this.getSiteSettingHistoryList({ sportid: this.state.nameChang, page: 1 })
+    this.getVenueRelatList({ sportid: this.state.nameChang, page: 1 })
     sessionStorage.setItem('siteSettings', '')
     if (this.state.runId !== '') {
       this.setState({
@@ -208,6 +224,9 @@ class siteSettings extends React.Component {
     } else if (this.state.headerData === '3') {
       this.setState({ pageThree: 1 })
       this.getSiteSettingHistoryList({ sportid: e, page: 1 })
+    } else if (this.state.headerData === '4') {
+      this.setState({ pageFour: 1 })
+      this.getVenueRelatList({ sportid: e, page: 1 })
     }
   }
 
@@ -289,7 +308,6 @@ class siteSettings extends React.Component {
 
 
   handleChangeOneTwo = e => {
-    console.log(e)
     this.getSiteSelectedTitle({ sportid: e })
     this.setState({ runIdTwo: e, joinB: false, tagsTwo: '', chekedTwo: '', chekedTwoLen: 0 })
     this.getVenueSportidTitle({ sportid: e })
@@ -337,7 +355,6 @@ class siteSettings extends React.Component {
       default:
         day = "";
     }
-    console.log(day)
     this.setState({ runNameTwo: day })
   }
 
@@ -491,7 +508,7 @@ class siteSettings extends React.Component {
   }
 
   submit = (e) => {
-    let { runIdTwo, runNameTwo, tagsTwo, openday,selectDA, starttime, timeLimit, timeLimitTwo, endtime, costperhour, chekedTwo, chekedTwoLen, maxScheduledDate, appointmenttime, comment, tagsTwoId, tags_type } = this.state
+    let { runIdTwo, runNameTwo, tagsTwo, openday, selectDA, starttime, timeLimit, timeLimitTwo, endtime, costperhour, chekedTwo, chekedTwoLen, maxScheduledDate, appointmenttime, comment, tagsTwoId, tags_type } = this.state
     if (runIdTwo === '') {
       message.warning('请选择场地类型')
     } else if (tagsTwo === '') {
@@ -528,7 +545,7 @@ class siteSettings extends React.Component {
         tags_type: tags_type,
         timelimit: timeLimit,
         durationlimit: timeLimitTwo,
-        priceunit:selectDA
+        priceunit: selectDA
       }
       this.AddSiteSetting(obj)
     }
@@ -590,9 +607,9 @@ class siteSettings extends React.Component {
       }
       this.setState({ maxScheduledDateName: dayTwo })
       if (res.data.data[0].tags.indexOf('散') !== -1) {
-        this.setState({ timeFalg: 'no',starttime: '00:00', endtime: '24:00', })
+        this.setState({ timeFalg: 'no', starttime: '00:00', endtime: '24:00', })
       } else if (res.data.data[0].tags.indexOf('按次') !== -1) {
-        this.setState({ timeFalg: 'yes',starttime: '00:00', endtime: '24:00', })
+        this.setState({ timeFalg: 'yes', starttime: '00:00', endtime: '24:00', })
       } else if (res.data.data[0].tags.indexOf('散') !== -1 || res.data.data[0].tags.indexOf('按次') !== -1) {
         this.setState({ appointmenttime: res.data.data[0].appointmenttime, starttime: '00:00', endtime: '24:00', timeFalg: false })
       } else {
@@ -605,7 +622,7 @@ class siteSettings extends React.Component {
         runIdTwo: res.data.data[0].sportid, tagsTwo: res.data.data[0].tags, opendayname: attop, openday: res.data.data[0].openday.split(','), starttime: res.data.data[0].starttime,
         costperhour: res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')), chekedTwo: res.data.data[0].venueid, chekedFour: res.data.data[0].venueid, chekedThree: res.data.data[0].venueid !== null ? res.data.data[0].venueid : res.data.data[0].venueid, chekedTwoLen: res.data.data[0].sitenumber, appointmenttime: res.data.data[0].appointmenttime,
         tagsTwoId: res.data.data[0].tags_id, tags_type: res.data.data[0].tags_type, comment: res.data.data[0].comment, maxScheduledDate: res.data.data[0].maxScheduledDate, runNameTwo: res.data.data[0].sportname, Disid: res.data.data[0].uuid, appointmenttimeTwo: res.data.data[0].discount_appointment === null ? 0 : res.data.data[0].discount_appointment, workingDayList: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(','),
-        timeLimit: res.data.data[0].timelimit, timeLimitTwo: res.data.data[0].durationlimit,selectDA:res.data.data[0].priceunit,
+        timeLimit: res.data.data[0].timelimit, timeLimitTwo: res.data.data[0].durationlimit, selectDA: res.data.data[0].priceunit,
       })
       if (this.state.runIdTwo !== '') {
         this.getVenueSportidTitle({ sportid: this.state.runIdTwo })
@@ -682,6 +699,12 @@ class siteSettings extends React.Component {
     this.getSiteSettingHistoryList({ sportid: this.state.nameChang, page: page })
   }
 
+  pageFour = (page, pageSize) => {
+    this.setState({ pageFour: page })
+    this.getVenueRelatList({ page: page })
+  }
+
+
 
   headerCli = e => {
     if (e.currentTarget.dataset.id === '2') {
@@ -693,6 +716,9 @@ class siteSettings extends React.Component {
     } else if (e.currentTarget.dataset.id === '3') {
       this.setState({ pageThree: 1 })
       this.getSiteSettingHistoryList({ sportid: this.state.nameChang, page: 1 })
+    } else if (e.currentTarget.dataset.id === '4') {
+      this.setState({ pageFour: 1 })
+      this.getVenueRelatList({ page: 1 })
     }
     this.setState({
       headerData: e.currentTarget.dataset.id,
@@ -704,6 +730,7 @@ class siteSettings extends React.Component {
       joinXi: false,
       typeDetel: 0,
       lppd: 0,
+      relatedness: false,
 
     })
   }
@@ -780,7 +807,7 @@ class siteSettings extends React.Component {
         } else if (this.state.tags === '') {
           message.error('请选择细分标签')
         } else {
-          if (this.state.typeTwo === 1 || this.state.typeTwo === 5) {
+          if (this.state.typeTwo === 1) {
             this.setState({
               arrNum: [
                 { id: '1A', cheked: false, num: 0 },
@@ -989,6 +1016,18 @@ class siteSettings extends React.Component {
                 { id: '场地不固定', cheked: false, num: 47 }]
             })
 
+          } else {
+            let arrNum = []
+            for (let i = 1; i <= 100; i++) {
+              let p = {
+                id: i, cheked: false
+              }
+              arrNum.push(p)
+
+            }
+            this.setState({
+              arrNum: arrNum
+            })
           }
 
           this.getSiteSelectedVenueid({ sportid: this.state.runId })
@@ -1034,7 +1073,7 @@ class siteSettings extends React.Component {
 
   seriaSon = e => {
     let { arrNum, runId } = this.state
-    if (runId === 6 || runId === 2) {
+    if (this.state.typeTwo === 1 || this.state.typeTwo === 2 || runId === 2) {
       if (arrNum[e.currentTarget.dataset.num].cheked === true) {
         arrNum[e.currentTarget.dataset.num].cheked = false
       } else if (arrNum[e.currentTarget.dataset.num].cheked === false) {
@@ -1055,7 +1094,6 @@ class siteSettings extends React.Component {
       }
 
 
-
       this.setState({
         arrNum: arrNum
       })
@@ -1074,6 +1112,7 @@ class siteSettings extends React.Component {
   async getSiteSelectedVenueidTwo(data) {
 
     const res = await getSiteSelectedVenueid(data, sessionStorage.getItem('venue_token'))
+    console.log(585)
     if (this.state.runId === 6) {
       for (let j in res.data.data) {
         for (let i in this.state.arrNum) {
@@ -1136,51 +1175,13 @@ class siteSettings extends React.Component {
     if (arrCheked.length === 0) {
       message.warning('请选择场地编号')
     } else {
-      if (this.state.typeTwo === 5) {
-        let arrChekedSon = []
-        for (let i in arrCheked) {
-          arrChekedSon.push(arrCheked[i].slice(0, -1))
-        }
 
+      this.setState({
+        arrCheked: arrCheked,
+        serialNumber: false,
+        arrChekedLen: arrCheked.length
+      })
 
-        let _res = []; // 
-        arrChekedSon.sort();
-        for (let i = 0; i < arrChekedSon.length;) {
-          let count = 0;
-          for (let j = i; j < arrChekedSon.length; j++) {
-            if (arrChekedSon[i] === arrChekedSon[j]) {
-              count++;
-            }
-          }
-          _res.push([arrChekedSon[i], count]);
-          i += count;
-        }
-        let _newArr = [];
-        for (let i = 0; i < _res.length; i++) {
-          if (_res[i][1] === 1) {
-            _newArr.push(_res[i][0])
-          }
-        }
-
-        if (arrCheked.length % 2 !== 0) {
-          message.warning('请选择全场')
-        } else if (_newArr.length !== 0) {
-          message.warning('请选择' + _newArr.join(',') + '的另一半场')
-        } else {
-          this.setState({
-            arrCheked: arrCheked,
-            serialNumber: false,
-            arrChekedLen: (arrCheked.length) / 2
-          })
-        }
-
-      } else {
-        this.setState({
-          arrCheked: arrCheked,
-          serialNumber: false,
-          arrChekedLen: arrCheked.length
-        })
-      }
 
     }
 
@@ -1208,6 +1209,8 @@ class siteSettings extends React.Component {
       uuid: e.currentTarget.dataset.id,
       type: typeTwo
     }
+
+
     this.getVenueNumberTitleSave(obj)
 
   }
@@ -1283,7 +1286,7 @@ class siteSettings extends React.Component {
   async getSiteSelectedVenueid(data) {
     let { arrNum, runId } = this.state
     const res = await getSiteSelectedVenueid(data, sessionStorage.getItem('venue_token'))
-    if (runId === 6 || runId === 2) {
+    if (this.state.typeTwo===1||this.state.typeTwo===2 || runId === 2) {
       for (let j in res.data.data) {
         for (let i in this.state.arrNum) {
           if (this.state.arrNum.length === 48) {
@@ -1310,7 +1313,10 @@ class siteSettings extends React.Component {
       this.setState({ arrNum: this.state.arrNum })
     } else {
       for (let i in res.data.data) {
-        this.state.arrNum[parseInt(res.data.data[i]) - 1].cheked = 'no'
+        if(res.data.data[i].indexOf('A')===-1&&res.data.data[i].indexOf('B')===-1){
+          this.state.arrNum[parseInt(res.data.data[i]) - 1].cheked = 'no'
+        }
+        
       }
       this.setState({ arrNum: this.state.arrNum })
     }
@@ -1444,10 +1450,10 @@ class siteSettings extends React.Component {
     })
   }
   handleChangeTags = e => {
-     if (e.indexOf('散') !== -1) {
-      this.setState({ timeFalg: 'no',starttime: '00:00', endtime: '24:00', })
+    if (e.indexOf('散') !== -1) {
+      this.setState({ timeFalg: 'no', starttime: '00:00', endtime: '24:00', appointmenttime: -1, })
     } else if (e.indexOf('按次') !== -1) {
-      this.setState({ timeFalg: 'yes',starttime: '00:00', endtime: '24:00', })
+      this.setState({ timeFalg: 'yes', starttime: '00:00', endtime: '24:00', appointmenttime: -1, })
     } else if (e.indexOf('散') !== -1 || e.indexOf('按次') !== -1) {
       this.setState({ appointmenttime: -1, starttime: '00:00', endtime: '24:00', timeFalg: false })
     } else {
@@ -1745,11 +1751,11 @@ class siteSettings extends React.Component {
     this.setState({ timeLimitTwo: Number(e) })
   }
 
-  selectDA=e=>{
-    this.setState({selectDA:e})
+  selectDA = e => {
+    this.setState({ selectDA: e })
   }
 
-  
+
   async getSpecialDaysForVenue(data) {
     const res = await getSpecialDaysForVenue(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 4001) {
@@ -1760,16 +1766,479 @@ class siteSettings extends React.Component {
   }
 
 
-  workingDay=e=>{
-    let index=e.currentTarget.dataset.index
-    this.getSpecialDaysForVenue({type:index})
-    this.setState({indexBtnSon:index})
+  workingDay = e => {
+    let index = e.currentTarget.dataset.index
+    this.getSpecialDaysForVenue({ type: index })
+    this.setState({ indexBtnSon: index })
   }
-  small=e=>{
-    let p=this.state.workingDayList
-     p.splice(p.indexOf(e.currentTarget.dataset.date),1)
-     this.setState({workingDayList:p})
+  small = e => {
+    let p = this.state.workingDayList
+    p.splice(p.indexOf(e.currentTarget.dataset.date), 1)
+    this.setState({ workingDayList: p })
   }
+
+
+
+
+
+  async getVenueRelatList(data) {
+    const res = await getVenueRelatList(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ relatList: res.data.data, otherFour: res.data.other.maxcount })
+    } else {
+      message.warning(res.data.msg)
+    }
+  }
+
+
+
+
+
+
+
+  relatedness = () => {
+    this.setState({ relatedness: true })
+  }
+
+
+  async getLabelRelatVenueNumber(data) {
+    const res = await getLabelRelatVenueNumber(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      let arrd = res.data.data
+      let data = this.state.arrNum
+      for (let j in arrd) {
+        for (let i in data) {
+          if (data[i].id.toString() === arrd[j]) {
+            data[i].cheked = 'no'
+          }
+        }
+      }
+
+      this.setState({ arrNum: data })
+
+    } else {
+      message.warning(res.data.msg)
+    }
+  }
+
+  handleChangeThree = e => {
+    this.setState({ relatednessRunid: [e], connectedName: '', connectedOne: '', connectedOneLen: 0 })
+  }
+
+  connectedCale = () => {
+    this.setState({ connected: false })
+  }
+
+  connected = (e) => {
+    if (this.state.relatednessRunid !== '') {
+      let num = e.currentTarget.dataset.num
+      let arrNum = []
+      if (this.state.relatednessRunid[0] === 2) {
+        arrNum = [
+          { id: '1', cheked: false, num: 0 },
+          { id: '2', cheked: false, num: 1 },
+          { id: '3', cheked: false, num: 2 },
+          { id: '4', cheked: false, num: 3 },
+          { id: '5', cheked: false, num: 4 },
+          { id: '6', cheked: false, num: 5 },
+          { id: '7', cheked: false, num: 6 },
+          { id: '8', cheked: false, num: 7 },
+          { id: '9', cheked: false, num: 8 },
+          { id: '10', cheked: false, num: 9 },
+          { id: '11', cheked: false, num: 10 },
+          { id: '12', cheked: false, num: 11 },
+          { id: '13', cheked: false, num: 12 },
+          { id: '14', cheked: false, num: 13 },
+          { id: '15', cheked: false, num: 14 },
+          { id: '16', cheked: false, num: 15 },
+          { id: '17', cheked: false, num: 16 },
+          { id: '18', cheked: false, num: 17 },
+          { id: '19', cheked: false, num: 18 },
+          { id: '20', cheked: false, num: 19 },
+          { id: '21', cheked: false, num: 20 },
+          { id: '22', cheked: false, num: 21 },
+          { id: '23', cheked: false, num: 22 },
+          { id: '24', cheked: false, num: 23 },
+          { id: '25', cheked: false, num: 24 },
+          { id: '26', cheked: false, num: 25 },
+          { id: '27', cheked: false, num: 26 },
+          { id: '28', cheked: false, num: 27 },
+          { id: '29', cheked: false, num: 28 },
+          { id: '30', cheked: false, num: 29 },
+          { id: '31', cheked: false, num: 30 },
+          { id: '32', cheked: false, num: 31 },
+          { id: '33', cheked: false, num: 32 },
+          { id: '34', cheked: false, num: 33 },
+          { id: '35', cheked: false, num: 34 },
+          { id: '36', cheked: false, num: 35 },
+          { id: '37', cheked: false, num: 36 },
+          { id: '38', cheked: false, num: 37 },
+          { id: '39', cheked: false, num: 38 },
+          { id: '40', cheked: false, num: 39 },
+          { id: '41', cheked: false, num: 40 },
+          { id: '42', cheked: false, num: 41 },
+          { id: '43', cheked: false, num: 42 },
+          { id: '44', cheked: false, num: 43 },
+          { id: '45', cheked: false, num: 44 },
+          { id: '46', cheked: false, num: 45 },
+          { id: '47', cheked: false, num: 46 },]
+      } else {
+        for (let i = 1; i <= 100; i++) {
+          let p = {
+            id: i, cheked: false
+          }
+
+          arrNum.push(p)
+        }
+
+      }
+      this.getLabelRelatVenueNumber({ sportid: this.state.relatednessRunid[0], type: 2 })
+
+      if (num !== '') {
+        if (this.state.relatednessRunid[0] === 6) {
+          let numT = num.split(',')
+          for (let i in numT) {
+            for (let j in arrNum) {
+              if (arrNum[j].id === numT[i]) {
+                arrNum[j].cheked = true
+              }
+            }
+          }
+        } else {
+          let numT = num.split(',')
+          for (let i in numT) {
+            arrNum[numT[i] - 1].cheked = true
+          }
+        }
+      }
+      let ko = ''
+      if (this.state.relatednessRunid[0] === 1) {
+        ko = '羽毛球'
+      } else if (this.state.relatednessRunid[0] === 2) {
+        ko = '兵乓球'
+      } else if (this.state.relatednessRunid[0] === 3) {
+        ko = '台球中式黑八'
+      } else if (this.state.relatednessRunid[0] === 4) {
+        ko = '台球美式九球'
+      } else if (this.state.relatednessRunid[0] === 5) {
+        ko = '台球斯诺克'
+      } else if (this.state.relatednessRunid[0] === 6) {
+        ko = '篮球'
+      } else if (this.state.relatednessRunid[0] === 7) {
+        ko = '足球11人制'
+      } else if (this.state.relatednessRunid[0] === 8) {
+        ko = '足球8人制'
+      } else if (this.state.relatednessRunid[0] === 9) {
+        ko = '足球7人制'
+      } else if (this.state.relatednessRunid[0] === 10) {
+        ko = '足球5人制'
+      } else if (this.state.relatednessRunid[0] === 11) {
+        ko = '排球'
+      } else if (this.state.relatednessRunid[0] === 12) {
+        ko = '网球'
+      } else if (this.state.relatednessRunid[0] === 13) {
+        ko = '足球6人制'
+      }
+      this.setState({ connectedName: ko, arrNum: arrNum, connected: true })
+    } else {
+      message.warning('请选择场地类型')
+    }
+
+  }
+  connectedSelsed = e => {
+
+    let data = this.state.arrNum
+    if (data[e.currentTarget.dataset.id - 1].cheked === true) {
+      data[e.currentTarget.dataset.id - 1].cheked = false
+    } else if (data[e.currentTarget.dataset.id - 1].cheked === false) {
+      data[e.currentTarget.dataset.id - 1].cheked = true
+    }
+    this.setState({ arrNum: data })
+
+  }
+  connectedBtn = () => {
+    let data = this.state.arrNum
+    let arr = []
+    for (let i in data) {
+      if (data[i].cheked === true) {
+        arr.push(data[i].id)
+      }
+    }
+    for (let i in data) {
+      data[i].cheked = false
+    }
+    this.setState({ connectedOne: arr.join(','), connectedOneLen: arr.length, connected: false, arrNum: data })
+  }
+
+  handleChangeGFour = e => {
+
+    this.setState({ relatednessRunidTwo: [e], connectedNameTwo: '', connectedOneTwo: '' })
+
+  }
+
+
+  connectedCaleTwo = () => {
+    this.setState({ connectedTwo: false })
+  }
+  connectedTwo = (e) => {
+    if (this.state.relatednessRunidTwo !== '') {
+      let arrNum = []
+      if (this.state.relatednessRunidTwo[0] === 6) {
+
+        arrNum = [
+          { id: '1A', cheked: false, num: 0 },
+          { id: '1B', cheked: false, num: 1 },
+          { id: '2A', cheked: false, num: 2 },
+          { id: '2B', cheked: false, num: 3 },
+          { id: '3A', cheked: false, num: 4 },
+          { id: '3B', cheked: false, num: 5 },
+          { id: '4A', cheked: false, num: 6 },
+          { id: '4B', cheked: false, num: 7 },
+          { id: '5A', cheked: false, num: 8 },
+          { id: '5B', cheked: false, num: 9 },
+          { id: '6A', cheked: false, num: 10 },
+          { id: '6B', cheked: false, num: 11 },
+          { id: '7A', cheked: false, num: 12 },
+          { id: '7B', cheked: false, num: 13 },
+          { id: '8A', cheked: false, num: 14 },
+          { id: '8B', cheked: false, num: 15 },
+          { id: '9A', cheked: false, num: 16 },
+          { id: '9B', cheked: false, num: 17 },
+          { id: '10A', cheked: false, num: 18 },
+          { id: '10B', cheked: false, num: 19 },
+          { id: '11A', cheked: false, num: 20 },
+          { id: '11B', cheked: false, num: 21 },
+          { id: '12A', cheked: false, num: 22 },
+          { id: '12B', cheked: false, num: 23 },
+          { id: '13A', cheked: false, num: 24 },
+          { id: '13B', cheked: false, num: 25 },
+          { id: '14A', cheked: false, num: 26 },
+          { id: '14B', cheked: false, num: 27 },
+          { id: '15A', cheked: false, num: 28 },
+          { id: '15B', cheked: false, num: 29 },
+          { id: '16A', cheked: false, num: 30 },
+          { id: '16B', cheked: false, num: 31 },
+          { id: '17A', cheked: false, num: 32 },
+          { id: '17B', cheked: false, num: 33 },
+          { id: '18A', cheked: false, num: 34 },
+          { id: '18B', cheked: false, num: 35 },
+          { id: '19A', cheked: false, num: 36 },
+          { id: '19B', cheked: false, num: 37 },
+          { id: '20A', cheked: false, num: 38 },
+          { id: '20B', cheked: false, num: 39 },
+          { id: '21A', cheked: false, num: 40 },
+          { id: '21B', cheked: false, num: 41 },
+          { id: '22A', cheked: false, num: 42 },
+          { id: '22B', cheked: false, num: 43 },
+          { id: '23A', cheked: false, num: 44 },
+          { id: '23B', cheked: false, num: 45 },
+          { id: '24A', cheked: false, num: 46 }]
+      } else if (this.state.relatednessRunidTwo[0] === 2) {
+        arrNum = [
+          { id: '1', cheked: false, num: 0 },
+          { id: '2', cheked: false, num: 1 },
+          { id: '3', cheked: false, num: 2 },
+          { id: '4', cheked: false, num: 3 },
+          { id: '5', cheked: false, num: 4 },
+          { id: '6', cheked: false, num: 5 },
+          { id: '7', cheked: false, num: 6 },
+          { id: '8', cheked: false, num: 7 },
+          { id: '9', cheked: false, num: 8 },
+          { id: '10', cheked: false, num: 9 },
+          { id: '11', cheked: false, num: 10 },
+          { id: '12', cheked: false, num: 11 },
+          { id: '13', cheked: false, num: 12 },
+          { id: '14', cheked: false, num: 13 },
+          { id: '15', cheked: false, num: 14 },
+          { id: '16', cheked: false, num: 15 },
+          { id: '17', cheked: false, num: 16 },
+          { id: '18', cheked: false, num: 17 },
+          { id: '19', cheked: false, num: 18 },
+          { id: '20', cheked: false, num: 19 },
+          { id: '21', cheked: false, num: 20 },
+          { id: '22', cheked: false, num: 21 },
+          { id: '23', cheked: false, num: 22 },
+          { id: '24', cheked: false, num: 23 },
+          { id: '25', cheked: false, num: 24 },
+          { id: '26', cheked: false, num: 25 },
+          { id: '27', cheked: false, num: 26 },
+          { id: '28', cheked: false, num: 27 },
+          { id: '29', cheked: false, num: 28 },
+          { id: '30', cheked: false, num: 29 },
+          { id: '31', cheked: false, num: 30 },
+          { id: '32', cheked: false, num: 31 },
+          { id: '33', cheked: false, num: 32 },
+          { id: '34', cheked: false, num: 33 },
+          { id: '35', cheked: false, num: 34 },
+          { id: '36', cheked: false, num: 35 },
+          { id: '37', cheked: false, num: 36 },
+          { id: '38', cheked: false, num: 37 },
+          { id: '39', cheked: false, num: 38 },
+          { id: '40', cheked: false, num: 39 },
+          { id: '41', cheked: false, num: 40 },
+          { id: '42', cheked: false, num: 41 },
+          { id: '43', cheked: false, num: 42 },
+          { id: '44', cheked: false, num: 43 },
+          { id: '45', cheked: false, num: 44 },
+          { id: '46', cheked: false, num: 45 },
+          { id: '47', cheked: false, num: 46 },]
+      } else {
+        for (let i = 1; i <= 100; i++) {
+          let p = {
+            id: i, cheked: false
+          }
+          arrNum.push(p)
+        }
+      }
+
+
+
+
+      this.getLabelRelatVenueNumber({ sportid: this.state.relatednessRunidTwo[0], type: 1 })
+      let num = e.currentTarget.dataset.num
+      if (num !== '') {
+        if (this.state.relatednessRunidTwo[0] === 6) {
+          let numT = num.split(',')
+          for (let i in numT) {
+            for (let j in arrNum) {
+              if (arrNum[j].id === numT[i]) {
+                arrNum[j].cheked = true
+              }
+            }
+          }
+        } else {
+          let numT = num.split(',')
+          for (let i in numT) {
+            arrNum[numT[i] - 1].cheked = true
+          }
+        }
+
+      }
+
+      let ko = ''
+      if (this.state.relatednessRunidTwo[0] === 1) {
+        ko = '羽毛球'
+      } else if (this.state.relatednessRunidTwo[0] === 2) {
+        ko = '兵乓球'
+      } else if (this.state.relatednessRunidTwo[0] === 3) {
+        ko = '台球中式黑八'
+      } else if (this.state.relatednessRunidTwo[0] === 4) {
+        ko = '台球美式九球'
+      } else if (this.state.relatednessRunidTwo[0] === 5) {
+        ko = '台球斯诺克'
+      } else if (this.state.relatednessRunidTwo[0] === 6) {
+        ko = '篮球'
+      } else if (this.state.relatednessRunidTwo[0] === 7) {
+        ko = '足球11人制'
+      } else if (this.state.relatednessRunidTwo[0] === 8) {
+        ko = '足球8人制'
+      } else if (this.state.relatednessRunidTwo[0] === 9) {
+        ko = '足球7人制'
+      } else if (this.state.relatednessRunidTwo[0] === 10) {
+        ko = '足球5人制'
+      } else if (this.state.relatednessRunidTwo[0] === 11) {
+        ko = '排球'
+      } else if (this.state.relatednessRunidTwo[0] === 12) {
+        ko = '网球'
+      } else if (this.state.relatednessRunidTwo[0] === 13) {
+        ko = '足球6人制'
+      }
+      this.setState({ connectedTwo: true, connectedNameTwo: ko, arrNum: arrNum })
+    } else {
+      message.warning('请选择母关联场地类型')
+    }
+
+  }
+  connectedSelsedTwo = e => {
+    if (this.state.relatednessRunidTwo[0] === 6) {
+      let data = this.state.arrNum
+      if (data[e.currentTarget.dataset.num].cheked === true) {
+        data[e.currentTarget.dataset.num].cheked = false
+      } else if (data[e.currentTarget.dataset.num].cheked === false) {
+        data[e.currentTarget.dataset.num].cheked = true
+      }
+      this.setState({ arrNum: data })
+    } else {
+      let data = this.state.arrNum
+      if (data[e.currentTarget.dataset.id - 1].cheked === true) {
+        data[e.currentTarget.dataset.id - 1].cheked = false
+      } else if (data[e.currentTarget.dataset.id - 1].cheked === false) {
+        data[e.currentTarget.dataset.id - 1].cheked = true
+      }
+      this.setState({ arrNum: data })
+    }
+
+
+
+  }
+  connectedBtnTwo = () => {
+    let data = this.state.arrNum
+    let arr = []
+    for (let i in data) {
+      if (data[i].cheked === true) {
+        arr.push(data[i].id)
+      }
+    }
+    for (let i in data) {
+      data[i].cheked = false
+    }
+    this.setState({ connectedOneTwo: arr.join(','), connectedOneLenTwo: arr.length, connectedTwo: false, arrNum: data })
+  }
+
+  async VenueRelatSave(data) {
+    const res = await VenueRelatSave(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      message.success('添加成功')
+      this.setState({ relatedness: false })
+      this.getVenueRelatList({ page: 1 })
+    } else if (res.data.code === 4002) {
+      message.warning('母关联者只能选择单个场地')
+    } else {
+      message.warning(res.data.msg)
+    }
+  }
+
+  subSiteSubdivisionTwo = () => {
+
+    if (this.state.relatednessRunid === '') {
+      message.warning('请选择母关联场地类型')
+    } else if (this.state.connectedOne === '') {
+      message.warning('请选择母关联场地编号')
+    } else if (this.state.relatednessRunidTwo === '') {
+      message.warning('请选择子关联场地类型')
+    } else if (this.state.connectedOneTwo === '') {
+      message.warning('请选择子关联场地编号')
+    } else {
+      let data = {
+        two_sportid: this.state.relatednessRunid[0],
+        two_sportname: this.state.connectedName,
+        two_venueid: this.state.connectedOne,
+        one_sportid: this.state.relatednessRunidTwo[0],
+        one_sportname: this.state.connectedNameTwo,
+        one_venueid: this.state.connectedOneTwo,
+      }
+      this.VenueRelatSave(data)
+    }
+
+  }
+  relat = (e) => {
+    this.setState({ relatUuid: e.currentTarget.dataset.uuid })
+  }
+
+
+  async VenueRelatRelieve(data) {
+    const res = await VenueRelatRelieve(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.getVenueRelatList({ page: this.state.pageFour })
+    }
+  }
+
+
+  relatfirm = () => {
+    this.VenueRelatRelieve({ relatid: this.state.relatUuid })
+  }
+
+
   render() {
     const { name } = this.state;
     return (
@@ -1778,7 +2247,9 @@ class siteSettings extends React.Component {
           <div className="header">
             <div className="left" style={this.state.headerData === '1' ? { color: '#fff', background: '#F5A623', border: '1px solid #F5A623' } : {}} onClick={this.headerCli} data-id='1'>场地细分</div>
             <div className="left" style={this.state.headerData === '2' ? { color: '#fff', background: '#F5A623', border: '1px solid #F5A623' } : {}} onClick={this.headerCli} data-id='2'>价格设置</div>
+            <div className="left" style={this.state.headerData === '4' ? { color: '#fff', background: '#F5A623', border: '1px solid #F5A623' } : {}} onClick={this.headerCli} data-id='4'>场地关联</div>
             <div className="left" style={this.state.headerData === '3' ? { color: '#fff', background: '#F5A623', border: '1px solid #F5A623' } : {}} onClick={this.headerCli} data-id='3'>历史设置</div>
+
             <div className="right"><span>场地类型</span>
               <Select className="selectName" defaultValue="类型名称" value={this.state.nameChang === '' ? '全部' : this.state.nameChang} style={{ width: 130, padding: 0, textAlign: 'center' }} onChange={this.nameChang}>
                 <Option value="0">全部</Option>
@@ -1795,7 +2266,6 @@ class siteSettings extends React.Component {
                 <Option value="10">足球5人制</Option>
                 <Option value="11">排球</Option>
                 <Option value="12">网球</Option>
-
               </Select>
             </div>
           </div>
@@ -1890,7 +2360,6 @@ class siteSettings extends React.Component {
                   <Popover content={(<div style={{ maxWidth: '200px', wordBreak: 'break-all' }}>{item.venueid}</div>)} title='详情' trigger="click">
                     <Col xs={{ span: 5 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer' }} onClick={this.tooltip}>{item.venueid}</Col>
                   </Popover>
-
                   <Col xs={{ span: 5 }}>{item.number}</Col>
                   <Col xs={{ span: 3 }}>
                     <img onClick={this.modification} data-uuid={item.uuid} style={{ marginRight: '5px', cursor: 'pointer' }} src={require("../../assets/icon_pc_updata.png")} alt="修改" />
@@ -1921,7 +2390,7 @@ class siteSettings extends React.Component {
               <Col xs={{ span: 1 }}>场地数量</Col>
               <Col xs={{ span: 2 }}>星期</Col>
               <Col xs={{ span: 2 }}>时间范围</Col>
-              <Col xs={{ span: 1 }}>价格<span style={{ fontSize: '12px', color: '#9b9b9b' }}>(元/时)</span></Col>
+              <Col xs={{ span: 1 }}>价格</Col>
               <Popover content={(<span>最长提前预订时间</span>)} title='详情' trigger="click">
                 <Col style={{ cursor: 'pointer' }} xs={{ span: 1 }}>最长提前预订时间</Col>
               </Popover>
@@ -1958,6 +2427,9 @@ class siteSettings extends React.Component {
                   <Popover content={(<span>{item.starttime}-{item.endtime}</span>)} title='详情' trigger="click">
                     <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.starttime}-{item.endtime}</Col>
                   </Popover>
+                  <Popover content={(<span>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '(元/次)'}</span>)} title='详情' trigger="click">
+                    <Col xs={{ span: 1 }} style={{ cursor: 'pointer' }}>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '(元/次)'}</Col>
+                  </Popover>
                   <Col xs={{ span: 1 }}>{item.costperhour}</Col>
                   <Col xs={{ span: 1 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
                   <Col xs={{ span: 1 }}>{item.appointmenttime === null ? '' : item.appointmenttime > 2879 ? item.appointmenttime / 60 / 24 + '天' : item.appointmenttime / 60 + '小时'}</Col>
@@ -1976,13 +2448,150 @@ class siteSettings extends React.Component {
               ))
             }
             <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.pageThree} onChange={this.pageThree} total={this.state.otherThree} />
+          </div>
 
 
 
 
 
+          <div style={this.state.headerData === '4' ? { overflowY: 'auto', height: '90%' } : { display: 'none' }}>
+            <Row className="rowConten" style={{ background: '#FCF7EE', borderBottom: '1px solid #E1E0E1' }}>
+              <Col xs={{ span: 5 }}>母关联场地类型</Col>
+              <Col xs={{ span: 5 }}>母关联场地编号</Col>
+              <Col xs={{ span: 5 }}>子关联场地类型</Col>
+              <Col xs={{ span: 5 }}>子关联场地编号</Col>
+              <Col xs={{ span: 4 }}>操作</Col>
+            </Row>
+            {
+              this.state.relatList.map((item, i) => (
+                <Row className="rowConten" style={{ marginTop: '5px' }} key={i}>
+                  <Col xs={{ span: 5 }}>{item.two_sportname==='篮球'?item.two_sportname+'（全场）':item.two_sportname}</Col>
+                  <Col xs={{ span: 5 }}>{item.two_venueid}</Col>
+                  <Col xs={{ span: 5 }}>{item.one_sportname==='篮球'?item.one_sportname+'（半场）':item.one_sportname}</Col>
+                  <Col xs={{ span: 5 }}>{item.one_venueid}</Col>
+                  <Col xs={{ span: 4 }}>
+                    <Popconfirm
+                      title={"你确定要删除该条场地关联么?"}
+                      onConfirm={this.relatfirm}
+                      onCancel={this.cancel}
+                      okText="确定"
+                      cancelText="取消"
+                    >
+                      <img onClick={this.relat} style={{ cursor: 'pointer' }} data-uuid={item.uuid} src={require("../../assets/icon_pc_delet.png")} alt="删除" />
+                    </Popconfirm></Col>
+                </Row>
+              ))
+            }
+            <div style={this.state.relatList.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '84px', height: '84px', display: 'block', margin: '64px auto 0' }} src={require('../../assets/xifen (6).png')} alt='icon' /><span style={{ display: 'block', textAlign: 'center' }}>您还没有设置关联场地!</span></div>
+            <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.pageFour} onChange={this.pageFour} total={this.state.otherFour} />
 
           </div>
+          <div className="join" style={this.state.headerData === '4' ? {} : { display: 'none' }} onClick={this.relatedness}><div id="join" style={{ textAlign: 'center', width: '150px', margin: '0 auto' }}>+添加场地关联</div></div>
+
+
+
+
+          <Modal
+            title="添加/修改关联场地"
+            visible={this.state.relatedness}
+            onOk={this.relatednessBtn}
+            onCancel={this.handlejoinXi}
+            width={500}
+            className='model'
+            closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
+          >
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>母关联场地类型</span>
+              <Select placeholder="请选择" className="selectModel" value={this.state.relatednessRunid === '' ? [] : this.state.relatednessRunid} style={{ width: 249, height: 32, marginRight: 80 }} onChange={this.handleChangeThree}>
+                {
+                  this.state.ListSport.map((item, i) => (
+                    <Option key={i} value={item.id}>{item.name}</Option>
+                  ))
+                }
+              </Select>
+            </div>
+
+            <div className="modelList" style={{ height: '32px' }} data-num={this.state.connectedOne} onClick={this.connected}>
+              <span>母关联场地编号</span>
+              <Input className="startTime" value={this.state.connectedOne.length !== 0 ? this.state.connectedOne : []} style={{ paddingLeft: '10px', height: 32, background: '#fff', color: '#333', cursor: 'pointer', marginRight: 80 }} disabled={true} placeholder="点击进行选择" />
+            </div>
+
+            <div className="modelList" style={{ height: '32px' }} >
+              <span>子关联场地数量</span>
+              <div className="startTime" style={{ marginRight: 75, fontSize: '14px' }}>{this.state.connectedOneLen}</div>
+            </div>
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>子关联场地类型</span>
+              <Select placeholder="请选择" className="selectModel" value={this.state.relatednessRunidTwo === '' ? [] : this.state.relatednessRunidTwo} style={{ width: 249, height: 32, marginRight: 80 }} onChange={this.handleChangeGFour}>
+                {
+                  this.state.ListSport.map((item, i) => (
+                    <Option key={i} value={item.id}>{item.name}</Option>
+                  ))
+                }
+              </Select>
+            </div>
+            <div className="modelList" style={{ height: '32px' }} data-num={this.state.connectedOneTwo} onClick={this.connectedTwo}>
+              <span>关联场地编号</span>
+              <Input className="startTime" value={this.state.connectedOneTwo.length !== 0 ? this.state.connectedOneTwo : []} style={{ paddingLeft: '10px', height: 32, background: '#fff', color: '#333', cursor: 'pointer', marginRight: 80 }} disabled={true} placeholder="点击进行选择" />
+            </div>
+            <div className="footerLok">
+              <div className="submit" data-id={this.state.venNumid} onClick={this.subSiteSubdivisionTwo}>提交</div>
+            </div>
+          </Modal>
+
+
+
+          <Modal
+            title="母关联场地编号"
+            visible={this.state.connected}
+            onOk={this.handleOk}
+            onCancel={this.connectedCale}
+            width={630}
+            style={{ zIndex: 999 }}
+            className='model'
+            closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
+          >
+            <div className="serialNumberTop"><span>请选择母关联的{this.state.connectedName}场地编号</span></div>
+            <div style={{ clear: 'both' }}>
+              {
+                this.state.arrNum.map((item, i) => (
+                  <div key={i} className="serialSon" onClick={this.connectedSelsed} data-num={item.num} data-id={item.id} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', transition: '0.3s', opacity: '0.2' } : item.id === '场地不固定' ? { width: '80px' } : {}}>{item.id}</div>
+                ))
+              }
+            </div>
+            <div className="footerSerial">
+              <div className="seriaComfir" onClick={this.connectedBtn}>提交</div>
+            </div>
+          </Modal>
+
+
+          <Modal
+            title="子关联场地编号"
+            visible={this.state.connectedTwo}
+            onOk={this.handleOk}
+            onCancel={this.connectedCaleTwo}
+            width={630}
+            style={{ zIndex: 999 }}
+            className='model'
+            closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
+          >
+            <div className="serialNumberTop"><span>请选择您要子关联的{this.state.connectedNameTwo}场地编号</span></div>
+            <div style={{ clear: 'both' }}>
+              {
+                this.state.arrNum.map((item, i) => (
+                  <div key={i} className="serialSon" onClick={this.connectedSelsedTwo} data-num={item.num} data-id={item.id} style={item.cheked === true ? { color: '#fff', background: '#F5A623', transition: '0.3s' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', transition: '0.3s', opacity: '0.2' } : item.id === '场地不固定' ? { width: '80px' } : {}}>{item.id}</div>
+                ))
+              }
+            </div>
+            <div className="footerSerial">
+              <div className="seriaComfir" onClick={this.connectedBtnTwo}>提交</div>
+            </div>
+          </Modal>
+
+
+
+
+
 
 
           <Drawer
@@ -2098,16 +2707,16 @@ class siteSettings extends React.Component {
 
 
             <div className="modelList" style={{ height: '32px' }}>
-              <span>价格</span><span>{this.state.timeFalg === 'no' ? '' : this.state.timeFalg === 'yes' ? '（元/次）' : '(元/时)'}</span>
-              <InputNumber className="startTime" value={this.state.costperhour} defaultValue={1} min={1} style={this.state.timeFalg === 'no'?{ height: 32, width: 269,marginLeft:'115px', paddingLeft: '11px',marginRight:0,float:'left' }:{ height: 32, width: 269, paddingLeft: '11px' }} placeholder="请输入" onChange={this.money} />
-              <Select placeholder="请选择" onChange={this.selectDA} value={this.state.selectDA} style={this.state.timeFalg === 'no'?{float:'right',marginRight:'50px',width:'80px',height:'32px'}:{display:'none'}}>
-              <Option value="次">次</Option>
-              <Option value="/H">/H</Option>
-              <Option value="2H">2H</Option>
-              <Option value="3H">3H</Option>
-              <Option value="4H">4H</Option>
-              <Option value="5H">5H</Option>
-              <Option value="6H">6H</Option>
+              <span>价格</span><span>{this.state.timeFalg === 'no' ? '' : this.state.timeFalg === 'yes' ? '' : '(元/时)'}</span>
+              <InputNumber className="startTime" value={this.state.costperhour} defaultValue={1} min={1} style={this.state.timeFalg === 'no' ? { height: 32, width: 269, marginLeft: '115px', paddingLeft: '11px', marginRight: 0, float: 'left' } : this.state.timeFalg === 'yes' ? { height: 32, width: 269, marginLeft: '115px', paddingLeft: '11px', marginRight: 0, float: 'left' } : { height: 32, width: 269, paddingLeft: '11px' }} placeholder="请输入" onChange={this.money} />
+              <Select placeholder="请选择" onChange={this.selectDA} value={this.state.selectDA} style={this.state.timeFalg === 'no' ? { float: 'right', marginRight: '50px', width: '80px', height: '32px' } : this.state.timeFalg === 'yes' ? { float: 'right', marginRight: '50px', width: '80px', height: '32px' } : { display: 'none' }}>
+                <Option value="次">次</Option>
+                <Option value="/H">/H</Option>
+                <Option value="2H">2H</Option>
+                <Option value="3H">3H</Option>
+                <Option value="4H">4H</Option>
+                <Option value="5H">5H</Option>
+                <Option value="6H">6H</Option>
 
               </Select>
             </div>
@@ -2123,7 +2732,7 @@ class siteSettings extends React.Component {
             </div>
             <div className="modelList" style={{ height: 32 }}>
               <span>最短提前预订时间</span>
-              <Select placeholder="请选择" disabled={this.state.timeFalg === false ? true : false} className="selectModel"
+              <Select placeholder="请选择" disabled={this.state.timeFalg === 'no' ? true : this.state.timeFalg === 'yes' ? true : false} className="selectModel"
                 defaultActiveFirstOption={false}
                 value={
                   this.state.appointmenttime === -1 ? '不限' : []
@@ -2413,28 +3022,28 @@ class siteSettings extends React.Component {
 
             <div className="modelList" style={{ height: 'auto' }}>
               <span>特定日期</span>
-            <div className="specificList">
-              <div className="specificListSon">
-                 
-                 {
-                   this.state.workingDayList.map((item,i)=>(
+              <div className="specificList">
+                <div className="specificListSon">
 
-                    <span className="small" key={i}>{item}<span onClick={this.small} data-date={item} >×</span></span>
-                   ))
-                 }
+                  {
+                    this.state.workingDayList.map((item, i) => (
+
+                      <span className="small" key={i}>{item}<span onClick={this.small} data-date={item} >×</span></span>
+                    ))
+                  }
+
+                </div>
+                <div className="footer">
+                  <div onClick={this.workingDay} data-index="1" style={this.state.indexBtnSon === '1' ? { background: '#F5A623' } : {}}>当前年工作日</div>
+                  <div onClick={this.workingDay} data-index="2" style={this.state.indexBtnSon === '2' ? { background: '#F5A623' } : {}}>当前年周六日</div>
+                  <div onClick={this.workingDay} data-index="3" style={this.state.indexBtnSon === '3' ? { background: '#F5A623' } : {}}>当前年法定节假日</div>
+                </div>
+
 
               </div>
-              <div className="footer">
-                <div onClick={this.workingDay} data-index="1" style={this.state.indexBtnSon==='1'?{background:'#F5A623'}:{}}>当前年工作日</div>
-                <div onClick={this.workingDay} data-index="2" style={this.state.indexBtnSon==='2'?{background:'#F5A623'}:{}}>当前年周六日</div>
-                <div onClick={this.workingDay} data-index="3" style={this.state.indexBtnSon==='3'?{background:'#F5A623'}:{}}>当前年法定节假日</div>
-              </div>
-              
 
-              </div>
-           
             </div>
-            
+
 
 
 

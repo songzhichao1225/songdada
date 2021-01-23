@@ -1,8 +1,8 @@
 import React from 'react';
 import './systemSettings.css';
 import 'antd/dist/antd.css';
-import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport, VenueTemporarilyClosed,VenueAdvertiseSave, VenueAdvertiseFirst, gerVenueName, imgUrlTwo, VenueIsClose, getVenueIsClose, VenueFeedback, getVenueHelpCenter } from '../../api';
-import { Input, message, Checkbox, Drawer, Pagination, Popconfirm, Upload } from 'antd';
+import { _code, VenueChangePassword, VenueBindingPhone, getVenueSport, VenueTemporarilyClosed, VenueAdvertiseSave, VenuecheckCodeIsTrue, VenueAdvertiseFirst, gerVenueName, imgUrlTwo, VenueIsClose, getVenueIsClose, VenueFeedback, getVenueHelpCenter } from '../../api';
+import { Input, message, Checkbox, Drawer, Pagination, Popconfirm, Upload, Modal } from 'antd';
 import Icon from '@ant-design/icons';
 import 'moment/locale/zh-cn';
 import ImgCrop from 'antd-img-crop';
@@ -22,6 +22,7 @@ class systemSettings extends React.Component {
     textT: '获取验证码',
     textTwo: '获取验证码',
     textOne: '获取验证码',
+    textFour: '获取验证码',
     phone: '',
     code: '',
     passWord: '',
@@ -50,8 +51,10 @@ class systemSettings extends React.Component {
     advertisingTwo: '',
     cgName: '',
     btnList: 1,
-    advertise_uuid:'',
-    ismethod:0,
+    advertise_uuid: '',
+    ismethod: 0,
+    erificationNum: false,
+    codeChange: '',
   }
 
   showDrawer = () => {
@@ -82,7 +85,7 @@ class systemSettings extends React.Component {
 
   componentDidMount() {
     this.getVenueIsClose()
-    this.setState({ corporatePhone: sessionStorage.getItem('legalphone'),ismethod:Number(sessionStorage.getItem('ismethod'))})
+    this.setState({ corporatePhone: sessionStorage.getItem('legalphone'), ismethod: Number(sessionStorage.getItem('ismethod')) })
     setInterval(() => {
       if (sessionStorage.getItem('sitew') === 'false') {
         this.setState({
@@ -157,12 +160,12 @@ class systemSettings extends React.Component {
     const res = await VenueAdvertiseFirst(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       if (res.data.data.length !== 0) {
-        if(res.data.data.imgURL.indexOf('|')!==-1){
-          this.setState({advertising:res.data.data.imgURL.split('|')[0],advertisingTwo:res.data.data.imgURL.split('|')[1]})
-        }else{
-          this.setState({advertising:res.data.data.imgURL})
+        if (res.data.data.imgURL.indexOf('|') !== -1) {
+          this.setState({ advertising: res.data.data.imgURL.split('|')[0], advertisingTwo: res.data.data.imgURL.split('|')[1] })
+        } else {
+          this.setState({ advertising: res.data.data.imgURL })
         }
-        this.setState({ btnList: res.data.data.status,advertise_uuid:res.data.data.uuid,})
+        this.setState({ btnList: res.data.data.status, advertise_uuid: res.data.data.uuid, })
       }
     }
   }
@@ -350,7 +353,7 @@ class systemSettings extends React.Component {
   }
 
   handleCancel = () => {
-    this.setState({ visible: false })
+    this.setState({ visible: false,erificationNum:false })
   }
 
   model = () => {
@@ -428,8 +431,31 @@ class systemSettings extends React.Component {
   closeYu = () => {
     this.props.history.push("/home/closeYu")
   }
-  command=()=>{
-    this.props.history.push("/home/command")
+
+  codeChange = e => {
+    this.setState({ codeChange: e.target.value })
+  }
+
+  async VenuecheckCodeIsTrue(data) {
+    const res = await VenuecheckCodeIsTrue(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.props.history.push("/home/command")
+    } else {
+      message.warning(res.data.msg)
+    }
+  }
+
+
+  codeBtnSubmi = () => {
+    this.VenuecheckCodeIsTrue({ mobile: this.state.corporatePhone, code: this.state.codeChange, type: 'venueAuthorized' })
+  }
+  command = () => {
+
+    this.setState({ erificationNum: true })
+
+
+
+
   }
   feedBack = () => {
     this.setState({ bot: !this.state.bot })
@@ -512,27 +538,48 @@ class systemSettings extends React.Component {
     if (res.data.code === 2000) {
       message.success(res.data.msg)
       this.VenueAdvertiseFirst()
-    }else{
+    } else {
       message.error(res.data.msg)
     }
   }
 
 
-  addBtn=()=>{
-    let imgurl=''
-    let {advertising,advertisingTwo}=this.state
-    if(advertising!==''&&advertisingTwo!==''){
-       imgurl=advertising+'|'+advertisingTwo
-    }else if(advertising===''&&advertisingTwo!==''){
-      imgurl=advertisingTwo
-    }else if(advertisingTwo===''&&advertising!==''){
-      imgurl=advertising
-    }else{
-      imgurl=''
+  addBtn = () => {
+    let imgurl = ''
+    let { advertising, advertisingTwo } = this.state
+    if (advertising !== '' && advertisingTwo !== '') {
+      imgurl = advertising + '|' + advertisingTwo
+    } else if (advertising === '' && advertisingTwo !== '') {
+      imgurl = advertisingTwo
+    } else if (advertisingTwo === '' && advertising !== '') {
+      imgurl = advertising
+    } else {
+      imgurl = ''
     }
-    this.VenueAdvertiseSave({imgurl:imgurl,advertise_uuid:this.state.advertise_uuid})
+    this.VenueAdvertiseSave({ imgurl: imgurl, advertise_uuid: this.state.advertise_uuid })
   }
 
+
+
+  codeClick = () => {
+    this.codeClickMsg({ "mobile": this.state.corporatePhone, "type": 'venueAuthorized', "uuid": sessionStorage.getItem('uuid') })
+  }
+
+  async codeClickMsg(data) {
+    const res = await _code(data)
+    if (res.data.code === 2000) {
+      let num = 60
+      const timer = setInterval(() => {
+        this.setState({ textFour: num-- })
+        if (num === -1) {
+          clearInterval(timer)
+          this.setState({ textFour: '获取验证码' })
+        }
+      }, 1000)
+    } else {
+      message.error(res.data.msg)
+    }
+  }
 
 
   render() {
@@ -542,7 +589,7 @@ class systemSettings extends React.Component {
         <svg t="1596268702646" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style={{ marginTop: '0.5rem' }} p-id="3225" width="48" height="48"><path d="M1004.8 533.333333H21.333333c-10.666667 0-19.2-8.533333-19.2-19.2V512c0-12.8 8.533333-21.333333 19.2-21.333333h983.466667c10.666667 0 19.2 8.533333 19.2 19.2v2.133333c2.133333 12.8-8.533333 21.333333-19.2 21.333333z" p-id="3226" fill="#8a8a8a"></path><path d="M535.466667 21.333333v981.333334c0 10.666667-8.533333 21.333333-21.333334 21.333333-10.666667 0-21.333333-10.666667-21.333333-21.333333V21.333333c0-10.666667 8.533333-21.333333 21.333333-21.333333 10.666667 0 21.333333 8.533333 21.333334 21.333333z" p-id="3227" fill="#8a8a8a"></path></svg>
       </div>
     )
-    
+
     return (
       <div className="systemSettings">
         <div className="title"><span style={{ cursor: 'pointer' }} onClick={this.resetNot}>系统设置</span> <span className={this.state.flagListOne === false ? 'titleSpan' : 'listNone'}>{this.state.text}</span></div>
@@ -564,7 +611,7 @@ class systemSettings extends React.Component {
 
           <ul className="ul">
             <li onClick={this.Untie}>更换操作员</li>
-            <li onClick={this.command} style={this.state.ismethod===1?{}:{display:'none'}}>添加/解除第二负责人</li>
+            <li onClick={this.command} >添加/解除第二负责人</li>
             <li onClick={this.reset}>重置密码</li>
             <li onClick={this.advertisingOne}>设置广告宣传图片</li>
           </ul>
@@ -594,11 +641,11 @@ class systemSettings extends React.Component {
               <div className="clearfix">
                 <ImgCrop aspect={20 / 9} quality={1} width={200} height={90}>
                   <Upload
-                    name="files" 
+                    name="files"
                     listType="picture-card"
                     className="avatar-uploader addImg"
                     showUploadList={false}
-                    action={imgUrlTwo+"api/UploadVenueImgs?type=Venue"}
+                    action={imgUrlTwo + "api/UploadVenueImgs?type=Venue"}
                     onChange={this.advertising}
                     accept=".jpg, .jpeg, .png"
                   >
@@ -614,7 +661,7 @@ class systemSettings extends React.Component {
                     listType="picture-card"
                     className="avatar-uploader addImg"
                     showUploadList={false}
-                    action={imgUrlTwo+"api/UploadVenueImgs?type=Venue"}
+                    action={imgUrlTwo + "api/UploadVenueImgs?type=Venue"}
                     onChange={this.advertisingTwo}
                     accept=".jpg, .jpeg, .png"
                   >
@@ -623,7 +670,7 @@ class systemSettings extends React.Component {
                 </ImgCrop>
               </div>
             </div>
-            <div className="submit" style={{ margin: 0 }} onClick={this.state.btnList===0?this.lokomook:this.addBtn}>{this.state.btnList === 0 ? '待审核' : '确定'}</div>
+            <div className="submit" style={{ margin: 0 }} onClick={this.state.btnList === 0 ? this.lokomook : this.addBtn}>{this.state.btnList === 0 ? '待审核' : '确定'}</div>
           </div>
         </div>
 
@@ -733,6 +780,18 @@ class systemSettings extends React.Component {
           <Pagination className='fenye' defaultCurrent={1} hideOnSinglePage={true} showSizeChanger={false} current={this.state.page} onChange={this.current} total={this.state.other} />
 
         </Drawer>
+
+        <Modal title="验证第一负责人手机号" visible={this.state.erificationNum} onOk={this.handleOk} className="mode" onCancel={this.handleCancel}>
+          <div className="listSon">
+            <span>第一负责人手机号</span><span style={{ paddingLeft: '30px' }}>{this.state.corporatePhone}</span><span className="codeClass" onClick={this.codeClick}>{this.state.textFour}</span>
+          </div>
+          <div className="listSon" style={{ height: '32px', lineHeight: '32px', marginTop: '10px' }}>
+            <span className="codeNumTw">验证码</span>
+            <Input className="inputCode" onChange={this.codeChange} type="number" />
+          </div>
+
+          <div className="codeBtnSubmi" onClick={this.codeBtnSubmi}>确认</div>
+        </Modal>
 
 
 

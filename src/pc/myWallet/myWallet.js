@@ -90,6 +90,7 @@ class myWallet extends React.Component {
     inCorName: '',
     inChargeNa: '',//负责人姓名,
     pageTwo: 1,
+    Bankphone:'',
   }
 
   dateChange = (data, dateString) => {
@@ -428,9 +429,13 @@ class myWallet extends React.Component {
     }
   }
 
+  Bankphone=e=>{
+    this.setState({Bankphone:e.target.value})
+  }
+
 
   ziSubmitTwo = () => {
-    let { numRadio, numRadioTwo, inCorName, inChargeNa, imgHood, imgFile, corporateId, imgFileTwo, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
+    let { numRadio, numRadioTwo, inCorName,Bankphone, inChargeNa, imgHood, imgFile, corporateId, imgFileTwo, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
     let data = {
       Bankcard: numRadio === 0 ? '' : corporateId,
       legalBaseURL: numRadioTwo === 1 ? imgHood : numRadio === 1 ? imgHood : '',
@@ -443,6 +448,7 @@ class myWallet extends React.Component {
       ProvinceBank: province_id,
       CityBank: city_id,
       account: numRadioTwo,
+      Bankphone:Bankphone,
       Bankcorporate: numRadio === 0 ? inCorName : '',
     }
 
@@ -830,6 +836,11 @@ class myWallet extends React.Component {
           <div className="listing">
             <span>银行卡号:</span>
             <Input className="listingInput" placeholder="请输入银行卡号" value={this.state.corporateCardId} onChange={this.corporateCardId} />
+          </div>
+
+          <div className="listing">
+            <span>短信通知:</span>
+            <Input className="listingInput" placeholder="请输入通知汇款成功手机号(可不填)" value={this.state.Bankphone} onChange={this.Bankphone} />
           </div>
 
           <div className="listing">

@@ -614,7 +614,7 @@ class appointmentList extends React.Component {
                   }</div> </Popover> : <span><div>
                     {
                       item.breakup.map((itemTwo, i) => (
-                        <div key={i} style={{ textAlign: 'center' }}>{itemTwo.venueid}</div>
+                        <div key={i} style={{ textAlign: 'center',lineHeight:'33px' }}>{itemTwo.venueid}</div>
                       ))
                     }
                   </div></span> : <span>{item.Shouldarrive}</span>}</Col>

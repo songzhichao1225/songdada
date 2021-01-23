@@ -76,8 +76,8 @@ class minePh extends React.Component {
   showDrawer = () => {
     this.setState({
       visible: true,
-    });
-  };
+    })
+  }
 
   onClose = () => {
     this.setState({
@@ -147,10 +147,14 @@ class minePh extends React.Component {
   }
 
   onchangList = (e) => {
+
     let data = {
       username: this.state.phone, usercode: '', userpass: '', type: 5, Logintype: 'mobile', venueloginuuid: e[0]
     }
-    this.login(data)
+
+    if(this.state.selectEdList.length>1){
+      this.login(data)
+    }
 
   }
   render() {
@@ -172,7 +176,7 @@ class minePh extends React.Component {
               >
                 <List.Item arrow="horizontal" className="selectEd" onClick={this.onClick}></List.Item>
               </Picker>
-
+ 
               <span>场地履约率{localStorage.getItem('lyv')}%</span>
             </div>
           </div>

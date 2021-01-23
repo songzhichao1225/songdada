@@ -121,6 +121,7 @@ class stadiums extends React.Component {
     legalhourBaseURL: '',
     ascrBaceUrl: '',
     valueThree: 1,
+    Bankphone:'',
   };
 
   async getVenueInformation(data) {
@@ -243,7 +244,7 @@ class stadiums extends React.Component {
       this.setState({
         CorporateName: res.data.data.CorporateName, bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
         faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
-        inCorName: res.data.data.Bankcorporate, corporateOpen: res.data.data.OpeningBank, corporateId: res.data.data.Bankcard, corporateCardId: res.data.data.Bankaccount, inChargeNa: res.data.data.Bankname, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
+        inCorName: res.data.data.Bankcorporate, corporateOpen: res.data.data.OpeningBank, corporateId: res.data.data.Bankcard,Bankphone:res.data.data.Bankphone, corporateCardId: res.data.data.Bankaccount, inChargeNa: res.data.data.Bankname, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
         legalBaseURL: res.data.data.legalBaseURL,
         filesThree: res.data.data.lisenceURL === '' ? [] : [{ url: imgUrlTwo + res.data.data.lisenceURL }],
         filesThreeSon: res.data.data.lisenceURL === '' ? '' : res.data.data.lisenceURL,
@@ -730,9 +731,12 @@ class stadiums extends React.Component {
       message.error(res.data.msg)
     }
   }
+  Bankphone=e=>{
+    this.setState({Bankphone:e.target.value})
+  }
 
   ziSubmitTwo = () => {
-    let { numRadio, numRadioTwo, inCorName, inChargeNa, legalBaseURL, imageUrlTwo, corporateId, imageUrlThree, filesFiveSon, filesFourSon, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
+    let { numRadio, numRadioTwo,Bankphone, inCorName, inChargeNa, legalBaseURL, imageUrlTwo, corporateId, imageUrlThree, filesFiveSon, filesFourSon, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
     let data = {
       legalBaseURL: numRadioTwo === 1 ? legalBaseURL : numRadio === 1 ? legalBaseURL : '',
       legalFilesURL: numRadioTwo === 1 ? filesFourSon + '|' + filesFiveSon : numRadio === 1 ? filesFourSon + '|' + filesFiveSon : '',
@@ -745,6 +749,7 @@ class stadiums extends React.Component {
       ProvinceBank: province_id,
       CityBank: city_id,
       account: numRadioTwo,
+      Bankphone:Bankphone,
       Bankcorporate: numRadio === 0 ? inCorName : '',
     }
     if (numRadio && imageUrlTwo === 1) {
@@ -1328,7 +1333,10 @@ class stadiums extends React.Component {
               <span>银行卡号:</span>
               <Input className="listingInput" placeholder="请输入银行卡号" value={this.state.corporateCardId} onChange={this.corporateCardId} />
             </div>
-
+            <div className="listing">
+              <span>短信通知:</span>
+              <Input className="listingInput" placeholder="请输入通知汇款成功手机号(可不填)" value={this.state.Bankphone} onChange={this.Bankphone} />
+            </div>
             <div className="listing">
               <span>开户所在地</span>
               <Select placeholder="银行类型" style={{ width: 120, height: '35px', marginLeft: '18px' }} value={this.state.bank_id === '' ? null : Number(this.state.bank_id)} loading={this.state.flagOne} onChange={this.typeChange}>

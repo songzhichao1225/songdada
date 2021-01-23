@@ -2,13 +2,15 @@ import axios from 'axios';
 
 //本地全部隐去
 // axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
-// axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
+axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
 
-// export let imgUrlTwo='https://app.tiaozhanmeiyitian.com/'  //正式图片路径
-export let imgUrlTwo='https://appstg.tiaozhanmeiyitian.com/'  //测试图片路径
+export let imgUrlTwo='https://app.tiaozhanmeiyitian.com/'  //正式图片路径
+// export let imgUrlTwo='https://appstg.tiaozhanmeiyitian.com/'  //测试图片路径
 
 // export let wsFn = new WebSocket("wss://www.cg.zhaoduishou.com/socket");//正式socket
-export let wsFn = new WebSocket("wss://cgstg.zhaoduishou.com/socket");//测试socket
+// export let wsFn = new WebSocket("wss://cgstg.zhaoduishou.com/socket");//测试socket
+// export let wsFn = new WebSocket("wss://59.110.0.126:9998");//测试socket
+export let wsFn = new WebSocket("wss://admin.tiaozhanmeiyitian.com/socket");//测试、正式环境只此一个
 
 export function _login(data){    //登录
     return axios.post('/api/getVenueLogin',data)
@@ -22,7 +24,6 @@ export function VenueChangePassword(data,headers){   //重置密码
     return axios.post('/api/VenueChangePassword',data,{headers: {'token': headers}})
 }
 
-
 export function getPromoteName(data){   //输入推广专员id号显示其姓名
     return axios.post('/api/getPromoteName',data)
 }
@@ -31,10 +32,9 @@ export function _code(data){    //获取验证码
     return axios.post('/api/toVenueSendCode',data)
 }
 
-
 export function getProvince(data){    //获取省份
     return axios.post('/api/getProvince',data)
-} 
+}
 
 export function getCrty(data){    //获取市
     return axios.post('/api/getCrty',data)
@@ -537,6 +537,27 @@ export function getSpecialDaysForVenue(data,headers){    //场馆端——获取
 export function getMobilePhoneBindingVenues(data,headers){    //场馆端~根据token获取与当前token下的手机号有关的场馆（操作员绑定的场馆，负责人绑定的场馆，第二负责人绑定的场馆）
     return axios.post('/api/getMobilePhoneBindingVenues',data,{headers: {'token': headers}})
 }
+
+export function VenueRelatSave(data,headers){    //场馆端~场地关联~添加修改场地关联
+    return axios.post('/api/VenueRelatSave',data,{headers: {'token': headers}})
+}
+  
+export function getVenueRelatList(data,headers){    //场馆端~场地关联~获取某个场馆的关联列表
+    return axios.post('/api/getVenueRelatList',data,{headers: {'token': headers}})
+}
+
+export function getLabelRelatVenueNumber(data,headers){    //场馆端~场地关联~获取场馆某个运动项目下已经被关联的id 
+    return axios.post('/api/getLabelRelatVenueNumber',data,{headers: {'token': headers}})
+}
+  
+export function VenueRelatRelieve(data,headers){    //场馆端~场地关联~取消关联 
+    return axios.post('/api/VenueRelatRelieve',data,{headers: {'token': headers}})
+}
+
+export function VenuecheckCodeIsTrue(data,headers){    //判断场馆端的验证码是否正确
+    return axios.post('/api/VenuecheckCodeIsTrue',data,{headers: {'token': headers}})
+}
+  
   
 
 

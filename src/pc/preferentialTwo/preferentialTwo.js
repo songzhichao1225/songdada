@@ -148,8 +148,11 @@ class appointmentList extends React.Component {
       this.getVenueNumberTitleList({ sportid: this.props.location.query.id })
     }
     let week=['周日','周一','周二','周三','周四','周五','周六']
-    
-    this.setState({ dateString: new Date().toLocaleDateString().replace(/\//g, "-"),week:week[new Date().getDay()] })
+    let lo=new Date().toLocaleDateString().split('/')[1]
+    if(lo.length===1){
+      lo=new Date().toLocaleDateString().split('/')[0]+'-0'+new Date().toLocaleDateString().split('/')[1]+'-'+new Date().toLocaleDateString().split('/')[2]
+    }
+    this.setState({ dateString: lo,week:week[new Date().getDay()] })
   }
 
 

@@ -101,7 +101,7 @@ class home extends React.Component {
       let object = res.data.data.label
       var arr = []
       for (let i in object) {
-        arr.push(object[i]);
+        arr.push(object[i])
       }
       this.setState({ detail: res.data.data, Selabel: arr, SelabelTwo: arr[0], isModalVisible: true })
     }
@@ -514,7 +514,7 @@ class home extends React.Component {
             <div className="Gname">
               <img src={require("../../assets/icon_logo_Gname (2).png")} alt="logo" />
              
-              <Select value={this.state.defaultValue} className="selectEd" onChange={this.selectEd} suffixIcon={<DownOutlined style={{ color: '#fff' }} />}>
+              <Select value={this.state.defaultValue} className="selectEd" onChange={this.selectEd}  suffixIcon={<DownOutlined style={{ color: '#fff',fontSize:'18px' }} />}>
                 {
                   this.state.selectEd.map((item,i) => (
                     <Option key={i} value={item.venueuuid}>{item.name}</Option>

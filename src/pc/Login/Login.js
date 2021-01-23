@@ -208,14 +208,14 @@ class Login extends React.Component {
                   <Form.Item className="code">
                     <Input onChange={this.code} placeholder="手机验证码" />
                   </Form.Item>
-                  <Form.Item className="bind">
+                 
                     <div className={this.state.textT === '获取验证码' ? 'codeBtn' : 'koohidden'} onClick={this.naCode}>
                       {this.state.textT}
                     </div>
                     <div className={this.state.textT === '获取验证码' ? 'koohidden' : 'codeBtn'} >
                       {this.state.textT}
                     </div>
-                  </Form.Item>
+                  
                  
 
                   <Form.Item className="bind">

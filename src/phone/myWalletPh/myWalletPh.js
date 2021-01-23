@@ -28,6 +28,7 @@ class myWalletPh extends React.Component {
     numRadio: 1,
     numRadioFive:0,
     corporateCardId: '',
+    Bankphone:'',
     corporateOpen: '',
     legalBaseURL: '',
     corporateId: '',
@@ -331,10 +332,13 @@ class myWalletPh extends React.Component {
   inCorName= e => {
     this.setState({ inCorName: e.target.value })
   }
+  Bankphone=e=>{
+    this.setState({Bankphone:e.target.value})
+  }
 
 
   ziSubmitTwo = () => {
-    let { numRadio, numRadioFive,inCorName,inChargeNa,legalBaseURL,corporateId,filesSon, filesSonTwo, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
+    let { numRadio, numRadioFive,inCorName,inChargeNa,Bankphone,legalBaseURL,corporateId,filesSon, filesSonTwo, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
     let data = {
       Bankcard: numRadio === 0 ? '' : corporateId,
       legalBaseURL: numRadioFive === 1 ? legalBaseURL : numRadio === 1 ? legalBaseURL : '',
@@ -347,6 +351,7 @@ class myWalletPh extends React.Component {
       ProvinceBank:typeof(province_id)==='object'?province_id.join():province_id,
       CityBank: typeof(city_id)==='object'?city_id.join():city_id,
       account: numRadioFive,
+      Bankphone:Bankphone,
       Bankcorporate:numRadio===0?inCorName:'',
     }
     this.VenueReceivingBankInformation(data)
@@ -646,6 +651,10 @@ class myWalletPh extends React.Component {
               <Input className="right" value={this.state.corporateCardId} placeholder="请输入银行账号" onChange={this.corporateCardId} />
             </div>
 
+            <div className="listSon">
+              <span style={{ paddingLeft: '5px' }}>短信通知</span>
+              <Input className="right" value={this.state.Bankphone} placeholder="请输入通知汇款成功手机号(可不填)" onChange={this.Bankphone} />
+            </div>
 
             <div className="listSon">
               <Picker data={this.state.type} cols={1} onChange={this.typeChange} disabled={this.state.flagDis} value={[Number(this.state.bank_id)]} className="forss">

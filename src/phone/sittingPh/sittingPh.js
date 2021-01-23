@@ -5,14 +5,16 @@ import { Toast, Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Switch } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
-import { VenueIsClose, getVenueIsClose } from '../../api';
+import { VenueIsClose, getVenueIsClose,_code,VenuecheckCodeIsTrue } from '../../api';
 
 const alert = Modal.alert;
+const prompt = Modal.prompt;
 class sittingPh extends React.Component {
 
   state = {
     flag: false,
     ismethod:0,
+    legalphone:'',
   };
 
 
@@ -37,7 +39,7 @@ class sittingPh extends React.Component {
 
   componentDidMount() {
     this.getVenueIsClose()
-    this.setState({ismethod:Number(localStorage.getItem('ismethod'))})
+    this.setState({ismethod:Number(localStorage.getItem('ismethod')),legalphone:localStorage.getItem('legalphone')})
   }
 
   onChange = (e) => {
@@ -56,8 +58,32 @@ class sittingPh extends React.Component {
     this.props.history.push('/homePh/untiePhonePh')
   }
 
+  async codeClickMsg(data) {
+    const res = await _code(data)
+    if (res.data.code === 2000) {
+      Toast.success('验证码发送成功')
+    } else {
+      Toast.fail(res.data.msg)
+    }
+  }
+
+  async VenuecheckCodeIsTrue(data) {
+    const res = await VenuecheckCodeIsTrue(data)
+    if(res.data.code===2000){
+      this.props.history.push('/homePh/commandPh')
+    }else{
+      Toast.fail(res.data.msg)
+    }
+  }
+
   commandPh = () => {
-    this.props.history.push('/homePh/commandPh')
+
+     this.codeClickMsg({mobile:this.state.legalphone,type:'venueAuthorized',uuid:localStorage.getItem('uuid')})
+    
+    prompt('验证码', '请输入验证码', [
+      { text: '取消' },
+      { text: '确认', onPress: value => this.VenuecheckCodeIsTrue({mobile:this.state.legalphone,code:value,type:'venueAuthorized'}) },
+    ])
   }
   resetPasswordPh = () => {
     this.props.history.push('/homePh/resetPasswordPh')
@@ -135,7 +161,7 @@ class sittingPh extends React.Component {
         </div>
 
 
-        <div className="siteSon"  style={this.state.ismethod===1?{display:'block'}:{display:'none'}} onClick={this.commandPh}>
+        <div className="siteSon"  onClick={this.commandPh}>
           <svg width="16px" height="16px" style={{ float: 'left' }} viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
             <title>icon/合作场馆/我的/解绑手机</title>
             <desc>Created with Sketch.</desc>

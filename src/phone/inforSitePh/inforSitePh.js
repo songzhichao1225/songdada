@@ -51,6 +51,7 @@ class inforSitePh extends React.Component {
     inChargeNa:'',//负责人姓名
     corporateId:'',//收款身份证号
     cardId: '',
+    Bankphone:'',
     flagOne: true,
     flagTwo: true,
     flagThree: true,
@@ -152,7 +153,7 @@ class inforSitePh extends React.Component {
       this.setState({
         CorporateName: res.data.data.CorporateName, bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
         faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
-        numRadio: res.data.data.Settlement,numRadioFive:res.data.data.ascription===1?1:res.data.data.account,inChargeNa:res.data.data.Bankname,inCorName:res.data.data.Bankcorporate, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
+        numRadio: res.data.data.Settlement,numRadioFive:res.data.data.ascription===1?1:res.data.data.account,inChargeNa:res.data.data.Bankname,inCorName:res.data.data.Bankcorporate,Bankphone:res.data.data.Bankphone, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
         legalBaseURL: res.data.data.legalBaseURL,corporateId:res.data.data.Bankcard,
         filesThree: res.data.data.lisenceURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.lisenceURL }],
         filesThreeSon: res.data.data.lisenceURL === '' ? '' : res.data.data.lisenceURL,
@@ -526,6 +527,11 @@ class inforSitePh extends React.Component {
   corporateCardId = e => {
     this.setState({ cardId: e.target.value })
   }
+
+  Bankphone = e => {
+    this.setState({ Bankphone: e.target.value })
+  }
+  
   CorporateName = e => {
     this.setState({ CorporateName: e.target.value })
   }
@@ -712,7 +718,7 @@ class inforSitePh extends React.Component {
 
 
   ziSubmitTwo = () => {
-    let { numRadio, numRadioFive,inCorName,inChargeNa, filesFourSon, corporateId, legalBaseURL, filesFiveSon, cardId, openingLine, bank_id, province_id, city_id } = this.state
+    let { numRadio, numRadioFive,inCorName,inChargeNa, filesFourSon, corporateId, legalBaseURL, filesFiveSon,Bankphone, cardId, openingLine, bank_id, province_id, city_id } = this.state
     let data = {
       Bankcard: numRadio === 0 ? '' : corporateId,
       legalBaseURL: numRadioFive === 1 ? legalBaseURL : numRadio === 1 ? legalBaseURL : '',
@@ -723,6 +729,7 @@ class inforSitePh extends React.Component {
       Bankname:numRadio === 0?'':inChargeNa,
       OpeningBank: openingLine,
       account: numRadioFive,
+      Bankphone:Bankphone,
       Banktype: typeof (bank_id) !== 'string' ? bank_id : bank_id,
       ProvinceBank: typeof (province_id) !== 'string' ? province_id : province_id,
       CityBank: typeof (city_id) !== 'string' ? city_id : city_id,
@@ -1403,6 +1410,12 @@ class inforSitePh extends React.Component {
             <span>银行账号</span>
             <Input className="right" value={this.state.cardId} placeholder="请输入银行账号" onChange={this.corporateCardId} />
           </div>
+
+          <div className="listSon">
+            <span>短信通知</span>
+            <Input className="right" value={this.state.Bankphone} placeholder="请输入通知汇款成功手机号(可不填)" onChange={this.Bankphone} />
+          </div>
+
 
 
           <div className="listSon">
