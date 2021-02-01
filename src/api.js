@@ -558,7 +558,41 @@ export function VenuecheckCodeIsTrue(data,headers){    //判断场馆端的验�
     return axios.post('/api/VenuecheckCodeIsTrue',data,{headers: {'token': headers}})
 }
   
-  
+export function AddVenueMember(data,headers){    //会员管理~添加会员
+    return axios.post('/api/AddVenueMember',data,{headers: {'token': headers}})
+}
+
+export function getVenueMemberlist(data,headers){    //会员管理~查询当前会员列表
+    return axios.post('/api/getVenueMemberlist',data,{headers: {'token': headers}})
+}
+
+export function getVenueMemberRecordsOfConsumption(data,headers){    //会员管理~某个会员的消费记录
+    return axios.post('/api/getVenueMemberRecordsOfConsumption',data,{headers: {'token': headers}})
+}
+
+export function getVenueMemberDetails(data,headers){    //会员管理~查询某个会员信息
+    return axios.post('/api/getVenueMemberDetails',data,{headers: {'token': headers}})
+}
+
+export function VenueMemberRecharge(data,headers){    //会员管理~会员卡充值
+    return axios.post('/api/VenueMemberRecharge',data,{headers: {'token': headers}})
+}
+
+
+export function VenueMemberRefundCardDetails(data,headers){    //会员管理~会员退卡详情
+    return axios.post('/api/VenueMemberRefundCardDetails',data,{headers: {'token': headers}})
+}
+
+export function VenueMemberRefundCard(data,headers){    //会员管理~会员退卡详情
+    return axios.post('/api/VenueMemberRefundCard',data,{headers: {'token': headers}})
+}
+
+export function EditVenueMember(data,headers){    //会员管理~会员退卡详情
+    return axios.post('/api/EditVenueMember',data,{headers: {'token': headers}})
+}
+
+
+
 
 
 

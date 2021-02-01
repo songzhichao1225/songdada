@@ -1067,6 +1067,11 @@ class inforSitePh extends React.Component {
             <span>运营专员</span>
             <span className="right" style={{ paddingLeft: '11px' }}>{listSon.promote === '' ? '无' : listSon.promote}</span>
           </div>
+
+          <div className="listSon">
+            <span>市场专员</span>
+            <span className="right" style={{ paddingLeft: '11px' }}>{listSon.marketid === '' ? '无' : listSon.marketid}</span>
+          </div>
           <div className="listSon">
             <span>场馆名称</span>
             <Input className="right" value={this.state.cgName} onChange={this.cgName} />

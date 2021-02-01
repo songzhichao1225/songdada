@@ -84,9 +84,29 @@ class myWalletPh extends React.Component {
     } else if (res.data.data.ishaverecharge === 2) {
       this.setState({ vipVisibleTwo: true })
       this.getMembershipCollectionDetails()
+    }else if (res.data.data.ishaverecharge === 3) {
+      this.getReceivingBankQualificationsThree()
     }
 
   }
+
+
+  async getReceivingBankQualificationsThree(data) {
+    const res = await getReceivingBankQualifications(data, localStorage.getItem('venue_token'))
+      if(res.data.code===4004){
+       Toast.fail(res.data.msg)
+      }else if(res.data.code===4002){
+        Toast.fail(res.data.msg)
+        this.setState({ visible: true })
+       }else if(res.data.code===4003){
+        this.setState({ visible: true })
+        Toast.fail(res.data.msg)
+       }else if(res.data.code!==2000&&res.data.code!==4001&&res.data.code!==4002&&res.data.code!==4003&&res.data.code!==4004){
+        Toast.fail(res.data.msg)
+      }
+  }
+
+
 
   componentDidMount() {
     this.getVenueMoney()
@@ -99,7 +119,9 @@ class myWalletPh extends React.Component {
     }else{
       this.setState({flag:1})
     }
+   
   }
+  
 
   async getReceivingBankQualifications(data) {
     const res = await getReceivingBankQualifications(data, localStorage.getItem('venue_token'))
@@ -354,7 +376,11 @@ class myWalletPh extends React.Component {
       Bankphone:Bankphone,
       Bankcorporate:numRadio===0?inCorName:'',
     }
-    this.VenueReceivingBankInformation(data)
+    if(data.Bankphone===''){
+     Toast.fail('请输入联系号码')
+    }else{
+      this.VenueReceivingBankInformation(data)
+    }
 
   }
   oneLeft = () => {
@@ -397,7 +423,6 @@ class myWalletPh extends React.Component {
   async MembershipRechargeAgreeToRefuse(data) {
     const res = await MembershipRechargeAgreeToRefuse(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      Toast.success(res.data.msg, 1)
       this.gerVenueName()
       this.setState({ vipVisible: false })
     } else {
@@ -417,6 +442,7 @@ class myWalletPh extends React.Component {
     } else if (res.data.code === 4004) {
       Toast.fail(res.data.msg, 1)
     } else {
+      this.MembershipRechargeAgreeToRefuse({ shipuuid: this.state.shipuuid, status: 1, remarks: '' })
       this.setState({ visible: true })
     }
   }
@@ -652,8 +678,8 @@ class myWalletPh extends React.Component {
             </div>
 
             <div className="listSon">
-              <span style={{ paddingLeft: '5px' }}>短信通知</span>
-              <Input className="right" value={this.state.Bankphone} placeholder="请输入通知汇款成功手机号(可不填)" onChange={this.Bankphone} />
+              <span style={{ paddingLeft: '5px' }}>联系号码</span>
+              <Input className="right" value={this.state.Bankphone} placeholder="请输入通知汇款成功手机号" onChange={this.Bankphone} />
             </div>
 
             <div className="listSon">

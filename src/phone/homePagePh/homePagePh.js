@@ -11,7 +11,7 @@ import newsPh from '../newsPh/newsPh';
 import minePh from '../minePh/minePh';
 import orderPhT from '../orderPhT/orderPhT';
 import { notification } from 'antd';
-import { getIsStatus, getIsSignOut,getAudio, wsFn,gerVenueName } from '../../api';
+import { getIsStatus, getIsSignOut,getAudio,gerVenueName } from '../../api';
 import { EllipsisOutlined } from '@ant-design/icons';
 
 
@@ -20,7 +20,7 @@ import { EllipsisOutlined } from '@ant-design/icons';
 
 const Item = Popover.Item;
 const alert = Modal.alert;
-const ws = wsFn
+
 
 class homePagePh extends React.Component {
 
@@ -108,8 +108,7 @@ class homePagePh extends React.Component {
     sessionStorage.setItem('kood', 1)
     this.getIsStatus()
     this.gerVenueName()
-      // this.getAudio({txt:'找对手提醒您:有用户发布活动初步预订了。11月20日,07:30-09:30,7号场地'})
-    
+     
     
     if (this.props.history.location.pathname === '/homePh/homePh') {
       this.setState({ title: '首页' })
@@ -126,10 +125,7 @@ class homePagePh extends React.Component {
 
 
     this.jo()
-    let that = this
-    ws.onclose = function () {
-      that.jo()
-    }
+    
 
     // setInterval(() => {
     //   if (this.state.koFlag === 1) {
@@ -161,7 +157,7 @@ class homePagePh extends React.Component {
 
 
   jo = () => {
-
+    let ws = new WebSocket("wss://admin.tiaozhanmeiyitian.com/socket")
     ws.onopen = function () {
       ws.send(localStorage.getItem('siteUid'))
     }
@@ -169,10 +165,13 @@ class homePagePh extends React.Component {
     ws.onmessage = function (e) {
       let message_info = JSON.parse(e.data)
       let percent = message_info.percent
-      
+      that.getAudio({txt:message_info.percent})
       that.setState({ koFlag: 1, percent: percent })
       notification.open({ description: message_info.percent, duration: 5 })
       sessionStorage.setItem('kood', 2)
+    }
+    ws.onclose = function () {
+      that.jo()
     }
 
   }

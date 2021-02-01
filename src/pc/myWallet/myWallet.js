@@ -191,9 +191,28 @@ class myWallet extends React.Component {
       } else if (res.data.data.ishaverecharge === 2) {
         this.setState({ vipVisibleTwo: true })
         this.getMembershipCollectionDetails()
+      }else if (res.data.data.ishaverecharge === 3) {
+        this.getReceivingBankQualificationsThree()
       }
     }
   }
+
+
+  async getReceivingBankQualificationsThree(data) {
+    const res = await getReceivingBankQualifications(data, sessionStorage.getItem('venue_token'))
+      if(res.data.code===4004){
+       message.warning(res.data.msg)
+      }else if(res.data.code===4002){
+        message.warning(res.data.msg)
+        this.setState({ visible: true })
+       }else if(res.data.code===4003){
+        this.setState({ visible: true })
+        message.warning(res.data.msg)
+       }else if(res.data.code!==2000&&res.data.code!==4001&&res.data.code!==4002&&res.data.code!==4003&&res.data.code!==4004){
+        message.warning(res.data.msg)
+      }
+  }
+
 
 
 
@@ -204,6 +223,8 @@ class myWallet extends React.Component {
         sessionStorage.setItem('wallet', true)
       }
     }, 50)
+
+    
     this.gerVenueName()
     this.getCompleteMembershipRechargeDetails()
     this.getVenueOpenBankProvince()
@@ -456,6 +477,8 @@ class myWallet extends React.Component {
       message.error('图片违规请重新上传')
     } else if (numRadio && imgFileTwo === undefined) {
       message.error('图片违规请重新上传')
+    }else if(data.Bankphone===''){
+       message.warning('请输入联系号码')
     } else {
       this.VenueReceivingBankInformation(data)
     }
@@ -469,6 +492,7 @@ class myWallet extends React.Component {
   flagHeadTwo = () => {
     this.setState({ flagHead: 1 })
   }
+
   handleCancelOne = () => {
     this.setState({ vipVisible: false })
   }
@@ -483,7 +507,6 @@ class myWallet extends React.Component {
   async MembershipRechargeAgreeToRefuse(data) {
     const res = await MembershipRechargeAgreeToRefuse(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      message.success(res.data.msg)
       this.gerVenueName()
       this.setState({ vipVisible: false })
     } else {
@@ -509,6 +532,7 @@ class myWallet extends React.Component {
     } else if (res.data.code === 4004) {
       message.error(res.data.msg)
     } else {
+      this.MembershipRechargeAgreeToRefuse({ shipuuid: this.state.shipuuid, status: 1, remarks: '' })
       this.setState({ visible: true })
     }
   }
@@ -521,6 +545,7 @@ class myWallet extends React.Component {
   maskingF = () => {
     this.setState({ masking: false })
   }
+  
   imgMasking = e => {
     this.setState({ imgMasking: e.currentTarget.dataset.url, masking: true })
   }
@@ -839,8 +864,8 @@ class myWallet extends React.Component {
           </div>
 
           <div className="listing">
-            <span>短信通知:</span>
-            <Input className="listingInput" placeholder="请输入通知汇款成功手机号(可不填)" value={this.state.Bankphone} onChange={this.Bankphone} />
+            <span>联系号码:</span>
+            <Input className="listingInput" placeholder="请输入通知汇款成功手机号" value={this.state.Bankphone} onChange={this.Bankphone} />
           </div>
 
           <div className="listing">

@@ -1028,6 +1028,10 @@ class stadiums extends React.Component {
               <span className="nameINput" >{this.state.informationList.promote === '' ? '无' : this.state.informationList.promote}</span>
             </div>
             <div className="name">
+              <span className="boTitle">市场专员:</span>
+              <span className="nameINput" >{this.state.informationList.marketid === '' ? '无' : this.state.informationList.marketid}</span>
+            </div>
+            <div className="name">
               <span className="boTitle">场馆名称:</span>
               <Input className="nameINput" value={this.state.name} onInput={this.handleName} />
             </div>

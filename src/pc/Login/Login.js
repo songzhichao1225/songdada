@@ -23,7 +23,7 @@ class Login extends React.Component {
 
   componentDidMount() {
    
-   
+    sessionStorage.setItem('tongyi',0)
   }
 
   phone = (e) => {

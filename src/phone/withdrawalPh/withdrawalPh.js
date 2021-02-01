@@ -63,7 +63,7 @@ class withdrawalPh extends React.Component {
         <div className="white"></div>
         <div className="bankCards">
           <span>{this.state.withdrawalPh.Settlement === 1 ? '个人账户' : '公司银行账户'}</span>
-    <span>{this.state.withdrawalPh.Bankcorporate===null?this.state.withdrawalPh.Bankname:this.state.withdrawalPh.Bankcorporate}<br/>{this.state.withdrawalPh.OpeningBank} <br/> { this.state.withdrawalPh.Bankaccount}</span>
+          <span>{this.state.withdrawalPh.Bankcorporate === '' ? this.state.withdrawalPh.Bankname : this.state.withdrawalPh.Bankcorporate}<br />{this.state.withdrawalPh.OpeningBank} <br /> {this.state.withdrawalPh.Bankaccount}</span>
         </div>
         <div className="white"></div>
         <div className="money">
@@ -72,7 +72,7 @@ class withdrawalPh extends React.Component {
             <span className="moneySon">￥</span><input value={this.state.value} onChange={this.inputValue} type="number" style={{ float: 'left', width: '80%', background: 'transparent' }} />
           </div>
           <div className="bottomSpan">
-            <span>扣除8%平台服务费后提现金额:￥{(this.state.value-(this.state.value*0.08).toFixed(2)).toFixed(2)}</span>
+            <span>扣除8%平台服务费后提现金额:￥{(this.state.value - (this.state.value * 0.08).toFixed(2)).toFixed(2)}</span>
             {/* <span style={{ display: 'block' }}>{'可用金额' + this.state.withdrawalPh.DiscountMoney + '元'}</span> */}
             <div>到账时间 预计2-3个工作日</div>
             <div className="all" onClick={this.all}>全部提现</div>

@@ -924,7 +924,7 @@ class information extends React.Component {
               <Row>
                 <Col span={8}>开始时间</Col>
                 <Col span={4}>时长</Col>
-                <Col span={6}>操作时间</Col>
+                <Col span={7}>操作时间</Col>
                 <Col span={6}>价格</Col>
               </Row>
               {
@@ -932,7 +932,7 @@ class information extends React.Component {
                   <Row key={i}>
                     <Col span={8}>{item.datetime}</Col>
                     <Col span={4}>{item.playtime}</Col>
-                    <Col span={6}>{item.time}</Col>
+                    <Col span={7}>{item.time}</Col>
                     <Col span={6}>￥{item.mone}</Col>
                   </Row>
                 ))
