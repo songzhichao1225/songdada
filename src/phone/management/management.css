@@ -1,0 +1,135 @@
+.management{
+    height: 100%;
+}
+.management .nav{
+    width: 100%;
+    height: 3rem;
+    border-bottom: 0.06rem solid #f5f5f5;
+    position: relative;
+    background: #374D66;
+    color:#fff
+}
+.management .nav .left{
+    float: left;
+    width: 100%;
+    text-align: center;
+    line-height: 3rem;
+    font-size: 1rem;
+    color: #fff;
+}
+.management .wsMa4{
+    height: 90%;
+    background-color: #F5F5F5;
+}
+.management .wsMa4 .Subdivide{
+    overflow-y: auto;
+    height: 100%;
+}
+.management .wsMa4 .Subdivide .card{
+  width: 95%;
+  margin: 0.75rem auto 0; 
+}
+.management .wsMa4 .Subdivide .card .titleLeft{
+    color: #D85D27;
+    font-size: 0.88rem;
+}
+.management .wsMa4 .Subdivide .card .titleRight{
+    color: #000;
+    font-size:0.75rem ;
+}
+.management .wsMa4 .Subdivide .card .idxNum{
+    width: 100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size: 0.88rem;
+    color: #000;
+    
+}
+.management .wsMa4 .Subdivide .card .number{
+    color: #000;
+    font-size: 0.88rem;
+} 
+.management .wsMa4 .footerSite{
+    width: 100%;
+    height: 2.8rem;
+    margin: 0.5rem auto 0;
+    position: fixed;
+    bottom: 0;
+    background: #f5f5f5;
+}
+.management .wsMa4 .footerSite>div{
+    width: 48%;
+    float: left;
+    background: #fff;
+    line-height: 2.5rem;
+    border-radius: 0.19rem;
+    text-align: center;
+    color: #D85D27;
+    margin-top: 0.2rem;
+}
+.management .wsMa4 .footerSite>div img{
+    width: 0.81rem;
+    height: 0.81rem;
+}
+.listDetails>div{
+    width: 50%;
+    float: left;
+}
+.lood  .am-list-line .am-list-extra{
+    text-align: left;
+    flex-basis: 64% !important;
+    color: #c0c0c0; 
+}
+ .look .am-input-control .fake-input-container .fake-input-placeholder{
+    text-align: left;
+    color: #c0c0c0 !important;
+}
+.btnsubmit{
+    width: 100%;
+    height: 2.75rem;
+    background: #D85D27;
+    margin: 1rem auto 0;
+    text-align: center;
+    line-height: 2.75rem;
+    border-radius: 2.75rem;
+    color: #fff;
+}
+
+.look .am-input-control .fake-input-container .fake-input.focus{
+    width: 100%;
+    text-align: left;
+}
+.look .am-input-control .fake-input-container .fake-input{
+    text-align: left;
+}
+.management .lishi{
+    padding-left: 0.5rem;
+    color: blue;
+}
+.management .topUp{
+    padding:2px 4px;
+    border-radius: 50%;
+    background-color: #6FB2FF;
+    color: #fff;
+    cursor: pointer;
+}
+.management .tui{
+    margin-left: 3px;
+    background-color:#F5A623 ;
+}
+.management img{
+    width: 14px;
+    height: 16px;
+    margin-left: 5px;
+}
+.conHead{
+    overflow: hidden;
+}
+.listDetailsTwo>div{
+    width: 100%;
+    float: left;
+}
+.am-list-item.am-input-disabled .am-input-label{
+    color: #000;
+}

@@ -14,6 +14,7 @@ import monthlyIncomePh from './phone/monthlyIncomePh/monthlyIncomePh';
 import moneyDetailPh from './phone/moneyDetailPh/moneyDetailPh';
 import commentPh from './phone/commentPh/commentPh';
 import myWalletPh from './phone/myWalletPh/myWalletPh';
+import management from './phone/management/management';
 import withdrawalPh from './phone/withdrawalPh/withdrawalPh';
 import walletDetailsPh from './phone/walletDetailsPh/walletDetailsPh';
 import recordPh from './phone/recordPh/recordPh';
@@ -49,6 +50,7 @@ const BasicRoute = () => (
             <Route exact path="/homePh/monthlyIncomePh/moneyDetailPh" component={moneyDetailPh}/>
             <Route exact path="/homePh/commentPh" component={commentPh}/>
             <Route exact path="/homePh/myWalletPh" component={myWalletPh}/>
+            <Route exact path="/homePh/management" component={management}/>
             <Route exact path="/homePh/withdrawalPh" component={withdrawalPh}/>
             <Route exact path="/homePh/walletDetailsPh" component={walletDetailsPh}/>
             <Route exact path="/homePh/recordPh" component={recordPh}/>
