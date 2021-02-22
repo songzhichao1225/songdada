@@ -514,7 +514,7 @@ class appointmentList extends React.Component {
     }
   }
   headTop = e => {
-    this.setState({ headTop: e.currentTarget.dataset.index, page: 1, sport: '', status: '', start: '开始日期', end: '结束日期', paied: '2', Oneloading: true, orderId: '' })
+    this.setState({ headTop: e.currentTarget.dataset.index, page: 1, status: '', start: '开始日期', end: '结束日期', paied: '2', Oneloading: true, orderId: '' })
 
     setTimeout(() => {
       if (this.state.start === '开始日期') {
@@ -527,8 +527,9 @@ class appointmentList extends React.Component {
   }
 
   onSearch = e => {
-    this.setState({ orderId: e })
-    this.getReservationActivitieslist({ page: 1, sport: '', status: '', paied: '2', orderId: e, reserve: this.state.headTop })
+    this.setState({ orderId: e,page:1 })
+    console.log(685)
+    this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: this.state.status, paied: this.state.paied, orderId: e, reserve: this.state.headTop })
   }
   confirmUUid = e => {
     this.setState({ confirmUUid: e.currentTarget.dataset.uuid })
@@ -713,7 +714,7 @@ class appointmentList extends React.Component {
                 <Col xs={{ span: 2 }}><span>活动编号</span></Col>
                 <Col xs={{ span: 2 }}>
                   <span>
-                    <Select className="selectName" defaultValue="项目名称" bordered={false} style={{ width: '100%', padding: 0 }} onChange={this.nameChang}>
+                    <Select className="selectName" defaultValue="项目名称" bordered={false}  style={{ width: '100%', padding: 0 }} onChange={this.nameChang}>
                       <Option value="0">全部</Option>
                       <Option value="1">羽毛球</Option>
                       <Option value="2">兵乓球</Option>

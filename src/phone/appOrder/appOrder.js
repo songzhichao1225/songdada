@@ -261,7 +261,7 @@ class appOrder extends React.Component {
   componentDidMount() {
 
     //测试数据
-    // let query = '?siteuid=f798e37b-644a-9846-fed9-72547a8ea90b&sportid=6&token=KtfJFfVmlqZtS1VyOZx4PpxtY2dVfqOOs9Tk4Z5rJp0NgpyReREOEmjDHVIfuZvX&sporttype=10&flag=1'
+    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=4&token=KtfJFfVmlqZtS1VyOZx4PpxtY2dVfqOOs9Tk4Z5rJp0NgpyReREOEmjDHVIfuZvX&sporttype=10&flag=1'
     let query = this.props.location.search
  
     let arr = query.split('&')
@@ -499,14 +499,14 @@ class appOrder extends React.Component {
             }
             this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
           } else {
-            let pop = (Number(this.state.moneyCall) + Number(money * 2)).toString()
+            let pop = (Number(this.state.moneyCall) + Number(money)).toString()
             if (pop.indexOf('.') !== -1) {
               pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
             }
             this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop })
           }
         } else {
-          let pop = (Number(this.state.moneyCall) + Number(money) * 2).toString()
+          let pop = (Number(this.state.moneyCall) + Number(money)).toString()
           if (pop.indexOf('.') !== -1) {
             pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
           }
@@ -555,14 +555,14 @@ class appOrder extends React.Component {
             }
             this.setState({ moneyCall: moneyCall })
           } else {
-            let pop = (Number(this.state.moneyCall) + Number(money * 2)).toString()
+            let pop = (Number(this.state.moneyCall) + Number(money)).toString()
             if (pop.indexOf('.') !== -1) {
               pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
             }
             this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop })
           }
         } else {
-          let pop = (Number(this.state.moneyCall) + Number(money) * 2).toString()
+          let pop = (Number(this.state.moneyCall) + Number(money)).toString()
           if (pop.indexOf('.') !== -1) {
             pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
           }
@@ -765,13 +765,13 @@ class appOrder extends React.Component {
           Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
         } else if (timelimit === '4' && Number(timeTwo.slice(0, 2)) % 2 !== 0) {
           Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
-        }else if (this.state.durationlimit === 1 && this.state.lotime.length/2 < 2) {
+        }else if (this.state.durationlimit === 1 && this.state.lotime.length < 2) {
           let durationlimit = '最少选择1小时以上场地'
           Toast.fail(durationlimit, 2, null, false);
-        } else if (this.state.durationlimit === 2 && this.state.lotime.length / 2 % 2 === 1) {
+        } else if (this.state.durationlimit === 2 && this.state.lotime.length % 2 === 1) {
           let durationlimit = '请选择1小时整数倍场地'
           Toast.fail(durationlimit, 2, null, false);
-        } else if (this.state.durationlimit === 3 && this.state.lotime.length / 2/2 % 2 !== 0) {
+        } else if (this.state.durationlimit === 3 && this.state.lotime.length /2 % 2 !== 0) {
           let durationlimit = '请选择2小时整数倍场地 '
           Toast.fail(durationlimit, 2, null, false);
         }else {
@@ -881,7 +881,7 @@ class appOrder extends React.Component {
         } else if (this.state.durationlimit === 2 && this.state.lotime.length / 2 % 2 !== 1&& this.state.lotime.length / 2 % 2 !== 0) {
           let durationlimit = '请选择1小时整数倍场地'
           Toast.fail(durationlimit, 2, null, false);
-        } else if (this.state.durationlimit === 3 && this.state.lotime.length / 2 % 4 !== 0) {
+        } else if (this.state.durationlimit === 3 && this.state.lotime.length /2% 2 !== 0) {
           let durationlimit = '请选择2小时整数倍场地 '
           Toast.fail(durationlimit, 2, null, false);
         } else {

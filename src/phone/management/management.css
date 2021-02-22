@@ -18,8 +18,9 @@
     color: #fff;
 }
 .management .wsMa4{
-    height: 90%;
+    height: 89%;
     background-color: #F5F5F5;
+    padding-bottom: 3rem;
 }
 .management .wsMa4 .Subdivide{
     overflow-y: auto;
@@ -79,6 +80,11 @@
 .lood  .am-list-line .am-list-extra{
     text-align: left;
     flex-basis: 64% !important;
+    color: #000; 
+}
+.loodTo  .am-list-line .am-list-extra{
+    text-align: left;
+    flex-basis: 64% !important;
     color: #c0c0c0; 
 }
  .look .am-input-control .fake-input-container .fake-input-placeholder{
@@ -132,4 +138,22 @@
 }
 .am-list-item.am-input-disabled .am-input-label{
     color: #000;
+}
+.gorad .am-list-line .am-list-extra{
+    flex-basis:64%!important;
+    text-align: left;
+    color: #bbb;
+}
+
+.look .am-input-control .fake-input-container .fake-input.focus:after{
+    left: 0!important;
+    right:100px!important;
+}
+
+.vipText{
+    width: 6rem;
+    float: left;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap
 }

@@ -787,7 +787,7 @@ class systemSettings extends React.Component {
           </div>
           <div className="listSon" style={{ height: '32px', lineHeight: '32px', marginTop: '10px' }}>
             <span className="codeNumTw">验证码</span>
-            <Input className="inputCode" onChange={this.codeChange} type="number" />
+            <Input className="inputCode" onChange={this.codeChange}  type="text" />
           </div>
 
           <div className="codeBtnSubmi" onClick={this.codeBtnSubmi}>确认</div>

@@ -2,7 +2,7 @@ import React from 'react';
 import './VipAgement.css';
 import 'antd/dist/antd.css';
 import { AddVenueMember, getVenueMemberlist, getVenueMemberRecordsOfConsumption, getVenueMemberDetails, VenueMemberRecharge, VenueMemberRefundCardDetails, VenueMemberRefundCard, EditVenueMember, _code } from '../../api';
-import { Row, Col, Modal, Input, Select, DatePicker, InputNumber, message, Pagination,Popconfirm } from 'antd';
+import { Row, Col, Modal, Input, Select, DatePicker, InputNumber, message, Pagination, Popconfirm,Popover } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 const { Search } = Input;
@@ -53,8 +53,10 @@ class VipAgement extends React.Component {
     codeTwo: '',
     textFour: '获取验证码',
     textFive: '获取验证码',
-    edorTwoLpoBlock:0,
-    memberuuidFour:'',
+    edorTwoLpoBlock: 0,
+    memberuuidFour: '',
+    pageTwo:'',
+    RecordsUid:''
   }
 
 
@@ -103,7 +105,7 @@ class VipAgement extends React.Component {
   }
 
   search = e => {
-    this.getVenueMemberlist({ page: 1,search:e.target.value })
+    this.getVenueMemberlist({ page: 1, search: e.target.value })
   }
 
   cardHolder = e => {
@@ -125,9 +127,10 @@ class VipAgement extends React.Component {
     this.setState({ handleChange: e })
   }
   topUp = e => {
-    this.setState({ topUp: e.target.value })
+    this.setState({ topUp: e.target.value,balance: Number(this.state.giveAway) + Number(e.target.value) })
   }
   giveAway = e => {
+
     this.setState({ giveAway: e.target.value, balance: Number(this.state.topUp) + Number(e.target.value) })
 
   }
@@ -155,7 +158,23 @@ class VipAgement extends React.Component {
       balance: balance,
       effective: validity,
     }
-    this.AddVenueMember(obj)
+    if (cardHolderVal === '') {
+      message.warning('请填写卡主名称')
+    } else if (contactPersonVal === '') {
+      message.warning('请填写联系人')
+    } else if (contactNumberVal === '') {
+      message.warning('请填写联系电话')
+    } else if (VipcardVal === '') {
+      message.warning('请填写会员卡号')
+    } else if (handleChange === '') {
+      message.warning('请选择会员等级')
+    } else if (topUp === '') {
+      message.warning('请输入充值金额')
+    } else if (validity === '') {
+      message.warning('请选择有效期')
+    } else {
+      this.AddVenueMember(obj)
+    }
   }
 
   async AddVenueMember(data) {
@@ -163,7 +182,7 @@ class VipAgement extends React.Component {
     if (res.data.code === 2000) {
       message.success(res.data.msg)
       this.getVenueMemberlist({ page: 1 })
-      this.setState({ isModalVisible: false })
+      this.setState({ isModalVisible: false, page: 1 })
     } else {
       message.error(res.data.msg)
     }
@@ -176,14 +195,18 @@ class VipAgement extends React.Component {
   async getVenueMemberRecordsOfConsumption(data) {
     const res = await getVenueMemberRecordsOfConsumption(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ recordsList: res.data.data, other: res.data.other.maxcount })
+      this.setState({ recordsList: res.data.data, otherTwo: res.data.other.maxcount })
     } else {
       message.error(res.data.msg)
     }
   }
+  currentTwo=(page,pageSize)=>{
+    this.setState({pageTwo:page})
+    this.getVenueMemberRecordsOfConsumption({ memberuuid:this.state.RecordsUid, page: page })
+  }
 
   recordsList = e => {
-    this.setState({ records: true })
+    this.setState({ records: true,RecordsUid: e.currentTarget.dataset.uuid})
     this.getVenueMemberRecordsOfConsumption({ memberuuid: e.currentTarget.dataset.uuid, page: 1 })
   }
   records = () => {
@@ -253,8 +276,8 @@ class VipAgement extends React.Component {
     this.VenueMemberRefundCardDetails({ memberuuid: e.currentTarget.dataset.uuid })
     this.setState({ returnCard: true, memberuuidCard: e.currentTarget.dataset.uuid })
   }
-  returnCardTwo=()=>{
-    this.setState({returnCard:false})
+  returnCardTwo = () => {
+    this.setState({ returnCard: false })
   }
 
   async VenueMemberRefundCard(data) {
@@ -286,12 +309,12 @@ class VipAgement extends React.Component {
 
   editorKo = e => {
     this.getVenueMemberDetailsTwo({ memberuuid: e.currentTarget.dataset.uuid })
-    this.setState({ editor: true,memberuuidFour:e.currentTarget.dataset.uuid })
+    this.setState({ editor: true, memberuuidFour: e.currentTarget.dataset.uuid })
   }
 
 
 
- 
+
 
 
   editor = e => {
@@ -325,7 +348,7 @@ class VipAgement extends React.Component {
     const res = await EditVenueMember(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success(res.data.msg)
-      this.setState({editor:false})
+      this.setState({ editor: false })
       this.getVenueMemberlist({ page: this.state.page })
     } else {
       message.error(res.data.msg)
@@ -333,7 +356,7 @@ class VipAgement extends React.Component {
   }
 
   returnCardSubTwo = () => {
-    let { memberuuidFour,cardHolderTwo, contactPersonTwo, dateOnChangeTwo,code,codeTwo,makeNumTwo, contactNumberTqwo, VipcardTwo,gradeTwo,validityTwo } = this.state
+    let { memberuuidFour, cardHolderTwo, contactPersonTwo, dateOnChangeTwo, code, codeTwo, makeNumTwo, contactNumberTqwo, VipcardTwo, gradeTwo, validityTwo } = this.state
     let obj = {
       memberuuid: memberuuidFour,
       cardholderName: cardHolderTwo,
@@ -341,11 +364,11 @@ class VipAgement extends React.Component {
       birthday: dateOnChangeTwo,
       contactNumber: contactNumberTqwo,
       cardNumber: VipcardTwo,
-      newContactNumber:makeNumTwo,
-      code:code,
-      newcode:codeTwo,
-      grade:gradeTwo,
-      effective:validityTwo,
+      newContactNumber: makeNumTwo,
+      code: code,
+      newcode: codeTwo,
+      grade: gradeTwo,
+      effective: validityTwo,
     }
     this.EditVenueMember(obj)
 
@@ -410,15 +433,15 @@ class VipAgement extends React.Component {
     this.codeClickMsgTwo({ mobile: this.state.makeNumTwo, type: 'venuemembernewphone', uuid: sessionStorage.getItem('uuid') })
   }
 
-  confirm=()=>{
-    if(this.state.code===''){
-       message.warning('请输入原联系电话验证码')
-    }else if(this.state.makeNumTwo===''){
+  confirm = () => {
+    if (this.state.code === '') {
+      message.warning('请输入原联系电话验证码')
+    } else if (this.state.makeNumTwo === '') {
       message.warning('请输入新联系电话号码')
-    }else if(this.state.codeTwo===''){
+    } else if (this.state.codeTwo === '') {
       message.warning('请输入新联系电话验证码')
-    }else{
-      this.setState({edorTwoLpo:false,edorTwoLpoBlock:1})
+    } else {
+      this.setState({ edorTwoLpo: false, edorTwoLpoBlock: 1 })
     }
   }
 
@@ -455,14 +478,16 @@ class VipAgement extends React.Component {
                 <Col xs={{ span: 2 }}>{item.contacts}</Col>
                 <Col xs={{ span: 2 }}>{item.birthday}</Col>
                 <Col xs={{ span: 3 }}>{item.contactNumber}</Col>
-                <Col xs={{ span: 2 }}>{item.cardNumber}</Col>
-                <Col xs={{ span: 2 }}>{item.grade === 1 ? '普通' : item.grade === 2 ? 'vip' : item.grade === 3 ? '银卡' : item.grade === 4 ? '金卡' : '超级vip'}</Col>
+                <Popover content={item.cardNumber} title="详情" trigger="click">
+                  <Col xs={{ span: 2 }} style={{ cursor: 'pointer' }}>{item.cardNumber}</Col>
+                </Popover>
+                <Col xs={{ span: 2 }}>{item.grade === 1 ? '普通会员' : item.grade === 2 ? '银卡会员' : item.grade === 3 ? '金卡会员' : item.grade === 4 ? '铂金会员' : item.grade === 5?'钻石会员':item.grade === 6?'星耀会员':''}</Col>
                 <Col xs={{ span: 2 }}>￥{item.rechargeMoney}</Col>
                 <Col xs={{ span: 2 }}>￥{item.giveMoney}</Col>
                 <Col xs={{ span: 1 }}>{item.discount}</Col>
                 <Col xs={{ span: 2 }}>￥{item.balance}<span style={{ fontSize: '10px', paddingLeft: '5px', color: '#4A90E2', cursor: 'pointer' }} data-uuid={item.uuid} onClick={this.recordsList}>历史记录</span></Col>
                 <Col xs={{ span: 2 }}>{item.effectiveDate}</Col>
-                <Col xs={{ span: 2 }}><span className="topUp" data-uuid={item.uuid} onClick={this.topAmountDetail}>充</span><span className="topUp tui" data-uuid={item.uuid} onClick={this.returnCard}>退</span><img onClick={this.editorKo} data-uuid={item.uuid} style={{cursor:'pointer'}} src={require('../../assets/icon_pc_updata.png')} alt="编辑" /></Col>
+                <Col xs={{ span: 2 }}><span className="topUp" data-uuid={item.uuid} onClick={this.topAmountDetail}>充</span><span className="topUp tui" data-uuid={item.uuid} onClick={this.returnCard}>退</span><img onClick={this.editorKo} data-uuid={item.uuid} style={{ cursor: 'pointer' }} src={require('../../assets/icon_pc_updata.png')} alt="编辑" /></Col>
               </Row>
             ))
           }
@@ -490,7 +515,7 @@ class VipAgement extends React.Component {
           </div>
           <div className="ViplistSon">
             <span className="title">生日</span>
-            <DatePicker style={{ marginLeft: '19.5px', width: '300px' }} onChange={this.dateOnChange} />
+            <DatePicker style={{ marginLeft: '19.5px', width: '300px' }} allowClear={false} onChange={this.dateOnChange} />
           </div>
           <div className="ViplistSon">
             <span className="title">联系电话<span className="redStart">*</span></span>
@@ -502,7 +527,7 @@ class VipAgement extends React.Component {
           </div>
           <div className="ViplistSon">
             <span className="title">折扣<span onClick={this.hintTr} style={{ padding: '0px 6px', marginLeft: '10px', background: '#F5A623', color: '#fff', cursor: 'pointer' }}>?</span></span>
-            <InputNumber style={{ marginLeft: '18px', width: '300px' }} step="1" value={this.state.discountVal} onChange={this.discount} maxLength={3} placeholder="请填写" />
+            <InputNumber style={{ marginLeft: '18px', width: '300px' }} max={10} step="1" value={this.state.discountVal} onChange={this.discount} maxLength={3} placeholder="请填写" />
           </div>
           <div className="ViplistSon">
             <span className="title">会员等级<span className="redStart">*</span></span>
@@ -530,9 +555,9 @@ class VipAgement extends React.Component {
           <div className="ViplistSon">
             <span className="title">有效期<span className="redStart">*</span></span>
             <Select placeholder="请选择 " style={{ width: 300, marginLeft: '18px' }} onChange={this.validity}>
-              <Option value="1">1个月</Option>
-              <Option value="2">2个月</Option>
-              <Option value="3">3个月</Option>
+              <Option value="1">一个月</Option>
+              <Option value="2">二个月</Option>
+              <Option value="3">三个月</Option>
               <Option value="4">四个月</Option>
               <Option value="5">五个月</Option>
               <Option value="6">六个月</Option>
@@ -581,7 +606,7 @@ class VipAgement extends React.Component {
 
 
         <Modal
-          title="消费记录"
+          title="历史记录"
           visible={this.state.records}
           className="mode"
           width={800}
@@ -603,6 +628,8 @@ class VipAgement extends React.Component {
               </Row>
             ))
           }
+           <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.pageTwo} total={this.state.otherTwo} onChange={this.currentTwo} />
+         
 
         </Modal>
 
@@ -641,7 +668,7 @@ class VipAgement extends React.Component {
 
           <div className="ViplistSon">
             <span className="title">有效期</span>
-            <Input value={this.state.memberDetails.effective === 1 ? '1个月' : this.state.memberDetails.effective === 2 ? '2个月' : this.state.memberDetails.effective === 3 ? '3个月' : this.state.memberDetails.effective === 4 ? '四个月' : this.state.memberDetails.effective === 5 ? '五个月' : this.state.memberDetails.effective === 6 ? '六个月' : this.state.memberDetails.effective === 7 ? '七个月' : this.state.memberDetails.effective === 8 ? '八个月' : this.state.memberDetails.effective === 9 ? '九个月' : this.state.memberDetails.effective === 10 ? '十个月' : this.state.memberDetails.effective === 11 ? '十一个月' : this.state.memberDetails.effective === 12 ? '十二个月' : this.state.memberDetails.effective === 13 ? '两年' : this.state.memberDetails.effective === 14 ? '三年' : this.state.memberDetails.effective === 15 ? '四年' : this.state.memberDetails.effective === 16 ? '五年' : this.state.memberDetails.effective === 17 ? '六年' : ''} disabled={true} />
+            <Input value={this.state.memberDetails.effective === 1 ? '一个月' : this.state.memberDetails.effective === 2 ? '二个月' : this.state.memberDetails.effective === 3 ? '三个月' : this.state.memberDetails.effective === 4 ? '四个月' : this.state.memberDetails.effective === 5 ? '五个月' : this.state.memberDetails.effective === 6 ? '六个月' : this.state.memberDetails.effective === 7 ? '七个月' : this.state.memberDetails.effective === 8 ? '八个月' : this.state.memberDetails.effective === 9 ? '九个月' : this.state.memberDetails.effective === 10 ? '十个月' : this.state.memberDetails.effective === 11 ? '十一个月' : this.state.memberDetails.effective === 12 ? '十二个月' : this.state.memberDetails.effective === 13 ? '两年' : this.state.memberDetails.effective === 14 ? '三年' : this.state.memberDetails.effective === 15 ? '四年' : this.state.memberDetails.effective === 16 ? '五年' : this.state.memberDetails.effective === 17 ? '六年' : ''} disabled={true} />
           </div>
 
           <div className="ViplistSon">
@@ -704,7 +731,7 @@ class VipAgement extends React.Component {
           </div>
           <div className="ViplistSon">
             <span className="title">生日</span>
-            <DatePicker style={{ marginLeft: '19.5px', width: '300px' }} value={moment(this.state.dateOnChangeTwo)} onChange={this.dateOnChangeTwo} />
+            <DatePicker style={{ marginLeft: '19.5px', width: '300px' }} allowClear={false} value={moment(this.state.dateOnChangeTwo)} onChange={this.dateOnChangeTwo} />
           </div>
           <div className="ViplistSon">
             <span className="title">联系电话</span>
@@ -712,7 +739,7 @@ class VipAgement extends React.Component {
             <span className="edorTwoLpo" onClick={this.edorTwoLpo}>修改</span>
           </div>
 
-          <div className="ViplistSon" style={this.state.edorTwoLpoBlock===1?{}:{display:'none'}}>
+          <div className="ViplistSon" style={this.state.edorTwoLpoBlock === 1 ? {} : { display: 'none' }}>
             <span className="title">新联系电话</span>
             <Input placeholder="请填写" value={this.state.makeNumTwo} disabled={true} />
           </div>
@@ -738,16 +765,15 @@ class VipAgement extends React.Component {
           <div className="ViplistSon">
             <span className="title">有效期</span>
             <Select placeholder="请选择 " style={{ width: 300, marginLeft: '18px' }} value={
-              this.state.validityTwo === 1 ? '1个月' : this.state.validityTwo === 2 ? '2个月' : this.state.validityTwo === 3 ? '3个月' :
+              this.state.validityTwo === 1 ? '一个月' : this.state.validityTwo === 2 ? '二个月' : this.state.validityTwo === 3 ? '三个月' :
                 this.state.validityTwo === 4 ? '四个月' : this.state.validityTwo === 5 ? '五个月' : this.state.validityTwo === 6 ? '六个月' : this.state.validityTwo === 7 ? '七个月' :
                   this.state.validityTwo === 8 ? '八个月' : this.state.validityTwo === 9 ? '九个月' : this.state.validityTwo === 10 ? '十个月' : this.state.validityTwo === 11 ? '十一个月' :
                     this.state.validityTwo === 12 ? '十二个月' : this.state.validityTwo === 13 ? '两年' : this.state.validityTwo === 14 ? '三年' : this.state.validityTwo === 15 ? '四年' :
                       this.state.validityTwo === 16 ? '五年' : this.state.validityTwo === 17 ? '六年' : ''
-
             } onChange={this.validityTwo}>
-              <Option value="1">1个月</Option>
-              <Option value="2">2个月</Option>
-              <Option value="3">3个月</Option>
+              <Option value="1">一个月</Option>
+              <Option value="2">二个月</Option>
+              <Option value="3">三个月</Option>
               <Option value="4">四个月</Option>
               <Option value="5">五个月</Option>
               <Option value="6">六个月</Option>

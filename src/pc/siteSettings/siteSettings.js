@@ -120,6 +120,36 @@ class siteSettings extends React.Component {
     relatList: [],
     otherFour: 1,
     relatUuid: '',
+    sportArrTwoSo: [
+      { name: '羽毛球', id: 1 },
+      { name: '乒乓球', id: 2 },
+      { name: '台球中式黑八', id: 3 },
+      { name: '台球美式九球', id: 4 },
+      { name: '台球斯诺克', id: 5 },
+      { name: '篮球（全场）', id: 6 },
+      { name: '足球11人制', id: 7 },
+      { name: '足球8人制', id: 8 },
+      { name: '足球7人制', id: 9 },
+      { name: '足球6人制', id: 13 },
+      { name: '足球5人制', id: 10 },
+      { name: '排球', id: 11 },
+      { name: '网球', id: 12 }
+    ],
+    sportArrTwoBe: [
+      { name: '羽毛球', id: 1 },
+      { name: '乒乓球', id: 2 },
+      { name: '台球中式黑八', id: 3 },
+      { name: '台球美式九球', id: 4 },
+      { name: '台球斯诺克', id: 5 },
+      { name: '篮球（半场）', id: 6 },
+      { name: '足球11人制', id: 7 },
+      { name: '足球8人制', id: 8 },
+      { name: '足球7人制', id: 9 },
+      { name: '足球6人制', id: 13 },
+      { name: '足球5人制', id: 10 },
+      { name: '排球', id: 11 },
+      { name: '网球', id: 12 }
+    ],
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -701,7 +731,7 @@ class siteSettings extends React.Component {
 
   pageFour = (page, pageSize) => {
     this.setState({ pageFour: page })
-    this.getVenueRelatList({ page: page })
+    this.getVenueRelatList({ sportid: this.state.nameChang, page: page })
   }
 
 
@@ -718,7 +748,7 @@ class siteSettings extends React.Component {
       this.getSiteSettingHistoryList({ sportid: this.state.nameChang, page: 1 })
     } else if (e.currentTarget.dataset.id === '4') {
       this.setState({ pageFour: 1 })
-      this.getVenueRelatList({ page: 1 })
+      this.getVenueRelatList({ sportid: this.state.nameChang, page: 1 })
     }
     this.setState({
       headerData: e.currentTarget.dataset.id,
@@ -2189,7 +2219,7 @@ class siteSettings extends React.Component {
     const res = await VenueRelatSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success('添加成功')
-      this.setState({ relatedness: false })
+      this.setState({ relatedness: false,pageFour:1 })
       this.getVenueRelatList({ page: 1 })
     } else if (res.data.code === 4002) {
       message.warning('母关联者只能选择单个场地')
@@ -2229,7 +2259,8 @@ class siteSettings extends React.Component {
   async VenueRelatRelieve(data) {
     const res = await VenueRelatRelieve(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.getVenueRelatList({ page: this.state.pageFour })
+      this.getVenueRelatList({ page: this.state.pageFour-1 })
+      this.setState({pageFour:this.state.pageFour-1})
     }
   }
 
@@ -2364,7 +2395,7 @@ class siteSettings extends React.Component {
                   <Col xs={{ span: 3 }}>
                     <img onClick={this.modification} data-uuid={item.uuid} style={{ marginRight: '5px', cursor: 'pointer' }} src={require("../../assets/icon_pc_updata.png")} alt="修改" />
                     <Popconfirm
-                      title={'您确定要删除该条场地细分么?删除后用户将无法预订该时间段' + item.sportid + '的' + item.title + '场地'}
+                      title={'您确定要删除该条场地细分么?删除后用户将无法预订' + item.sportid + '的' + item.title + '场地'}
                       onConfirm={this.confirmserisa}
                       onCancel={this.cancel}
                       okText="确定"
@@ -2503,7 +2534,7 @@ class siteSettings extends React.Component {
               <span>母关联场地类型</span>
               <Select placeholder="请选择" className="selectModel" value={this.state.relatednessRunid === '' ? [] : this.state.relatednessRunid} style={{ width: 249, height: 32, marginRight: 80 }} onChange={this.handleChangeThree}>
                 {
-                  this.state.ListSport.map((item, i) => (
+                  this.state.sportArrTwoSo.map((item, i) => (
                     <Option key={i} value={item.id}>{item.name}</Option>
                   ))
                 }
@@ -2523,7 +2554,7 @@ class siteSettings extends React.Component {
               <span>子关联场地类型</span>
               <Select placeholder="请选择" className="selectModel" value={this.state.relatednessRunidTwo === '' ? [] : this.state.relatednessRunidTwo} style={{ width: 249, height: 32, marginRight: 80 }} onChange={this.handleChangeGFour}>
                 {
-                  this.state.ListSport.map((item, i) => (
+                  this.state.sportArrTwoBe.map((item, i) => (
                     <Option key={i} value={item.id}>{item.name}</Option>
                   ))
                 }
@@ -2985,22 +3016,35 @@ class siteSettings extends React.Component {
               <Select placeholder="请选择" className="selectModel"
                 defaultActiveFirstOption={false}
                 value={
-                  this.state.appointmenttimeTwo === 0 ? '0分钟' : []
-                    && this.state.appointmenttimeTwo === 30 ? '30分钟' : []
-                      && this.state.appointmenttimeTwo === 60 ? '60分钟' : []
-                        && this.state.appointmenttimeTwo === 120 ? '2小时' : []
-                          && this.state.appointmenttimeTwo === 180 ? '3小时' : []
-                            && this.state.appointmenttimeTwo === 240 ? '4小时' : []
-                              && this.state.appointmenttimeTwo === 300 ? '5小时' : []
-                                && this.state.appointmenttimeTwo === 360 ? '6小时' : []
-                                  && this.state.appointmenttimeTwo === 1440 ? '24小时' : []
-                                    && this.state.appointmenttimeTwo === 2880 ? '48小时' : []
-                                      && this.state.appointmenttimeTwo === 4320 ? '72小时' : []
+                  this.state.appointmenttimeTwo === -1 ? '不限' : []
+                    && this.state.appointmenttimeTwo === 0 ? '不限' : []
+                      && this.state.appointmenttimeTwo === 30 ? '30分钟' : []
+                        && this.state.appointmenttimeTwo === 60 ? '60分钟' : []
+                          && this.state.appointmenttimeTwo === 120 ? '2小时' : []
+                            && this.state.appointmenttimeTwo === 180 ? '3小时' : []
+                              && this.state.appointmenttimeTwo === 240 ? '4小时' : []
+                                && this.state.appointmenttimeTwo === 300 ? '5小时' : []
+                                  && this.state.appointmenttimeTwo === 360 ? '6小时' : []
+                                    && this.state.appointmenttimeTwo === 1440 ? '24小时' : []
+                                      && this.state.appointmenttimeTwo === 2880 ? '2天' : []
+                                        && this.state.appointmenttimeTwo === 4320 ? '3天' : []
+                                          && this.state.appointmenttimeTwo === 5760 ? '4天' : []
+                                            && this.state.appointmenttimeTwo === 7200 ? '5天' : []
+                                              && this.state.appointmenttimeTwo === 8640 ? '6天' : []
+                                                && this.state.appointmenttimeTwo === 10080 ? '7天' : []
+                                                  && this.state.appointmenttimeTwo === 11520 ? '8天' : []
+                                                    && this.state.appointmenttimeTwo === 12960 ? '9天' : []
+                                                      && this.state.appointmenttimeTwo === 14400 ? '10天' : []
+                                                        && this.state.appointmenttimeTwo === 15840 ? '11天' : []
+                                                          && this.state.appointmenttimeTwo === 17280 ? '12天' : []
+                                                            && this.state.appointmenttimeTwo === 18720 ? '13天' : []
+                                                              && this.state.appointmenttimeTwo === 20160 ? '14天' : []
+                                                                && this.state.appointmenttimeTwo === 21600 ? '15天' : []
                 }
                 style={{ width: 330, height: 32, float: 'right', marginRight: '100px' }}
                 onChange={this.handleChangeFiveTwo}
               >
-                <Option value="0">0分钟</Option>
+                 <Option value="0">0分钟</Option>
                 <Option value="30">30分钟</Option>
                 <Option value="60">60分钟</Option>
                 <Option value="120">2小时</Option>
@@ -3009,8 +3053,20 @@ class siteSettings extends React.Component {
                 <Option value="300">5小时</Option>
                 <Option value="360">6小时</Option>
                 <Option value="1440">24小时</Option>
-                <Option value="2880">48小时</Option>
-                <Option value="4320">72小时</Option>
+                <Option value="2880">2天</Option>
+                <Option value="4320">3天</Option>
+                <Option value="5760">4天</Option>
+                <Option value="7200">5天</Option>
+                <Option value="8640">6天</Option>
+                <Option value="10080">7天</Option>
+                <Option value="11520">8天</Option>
+                <Option value="12960">9天</Option>
+                <Option value="14400">10天</Option>
+                <Option value="15840">11天</Option>
+                <Option value="17280">12天</Option>
+                <Option value="18720">13天</Option>
+                <Option value="20160">14天</Option>
+                <Option value="21600">15天</Option>
               </Select>
             </div>
 

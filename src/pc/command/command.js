@@ -82,6 +82,7 @@ class command extends React.Component {
     if (res.data.code === 2000) {
       message.success('添加成功')
       this.getSecondSupervisorList()
+      this.setState({operationPhone:'',operationCode:''})
     } else {
       message.error(res.data.msg)
     }
@@ -91,6 +92,7 @@ class command extends React.Component {
   UoiteSubimt = () => {
     this.AddSecondSupervisor({ phone: this.state.operationPhone, code: this.state.operationCode })
   }
+
 
 
   parameterid=e=>{
@@ -112,14 +114,10 @@ class command extends React.Component {
 
 
 
-
-
-
   render() {
     return (
       <div className="command">
         <div className="headTitle"><span onClick={this.next}>系统设置 > </span><span style={{ color: '#F5A623' }}>添加/解除第二负责人</span></div>
-
         <div className="resetSon">
           <div className="inputSon" style={this.state.command.length === 0 ? {display:'none'}:{ marginLeft: '-68px', overflow: 'hidden' }}>
             <span style={{ float: 'left', width: '125px' }}>第二负责人手机号</span>
@@ -145,11 +143,11 @@ class command extends React.Component {
           </div>
           <div className="inputSon">
             <span style={{ width: 145, marginLeft: -98, textAlign: 'right' }}>添加第二负责人手机号</span>
-            <Input maxLength={11} prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.operationPhone} placeholder="请输入手机号" />
+            <Input maxLength={11} prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />} value={this.state.operationPhone} onChange={this.operationPhone} placeholder="请输入手机号" />
           </div>
           <div className="inputSonT inputSon">
             <span style={{ textAlign: 'right' }}>验证码</span>
-            <Input maxLength={6} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.operationCode} placeholder="请输入验证码" />
+            <Input maxLength={6} prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} value={this.state.operationCode} onChange={this.operationCode} placeholder="请输入验证码" />
             <div style={{ height: 43, lineHeight: '43px' }} className={this.state.textTwo === '获取验证码' ? 'obtainCode' : 'koohidden'} onClick={this.naCodeOutieTwo}>{this.state.textTwo}</div>
             <div style={{ height: 43, lineHeight: '43px' }} className={this.state.textTwo === '获取验证码' ? 'koohidden' : 'obtainCode'} >{this.state.textTwo}</div>
           </div>

@@ -86,7 +86,7 @@ class home extends React.Component {
     detail: [],
     Selabel: [],
     SelabelTwo: [],
-    rate: 1,
+    rate: 5,
     labelId: [],
     isevaluate: 0,
     selectEd: [],
@@ -600,7 +600,7 @@ class home extends React.Component {
                 </div>
               </div>
               <div className="Choose">
-                <div className="start">整体评分   <Rate defaultValue={1} allowClear={false} onChange={this.rate} /> {this.state.rate}分</div>
+                <div className="start">整体评分   <Rate defaultValue={5} allowClear={false} onChange={this.rate} /> {this.state.rate}分</div>
                 <span className="text">基于对ta的印象点击下方标签评价吧!</span>
                 {
                   this.state.SelabelTwo.map((item, i) => (

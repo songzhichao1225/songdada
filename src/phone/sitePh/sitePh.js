@@ -49,7 +49,37 @@ class sitePh extends React.Component {
       { label: '排球', value: 11 },
       { label: '网球', value: 12 }
     ],
-    selectDaArr: [{ label: '次', value: '次' }, { label: '/H', value: '/H' }, { label: '2H', value: '2H' }, { label: '3H', value: '3H' }, { label: '4H', value: '4H' }, { label: '5H', value: '5H' }, { label: '6H', value: '6H' }],
+    sportArrTwoSo: [
+      { label: '羽毛球', value: 1 },
+      { label: '乒乓球', value: 2 },
+      { label: '台球中式黑八', value: 3 },
+      { label: '台球美式九球', value: 4 },
+      { label: '台球斯诺克', value: 5 },
+      { label: '篮球（全场）', value: 6 },
+      { label: '足球11人制', value: 7 },
+      { label: '足球8人制', value: 8 },
+      { label: '足球7人制', value: 9 },
+      { label: '足球6人制', value: 13 },
+      { label: '足球5人制', value: 10 },
+      { label: '排球', value: 11 },
+      { label: '网球', value: 12 }
+    ],
+    sportArrTwoBe: [
+      { label: '羽毛球', value: 1 },
+      { label: '乒乓球', value: 2 },
+      { label: '台球中式黑八', value: 3 },
+      { label: '台球美式九球', value: 4 },
+      { label: '台球斯诺克', value: 5 },
+      { label: '篮球（半场）', value: 6 },
+      { label: '足球11人制', value: 7 },
+      { label: '足球8人制', value: 8 },
+      { label: '足球7人制', value: 9 },
+      { label: '足球6人制', value: 13 },
+      { label: '足球5人制', value: 10 },
+      { label: '排球', value: 11 },
+      { label: '网球', value: 12 }
+    ],
+    selectDaArr: [{ label: '次', value: '次' }, { label: 'H', value: 'H' }, { label: '2H', value: '2H' }, { label: '3H', value: '3H' }, { label: '4H', value: '4H' }, { label: '5H', value: '5H' }, { label: '6H', value: '6H' }],
     ListSportTwo: [{ label: '半场', value: 1 }, { label: '散场', value: 2 }, { label: '全场', value: 5 }],
     ListSportThree: [{ label: '按时(收费)', value: 3 }, { label: '按次(收费)', value: 4 }],
     timeLimitList: [{ label: '不限', value: 1 }, { label: '整点', value: 2 }, { label: '单数整点', value: 3 }, { label: '双数整点', value: 4 }],
@@ -121,7 +151,7 @@ class sitePh extends React.Component {
     timeLimit: [1],
     timeLimitTwo: [1],
     selectDa: [''],
-    withDayIndex: '0',
+    withDayIndex: '1',
     withDayList: [],
     relatedness:false,
     relatednessRunid:'',
@@ -1351,6 +1381,7 @@ class sitePh extends React.Component {
   }
 
   onPanelChange = (date) => {
+    console.log(date)
     let dateSelect = date.format('YYYY-MM-DD')
     let dateArr = []
     if (this.state.withDayList.indexOf(dateSelect) === -1) {
@@ -1721,6 +1752,7 @@ class sitePh extends React.Component {
     }
 
   }
+
   connectedSelsedTwo = e => {
     if (this.state.relatednessRunidTwo[0] === 6) {
       let data = this.state.arrNum
@@ -1761,7 +1793,7 @@ class sitePh extends React.Component {
     const res = await VenueRelatSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       Toast.success('添加成功')
-      this.setState({ relatedness: false })
+      this.setState({ relatedness: false,pageFour:1 })
       this.getVenueRelatList({ page: 1 })
     } else if (res.data.code === 4002) {
       Toast.fail('母关联者只能选择单个场地')
@@ -1817,7 +1849,7 @@ class sitePh extends React.Component {
         <div className="header">
           <div onTouchStart={this.header} data-index='1' style={this.state.index === '1' ? { color: '#D85D27' } : {}}>场地细分<div style={this.state.index === '1' ? { width: '10%', height: '2px', background: '#D85D27', margin: '-3px auto 0' } : { display: 'none' }}></div></div>
           <div onTouchStart={this.header} data-index='2' style={this.state.index === '2' ? { color: '#D85D27' } : {}}>价格设置<div style={this.state.index === '2' ? { width: '10%', height: '2px', background: '#D85D27', margin: '-3px auto 0' } : { display: 'none' }}></div></div>
-          <div onTouchStart={this.header} data-index='4' style={this.state.index === '2' ? { color: '#D85D27' } : {}}>场地关联<div style={this.state.index === '4' ? { width: '10%', height: '2px', background: '#D85D27', margin: '-3px auto 0' } : { display: 'none' }}></div></div>
+          <div onTouchStart={this.header} data-index='4' style={this.state.index === '4' ? { color: '#D85D27' } : {}}>场地关联<div style={this.state.index === '4' ? { width: '10%', height: '2px', background: '#D85D27', margin: '-3px auto 0' } : { display: 'none' }}></div></div>
           <div onTouchStart={this.header} data-index='3' style={this.state.index === '3' ? { color: '#D85D27' } : {}}>历史设置<div style={this.state.index === '3' ? { width: '10%', height: '2px', background: '#D85D27', margin: '-3px auto 0' } : { display: 'none' }}></div></div>
         </div>
         <div className="wsMa4" style={this.state.index === '1' ? {} : { display: 'none' }}>
@@ -1871,7 +1903,7 @@ class sitePh extends React.Component {
                       <div>场地数量：{item.sitenumber}</div>
                       <div onClick={this.venDuo} data-venueid={item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}>星期：{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</div>
                       <div onClick={this.venDuo} data-venueid={item.starttime + '~' + item.endtime}>时间范围：{item.starttime}~{item.endtime}</div>
-                      <div>价格：{item.tags.indexOf('散') === -1 || item.tags.indexOf('按次') === -1 ? item.costperhour + '元/时' : item.costperhour + '元/次'}</div>
+                      <div>价格：{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '元/时' : item.costperhour + '元/次'}</div>
                       <div>开始时间限制：{item.timelimit === 1 ? '不限' : item.timelimit === 2 ? '整点' : item.timelimit === 3 ? '单数整点' : item.timelimit === 4 ? '双数整点' : '不限'}</div>
                       <div>时长限制：{item.durationlimit === 1 ? '一小时以上' : item.durationlimit === 2 ? '一小时整数倍' : item.durationlimit === 3 ? '二小时整数倍' : '一小时以上'}</div>
                       <div onClick={this.venDuo} data-venueid={item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}>最长提前预定时间：{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</div>
@@ -1917,7 +1949,7 @@ class sitePh extends React.Component {
                       <div>场地数量：{item.sitenumber}</div>
                       <div onClick={this.venDuo} data-venueid={item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}>星期：{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</div>
                       <div onClick={this.venDuo} data-venueid={item.starttime + '~' + item.endtime}>时间范围：{item.starttime}~{item.endtime}</div>
-                      <div>价格：{item.costperhour}元/时</div>
+                      <div>价格：{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '元/时' : item.costperhour + '元/次'}</div>
                       <div>开始时间限制：{item.timelimit === 1 ? '不限' : item.timelimit === 2 ? '整点' : item.timelimit === 3 ? '单数整点' : item.timelimit === 4 ? '双数整点' : '不限'}</div>
                       <div>时长限制：{item.durationlimit === 1 ? '一小时以上' : item.durationlimit === 2 ? '一小时整数倍' : item.durationlimit === 3 ? '二小时整数倍' : '一小时以上'}</div>
                       <div onClick={this.venDuo} data-venueid={item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}>最长提前预定时间：{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</div>
@@ -1998,17 +2030,17 @@ class sitePh extends React.Component {
           visible={this.state.relatedness}
         >
           <Picker
-            data={this.state.sportArrTwo}
+            data={this.state.sportArrTwoSo}
             value={this.state.relatednessRunid}
             disabled={this.state.upData === 1 ? true : false}
-            onOk={v => this.setState({ relatednessRunid: v, idxTitleTwo: '请选择/添加', connectedOne: [] })}
+            onOk={v =>this.setState({ relatednessRunid:v, idxTitleTwo: '请选择/添加', connectedOne: []})}
             cols={1} className="forss">
             <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} style={{ borderBottom: '1px solid #E9E9E9' }}>母关联场地类型</List.Item>
           </Picker>
           <List.Item arrow="horizontal" onClick={this.connected} data-num={this.state.connectedOne} extra={this.state.connectedOne.length === 0 ? '请选择' : this.state.connectedOne} style={{ borderBottom: '1px solid #E9E9E9' }}>母关联场地编号</List.Item>
           <List.Item arrow="empty" extra={this.state.connectedOneLen} style={{ borderBottom: '1px solid #E9E9E9' }}>母关联场地数量</List.Item>
           <Picker
-            data={this.state.sportArrTwo}
+            data={this.state.sportArrTwoBe}
             value={this.state.relatednessRunidTwo}
             disabled={this.state.upData === 1 ? true : false}
             onOk={v => this.setState({ relatednessRunidTwo: v, idxTitleTwo: '请选择/添加', connectedOneTwo: [] })}
@@ -2033,7 +2065,7 @@ class sitePh extends React.Component {
           <div className="sitePhSerial">
             {
               this.state.arrNum.map((item, i) => (
-                <div key={i} className='serialSon' onClick={this.connectedSelsed} data-num={item.num} data-id={item.id} style={item.cheked === true ? { background: '#F5A623', color: '#fff' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', opacity: '0.2' } : item.num === '场地不固定' ? { width: '5rem' } : {}}>{item.id}</div>
+                <div key={i} className='serialSon' onClick={this.connectedSelsed} data-num={item.num} data-id={item.id} style={item.cheked === true ? { background: '#F5A623', color: '#fff' } : {} && item.cheked === 'no' ? { color: '#fff', background: '#F5A623', opacity: '0.2' } : {}}>{item.id}</div>
               ))
             }
           </div>

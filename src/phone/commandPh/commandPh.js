@@ -63,6 +63,7 @@ class commandPh extends React.Component {
     if (res.data.code === 2000) {
       Toast.success('添加成功')
       this.getSecondSupervisorList()
+      this.setState({phoneTwo:'',codeTwo:''})
     } else {
       Toast.fail(res.data.msg)
     }
@@ -110,11 +111,11 @@ class commandPh extends React.Component {
           </div>
         </div>
         <div className="listSon">
-          <Input maxLength={11} onChange={this.phoneTwo} placeholder="请输入操作员新手机号" />
+          <Input maxLength={11} onChange={this.phoneTwo} value={this.state.phoneTwo} placeholder="请输入操作员新手机号" />
         </div>
 
         <div className="listSon">
-          <Input maxLength={11} placeholder="请输入验证码" onChange={this.codeTwo} /><span onClick={this.state.textTwo === '获取验证码' ? this.nacodeTwoT : this.ko}>{this.state.textTwo}</span>
+          <Input maxLength={11} placeholder="请输入验证码" value={this.state.codeTwo} onChange={this.codeTwo} /><span onClick={this.state.textTwo === '获取验证码' ? this.nacodeTwoT : this.ko}>{this.state.textTwo}</span>
         </div>
         <div className="btn" onClick={this.submit}>提交</div>
 
