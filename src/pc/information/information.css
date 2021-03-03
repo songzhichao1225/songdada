@@ -31,15 +31,15 @@
 .orderList .ant-col{
     min-height: 50px;
     text-align: center;
-    display:table;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    line-height: 50px;
 }
 .orderList .ant-col span{
-    display:table-cell;
-    vertical-align: middle;
     cursor: pointer;
+    display: block;
+    line-height: 50px;
 }
 .orderList .rowConten{
     height: 50px;

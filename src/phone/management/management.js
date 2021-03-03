@@ -267,7 +267,9 @@ class management extends React.Component {
                     <div>生日：{item.birthday}</div> <div>联系电话：{item.contactNumber}</div> <div><div style={{float:'left'}}>会员卡号：</div><div className="vipText" data-txt={item.cardNumber} onClick={this.lookText}>{item.cardNumber}</div></div>
                     <div>会员等级：{item.grade === 1 ? '普通' : item.grade === 2 ? 'vip' : item.grade === 3 ? '银卡' : item.grade === 4 ? '金卡' : '超级vip'}</div>
                     <div>折扣：{item.discount}折</div>  <div>充值金额：￥{item.rechargeMoney}</div> <div>赠送金额：￥{item.giveMoney}</div>   <div>余额：￥{item.balance}<span className="lishi" onClick={this.consumptionOne} data-uuid={item.uuid}>历史记录</span></div>
-                    <div>有效日期：{item.effectiveDate}</div><span className="topUp" data-uuid={item.uuid} onClick={this.visibleJoinTwo}>充</span> <span className="topUp tui" data-uuid={item.uuid} onClick={this.fallBack}>退</span> <img data-uuid={item.uuid} onClick={this.edidor} src={require('../../assets/icon_pc_updata.png')} alt="img" />
+                    <div style={{paddingBottom:'0.5rem'}}>有效日期：{item.effectiveDate}</div> <div style={{paddingBottom:'0.5rem'}}>会员卡状态：{item.status===1?'已正常':item.status===2?'已退卡':item.status===3?'已过期':''}</div>
+                     
+                    <span className="topUp" data-uuid={item.uuid} onClick={this.visibleJoinTwo}>充</span> <span className="topUp tui" data-uuid={item.uuid} onClick={this.fallBack}>退</span> <img data-uuid={item.uuid} onClick={this.edidor} src={require('../../assets/icon_pc_updata.png')} alt="img" />
                   </Card.Body>
                 </Card>
               ))
@@ -370,6 +372,7 @@ class management extends React.Component {
               type='money'
               placeholder="请输入"
               className="look"
+              maxLength={8}
               value={this.state.topUp}
               onChange={(v) => { this.setState({ topUp: v,balance: Number(this.state.giveAway) + Number(v) }) }}
               style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
@@ -381,6 +384,7 @@ class management extends React.Component {
               type='money'
               placeholder="请输入"
               className="look"
+              maxLength={8}
               value={this.state.giveAway}
               onChange={(v) => { this.setState({ giveAway: v, balance: Number(this.state.topUp) + Number(v) }) }}
               style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
@@ -507,6 +511,7 @@ class management extends React.Component {
               placeholder="请输入"
               className="look"
               value={this.state.topUpTwo}
+              maxLength={8}
               onChange={(v) => { this.setState({ topUpTwo: v }) }}
               style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>充值金额</span></InputItem>
@@ -517,6 +522,7 @@ class management extends React.Component {
               type='money'
               placeholder="请输入"
               className="look"
+              maxLength={8}
               value={this.state.giveAwayTwo}
               onChange={(v) => { this.setState({ giveAwayTwo: v, balanceTwo: Number(this.state.topUpTwo) + Number(v) }) }}
               style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
@@ -600,6 +606,7 @@ class management extends React.Component {
               type='text'
               placeholder="请输入"
               value={this.state.VipcardThree}
+              maxLength={20}
               onChange={(v) => { this.setState({ VipcardThree: v }) }}
               style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>会员卡号</span></InputItem>

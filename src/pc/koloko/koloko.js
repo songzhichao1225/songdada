@@ -1,5 +1,5 @@
 import React from 'react';
-import './preferentialTwo.css';
+import './koloko.css';
 import 'antd/dist/antd.css';
 import { Input, Spin, message, DatePicker, Modal, Drawer, Table, Checkbox, Select, Popover } from 'antd';
 import { SyncOutlined, CloseCircleOutlined } from '@ant-design/icons';
@@ -25,7 +25,7 @@ for (let i = 0; i < 100; i++) {
 
 
 
-class appointmentList extends React.Component {
+class koloko extends React.Component {
 
   state = {
     number: '2',
@@ -113,13 +113,12 @@ class appointmentList extends React.Component {
   };
 
   async getVenueSport(data) {
-    const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
+    const res = await getVenueSport(data, '')
     if (res.data.code === 4001) {
-      this.props.history.push('/')
-      message.error('登录超时请重新登录!')
+      message.error('登录超时!')
     } else if (res.data.code === 2000) {
       this.setState({ activityNav: res.data.data, liNum: res.data.data[0].id })
-      this.getVenueNumberTitleList({ sportid: res.data.data[0].id })
+      this.getVenueNumberTitleList({ sportid: res.data.data[0].id,at:this.state.at,sid:this.state.sid })
     }
   }
 
@@ -131,15 +130,15 @@ class appointmentList extends React.Component {
 
 
   async getVenueNumberTitleList(data) {
-    const res = await getVenueNumberTitleList(data, sessionStorage.getItem('venue_token'))
+    const res = await getVenueNumberTitleList(data,'')
     if (res.data.code === 2000) {
       this.setState({ topNumList: res.data.data })
-      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.dateString })
+      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.dateString,at:this.state.at,sid:this.state.sid  })
     }
   }
 
   async getDateAndDayOfWeek(data) {
-    const res = await getDateAndDayOfWeek(data, sessionStorage.getItem('venue_token'))
+    const res = await getDateAndDayOfWeek(data,'')
     this.setState({ weekList: res.data.data })
 
   }
@@ -147,31 +146,28 @@ class appointmentList extends React.Component {
 
   componentDidMount() {
     this.getDateAndDayOfWeek()
-    this.getVenueSport()
+    let url=this.props.location.search
+    this.setState({at:url.split('&')[1].slice(15,url.split('&')[1].length),sid:url.split('&')[0].slice(10,url.split('&')[0].length)})
+    this.getVenueSport({at:url.split('&')[1].slice(15,url.split('&')[1].length),sid:url.split('&')[0].slice(10,url.split('&')[0].length)})
+    this.getDateAndDayOfWeek({at:url.split('&')[1].slice(15,url.split('&')[1].length),sid:url.split('&')[0].slice(10,url.split('&')[0].length)})
     if (this.props.location.query !== undefined) {
       this.setState({
         number: this.props.location.query.number.toString()
       })
       this.setState({ dianIndex: this.props.location.query.dataIndex, liNum: this.props.location.query.id.toString(), spinningTwo: true })
-      this.getVenueNumberTitleList({ sportid: this.props.location.query.id })
+      this.getVenueNumberTitleList({ sportid: this.props.location.query.id,at:this.state.at,sid:this.state.sid })
     }
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    // let lo = new Date().toLocaleDateString().split('/')[1]
-    // let loTwo = new Date().toLocaleDateString().split('/')[2]
-    // if (lo.length === 1&&loTwo.length>1) {
-    //   lo = new Date().toLocaleDateString().split('/')[0] + '-0' + new Date().toLocaleDateString().split('/')[1] + '-' + new Date().toLocaleDateString().split('/')[2]
-    // }else if(lo.length === 1&&loTwo.length===1){
-    //   lo = new Date().toLocaleDateString().split('/')[0] + '-0' + new Date().toLocaleDateString().split('/')[1] + '-0' + new Date().toLocaleDateString().split('/')[2]
-    // }else if(lo.length > 1&&loTwo.length===1){
-    //   lo = new Date().toLocaleDateString().split('/')[0] + '-' + new Date().toLocaleDateString().split('/')[1] + '-0' + new Date().toLocaleDateString().split('/')[2]
-    // }
-    
-    this.setState({ dateString: new Date(), week: week[new Date().getDay()] })
+    let lo = new Date().toLocaleDateString().split('/')[1]
+    if (lo.length === 1) {
+      lo = new Date().toLocaleDateString().split('/')[0] + '-0' + new Date().toLocaleDateString().split('/')[1] + '-' + new Date().toLocaleDateString().split('/')[2]
+    }
+    this.setState({ dateString: lo, week: week[new Date().getDay()] })
   }
 
 
   async getVenueReservation(data) {
-    const res = await getVenueReservation(data, sessionStorage.getItem('venue_token'))
+    const res = await getVenueReservation(data, '')
 
 
     if (res.data.code === 2000) {
@@ -260,7 +256,7 @@ class appointmentList extends React.Component {
         obj.key = i + 1
         let key = resData[i].c[j].venueids
         let value = <div><div data-type={resData[i].c[j].type} data-uuid={resData[i].c[j].uuid} onClick={this.lookDeta} style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, color: 'transparent', lineHeight: 3 } : {}}>
-          {resData[i].c[j].money_cg}</div></div>
+          {resData[i].c[j].money}</div></div>
         obj[key] = value
         let koTwo = parseInt(resData[i].a.slice(1, 2)) + 1 + ':00'
         obj.lppd = <div style={{ color: '#F5A623' }}>{resData[i].a}<br />{resData[i].a.slice(3, resData[i].a.length) === '00' ? resData[i].a.slice(0, 2) + ':30' : koTwo === '10:00' && resData[i].a !== '19:30' ? '10:00' : resData[i].a === '19:30' ? '20:00' : resData[i].a.slice(0, 1) + koTwo}</div>
@@ -280,7 +276,7 @@ class appointmentList extends React.Component {
 
 
   clickLi = (e) => {
-    this.getVenueNumberTitleList({ sportid: e.target.dataset.num })
+    this.getVenueNumberTitleList({ sportid: e.target.dataset.num,at:this.state.at,sid:this.state.sid })
     this.setState({ dianIndex: e.target.dataset.index, liNum: e.target.dataset.num, spinningTwo: true })
   }
 
@@ -292,16 +288,16 @@ class appointmentList extends React.Component {
 
   dateChange = (data, datatring) => {
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    console.log(datatring)
+
     this.setState({ dateString: datatring, week: week[new Date(datatring).getDay()] })
-    this.getDateAndDayOfWeek({ date: datatring })
-    this.getVenueReservation({ sportid: this.state.liNum, date: datatring })
+    this.getDateAndDayOfWeek({ date: datatring,at:this.state.at,sid:this.state.sid })
+    this.getVenueReservation({ sportid: this.state.liNum, date: datatring,at:this.state.at,sid:this.state.sid })
   }
 
   dateStingTwo = (e) => {
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
     this.setState({ dateString: e.currentTarget.dataset.date, week: week[new Date(e.currentTarget.dataset.date).getDay()] })
-    this.getVenueReservation({ sportid: this.state.liNum, date: e.currentTarget.dataset.date })
+    this.getVenueReservation({ sportid: this.state.liNum, date: e.currentTarget.dataset.date,at:this.state.at,sid:this.state.sid  })
   }
 
 
@@ -462,15 +458,15 @@ class appointmentList extends React.Component {
   riLeft = () => {
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
     this.setState({ dateString: this.getDay(-7), week: week[new Date(this.getDay(-7)).getDay()] })
-    this.getDateAndDayOfWeek({ date: this.getDay(-7) })
-    this.getVenueReservation({ sportid: this.state.liNum, date: this.getDay(-7) })
+    this.getDateAndDayOfWeek({ date: this.getDay(-7),at:this.state.at,sid:this.state.sid })
+    this.getVenueReservation({ sportid: this.state.liNum, date: this.getDay(-7),at:this.state.at,sid:this.state.sid  })
   }
 
   riRight = () => {
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
     this.setState({ dateString: this.getDay(7), week: week[new Date(this.getDay(7)).getDay()] })
-    this.getDateAndDayOfWeek({ date: this.getDay(7) })
-    this.getVenueReservation({ sportid: this.state.liNum, date: this.getDay(7) })
+    this.getDateAndDayOfWeek({ date: this.getDay(7),at:this.state.at,sid:this.state.sid })
+    this.getVenueReservation({ sportid: this.state.liNum, date: this.getDay(7),at:this.state.at,sid:this.state.sid  })
   }
 
   theWay = e => {
@@ -767,4 +763,4 @@ class appointmentList extends React.Component {
   }
 }
 
-export default appointmentList;
+export default koloko;

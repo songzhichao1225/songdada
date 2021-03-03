@@ -261,7 +261,7 @@ class appOrder extends React.Component {
   componentDidMount() {
 
     //测试数据
-    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=4&token=KtfJFfVmlqZtS1VyOZx4PpxtY2dVfqOOs9Tk4Z5rJp0NgpyReREOEmjDHVIfuZvX&sporttype=10&flag=1'
+    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=4&token=KtfJFfVmlqZtS1VyOZx4PpxtY2dVfqOOs9Tk4Z5rJp0NgpyReREOEmjDHVIfuZvX&sporttype=22&flag=1'
     let query = this.props.location.search
  
     let arr = query.split('&')
@@ -1019,6 +1019,8 @@ class appOrder extends React.Component {
                 <div className="titleDivTwo" onTouchStart={this.date}>{this.state.date}   {this.state.week}</div>
               </div>
               <div className="titleDiv" style={this.state.sporttypeFive === '22' || this.state.sporttypeFive === '24' ? {} : { display: 'none' }}><span className="fontSize">由于散场人数不可控，为了有更好的体验，出发之前可与场馆方联系。</span></div>
+              
+              
               <div className="modTitle">
 
                 <span className="blue"></span><span>可选</span>
@@ -1047,6 +1049,7 @@ class appOrder extends React.Component {
                 maxDate={new Date(+now + 31536000000)}
               />
             </div>
+          <div className="textPass">我们确保100%留有场地,否则将退还您预付的所有场地费并补偿您20元</div>
             <div className="footerKo">
               <div style={{ float: 'left', lineHeight: '3', marginLeft: '1rem' }}>场地费合计：{this.state.moneyCall.toString().indexOf('.') === -1 ? this.state.moneyCall + '.00' : this.state.moneyCall + '0'} <span style={this.state.sporttypeFive === '22' || this.state.sporttypeFive === '24' ? { paddingLeft: '4rem' } : { display: 'none' }}>次数{this.state.lotime.length}</span></div>
               <div

@@ -256,7 +256,7 @@ class VipAgement extends React.Component {
     const res = await VenueMemberRecharge(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success(res.data.msg)
-      this.setState({ topAmount: false })
+      this.setState({ topAmount: false,giveAwayTwo:'',topUpTwo:'',balanceTwo:'' })
       this.getVenueMemberlist({ page: this.state.page })
     } else {
       message.error(res.data.msg)
@@ -459,7 +459,7 @@ class VipAgement extends React.Component {
         <div className="content">
           <Row className="headList">
             <Col xs={{ span: 2 }}>卡主名称</Col>
-            <Col xs={{ span: 2 }}>联系人</Col>
+            <Col xs={{ span: 1 }}>联系人</Col>
             <Col xs={{ span: 2 }}>生日</Col>
             <Col xs={{ span: 3 }}>联系电话</Col>
             <Col xs={{ span: 2 }}>会员卡号</Col>
@@ -469,13 +469,14 @@ class VipAgement extends React.Component {
             <Col xs={{ span: 1 }}>折扣</Col>
             <Col xs={{ span: 2 }}>余额</Col>
             <Col xs={{ span: 2 }}>有效期</Col>
+            <Col xs={{ span: 1 }}>会员状态</Col>
             <Col xs={{ span: 2 }}>操作</Col>
           </Row>
           {
             this.state.memberList.map((item, i) => (
               <Row className="headListSon" key={i}>
                 <Col xs={{ span: 2 }}>{item.cardholderName}</Col>
-                <Col xs={{ span: 2 }}>{item.contacts}</Col>
+                <Col xs={{ span: 1 }}>{item.contacts}</Col>
                 <Col xs={{ span: 2 }}>{item.birthday}</Col>
                 <Col xs={{ span: 3 }}>{item.contactNumber}</Col>
                 <Popover content={item.cardNumber} title="详情" trigger="click">
@@ -487,6 +488,7 @@ class VipAgement extends React.Component {
                 <Col xs={{ span: 1 }}>{item.discount}</Col>
                 <Col xs={{ span: 2 }}>￥{item.balance}<span style={{ fontSize: '10px', paddingLeft: '5px', color: '#4A90E2', cursor: 'pointer' }} data-uuid={item.uuid} onClick={this.recordsList}>历史记录</span></Col>
                 <Col xs={{ span: 2 }}>{item.effectiveDate}</Col>
+                <Col xs={{ span: 1 }} style={{color:'blue'}}>{item.status===1?'正常':item.status===2?'已退卡':item.status===3?'已过期':''}</Col>
                 <Col xs={{ span: 2 }}><span className="topUp" data-uuid={item.uuid} onClick={this.topAmountDetail}>充</span><span className="topUp tui" data-uuid={item.uuid} onClick={this.returnCard}>退</span><img onClick={this.editorKo} data-uuid={item.uuid} style={{ cursor: 'pointer' }} src={require('../../assets/icon_pc_updata.png')} alt="编辑" /></Col>
               </Row>
             ))
@@ -523,7 +525,7 @@ class VipAgement extends React.Component {
           </div>
           <div className="ViplistSon">
             <span className="title">会员卡号<span className="redStart">*</span></span>
-            <Input placeholder="请填写" onChange={this.Vipcard} />
+            <Input placeholder="请填写" maxLength={20} onChange={this.Vipcard} />
           </div>
           <div className="ViplistSon">
             <span className="title">折扣<span onClick={this.hintTr} style={{ padding: '0px 6px', marginLeft: '10px', background: '#F5A623', color: '#fff', cursor: 'pointer' }}>?</span></span>
@@ -542,11 +544,11 @@ class VipAgement extends React.Component {
           </div>
           <div className="ViplistSon">
             <span className="title">充值金额<span className="redStart">*</span></span>
-            <Input placeholder="请填写" onChange={this.topUp} />
+            <Input placeholder="请填写" maxLength={8} onChange={this.topUp} />
           </div>
           <div className="ViplistSon">
             <span className="title">赠送金额</span>
-            <Input placeholder="请填写" onChange={this.giveAway} />
+            <Input placeholder="请填写" maxLength={8} onChange={this.giveAway} />
           </div>
           <div className="ViplistSon">
             <span className="title">余额</span>
@@ -678,11 +680,11 @@ class VipAgement extends React.Component {
 
           <div className="ViplistSon">
             <span className="title">充值金额<span className="redStart">*</span></span>
-            <Input type="number" placeholder="请填写" onChange={this.topUpTwo} />
+            <Input type="number" maxLength={8} placeholder="请填写" value={this.state.topUpTwo} onChange={this.topUpTwo} />
           </div>
           <div className="ViplistSon">
             <span className="title">赠送金额</span>
-            <Input type="number" placeholder="请填写" onChange={this.giveAwayTwo} />
+            <Input type="number" maxLength={8} placeholder="请填写" value={this.state.giveAwayTwo} onChange={this.giveAwayTwo} />
           </div>
 
           <div className="ViplistSon">
@@ -809,7 +811,7 @@ class VipAgement extends React.Component {
           </div>
           <div className="ViplistSon">
             <span className="title">验证码</span>
-            <Input placeholder="请填写" type="number" onChange={this.code} style={{ width: '230px' }} />
+            <Input placeholder="请填写" type="text" onChange={this.code} style={{ width: '230px' }} />
             <span className="codeLpo" onClick={this.codeGo}>{this.state.textFour}</span>
           </div>
 

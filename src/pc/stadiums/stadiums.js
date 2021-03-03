@@ -7,7 +7,7 @@ import { ImagePicker } from 'antd-mobile';
 import lrz from 'lrz';
 
 const { Option } = Select;
-const { TextArea } = Input;
+const { TextArea, Search } = Input;
 
 
 
@@ -66,10 +66,10 @@ class stadiums extends React.Component {
     imgHood: '',
     imgHoodTwo: '',
     zuo: 0,
-    starttime:'',
-    endtime:'',
+    starttime: '',
+    endtime: '',
     timer: [{ name: '00:00' }, { name: '00:30' }, { name: '01:00' }, { name: '01:30' }, { name: '02:00' }, { name: '02:30' }, { name: '03:00' }, { name: '03:30' }, { name: '04:00' }, { name: '04:30' }, { name: '05:00' }, { name: '05:30' }, { name: '06:00' }, { name: '06:30' }, { name: '07:00' }, { name: '07:30' }, { name: '08:00' }, { name: '08:30' }, { name: '09:00' }, { name: '09:30' }, { name: '10:00' }, { name: '10:30' }, { name: '11:00' }, { name: '11:30' }, { name: '12:00' }, { name: '12:30' }, { name: '13:00' }, { name: '13:30' }, { name: '14:00' }, { name: '14:30' }, { name: '15:00' }, { name: '15:30' }, { name: '16:00' }, { name: '16:30' }, { name: '17:00' }, { name: '17:30' }, { name: '18:00' }, { name: '18:30' }, { name: '19:00' }, { name: '19:30' }, { name: '20:00' }, { name: '20:30' }, { name: '21:00' }, { name: '21:30' }, { name: '22:00' }, { name: '22:30' }, { name: '23:00' }, { name: '23:30' }, { name: '24:00' }],
-    
+
 
     flagOne: true,
     flagTwo: true,
@@ -121,7 +121,10 @@ class stadiums extends React.Component {
     legalhourBaseURL: '',
     ascrBaceUrl: '',
     valueThree: 1,
-    Bankphone:'',
+    Bankphone: '',
+    yinhangSelect: 0,
+    hand: 1,
+    kolod:'',
   };
 
   async getVenueInformation(data) {
@@ -152,7 +155,7 @@ class stadiums extends React.Component {
           informationList: res.data.data, name: res.data.data.name,
           contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone,
           files: [{ url: imgUrlTwo + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
-          starttime:res.data.data.openingtime,endtime:res.data.data.closingtime,
+          starttime: res.data.data.openingtime, endtime: res.data.data.closingtime,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, sport: lo, facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
         })
       } else if (this.props.location.query === undefined || this.props.location.query.name === 'sunny') {
@@ -166,7 +169,7 @@ class stadiums extends React.Component {
           informationList: res.data.data, name: res.data.data.name, handleAddress: res.data.data.address,
           contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, adddress: res.data.data.position,
           files: [{ url: imgUrlTwo + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
-          starttime:res.data.data.openingtime,endtime:res.data.data.closingtime,
+          starttime: res.data.data.openingtime, endtime: res.data.data.closingtime,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, sport: lo, facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
         })
       }
@@ -199,10 +202,45 @@ class stadiums extends React.Component {
         let obj = {}
         obj.name = name[i].sub_branch_name
         obj.nameT = name[i].sub_branch_name.slice(name[i].sub_branch_name.indexOf('公司') + 2, name[i].sub_branch_name.length)
+        obj.id=i
         arrName.push(obj)
       }
-      this.setState({ backList: arrName, flagThree: false })
+   
+      this.setState({ backList: arrName, flagThree: false,yinhangSelect: 1 })
     }
+  }
+
+  
+  backListJoinInput=e=>{
+      this.setState({backListJoinInput:e.target.value.replace(/\s+/g,"")})
+  }
+  backListJoin=()=>{
+    if(this.state.backListJoinInput===''){
+        message.warning('请填写内容')
+    }else if(this.state.backList.length!==0){
+      for(let i in this.state.backList){
+        if(this.state.backList[i].name===this.state.backListJoinInput){
+          message.warning('请勿重复添加')
+        }else{
+          let arr=this.state.backList
+          let lok= {}
+          lok.name=this.state.backListJoinInput
+          lok.nameT=this.state.backListJoinInput
+          lok.id=1000
+          arr.push(lok)
+          this.setState({backList:arr})
+        }
+      }
+    }else{
+      let arr=this.state.backList
+      let lok= {}
+      lok.name=this.state.backListJoinInput
+      lok.nameT=this.state.backListJoinInput
+      lok.id=1000
+      arr.push(lok)
+      this.setState({backList:arr})
+    }
+   
   }
   async getVenueOpenBankCity(data) {
     const res = await getVenueOpenBankCity(data, sessionStorage.getItem('venue_token'))
@@ -241,10 +279,13 @@ class stadiums extends React.Component {
       } else {
         this.setState({ numRadio: res.data.data.Settlement, numRadioTwo: res.data.data.account, })
       }
+      if(res.data.data.OpeningBank!==''){
+         this.setState({kolod:0})
+      }
       this.setState({
         CorporateName: res.data.data.CorporateName, bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
         faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
-        inCorName: res.data.data.Bankcorporate, corporateOpen: res.data.data.OpeningBank, corporateId: res.data.data.Bankcard,Bankphone:res.data.data.Bankphone, corporateCardId: res.data.data.Bankaccount, inChargeNa: res.data.data.Bankname, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
+        inCorName: res.data.data.Bankcorporate, corporateOpen: res.data.data.OpeningBank, corporateId: res.data.data.Bankcard, Bankphone: res.data.data.Bankphone, corporateCardId: res.data.data.Bankaccount, inChargeNa: res.data.data.Bankname, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
         legalBaseURL: res.data.data.legalBaseURL,
         filesThree: res.data.data.lisenceURL === '' ? [] : [{ url: imgUrlTwo + res.data.data.lisenceURL }],
         filesThreeSon: res.data.data.lisenceURL === '' ? '' : res.data.data.lisenceURL,
@@ -457,7 +498,7 @@ class stadiums extends React.Component {
   }
 
   confirm = () => {
-    let { informationList, name, handleAddress, contacts, contactNumber,starttime,endtime, filesTwoSon, adddress, filesSon, sport, facilities, siteInfo, comment } = this.state
+    let { informationList, name, handleAddress, contacts, contactNumber, starttime, endtime, filesTwoSon, adddress, filesSon, sport, facilities, siteInfo, comment } = this.state
     if (filesTwoSon.slice(1, filesTwoSon.length).split('|').length < 2) {
       message.error('至少上传两张场地照')
     } else {
@@ -478,8 +519,8 @@ class stadiums extends React.Component {
         siteInfo: siteInfo,
         position: adddress,
         comment: comment,
-        openingtime:starttime,
-        closingtime:endtime,
+        openingtime: starttime,
+        closingtime: endtime,
         type: 2
       }
       if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(contacts) === false) {
@@ -635,7 +676,10 @@ class stadiums extends React.Component {
     this.setState({ corporateCardId: e.target.value })
   }
   corporateOpen = e => {
-    this.setState({ corporateOpen: e })
+    if(e!==this.state.corporateOpen){
+     this.setState({kolod:'',yinhangSelect:0})
+     this.setState({ corporateOpen: e.target.value })
+    }
   }
 
 
@@ -711,8 +755,15 @@ class stadiums extends React.Component {
 
 
   handleSearch = e => {
-    if (e !== '') {
+    if (e !== ''&&this.state.city_id!=='') {
       this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
+    }
+  }
+  selectChecked = e => {
+    if(e.currentTarget.dataset.id==='1000'){
+      this.setState({ corporateOpen: e.currentTarget.dataset.name, yinhangSelect: 0, hand: 1,kolod:e.currentTarget.dataset.id })
+    }else{
+    this.setState({ corporateOpen: e.currentTarget.dataset.name, yinhangSelect: 0, hand: 0,kolod:e.currentTarget.dataset.id })
     }
   }
 
@@ -731,12 +782,12 @@ class stadiums extends React.Component {
       message.error(res.data.msg)
     }
   }
-  Bankphone=e=>{
-    this.setState({Bankphone:e.target.value})
+  Bankphone = e => {
+    this.setState({ Bankphone: e.target.value })
   }
 
   ziSubmitTwo = () => {
-    let { numRadio, numRadioTwo,Bankphone, inCorName, inChargeNa, legalBaseURL, imageUrlTwo, corporateId, imageUrlThree, filesFiveSon, filesFourSon, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
+    let { kolod,hand, numRadio, numRadioTwo, Bankphone, inCorName, inChargeNa, legalBaseURL, imageUrlTwo, corporateId, imageUrlThree, filesFiveSon, filesFourSon, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
     let data = {
       legalBaseURL: numRadioTwo === 1 ? legalBaseURL : numRadio === 1 ? legalBaseURL : '',
       legalFilesURL: numRadioTwo === 1 ? filesFourSon + '|' + filesFiveSon : numRadio === 1 ? filesFourSon + '|' + filesFiveSon : '',
@@ -749,13 +800,19 @@ class stadiums extends React.Component {
       ProvinceBank: province_id,
       CityBank: city_id,
       account: numRadioTwo,
-      Bankphone:Bankphone,
+      Bankphone: Bankphone,
       Bankcorporate: numRadio === 0 ? inCorName : '',
+      hand: hand
     }
     if (numRadio && imageUrlTwo === 1) {
       message.error('图片违规请重新上传')
     } else if (numRadio && imageUrlThree === 1) {
       message.error('图片违规请重新上传')
+    } else if (Bankphone === '') {
+      message.warning('请输入短信通知手机号')
+    }else if(kolod===''){
+      this.setState({yinhangSelect:1})
+      message.warning('请选择搜索出来的支行名称')
     } else {
       if (this.state.loading === false) {
         message.warning('图片上传中...')
@@ -993,19 +1050,19 @@ class stadiums extends React.Component {
     this.setState({ faIdcard: e.target.value })
   }
 
-  starttime=(e)=>{
-    this.setState({starttime:e})
+  starttime = (e) => {
+    this.setState({ starttime: e })
   }
-  endtime=(e)=>{
-    this.setState({endtime:e})
+  endtime = (e) => {
+    this.setState({ endtime: e })
   }
 
-  
+
 
 
   render() {
     const { files, filesTwo, filesThree, filesFive, BelongingFour, filesFour, BelongingOne, BelongingTwo, BelongingThree, BelongingFive, BelongingSix } = this.state;
-    
+
 
 
     return (
@@ -1081,7 +1138,7 @@ class stadiums extends React.Component {
               </div>
             </div>
 
-            
+
             <div className="name" style={{ overflow: 'hidden' }}>
               <span className="boTitle">场地类型:</span><span className="kong"></span>
               <Checkbox.Group style={{ float: 'left', width: '50%', marginLeft: '26.8px' }} className="chekkoh" options={this.state.plainOptions} value={this.state.sport} onChange={this.onChangeCheck} /><br /><span className="kong"></span>
@@ -1093,12 +1150,12 @@ class stadiums extends React.Component {
                 {this.state.timer.map((item, i) => (
                   <Option key={i} value={item.name}>{item.name}</Option>
                 ))}
-              </Select><span style={{float:'left',marginLeft:'25px',lineHeight:'32px'}}>至</span><Select style={{ width: 130, height: 'auto' }} value={this.state.endtime === '' ? '24:00' : this.state.endtime} onChange={this.endtime} placeholder="结束时间">
+              </Select><span style={{ float: 'left', marginLeft: '25px', lineHeight: '32px' }}>至</span><Select style={{ width: 130, height: 'auto' }} value={this.state.endtime === '' ? '24:00' : this.state.endtime} onChange={this.endtime} placeholder="结束时间">
                 {this.state.timer.map((item, i) => (
                   <Option key={i} value={item.name}>{item.name}</Option>
                 ))}
               </Select>
-           </div>
+            </div>
 
 
 
@@ -1299,7 +1356,7 @@ class stadiums extends React.Component {
 
             <div className="listing" style={this.state.numRadio === 1 ? { display: 'none' } : {}}>
               <span>公司名称:</span>
-              <Input className="listingInput" value={this.state.inCorName} maxLength={18} onChange={this.inCorName} />
+              <Input className="listingInput" value={this.state.inCorName} onChange={this.inCorName} />
             </div>
 
 
@@ -1310,7 +1367,7 @@ class stadiums extends React.Component {
 
             <div className="listing" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
               <span>负责人身份证号:</span>
-              <Input className="listingInput" value={this.state.corporateId} maxLength={18} onChange={this.corporateId} />
+              <Input className="listingInput" value={this.state.corporateId} onChange={this.corporateId} />
             </div>
             <div className="listing" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
               <span>身份证照:</span>
@@ -1339,25 +1396,25 @@ class stadiums extends React.Component {
             </div>
             <div className="listing">
               <span>短信通知:</span>
-              <Input className="listingInput" placeholder="请输入通知汇款成功手机号(可不填)" value={this.state.Bankphone} onChange={this.Bankphone} />
+              <Input className="listingInput" placeholder="请输入通知汇款成功手机号" value={this.state.Bankphone} onChange={this.Bankphone} />
             </div>
             <div className="listing">
               <span>开户所在地</span>
-              <Select placeholder="银行类型" style={{ width: 120, height: '35px', marginLeft: '18px' }} value={this.state.bank_id === '' ? null : Number(this.state.bank_id)} loading={this.state.flagOne} onChange={this.typeChange}>
+              <Select placeholder="银行类型" style={{ width: 130, height: '35px', marginLeft: '18px' }} value={this.state.bank_id === '' ? null : Number(this.state.bank_id)} loading={this.state.flagOne} onChange={this.typeChange}>
                 {
                   this.state.type.map((item, i) => (
                     <Option key={i} value={item.bank_id}>{item.bank_name}</Option>
                   ))
                 }
               </Select>
-              <Select placeholder="所在省" style={{ width: 120, height: '35px', marginLeft: '18px' }} value={this.state.province_id === '' ? null : Number(this.state.province_id)} loading={this.state.flagTwo} onChange={this.provinceChange}>
+              <Select placeholder="所在省" style={{ width: 130, height: '35px', marginLeft: '18px' }} value={this.state.province_id === '' ? null : Number(this.state.province_id)} loading={this.state.flagTwo} onChange={this.provinceChange}>
                 {
                   this.state.backProvince.map((item, i) => (
                     <Option key={i} value={item.province_id}>{item.province}</Option>
                   ))
                 }
               </Select>
-              <Select placeholder="所在市" style={{ width: 120, height: '35px', marginLeft: '18px' }} value={this.state.city_id === '' ? null : Number(this.state.city_id)} loading={this.state.flagThree} onChange={this.cityChange}>
+              <Select placeholder="所在市" style={{ width: 130, height: '35px', marginLeft: '18px' }} value={this.state.city_id === '' ? null : Number(this.state.city_id)} loading={this.state.flagThree} onChange={this.cityChange}>
                 {
                   this.state.backCity.map((item, i) => (
                     <Option key={i} value={item.city_id}>{item.city}</Option>
@@ -1370,10 +1427,29 @@ class stadiums extends React.Component {
 
             <div className="listing">
               <span>开户行:</span>
-              <Select
+
+              <Search placeholder="请输入支行名称" value={this.state.corporateOpen === '' ? null : this.state.corporateOpen} onChange={this.corporateOpen} onSearch={this.handleSearch} style={{ width: 430 }} />
+              <div className="yinhangSelectTwo" style={this.state.yinhangSelect === 0 ? { display: 'none' } : { display: 'block' }}>
+                <div style={{height:'110px',overflowY:'auto'}}>
+                <div style={this.state.backList.length===0?{textAlign:'center',marginBottom:'30px'}:{display:'none'}}>未找到该支行名称</div>
+                {
+                  this.state.backList.map((item, i) => (
+                    <div key={i}  onClick={this.selectChecked} data-name={item.name} data-id={item.id}>{item.nameT}</div>
+                  ))
+                }
+                </div>
+                <div style={this.state.backList.length<10?{}:{display:'none'}}>
+                  <Input placeholder="手动添加支行" style={{width:'60%'}} onKeyDown={this.keydown} onChange={this.backListJoinInput}/>
+                  <span className="pJoin" onClick={this.backListJoin}>+添加</span><span></span>
+                </div>
+              </div>
+
+
+
+              {/* <Select
                 showSearch
-                style={{ width: 395, height: '36px', marginLeft: '18px', float: 'left' }}
-                onSearch={this.handleSearch}
+                style={{ width: 425, height: '36px', marginLeft: '18px', float: 'left' }}
+                onBlur={this.handleSearch}
                 onChange={this.corporateOpen}
                 defaultActiveFirstOption={false}
                 showArrow={false}
@@ -1388,7 +1464,7 @@ class stadiums extends React.Component {
                     </Option>
                   ))
                 }
-              </Select>
+              </Select> */}
             </div>
 
             <Popconfirm

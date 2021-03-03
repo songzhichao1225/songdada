@@ -614,31 +614,31 @@ class information extends React.Component {
             this.state.list.map((item, i) => (
               <Row key={i}>
                 <Popover content={(<span>{item.orderId}</span>)} title='详情' trigger="click">
-                  <Col xs={{ span: 2 }}><span>{item.orderId}</span></Col>
+                  <Col xs={{ span: 2 }}>{item.orderId}</Col>
                 </Popover>
                 <Popover content={(<span>{item.SportName}</span>)} title='详情' trigger="click">
-                  <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer' }}><span>{item.SportName}</span></Col>
+                  <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer' }}>{item.SportName}</Col>
                 </Popover>
                 <Col xs={{ span: 2 }} style={this.state.headTop === '1' ? { display: 'none' } : {}}><div style={{ lineHeight: '25px', fontSize: '10px' }}>{item.StartTime === 0 ? '00:00' : item.StartTime.slice(0, 10)}</div><div style={{ lineHeight: '25px' }}>{item.StartTime === 0 ? '00:00' : item.StartTime.slice(11, 16)}</div></Col>
                 <Col xs={{ span: 2 }}><div style={{ lineHeight: '25px', fontSize: '10px' }}>{item.FinishedTime.slice(0, 10)}</div><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(11, 16)}</div></Col>
-                <Col xs={{ span: 2 }}><span>{item.breakup.length === 0 ? item.PlayTime + '小时' : '无'}</span></Col>
-                <Col xs={{ span: 1 }}><span style={{ color: '#4A90E2' }} onClick={this.duration} data-uuid={item.uuid}>查看详情</span></Col>
+                <Col xs={{ span: 2 }}>{item.breakup.length === 0 ? item.PlayTime + '小时' : '无'}</Col>
+                <Col xs={{ span: 1 }}><div style={{ color: '#4A90E2' }} onClick={this.duration} data-uuid={item.uuid}>查看详情</div></Col>
 
                 <Col xs={{ span: 2 }} >{this.state.headTop === '1' ? item.breakup.length === 0 ? <Popover content={(<span>{item.venueid}</span>)} title='详情' trigger="click">
                   <div>{
                     item.venueid_details.map((itemKo, i) => (
                       <div key={i}>{itemKo.venueid}</div>
                     ))
-                  }</div> </Popover> : <span><div>
+                  }</div> </Popover> :<div>
                     {
                       item.breakup.map((itemTwo, i) => (
                         <div key={i} style={{ textAlign: 'center' }}>{itemTwo.venueid}</div>
                       ))
                     }
-                  </div></span> : <span>{item.Shouldarrive}</span>}</Col>
+                  </div> : <span>{item.Shouldarrive}</span>}</Col>
 
                 <Col xs={{ span: 2 }}>
-                  <span>{this.state.headTop === '1' ? item.breakup.length === 0 ? <div>
+                  {this.state.headTop === '1' ? item.breakup.length === 0 ? <div>
                     {
                       item.venueid_details.map((itemHo, i) => (
                         <div key={i}>{itemHo.time}</div>
@@ -650,9 +650,9 @@ class information extends React.Component {
                           <div key={i} style={{ textAlign: 'center', lineHeight: '30px' }}>￥{itemTwo.price}/次</div>
                         ))
                       }
-                    </div> : item.TrueTo}</span>
+                    </div> : item.TrueTo}
                 </Col>
-                <Col xs={{ span: 3 }} style={this.state.headTop === '1' ? {} : { display: 'none' }}><span>
+                <Col xs={{ span: 3 }} style={this.state.headTop === '1' ? {} : { display: 'none' }}>
                   {
                     item.breakup.map((itemThree, i) => (
                       <div key={i} style={{ overflow: 'hidden', marginTop: '6px' }}><div style={{ float: 'left', marginLeft: '35%' }}>{itemThree.frequency}</div>
@@ -672,7 +672,7 @@ class information extends React.Component {
                         }
                       </div>
                     ))
-                  }</span> <span onClick={this.deducting} data-uuid={item.uuid} data-sportName={item.SportName} style={item.breakup.length === 0 ? { display: 'none' } : { float: 'left', color: '#4A90E2' }}>扣除<br />记录</span><span style={item.breakup.length === 0 ? {} : { display: 'none' }}>非散场</span></Col>
+                  } <div onClick={this.deducting} data-uuid={item.uuid} data-sportName={item.SportName} style={item.breakup.length === 0 ? { display: 'none' } : { float: 'left', color: '#4A90E2' }}>扣除<br />记录</div><div style={item.breakup.length === 0 ? {} : { display: 'none' }}>非散场</div></Col>
                 <Col xs={{ span: 2 }}  style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}><span>{item.PublicStatus}<span onClick={this.Complaints} data-id={item.uuid} style={item.iscomplain === 1 ? { color: '#F6410C', fontSize: '12px' } : { display: 'none' }}>(有投诉)</span></span></Col>
                 <Col xs={{ span: 2 }}><span>￥{item.SiteMoney}</span></Col>
                 <Col xs={{ span: 2 }}><span>{item.SiteMoneyStatus}</span></Col>
@@ -727,9 +727,8 @@ class information extends React.Component {
               <div className="xiange"></div>
 
               <Row className="rowConten" style={{ background: '#FCF7EE', marginTop: 0 }}>
-                <Col xs={{ span: 2 }}><span>活动编号</span></Col>
+                <Col xs={{ span: 2 }}>活动编号</Col>
                 <Col xs={{ span: 2 }}>
-                  <span>
                     <Select className="selectName" defaultValue="项目名称" bordered={false} style={{ width: '100%', padding: 0 }} onChange={this.nameChang}>
                       <Option value="0">全部</Option>
                       <Option value="1">羽毛球</Option>
@@ -740,17 +739,15 @@ class information extends React.Component {
                       <Option value="6">排球</Option>
                       <Option value="7">网球</Option>
                     </Select>
-                  </span>
                 </Col>
-                <Col xs={{ span: 2 }} style={this.state.headTop === '1' ? { display: 'none' } : {}}><span>开始时间</span></Col>
-                <Col xs={{ span: 2 }}><span>结束时间</span></Col>
-                <Col xs={{ span: 2 }}><span>时长</span></Col>
-                <Col xs={{ span: 1 }}><span>续时</span></Col>
-                <Col xs={{ span: 2 }}><span>{this.state.headTop === '1' ? '场地编号' : '应到人数'}</span></Col>
-                <Col xs={{ span: 2 }}><span>{this.state.headTop === '1' ? '单价/时间段' : '已报名人数'}</span></Col>
-                <Col style={this.state.headTop === '0' ? { display: 'none' } : {}} xs={{ span: 3 }}><span>剩余次数</span></Col>
+                <Col xs={{ span: 2 }} style={this.state.headTop === '1' ? { display: 'none' } : {}}>开始时间</Col>
+                <Col xs={{ span: 2 }}>结束时间</Col>
+                <Col xs={{ span: 2 }}>时长</Col>
+                <Col xs={{ span: 1 }}>续时</Col>
+                <Col xs={{ span: 2 }}>{this.state.headTop === '1' ? '场地编号' : '应到人数'}</Col>
+                <Col xs={{ span: 2 }}>{this.state.headTop === '1' ? '单价/时间段' : '已报名人数'}</Col>
+                <Col style={this.state.headTop === '0' ? { display: 'none' } : {}} xs={{ span: 3 }}>剩余次数</Col>
                 <Col xs={{ span: 2 }}>
-                  <span>
                     <Select className="selectName" defaultValue="活动状态" bordered={false} listHeight={300} dropdownStyle={{ height: '300px', textAlign: 'center' }} style={{ width: '100%' }} onChange={this.activityChang} >
                       <Option value="0">全部</Option>
                       <Option value="1">匹配中</Option>
@@ -762,19 +759,16 @@ class information extends React.Component {
                       <Option value="5">已完成</Option>
                       <Option value="7">已取消</Option>
                     </Select>
-                  </span>
                 </Col>
-                <Col xs={{ span: 2 }}><span>场地费用</span></Col>
+                <Col xs={{ span: 2 }}>场地费用</Col>
                 <Col xs={{ span: 2 }}>
-                  <span>
                     <Select className="selectName" defaultValue="支付状态" bordered={false} dropdownStyle={{ textAlign: 'center' }} style={{ width: '100%' }} onChange={this.paied} >
                       <Option value="2">全部</Option>
                       <Option value="0">未到账</Option>
                       <Option value="1">已支付</Option>
                     </Select>
-                  </span>
                 </Col>
-                <Col xs={{ span: 2 }}><span>发消息</span></Col>
+                <Col xs={{ span: 2 }}>发消息</Col>
               </Row>
               <div className={this.state.hidden === true ? '' : 'hidden'} style={{ height: '90%', overflowY: 'auto' }}>
                 {userMessage}

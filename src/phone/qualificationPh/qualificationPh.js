@@ -3,16 +3,15 @@ import './qualificationPh.css';
 
 import { Toast, Picker, List, NavBar, Popover, Modal, ImagePicker, Checkbox } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Input, Radio, Select } from 'antd';
+import { Input, Radio } from 'antd';
 import lrz from 'lrz';
 import { LeftOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { getIsStatus, getVenueOpenBankList, getVenueOpenBank, getVenueOpenBankProvince, VenueVerifyThatAllAreFilledIn, imgUrlTwo, getVenueOpenBankCity, VenueQualifications_another, getIsSignOut, UploadVenueImgsLisenTwo, _code, UploadVenueImgsLisen, getVenueQualified, TemporaryQualificationInformation_another, getVenueQualificationInformation, VenueQualificationInformationSave_another, getVenueQualifiedCompany } from '../../api';
 const alert = Modal.alert;
 const prompt = Modal.prompt;
-const { Option } = Select;
 const Item = Popover.Item;
 const CheckboxItem = Checkbox.CheckboxItem;
-
+const {Search}=Input
 
 
 
@@ -80,6 +79,9 @@ class qualificationPh extends React.Component {
     BelongingSixSon: '',
     ascrBaceUrl: '',
     legalhourBaseURL: '',
+    yinhangSelect: 0,
+    hand: 1,
+    kolod:'',
   };
 
 
@@ -135,6 +137,9 @@ class qualificationPh extends React.Component {
     if (res.data.code === 2000) {
       if (res.data.data.ProvinceBank !== '') {
         this.getVenueOpenBankCity({ province_id: res.data.data.ProvinceBank })
+      }
+      if (res.data.data.OpeningBank !== '') {
+        this.setState({ kolod: 0 })
       }
       this.setState({
         CorporateName: res.data.data.CorporateName, bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
@@ -392,10 +397,24 @@ class qualificationPh extends React.Component {
         let obj = {}
         obj.name = name[i].sub_branch_name
         obj.nameT = name[i].sub_branch_name.slice(name[i].sub_branch_name.indexOf('公司') + 2, name[i].sub_branch_name.length)
+        obj.id=i
         arrName.push(obj)
       }
-      this.setState({ backList: arrName, flagThree: false })
+      this.setState({ backList: arrName, flagThree: false,yinhangSelect:1 })
     }
+  }
+
+  backListJoinInput = e => {
+    this.setState({ backListJoinInput: e.target.value })
+  }
+  backListJoin = () => {
+    let arr = this.state.backList
+    let lok = {}
+    lok.name = this.state.backListJoinInput
+    lok.nameT = this.state.backListJoinInput
+    lok.id = 1000
+    arr.push(lok)
+    this.setState({ backList: arr })
   }
 
   provinceChange = e => {
@@ -425,12 +444,38 @@ class qualificationPh extends React.Component {
 
   }
   handleSearch = e => {
-    if (e !== '') {
-      this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
+    if (this.state.bank_id === '') {
+      Toast.fail('请选择银行类型', 1.5)
+    } else if (this.state.province_id === '') {
+      Toast.fail('请选择银行所在省', 1.5)
+    } else if (this.state.city_id === '') {
+      Toast.fail('请选择银行所在市', 1.5)
+    } else {
+      if (typeof (this.state.bank_id) !== 'string') {
+        this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
+      } else {
+        this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
+      }
     }
   }
+
+
+  selectChecked = e => {
+    if (e.currentTarget.dataset.id === '1000') {
+      this.setState({ openingLine: e.currentTarget.dataset.name, yinhangSelect: 0, hand: 1, kolod: e.currentTarget.dataset.id })
+    } else {
+      this.setState({ openingLine: e.currentTarget.dataset.name, yinhangSelect: 0, hand: 0, kolod: e.currentTarget.dataset.id })
+    }
+  }
+
+
+
+
   openingLine = e => {
-    this.setState({ openingLine: e })
+    if (e !== this.state.openingLine) {
+      this.setState({ kolod: '',yinhangSelect:0  })
+      this.setState({ openingLine: e.target.value })
+    }
   }
 
   async VenueQualifications_another(data) {
@@ -1471,7 +1516,7 @@ class qualificationPh extends React.Component {
 
           <div className="input">
             <span>短信通知</span>
-            <Input className="select"  style={{ paddingLeft: '4.5%' }} disabled={this.state.flagDis} onChange={this.Bankphone} value={this.state.Bankphone} placeholder="请输入通知汇款成功手机号(可不填)" />
+            <Input className="select"  style={{ paddingLeft: '4.5%' }} disabled={this.state.flagDis} onChange={this.Bankphone} value={this.state.Bankphone} placeholder="请输入通知汇款成功手机号" />
           </div>
 
           <div className="input">
@@ -1498,7 +1543,26 @@ class qualificationPh extends React.Component {
 
           <div className="input">
             <span>开户行</span>
-            <Select
+            <Search placeholder="请输入支行名称" value={this.state.openingLine === '' ? null : this.state.openingLine} onChange={this.openingLine} onSearch={this.handleSearch} style={{ width: '68%',float:'right', height: '2.8rem', paddingLeft: '0', border: 'none',fontSize:'0.75rem' }} />
+            <div className="yinhangSelectTwo" style={this.state.yinhangSelect === 0 ? { display: 'none' } : { display: 'block' }}>
+              <div style={{ height: '110px', overflowY: 'auto' }}>
+                <div style={this.state.backList.length === 0 ? { textAlign: 'center', marginBottom: '30px' } : { display: 'none' }}>未找到该支行名称</div>
+                {
+                  this.state.backList.map((item, i) => (
+                    <div key={i} style={{paddingLeft:'10px'}} onClick={this.selectChecked} data-name={item.name} data-id={item.id}>{item.nameT}</div>
+                  ))
+                }
+              </div>
+              <div style={this.state.backList.length < 10 ? {} : { display: 'none' }}>
+                <Input placeholder="手动添加支行" style={{ width: '60%',height:'36px',border:'0.06rem solid #f5f5f5' }} onChange={this.backListJoinInput} />
+                <span className="pJoin" onClick={this.backListJoin}>+添加</span><span></span>
+              </div>
+            </div>
+
+
+
+
+            {/* <Select
               showSearch
               style={{ width: '68%', height: '2.9rem', float: 'right', background: '#fff', fontSize: '0.75rem' }}
               onSearch={this.handleSearch}
@@ -1518,7 +1582,7 @@ class qualificationPh extends React.Component {
                   </Option>
                 ))
               }
-            </Select>
+            </Select> */}
           </div>
 
 

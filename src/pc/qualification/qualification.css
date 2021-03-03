@@ -46,7 +46,7 @@
 }
 .qualification .nav div>span{
 	position: absolute;
-	z-index: 99;
+	z-index: 9;
 	display: block;
 	width: 100%;
 	text-align: center;
@@ -107,7 +107,7 @@
 }
 .qualification .name{
 	margin-top: 20px;
-	overflow: hidden;
+	
 }
 .qualification .nameINput{
 	width: 273px;
@@ -217,4 +217,18 @@ display: inline-block;
     max-width: 90%;
     max-height: 90%;
 }
+.qualification .yinhangSelect{
+	width: 445px;
+	height: 150px;
+	margin-left: 150px;
+	border: 1px solid #e0e0e0;
+	border-top: none;
+	background-color: #fff;
+	overflow-y: auto;
+	z-index: 1000;
+}
 
+.qualification .yinhangSelect>div{
+	cursor: pointer;
+	padding: 3px 6px;
+}

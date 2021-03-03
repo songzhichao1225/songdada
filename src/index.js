@@ -38,6 +38,4 @@ if (goUrl === 0) {
 
 
 
-
-
 serviceWorker.unregister();

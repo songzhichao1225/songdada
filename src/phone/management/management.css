@@ -25,6 +25,7 @@
 .management .wsMa4 .Subdivide{
     overflow-y: auto;
     height: 100%;
+    width: 100%;
 }
 .management .wsMa4 .Subdivide .card{
   width: 95%;

@@ -30,10 +30,10 @@ class siteSettings extends React.Component {
     opendayname: '',//营业时间端名称
     starttime: '',//开始时间
     endtime: '',//结束时间
-    costperhour: '',//价格
+    costperhour_cg: '',//价格
     number: 1,//数量
-    maxScheduledDate: '',//最长可预定日期、
-    appointmenttime: '',//最短可提前预定时间
+    maxScheduledDate_cg: '',//最长可预定日期、
+    appointmenttime_cg: '',//最短可提前预定时间
     comment: '',//备注
     loading: true,//加载
     Disid: '',
@@ -41,7 +41,7 @@ class siteSettings extends React.Component {
     other: 0,
     page: 1,
     deletUid: 0,
-    maxScheduledDateName: [],
+    maxScheduledDate_cgName: [],
     siteEditor: 0,//场地设置打开修改
     headerData: '1',
     joinXi: false,
@@ -95,7 +95,7 @@ class siteSettings extends React.Component {
     detail: false,
     deData: [],
     dateArr: [],
-    appointmenttimeTwo: '',
+    appointmenttime_cgTwo: '',
     ListSportTwoLO: [{ name: '半场', id: 1 }, { name: '散场', id: 2 }, { name: '全场', id: 5 }],
     ListSportThreeLO: [{ name: '按时(收费)', id: 3 }, { name: '按次(收费)', id: 4 }],
     typeTwo: 0,
@@ -168,15 +168,15 @@ class siteSettings extends React.Component {
     const res = await getSiteSettingList(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       for (let i in res.data.data) {
-        if (res.data.data[i].maxScheduledDate === '0.1') {
+        if (res.data.data[i].maxScheduledDate_cg === '0.1') {
           res.data.data[i].maxScheduledDateTwo = '1周'
-        } else if (res.data.data[i].maxScheduledDate === '0.2') {
+        } else if (res.data.data[i].maxScheduledDate_cg === '0.2') {
           res.data.data[i].maxScheduledDateTwo = '2周'
-        } else if (res.data.data[i].maxScheduledDate === '0.3') {
+        } else if (res.data.data[i].maxScheduledDate_cg === '0.3') {
           res.data.data[i].maxScheduledDateTwo = '3周'
-        } else if (res.data.data[i].maxScheduledDate === '1') {
+        } else if (res.data.data[i].maxScheduledDate_cg === '1') {
           res.data.data[i].maxScheduledDateTwo = '1个月'
-        } else if (res.data.data[i].maxScheduledDate === '2') {
+        } else if (res.data.data[i].maxScheduledDate_cg === '2') {
           res.data.data[i].maxScheduledDateTwo = '2个月'
         }
       }
@@ -273,8 +273,8 @@ class siteSettings extends React.Component {
     this.setState({
       visible: false, update: 0, Disid: '',
       // runIdTwo: '', tagsTwo: '', opendayname: '', openday: '', starttime: '',
-      // endtime: '', costperhour: '', chekedTwo: '', chekedTwoLen: 0, appointmenttime: '',
-      // tagsTwoId: '', comment: '', maxScheduledDate: '', maxScheduledDateName: [], runNameTwo: '', Disid: ''   用于价格设置弹窗清空
+      // endtime: '', costperhour: '', chekedTwo: '', chekedTwoLen: 0, appointmenttime_cg: '',
+      // tagsTwoId: '', comment: '', maxScheduledDate_cg: '', maxScheduledDate_cgName: [], runNameTwo: '', Disid: ''   用于价格设置弹窗清空
     })
   }
   handleChangeOne = e => {
@@ -447,13 +447,13 @@ class siteSettings extends React.Component {
 
 
   money = e => {
-    this.setState({ costperhour: e })
+    this.setState({ costperhour_cg: e })
   }
   moneyTwo = e => {
     this.setState({ costperhourTwo: e.target.value })
   }
   handleChangeFour = e => {
-    this.setState({ maxScheduledDate: e })
+    this.setState({ maxScheduledDate_cg: e })
     let dayTwo = ''
     switch (e) {
       case '0.1':
@@ -474,17 +474,17 @@ class siteSettings extends React.Component {
       default:
         dayTwo = "请选择";
     }
-    this.setState({ maxScheduledDateName: dayTwo })
+    this.setState({ maxScheduledDate_cgName: dayTwo })
   }
   handleChangeFive = e => {
-    if (this.state.maxScheduledDate === '') {
+    if (this.state.maxScheduledDate_cg === '') {
       message.warning('请选择最长提前预订时间')
-    } else if (this.state.maxScheduledDate === '0.1' && parseInt(e) > 10080) {
+    } else if (this.state.maxScheduledDate_cg === '0.1' && parseInt(e) > 10080) {
       message.warning('最短提前预订时间超出最长提前预订时间范围')
-    } else if (this.state.maxScheduledDate === '0.2' && parseInt(e) > 20160) {
+    } else if (this.state.maxScheduledDate_cg === '0.2' && parseInt(e) > 20160) {
       message.warning('最短提前预订时间超出最长提前预订时间范围')
     } else {
-      this.setState({ appointmenttime: parseInt(e) })
+      this.setState({ appointmenttime_cg: parseInt(e) })
     }
 
   }
@@ -538,7 +538,7 @@ class siteSettings extends React.Component {
   }
 
   submit = (e) => {
-    let { runIdTwo, runNameTwo, tagsTwo, openday, selectDA, starttime, timeLimit, timeLimitTwo, endtime, costperhour, chekedTwo, chekedTwoLen, maxScheduledDate, appointmenttime, comment, tagsTwoId, tags_type } = this.state
+    let { runIdTwo, runNameTwo, tagsTwo, openday, selectDA, starttime, timeLimit, timeLimitTwo, endtime, costperhour_cg, chekedTwo, chekedTwoLen, maxScheduledDate_cg, appointmenttime_cg, comment, tagsTwoId, tags_type } = this.state
     if (runIdTwo === '') {
       message.warning('请选择场地类型')
     } else if (tagsTwo === '') {
@@ -549,11 +549,11 @@ class siteSettings extends React.Component {
       message.warning('请选择时间范围（开始时间）')
     } else if (endtime === '') {
       message.warning('请选择时间范围（结束时间）')
-    } else if (costperhour === '' || costperhour === null) {
+    } else if (costperhour_cg === '' || costperhour_cg === null) {
       message.warning('请填写价格')
-    } else if (maxScheduledDate === '') {
+    } else if (maxScheduledDate_cg === '') {
       message.warning('请选择最长可预订日期')
-    } else if (appointmenttime === '') {
+    } else if (appointmenttime_cg === '') {
       message.warning('请选择最短提前预订时间')
     } else {
       let obj = {
@@ -565,11 +565,11 @@ class siteSettings extends React.Component {
         opendayname: '',
         starttime: starttime,
         endtime: endtime,
-        costperhour: Number(costperhour).toFixed(2),
+        costperhour_cg: Number(costperhour_cg).toFixed(2),
         venueid: chekedTwo,
         sitenumber: chekedTwoLen,
-        maxScheduledDate: maxScheduledDate,
-        appointmenttime: appointmenttime === -1 ? 0 : appointmenttime,
+        maxScheduledDate_cg: maxScheduledDate_cg,
+        appointmenttime_cg: appointmenttime_cg === -1 ? 0 : appointmenttime_cg,
         comment: comment,
         tags_id: tagsTwoId,
         tags_type: tags_type,
@@ -615,7 +615,7 @@ class siteSettings extends React.Component {
         attop.push('周日')
       }
       let dayTwo = ''
-      switch (res.data.data[0].maxScheduledDate) {
+      switch (res.data.data[0].maxScheduledDate_cg) {
         case '0.1':
           dayTwo = "一周";
           break;
@@ -635,23 +635,23 @@ class siteSettings extends React.Component {
 
           dayTwo = "请选择";
       }
-      this.setState({ maxScheduledDateName: dayTwo })
+      this.setState({ maxScheduledDate_cgName: dayTwo })
       if (res.data.data[0].tags.indexOf('散') !== -1) {
         this.setState({ timeFalg: 'no', starttime: '00:00', endtime: '24:00', })
       } else if (res.data.data[0].tags.indexOf('按次') !== -1) {
         this.setState({ timeFalg: 'yes', starttime: '00:00', endtime: '24:00', })
       } else if (res.data.data[0].tags.indexOf('散') !== -1 || res.data.data[0].tags.indexOf('按次') !== -1) {
-        this.setState({ appointmenttime: res.data.data[0].appointmenttime, starttime: '00:00', endtime: '24:00', timeFalg: false })
+        this.setState({ appointmenttime_cg: res.data.data[0].appointmenttime_cg, starttime: '00:00', endtime: '24:00', timeFalg: false })
       } else {
-        this.setState({ appointmenttime: res.data.data[0].appointmenttime, starttime: res.data.data[0].starttime, endtime: res.data.data[0].endtime, timeFalg: true })
+        this.setState({ appointmenttime_cg: res.data.data[0].appointmenttime_cg, starttime: res.data.data[0].starttime, endtime: res.data.data[0].endtime, timeFalg: true })
       }
       this.setState({
         runId: res.data.data[0].sportid, tags: res.data.data[0].tags,
         discount_sdate: res.data.data[0].discount_sdate, discount_edate: res.data.data[0].discount_edate, discount_start: res.data.data[0].discount_start,
-        discount_end: res.data.data[0].discount_end, costperhourTwo: res.data.data[0].discount_costperhour === null ? res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')) : res.data.data[0].discount_costperhour.slice(0, res.data.data[0].discount_costperhour.indexOf('.')),
+        discount_end: res.data.data[0].discount_end, costperhourTwo: res.data.data[0].discount_costperhour_cg === null ? res.data.data[0].costperhour_cg.slice(0, res.data.data[0].costperhour_cg.indexOf('.')) : res.data.data[0].discount_costperhour_cg.slice(0, res.data.data[0].discount_costperhour_cg.indexOf('.')),
         runIdTwo: res.data.data[0].sportid, tagsTwo: res.data.data[0].tags, opendayname: attop, openday: res.data.data[0].openday.split(','), starttime: res.data.data[0].starttime,
-        costperhour: res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')), chekedTwo: res.data.data[0].venueid, chekedFour: res.data.data[0].venueid, chekedThree: res.data.data[0].venueid !== null ? res.data.data[0].venueid : res.data.data[0].venueid, chekedTwoLen: res.data.data[0].sitenumber, appointmenttime: res.data.data[0].appointmenttime,
-        tagsTwoId: res.data.data[0].tags_id, tags_type: res.data.data[0].tags_type, comment: res.data.data[0].comment, maxScheduledDate: res.data.data[0].maxScheduledDate, runNameTwo: res.data.data[0].sportname, Disid: res.data.data[0].uuid, appointmenttimeTwo: res.data.data[0].discount_appointment === null ? 0 : res.data.data[0].discount_appointment, workingDayList: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(','),
+        costperhour_cg: res.data.data[0].costperhour_cg.slice(0, res.data.data[0].costperhour_cg.indexOf('.')), chekedTwo: res.data.data[0].venueid, chekedFour: res.data.data[0].venueid, chekedThree: res.data.data[0].venueid !== null ? res.data.data[0].venueid : res.data.data[0].venueid, chekedTwoLen: res.data.data[0].sitenumber, appointmenttime_cg: res.data.data[0].appointmenttime_cg,
+        tagsTwoId: res.data.data[0].tags_id, tags_type: res.data.data[0].tags_type, comment: res.data.data[0].comment, maxScheduledDate_cg: res.data.data[0].maxScheduledDate_cg, runNameTwo: res.data.data[0].sportname, Disid: res.data.data[0].uuid, appointmenttime_cgTwo: res.data.data[0].discount_appointment === null ? 0 : res.data.data[0].discount_appointment, workingDayList: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(','),
         timeLimit: res.data.data[0].timelimit, timeLimitTwo: res.data.data[0].durationlimit, selectDA: res.data.data[0].priceunit,
       })
       if (this.state.runIdTwo !== '') {
@@ -689,15 +689,15 @@ class siteSettings extends React.Component {
 
     if (res.data.code === 2000) {
       for (let i in res.data.data) {
-        if (res.data.data[i].maxScheduledDate === '0.1') {
+        if (res.data.data[i].maxScheduledDate_cg === '0.1') {
           res.data.data[i].maxScheduledDateTwo = '1周'
-        } else if (res.data.data[i].maxScheduledDate === '0.2') {
+        } else if (res.data.data[i].maxScheduledDate_cg === '0.2') {
           res.data.data[i].maxScheduledDateTwo = '2周'
-        } else if (res.data.data[i].maxScheduledDate === '0.3') {
+        } else if (res.data.data[i].maxScheduledDate_cg === '0.3') {
           res.data.data[i].maxScheduledDateTwo = '3周'
-        } else if (res.data.data[i].maxScheduledDate === '1') {
+        } else if (res.data.data[i].maxScheduledDate_cg === '1') {
           res.data.data[i].maxScheduledDateTwo = '1个月'
-        } else if (res.data.data[i].maxScheduledDate === '2') {
+        } else if (res.data.data[i].maxScheduledDate_cg === '2') {
           res.data.data[i].maxScheduledDateTwo = '2个月'
         }
       }
@@ -1481,13 +1481,13 @@ class siteSettings extends React.Component {
   }
   handleChangeTags = e => {
     if (e.indexOf('散') !== -1) {
-      this.setState({ timeFalg: 'no', starttime: '00:00', endtime: '24:00', appointmenttime: -1, })
+      this.setState({ timeFalg: 'no', starttime: '00:00', endtime: '24:00', appointmenttime_cg: -1, })
     } else if (e.indexOf('按次') !== -1) {
-      this.setState({ timeFalg: 'yes', starttime: '00:00', endtime: '24:00', appointmenttime: -1, })
+      this.setState({ timeFalg: 'yes', starttime: '00:00', endtime: '24:00', appointmenttime_cg: -1, })
     } else if (e.indexOf('散') !== -1 || e.indexOf('按次') !== -1) {
-      this.setState({ appointmenttime: -1, starttime: '00:00', endtime: '24:00', timeFalg: false })
+      this.setState({ appointmenttime_cg: -1, starttime: '00:00', endtime: '24:00', timeFalg: false })
     } else {
-      this.setState({ appointmenttime: '', starttime: '', endtime: '', timeFalg: true })
+      this.setState({ appointmenttime_cg: '', starttime: '', endtime: '', timeFalg: true })
     }
 
     if (this.state.arrTitle.indexOf(e) === -1) {
@@ -1539,8 +1539,8 @@ class siteSettings extends React.Component {
   PreferentialCan = () => {
     this.setState({
       Preferential: false, runIdTwo: '', tagsTwo: '', opendayname: '', openday: '', starttime: '00:00',
-      endtime: '', costperhour: '', chekedTwo: '', chekedTwoLen: '', appointmenttime: '',
-      tagsTwoId: '', comment: '', maxScheduledDate: '', maxScheduledDateName: [], runNameTwo: '', Disid: '', runId: '', tags: '', update: 0, tags_type: '',
+      endtime: '', costperhour_cg: '', chekedTwo: '', chekedTwoLen: '', appointmenttime_cg: '',
+      tagsTwoId: '', comment: '', maxScheduledDate_cg: '', maxScheduledDate_cgName: [], runNameTwo: '', Disid: '', runId: '', tags: '', update: 0, tags_type: '',
     })
   }
 
@@ -1629,18 +1629,14 @@ class siteSettings extends React.Component {
   }
 
   PreferentialComfir = (e) => {
-    let { siteListId, workingDayList, costperhourTwo, appointmenttimeTwo } = this.state
-
-
+    let { siteListId, workingDayList, costperhourTwo, appointmenttime_cgTwo } = this.state
     let obj = {
       uuid: siteListId,
       discount_date: workingDayList.join(','),
-      discount_costperhour: costperhourTwo,
-      discount_appointment: appointmenttimeTwo
+      discount_costperhour_cg: costperhourTwo,
+      discount_appointment_cg: appointmenttime_cgTwo
     }
     this.SiteSettingDiscountSave(obj)
-
-
   }
   tooltip = () => {
     this.setState({
@@ -1767,7 +1763,7 @@ class siteSettings extends React.Component {
     this.setState({ dateArr: this.state.dateArr.slice(0, this.state.dateArr.length - 1) })
   }
   handleChangeFiveTwo = e => {
-    this.setState({ appointmenttimeTwo: parseInt(e) })
+    this.setState({ appointmenttime_cgTwo: parseInt(e) })
   }
   handleChangeType = e => {
     this.setState({ typeTwo: e, arrCheked: [] })
@@ -2341,11 +2337,11 @@ class siteSettings extends React.Component {
                         <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</Col>
                       </Popover>
                       <Col xs={{ span: 2 }} style={{ lineHeight: '24px' }}>{item.starttime}<br />{item.endtime}</Col>
-                      <Popover content={(<span>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '(元/次)'}</span>)} title='详情' trigger="click">
-                        <Col xs={{ span: 1 }} style={{ cursor: 'pointer' }}>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '(元/次)'}</Col>
+                      <Popover content={(<span>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour_cg + '(元/时)' : item.costperhour_cg + '(元/次)'}</span>)} title='详情' trigger="click">
+                        <Col xs={{ span: 1 }} style={{ cursor: 'pointer' }}>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour_cg + '(元/时)' : item.costperhour_cg + '(元/次)'}</Col>
                       </Popover>
-                      <Col xs={{ span: 1 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
-                      <Col xs={{ span: 1 }}>{item.appointmenttime === null ? '' : item.appointmenttime > 2879 ? item.appointmenttime / 60 / 24 + '天' : item.appointmenttime / 60 + '小时'}</Col>
+                      <Col xs={{ span: 1 }}>{item.maxScheduledDate_cg === null ? '' : item.maxScheduledDateTwo}</Col>
+                      <Col xs={{ span: 1 }}>{item.appointmenttime_cg === null ? '' : item.appointmenttime_cg > 2879 ? item.appointmenttime_cg / 60 / 24 + '天' : item.appointmenttime_cg / 60 + '小时'}</Col>
                       <Col xs={{ span: 2 }}>{item.timelimit === 1 ? '不限' : item.timelimit === 2 ? '整点' : item.timelimit === 3 ? '单数整点' : item.timelimit === 4 ? '双数整点' : '不限'}</Col>
                       <Col xs={{ span: 2 }}>{item.tags.indexOf('散') !== -1 || item.tags.indexOf('按次') !== -1 ? '不限' : item.durationlimit === 1 ? '1小时以上' : item.durationlimit === 2 ? '1小时整数倍' : item.durationlimit === 3 ? '2小时整数倍' : '不限'}</Col>
                       <Popover content={(<span>{item.comment === '' ? '无' : item.comment}</span>)} title='详情' trigger="click">
@@ -2458,11 +2454,11 @@ class siteSettings extends React.Component {
                   <Popover content={(<span>{item.starttime}-{item.endtime}</span>)} title='详情' trigger="click">
                     <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.starttime}-{item.endtime}</Col>
                   </Popover>
-                  <Popover content={(<span>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '(元/次)'}</span>)} title='详情' trigger="click">
-                    <Col xs={{ span: 1 }} style={{ cursor: 'pointer' }}>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '(元/次)'}</Col>
+                  <Popover content={(<span>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour_cg + '(元/时)' : item.costperhour_cg + '(元/次)'}</span>)} title='详情' trigger="click">
+                    <Col xs={{ span: 1 }} style={{ cursor: 'pointer' }}>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour_cg + '(元/时)' : item.costperhour_cg + '(元/次)'}</Col>
                   </Popover>
-                  <Col xs={{ span: 1 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
-                  <Col xs={{ span: 1 }}>{item.appointmenttime === null ? '' : item.appointmenttime > 2879 ? item.appointmenttime / 60 / 24 + '天' : item.appointmenttime / 60 + '小时'}</Col>
+                  <Col xs={{ span: 1 }}>{item.maxScheduledDate_cg === null ? '' : item.maxScheduledDateTwo}</Col>
+                  <Col xs={{ span: 1 }}>{item.appointmenttime_cg_cg === null ? '' : item.appointmenttime_cg_cg > 2879 ? item.appointmenttime_cg_cg / 60 / 24 + '天' : item.appointmenttime_cg_cg / 60 + '小时'}</Col>
                   <Col xs={{ span: 2 }}>{item.timelimit === 1 ? '不限' : item.timelimit === 2 ? '整点' : item.timelimit === 3 ? '单数整点' : item.timelimit === 4 ? '双数整点' : '不限'}</Col>
                   <Col xs={{ span: 2 }}>{item.durationlimit === 1 ? '1小时以上' : item.durationlimit === 2 ? '1小时整数倍' : item.durationlimit === 3 ? '2小时整数倍' : '1小时以上'}</Col>
 
@@ -2738,21 +2734,20 @@ class siteSettings extends React.Component {
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>价格</span><span>{this.state.timeFalg === 'no' ? '' : this.state.timeFalg === 'yes' ? '' : '(元/时)'}</span>
-              <InputNumber className="startTime" value={this.state.costperhour} defaultValue={1} min={1} style={this.state.timeFalg === 'no' ? { height: 32, width: 269, marginLeft: '115px', paddingLeft: '11px', marginRight: 0, float: 'left' } : this.state.timeFalg === 'yes' ? { height: 32, width: 269, marginLeft: '115px', paddingLeft: '11px', marginRight: 0, float: 'left' } : { height: 32, width: 269, paddingLeft: '11px' }} placeholder="请输入" onChange={this.money} />
+              <InputNumber className="startTime" value={this.state.costperhour_cg} defaultValue={1} min={1} style={this.state.timeFalg === 'no' ? { height: 32, width: 269, marginLeft: '115px', paddingLeft: '11px', marginRight: 0, float: 'left' } : this.state.timeFalg === 'yes' ? { height: 32, width: 269, marginLeft: '115px', paddingLeft: '11px', marginRight: 0, float: 'left' } : { height: 32, width: 269, paddingLeft: '11px' }} placeholder="请输入" onChange={this.money} />
               <Select placeholder="请选择" onChange={this.selectDA} value={this.state.selectDA} style={this.state.timeFalg === 'no' ? { float: 'right', marginRight: '50px', width: '80px', height: '32px' } : this.state.timeFalg === 'yes' ? { float: 'right', marginRight: '50px', width: '80px', height: '32px' } : { display: 'none' }}>
-                <Option value="次">次</Option>
+                <Option value="/次">/次</Option>
                 <Option value="/H">/H</Option>
-                <Option value="2H">2H</Option>
-                <Option value="3H">3H</Option>
-                <Option value="4H">4H</Option>
-                <Option value="5H">5H</Option>
-                <Option value="6H">6H</Option>
-
+                <Option value="/2H">/2H</Option>
+                <Option value="/3H">/3H</Option>
+                <Option value="/4H">/4H</Option>
+                <Option value="/5H">/5H</Option>
+                <Option value="/6H">/6H</Option>
               </Select>
             </div>
             <div className="modelList" style={{ height: 32 }}>
               <span>最长提前预订时间</span>
-              <Select placeholder="请选择" className="selectModel" value={this.state.maxScheduledDateName} style={{ width: 269, height: 32 }} onChange={this.handleChangeFour}>
+              <Select placeholder="请选择" className="selectModel" value={this.state.maxScheduledDate_cgName} style={{ width: 269, height: 32 }} onChange={this.handleChangeFour}>
                 <Option value="0.1">一周</Option>
                 <Option value="0.2">两周</Option>
                 <Option value="0.3">三周</Option>
@@ -2765,30 +2760,30 @@ class siteSettings extends React.Component {
               <Select placeholder="请选择" disabled={this.state.timeFalg === 'no' ? true : this.state.timeFalg === 'yes' ? true : false} className="selectModel"
                 defaultActiveFirstOption={false}
                 value={
-                  this.state.appointmenttime === -1 ? '不限' : []
-                    && this.state.appointmenttime === 0 ? '不限' : []
-                      && this.state.appointmenttime === 30 ? '30分钟' : []
-                        && this.state.appointmenttime === 60 ? '60分钟' : []
-                          && this.state.appointmenttime === 120 ? '2小时' : []
-                            && this.state.appointmenttime === 180 ? '3小时' : []
-                              && this.state.appointmenttime === 240 ? '4小时' : []
-                                && this.state.appointmenttime === 300 ? '5小时' : []
-                                  && this.state.appointmenttime === 360 ? '6小时' : []
-                                    && this.state.appointmenttime === 1440 ? '24小时' : []
-                                      && this.state.appointmenttime === 2880 ? '2天' : []
-                                        && this.state.appointmenttime === 4320 ? '3天' : []
-                                          && this.state.appointmenttime === 5760 ? '4天' : []
-                                            && this.state.appointmenttime === 7200 ? '5天' : []
-                                              && this.state.appointmenttime === 8640 ? '6天' : []
-                                                && this.state.appointmenttime === 10080 ? '7天' : []
-                                                  && this.state.appointmenttime === 11520 ? '8天' : []
-                                                    && this.state.appointmenttime === 12960 ? '9天' : []
-                                                      && this.state.appointmenttime === 14400 ? '10天' : []
-                                                        && this.state.appointmenttime === 15840 ? '11天' : []
-                                                          && this.state.appointmenttime === 17280 ? '12天' : []
-                                                            && this.state.appointmenttime === 18720 ? '13天' : []
-                                                              && this.state.appointmenttime === 20160 ? '14天' : []
-                                                                && this.state.appointmenttime === 21600 ? '15天' : []
+                  this.state.appointmenttime_cg_cg === -1 ? '不限' : []
+                    && this.state.appointmenttime_cg === 0 ? '不限' : []
+                      && this.state.appointmenttime_cg === 30 ? '30分钟' : []
+                        && this.state.appointmenttime_cg === 60 ? '60分钟' : []
+                          && this.state.appointmenttime_cg === 120 ? '2小时' : []
+                            && this.state.appointmenttime_cg === 180 ? '3小时' : []
+                              && this.state.appointmenttime_cg === 240 ? '4小时' : []
+                                && this.state.appointmenttime_cg === 300 ? '5小时' : []
+                                  && this.state.appointmenttime_cg === 360 ? '6小时' : []
+                                    && this.state.appointmenttime_cg === 1440 ? '24小时' : []
+                                      && this.state.appointmenttime_cg === 2880 ? '2天' : []
+                                        && this.state.appointmenttime_cg === 4320 ? '3天' : []
+                                          && this.state.appointmenttime_cg === 5760 ? '4天' : []
+                                            && this.state.appointmenttime_cg === 7200 ? '5天' : []
+                                              && this.state.appointmenttime_cg === 8640 ? '6天' : []
+                                                && this.state.appointmenttime_cg === 10080 ? '7天' : []
+                                                  && this.state.appointmenttime_cg === 11520 ? '8天' : []
+                                                    && this.state.appointmenttime_cg === 12960 ? '9天' : []
+                                                      && this.state.appointmenttime_cg === 14400 ? '10天' : []
+                                                        && this.state.appointmenttime_cg === 15840 ? '11天' : []
+                                                          && this.state.appointmenttime_cg === 17280 ? '12天' : []
+                                                            && this.state.appointmenttime_cg === 18720 ? '13天' : []
+                                                              && this.state.appointmenttime_cg === 20160 ? '14天' : []
+                                                                && this.state.appointmenttime_cg === 21600 ? '15天' : []
                 }
                 style={{ width: 269, height: 32 }}
                 onChange={this.handleChangeFive}
@@ -3016,30 +3011,30 @@ class siteSettings extends React.Component {
               <Select placeholder="请选择" className="selectModel"
                 defaultActiveFirstOption={false}
                 value={
-                  this.state.appointmenttimeTwo === -1 ? '不限' : []
-                    && this.state.appointmenttimeTwo === 0 ? '不限' : []
-                      && this.state.appointmenttimeTwo === 30 ? '30分钟' : []
-                        && this.state.appointmenttimeTwo === 60 ? '60分钟' : []
-                          && this.state.appointmenttimeTwo === 120 ? '2小时' : []
-                            && this.state.appointmenttimeTwo === 180 ? '3小时' : []
-                              && this.state.appointmenttimeTwo === 240 ? '4小时' : []
-                                && this.state.appointmenttimeTwo === 300 ? '5小时' : []
-                                  && this.state.appointmenttimeTwo === 360 ? '6小时' : []
-                                    && this.state.appointmenttimeTwo === 1440 ? '24小时' : []
-                                      && this.state.appointmenttimeTwo === 2880 ? '2天' : []
-                                        && this.state.appointmenttimeTwo === 4320 ? '3天' : []
-                                          && this.state.appointmenttimeTwo === 5760 ? '4天' : []
-                                            && this.state.appointmenttimeTwo === 7200 ? '5天' : []
-                                              && this.state.appointmenttimeTwo === 8640 ? '6天' : []
-                                                && this.state.appointmenttimeTwo === 10080 ? '7天' : []
-                                                  && this.state.appointmenttimeTwo === 11520 ? '8天' : []
-                                                    && this.state.appointmenttimeTwo === 12960 ? '9天' : []
-                                                      && this.state.appointmenttimeTwo === 14400 ? '10天' : []
-                                                        && this.state.appointmenttimeTwo === 15840 ? '11天' : []
-                                                          && this.state.appointmenttimeTwo === 17280 ? '12天' : []
-                                                            && this.state.appointmenttimeTwo === 18720 ? '13天' : []
-                                                              && this.state.appointmenttimeTwo === 20160 ? '14天' : []
-                                                                && this.state.appointmenttimeTwo === 21600 ? '15天' : []
+                  this.state.appointmenttime_cgTwo === -1 ? '不限' : []
+                    && this.state.appointmenttime_cgTwo === 0 ? '不限' : []
+                      && this.state.appointmenttime_cgTwo === 30 ? '30分钟' : []
+                        && this.state.appointmenttime_cgTwo === 60 ? '60分钟' : []
+                          && this.state.appointmenttime_cgTwo === 120 ? '2小时' : []
+                            && this.state.appointmenttime_cgTwo === 180 ? '3小时' : []
+                              && this.state.appointmenttime_cgTwo === 240 ? '4小时' : []
+                                && this.state.appointmenttime_cgTwo === 300 ? '5小时' : []
+                                  && this.state.appointmenttime_cgTwo === 360 ? '6小时' : []
+                                    && this.state.appointmenttime_cgTwo === 1440 ? '24小时' : []
+                                      && this.state.appointmenttime_cgTwo === 2880 ? '2天' : []
+                                        && this.state.appointmenttime_cgTwo === 4320 ? '3天' : []
+                                          && this.state.appointmenttime_cgTwo === 5760 ? '4天' : []
+                                            && this.state.appointmenttime_cgTwo === 7200 ? '5天' : []
+                                              && this.state.appointmenttime_cgTwo === 8640 ? '6天' : []
+                                                && this.state.appointmenttime_cgTwo === 10080 ? '7天' : []
+                                                  && this.state.appointmenttime_cgTwo === 11520 ? '8天' : []
+                                                    && this.state.appointmenttime_cgTwo === 12960 ? '9天' : []
+                                                      && this.state.appointmenttime_cgTwo === 14400 ? '10天' : []
+                                                        && this.state.appointmenttime_cgTwo === 15840 ? '11天' : []
+                                                          && this.state.appointmenttime_cgTwo === 17280 ? '12天' : []
+                                                            && this.state.appointmenttime_cgTwo === 18720 ? '13天' : []
+                                                              && this.state.appointmenttime_cgTwo === 20160 ? '14天' : []
+                                                                && this.state.appointmenttime_cgTwo === 21600 ? '15天' : []
                 }
                 style={{ width: 330, height: 32, float: 'right', marginRight: '100px' }}
                 onChange={this.handleChangeFiveTwo}

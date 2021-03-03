@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 //本地全部隐去
-axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
+// axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
 // axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
 
 // export let imgUrlTwo='https://app.tiaozhanmeiyitian.com/'  //正式图片路径
@@ -11,6 +11,9 @@ export let imgUrlTwo='https://appstg.tiaozhanmeiyitian.com/'  //测试图片路�
 // export let wsFn = new WebSocket("wss://cgstg.zhaoduishou.com/socket");//测试socket
 // export let wsFn = new WebSocket("wss://59.110.0.126:9998");//测试socket
 export let wsFn = new WebSocket("wss://admin.tiaozhanmeiyitian.com/socket");//测试、正式环境只此一个
+
+export let htUrl='http://adminstg.tiaozhanmeiyitian.com/'  //测试合同路径
+// export let htUrl='http://admin.tiaozhanmeiyitian.com/'  //正式合同路径
 
 export function _login(data){    //登录
     return axios.post('/api/getVenueLogin',data)
@@ -590,6 +593,19 @@ export function VenueMemberRefundCard(data,headers){    //会员管理~会员退
 export function EditVenueMember(data,headers){    //会员管理~会员退卡详情
     return axios.post('/api/EditVenueMember',data,{headers: {'token': headers}})
 }
+
+export function getVipCardInfomation(data,headers){    //场馆端~线下占用~根据卡主名，电话号或卡号获取会员卡基本信息
+    return axios.post('/api/getVipCardInfomation',data,{headers: {'token': headers}})
+}
+
+export function setSquareByOffLine(data,headers){    //线下占用~ 获取可选择场地编号
+    return axios.post('/api/setSquareByOffLine',data,{headers: {'token': headers}})
+}
+
+export function getHTBySite(data,headers){    //获取场馆签署合同
+    return axios.post('/api/getHTBySite',data,{headers: {'token': headers}})
+}
+
 
 
 

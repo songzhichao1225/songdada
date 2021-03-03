@@ -318,10 +318,13 @@
      position: relative;
  }
  .appOrder .ant-table-cell>div>span{
+
      display: block;
      font-size: 12px;
      -webkit-transform-origin-x: 0;
     -webkit-transform: scale(0.8);
+    padding-top: 5%;
+    padding-left: 10%;
  }
 
  .appOrder .ant-table-cell>div>span:last-child{
@@ -345,5 +348,13 @@
      line-height: 12px;
      right: 0;
  }
-
+.appOrder .textPass{
+    border-top: 1px solid #9b9b9b;
+    position: absolute;
+    bottom: 48px;
+    font-size: 0.75rem;
+    line-height: 1.5rem;
+    width: 100%;
+    text-align: center;
+}
 

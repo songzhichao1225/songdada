@@ -39,6 +39,7 @@
     border-bottom: 0.06rem solid #f3f3f3;
     float: left;
     padding: 0.2rem 0;
+    position: relative;
 }
 .qualificationPh .boss .input>span{
     font-size:0.88rem;
@@ -165,8 +166,9 @@
 }
 .qualificationPh .am-list-item .am-list-line .am-list-extra{
     font-size: 0.75rem;
-    flex-basis:62%;
+    flex-basis:61%;
     color: #333;
+    text-align: left;
 }
 .qualificationPh .am-checkbox.am-checkbox-checked .am-checkbox-inner{
     background: #D85D27;
@@ -259,3 +261,36 @@
     max-width: 100%;
     max-height: 100%;
 }
+
+.qualificationPh .yinhangSelectTwo{
+	width: 100%;
+	height: 150px;
+	top: -150px;
+	border: 1px solid #e0e0e0;
+	position: absolute;
+	background-color: #fff;
+	z-index: 1000;
+	overflow-y: auto;
+}
+.qualificationPh .am-search{
+    background: #fff;
+    width: 80%;
+    float: right;
+}
+.qualificationPh .am-search.am-search-start .am-search-input input[type="search"]{
+    font-size: 0.75rem;
+}
+.qualificationPh .yinhangSelectTwo>div{
+	cursor: pointer;
+	text-align: left;
+}
+.qualificationPh .ant-input-affix-wrapper > input.ant-input{
+    font-size: 0.8rem;
+}
+
+.qualificationPh .ant-input-affix-wrapper {
+    border: none;
+    border-bottom: 1px solid white !important;
+    box-shadow: none;
+}
+

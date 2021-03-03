@@ -35,6 +35,10 @@ const command = lazyLoad(() => import('../command/command'));
 const appointmentList = lazyLoad(() => import('../appointmentList/appointmentList'));
 const special = lazyLoad(() => import('../special/special'));
 const VipAgement = lazyLoad(() => import('../VipAgement/VipAgement'));
+const siteSettingsTwo=lazyLoad(() => import('../siteSettingsTwo/siteSettingsTwo'));
+const Koloko=lazyLoad(() => import('../koloko/koloko'));
+
+
 const { Header, Sider, Content } = Layout;
 const { Option } = Select;
 
@@ -92,6 +96,9 @@ class home extends React.Component {
     selectEd: [],
     defaultValue: '',
     phone: '',
+    flagHidden:0,
+    at:'',
+    sid:'',
   };
 
 
@@ -103,7 +110,8 @@ class home extends React.Component {
       for (let i in object) {
         arr.push(object[i])
       }
-      this.setState({ detail: res.data.data, Selabel: arr, SelabelTwo: arr[0], isModalVisible: true })
+
+      this.setState({ detail: res.data.data, Selabel: arr, SelabelTwo: arr[4], isModalVisible: true })
     }
   }
 
@@ -122,6 +130,39 @@ class home extends React.Component {
   }
 
 
+  
+  async getVenueIndexTwo(data) {
+    const res = await getVenueIndex(data,'')
+    if (res.data.code === 2000) {
+      if (res.data.data.isevaluate === 0) {
+        this.VenueEvaluationOfOperation()
+      }
+      this.setState({
+        isevaluate: res.data.data.dataisevaluate,
+        getVenueMonth_money: res.data.data.month_money, getVenueToday_money: res.data.data.today_money, getVenueMonth_count: res.data.data.month_count,
+        month_member_money: res.data.data.month_member_money, today_member_money: res.data.data.today_member_money,
+        getVenueToday_count: res.data.data.today_count, getVenueScore: res.data.data.score
+      })
+      sessionStorage.setItem('score', res.data.data.score)
+    }
+  }
+
+  async gerVenueNameTwo(data) {
+    const res = await gerVenueName(data, '')
+    if (res.data.code === 4001) {
+      message.error('登录超时!')
+    } else {
+      this.setState({ defaultValue: res.data.data.name, gerVenueNameRate: res.data.data.rate, ishaverecharge: res.data.data.ishaverecharge })
+      sessionStorage.setItem('mess', res.data.data.mess)
+      sessionStorage.setItem('siteuid', res.data.data.siteuid)
+      sessionStorage.setItem('ishaverecharge', res.data.data.ishaverecharge)
+      if (res.data.data.ishaverecharge === 1 || res.data.data.ishaverecharge === 2) {
+        this.props.history.push({ pathname: '/home/myWallet', query: { time: 2 } })
+        sessionStorage.setItem('incomtime', 2)
+      }
+    }
+  }
+
 
   componentDidMount() {
     sessionStorage.setItem('kood', 1)
@@ -129,12 +170,23 @@ class home extends React.Component {
     sessionStorage.setItem('sitew', true)
     sessionStorage.setItem('wallet', true)
     this.setState({ minheight: document.body.scrollHeight, path: this.props.history.location.pathname })
-    this.getVenueIndex()
-    this.gerVenueName()
-    this.getMobilePhoneBindingVenues()
+ 
     setInterval(() => {
       this.timer()
     }, 1000)
+    if(this.props.history.location.search.indexOf('getTheiD')!==-1&&this.props.history.location.search.indexOf('identification')!==-1){
+      let url=this.props.location.search
+      this.setState({at:url.split('&')[1].slice(15,url.split('&')[1].length),sid:url.split('&')[0].slice(10,url.split('&')[0].length)})
+      this.getVenueIndexTwo({at:url.split('&')[1].slice(15,url.split('&')[1].length),sid:url.split('&')[0].slice(10,url.split('&')[0].length)})
+      this.gerVenueNameTwo({at:url.split('&')[1].slice(15,url.split('&')[1].length),sid:url.split('&')[0].slice(10,url.split('&')[0].length)})
+      this.setState({flagHidden:1})
+      sessionStorage.setItem('path', '1');
+    }else{
+      jo()
+      this.getMobilePhoneBindingVenues()
+      this.getVenueIndex()
+      this.gerVenueName()
+    }
 
     if (this.props.history.location.pathname === '/home') {
       sessionStorage.setItem('path', '1');
@@ -161,7 +213,7 @@ class home extends React.Component {
     } else if (this.props.history.location.pathname === '/home/VipAgement') {
       sessionStorage.setItem('path', '9');
     }
-    jo()
+    
     if (sessionStorage.getItem('islegal') === '0' || sessionStorage.getItem('islegal') === '2') {
       this.props.history.push('/statusAudits')
     }
@@ -178,8 +230,8 @@ class home extends React.Component {
 
   componentWillReceiveProps() {
     this.setState({ path: this.props.history.location.pathname })
-    this.getVenueIndex()
-    this.gerVenueName()
+   
+    
 
     if (this.props.history.location.pathname === '/home') {
       sessionStorage.setItem('path', '1');
@@ -426,7 +478,7 @@ class home extends React.Component {
                 src={require("../../assets/tiaozhanicon.png")} alt="logo" />
             </Link>
           </div>
-          <Menu theme="dark" selectedKeys={[sessionStorage.getItem('path')]} onSelect={this.kood} style={{ marginTop: '-5px' }}>
+          <Menu theme="dark" selectedKeys={[sessionStorage.getItem('path')]} onSelect={this.kood} style={this.state.flagHidden===0?{ marginTop: '-5px' }:{display:'none'}}>
             <Menu.Item key="1">
               <Link to="/home">
                 <i className="anticon anticon-gift">
@@ -518,9 +570,28 @@ class home extends React.Component {
             </Menu.Item>
 
 
-            
+
           </Menu>
 
+          <Menu theme="dark" selectedKeys={[sessionStorage.getItem('path')]} onSelect={this.kood} style={this.state.flagHidden===1?{ marginTop: '-5px' }:{display:'none'}}>
+            <Menu.Item key="1">
+              <Link to={'/home/insideView?getTheiD='+this.state.sid+'&identification='+this.state.at}>
+                <i className="anticon anticon-gift">
+                  <svg t="1591090181546" className="icon" viewBox="64 64 896 896" version="1.1" fill="currentColor" xmlns="http://www.w3.org/2000/svg" p-id="12894" width="1.5em" height="1.5em"><path d="M512 64 0 512l128 0 0 448 768 0L896 512l128 0L512 64zM633.984 929.984 384 929.984 384 720l249.984 0L633.984 929.984zM864 480l0 449.984-200 0 0-238.016L352 691.968l0 238.016-192 0L160 480 81.984 480 512 108.032 947.968 480 864 480z" p-id="12895"></path></svg>
+                </i>
+                <span>价格设置</span>
+              </Link>
+            </Menu.Item>
+
+            <Menu.Item key="21">
+              <Link to={'/home/Koloko?getTheiD='+this.state.sid+'&identification='+this.state.at}>
+                <i className="anticon anticon-gift">
+                  <svg t="1591090181546" className="icon" viewBox="64 64 896 896" version="1.1" fill="currentColor" xmlns="http://www.w3.org/2000/svg" p-id="12894" width="1.5em" height="1.5em"><path d="M512 64 0 512l128 0 0 448 768 0L896 512l128 0L512 64zM633.984 929.984 384 929.984 384 720l249.984 0L633.984 929.984zM864 480l0 449.984-200 0 0-238.016L352 691.968l0 238.016-192 0L160 480 81.984 480 512 108.032 947.968 480 864 480z" p-id="12895"></path></svg>
+                </i>
+                <span>场地占用</span>
+              </Link>
+            </Menu.Item>
+          </Menu>
         </Sider>
         <Layout>
           <Header className="headerTor">
@@ -536,8 +607,7 @@ class home extends React.Component {
 
               </Select>
             </div>
-            <div className="time">
-
+            <div className="time" style={this.state.flagHidden===1?{display:'none'}:{}}>
               <div className="new">
                 <div onClick={this.news}>
                   <img src={require("../../assets/icon_pc_new2.png")} style={{ cursor: 'pointer' }} alt="message" />
@@ -625,6 +695,9 @@ class home extends React.Component {
             <Route path="/home/appointmentList" component={appointmentList} />
             <Route path="/home/special" component={special} />
             <Route path="/home/VipAgement" component={VipAgement} />
+            <Route path="/home/insideView" component={siteSettingsTwo} />
+            <Route path="/home/Koloko" component={Koloko} />
+            
 
           </Content>
         </Layout>

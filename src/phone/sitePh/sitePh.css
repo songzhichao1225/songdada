@@ -447,7 +447,7 @@
     margin-top: 0.6rem;
 }
 .sitePhSerial .serialSon:last-child{
-
+    width: 5rem;
     height:1.7rem;
     text-align: center;
     line-height: 1.7rem;

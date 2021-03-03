@@ -4,13 +4,12 @@ import React from 'react';
 import './inforSitePh.css';
 import { Toast, Modal, TextareaItem, Picker, List, ImagePicker } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Input, Checkbox, Button, Radio, Select, Spin } from 'antd';
+import { Input, Checkbox, Button, Radio, Spin, } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 import lrz from 'lrz';
-import { getVenueInformation, getVenueQualificationInformation, VenueInformationSave, UploadVenueImgs,imgUrlTwo, VenueQualificationInformationSave_another, UploadVenueImgsLisenTwo, UploadVenueImgsLisen, getVenueIssecondaudit, getVenueOpenBank, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity, VenueReceivingBankInformation } from '../../api';
-const { Option } = Select
+import { getVenueInformation, getVenueQualificationInformation, VenueInformationSave, UploadVenueImgs, imgUrlTwo, VenueQualificationInformationSave_another, UploadVenueImgsLisenTwo, UploadVenueImgsLisen, getVenueIssecondaudit, getVenueOpenBank, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity, VenueReceivingBankInformation } from '../../api';
 const alert = Modal.alert;
-
+const { Search } = Input
 
 function getBase64T(file) {
   return new Promise((resolve, reject) => {
@@ -46,12 +45,12 @@ class inforSitePh extends React.Component {
     faIdcard: '',
     corporatePhone: '',
     numRadio: 1,
-    numRadioFive:0,
-    inCorName:'',//公司名称
-    inChargeNa:'',//负责人姓名
-    corporateId:'',//收款身份证号
+    numRadioFive: 0,
+    inCorName: '',//公司名称
+    inChargeNa: '',//负责人姓名
+    corporateId: '',//收款身份证号
     cardId: '',
-    Bankphone:'',
+    Bankphone: '',
     flagOne: true,
     flagTwo: true,
     flagThree: true,
@@ -96,12 +95,14 @@ class inforSitePh extends React.Component {
     BelongingFiveSon: '',
     BelongingSix: [],
     BelongingSixSon: '',
-    ascrBaceUrl:'',
-    legalhourBaseURL:'',
-    starttime:['00:00'],
-    endtime:['24:00'],
+    ascrBaceUrl: '',
+    legalhourBaseURL: '',
+    starttime: ['00:00'],
+    endtime: ['24:00'],
     timeRtArr: [{ label: '00:00', value: '00:00' }, { label: '00:30', value: '00:30' }, { label: '01:00', value: '01:00' }, { label: '01:30', value: '01:30' }, { label: '02:00', value: '02:00' }, { label: '02:30', value: '02:30' }, { label: '03:00', value: '03:00' }, { label: '03:30', value: '03:30' }, { label: '04:00', value: '04:00' }, { label: '04:30', value: '04:30' }, { label: '05:00', value: '05:00' }, { label: '05:30', value: '05:30' }, { label: '06:00', value: '06:00' }, { label: '06:30', value: '06:30' }, { label: '07:00', value: '07:00' }, { label: '07:30', value: '07:30' }, { label: '08:00', value: '08:00' }, { label: '08:30', value: '08:30' }, { label: '09:00', value: '09:00' }, { label: '09:30', value: '09:30' }, { label: '10:00', value: '10:00' }, { label: '10:30', value: '10:30' }, { label: '11:00', value: '11:00' }, { label: '11:30', value: '11:30' }, { label: '12:00', value: '12:00' }, { label: '12:30', value: '12:30' }, { label: '13:00', value: '13:00' }, { label: '13:30', value: '13:30' }, { label: '14:00', value: '14:00' }, { label: '14:30', value: '14:30' }, { label: '15:00', value: '15:00' }, { label: '15:30', value: '15:30' }, { label: '16:00', value: '16:00' }, { label: '16:30', value: '16:30' }, { label: '17:00', value: '17:00' }, { label: '17:30', value: '17:30' }, { label: '18:00', value: '18:00' }, { label: '18:30', value: '18:30' }, { label: '19:00', value: '19:00' }, { label: '19:30', value: '19:30' }, { label: '20:00', value: '20:00' }, { label: '20:30', value: '20:30' }, { label: '21:00', value: '21:00' }, { label: '21:30', value: '21:30' }, { label: '22:00', value: '22:00' }, { label: '22:30', value: '22:30' }, { label: '23:00', value: '23:00' }, { label: '23:30', value: '23:30' }, { label: '24:00', value: '24:00' }],
-    
+    yinhangSelect: 0,
+    hand: 1,
+    kolod: '',
   };
 
   async getVenueInformation(data) {
@@ -110,22 +111,22 @@ class inforSitePh extends React.Component {
     if (res.data.code === 2000) {
       let imgS = (res.data.data.filesURL).slice(1, (res.data.data.filesURL).length).split('|')
       for (let i in imgS) {
-        arrImg.push({ url: imgUrlTwo+imgS[i] })
+        arrImg.push({ url: imgUrlTwo + imgS[i] })
       }
 
       if (this.props.history.location.query !== undefined) {
         this.setState({
           listSon: res.data.data, sport: res.data.data.sport.split(','), facilities: res.data.data.facilities.split(','),
-          files: [{ url:imgUrlTwo+res.data.data.firstURL }], filesSon: res.data.data.firstURL,
+          files: [{ url: imgUrlTwo + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
           province: this.props.history.location.query.province, city: this.props.history.location.query.city, area: this.props.history.location.query.district,
-          starttime:[res.data.data.openingtime],endtime:[res.data.data.closingtime],
+          starttime: [res.data.data.openingtime], endtime: [res.data.data.closingtime],
           cgName: res.data.data.name, address: this.props.history.location.query.adddress, linkMan: res.data.data.linkMan, telephone: res.data.data.telephone, siteInfo: res.data.data.siteInfo,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, comment: res.data.data.siteInfo, lat: this.props.history.location.query.lat, lng: this.props.history.location.query.lng, position: this.props.history.location.query.title, spin: false
         })
       } else {
         this.setState({
-          listSon: res.data.data, sport: res.data.data.sport.split(','), facilities: res.data.data.facilities.split(','), files: [{ url:imgUrlTwo+res.data.data.firstURL }], filesSon: res.data.data.firstURL,
-          province: res.data.data.province, city: res.data.data.city, area: res.data.data.area,starttime:[res.data.data.openingtime],endtime:[res.data.data.closingtime],
+          listSon: res.data.data, sport: res.data.data.sport.split(','), facilities: res.data.data.facilities.split(','), files: [{ url: imgUrlTwo + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
+          province: res.data.data.province, city: res.data.data.city, area: res.data.data.area, starttime: [res.data.data.openingtime], endtime: [res.data.data.closingtime],
           cgName: res.data.data.name, address: res.data.data.address, linkMan: res.data.data.linkMan, telephone: res.data.data.telephone, siteInfo: res.data.data.siteInfo,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, comment: res.data.data.siteInfo, lat: res.data.data.lat, lng: res.data.data.lng, position: res.data.data.position, spin: false
         })
@@ -150,34 +151,37 @@ class inforSitePh extends React.Component {
       if (res.data.data.ProvinceBank !== '') {
         this.getVenueOpenBankCity({ province_id: res.data.data.ProvinceBank })
       }
+      if (res.data.data.OpeningBank !== '') {
+        this.setState({ kolod: 0 })
+      }
       this.setState({
         CorporateName: res.data.data.CorporateName, bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
         faName: res.data.data.legalname, faIdcard: res.data.data.legalcard, faPhone: res.data.data.legalphone,
-        numRadio: res.data.data.Settlement,numRadioFive:res.data.data.ascription===1?1:res.data.data.account,inChargeNa:res.data.data.Bankname,inCorName:res.data.data.Bankcorporate,Bankphone:res.data.data.Bankphone, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
-        legalBaseURL: res.data.data.legalBaseURL,corporateId:res.data.data.Bankcard,
-        filesThree: res.data.data.lisenceURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.lisenceURL }],
+        numRadio: res.data.data.Settlement, numRadioFive: res.data.data.ascription === 1 ? 1 : res.data.data.account, inChargeNa: res.data.data.Bankname, inCorName: res.data.data.Bankcorporate, Bankphone: res.data.data.Bankphone, cardId: res.data.data.Bankaccount, openingLine: res.data.data.OpeningBank,
+        legalBaseURL: res.data.data.legalBaseURL, corporateId: res.data.data.Bankcard,
+        filesThree: res.data.data.lisenceURL === '' ? [] : [{ url: imgUrlTwo + res.data.data.lisenceURL }],
         filesThreeSon: res.data.data.lisenceURL === '' ? '' : res.data.data.lisenceURL,
         filesFourSon: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[0],
-        filesFour: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0] }],
+        filesFour: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url: imgUrlTwo + res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[0] }],
         filesFiveSon: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? '' : res.data.data.legalFilesURL.split('|')[1],
-        filesFive: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1] }],
+        filesFive: res.data.data.legalBaseURL === '' || res.data.data.legalBaseURL === null ? [] : [{ url: imgUrlTwo + res.data.data.legalBaseURL + res.data.data.legalFilesURL.split('|')[1] }],
         BelongingFourSon: res.data.data.empowerURL === '' ? '' : res.data.data.empowerURL,
-        BelongingFour: res.data.data.empowerURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.empowerURL }],
+        BelongingFour: res.data.data.empowerURL === '' ? [] : [{ url: imgUrlTwo + res.data.data.empowerURL }],
         BelongingOneSon: res.data.data.promiseURL === '' ? '' : res.data.data.promiseURL,
-        BelongingOne: res.data.data.promiseURL === '' ? [] : [{ url:imgUrlTwo+res.data.data.promiseURL }],
+        BelongingOne: res.data.data.promiseURL === '' ? [] : [{ url: imgUrlTwo + res.data.data.promiseURL }],
         ascrBaceUrl: res.data.data.ascriphourBaseURL,
-        BelongingTwo: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.ascriphourBaseURL + res.data.data.ascriphourFilesURL.split('|')[0] }],
+        BelongingTwo: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? [] : [{ url: imgUrlTwo + res.data.data.ascriphourBaseURL + res.data.data.ascriphourFilesURL.split('|')[0] }],
         BelongingTwoSon: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? '' : res.data.data.ascriphourFilesURL.split('|')[0],
-        BelongingThree: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.ascriphourBaseURL + res.data.data.ascriphourFilesURL.split('|')[1] }],
+        BelongingThree: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? [] : [{ url: imgUrlTwo + res.data.data.ascriphourBaseURL + res.data.data.ascriphourFilesURL.split('|')[1] }],
         BelongingThreeSon: res.data.data.ascriphourBaseURL === '' || res.data.data.ascriphourBaseURL === null ? '' : res.data.data.ascriphourFilesURL.split('|')[1],
         legalhourBaseURL: res.data.data.legalhourBaseURL,
-        BelongingFive: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalhourBaseURL + res.data.data.legalhourFilesURL.split('|')[0] }],
+        BelongingFive: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? [] : [{ url: imgUrlTwo + res.data.data.legalhourBaseURL + res.data.data.legalhourFilesURL.split('|')[0] }],
         BelongingFiveSon: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? '' : res.data.data.legalhourFilesURL.split('|')[0],
-        BelongingSix: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? [] : [{ url:imgUrlTwo+res.data.data.legalhourBaseURL + res.data.data.legalhourFilesURL.split('|')[1] }],
+        BelongingSix: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? [] : [{ url: imgUrlTwo + res.data.data.legalhourBaseURL + res.data.data.legalhourFilesURL.split('|')[1] }],
         BelongingSixSon: res.data.data.legalhourBaseURL === '' || res.data.data.legalhourBaseURL === null ? '' : res.data.data.legalhourFilesURL.split('|')[1],
         value: res.data.data.ascription,
         valueTwo: res.data.data.personIncharge,
-        valueThree:res.data.data.verification
+        valueThree: res.data.data.verification
       })
     }
   }
@@ -382,7 +386,7 @@ class inforSitePh extends React.Component {
   }
 
   confirm = () => {
-    let { cgName, address, linkMan, telephone, filesTwoSon, filesSon, sport,starttime,endtime, facilities, comment, lat, lng, position, province, city, area } = this.state
+    let { cgName, address, linkMan, telephone, filesTwoSon, filesSon, sport, starttime, endtime, facilities, comment, lat, lng, position, province, city, area } = this.state
     if (filesTwoSon.slice(1, filesTwoSon.length).split('|').length > 1) {
       let data = {
         venuename: cgName,
@@ -402,8 +406,8 @@ class inforSitePh extends React.Component {
         position: position,
         comment: comment,
         sporttype: '',
-        openingtime:starttime[0],
-        closingtime:endtime[0],
+        openingtime: starttime[0],
+        closingtime: endtime[0],
         type: 2
       }
 
@@ -508,20 +512,20 @@ class inforSitePh extends React.Component {
   }
 
   numRadioFive = e => {
-    this.setState({ numRadioFive: e.target.value,numRadio:e.target.value, cardId: '', openingLine: '' })
+    this.setState({ numRadioFive: e.target.value, numRadio: e.target.value, cardId: '', openingLine: '' })
     if (e.target.value === 1) {
       this.setState({ bank_id: '', province_id: '', city_id: '' })
     }
   }
-  corporateId=e=>{
-    this.setState({corporateId:e.target.value})
+  corporateId = e => {
+    this.setState({ corporateId: e.target.value })
   }
-  inChargeNa=e=>{
-    this.setState({inChargeNa:e.target.value})
+  inChargeNa = e => {
+    this.setState({ inChargeNa: e.target.value })
   }
 
-  inCorName=e=>{
-    this.setState({inCorName:e.target.value})
+  inCorName = e => {
+    this.setState({ inCorName: e.target.value })
   }
 
   corporateCardId = e => {
@@ -531,7 +535,7 @@ class inforSitePh extends React.Component {
   Bankphone = e => {
     this.setState({ Bankphone: e.target.value })
   }
-  
+
   CorporateName = e => {
     this.setState({ CorporateName: e.target.value })
   }
@@ -593,14 +597,45 @@ class inforSitePh extends React.Component {
         let obj = {}
         obj.name = name[i].sub_branch_name
         obj.nameT = name[i].sub_branch_name.slice(name[i].sub_branch_name.indexOf('公司') + 2, name[i].sub_branch_name.length)
+        obj.id = i
         arrName.push(obj)
       }
-      this.setState({ backList: arrName })
+
+      this.setState({ backList: arrName, yinhangSelect: 1 })
     }
   }
 
-
-
+  backListJoinInput = e => {
+    this.setState({ backListJoinInput: e.target.value })
+  }
+  backListJoin=()=>{
+    if(this.state.backListJoinInput===''){
+        Toast.fail('请填写内容')
+    }else if(this.state.backList.length!==0){
+      for(let i in this.state.backList){
+        if(this.state.backList[i].name===this.state.backListJoinInput){
+          Toast.fail('请勿重复添加')
+        }else{
+          let arr=this.state.backList
+          let lok= {}
+          lok.name=this.state.backListJoinInput
+          lok.nameT=this.state.backListJoinInput
+          lok.id=1000
+          arr.push(lok)
+          this.setState({backList:arr})
+        }
+      }
+    }else{
+      let arr=this.state.backList
+      let lok= {}
+      lok.name=this.state.backListJoinInput
+      lok.nameT=this.state.backListJoinInput
+      lok.id=1000
+      arr.push(lok)
+      this.setState({backList:arr})
+    }
+   
+  }
 
   typeChange = e => {
     this.setState({ bank_id: e.toString(), openingLine: '', backList: [] })
@@ -626,12 +661,22 @@ class inforSitePh extends React.Component {
       } else {
         this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
       }
+    }
+  }
 
+  selectChecked = e => {
+    if (e.currentTarget.dataset.id === '1000') {
+      this.setState({ openingLine: e.currentTarget.dataset.name, yinhangSelect: 0, hand: 1, kolod: e.currentTarget.dataset.id })
+    } else {
+      this.setState({ openingLine: e.currentTarget.dataset.name, yinhangSelect: 0, hand: 0, kolod: e.currentTarget.dataset.id })
     }
   }
 
   corporateOpen = e => {
-    this.setState({ openingLine: e })
+    if (e.target.value !== this.state.openingLine) {
+      this.setState({ kolod: '',yinhangSelect:0 })
+      this.setState({ openingLine: e.target.value })
+    }
   }
 
   async VenueQualificationInformationSave_another(data) {
@@ -645,23 +690,23 @@ class inforSitePh extends React.Component {
   }
 
   ziSubmit = () => {
-    let { zuo,value,valueTwo,valueThree,BelongingTwoSon,BelongingThreeSon,BelongingOneSon,BelongingFourSon,faName,faPhone,faIdcard,legalhourBaseURL,BelongingFiveSon,BelongingSixSon, imgHood,ascrBaceUrl, filesThreeSon, CorporateName } = this.state
+    let { zuo, value, valueTwo, valueThree, BelongingTwoSon, BelongingThreeSon, BelongingOneSon, BelongingFourSon, faName, faPhone, faIdcard, legalhourBaseURL, BelongingFiveSon, BelongingSixSon, imgHood, ascrBaceUrl, filesThreeSon, CorporateName } = this.state
     let data = {
-      ascription:value,
+      ascription: value,
       CorporateName: value === 1 ? '' : CorporateName,
       lisenceURL: value === 1 ? '' : filesThreeSon,
       promiseURL: value === 1 ? BelongingOneSon : '',
       ascriphourBaseURL: value === 1 && ascrBaceUrl !== '' ? ascrBaceUrl : '',
       ascriphourFilesURL: value === 1 && ascrBaceUrl !== '' ? BelongingTwoSon + '|' + BelongingThreeSon : '',
-      personIncharge:valueTwo,
-      empowerURL:valueTwo === 1 && valueTwo === 2 ? '' : BelongingFourSon,
-      verification:valueThree,
-      legalname:faName,
-      legalphone:faPhone,
-      legalcard:faIdcard,
-      legalhourBaseURL:legalhourBaseURL,
+      personIncharge: valueTwo,
+      empowerURL: valueTwo === 1 && valueTwo === 2 ? '' : BelongingFourSon,
+      verification: valueThree,
+      legalname: faName,
+      legalphone: faPhone,
+      legalcard: faIdcard,
+      legalhourBaseURL: legalhourBaseURL,
       legalhourFilesURL: this.state.valueThree === 3 ? BelongingFiveSon + '|' + BelongingSixSon : '',
-      Settlement:value,
+      Settlement: value,
       Bankaccount: '',
       OpeningBank: '',
       legalBaseURL: '',
@@ -673,23 +718,21 @@ class inforSitePh extends React.Component {
 
     }
     if (zuo === 1) {
-     
-        data.legalBaseURL = imgHood
-        if (this.state.loading === false) {
-          Toast.loading('图片上传中', 1);
-        } else {
-         
-            this.VenueQualificationInformationSave_another(data)
-          
-        }
-      
+
+      data.legalBaseURL = imgHood
+      if (this.state.loading === false) {
+        Toast.loading('图片上传中', 1);
+      } else {
+        this.VenueQualificationInformationSave_another(data)
+      }
+
     } else {
       if (this.state.loading === false) {
         Toast.loading('图片上传中', 1);
       } else {
-       
-          this.VenueQualificationInformationSave_another(data)
-        
+
+        this.VenueQualificationInformationSave_another(data)
+
       }
     }
   }
@@ -718,24 +761,29 @@ class inforSitePh extends React.Component {
 
 
   ziSubmitTwo = () => {
-    let { numRadio, numRadioFive,inCorName,inChargeNa, filesFourSon, corporateId, legalBaseURL, filesFiveSon,Bankphone, cardId, openingLine, bank_id, province_id, city_id } = this.state
+    let { kolod, hand, numRadio, numRadioFive, inCorName, inChargeNa, filesFourSon, corporateId, legalBaseURL, filesFiveSon, Bankphone, cardId, openingLine, bank_id, province_id, city_id } = this.state
     let data = {
       Bankcard: numRadio === 0 ? '' : corporateId,
       legalBaseURL: numRadioFive === 1 ? legalBaseURL : numRadio === 1 ? legalBaseURL : '',
       legalFilesURL: numRadioFive === 1 ? filesFourSon + '|' + filesFiveSon : numRadio === 1 ? filesFourSon + '|' + filesFiveSon : '',
       Settlement: numRadio,
-      Bankcorporate:numRadio===0?inCorName:'',
+      Bankcorporate: numRadio === 0 ? inCorName : '',
       Bankaccount: cardId,
-      Bankname:numRadio === 0?'':inChargeNa,
+      Bankname: numRadio === 0 ? '' : inChargeNa,
       OpeningBank: openingLine,
       account: numRadioFive,
-      Bankphone:Bankphone,
+      Bankphone: Bankphone,
       Banktype: typeof (bank_id) !== 'string' ? bank_id : bank_id,
       ProvinceBank: typeof (province_id) !== 'string' ? province_id : province_id,
       CityBank: typeof (city_id) !== 'string' ? city_id : city_id,
+      hand: hand
     }
     if (this.state.loading === false) {
       Toast.loading('图片上传中', 1);
+    } else if (Bankphone === '') {
+      Toast.fail('请输入短信通知手机号')
+    } else if (kolod === '') {
+      Toast.fail('请选择搜索出来的支行名称')
     } else {
       this.VenueReceivingBankInformation(data)
     }
@@ -928,16 +976,16 @@ class inforSitePh extends React.Component {
   numRadioTwo = e => {
     if (e.target.value === 0) {
       this.setState({ valueTwo: 1 })
-    }else{
+    } else {
       this.setState({ valueTwo: 2 })
     }
-    this.setState({ value: e.target.value,numRadioFive:e.target.value,numRadio:e.target.value })
+    this.setState({ value: e.target.value, numRadioFive: e.target.value, numRadio: e.target.value })
   }
   numRadioThree = e => {
     this.setState({ valueTwo: e.target.value })
   }
-  numRadioFour=e=>{
-    this.setState({valueThree:e.target.value})
+  numRadioFour = e => {
+    this.setState({ valueThree: e.target.value })
   }
   async BelongingFiveLisen(data) {
     const res = await UploadVenueImgsLisenTwo(data)
@@ -1004,13 +1052,14 @@ class inforSitePh extends React.Component {
     }
   }
 
-  starttime=(e)=>{
-    this.setState({starttime:e})
+  starttime = (e) => {
+    this.setState({ starttime: e })
   }
 
-  endtime=(e)=>{
-    this.setState({endtime:e})
+  endtime = (e) => {
+    this.setState({ endtime: e })
   }
+
 
 
 
@@ -1077,9 +1126,9 @@ class inforSitePh extends React.Component {
             <Input className="right" value={this.state.cgName} onChange={this.cgName} />
           </div>
           <div className="listSon" onClick={this.mapPh} data-position={listSon.position}>
-            <span style={{ float: 'left' }}>场馆位置</span>
+            <span style={{ float: 'left', width: '84px' }}>场馆位置</span>
             <img style={{ float: 'right', width: '0.85rem', marginTop: '0.9rem' }} src={require('../../assets/icon_pc_dingwei.png')} alt="icon" />
-            <Input className="right" style={{ width: '76%' }} value={this.state.position} disabled={true} />
+            <Input className="right" style={{ width: '70%', paddingLeft: '0', float: 'left' }} value={this.state.position} disabled={true} />
           </div>
           <div className="listSon">
             <TextareaItem
@@ -1087,7 +1136,7 @@ class inforSitePh extends React.Component {
               placeholder="click the button below to focus"
               value={this.state.address}
               onChange={this.address}
-              style={{ minHeight: '2rem', fontSize: '0.75rem', color: '#333',padding:'0' }}
+              style={{ minHeight: '2rem', fontSize: '0.75rem', color: '#333', padding: '0' }}
               className="textItem"
               autoHeight
             />
@@ -1101,7 +1150,7 @@ class inforSitePh extends React.Component {
             <span>联系电话</span>
             <Input className="right" value={this.state.telephone} placeholder="联系人电话" onChange={this.telephone} />
           </div>
-          <div className="listSon">
+          <div className="listSon" style={{ overflow: 'hidden' }}>
             <span>门脸照</span>
             <ImagePicker
               files={files}
@@ -1113,7 +1162,7 @@ class inforSitePh extends React.Component {
               multiple={false}
             />
           </div>
-          <div className="listSon">
+          <div className="listSon" style={{ overflow: 'hidden' }}>
             <span>场地照片</span>
             <ImagePicker
               files={filesTwo}
@@ -1131,7 +1180,7 @@ class inforSitePh extends React.Component {
               <Checkbox.Group options={optionsTwo} value={this.state.facilities} onChange={this.onChangeSite} />
             </div>
           </div>
-          <div className="listSon">
+          <div className="listSon" style={{ overflow: 'hidden' }}>
             <span>场地类型</span>
             <div className="rightLi kop">
               <Checkbox.Group options={options} value={this.state.sport} onChange={this.onChangeCheck} />
@@ -1139,25 +1188,25 @@ class inforSitePh extends React.Component {
           </div>
 
           <div className="listSon">
-          <Picker
-            data={this.state.timeRtArr}
-            onOk={this.starttime}
-            value={this.state.starttime}
-            cols={1}
-          >
-            <List.Item arrow="horizontal">营业开始时间</List.Item>
-          </Picker>
+            <Picker
+              data={this.state.timeRtArr}
+              onOk={this.starttime}
+              value={this.state.starttime}
+              cols={1}
+            >
+              <List.Item arrow="horizontal">营业开始时间</List.Item>
+            </Picker>
           </div>
 
           <div className="listSon">
-          <Picker
-            data={this.state.timeRtArr}
-            onOk={this.endtime}
-            value={this.state.endtime}
-            cols={1}
-          >
-            <List.Item arrow="horizontal">营业结束时间</List.Item>
-          </Picker>
+            <Picker
+              data={this.state.timeRtArr}
+              onOk={this.endtime}
+              value={this.state.endtime}
+              cols={1}
+            >
+              <List.Item arrow="horizontal">营业结束时间</List.Item>
+            </Picker>
           </div>
 
 
@@ -1197,7 +1246,7 @@ class inforSitePh extends React.Component {
               <span>公司名称</span>
               <Input className="right" value={this.state.CorporateName} placeholder="请输入公司名称" onChange={this.CorporateName} />
             </div>
-            <div className="listSon">
+            <div className="listSon" style={{ overflow: 'hidden' }}>
               <span>营业执照</span>
               <ImagePicker
                 files={filesThree}
@@ -1213,11 +1262,11 @@ class inforSitePh extends React.Component {
 
           <div style={this.state.value === 1 ? {} : { display: 'none' }}>
 
-            <div className="listSon">
-              <span>承诺书照</span>
+            <div className="listSon" style={{ overflow: 'hidden' }}>
+              <span style={{ float: 'left', marginRight: '3px' }}>承诺书照</span>
               <ImagePicker
                 files={BelongingOne}
-                style={{ float: 'right', width: '80%' }}
+                style={{ float: 'left', width: '73%' }}
                 onChange={this.BelongingOne}
                 onImageClick={this.previewing}
                 selectable={BelongingOne.length < 1}
@@ -1227,7 +1276,7 @@ class inforSitePh extends React.Component {
               />
             </div>
 
-            <div className="listSon">
+            <div className="listSon" style={{ overflow: 'hidden' }}>
               <span style={{ float: 'left' }}>手持身份证照</span>
               <ImagePicker
                 files={BelongingTwo}
@@ -1261,7 +1310,7 @@ class inforSitePh extends React.Component {
             <Radio value={3}>代理人</Radio>
           </Radio.Group>
           <div style={{ clear: 'both' }}>
-            <div className="listSon" style={this.state.valueTwo === 1||this.state.valueTwo === 2 ? { display: 'none' } : {}}>
+            <div className="listSon" style={this.state.valueTwo === 1 || this.state.valueTwo === 2 ? { display: 'none' } : { overflow: 'hidden' }}>
               <span>授权书照</span>
               <ImagePicker
                 files={BelongingFour}
@@ -1295,12 +1344,12 @@ class inforSitePh extends React.Component {
               <span>手机号</span>
               <Input className="right" value={this.state.faPhone} placeholder="请输入负责人手机号" onChange={this.faPhone} />
             </div>
-            <div className="listSon" style={this.state.valueThree === 2 ? {} : {display: 'none'}}>
+            <div className="listSon" style={this.state.valueThree === 2 ? {} : { display: 'none' }}>
               <span>身份证号</span>
               <Input className="right" onChange={this.faIdcard} value={this.state.faIdcard} placeholder="请输入身份证号" />
             </div>
 
-            <div className="listSon" style={this.state.valueThree === 3 ? {} : {display: 'none'}}>
+            <div className="listSon" style={this.state.valueThree === 3 ? {} : { display: 'none' }}>
               <span style={{ lineHeight: '1.5rem', paddingRight: '0.5rem', float: 'left' }}>手持身份证照</span>
               <ImagePicker
                 files={BelongingFive}
@@ -1354,18 +1403,18 @@ class inforSitePh extends React.Component {
         <div className="qualification" style={this.state.flag === 3 ? { display: 'block', height: '90%' } : { display: 'none' }}>
 
 
-        <div className="listSon">
+          <div className="listSon">
             <span style={{ float: 'left' }}>结算账号:</span>
-            <Radio.Group style={{ float: 'left', fontSize: '0.75rem', marginLeft: '10%' }} onChange={this.numRadioFive} value={this.state.numRadioFive}>
-              <Radio style={this.state.value===1?{display:'none'}:{}} value={0}>场馆归属人</Radio>
+            <Radio.Group style={{ float: 'left', fontSize: '0.75rem', }} onChange={this.numRadioFive} value={this.state.numRadioFive}>
+              <Radio style={this.state.value === 1 ? { display: 'none' } : {}} value={0}>场馆归属人</Radio>
               <Radio value={1}>场馆负责人</Radio>
             </Radio.Group>
           </div>
 
 
-          <div className="listSon" style={this.state.numRadioFive===1?{display:'none'}:{}}>
+          <div className="listSon" style={this.state.numRadioFive === 1 ? { display: 'none' } : {}}>
             <span style={{ float: 'left' }}>归属人性质:</span>
-            <Radio.Group style={{ float: 'left', fontSize: '0.75rem', marginLeft: '7%' }} onChange={this.numRadio} value={this.state.numRadio}>
+            <Radio.Group style={{ float: 'left', fontSize: '0.75rem' }} onChange={this.numRadio} value={this.state.numRadio}>
               <Radio value={0}>公司</Radio>
               <Radio value={1}>个人</Radio>
             </Radio.Group>
@@ -1373,27 +1422,27 @@ class inforSitePh extends React.Component {
 
           <div className="listSon" style={this.state.numRadio === 1 ? { display: 'none' } : {}}>
             <span style={{ float: 'left' }}>公司名称</span>
-            <Input className="right" style={{ width: '75%', paddingLeft: '0.5rem', float: 'right' }} maxLength={18} placeholder="请输入公司名称" value={this.state.inCorName} onChange={this.inCorName} />
+            <Input className="right" style={{ width: '70%', paddingLeft: '0rem', float: 'left' }} placeholder="请输入公司名称" value={this.state.inCorName} onChange={this.inCorName} />
           </div>
 
           <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
             <span style={{ float: 'left' }}>负责人姓名</span>
-            <Input className="right" style={{ width: '75%', paddingLeft: '0.5rem', float: 'right' }} maxLength={18} placeholder="请输入负责人姓名" value={this.state.inChargeNa} onChange={this.inChargeNa} />
+            <Input className="right" style={{ width: '70%', paddingLeft: '0rem', float: 'left' }} placeholder="请输入负责人姓名" value={this.state.inChargeNa} onChange={this.inChargeNa} />
           </div>
 
-         
+
 
 
           <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
             <span style={{ float: 'left' }}>负责人身份证号</span>
-            <Input className="right" style={{ width: '75%', paddingLeft: '0.5rem', float: 'right' }} maxLength={18} placeholder="请输入负责人身份证号" value={this.state.corporateId} onChange={this.corporateId} />
+            <Input className="right" style={{ width: '70%', paddingLeft: '0rem', float: 'left' }} placeholder="请输入负责人身份证号" value={this.state.corporateId} onChange={this.corporateId} />
           </div>
 
-          <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : {}}>
+          <div className="listSon" style={this.state.numRadio === 0 ? { display: 'none' } : { overflow: 'hidden' }}>
             <span style={{ float: 'left' }}>身份证照</span>
             <ImagePicker
               files={filesFour}
-              style={{ float: 'left', width: '30%', marginLeft: "8%" }}
+              style={{ float: 'left', width: '30%' }}
               onChange={this.handleChangeTwo}
               onImageClick={this.previewing}
               selectable={filesFour.length < 1}
@@ -1412,13 +1461,13 @@ class inforSitePh extends React.Component {
             />
           </div>
           <div className="listSon">
-            <span>银行账号</span>
-            <Input className="right" value={this.state.cardId} placeholder="请输入银行账号" onChange={this.corporateCardId} />
+            <span style={{ float: 'left' }}>银行账号</span>
+            <Input className="right" value={this.state.cardId} style={{ width: '70%', paddingLeft: '0', float: 'left' }} placeholder="请输入银行账号" onChange={this.corporateCardId} />
           </div>
 
           <div className="listSon">
-            <span>短信通知</span>
-            <Input className="right" value={this.state.Bankphone} placeholder="请输入通知汇款成功手机号(可不填)" onChange={this.Bankphone} />
+            <span style={{ float: 'left' }}>短信通知</span>
+            <Input className="right" value={this.state.Bankphone} style={{ width: '70%', float: 'left', padding: '0' }} placeholder="请输入通知汇款成功手机号" onChange={this.Bankphone} />
           </div>
 
 
@@ -1443,9 +1492,34 @@ class inforSitePh extends React.Component {
           </div>
 
 
-          <div className="listSon">
-            <span>开户行</span>
-            <Select
+          <div className="listSon" style={{ lineHeight: '2.5rem', height: '3rem' }}>
+            <span style={{ float: 'left'}}>开户行</span>
+
+
+            <Search placeholder="请输入支行名称" value={this.state.openingLine === '' ? null : this.state.openingLine} onChange={this.corporateOpen} onSearch={this.handleSearch} style={{ width: '70%', height: '2.8rem', top: '-0.45rem', paddingLeft: '0', border: 'none' }} />
+            <div className="yinhangSelectTwo" style={this.state.yinhangSelect === 0 ? { display: 'none' } : { display: 'block' }}>
+              <div style={{ height: '110px', overflowY: 'auto' }}>
+                <div style={this.state.backList.length === 0 ? { textAlign: 'center', marginBottom: '30px' } : { display: 'none' }}>未找到该支行名称</div>
+                {
+                  this.state.backList.map((item, i) => (
+                    <div key={i} style={{paddingLeft:'10px'}} onClick={this.selectChecked} data-name={item.name} data-id={item.id}>{item.nameT}</div>
+                  ))
+                }
+              </div>
+              <div style={this.state.backList.length < 10 ? {} : { display: 'none' }}>
+                <Input placeholder="手动添加支行" style={{ width: '60%' }} onChange={this.backListJoinInput} />
+                <span className="pJoin" onClick={this.backListJoin}>+添加</span><span></span>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+            {/* <Select
               showSearch
               className="right"
               style={{ height: '32px', lineHeight: '32px', width: '79%', float: 'right', }}
@@ -1464,7 +1538,7 @@ class inforSitePh extends React.Component {
                   </Option>
                 ))
               }
-            </Select>
+            </Select> */}
           </div>
 
 
