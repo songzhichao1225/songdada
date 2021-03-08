@@ -154,6 +154,7 @@ class news extends React.Component {
       sessionStorage.setItem('siteuid', res.data.data.siteuid)
       sessionStorage.setItem('mess', res.data.data.mess)
       sessionStorage.setItem('rate', res.data.data.rate)
+      sessionStorage.setItem('siteName',res.data.data.name)
     }
   }
 

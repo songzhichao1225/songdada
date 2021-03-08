@@ -111,6 +111,7 @@ class systemSettings extends React.Component {
     } else {
       sessionStorage.setItem('phone', res.data.data.phone)
       sessionStorage.setItem('legalphone', res.data.data.legalphone)
+      sessionStorage.setItem('siteName',res.data.data.name)
       this.setState({ cgName: res.data.data.name })
     }
   }
@@ -716,7 +717,7 @@ class systemSettings extends React.Component {
         <div className={this.state.flagUntie === false ? 'Untie' : 'listNone'}>
           <div className="resetSon">
             <div className="inputSon">
-              <span style={{ width: 145, marginLeft: -42, textAlign: 'right' }}>负责人手机号</span>
+              <span style={{ width: 145, marginLeft: -70, textAlign: 'right' }}>第一负责人手机号</span>
               <Input maxLength={11} value={this.state.corporatePhone} disabled={true} prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />} onChange={this.corporatePhone} placeholder="请输入手机号" />
             </div>
 

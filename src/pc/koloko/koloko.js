@@ -158,11 +158,7 @@ class koloko extends React.Component {
       this.getVenueNumberTitleList({ sportid: this.props.location.query.id,at:this.state.at,sid:this.state.sid })
     }
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    let lo = new Date().toLocaleDateString().split('/')[1]
-    if (lo.length === 1) {
-      lo = new Date().toLocaleDateString().split('/')[0] + '-0' + new Date().toLocaleDateString().split('/')[1] + '-' + new Date().toLocaleDateString().split('/')[2]
-    }
-    this.setState({ dateString: lo, week: week[new Date().getDay()] })
+    this.setState({ dateString: new Date(), week: week[new Date().getDay()] })
   }
 
 
@@ -545,7 +541,7 @@ class koloko extends React.Component {
         <div className={this.state.number === '2' ? 'circumstance' : 'circumstanceT'} style={{ height: '92%' }} >
           <ul className="rightNav" style={{ top: '-63px', left: '-20px' }}>
             <li className="dateSelect">
-              <DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={locale} value={moment(this.state.dateString, 'YYYY-MM-DD')} allowClear={false} placeholder="请选择日期" className="DatePicker" onPanelChange={this.dateChangeTwo} onChange={this.dateChange} />
+              <DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={locale} allowClear={false} placeholder="请选择日期" className="DatePicker" onPanelChange={this.dateChangeTwo} onChange={this.dateChange} />
             </li>
           </ul>
 
@@ -595,7 +591,7 @@ class koloko extends React.Component {
           closable={false}
           width='400px'
           onClose={this.informOnClose}
-          visible={this.state.informVisible}
+          visible={false}
         >
           <div style={this.state.informList.length > 0 ? {} : { display: 'none' }}>
             <div className="informDrawer">

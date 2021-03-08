@@ -155,7 +155,7 @@ class forgetPassword extends React.Component {
                 </Form.Item>
               <Form.Item>
 
-                <Button className="confirmBtn" style={{marginLeft:'0'}} onClick={this.comfir}>确定</Button>
+                <Button className="confirmBtn" style={{marginLeft:'75px'}} onClick={this.comfir}>确定</Button>
 
               </Form.Item>
             </Form>

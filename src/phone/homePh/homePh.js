@@ -102,7 +102,6 @@ class homePh extends React.Component {
   componentDidMount() {
     sessionStorage.setItem('kood', 1)
     this.getVenueIndex()
-    
   }
 
   reture = () => {

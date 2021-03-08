@@ -18,7 +18,10 @@ class loginPhTeo extends React.Component {
   };
 
   componentDidMount() {
-    localStorage.clear()
+    if (localStorage.getItem('venue_token')) {
+        this.props.history.push('/homePh/homePh')
+    }
+   
   }
   corporatePh = () => {
     this.props.history.push('/corporateLogin')

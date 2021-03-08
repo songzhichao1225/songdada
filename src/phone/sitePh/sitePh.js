@@ -872,15 +872,15 @@ class sitePh extends React.Component {
   async getSiteSettingList(data) {
     const res = await getSiteSettingList(data, localStorage.getItem('venue_token'))
     for (let i in res.data.data) {
-      if (res.data.data[i].maxScheduledDate === '0.1') {
+      if (res.data.data[i].maxScheduledDate_cg === '0.1') {
         res.data.data[i].maxScheduledDateTwo = '1周'
-      } else if (res.data.data[i].maxScheduledDate === '0.2') {
+      } else if (res.data.data[i].maxScheduledDate_cg === '0.2') {
         res.data.data[i].maxScheduledDateTwo = '2周'
-      } else if (res.data.data[i].maxScheduledDate === '0.3') {
+      } else if (res.data.data[i].maxScheduledDate_cg === '0.3') {
         res.data.data[i].maxScheduledDateTwo = '3周'
-      } else if (res.data.data[i].maxScheduledDate === '1') {
+      } else if (res.data.data[i].maxScheduledDate_cg === '1') {
         res.data.data[i].maxScheduledDateTwo = '1个月'
-      } else if (res.data.data[i].maxScheduledDate === '2') {
+      } else if (res.data.data[i].maxScheduledDate_cg === '2') {
         res.data.data[i].maxScheduledDateTwo = '2个月'
       }
     }
@@ -913,15 +913,15 @@ class sitePh extends React.Component {
   async getSiteSettingHistoryList(data) {
     const res = await getSiteSettingHistoryList(data, localStorage.getItem('venue_token'))
     for (let i in res.data.data) {
-      if (res.data.data[i].maxScheduledDate === '0.1') {
+      if (res.data.data[i].maxScheduledDate_cg === '0.1') {
         res.data.data[i].maxScheduledDateTwo = '1周'
-      } else if (res.data.data[i].maxScheduledDate === '0.2') {
+      } else if (res.data.data[i].maxScheduledDate_cg === '0.2') {
         res.data.data[i].maxScheduledDateTwo = '2周'
-      } else if (res.data.data[i].maxScheduledDate === '0.3') {
+      } else if (res.data.data[i].maxScheduledDate_cg === '0.3') {
         res.data.data[i].maxScheduledDateTwo = '3周'
-      } else if (res.data.data[i].maxScheduledDate === '1') {
+      } else if (res.data.data[i].maxScheduledDate_cg === '1') {
         res.data.data[i].maxScheduledDateTwo = '1个月'
-      } else if (res.data.data[i].maxScheduledDate === '2') {
+      } else if (res.data.data[i].maxScheduledDate_cg === '2') {
         res.data.data[i].maxScheduledDateTwo = '2个月'
       }
     }
@@ -1122,11 +1122,11 @@ class sitePh extends React.Component {
         opendayname: Liturgyche,
         starttime: starttime[0],
         endtime: endtime[0],
-        costperhour: Number(money).toFixed(2),
+        costperhour_cg: Number(money).toFixed(2),
         venueid: cheStr,
         sitenumber: titleArrFoterNum,
-        maxScheduledDate: pickerValueFour[0],
-        appointmenttime: pickerValueFive[0] === undefined ? 0 : pickerValueFive[0],
+        maxScheduledDate_cg: pickerValueFour[0],
+        appointmenttime_cg: pickerValueFive[0] === undefined ? 0 : pickerValueFive[0],
         comment: comment,
         tags_id: tagId,
         tags_type: tags_type,
@@ -1154,7 +1154,7 @@ class sitePh extends React.Component {
               } else if (that.state.titleArr[i].label.indexOf('散') !== -1 || that.state.titleArr[i].label.indexOf('按次') !== -1) {
                 this.setState({ pickerValueFive: -1, starttime: ['00:00'], endtime: ['24:00'], timeFalg: false })
               } else {
-                this.setState({ pickerValueFive: [res.data.data[0].appointmenttime], starttime: [res.data.data[0].starttime], endtime: [res.data.data[0].endtime], timeFalg: true })
+                this.setState({ pickerValueFive: [res.data.data[0].appointmenttime_cg], starttime: [res.data.data[0].starttime], endtime: [res.data.data[0].endtime], timeFalg: true })
               }
               that.setState({ pickerValueThree: [that.state.titleArr[i].value]})
             }
@@ -1193,7 +1193,7 @@ class sitePh extends React.Component {
           Price: true, pickerValueTwo: res.data.data[0].sportid,
           cheStr: res.data.data[0].venueid, titleArrFoterNum: res.data.data[0].sitenumber,
           LiturgycheNum: res.data.data[0].openday, Liturgyche: p.join(','),
-          money: res.data.data[0].costperhour, pickerValueFour: [Number(res.data.data[0].maxScheduledDate)],
+          money: res.data.data[0].costperhour_cg, pickerValueFour: [Number(res.data.data[0].maxScheduledDate_cg)],
           tagId: res.data.data[0].tags_id,
           tags_type: res.data.data[0].tags_type,
           comment: res.data.data[0].comment,
@@ -1243,14 +1243,14 @@ class sitePh extends React.Component {
         }
 
         this.setState({
-          kop: res.data.data[0].discount_costperhour,
+          kop: res.data.data[0].discount_costperhour_cg,
           SiscountUUid: res.data.data[0].uuid,
           specialOffer: true, sportSiscount: res.data.data[0].sportname, titleSiscount: res.data.data[0].tags, xingSiscount: p.join(','),
-          moneySiscount: res.data.data[0].discount_costperhour === null ? res.data.data[0].costperhour : res.data.data[0].discount_costperhour,
+          moneySiscount: res.data.data[0].discount_costperhour_cg === null ? res.data.data[0].costperhour_cg : res.data.data[0].discount_costperhour_cg,
           startDate: res.data.data[0].discount_sdate === null ? this.state.startDate : new Date(res.data.data[0].discount_sdate + ' ' + res.data.data[0].discount_start),
           endDate: res.data.data[0].discount_edate === null ? this.state.endDate : new Date(res.data.data[0].discount_edate + ' ' + res.data.data[0].discount_end),
           starttimeSiscount: res.data.data[0].starttime, endtimeSiscount: res.data.data[0].endtime, venueidSiscount: kol, venueidSiscountTwo: res.data.data[0].venueid === null ? '请选择' : res.data.data[0].venueid,
-          appointmenttimeTwo: [res.data.data[0].discount_appointment === null ? res.data.data[0].appointmenttime : res.data.data[0].discount_appointment], withDayList: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(','),
+          appointmenttimeTwo: [res.data.data[0].discount_appointment === null ? res.data.data[0].appointmenttime_cg : res.data.data[0].discount_appointment], withDayList: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(','),
         })
       }
     }
@@ -1351,8 +1351,8 @@ class sitePh extends React.Component {
     let obj = {
       uuid: SiscountUUid,
       discount_date: withDayList.join(','),
-      discount_costperhour: moneySiscount,
-      discount_appointment: appointmenttimeTwo[0]
+      discount_costperhour_cg: moneySiscount,
+      discount_appointment_cg: appointmenttimeTwo[0]
     }
     this.SiteSettingDiscountSave(obj)
 
@@ -1903,11 +1903,11 @@ class sitePh extends React.Component {
                       <div>场地数量：{item.sitenumber}</div>
                       <div onClick={this.venDuo} data-venueid={item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}>星期：{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</div>
                       <div onClick={this.venDuo} data-venueid={item.starttime + '~' + item.endtime}>时间范围：{item.starttime}~{item.endtime}</div>
-                      <div>价格：{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '元/时' : item.costperhour + '元/次'}</div>
+                      <div>价格：{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour_cg + '元/时' : item.costperhour_cg + '元/次'}</div>
                       <div>开始时间限制：{item.timelimit === 1 ? '不限' : item.timelimit === 2 ? '整点' : item.timelimit === 3 ? '单数整点' : item.timelimit === 4 ? '双数整点' : '不限'}</div>
                       <div>时长限制：{item.durationlimit === 1 ? '一小时以上' : item.durationlimit === 2 ? '一小时整数倍' : item.durationlimit === 3 ? '二小时整数倍' : '一小时以上'}</div>
-                      <div onClick={this.venDuo} data-venueid={item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}>最长提前预定时间：{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</div>
-                      <div onClick={this.venDuo} data-venueid={item.appointmenttime === null ? '' : item.appointmenttime > 2879 ? item.appointmenttime / 60 / 24 + '天' : item.appointmenttime / 60 + '小时'}>最短提前预定时间：{item.appointmenttime === null ? '' : item.appointmenttime > 2879 ? item.appointmenttime / 60 / 24 + '天' : item.appointmenttime / 60 + '小时'}</div>
+                      <div onClick={this.venDuo} data-venueid={item.maxScheduledDate_cg === null ? '' : item.maxScheduledDateTwo}>最长提前预定时间：{item.maxScheduledDate_cg === null ? '' : item.maxScheduledDateTwo}</div>
+                      <div onClick={this.venDuo} data-venueid={item.appointmenttime_cg === null ? '' : item.appointmenttime_cg > 2879 ? item.appointmenttime_cg / 60 / 24 + '天' : item.appointmenttime_cg / 60 + '小时'}>最短提前预定时间：{item.appointmenttime_cg === null ? '' : item.appointmenttime_cg > 2879 ? item.appointmenttime_cg / 60 / 24 + '天' : item.appointmenttime_cg / 60 + '小时'}</div>
                       <div onClick={item.comment === null ? '' : this.venDuo} data-venueid={item.comment === '' ? '无' : item.comment}>备注：{item.comment === '' ? '无' : item.comment}</div>
                     </div>
                   </Card.Body>
@@ -1949,13 +1949,13 @@ class sitePh extends React.Component {
                       <div>场地数量：{item.sitenumber}</div>
                       <div onClick={this.venDuo} data-venueid={item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}>星期：{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</div>
                       <div onClick={this.venDuo} data-venueid={item.starttime + '~' + item.endtime}>时间范围：{item.starttime}~{item.endtime}</div>
-                      <div>价格：{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '元/时' : item.costperhour + '元/次'}</div>
+                      <div>价格：{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour_cg + '元/时' : item.costperhour_cg + '元/次'}</div>
                       <div>开始时间限制：{item.timelimit === 1 ? '不限' : item.timelimit === 2 ? '整点' : item.timelimit === 3 ? '单数整点' : item.timelimit === 4 ? '双数整点' : '不限'}</div>
                       <div>时长限制：{item.durationlimit === 1 ? '一小时以上' : item.durationlimit === 2 ? '一小时整数倍' : item.durationlimit === 3 ? '二小时整数倍' : '一小时以上'}</div>
-                      <div onClick={this.venDuo} data-venueid={item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}>最长提前预定时间：{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</div>
-                      <div onClick={this.venDuo} data-venueid={item.appointmenttime === null ? '' : item.appointmenttime > 2879 ? item.appointmenttime / 60 / 24 + '天' : item.appointmenttime / 60 + '小时'}>最短提前预定时间：{item.appointmenttime === null ? '' : item.appointmenttime > 2879 ? item.appointmenttime / 60 / 24 + '天' : item.appointmenttime / 60 + '小时'}</div>
+                      <div onClick={this.venDuo} data-venueid={item.maxScheduledDate_cg === null ? '' : item.maxScheduledDateTwo}>最长提前预定时间：{item.maxScheduledDate_cg === null ? '' : item.maxScheduledDateTwo}</div>
+                      <div onClick={this.venDuo} data-venueid={item.appointmenttime_cg === null ? '' : item.appointmenttime_cg > 2879 ? item.appointmenttime_cg / 60 / 24 + '天' : item.appointmenttime_cg / 60 + '小时'}>最短提前预定时间：{item.appointmenttime_cg === null ? '' : item.appointmenttime_cg > 2879 ? item.appointmenttime_cg / 60 / 24 + '天' : item.appointmenttime_cg / 60 + '小时'}</div>
                       <div onClick={item.comment === null ? '' : this.venDuo} data-venueid={item.comment === '' ? '无' : item.comment}>备注：{item.comment === '' ? '无' : item.comment}</div>
-                      <div>特定日期:{item.discount_date === '' ? '无' : <span style={{ color: '#D85D27', cursor: 'pointer' }} data-sd={item.discount_date} data-app={item.discount_appointment} data-cos={item.discount_costperhour} onClick={this.detail}>查看</span>}</div>
+                      <div>特定日期:{item.discount_date === '' ? '无' : <span style={{ color: '#D85D27', cursor: 'pointer' }} data-sd={item.discount_date} data-app={item.discount_appointment} data-cos={item.discount_costperhour_cg} onClick={this.detail}>查看</span>}</div>
                       <div>操作:{item.operation === 1 ? '添加' : item.operation === 2 ? '修改' : item.operation === 3 ? '删除' : '无'}</div>
                       <div style={{ width: '100%' }}>操作时间:{item.intime}</div>
                     </div>

@@ -32,6 +32,8 @@ import MembershipList from './phone/MembershipList/MembershipList';
 import advertisingPh from './phone/advertisingPh/advertisingPh';
 import lazyLoad from './lazyLoad';
 const appOrder = lazyLoad(() => import('./phone/appOrder/appOrder'));
+const bindingsWx = lazyLoad(() => import('./phone/bindingsWx/bindingsWx'));
+
 
 const BasicRoute = () => (
     <HashRouter>
@@ -63,6 +65,7 @@ const BasicRoute = () => (
             <Route exact path="/homePh/advertisingPh" component={advertisingPh}/>
             <Route  path="/homePh" component={homePagePh}/>
             <Route exact path="/appOrder" component={appOrder}/>
+            <Route exact path="/bindingsWx" component={bindingsWx}/>
             <Route exact path="/phone" component={phone}/>
             <Route exact path="/Agreement" component={Agreement}/>
             <Route exact path="/Membership" component={Membership}/>

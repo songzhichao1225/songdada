@@ -79,6 +79,7 @@ class newsPh extends React.Component {
   async gerVenueName(data) {
     const res = await gerVenueName(data, localStorage.getItem('venue_token'))
     localStorage.setItem('avatar', imgUrlTwo + res.data.data.siteimg)
+    localStorage.setItem('siteName',res.data.data.name)
   }
 
   componentDidMount() {

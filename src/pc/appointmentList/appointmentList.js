@@ -605,7 +605,7 @@ class appointmentList extends React.Component {
                 <Col xs={{ span: 2 }} style={this.state.headTop === '1' ? { display: 'none' } : {}}><div style={{ lineHeight: '25px', fontSize: '10px' }}>{item.StartTime === 0 ? '00:00' : item.StartTime.slice(0, 10)}</div><div style={{ lineHeight: '25px' }}>{item.StartTime === 0 ? '00:00' : item.StartTime.slice(11, 16)}</div></Col>
                 <Col xs={{ span: 2 }}><div style={{ lineHeight: '25px', fontSize: '10px' }}>{item.FinishedTime.slice(0, 10)}</div><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(11, 16)}</div></Col>
                 <Col xs={{ span: 2 }}>{item.breakup.length === 0 ? item.PlayTime + '小时' : '无'}</Col>
-                <Col xs={{ span: 1 }} style={{width:'43px'}}><div style={{ color: '#4A90E2' }} onClick={this.duration} data-uuid={item.uuid}>查看详情</div></Col>
+                <Col xs={{ span: 1 }} style={{width:'43px',cursor:'pointer'}}><div style={{ color: '#4A90E2' }} onClick={this.duration} data-uuid={item.uuid}>查看详情</div></Col>
 
                 <Col xs={{ span: 2 }} >{this.state.headTop === '1' ? item.breakup.length === 0 ? <Popover content={(<span>{item.venueid}</span>)} title='详情' trigger="click">
                   <div>{

@@ -689,15 +689,15 @@ class siteSettings extends React.Component {
 
     if (res.data.code === 2000) {
       for (let i in res.data.data) {
-        if (res.data.data[i].maxScheduledDate_cg === '0.1') {
+        if (res.data.data[i].maxScheduledDate === '0.1') {
           res.data.data[i].maxScheduledDateTwo = '1周'
-        } else if (res.data.data[i].maxScheduledDate_cg === '0.2') {
+        } else if (res.data.data[i].maxScheduledDate === '0.2') {
           res.data.data[i].maxScheduledDateTwo = '2周'
-        } else if (res.data.data[i].maxScheduledDate_cg === '0.3') {
+        } else if (res.data.data[i].maxScheduledDate === '0.3') {
           res.data.data[i].maxScheduledDateTwo = '3周'
-        } else if (res.data.data[i].maxScheduledDate_cg === '1') {
+        } else if (res.data.data[i].maxScheduledDate === '1') {
           res.data.data[i].maxScheduledDateTwo = '1个月'
-        } else if (res.data.data[i].maxScheduledDate_cg === '2') {
+        } else if (res.data.data[i].maxScheduledDate === '2') {
           res.data.data[i].maxScheduledDateTwo = '2个月'
         }
       }
@@ -2454,11 +2454,11 @@ class siteSettings extends React.Component {
                   <Popover content={(<span>{item.starttime}-{item.endtime}</span>)} title='详情' trigger="click">
                     <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.starttime}-{item.endtime}</Col>
                   </Popover>
-                  <Popover content={(<span>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour_cg + '(元/时)' : item.costperhour_cg + '(元/次)'}</span>)} title='详情' trigger="click">
-                    <Col xs={{ span: 1 }} style={{ cursor: 'pointer' }}>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour_cg + '(元/时)' : item.costperhour_cg + '(元/次)'}</Col>
+                  <Popover content={(<span>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '(元/次)'}</span>)} title='详情' trigger="click">
+                    <Col xs={{ span: 1 }} style={{ cursor: 'pointer' }}>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '(元/次)'}</Col>
                   </Popover>
-                  <Col xs={{ span: 1 }}>{item.maxScheduledDate_cg === null ? '' : item.maxScheduledDateTwo}</Col>
-                  <Col xs={{ span: 1 }}>{item.appointmenttime_cg_cg === null ? '' : item.appointmenttime_cg_cg > 2879 ? item.appointmenttime_cg_cg / 60 / 24 + '天' : item.appointmenttime_cg_cg / 60 + '小时'}</Col>
+                  <Col xs={{ span: 1 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
+                  <Col xs={{ span: 1 }}>{item.appointmenttime=== null ? '' : item.appointmenttime > 2879 ? item.appointmenttime / 60 / 24 + '天' : item.appointmenttime / 60 + '小时'}</Col>
                   <Col xs={{ span: 2 }}>{item.timelimit === 1 ? '不限' : item.timelimit === 2 ? '整点' : item.timelimit === 3 ? '单数整点' : item.timelimit === 4 ? '双数整点' : '不限'}</Col>
                   <Col xs={{ span: 2 }}>{item.durationlimit === 1 ? '1小时以上' : item.durationlimit === 2 ? '1小时整数倍' : item.durationlimit === 3 ? '2小时整数倍' : '1小时以上'}</Col>
 

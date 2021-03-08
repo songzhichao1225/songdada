@@ -24,6 +24,7 @@ class untiePhonePh extends React.Component {
     if(res.data.code===2000) {
       localStorage.setItem('phone', res.data.data.phone)
       localStorage.setItem('legalphone',res.data.data.legalphone)
+      localStorage.setItem('siteName',res.data.data.name)
     }
   }
 
@@ -111,7 +112,7 @@ class untiePhonePh extends React.Component {
       <div className="untiePhonePh">
         <div className="headTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', left: '0', width: '48px', height: '48px', lineHeight: '48px' }} />解除绑定手机号</div>
         <div className="listSon">
-          <Input maxLength={11} onChange={this.phone} value={localStorage.getItem('legalphone')} disabled={true} placeholder="请输入负责人手机号" />
+          <Input maxLength={11} style={{width:'100%'}} onChange={this.phone} value={'第一负责人手机号：'+localStorage.getItem('legalphone')} disabled={true} placeholder="请输入负责人手机号" />
         </div>
         <div className="listSon">
           <Input maxLength={11} placeholder="请输入验证码" onChange={this.codeOne} /><span onClick={this.state.textT === '获取验证码' ? this.nacodeOne : this.ko}>{this.state.textT}</span>

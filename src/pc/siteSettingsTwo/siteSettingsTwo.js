@@ -239,10 +239,8 @@ class siteSettingsTwo extends React.Component {
       sessionStorage.setItem('mess', res.data.data.mess)
       sessionStorage.setItem('siteuid', res.data.data.siteuid)
       sessionStorage.setItem('ishaverecharge', res.data.data.ishaverecharge)
-      if (res.data.data.ishaverecharge === 1 || res.data.data.ishaverecharge === 2) {
-        this.props.history.push({ pathname: '/home/myWallet', query: { time: 2 } })
-        sessionStorage.setItem('incomtime', 2)
-      }
+      sessionStorage.setItem('siteName',res.data.data.name)
+     
     }
   }
   componentDidMount() {

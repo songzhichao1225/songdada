@@ -110,7 +110,7 @@ class resetPasswordPh extends React.Component {
         <div className="headTitile"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', left:'0',width:'48px',height:'48px',lineHeight:'48px' }} />重置密码</div>
 
         <div className="listSon">
-          <Input maxLength={11} placeholder="请输入负责人/操作员手机号"  onChange={this.phone} />
+          <Input maxLength={11} placeholder="请输入操作员手机号"  onChange={this.phone} />
         </div>
 
         <div className="listSon">

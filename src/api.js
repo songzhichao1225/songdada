@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 //本地全部隐去
-// axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
+axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
 // axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
 
 // export let imgUrlTwo='https://app.tiaozhanmeiyitian.com/'  //正式图片路径
@@ -604,6 +604,22 @@ export function setSquareByOffLine(data,headers){    //线下占用~ 获取可�
 
 export function getHTBySite(data,headers){    //获取场馆签署合同
     return axios.post('/api/getHTBySite',data,{headers: {'token': headers}})
+}
+
+export function getOpenidBindingVenue(data){    //~获取该微信公众号下用户已经绑定的场馆
+    return axios.post('/api/getOpenidBindingVenue',data)
+}
+
+export function VenueUnbundling(data){    //微信公众号与场馆进行解绑
+    return axios.post('/api/VenueUnbundling',data)
+}
+
+export function WetchSelectSiteName(data){    //场馆端~通过手机号查看该手机号下的场馆名
+    return axios.post('/api/WetchSelectSiteName',data)
+}
+
+export function VenueBinding(data){    //场馆端~微信公众号中绑定场馆
+    return axios.post('/api/VenueBinding',data)
 }
 
 

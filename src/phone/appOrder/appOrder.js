@@ -1,6 +1,6 @@
 import React from 'react';
 import './appOrder.css';
-import { Calendar, Toast, Result, Icon, ActivityIndicator } from 'antd-mobile';
+import { Calendar, Toast, Result, Icon, ActivityIndicator,NoticeBar } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Table } from 'antd';
 import { getAppVenueReservations, getVenueNumberTitleList, getAPPVenueSelectSite } from '../../api';
@@ -54,9 +54,9 @@ class appOrder extends React.Component {
 
   async getAppVenueReservations(data) {
     const res = await getAppVenueReservations(data, this.state.token)
-    let dataOne=JSON.stringify(res.data.data)
-    let dataTwo=JSON.parse(dataOne)
-   
+    let dataOne = JSON.stringify(res.data.data)
+    let dataTwo = JSON.parse(dataOne)
+
     if (res.data.code === 2000) {
       if (this.state.topNumList.length > 0) {
         for (let j = 0; j < this.state.topNumList.length; j++) {
@@ -66,6 +66,11 @@ class appOrder extends React.Component {
           }
         }
       }
+
+
+
+
+
       if (this.state.sporttypeFive === '10') {
         let arrVen = []
         for (let i in res.data.other.bq) {
@@ -90,38 +95,7 @@ class appOrder extends React.Component {
             }
           }
         }
-        // for (let m = 0; m < newArr.length; m++) {
-        //   if (newarr2[m] === 1) {
-        //     for (let k in res.data.other.bq) {
-        //       if (newArr[m] === parseInt(res.data.other.bq[k].venueid)) {
-        //         function removeByValue(arr, val) {
-        //           for (var i = 0; i < arr.length; i++) {
-        //             if (arr[i] === val) {
-        //               arr.splice(i, 1);
-        //               break;
-        //             }
-        //           }
-        //         }
-        //         removeByValue(res.data.other.bq, res.data.other.bq[k]);
-        //       }
-        //     }
-        //     for (let i in dataTwo) {
-        //       for (let j in dataTwo[i].c) {
-        //         if (newArr[m] === parseInt(dataTwo[i].c[j].venueid)) {
-        //           function removeByValue(arr, val) {
-        //             for (var i = 0; i < arr.length; i++) {
-        //               if (arr[i] === val) {
-        //                 arr.splice(i, 1);
-        //                 break;
-        //               }
-        //             }
-        //           }
-        //           removeByValue(dataTwo[i].c, dataTwo[i].c[j]);
-        //         }
-        //       }
-        //     }
-        //   }
-        // }
+     
       }
 
       let arrTime = []
@@ -230,24 +204,24 @@ class appOrder extends React.Component {
               && resData.data[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 40, lineHeight: 3 } : {}
                 && resData.data[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 40, lineHeight: 3 } : {}
                   && resData.data[i].c[j].type === 4 ? { background: 'red', height: 40, lineHeight: 3 } : { background: 'red', height: 40, lineHeight: 3, color: '#fff' }}
-        > <span>{'￥'+resData.data[i].c[j].money}{this.state.sporttypeFive === '22' || this.state.sporttypeFive === '24' ? '' : ''}</span><span>{resData.data[i].c[j].priceunit}</span></div>
+        > <span>{'￥' + resData.data[i].c[j].money}{this.state.sporttypeFive === '22' || this.state.sporttypeFive === '24' ? '' : ''}</span><span>{resData.data[i].c[j].priceunit}</span></div>
         if (resData.data[i].c[j].type === 3) {
           this.setState({ selectedTwo: [...this.state.selectedTwo, resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney] })
         }
         obj[key] = value
       }
       let lo = resData.data[i].a
-      let resuLo=''
+      let resuLo = ''
       if (result.hasOwnProperty(lo)) {
-        resuLo=result[lo]
+        resuLo = result[lo]
       }
       obj.lppd = this.state.sporttypeFive === '22' || this.state.sporttypeFive === '24' ? <div>
-        <div className="btnAutoi" style={result.hasOwnProperty(lo)?{opacity:1}:{opacity:0}}>{ resData.data[i].a===lo?resuLo:''}</div></div> 
-      : <div><div style={i!=='0'?{ color: '#F5A623', marginTop: '-1.4rem' }:{ color: '#F5A623'}}>{resData.data[i].a}<div style={resData.data[i].a==='23:30'?{width:'100%',position:'absolute',bottom:'-1rem',textAlign:'center'}:{display:'none'}}>{resData.data[i].a==='23:30'?'24:00':''}</div></div><div className="btnAutoi" style={result.hasOwnProperty(lo)?{opacity:1}:{opacity:0}}>{ resData.data[i].a===lo?resuLo:''}</div></div>
+        <div className="btnAutoi" style={result.hasOwnProperty(lo) ? { opacity: 1 } : { opacity: 0 }}>{resData.data[i].a === lo ? resuLo : ''}</div></div>
+        : <div><div style={i !== '0' ? { color: '#F5A623', marginTop: '-1.4rem' } : { color: '#F5A623' }}>{resData.data[i].a}<div style={resData.data[i].a === '23:30' ? { width: '100%', position: 'absolute', bottom: '-1rem', textAlign: 'center' } : { display: 'none' }}>{resData.data[i].a === '23:30' ? '24:00' : ''}</div></div><div className="btnAutoi" style={result.hasOwnProperty(lo) ? { opacity: 1 } : { opacity: 0 }}>{resData.data[i].a === lo ? resuLo : ''}</div></div>
       jood.push(obj)
     }
     this.setState({
-      lookBan: jood 
+      lookBan: jood
     })
   }
 
@@ -261,9 +235,9 @@ class appOrder extends React.Component {
   componentDidMount() {
 
     //测试数据
-    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=4&token=KtfJFfVmlqZtS1VyOZx4PpxtY2dVfqOOs9Tk4Z5rJp0NgpyReREOEmjDHVIfuZvX&sporttype=22&flag=1'
+    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=4&token=KtfJFfVmlqZtS1VyOZx4PpxtY2dVfqOOs9Tk4Z5rJp0NgpyReREOEmjDHVIfuZvX&sporttype=10&flag=0'
     let query = this.props.location.search
- 
+
     let arr = query.split('&')
     let siteuid = arr[0].slice(9, arr[0].length)
     let sportid = arr[1].slice(8, arr[1].length)
@@ -274,7 +248,7 @@ class appOrder extends React.Component {
     setTimeout(() => {
       this.getAppVenueReservations({ date: '', siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
     }, 500)
-    let start = new Date().toLocaleDateString() 
+    let start = new Date().toLocaleDateString()
     if (start.split('/')[0].length === 4) {
       let yoo = start.split('/')[0] + '/' + start.split('/')[1] + '/' + start.split('/')[2]
       let mydate = new Date();
@@ -422,7 +396,7 @@ class appOrder extends React.Component {
           }
           this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
         } else if (this.state.time.sort().indexOf(time) !== -1) {
-          this.state.lotime.sort().splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney+'-'+timelimit)
+          this.state.lotime.sort().splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney + '-' + timelimit)
           this.setState({ lotime: this.state.lotime })
           let moneyCall = 0
           for (let i in this.state.lotime) {
@@ -487,7 +461,7 @@ class appOrder extends React.Component {
         Toast.fail('请选择双数整点场地', 2, null, false);
         return false
       }
-    
+
       if (e.currentTarget.dataset.type === '1') {
         if (this.state.lotime.length > 0) {
           if (this.state.lotime.indexOf(lotime) !== -1) {
@@ -542,12 +516,12 @@ class appOrder extends React.Component {
             }
             this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
           } else if (this.state.time.sort().indexOf(time) !== -1) {
-         
-            
-              let lo = this.state.lotime.sort()
-              lo.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney+'-'+timelimit)
-              this.setState({ lotime: lo })
-          
+
+
+            let lo = this.state.lotime.sort()
+            lo.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney + '-' + timelimit)
+            this.setState({ lotime: lo })
+
             this.setState({ lotime: this.state.lotime })
             let moneyCall = 0
             for (let i in this.state.lotime) {
@@ -765,16 +739,16 @@ class appOrder extends React.Component {
           Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
         } else if (timelimit === '4' && Number(timeTwo.slice(0, 2)) % 2 !== 0) {
           Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
-        }else if (this.state.durationlimit === 1 && this.state.lotime.length < 2) {
+        } else if (this.state.durationlimit === 1 && this.state.lotime.length < 2) {
           let durationlimit = '最少选择1小时以上场地'
           Toast.fail(durationlimit, 2, null, false);
         } else if (this.state.durationlimit === 2 && this.state.lotime.length % 2 === 1) {
           let durationlimit = '请选择1小时整数倍场地'
           Toast.fail(durationlimit, 2, null, false);
-        } else if (this.state.durationlimit === 3 && this.state.lotime.length /2 % 2 !== 0) {
+        } else if (this.state.durationlimit === 3 && this.state.lotime.length / 2 % 2 !== 0) {
           let durationlimit = '请选择2小时整数倍场地 '
           Toast.fail(durationlimit, 2, null, false);
-        }else {
+        } else {
           let sUserAgent = navigator.userAgent
           let mobileAgents = ['Android', 'iPhone', 'miniProgram'];
           for (let index = 0; index < mobileAgents.length; index++) {
@@ -875,13 +849,13 @@ class appOrder extends React.Component {
           Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
         } else if (timelimit === '4' && Number(timeTwo.slice(0, 2)) % 2 !== 0) {
           Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
-        }else if (this.state.durationlimit === 1 && this.state.lotime.length < 2) {
+        } else if (this.state.durationlimit === 1 && this.state.lotime.length < 2) {
           let durationlimit = '最少选择1小时以上场地'
           Toast.fail(durationlimit, 2, null, false);
-        } else if (this.state.durationlimit === 2 && this.state.lotime.length / 2 % 2 !== 1&& this.state.lotime.length / 2 % 2 !== 0) {
+        } else if (this.state.durationlimit === 2 && this.state.lotime.length / 2 % 2 !== 1 && this.state.lotime.length / 2 % 2 !== 0) {
           let durationlimit = '请选择1小时整数倍场地'
           Toast.fail(durationlimit, 2, null, false);
-        } else if (this.state.durationlimit === 3 && this.state.lotime.length /2% 2 !== 0) {
+        } else if (this.state.durationlimit === 3 && this.state.lotime.length / 2 % 2 !== 0) {
           let durationlimit = '请选择2小时整数倍场地 '
           Toast.fail(durationlimit, 2, null, false);
         } else {
@@ -925,7 +899,7 @@ class appOrder extends React.Component {
         let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[0])
         if ((Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1 !== this.state.lotime.length && this.state.flag !== '1') {
           Toast.fail('时间必须连贯', 2, null, false);
-        }else if (timelimit === '2' && timeTwo.indexOf('30') !== -1) {
+        } else if (timelimit === '2' && timeTwo.indexOf('30') !== -1) {
           Toast.fail('请选择开始时间为整点场地', 2, null, false);
         } else if (timelimit === '3' && timeTwo.indexOf('30') !== -1) {
           Toast.fail('请选择开始时间为单数整点场地', 2, null, false);
@@ -938,7 +912,7 @@ class appOrder extends React.Component {
         } else if (this.state.durationlimit === 1 && this.state.lotime.length < 2) {
           let durationlimit = '最少选择1小时以上场地'
           Toast.fail(durationlimit, 2, null, false);
-        } else if (this.state.durationlimit === 2 && this.state.lotime.length / 2 % 2 !== 1&& this.state.lotime.length / 2 % 2 !== 0) {
+        } else if (this.state.durationlimit === 2 && this.state.lotime.length / 2 % 2 !== 1 && this.state.lotime.length / 2 % 2 !== 0) {
           let durationlimit = '请选择1小时整数倍场地'
           Toast.fail(durationlimit, 2, null, false);
         } else if (this.state.durationlimit === 3 && this.state.lotime.length / 2 % 2 !== 0) {
@@ -1019,8 +993,8 @@ class appOrder extends React.Component {
                 <div className="titleDivTwo" onTouchStart={this.date}>{this.state.date}   {this.state.week}</div>
               </div>
               <div className="titleDiv" style={this.state.sporttypeFive === '22' || this.state.sporttypeFive === '24' ? {} : { display: 'none' }}><span className="fontSize">由于散场人数不可控，为了有更好的体验，出发之前可与场馆方联系。</span></div>
-              
-              
+
+
               <div className="modTitle">
 
                 <span className="blue"></span><span>可选</span>
@@ -1031,7 +1005,11 @@ class appOrder extends React.Component {
 
                 <span className="red"></span><span>已选中</span>
               </div>
-              <Table loading={false} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '92%' }} />
+              <Table loading={false} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '88%' }} />
+              
+              <NoticeBar className="textPass" marqueeProps={{ loop: true, style: { padding: '0 7.5px',fontSize:'0.75rem',lineHeight:'1.2rem' } }}>
+                我们确保100%留有场地,否则将退还您预付的所有场地费并补偿您20元
+    </NoticeBar>
               <Result
                 style={this.state.otherType.length === 0 ? { display: 'block' } : { display: 'none' }}
                 img={<Icon type="cross-circle-o" style={{ fill: 'rgba(245,166,35,1)', width: '4rem', height: '4rem' }} />}
@@ -1049,7 +1027,7 @@ class appOrder extends React.Component {
                 maxDate={new Date(+now + 31536000000)}
               />
             </div>
-          <div className="textPass">我们确保100%留有场地,否则将退还您预付的所有场地费并补偿您20元</div>
+
             <div className="footerKo">
               <div style={{ float: 'left', lineHeight: '3', marginLeft: '1rem' }}>场地费合计：{this.state.moneyCall.toString().indexOf('.') === -1 ? this.state.moneyCall + '.00' : this.state.moneyCall + '0'} <span style={this.state.sporttypeFive === '22' || this.state.sporttypeFive === '24' ? { paddingLeft: '4rem' } : { display: 'none' }}>次数{this.state.lotime.length}</span></div>
               <div

@@ -81,6 +81,8 @@ class myWalletPh extends React.Component {
     localStorage.setItem('avatar', "https://app.tiaozhanmeiyitian.com/" + res.data.data.siteimg)
     localStorage.setItem('lyv', res.data.data.rate)
     localStorage.setItem('siteUid', res.data.data.siteuid)
+    localStorage.setItem('siteName',res.data.data.name)
+    this.setState({siteName:res.data.data.name})
     if (res.data.data.ishaverecharge === 1) {
       this.setState({ vipVisible: true })
       this.getMembershipRechargeDetails()
@@ -620,8 +622,9 @@ class myWalletPh extends React.Component {
           <div className="oneVip">
             <span style={{ fontSize: '14px' }}>会员卡信息</span>
             <span style={{ paddingTop: '1.5rem' }}>北京甲乙电子商务有限公司(找对手平台)</span>
-            <span style={this.state.chargeDetails.cardnumber === '' || this.state.chargeDetails.length === 0 ? { display: 'none' } : { paddingTop: '1.5rem' }}>卡号：{this.state.chargeDetails.cardnumber}</span>
-            <span style={{ textAlign: 'right', fontSize: '14px', paddingTop: '1.5rem', paddingRight: '1rem' }}>当前余额：¥{this.state.chargeDetailsNum}</span>
+            <span style={this.state.chargeDetails.cardnumber === '' || this.state.chargeDetails.length === 0 ? { display: 'none' } : { paddingTop: '0.5rem' }}>卡号：{this.state.chargeDetails.cardnumber}</span>
+            <span style={{ textAlign: 'left', fontSize: '14px', paddingTop: '0.5rem', paddingRight: '1rem' }}>场馆名称：{this.state.siteName}</span>
+            <span style={{ textAlign: 'right', fontSize: '14px', paddingTop: '1rem', paddingRight: '1rem' }}>当前余额：¥{this.state.chargeDetailsNum}</span>
             <div className="lookhe" style={this.state.bySite.length!==0?{}:{display:'none'}}><a href={this.state.bySite.length!==0?htUrl+this.state.bySite[0].HT_path:''}  rel="noopener noreferrer" target="_blank">查看合同</a></div>
            
           </div>
@@ -647,6 +650,7 @@ class myWalletPh extends React.Component {
           <p><span className="vipLeftTwo">会员卡余额</span>￥{this.state.vipList.balance}</p>
           <p><span className="vipLeftTwo">计划充值金额</span>￥{this.state.vipList.PlanRecharge}</p>
           <p><span className="vipLeftTwo">需赠送金额</span>￥{this.state.vipList.givemoney}</p>
+          <p><span className="vipLeftTwo">场馆名称</span>{this.state.siteName}</p>
           <div className="lokoijjkj" style={this.state.bySite.length!==0?{}:{display:'none'}}><a href={this.state.bySite.length!==0?htUrl+this.state.bySite[0].HT_path:''}  rel="noopener noreferrer" target="_blank">查看合同</a></div>
            
           <TextArea rows={4} maxLength={100} onChange={this.vipNot} placeholder="拒绝时请填写拒绝原因" style={{ background: '#F3F3F3' }} />
