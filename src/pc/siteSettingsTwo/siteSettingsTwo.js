@@ -489,7 +489,6 @@ class siteSettingsTwo extends React.Component {
         appointmenttimeYThree:res.data.data[0].appointmenttime,
         costperhourSix: res.data.data[0].discount_costperhour===null?0:res.data.data[0].discount_costperhour.slice(0, res.data.data[0].discount_costperhour.indexOf('.')),
         appointmenttimeSix: res.data.data[0].discount_appointment === null ? 0 : res.data.data[0].discount_appointment,
-        
       })
       if (this.state.runIdTwo !== '') {
         this.getVenueSportidTitle({ sportid: this.state.runIdTwo })
@@ -1883,6 +1882,7 @@ class siteSettingsTwo extends React.Component {
               <span>内部最短提前预订时间</span>
               <Select placeholder="请选择"  className="selectModel"
                 defaultActiveFirstOption={false}
+                disabled={this.state.timeFalg==='no'||this.state.timeFalg==='yes'?true:false}
                 value={
                   this.state.appointmenttimeYThree === -1 ? '不限' : []
                     && this.state.appointmenttimeYThree === 0 ? '不限' : []

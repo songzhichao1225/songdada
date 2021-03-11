@@ -165,7 +165,6 @@ class appointmentList extends React.Component {
     // }else if(lo.length > 1&&loTwo.length===1){
     //   lo = new Date().toLocaleDateString().split('/')[0] + '-' + new Date().toLocaleDateString().split('/')[1] + '-0' + new Date().toLocaleDateString().split('/')[2]
     // }
-    
     this.setState({ dateString: new Date(), week: week[new Date().getDay()] })
   }
 

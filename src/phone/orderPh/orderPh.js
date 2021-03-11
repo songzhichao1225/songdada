@@ -202,13 +202,13 @@ class orderPh extends React.Component {
       this.hoode(res.data.data)
       for (let i in res.data.other) {
         res.data.other[i].dataIndex = res.data.other[i].venueid
-        res.data.other[i].title = <div>{res.data.other[i].venueid}<br />{res.data.other[i].title}</div>
-        res.data.other[i].width = 80
+        res.data.other[i].title = <div style={{fontSize:'0.75rem'}}>{res.data.other[i].venueid}<br />{res.data.other[i].title}</div>
+        res.data.other[i].width = 60
       }
       let ploboj = {
         title: <div>场地号<br />标签</div>,
         fixed: 'left',
-        width: 80,
+        width: 60,
         dataIndex: 'lppd',
       }
       res.data.other.unshift(ploboj)
@@ -1026,7 +1026,7 @@ class orderPh extends React.Component {
             </div>
           </div>
           {/* 看板渲染标签 */}
-          <Table loading={this.state.loadingTwo} style={this.state.otherType.length === 0 ? { display: 'none' } : { maxWidth: this.state.otherType.length * 80 }} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 76, minWidth: 40, y: '90%' }} />,
+          <Table loading={this.state.loadingTwo} style={this.state.otherType.length === 0 ? { display: 'none' } : { maxWidth: this.state.otherType.length * 36 }} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 25, minWidth: 5, y: '90%' }} />,
             <div style={this.state.activityList === false && this.state.otherType.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (2).png')} alt="555" /><span style={{ textAlign: 'center', display: "block" }}>{this.state.textNuma}!</span></div>
         </div>
 

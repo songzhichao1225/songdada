@@ -3084,9 +3084,9 @@ class siteSettings extends React.Component {
 
                 </div>
                 <div className="footer">
-                  <div onClick={this.workingDay} data-index="1" style={this.state.indexBtnSon === '1' ? { background: '#F5A623' } : {}}>当前年工作日</div>
-                  <div onClick={this.workingDay} data-index="2" style={this.state.indexBtnSon === '2' ? { background: '#F5A623' } : {}}>当前年周六日</div>
-                  <div onClick={this.workingDay} data-index="3" style={this.state.indexBtnSon === '3' ? { background: '#F5A623' } : {}}>当前年法定节假日</div>
+                  <div onClick={this.workingDay} data-index="1" style={this.state.indexBtnSon === '1' ? { background: '#F5A623' } : {}}>当年工作日</div>
+                  <div onClick={this.workingDay} data-index="2" style={this.state.indexBtnSon === '2' ? { background: '#F5A623' } : {}}>当年周六日</div>
+                  <div onClick={this.workingDay} data-index="3" style={this.state.indexBtnSon === '3' ? { background: '#F5A623' } : {}}>当年法定节假日</div>
                 </div>
 
 

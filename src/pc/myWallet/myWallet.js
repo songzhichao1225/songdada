@@ -701,7 +701,7 @@ class myWallet extends React.Component {
           </div>
           <div className={this.state.flag === 2 ? 'record myWallet' : 'myWalletNone'}>
             <div className="header">
-              <span className="previousStep" onClick={this.returnN}>钱包到账 ></span><span style={{ color: '#F5A623' }}>提现记录</span>
+              <span className="previousStep" onClick={this.returnN}>钱包到账 &gt;</span><span style={{ color: '#F5A623' }}>提现记录</span>
               <div style={{ float: 'right', fontSize: '16px', marginRight: '130px', lineHeight: '46px' }}>总计:￥{this.state.maxmoney}</div>
             </div>
             <div className="xiange"></div>
@@ -731,7 +731,7 @@ class myWallet extends React.Component {
           <div className={this.state.flag === 3 ? 'withdrawal myWallet' : 'myWalletNone'}>
 
             <div className="header">
-              <span className="previousStep" onClick={this.returnN}>钱包到账> </span><span>提现</span>
+              <span className="previousStep" onClick={this.returnN}>钱包到账 &gt; </span><span>提现</span>
             </div>
             <div className="xiange"></div>
             <div className="balance">
@@ -852,6 +852,7 @@ class myWallet extends React.Component {
           <p><span className="vipLeft">持卡人</span>北京甲乙电子商务有限公司(找对手平台)</p>
           <p><span className="vipLeft">充值金额</span>￥{this.state.vipListTwo.PlanRecharge}</p>
           <p><span className="vipLeft">需赠送金额</span>￥{this.state.vipListTwo.givemoney}</p>
+          <p><span className="vipLeft">场馆名称</span>￥{this.state.gerVenueNameName}</p>
           <p><span className="vipLeft" style={{ color: '#F5A623', cursor: 'pointer' }} data-url={this.state.vipListTwo.RemittanceURL} onClick={this.imgMasking}>查看凭证</span></p>
           <p className="vipFooter"><span data-id={this.state.vipListTwo.uuid} onClick={this.queren}>确认</span></p>
         </Modal>

@@ -117,7 +117,7 @@ class command extends React.Component {
   render() {
     return (
       <div className="command">
-        <div className="headTitle"><span onClick={this.next}>系统设置 > </span><span style={{ color: '#F5A623' }}>添加/解除第二负责人</span></div>
+        <div className="headTitle"><span onClick={this.next}>系统设置 &gt; </span><span style={{ color: '#F5A623' }}>添加/解除第二负责人</span></div>
         <div className="resetSon">
           <div className="inputSon" style={this.state.command.length === 0 ? {display:'none'}:{ marginLeft: '-68px', overflow: 'hidden' }}>
             <span style={{ float: 'left', width: '125px' }}>第二负责人手机号</span>
@@ -132,7 +132,7 @@ class command extends React.Component {
                     cancelText="取消"
                     key={i}
                   >
-                    <div className="phoneRight" ><span>{item.phone}</span><span data-uuid={item.parameterid} onClick={this.parameterid}>解除</span></div>
+                    <div className="phoneRight" ><span>{item.phone}</span><span data-uuid={item.parameterid} onClick={this.parameterid} style={{color:'blue'}}>解除</span></div>
                   </Popconfirm>
                 ))
               }

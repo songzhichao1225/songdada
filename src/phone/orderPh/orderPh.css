@@ -469,7 +469,7 @@ html:not([data-scale]) .am-card-body::before{
     padding:2px 2px; 
     text-align: center;
     color: #fff; 
-    width: 76px;
+    width: 36px;
 }
 .orderPh .ant-table-tbody > tr > td:first-child{
     background-color: #fff;

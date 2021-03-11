@@ -2389,9 +2389,9 @@ class sitePh extends React.Component {
           </div>
 
           <div className="footerBtnSel">
-            <div onClick={this.withDay} data-date="1" style={this.state.withDayIndex === '1' ? { background: '#D85D27' } : {}}>当前年工作日</div>
-            <div onClick={this.withDay} data-date="2" style={this.state.withDayIndex === '2' ? { background: '#D85D27' } : {}}>当前年周六、日</div>
-            <div onClick={this.withDay} data-date="3" style={this.state.withDayIndex === '3' ? { background: '#D85D27' } : {}}>当前年法定节假日</div>
+            <div onClick={this.withDay} data-date="1" style={this.state.withDayIndex === '1' ? { background: '#D85D27' } : {}}>当年工作日</div>
+            <div onClick={this.withDay} data-date="2" style={this.state.withDayIndex === '2' ? { background: '#D85D27' } : {}}>当年周六、日</div>
+            <div onClick={this.withDay} data-date="3" style={this.state.withDayIndex === '3' ? { background: '#D85D27' } : {}}>当年法定节假日</div>
           </div>
 
         

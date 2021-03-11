@@ -1,7 +1,7 @@
 import React from 'react';
 import './koloko.css';
 import 'antd/dist/antd.css';
-import { Input, Spin, message, DatePicker, Modal, Drawer, Table, Checkbox, Select, Popover } from 'antd';
+import { Input, Spin, message, DatePicker, Modal, Drawer, Table, Select, Popover } from 'antd';
 import { SyncOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { getVenueReservation, getVenueSport, VenueNumberSporttypeSave, getVenueNumberTitleList, getDateAndDayOfWeek, getReservationActivitieslist,setSquareByOffLine, VenueNewsHistoricalRecord, VenueRemarksLabel, getVipCardInfomation } from '../../api';
 import locale from 'antd/es/date-picker/locale/zh_CN';
@@ -97,7 +97,7 @@ class koloko extends React.Component {
     calesRed: 0,
     arrTimeuid: [],
     lppding: true,
-    textNuma: '您还没有进行场地设置,请前往设置！',
+    textNuma: '场馆还没有进行场地设置！',
     paied: '2',
     week: '',
     isloop: 2,
@@ -341,22 +341,8 @@ class koloko extends React.Component {
       this.setState({ isloop: 2 })
     }
   }
-
-  placeSubmit = () => {
-    let { venueidids, dtime, placeHui, placeName, placePhone, placeQi } = this.state
-
-    let obj = {
-      placeHui: placeHui,
-      placeName: placeName,
-      placePhone: placePhone,
-      placeQi: placeQi,
-    }
-
-
-
-
-  }
-
+  
+  
   Cancels = () => {
     this.setState({
       Cancels: 1
@@ -591,7 +577,7 @@ class koloko extends React.Component {
           closable={false}
           width='400px'
           onClose={this.informOnClose}
-          visible={false}
+          visible={this.state.informVisible}
         >
           <div style={this.state.informList.length > 0 ? {} : { display: 'none' }}>
             <div className="informDrawer">

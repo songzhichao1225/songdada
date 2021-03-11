@@ -71,6 +71,8 @@ class appOrder extends React.Component {
 
 
 
+
+
       if (this.state.sporttypeFive === '10') {
         let arrVen = []
         for (let i in res.data.other.bq) {
@@ -1007,7 +1009,7 @@ class appOrder extends React.Component {
               </div>
               <Table loading={false} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '88%' }} />
               
-              <NoticeBar className="textPass" marqueeProps={{ loop: true, style: { padding: '0 7.5px',fontSize:'0.75rem',lineHeight:'1.2rem' } }}>
+              <NoticeBar className="textPass" marqueeProps={{ loop: true, style: { padding: '0 7.5px',fontSize:'0.75rem',lineHeight:'0.8rem' } }}>
                 我们确保100%留有场地,否则将退还您预付的所有场地费并补偿您20元
     </NoticeBar>
               <Result

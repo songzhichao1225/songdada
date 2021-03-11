@@ -39,18 +39,14 @@ class monthlyIncomePh extends React.Component {
       if (sessionStorage.getItem('income') === 'day') {
         let start = moment().startOf('day')._d.toLocaleDateString()
         let end = moment().endOf('day')._d.toLocaleDateString()
-        console.log(start)
           this.setState({ qiStart: start, qiEnd: end })
           this.getVenueMoneyList({ start: start, end: end, page: 1 })
       }else  {
         let myDate = new Date()
         let start = moment().startOf('day').subtract(myDate.getDate() - 1, 'days')._d.toLocaleDateString()
         let end = moment().endOf('day')._d.toLocaleDateString()
-        
           this.setState({ qiStart: start, qiEnd: end })
           this.getVenueMoneyList({ start: start, end: end, page: 1 })
-        
-
       }
     }
   }

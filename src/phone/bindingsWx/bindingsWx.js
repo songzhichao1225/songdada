@@ -2,10 +2,10 @@ import React from 'react';
 import './bindingsWx.css';
 import { } from 'antd';
 import 'antd-mobile/dist/antd-mobile.css';
-import { getOpenidBindingVenue, VenueUnbundling, _code, WetchSelectSiteName,VenueBinding } from '../../api';
-import { Toast, Modal, List, Radio, } from 'antd-mobile';
+import { getOpenidBindingVenue, VenueUnbundling, _code, WetchSelectSiteName, VenueBinding } from '../../api';
+import { Toast, Modal, List, Checkbox, } from 'antd-mobile';
 import { LeftOutlined } from '@ant-design/icons';
-const RadioItem = Radio.RadioItem;
+const CheckboxItem = Checkbox.CheckboxItem;
 class bindingsWx extends React.Component {
 
   state = {
@@ -77,11 +77,12 @@ class bindingsWx extends React.Component {
   async WetchSelectSiteName(data) {
     const res = await WetchSelectSiteName(data)
     if (res.data.code === 2000) {
-      let arr=[]
+      let arr = []
       for (let i in res.data.data) {
         let obj = {}
         obj.label = res.data.data[i].name
         obj.value = res.data.data[i].siteuuid
+        obj.checked=false
         arr.push(obj)
       }
       this.setState({ venueList: arr, modal: true })
@@ -102,7 +103,12 @@ class bindingsWx extends React.Component {
   }
 
   venueId = (e) => {
-    this.setState({ siteuuid: e.currentTarget.dataset.siteuuid })
+    let id = e.currentTarget.dataset.index
+    if(this.state.venueList[id].checked===true){
+      this.state.venueList[id].checked=false
+    }else{
+      this.state.venueList[id].checked=true
+    }
   }
 
 
@@ -110,19 +116,25 @@ class bindingsWx extends React.Component {
     const res = await VenueBinding(data)
     if (res.data.code === 2000) {
       Toast.success('新增成功')
-      this.setState({modal:false})
-      localStorage.setItem('venue_token', res.data.data.token)
-      setTimeout(()=>{
-        this.setState({flag:0})
+      this.setState({ modal: false })
+      localStorage.setItem('venue_token', res.data.data.token)
+      setTimeout(() => {
+        this.setState({ flag: 0 })
         this.getOpenidBindingVenue({ openid: this.state.para })
-      },1500)
-    }else{
+      }, 1500)
+    } else {
       Toast.fail(res.data.msg)
     }
   }
 
-  subKtwo=()=>{
-  this.VenueBinding({phone:this.state.phone,openid:this.state.para,siteuuid:this.state.siteuuid})
+  subKtwo = () => {
+    let arr=''
+    for(let i in this.state.venueList){
+       if(this.state.venueList[i].checked===true){
+        arr+=this.state.venueList[i].value+','
+       } 
+    }
+    this.VenueBinding({ phone: this.state.phone, openid: this.state.para, siteuuid: arr.slice(0,arr.length-1) })
   }
 
   reture = () => {
@@ -131,7 +143,7 @@ class bindingsWx extends React.Component {
   render() {
     return (
       <div className="bindingsWx">
-        <div className="headTitle"><LeftOutlined onClick={this.reture} style={{ position: 'absolute', left: '0', width: '48px', height: '48px', lineHeight: '48px' }} />绑定场馆</div>
+        <div className="headTitle"><LeftOutlined onClick={this.reture} style={this.state.flag === 1 ? { position: 'absolute', left: '0', width: '48px', height: '48px', lineHeight: '48px' } : { display: 'none' }} />绑定场馆</div>
         <div className="listClick" style={this.state.flag === 0 ? {} : { display: 'none' }}>
           {
             this.state.listSon.map((item, i) => (
@@ -139,8 +151,9 @@ class bindingsWx extends React.Component {
             ))
           }
           <div className="btnSubBind" onClick={this.btnSubBind}>+新增绑定场馆</div>
+          <div className="text"><span >温馨提示:</span>绑定手机号后，您在该公众号即可收到“找对手”平台用户预订该场馆时的预订通知。
         </div>
-
+        </div>
 
         <div className="joinList" style={this.state.flag === 1 ? {} : { display: 'none' }}>
           <div className="join">
@@ -153,7 +166,7 @@ class bindingsWx extends React.Component {
             </div>
             <div className="soSelect"></div>
             <div className="submit" onClick={this.submitSub} >绑定场馆</div>
-            <div className="text"><span >温馨提示:</span>绑定手机号后，微信公众号能接收到该手机账号在找对手用户端或场馆端应收到的通知消息，以免您错过重要信息。
+            <div className="text"><span >温馨提示:</span>绑定手机号后，您在该公众号即可收到“找对手”平台用户预订该场馆时的预订通知。
         </div>
           </div>
 
@@ -167,15 +180,19 @@ class bindingsWx extends React.Component {
           maskClosable={false}
           onClose={this.onClose}
           title="选择场馆"
+          className="sdfdsf"
           style={{ height: '25rem' }}
         >
-          <List>
-            {this.state.venueList.map((item, i) => (
-              <RadioItem key={i} checked={item.value === this.state.siteuuid}  data-siteuuid={item.value}  onClick={this.venueId}>
-                {item.label}
-              </RadioItem>
-            ))}
-          </List>
+          <div style={{ paddingBottom: '5rem' }}>
+            <List>
+              {this.state.venueList.map((item, i) => (
+                <CheckboxItem key={i} data-index={i} onClick={this.venueId}>
+                  {item.label}
+                </CheckboxItem>
+              ))}
+            </List>
+          </div>
+
 
           <div className="lokoisdjfsdg" onClick={this.subKtwo}>确定</div>
 

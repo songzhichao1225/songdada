@@ -104,7 +104,7 @@ class commandPh extends React.Component {
             <div className="phoneRight">
               {
                 this.state.command.map((item,i)=>(
-                  <div key={i}><span>{item.phone}</span><span data-uuid={item.parameterid} onClick={this.jiechu}>解除</span></div>
+                  <div key={i}><span>{item.phone}</span><span data-uuid={item.parameterid} onClick={this.jiechu} style={{color:'blue'}}>解除</span></div>
                 ))
               }
              

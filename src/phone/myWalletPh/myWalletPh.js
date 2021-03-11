@@ -669,6 +669,7 @@ class myWalletPh extends React.Component {
           <p><span className="vipLeft">持卡人</span><span style={{ width: '7rem', display: 'block', float: 'left' }}>北京甲乙电子商务有限公司(找对手平台)</span></p>
           <p><span className="vipLeft">充值金额</span>￥{this.state.vipListTwo.PlanRecharge}</p>
           <p><span className="vipLeft">需赠送金额</span>￥{this.state.vipListTwo.givemoney}</p>
+          <p><span className="vipLeft">场馆名称</span>{this.state.siteName}</p>
           <p><span className="vipLeft" style={{ color: '#F5A623', cursor: 'pointer' }} data-url={this.state.vipListTwo.RemittanceURL} onClick={this.imgMasking}>查看凭证</span></p>
         </Modal>
 
