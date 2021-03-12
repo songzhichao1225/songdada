@@ -57,7 +57,7 @@
     "react": "^16.11.0",
     "react-app-polyfill": "^1.0.6",
     "react-audio-player": "^0.14.0",
-    "react-dev-utils": "^9.0.1",
+    "react-dev-utils": "^11.0.4",
     "react-dom": "^16.11.0",
     "react-fastclick": "^3.0.2",
     "resolve": "1.10.0",
