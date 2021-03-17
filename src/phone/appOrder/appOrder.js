@@ -97,7 +97,6 @@ class appOrder extends React.Component {
             }
           }
         }
-     
       }
 
       let arrTime = []
@@ -122,7 +121,6 @@ class appOrder extends React.Component {
             document.querySelector('.ant-table-body').scrollTo(0, 0)
           }
         }, 50)
-
       }
 
       this.setState({
@@ -136,7 +134,7 @@ class appOrder extends React.Component {
         res.data.other.bq[i].title = <div className="titleScale" style={{ textAlign: 'center', fontSize: '10px' }}>{res.data.other.bq[i].venueid}<br />{res.data.other.bq[i].title}</div>
         res.data.other.bq[i].width = 54
         res.data.other.bq[i].maxWidth = 54
-      }
+      } 
       let ploboj = {
         title: <div style={{ fontSize: '10px' }}>场地号<br />标签</div>,
         fixed: 'left',
@@ -239,7 +237,6 @@ class appOrder extends React.Component {
     //测试数据
     // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=4&token=KtfJFfVmlqZtS1VyOZx4PpxtY2dVfqOOs9Tk4Z5rJp0NgpyReREOEmjDHVIfuZvX&sporttype=10&flag=0'
     let query = this.props.location.search
-
     let arr = query.split('&')
     let siteuid = arr[0].slice(9, arr[0].length)
     let sportid = arr[1].slice(8, arr[1].length)
@@ -1010,7 +1007,7 @@ class appOrder extends React.Component {
               <Table loading={false} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '88%' }} />
               
               <NoticeBar className="textPass" marqueeProps={{ loop: true, style: { padding: '0 7.5px',fontSize:'0.75rem',lineHeight:'0.8rem' } }}>
-                我们确保100%留有场地,否则将退还您预付的所有场地费并补偿您20元
+                我们确保100%留有场地,否则将退还您预付的所有场地费并补偿您：20元（到场签到了）；10元（未到场签到）。
     </NoticeBar>
               <Result
                 style={this.state.otherType.length === 0 ? { display: 'block' } : { display: 'none' }}

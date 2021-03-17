@@ -1,9 +1,9 @@
 import React from 'react';
 import './preferentialTwo.css';
 import 'antd/dist/antd.css';
-import { Input, Spin, message, DatePicker, Modal, Drawer, Table, Checkbox, Select, Popover } from 'antd';
+import { Input, Spin, message, DatePicker, Modal, Drawer, Table, Popconfirm, Select, Popover } from 'antd';
 import { SyncOutlined, CloseCircleOutlined } from '@ant-design/icons';
-import { getVenueReservation, getVenueSport, VenueNumberSporttypeSave, getVenueNumberTitleList, getDateAndDayOfWeek, getReservationActivitieslist,setSquareByOffLine, VenueNewsHistoricalRecord, VenueRemarksLabel, getVipCardInfomation } from '../../api';
+import { getVenueReservation, getVenueSport, VenueNumberSporttypeSave, getVenueNumberTitleList,DelVenueOfflineOccupancy, CalculateVenuePrice, AddVenueOfflineOccupancy, getDateAndDayOfWeek, getReservationActivitieslist, setSquareByOffLine, VenueNewsHistoricalRecord, getVenueBookingInformation, getVipCardInfomation } from '../../api';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -75,7 +75,7 @@ class appointmentList extends React.Component {
     nowtime: '',
     lotime: [],
     tooltip: false,
-    otherObj: '',
+    otherObjTime: [],
     menu: 2,
     topNumList: [],
     flagClick: 0,
@@ -103,13 +103,21 @@ class appointmentList extends React.Component {
     isloop: 2,
     isModalVisible: false,
     weekList: [],
-    theWay: '1',//支付方式
+    theWay: '2',//支付方式
     searching: '',//检索会员卡
     startTime: '',//开始时间
     timeLen: '',//预约时长
-    repeat: '',//是否重复
+    repeat: '0',//是否重复
     theNews: '',//其他
     vipDetails: [],//会员卡详情
+    selectable: false,
+    selectableList: [],
+    selectVenueId: '',
+    contacts: '',
+    contactNumber: '',
+    otherObj: [],
+    informaid:'',
+    TotalPrice:0,
   };
 
   async getVenueSport(data) {
@@ -183,6 +191,7 @@ class appointmentList extends React.Component {
         }
       }
 
+    
 
       let arrTime = []
       for (let i in res.data.data) {
@@ -243,7 +252,8 @@ class appointmentList extends React.Component {
       this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: '', paied: this.state.paied })
       this.setState({ informVisible: true })
     } else if (e.currentTarget.dataset.type === '4' && this.state.Cancels === 0) {
-      this.VenueRemarksLabel({ uuid: e.currentTarget.dataset.uuid })
+      this.setState({informaid: e.currentTarget.dataset.uuid})
+      this.getVenueBookingInformation({ informaid: e.currentTarget.dataset.uuid, type: 1,cur:this.state.dateString })
     }
   }
   informOnClose = () => {
@@ -349,21 +359,45 @@ class appointmentList extends React.Component {
     }
   }
 
-  placeSubmit = () => {
-    let { venueidids, dtime, placeHui, placeName, placePhone, placeQi } = this.state
 
-    let obj = {
-      placeHui: placeHui,
-      placeName: placeName,
-      placePhone: placePhone,
-      placeQi: placeQi,
+
+  async AddVenueOfflineOccupancy(data) {
+    const res = await AddVenueOfflineOccupancy(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ info: false })
+      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.datatring })
+    }else{
+      message.warning(res.data.msg)
     }
-
-
-
-
   }
 
+  placeSubmit = () => {
+    let { liNum, theWay, contacts,TotalPrice, selectVenueId, contactNumber, startTime, timeLen, repeat, theNews } = this.state
+
+    let obj = {
+      sportid: liNum,
+      mode: theWay,
+      memberuuid: '',
+      cardholderName: '',
+      contacts: contacts,
+      contactNumber: contactNumber,
+      cardNumber: '',
+      balance: '',
+      venueid: selectVenueId,
+      starttime: startTime,
+      playtime: timeLen,
+      isloop: repeat,
+      consumpMoney: TotalPrice,
+      comment: theNews,
+    }
+    this.AddVenueOfflineOccupancy(obj)
+  }
+  contacts = e => {
+    this.setState({ contacts: e.target.value })
+  }
+  contactNumber = e => {
+    this.setState({ contactNumber: e.target.value })
+  }
   Cancels = () => {
     this.setState({
       Cancels: 1
@@ -392,56 +426,33 @@ class appointmentList extends React.Component {
     this.setState({ History: false })
   }
 
-  async VenueRemarksLabel(data) {
-    const res = await VenueRemarksLabel(data, sessionStorage.getItem('venue_token'))
+  async getVenueBookingInformation(data) {
+    const res = await getVenueBookingInformation(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      let ko = JSON.parse(res.data.data)
-      let arrObj = <div>
-        <div>姓名：{ko.placeName === '' ? '无' : ko.placeName}</div>
-        <div>手机号：{ko.placePhone === '' ? '无' : ko.placePhone}</div>
-        <div>会员卡号：{ko.placeHui === '' ? '无' : ko.placeHui}</div>
-        <div>其他：{ko.placeQi === '' ? '无' : ko.placeQi}</div>
-      </div>
-      this.setState({ otherObj: arrObj, menu: 1, History: true })
+      this.setState({ otherObj: res.data.data, otherObjTime: res.data.data.time, menu: 1, History: true })
     }
   }
   handleCancelInFo = () => {
     this.setState({
       info: false,
+      selectable: false
     })
   }
-
-
-
-
-
-
-
+  handleCancel=()=>{
+    this.setState({selectable:false})
+  }
 
 
   getDay = (day) => {
     var today = new Date(this.state.dateString);
-
     var targetday_milliseconds = today.getTime() + 1000 * 60 * 60 * 24 * day;
-
-
-
     today.setTime(targetday_milliseconds); //注意，这行是关键代码
-
-
-
     var tYear = today.getFullYear();
-
     var tMonth = today.getMonth();
-
     var tDate = today.getDate();
-
     tMonth = this.doHandleMonth(tMonth + 1);
-
     tDate = this.doHandleMonth(tDate);
-
     return tYear + "-" + tMonth + "-" + tDate;
-
   }
 
   doHandleMonth = (month) => {
@@ -484,6 +495,7 @@ class appointmentList extends React.Component {
   }
 
 
+
   searching = e => {
     this.setState({ searching: e })
     this.getVipCardInfomation({ kw: e, sID: sessionStorage.getItem('siteuid') })
@@ -498,14 +510,16 @@ class appointmentList extends React.Component {
     this.setState({ repeat: e })
   }
   theNews = e => {
-    this.setState({ theNews: e })
+    this.setState({ theNews: e.target.value })
   }
 
 
   async setSquareByOffLine(data) {
     const res = await setSquareByOffLine(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      
+      this.setState({ selectable: true, selectableList: res.data.data })
+    } else {
+      message.warning(res.data.msg)
     }
   }
 
@@ -516,16 +530,65 @@ class appointmentList extends React.Component {
     } else if (this.state.timeLen === '') {
       message.warning('请选择预约时长')
     } else {
-      let obj={
-        siteUUID:sessionStorage.getItem('siteuid'),
-        sportid:this.state.liNum,
-        startTime:this.state.startTime,
-        playTime:this.state.timeLen
+      let obj = {
+        siteUUID: sessionStorage.getItem('siteuid'),
+        sportid: this.state.liNum,
+        startTime: this.state.startTime,
+        playTime: this.state.timeLen
       }
-       this.setSquareByOffLine(obj)
+      this.setSquareByOffLine(obj)
     }
-
   }
+  selectClick = e => {
+    let koo = this.state.selectableList
+    if(koo[e.currentTarget.dataset.ifused].ifUsed===1){
+      koo[e.currentTarget.dataset.ifused].ifUsed = 2
+    }else if(koo[e.currentTarget.dataset.ifused].ifUsed===2){
+      koo[e.currentTarget.dataset.ifused].ifUsed = 1
+    }
+    this.setState({ selectableList: koo })
+  }
+  submitkojhi = () => {
+    let selectableList = this.state.selectableList
+    let venueidid = ''
+    for (let i in selectableList) {
+      if (selectableList[i].ifUsed === 2) {
+        venueidid += ',' + selectableList[i].venueid
+      }
+    }
+    this.CalculateVenuePrice({ starttime: this.state.startTime, playtime: this.state.timeLen, sportid: this.state.liNum, venueid: venueidid.slice(1, venueidid.length) })
+    this.setState({ selectable: false, selectVenueId: venueidid.slice(1, venueidid.length) })
+  }
+
+  async CalculateVenuePrice(data) {
+    const res = await CalculateVenuePrice(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+       this.setState({TotalPrice:res.data.data.TotalPrice})
+    }
+  }
+
+
+
+
+  async DelVenueOfflineOccupancy(data) {
+    const res = await DelVenueOfflineOccupancy(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.datatring })
+      this.setState({History:false})
+      message.success('取消成功')
+    }
+  }
+
+
+  delVenue=()=>{
+   this.DelVenueOfflineOccupancy({offid:this.state.informaid,isloop:this.state.otherObj.isloop===0?3:2})
+  }
+
+
+
+
+
+
   render() {
 
     const content = (
@@ -577,7 +640,7 @@ class appointmentList extends React.Component {
                   <li key={i} onClick={this.clickLi} data-index={i} data-num={item.id} className={parseInt(this.state.dianIndex) === i ? 'borderLi' : ''}>{item.name}</li>
                 ))
               }
-              {/* <li><div className="cofirmZ" onClick={this.cofirmZ}>预订场地</div></li> */}
+              <li><div className="cofirmZ" onClick={this.cofirmZ}>预订场地</div></li>
 
             </ul>
           </div>
@@ -643,31 +706,55 @@ class appointmentList extends React.Component {
           <div style={this.state.informList.length > 0 ? { display: 'none' } : {}}>无</div>
         </Drawer>
         <Drawer
-          title='线下预订人信息'
+          title='预订信息'
           placement="right"
           closable={false}
           width='400px'
+          className="kojk"
           onClose={this.historyClose}
           visible={this.state.History}
+
         >
-          <div style={this.state.menu !== 1 ? { display: 'block' } : { display: 'none' }}>
-            <div style={this.state.historyNews.length === 0 ? { display: 'block' } : { display: 'none' }}>没有历史记录...</div>
-            <div style={this.state.historyNews.length > 0 ? { display: 'block' } : { display: 'none' }}>
-              {
-                this.state.historyNews.map((item, i) => (
-                  <div key={i} style={{ marginTop: '15px' }}>
-                    <span style={{ display: 'block' }}>{item.comment}</span>
-                    <span style={{ display: 'block' }}>{item.intime}</span>
-                  </div>
-                ))
-              }
-            </div>
+          <div className="plaTop">
+            <p>预订人信息</p>
+            <div><span>支付方式:</span><span>{this.state.otherObj.mode}</span></div>
+            <div style={this.state.otherObj.cardholderName === '' ? { display: 'none' } : {}}><span>卡主名称:</span><span>{this.state.otherObj.cardholderName}</span></div>
+            <div><span>联系人:</span><span>{this.state.otherObj.contacts}</span></div>
+            <div><span>手机号:</span><span>{this.state.otherObj.contactNumber}</span></div>
+            <div style={this.state.otherObj.cardNumber === '' ? { display: 'none' } : {}}><span>会员卡号:</span><span>{this.state.otherObj.cardNumber}</span></div>
+            <div style={this.state.otherObj.balance === '' ? { display: 'none' } : {}}><span>余额:</span><span>{this.state.otherObj.balance}</span></div>
+            <div><span>其他:</span><span>{this.state.otherObj.comment === '' ? '无' : this.state.otherObj.comment}</span></div>
           </div>
-          <div style={this.state.menu === 1 ? { display: 'block' } : { display: 'none' }}>
-            {this.state.otherObj}
+          <div style={{ height: '12px', background: '#f5f5f5', marginTop: "10px" }}></div>
+
+          <div className="plaTop plaTopTwo">
+            <p>场地信息</p>
+            <div style={{ fontWeight: 'bold', fontSize: '17px' }}><span>预订时间:</span><span>{this.state.otherObj.bookingTime}</span></div>
+            {
+              this.state.otherObjTime.map((item, i) => (
+                <div key={i}><span>{item.date}  {item.option}</span><span>{item.venueid}</span></div>
+              ))
+            }
+            <div style={{ color: "#D0021B" }}>预计消费：￥{this.state.otherObj.consumpMoney}</div>
+          </div>
+          <div className="footer"><span style={{ color: '#F5A623', fontSize: '17px' }}>订单状态：{this.state.otherObj.status}</span>
+
+            <Popconfirm
+              title="您确定取消本次订单吗?"
+              onConfirm={this.delVenue}
+              onCancel={this.cancel}
+              okText="确定"
+              cancelText="取消"
+            >
+              <div className="calce">取消订单</div>
+            </Popconfirm>
+
+
           </div>
 
         </Drawer>
+
+
 
 
         <Modal
@@ -681,31 +768,42 @@ class appointmentList extends React.Component {
           <div className="Relatedness">
             <div>
               <span>支付方式</span>
-              <Select defaultValue="会员卡扣费" placeholder="选择支付方式" style={{ width: 260 }} onChange={this.theWay}>
+              <Select defaultValue="其他支付(现金/微信/支付宝)" placeholder="选择支付方式" disabled={true} style={{ width: 260 }} onChange={this.theWay}>
                 <Option value="1">会员卡扣费</Option>
                 <Option value="2">其他支付(现金/微信/支付宝)</Option>
               </Select>
             </div>
-            <div>
+            <div style={this.state.theWay === '1' ? {} : { display: 'none' }}>
               <span>检索会员信息</span>
               <Search placeholder="请输入卡主名称/手机号/会员卡号检索" style={{ width: '260px', padding: '0 11px' }} onSearch={this.searching} />
             </div>
 
-            <div>
+            <div style={this.state.theWay === '1' ? {} : { display: 'none' }}>
               <span>会员信息</span>
               <Popover placement="top" title="会员详情" content={content} trigger="click">
                 <div style={{ lineHeight: '36px', color: '#F5A623', cursor: 'pointer' }}>查看详情</div>
               </Popover>
             </div>
 
-            <div>
+            <div style={this.state.theWay === '1' ? {} : { display: 'none' }}>
               <span>余额</span>
               <Input disabled={true} value={this.state.vipDetails.length === 0 ? '￥0' : '￥' + this.state.vipDetails.balance} />
             </div>
 
+
+            <div style={this.state.theWay === '2' ? {} : { display: 'none' }}>
+              <span>联系人</span>
+              <Input maxLength={18} placeholder="请填写" onChange={this.contacts} />
+            </div>
+
+            <div style={this.state.theWay === '2' ? {} : { display: 'none' }}>
+              <span>手机号</span>
+              <Input maxLength={11} placeholder="请填写" onChange={this.contactNumber} />
+            </div>
+
             <div>
               <span>开始时间</span>
-              <DatePicker showTime style={{ width: '260px' }} format="YYYY-MM-DD HH:mm" onOk={this.startTime} />
+              <DatePicker showNow={false} allowClear={false} showTime  minuteStep={30} style={{ width: '260px' }} format="YYYY-MM-DD HH:mm" onOk={this.startTime} />
             </div>
 
             <div>
@@ -722,24 +820,26 @@ class appointmentList extends React.Component {
 
             <div onClick={this.selectVenue}>
               <span>场地号</span>
-              <Input disabled={true} placeholder="点击选择场地号" />
+              <Input disabled={true} value={this.state.selectVenueId} placeholder="点击选择场地号" />
+            </div>
+
+            <div>
+              <span>预计消费</span>
+              <Input disabled={true} value={'￥'+this.state.TotalPrice} />
             </div>
 
             <div>
               <span>每周重复</span>
-              <Select placeholder="选择预约时长" style={{ width: 260 }} onChange={this.repeat}>
+              <Select placeholder="选择预约时长" style={{ width: 260 }} value={this.state.repeat} onChange={this.repeat}>
                 <Option value="0">不重复</Option>
                 <Option value="1">重复</Option>
               </Select>
             </div>
 
-            <div>
-              <span>预计消费</span>
-              <Input disabled={true} value={'￥0'} />
-            </div>
+           
 
-            <div> 
-              <span>其他</span>
+            <div>
+              <span>其它</span>
               <Input maxLength={200} placeholder="选填" onChange={this.theNews} />
             </div>
 
@@ -753,6 +853,24 @@ class appointmentList extends React.Component {
           <span onClick={this.placeSubmit} style={{ cursor: 'pointer', padding: '4px 8px', background: '#F5A623', color: '#fff', float: 'right', marginRight: '125px', marginTop: '20px' }}>提交</span>
 
 
+        </Modal>
+
+
+        <Modal
+          title="可选择场地编号"
+          visible={this.state.selectable}
+          onOk={this.handleOk}
+          className="mode"
+          onCancel={this.handleCancel}
+        >
+          <div style={{ overflow: 'hidden' }}>
+            {
+              this.state.selectableList.map((item, i) => (
+                <div className="lohkhjgj" key={i} data-ifused={i} onClick={this.selectClick} style={item.ifUsed === 2 ? { background: '#F5A623' } : item.ifUsed === 0 ? { background: 'red' } : {}}>{item.venueid}</div>
+              ))
+            }
+          </div>
+          <div className="dfgk" onClick={this.submitkojhi}>确认</div>
         </Modal>
 
 

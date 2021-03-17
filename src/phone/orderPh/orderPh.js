@@ -1,10 +1,10 @@
 import React from 'react';
 import './orderPh.css';
 
-import { DatePicker, Toast, Card, Modal, InputItem, List } from 'antd-mobile';
+import { DatePicker, Toast, Card, Modal, InputItem, List, Picker } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Pagination, Drawer, Spin, Table, Checkbox,Row, Col } from 'antd';
-import { getReservationActivitieslist, VenueSendMessage, getVenueReservation, getVenueSport, VenueClickCancelPlace,BreakUpConsumptionDetails,ContinuationRecord, getVenueNumberTitleList, VenueRemarksLabel, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave, DeductTheTimesOfClosing } from '../../api';
+import { Pagination, Drawer, Spin, Table, Checkbox, Row, Col } from 'antd';
+import { getReservationActivitieslist, VenueSendMessage, getVenueReservation, setSquareByOffLine, DelVenueOfflineOccupancy, getVenueSport, CalculateVenuePrice, AddVenueOfflineOccupancy, getVenueBookingInformation, VenueClickCancelPlace, BreakUpConsumptionDetails, ContinuationRecord, getVenueNumberTitleList, VenueRemarksLabel, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave, DeductTheTimesOfClosing } from '../../api';
 const prompt = Modal.prompt;
 const alert = Modal.alert;
 
@@ -138,13 +138,28 @@ class orderPh extends React.Component {
     textNuma: '您还没有进行场地设置,请前往设置',
     headTop: '0',
     onSearchInput: '',
-    deducting:false,
+    deducting: false,
     deductingdetails: [],
-    isfinsh:0,
-    week:'',
-    isloop:2,
-    duration:false,
-    Record:[]
+    isfinsh: 0,
+    week: '',
+    isloop: 2,
+    duration: false,
+    Record: [],
+    district: [{ label: '会员卡支付', value: 1 }, { label: '其他支付(现金/微信/支付宝)', value: 2 }],
+    theWay: [2],
+    contacts: '',
+    contactNumber: '',
+    timeLenList: [{ label: '1小时', value: 1 }, { label: '2小时', value: 2 }, { label: '3小时', value: 3 }, { label: '4小时', value: 4 }, { label: '5小时', value: 5 }, { label: '6小时', value: 6 }],
+    timeLen: [],
+    selectVenueId: '',
+    selectable: false,
+    selectableList: [],
+    TotalPrice: 0,
+    repeat: [0],
+    repeatList: [{ label: '不重复', value: 0 }, { label: '重复', value: 1 }],
+    theNews: '',
+    otherObjTime: [],
+    History: false,
   }
 
 
@@ -202,7 +217,7 @@ class orderPh extends React.Component {
       this.hoode(res.data.data)
       for (let i in res.data.other) {
         res.data.other[i].dataIndex = res.data.other[i].venueid
-        res.data.other[i].title = <div style={{fontSize:'0.75rem'}}>{res.data.other[i].venueid}<br />{res.data.other[i].title}</div>
+        res.data.other[i].title = <div style={{ fontSize: '0.75rem' }}>{res.data.other[i].venueid}<br />{res.data.other[i].title}</div>
         res.data.other[i].width = 60
       }
       let ploboj = {
@@ -227,6 +242,7 @@ class orderPh extends React.Component {
   }
 
 
+
   hoode = (resData) => {
     let jood = []
     for (let i in resData) {
@@ -243,13 +259,14 @@ class orderPh extends React.Component {
     }
 
 
+
     this.setState({
       lookBan: jood,
       lppding: false
     })
 
 
-
+   
 
   }
 
@@ -257,15 +274,18 @@ class orderPh extends React.Component {
     if (e.currentTarget.dataset.type === "3") {
       this.getReservationActivitieslist({ publicuid: e.currentTarget.dataset.uuid, page: 1, sport: '', status: '', paied: 0 })
       this.setState({ informVisible: true })
-    } else if (e.currentTarget.dataset.type === '4' && this.state.Cancels === 0) {
-      if (this.state.lood === false) {
-        this.setState({ lood: true })
-        this.VenueRemarksLabel({ uuid: e.currentTarget.dataset.uuid })
-      }
-
+    } else if (e.currentTarget.dataset.type === '4') {
+        this.setState({ informaid: e.currentTarget.dataset.uuid })
+        this.getVenueBookingInformation({ informaid: e.currentTarget.dataset.uuid, type: 1,cur:this.state.qiDate })
     }
   }
 
+  async getVenueBookingInformation(data) {
+    const res = await getVenueBookingInformation(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ otherObj: res.data.data, otherObjTime: res.data.data.time, menu: 1, History: true })
+    }
+  }
 
   async getReservationActivitieslist(data) {
     const res = await getReservationActivitieslist(data, localStorage.getItem('venue_token'))
@@ -282,7 +302,7 @@ class orderPh extends React.Component {
   async getVenueSport(data) {
     const res = await getVenueSport(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({liNum:res.data.data[0].id})
+      this.setState({ liNum: res.data.data[0].id })
       this.getReservationActivitieslist({ page: 1, sport: 0, status: 0, paied: 2, reserve: this.state.headTop })
       if (res.data.data.length > 0) {
         this.setState({ remList: res.data.data })
@@ -305,16 +325,15 @@ class orderPh extends React.Component {
 
 
   componentDidMount() {
-    let week=['周日','周一','周二','周三','周四','周五','周六']
-    this.setState({ qiDate: new Date(), nowDate: new Date().toLocaleDateString().replace(/\//g, "-"),week:week[new Date().getDay()] })
-   
+    let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+    this.setState({ qiDate: new Date(), nowDate: new Date().toLocaleDateString().replace(/\//g, "-"), week: week[new Date().getDay()] })
+
     this.getVenueSport()
     if (this.props.location.query !== undefined) {
       this.setState({
         activityList: false,
         liIndex: this.props.location.query.liIndex,
       })
-      
       this.setState({ liNum: this.props.location.query.id, liIndex: this.props.location.query.liIndex })
       this.getVenueNumberTitleList({ sportid: this.props.location.query.id })
     }
@@ -426,7 +445,7 @@ class orderPh extends React.Component {
     this.setState({
       Drawervisible: false,
       modalTwo: false,
-      duration:false
+      duration: false
     })
   }
   sport = e => {
@@ -486,7 +505,10 @@ class orderPh extends React.Component {
   }
 
   informOnClose = () => {
-    this.setState({ informVisible: false })
+    this.setState({ informVisible: false, info: false, })
+  }
+  informOnCloseTwo = () => {
+    this.setState({ selectable: false })
   }
 
   async VenueClickCancelPlace(data) {
@@ -499,7 +521,7 @@ class orderPh extends React.Component {
       } else if (data.type === 2) {
         Toast.success('该场地该时间段已向找对手线上释放', 1)
       }
-      this.setState({ info: false, lotime: [], arrTimeuid: [],isloop:2 })
+      this.setState({ info: false, lotime: [], arrTimeuid: [], isloop: 2 })
     } else {
       Toast.fail('操作失败', 1)
     }
@@ -594,26 +616,26 @@ class orderPh extends React.Component {
     this.setState({ phoneChang: val })
   }
 
-  CheckboxOnChange=(e)=>{
-    if(e.target.checked===true){
-      this.setState({isloop:1})
-    }else{
-     this.setState({isloop:2})
+  CheckboxOnChange = (e) => {
+    if (e.target.checked === true) {
+      this.setState({ isloop: 1 })
+    } else {
+      this.setState({ isloop: 2 })
     }
-   }
+  }
 
   placeSubmit = () => {
     let { venueidids, dtime, vIpChang, nameChang, phoneChang, qitaChang } = this.state
-   
-      let obj = {
-        placeHui: vIpChang,
-        placeName: nameChang,
-        placePhone: phoneChang,
-        placeQi: qitaChang,
-      }
-      this.VenueClickCancelPlace({ uuid: '', date: this.state.qiDate, venueid: venueidids, other: JSON.stringify(obj), time: dtime, sportid: this.state.liNum, type: 1,isloop:this.state.isloop })
 
-    
+    let obj = {
+      placeHui: vIpChang,
+      placeName: nameChang,
+      placePhone: phoneChang,
+      placeQi: qitaChang,
+    }
+    this.VenueClickCancelPlace({ uuid: '', date: this.state.qiDate, venueid: venueidids, other: JSON.stringify(obj), time: dtime, sportid: this.state.liNum, type: 1, isloop: this.state.isloop })
+
+
 
 
   }
@@ -655,8 +677,8 @@ class orderPh extends React.Component {
   }
 
   dateChange = (date) => {
-    let week=['周日','周一','周二','周三','周四','周五','周六']
-    this.setState({week:week[new Date(date).getDay()]})
+    let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+    this.setState({ week: week[new Date(date).getDay()] })
     this.getVenueNumberTitleList({ sportid: this.state.liNum })
   }
 
@@ -669,13 +691,7 @@ class orderPh extends React.Component {
   }
 
   cofirmZ = () => {
-    this.setState({
-      cofirmZ: 1,
-      chePe: false
-    })
-    setTimeout(() => {
-      this.hoode(this.state.resData)
-    }, 50)
+    this.setState({ info: true })
 
   }
 
@@ -760,14 +776,14 @@ class orderPh extends React.Component {
       duuid.push(arrTimeuid[i].split('#')[0])
     }
 
-    const lp=alert('提示', <div><div style={{fontSize:'0.75rem'}}>将所选线下占用场地时间段释放到线上?</div><div><Checkbox style={{marginTop:'1rem',fontSize:'0.75rem'}} onChange={this.CheckboxOnChange}>将所选场地时间段在每{this.state.week}都释放</Checkbox></div></div>, [
-      { text: '取消', onPress: () =>console.log() },
+    const lp = alert('提示', <div><div style={{ fontSize: '0.75rem' }}>将所选线下占用场地时间段释放到线上?</div><div><Checkbox style={{ marginTop: '1rem', fontSize: '0.75rem' }} onChange={this.CheckboxOnChange}>将所选场地时间段在每{this.state.week}都释放</Checkbox></div></div>, [
+      { text: '取消', onPress: () => console.log() },
       {
         text: '确定',
         onPress: () =>
           new Promise((resolve) => {
             if (venueidids.length !== 0) {
-              this.VenueClickCancelPlace({ date:this.state.qiDate.format("yyyy-MM-dd"), sportid: liNum, type: 2, time: dtime.join(','), venueid: venueidids.join(','), uuid: duuid.join(','), other: '',isloop:this.state.isloop })
+              this.VenueClickCancelPlace({ date: this.state.qiDate.format("yyyy-MM-dd"), sportid: liNum, type: 2, time: dtime.join(','), venueid: venueidids.join(','), uuid: duuid.join(','), other: '', isloop: this.state.isloop })
               lp.close()
             } else {
               Toast.fail('请选择需要释放的场地', 1)
@@ -776,7 +792,7 @@ class orderPh extends React.Component {
       },
     ])
 
-    
+
   }
   CancelsshourTwo = () => {
     this.setState({
@@ -801,7 +817,7 @@ class orderPh extends React.Component {
     this.setState({ info: false })
   }
   headTop = e => {
-    this.setState({ headTop: e.currentTarget.dataset.index, page: 1, sportIdVal: '', statusIdVal: '', start: '', end: '', paied: '2',onSearchInput:'' })
+    this.setState({ headTop: e.currentTarget.dataset.index, page: 1, sportIdVal: '', statusIdVal: '', start: '', end: '', paied: '2', onSearchInput: '' })
     setTimeout(() => {
       this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sportIdVal, status: this.state.statusIdVal, publicuid: '', startdate: this.state.start === '选择开始日期' ? '' : this.state.start, enddate: this.state.end === '选择结束日期' ? '' : this.state.end, paied: this.state.paied, reserve: this.state.headTop })
     }, 500)
@@ -811,7 +827,7 @@ class orderPh extends React.Component {
   }
 
   onSearch = e => {
-    this.setState({page:1})
+    this.setState({ page: 1 })
     this.getReservationActivitieslist({ page: 1, sport: '', status: '', paied: '2', orderId: this.state.onSearchInput, reserve: this.state.headTop })
   }
 
@@ -838,19 +854,19 @@ class orderPh extends React.Component {
   async BreakUpConsumptionDetails(data) {
     const res = await BreakUpConsumptionDetails(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ deductingdetails: res.data.data.details,isfinsh:res.data.data.isfinsh })
-    } 
+      this.setState({ deductingdetails: res.data.data.details, isfinsh: res.data.data.isfinsh })
+    }
   }
 
 
 
-  deducting=e=>{
-    this.setState({deducting:true})
-    this.BreakUpConsumptionDetails({publicuuid:e.currentTarget.dataset.uuid})
+  deducting = e => {
+    this.setState({ deducting: true })
+    this.BreakUpConsumptionDetails({ publicuuid: e.currentTarget.dataset.uuid })
   }
 
-  deductingTwo=()=>{
-    this.setState({deducting:false})
+  deductingTwo = () => {
+    this.setState({ deducting: false })
   }
 
   async ContinuationRecord(data) {
@@ -864,6 +880,145 @@ class orderPh extends React.Component {
   duration = (e) => {
     this.ContinuationRecord({ type: 2, publicuuid: e.currentTarget.dataset.uuid })
 
+  }
+
+  theWay = e => {
+    this.setState({ theWay: e })
+  }
+  contacts = e => {
+    this.setState({ contacts: e })
+  }
+  contactNumber = e => {
+    this.setState({ contactNumber: e })
+  }
+  startTime = e => {
+    this.setState({ date: e, startTime: e.format("yyyy-MM-dd hh:mm") })
+  }
+  timeLen = e => {
+    this.setState({ timeLen: e })
+  }
+
+  async setSquareByOffLine(data) {
+    const res = await setSquareByOffLine(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ selectable: true, selectableList: res.data.data })
+    } else {
+      Toast.fail(res.data.msg)
+    }
+  }
+
+  selectVenue = () => {
+    if (this.state.startTime === '') {
+      Toast.fail('请选择开始时间')
+    } else if (this.state.timeLen === '') {
+      Toast.fail('请选择预约时长')
+    } else {
+      let obj = {
+        siteUUID: localStorage.getItem('siteUid'),
+        sportid: this.state.liNum,
+        startTime: this.state.startTime,
+        playTime: this.state.timeLen[0]
+      }
+      this.setSquareByOffLine(obj)
+    }
+  }
+
+  selectClick = e => {
+    let koo = this.state.selectableList
+    if (koo[e.currentTarget.dataset.ifused].ifUsed === 1) {
+      koo[e.currentTarget.dataset.ifused].ifUsed = 2
+    } else if (koo[e.currentTarget.dataset.ifused].ifUsed === 2) {
+      koo[e.currentTarget.dataset.ifused].ifUsed = 1
+    }
+
+    this.setState({ selectableList: koo })
+  }
+  submitkojhi = () => {
+    let selectableList = this.state.selectableList
+    let venueidid = ''
+    for (let i in selectableList) {
+      if (selectableList[i].ifUsed === 2) {
+        venueidid += ',' + selectableList[i].venueid
+      }
+    }
+    this.CalculateVenuePrice({ starttime: this.state.startTime, playtime: this.state.timeLen[0], sportid: this.state.liNum, venueid: venueidid.slice(1, venueidid.length) })
+    this.setState({ selectable: false, selectVenueId: venueidid.slice(1, venueidid.length) })
+  }
+
+  async CalculateVenuePrice(data) {
+    const res = await CalculateVenuePrice(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ TotalPrice: res.data.data.TotalPrice })
+    }
+  }
+  repeat = e => {
+    this.setState({ repeat: e })
+  }
+  theNews = e => {
+    this.setState({ theNews: e })
+  }
+
+  async AddVenueOfflineOccupancy(data) {
+    const res = await AddVenueOfflineOccupancy(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ info: false })
+      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.datatring })
+    }else{
+      Toast.fail(res.data.msg)
+    }
+  }
+  placeSubmit = () => {
+    let { liNum, theWay, contacts, TotalPrice, selectVenueId, contactNumber, startTime, timeLen, repeat, theNews } = this.state
+
+    let obj = {
+      sportid: liNum,
+      mode: theWay[0],
+      memberuuid: '',
+      cardholderName: '',
+      contacts: contacts,
+      contactNumber: contactNumber,
+      cardNumber: '',
+      balance: '',
+      venueid: selectVenueId,
+      starttime: startTime,
+      playtime: timeLen[0],
+      isloop: repeat[0],
+      consumpMoney: TotalPrice,
+      comment: theNews,
+    }
+    this.AddVenueOfflineOccupancy(obj)
+  }
+
+  historyClose = () => {
+    this.setState({ History: false })
+  }
+
+  async DelVenueOfflineOccupancy(data) {
+    const res = await DelVenueOfflineOccupancy(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.datatring })
+      this.setState({ History: false })
+      Toast.success('取消成功')
+    }
+  }
+
+  calesdeedsfr = () => {
+    alert('提示', '您确定取消本次订单吗?', [
+      { text: '取消', onPress: () => console.log('cancel') },
+      { text: '确认', onPress: () => this.DelVenueOfflineOccupancy({ offid: this.state.informaid, isloop: this.state.otherObj.isloop === 0 ? 3 : 2 }) },
+    ])
+  }
+  dayBefore = () => {
+    let myDate = new Date(this.state.qiDate)
+    myDate.setDate(myDate.getDate() - 1)
+    this.setState({qiDate:myDate})
+    this.getVenueReservation({ sportid: this.state.liNum, date: myDate })
+  }
+  nextDay=()=>{
+    let myDate = new Date(this.state.qiDate)
+    myDate.setDate(myDate.getDate() + 1)
+    this.setState({qiDate:myDate})
+    this.getVenueReservation({ sportid: this.state.liNum, date: myDate })
   }
 
   render() {
@@ -892,25 +1047,25 @@ class orderPh extends React.Component {
                       <Card.Header
                         title={'**' + item.orderId.slice(-10) + item.SportName}
                         thumb={
-                               item.PublicStatus === '匹配中' ? require('../../assets/pipei.png') : ''
+                          item.PublicStatus === '匹配中' ? require('../../assets/pipei.png') : ''
                             || item.PublicStatus === '待评价' ? require('../../assets/pinjia.png') : ''
-                            || item.PublicStatus === '活动中' ? require('../../assets/huodong.png') : ''
-                            || item.PublicStatus === '待填写比赛结果' ? require('../../assets/jieguo.png') : ''
-                            || item.PublicStatus === '待确认结束' ? require('../../assets/jieshu.png') : ''
-                            || item.PublicStatus === '已取消' ? require('../../assets/tuichu.png') : ''
-                            || item.PublicStatus === '已完成' ? require('../../assets/wancheng.png') : ''
-                            || item.PublicStatus === '待出发' ? require('../../assets/dai.png') : ''
-                            || item.PublicStatus === '投诉中' ? require('../../assets/tousua.png') : ''}
+                              || item.PublicStatus === '活动中' ? require('../../assets/huodong.png') : ''
+                                || item.PublicStatus === '待填写比赛结果' ? require('../../assets/jieguo.png') : ''
+                                  || item.PublicStatus === '待确认结束' ? require('../../assets/jieshu.png') : ''
+                                    || item.PublicStatus === '已取消' ? require('../../assets/tuichu.png') : ''
+                                      || item.PublicStatus === '已完成' ? require('../../assets/wancheng.png') : ''
+                                        || item.PublicStatus === '待出发' ? require('../../assets/dai.png') : ''
+                                          || item.PublicStatus === '投诉中' ? require('../../assets/tousua.png') : ''}
                         extra={<div className="cardHeader">{item.StartTime === 0 ? item.FinishedTime.slice(0, 10) : item.StartTime.slice(0, 10)}<br />{item.StartTime === 0 ? '' : item.StartTime.slice(10, item.StartTime.length) + ' -'}{item.FinishedTime.slice(10, item.FinishedTime.length)}</div>}
                       />
                       <Card.Body className="cardBody">
                         <div>
                           <span className="footerOne" >金额:￥{item.SiteMoney}</span>
-                          <span style={{float:'left' }}>支付状态:{item.SiteMoneyStatus}</span>
-                          <span style={item.reserve !== 1 ? { display: 'none' } : {marginLeft:'5%',float:'left'}}>续时:<span style={{color:'#4A90E2'}} onClick={this.duration} data-uuid={item.uuid}>查看记录</span></span>
-                          <span style={item.reserve === 1 ? { display: 'none' } : { display: 'block', width: '90px', float: 'left',marginLeft:'6%' }}>应到人数:{item.Shouldarrive}人</span>
+                          <span style={{ float: 'left' }}>支付状态:{item.SiteMoneyStatus}</span>
+                          <span style={item.reserve !== 1 ? { display: 'none' } : { marginLeft: '5%', float: 'left' }}>续时:<span style={{ color: '#4A90E2' }} onClick={this.duration} data-uuid={item.uuid}>查看记录</span></span>
+                          <span style={item.reserve === 1 ? { display: 'none' } : { display: 'block', width: '90px', float: 'left', marginLeft: '6%' }}>应到人数:{item.Shouldarrive}人</span>
                         </div>
-                       
+
                         <div style={item.breakup.length === 0 && item.reserve === 1 ? { width: '25%', marginLeft: '0.5rem', float: 'left' } : { display: 'none' }}>场地编号
                       {
                             item.venueid_details.map((itemKo, i) => (
@@ -928,7 +1083,7 @@ class orderPh extends React.Component {
 
 
                         <div style={item.breakup.length === 0 ? { display: 'none' } : {}}>
-                          <div style={{ width:'25%', marginLeft: '0.5rem', float: 'left' }}>
+                          <div style={{ width: '25%', marginLeft: '0.5rem', float: 'left' }}>
                             <div>场地编号</div>
                             {
                               item.breakup.map((itemTwo, i) => (
@@ -949,18 +1104,18 @@ class orderPh extends React.Component {
                             <div>剩余次数</div>
                             {
                               item.breakup.map((itemTwo, i) => (
-                                <div key={i}>{itemTwo.frequency}<button style={itemTwo.frequency===0||item.PublicStatus ==='已完成' ?{display:'none'}:{ marginLeft: "0.5rem" }} onClick={this.confirm} data-uuid={itemTwo.uuid}>－</button></div>
+                                <div key={i}>{itemTwo.frequency}<button style={itemTwo.frequency === 0 || item.PublicStatus === '已完成' ? { display: 'none' } : { marginLeft: "0.5rem" }} onClick={this.confirm} data-uuid={itemTwo.uuid}>－</button></div>
                               ))
                             }
                           </div>
-                        
-                          <div style={{color:'#4A90E2',marginTop:'25px'}} data-uuid={item.uuid} onClick={this.deducting}>扣除<br/>记录</div>
+
+                          <div style={{ color: '#4A90E2', marginTop: '25px' }} data-uuid={item.uuid} onClick={this.deducting}>扣除<br />记录</div>
                         </div>
                         <div>
-                          <span className="footerOne" style={this.state.headTop === '0' ? {} : { display: 'none' }}>时长:{item.breakup.length===0?item.PlayTime+'小时':'无'}</span>
-                          <span style={item.reserve === 1 ? { display: 'none' } : {display:'block',width:'90px',float:'left'}}>报名人数:{item.TrueTo}人</span>
-                          <span style={item.reserve === 1 ? { display: 'none' } : {marginLeft:'5%',float:'left'}}>续时:<span style={{color:'#4A90E2'}} onClick={this.duration} data-uuid={item.uuid}>查看记录</span></span>
-                          <i onClick={this.showModal} data-venueid={item.venueid} data-uid={item.uuid} className={item.breakup.length === 0 ?item.PublicStatus === '匹配中' ? 'sendingTwo' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'sendingTwo' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'sendingTwo' : 'circumstanceT':'circumstanceT'} >
+                          <span className="footerOne" style={this.state.headTop === '0' ? {} : { display: 'none' }}>时长:{item.breakup.length === 0 ? item.PlayTime + '小时' : '无'}</span>
+                          <span style={item.reserve === 1 ? { display: 'none' } : { display: 'block', width: '90px', float: 'left' }}>报名人数:{item.TrueTo}人</span>
+                          <span style={item.reserve === 1 ? { display: 'none' } : { marginLeft: '5%', float: 'left' }}>续时:<span style={{ color: '#4A90E2' }} onClick={this.duration} data-uuid={item.uuid}>查看记录</span></span>
+                          <i onClick={this.showModal} data-venueid={item.venueid} data-uid={item.uuid} className={item.breakup.length === 0 ? item.PublicStatus === '匹配中' ? 'sendingTwo' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'sendingTwo' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'sendingTwo' : 'circumstanceT' : 'circumstanceT'} >
                             <svg t="1577274065679" className="icon" viewBox="0 0 1235 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15123" width="30" height="30"><path d="M899.65056 979.48672c-120.35072 0-218.2656-97.95584-218.2656-218.35776s97.91488-218.35776 218.2656-218.35776 218.2656 97.95584 218.2656 218.35776S1020.0028 979.48672 899.65056 979.48672M899.65056 498.25792c-144.88576 0-262.76352 117.92384-262.76352 262.87104S754.75968 1024 899.65056 1024s262.76352-117.92384 262.76352-262.87104S1045.53984 498.25792 899.65056 498.25792M586.60864 862.70976 130.58048 862.70976c-17.21344 0-31.21152-14.53568-31.21152-32.41472L99.36896 112.66048c0-17.86368 14.0032-32.39936 31.21152-32.39936l926.38208 0c17.21344 0 31.2064 14.53568 31.2064 32.39936l0 377.84576c0 12.29824 9.6 22.25664 21.43744 22.25664 11.83232 0 21.43744-9.9584 21.43744-22.25664L1131.04384 112.66048c0-42.40896-33.23392-76.91264-74.08128-76.91264L130.58048 35.74784c-40.84736 0-74.0864 34.50368-74.0864 76.91264l0 717.63456c0 42.41408 33.23904 76.928 74.0864 76.928l456.02816 0c11.83744 0 21.43744-9.96352 21.43744-22.25664S598.44608 862.70976 586.60864 862.70976M1042.52928 95.83616l-448.768 343.95648c-0.87552 0.24064-2.25792 0.24576-3.10272 0.03072l-445.5936-343.936c-8.63232-8.74496-22.72256-8.832-31.4624-0.18944-8.74496 8.6272-8.82688 22.72768-0.19456 31.47264l447.42144 345.7792c0.7168 0.73216 1.48992 1.41312 2.30912 2.03264 8.28416 6.33856 18.6624 9.51296 29.05088 9.51296 10.37824 0 20.76672-3.1744 29.05088-9.50784 0.79872-0.60928 1.55136-1.26976 2.25792-1.98144l450.5856-345.7792c8.66304-8.71936 8.6272-22.8096-0.08704-31.47776C1065.27232 87.08608 1051.17696 87.11168 1042.52928 95.83616M779.74016 783.3856l186.10176 0-44.78976 44.8c-8.68864 8.69376-8.68864 22.784 0 31.47776 8.68352 8.69376 22.76864 8.69376 31.4624 0.00512l82.7648-82.79552c0.16384-0.16384 0.27136-0.36352 0.43008-0.52736 0.83456-0.88576 1.63328-1.81248 2.31424-2.82112 0.26624-0.39936 0.44544-0.83968 0.68096-1.2544 0.49152-0.83968 0.9984-1.67424 1.37216-2.57536 0.20992-0.50176 0.31232-1.03424 0.48128-1.55136 0.28672-0.86528 0.60928-1.70496 0.7936-2.60608 0.29184-1.43872 0.44544-2.91328 0.44544-4.40832l0 0 0 0c0-0.05632-0.02048-0.11264-0.02048-0.17408-0.01024-1.42848-0.14848-2.8416-0.42496-4.224-0.20992-1.024-0.55808-1.99168-0.896-2.95936-0.13824-0.39424-0.21504-0.80896-0.37376-1.19296-0.44544-1.07008-1.024-2.05824-1.62304-3.03104-0.1536-0.26112-0.26112-0.54272-0.42496-0.78848-0.81408-1.21344-1.7408-2.3552-2.76992-3.38432l-82.75456-98.23232c-4.34688-4.34176-10.0352-6.51776-15.73376-6.51776-5.68832 0-11.392 2.176-15.73376 6.51776-8.68864 8.69376-8.68864 38.23616 0 46.92992l44.78976 44.8-186.10176 0c-12.288 0-22.2464 9.96352-22.2464 22.25664S767.45216 783.3856 779.74016 783.3856" p-id="15124" fill='#888'></path></svg>
                           </i></div>
                       </Card.Body>
@@ -983,12 +1138,12 @@ class orderPh extends React.Component {
           transparent
           onClose={this.deductingTwo}
           title="扣除记录"
-          style={{width:'90%',minHeight:'10rem'}}
+          style={{ width: '90%', minHeight: '10rem' }}
         >
-          <div style={this.state.isfinsh===0?{display:'none'}:{fontSize:'14px',fontWeight:'bold',color:'#333'}}>所有散场次数已消费完</div>
+          <div style={this.state.isfinsh === 0 ? { display: 'none' } : { fontSize: '14px', fontWeight: 'bold', color: '#333' }}>所有散场次数已消费完</div>
           {
-            this.state.deductingdetails.map((item,i)=>(
-            <div key={i} style={{fontSize:'12px',clear:'both',lineHeight:'25px'}}><span style={{float:'left',width:'60%',textAlign:'left'}}>{item.comment}</span><span style={{float:'right'}}>{item.time}</span></div>
+            this.state.deductingdetails.map((item, i) => (
+              <div key={i} style={{ fontSize: '12px', clear: 'both', lineHeight: '25px' }}><span style={{ float: 'left', width: '60%', textAlign: 'left' }}>{item.comment}</span><span style={{ float: 'right' }}>{item.time}</span></div>
             ))
           }
         </Modal>
@@ -996,24 +1151,23 @@ class orderPh extends React.Component {
 
 
         <div className={this.state.activityList === false ? 'bookingKanban' : 'hidden'}>
-          <DatePicker
-            mode="date"
-            extra='选择日期'
-            title='选择日期'
-            value={this.state.qiDate}
-            onChange={qiDate => this.setState({ qiDate })}
-            onOk={this.dateChange}
-
-          >
-            <List.Item className="dateT" style={{ fontSize: '14px' }}></List.Item>
-          </DatePicker>
+          <div style={{ position: 'relative' }}>
+            <span className="topDay" onClick={this.dayBefore}>前一天</span>
+            <DatePicker
+              mode="date"
+              extra='选择日期'
+              title='选择日期'
+              value={this.state.qiDate}
+              onChange={qiDate => this.setState({ qiDate })}
+              onOk={this.dateChange}
+            >
+              <List.Item className="dateT" style={{ fontSize: '14px' }}></List.Item>
+            </DatePicker>
+            <span className="botDay" onClick={this.nextDay}>后一天</span>
+          </div>
           <div className="modTitle">
             <span className="blue"></span><span>空闲</span><span className="white"></span><span>不可选</span><span className="yellow"></span><span>线上占用</span><span className="red"></span><span>线下占用</span>
-            <br />
-            <span className="btnSi" style={this.state.cofirmZ === 1 || this.state.otherType.length === 0 || this.state.Cancels === 1 ? { display: 'none' } : { display: 'block' }} onClick={this.cofirmZ}><span>设置占用</span></span>
-            <span style={this.state.cofirmZ === 1 ? { display: 'block' } : { display: 'none' }}><div className="cofirmZText" onClick={this.shour}>确定</div><div style={{ marginLeft: '2px' }} className="cofirmZText" onClick={this.shourTwo}>取消</div></span>
-            <span className="btnSi" style={this.state.Cancels === 1 || this.state.otherType.length === 0 || this.state.calesRed === 0 || this.state.cofirmZ === 1 ? { display: 'none' } : { display: 'block' }} onClick={this.Cancels}>释放占用</span>
-            <span style={this.state.Cancels === 1 ? { display: 'block' } : { display: 'none' }}><div className="cofirmZText" onClick={this.Cancelsshour}>确定</div><div style={{ marginLeft: 2 }} className="cofirmZText" onClick={this.CancelsshourTwo}>取消</div></span>
+            <span className="btnSi" onClick={this.cofirmZ}><span>预订场地</span></span>
           </div>
 
           <div style={{ width: '100%', overflowX: 'auto' }}>
@@ -1033,35 +1187,35 @@ class orderPh extends React.Component {
 
 
         <Drawer
-        title="续时记录"
-        placement="bottom"
-        height='70%'
-        onClose={this.onClose}
-        className="momo"
-        visible={this.state.duration}
-      >
-        <div style={this.state.Record.length!==0?{}:{display:'none'}}>
-              <Row>
-                <Col span={8}>开始时间</Col>
-                <Col span={5}>时长</Col>
-                <Col span={7}>操作时间</Col>
-                <Col span={4}>价格</Col>
-              </Row>
-              {
-                this.state.Record.map((item, i) => (
-                  <Row key={i} style={{fontSize:'0.75rem'}}>
-                    <Col span={8}>{item.datetime}</Col>
-                    <Col span={5}>{item.playtime}</Col>
-                    <Col span={7}>{item.time}</Col>
-                    <Col span={4}>￥{item.mone}</Col>
-                  </Row>
-                ))
-              }
-            </div>
-            <div style={this.state.Record.length===0?{textAlign:'center'}:{display:'none'}}>暂无续时~</div>
+          title="续时记录"
+          placement="bottom"
+          height='70%'
+          onClose={this.onClose}
+          className="momo"
+          visible={this.state.duration}
+        >
+          <div style={this.state.Record.length !== 0 ? {} : { display: 'none' }}>
+            <Row>
+              <Col span={8}>开始时间</Col>
+              <Col span={5}>时长</Col>
+              <Col span={7}>操作时间</Col>
+              <Col span={4}>价格</Col>
+            </Row>
+            {
+              this.state.Record.map((item, i) => (
+                <Row key={i} style={{ fontSize: '0.75rem' }}>
+                  <Col span={8}>{item.datetime}</Col>
+                  <Col span={5}>{item.playtime}</Col>
+                  <Col span={7}>{item.time}</Col>
+                  <Col span={4}>￥{item.mone}</Col>
+                </Row>
+              ))
+            }
+          </div>
+          <div style={this.state.Record.length === 0 ? { textAlign: 'center' } : { display: 'none' }}>暂无续时~</div>
 
-       
-      </Drawer>
+
+        </Drawer>
 
 
 
@@ -1149,20 +1303,163 @@ class orderPh extends React.Component {
 
 
 
-        <Modal
+
+        <Drawer
+          title="预订场馆信息"
+          placement="right"
+          width='100%'
+          className="sdfgkdg"
+          onClose={this.informOnClose}
           visible={this.state.info}
-          transparent
-          onClose={this.onCloseKO}
-          title="请输入线下预订人的相关信息"
-          footer={[{ text: '提交', onPress: () => { this.placeSubmit(); } }]}
-          wrapProps={{ onTouchStart: this.onWrapTouchStart }}
         >
-          <InputItem className="inputModel" style={{ fontSize: '12px' }} placeholder="(选填)" value={this.state.nameChang} maxLength={20} onChange={this.nameChang} ><span style={{ fontSize: '12px' }}>姓名:</span></InputItem>
-          <InputItem className="inputModel" style={{ fontSize: '12px' }} placeholder="(选填)" value={this.state.phoneChang} maxLength={11} onChange={this.phoneChang}  ><span style={{ fontSize: '12px' }}>手机号:</span></InputItem>
-          <InputItem className="inputModel" style={{ fontSize: '12px' }} placeholder="(选填)" value={this.state.vIpChang} maxLength={20} onChange={this.vIpChang}  ><span style={{ fontSize: '12px' }}>会员卡:</span></InputItem>
-          <InputItem className="inputModel" style={{ fontSize: '12px' }} placeholder="(选填)" value={this.state.qitaChang} maxLength={50} onChange={this.qitaChang}  ><span style={{ fontSize: '12px' }}>其他:</span></InputItem>
-          <Checkbox style={{marginTop:'1rem'}} onChange={this.CheckboxOnChange}>将所选场地时间段在每{this.state.week}都预留给该线下用户</Checkbox>
-        </Modal>
+          <div className="listKoj">
+            <Picker data={this.state.district} cols={1} value={this.state.theWay} onChange={this.theWay} className="forss">
+              <List.Item arrow="horizontal">支付方式</List.Item>
+            </Picker>
+          </div>
+          <div className="listKoj">
+            <InputItem
+              placeholder="请填写"
+              className="rightInput"
+              onBlur={this.contacts}
+            ><div className="leftTxt">联系人</div></InputItem>
+          </div>
+
+          <div className="listKoj">
+            <InputItem
+              placeholder="请填写"
+              className="rightInput"
+              type='number'
+              onBlur={this.contactNumber}
+            ><div className="leftTxt">手机号</div></InputItem>
+          </div>
+
+
+          <div className="listKoj">
+            <DatePicker
+              value={this.state.date}
+              onOk={this.startTime}
+              minuteStep={30}
+            >
+              <List.Item arrow="horizontal">开始时间</List.Item>
+            </DatePicker>
+          </div>
+
+          <div className="listKoj">
+            <Picker data={this.state.timeLenList} cols={1} value={this.state.timeLen} onChange={this.timeLen} className="forss">
+              <List.Item arrow="horizontal">预约时长</List.Item>
+            </Picker>
+          </div>
+
+          <div className="listKoj" onClick={this.selectVenue}>
+            <InputItem
+              placeholder="点击选择场地号"
+              className="rightInput"
+              disabled={true}
+              value={this.state.selectVenueId}
+            ><div className="leftTxt">场地号</div></InputItem>
+          </div>
+
+          <div className="listKoj">
+            <InputItem
+              placeholder="请填写"
+              className="rightInput"
+              value={'￥' + this.state.TotalPrice}
+            ><div className="leftTxt">预计消费</div></InputItem>
+          </div>
+
+          <div className="listKoj">
+            <Picker data={this.state.repeatList} cols={1} value={this.state.repeat} onChange={this.repeat} className="forss">
+              <List.Item arrow="horizontal">每周重复</List.Item>
+            </Picker>
+          </div>
+
+          <div className="listKoj">
+            <InputItem
+              placeholder="请填写"
+              className="rightInput"
+              onBlur={this.theNews}
+            ><div className="leftTxt">其它</div></InputItem>
+          </div>
+
+
+          <div className="sdfgdfhf" onClick={this.placeSubmit}>提交</div>
+
+
+
+        </Drawer>
+
+
+        <Drawer
+          title="可选择场地编号"
+          placement="bottom"
+          width='60%'
+          className="sdmjfkdsj"
+          onClose={this.informOnCloseTwo}
+          visible={this.state.selectable}
+        >
+
+          <div style={{ overflow: 'hidden' }}>
+            {
+              this.state.selectableList.map((item, i) => (
+                <div className="lohkhjgj" key={i} data-ifused={i} onClick={this.selectClick} style={item.ifUsed === 2 ? { background: '#F5A623' } : item.ifUsed === 0 ? { background: 'red' } : {}}>{item.venueid}</div>
+              ))
+            }
+          </div>
+          <div className="dfgk" onClick={this.submitkojhi}>确认</div>
+
+        </Drawer>
+
+
+
+        <Drawer
+          title='预订信息'
+          placement="bottom"
+          height='100%'
+          className="kojk"
+          onClose={this.historyClose}
+          visible={this.state.History}
+
+        >
+
+
+          <div style={{overflowY:'auto'}}>
+          <div className="plaTop">
+            <p>预订人信息</p>
+            <div><span>支付方式:</span><span>{this.state.otherObj.mode}</span></div>
+            <div style={this.state.otherObj.cardholderName === '' ? { display: 'none' } : {}}><span>卡主名称:</span><span>{this.state.otherObj.cardholderName}</span></div>
+            <div><span>联系人:</span><span>{this.state.otherObj.contacts}</span></div>
+            <div><span>手机号:</span><span>{this.state.otherObj.contactNumber}</span></div>
+            <div style={this.state.otherObj.cardNumber === '' ? { display: 'none' } : {}}><span>会员卡号:</span><span>{this.state.otherObj.cardNumber}</span></div>
+            <div style={this.state.otherObj.balance === '' ? { display: 'none' } : {}}><span>余额:</span><span>{this.state.otherObj.balance}</span></div>
+            <div><span>其他:</span><span>{this.state.otherObj.comment === '' ? '无' : this.state.otherObj.comment}</span></div>
+          </div>
+          <div style={{ height: '12px', background: '#f5f5f5', marginTop: "10px" }}></div>
+
+          <div className="plaTop plaTopTwo">
+            <p>场地信息</p>
+            <div style={{ fontWeight: 'bold', fontSize: '17px' }}><span>预订时间:</span><span>{this.state.otherObj.bookingTime}</span></div>
+            {
+              this.state.otherObjTime.map((item, i) => (
+                <div key={i}><span>{item.date}  {item.option}</span><span>{item.venueid}</span></div>
+              ))
+            }
+            <div style={{ color: "#D0021B" }}>预计消费：￥{this.state.otherObj.consumpMoney}</div>
+          </div>
+          <div className="footer"><span style={{ color: '#F5A623', fontSize: '17px' }}>订单状态：{this.state.otherObj.status}</span>
+
+            <div className="calce" onClick={this.calesdeedsfr}>取消订单</div>
+
+          </div>
+
+          </div>
+
+
+
+        </Drawer>
+
+
+
 
 
 

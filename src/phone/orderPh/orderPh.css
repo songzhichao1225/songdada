@@ -159,11 +159,14 @@
 }
 .orderPh .bookingKanban .modTitle .btnSi{
     display: block;
-    background-color: rgba(245,166,35,1);
+    background-color: #4A90E2;
     color: #fff;
     padding: 0 0.1rem;
     border-radius: 2px;
     margin-top: 0.6rem;
+    float: right;
+    margin-top: -0.1rem;
+    margin-right: 0.5rem;
 }
 .orderPh .bookingKanban .modTitle>span{
     display: block;
@@ -276,13 +279,13 @@
     padding-bottom: 3rem;
 }
 .orderPh .dateT{
-   position: absolute;
-   top: 0rem;
-   right: 0rem;
-   width: 5rem;
+   width: 100%;
    min-height: 38px;
    padding-left: 0;
+   background-color: #F5A623;
+   padding-bottom: 0.3rem;
 }
+
 
 .orderPh .circumstanceT{
     display: none;
@@ -459,7 +462,35 @@ html:not([data-scale]) .am-card-body::before{
     flex-basis: 100%;
     font-size: 12px;
     color:#000;
-    text-align: left;
+    text-align: center;
+    color: #fff;
+    border-bottom: 0.06rem solid #fff;
+    margin: 0 auto;
+}
+
+.dateT  .am-list-content{
+    width: 100%;
+}
+.topDay{
+    position: absolute;
+    color: #fff;
+    margin-left: 10%;
+    padding: 0.1rem 0.3rem;
+    border: 0.06rem solid #fff;
+    border-radius: 0.3rem;
+    z-index: 1000;
+    top: 0.8rem;
+}
+ .botDay{
+    position: absolute;
+    color: #fff;
+    margin-right: 10%;
+    padding: 0.1rem 0.3rem;
+    border: 0.06rem solid #fff;
+    border-radius: 0.3rem;
+    z-index: 1000;
+    right: 0;
+    top: 0.8rem;
 }
 
 .orderPh .ant-table-thead > tr > th{
@@ -542,3 +573,123 @@ html:not([data-scale]) .am-card-body::before{
 .momo .ant-drawer-body{
     padding: 7px;
 }
+.sdfgkdg .ant-drawer-body{
+    padding: 0;
+}
+
+.listKoj{
+    border-bottom: 1px solid #f5f5f5;
+}
+.leftTxt{
+    font-size: 0.88rem;
+    padding-left: 15px;
+    width: 100%;
+}
+.listKoj .am-list-item .am-input-control input{
+    font-size: 0.88rem;
+    text-align: right;
+    padding-right: 1.5rem;
+}
+
+.lohkhjgj{
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    line-height: 25px;
+    color: #fff;
+    background-color: #ccc;
+    float: left;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.dfgk{
+    width: 60px;
+    height: 25px;
+    color: #fff;
+    background-color: #F5A623;
+    float: right;
+    margin-top: 50px;
+    text-align: center;
+    line-height: 25px;
+    border-radius: 2px;
+    cursor: pointer;
+}
+.sdfgdfhf{
+    width: 80%;
+    height: 2.69rem;
+    background: #D85D27;
+    border-radius: 1.34rem;
+    margin:  1rem auto 0;
+    text-align: center;
+    line-height: 2.69rem;
+    color: #fff;
+    font-size: 1.06rem;
+}
+
+.sdfgkdg .ant-drawer-title{
+    text-align: center;
+}
+
+
+
+.kojk .ant-drawer-body{
+    padding: 0;
+}
+.kojk .ant-drawer-header{
+    padding: 16px 8px;
+   
+}
+.kojk .ant-drawer-title{
+    font-size: 18px;
+    font-weight: bold;
+}
+.kojk .plaTop{
+    padding: 0 8px;
+    line-height: 30px;
+    font-size: 15px;
+}
+.kojk .plaTop>p{
+    font-size: 17px;
+    font-weight: bold;
+    padding-top: 15px;
+}
+.kojk .plaTop>div{
+    overflow: hidden;
+}
+
+.kojk .plaTop>div>span:first-child{
+    float: left;
+    width:140px ;
+}
+.kojk .plaTop>div>span:last-child{
+    float: left;
+}
+.kojk .plaTopTwo>p{
+    border-bottom: 1px solid #f5f5f5;
+    padding-bottom: 15px;
+}
+.kojk .plaTopTwo{
+    border-bottom: 1px solid #f5f5f5;
+    padding-bottom: 10px;
+}
+.kojk .footer{
+    padding: 0 8px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+.kojk .footer>span{
+    float: left;
+}
+.kojk .footer .calce{
+  width: 63px;
+  height: 29px;
+  background: #F5A623;
+  border-radius: 3px;
+  color: #fff;
+  text-align: center;
+  line-height: 29px;
+  float: right;
+  cursor: pointer;
+
+}
+

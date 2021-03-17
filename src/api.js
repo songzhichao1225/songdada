@@ -268,7 +268,11 @@ export function getVenueHelpCenter(data,headers){    // 场馆帮助中心
 
 
 
-export function VenueRemarksLabel(data,headers){    // 场馆端取消场地后的线下备注标签内容
+export function getVenueBookingInformation(data,headers){    // 线下占用~查看预定信息
+    return axios.post('/api/getVenueBookingInformation',data, {headers: {'token': headers}})
+}
+
+export function VenueRemarksLabel(data,headers){    // 线下占用~查看预定信息
     return axios.post('/api/VenueRemarksLabel',data, {headers: {'token': headers}})
 }
 
@@ -620,6 +624,19 @@ export function WetchSelectSiteName(data){    //场馆端~通过手机号查看�
 
 export function VenueBinding(data){    //场馆端~微信公众号中绑定场馆
     return axios.post('/api/VenueBinding',data)
+}
+
+export function CalculateVenuePrice(data,headers){    //线下占用~计算场地价格
+    return axios.post('/api/CalculateVenuePrice',data,{headers: {'token': headers}})
+}
+
+export function AddVenueOfflineOccupancy(data,headers){    //线下占用~添加线下占用
+    return axios.post('/api/AddVenueOfflineOccupancy',data,{headers: {'token': headers}})
+}
+
+
+export function DelVenueOfflineOccupancy(data,headers){    //线下占用~取消订单
+    return axios.post('/api/DelVenueOfflineOccupancy',data,{headers: {'token': headers}})
 }
 
 

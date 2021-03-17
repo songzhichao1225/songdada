@@ -556,7 +556,6 @@ class information extends React.Component {
       setTimeout(() => {
         if (this.state.start === '开始日期') {
           this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, orderId: this.state.orderId, status: 10, startdate: '', enddate: '', paied: this.state.paied, reserve: this.state.headTop })
-
         } else {
           this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, orderId: this.state.orderId, status: 10, startdate: this.state.start, enddate: this.state.end, paied: this.state.paied, reserve: this.state.headTop })
         }
@@ -673,7 +672,7 @@ class information extends React.Component {
                       </div>
                     ))
                   } <div onClick={this.deducting} data-uuid={item.uuid} data-sportName={item.SportName} style={item.breakup.length === 0 ? { display: 'none' } : { float: 'left', color: '#4A90E2' }}>扣除<br />记录</div><div style={item.breakup.length === 0 ? {} : { display: 'none' }}>非散场</div></Col>
-                <Col xs={{ span: 2 }}  style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}><span>{item.PublicStatus}<span onClick={this.Complaints} data-id={item.uuid} style={item.iscomplain === 1 ? { color: '#F6410C', fontSize: '12px' } : { display: 'none' }}>(有投诉)</span></span></Col>
+                <Col xs={{ span: 2 }}  style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}><span>{item.PublicStatus}<span onClick={this.Complaints} data-id={item.uuid} style={item.iscomplain === 1 ? { color: '#F6410C', fontSize: '12px',cursor:'pointer' } : { display: 'none' }}>(有投诉)</span></span></Col>
                 <Col xs={{ span: 2 }}><span>￥{item.SiteMoney}</span></Col>
                 <Col xs={{ span: 2 }}><span>{item.SiteMoneyStatus}</span></Col>
                 <Col xs={{ span: 2 }}>

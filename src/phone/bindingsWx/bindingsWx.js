@@ -82,7 +82,7 @@ class bindingsWx extends React.Component {
         let obj = {}
         obj.label = res.data.data[i].name
         obj.value = res.data.data[i].siteuuid
-        obj.checked=false
+        obj.checked = false
         arr.push(obj)
       }
       this.setState({ venueList: arr, modal: true })
@@ -104,10 +104,10 @@ class bindingsWx extends React.Component {
 
   venueId = (e) => {
     let id = e.currentTarget.dataset.index
-    if(this.state.venueList[id].checked===true){
-      this.state.venueList[id].checked=false
-    }else{
-      this.state.venueList[id].checked=true
+    if (this.state.venueList[id].checked === true) {
+      this.state.venueList[id].checked = false
+    } else {
+      this.state.venueList[id].checked = true
     }
   }
 
@@ -128,13 +128,13 @@ class bindingsWx extends React.Component {
   }
 
   subKtwo = () => {
-    let arr=''
-    for(let i in this.state.venueList){
-       if(this.state.venueList[i].checked===true){
-        arr+=this.state.venueList[i].value+','
-       } 
+    let arr = ''
+    for (let i in this.state.venueList) {
+      if (this.state.venueList[i].checked === true) {
+        arr += this.state.venueList[i].value + ','
+      }
     }
-    this.VenueBinding({ phone: this.state.phone, openid: this.state.para, siteuuid: arr.slice(0,arr.length-1) })
+    this.VenueBinding({ phone: this.state.phone, openid: this.state.para, siteuuid: arr.slice(0, arr.length - 1) })
   }
 
   reture = () => {
@@ -165,7 +165,7 @@ class bindingsWx extends React.Component {
               <input type="number" className="faCode" onChange={this.code} placeholder="请输入验证码" />
             </div>
             <div className="soSelect"></div>
-            <div className="submit" onClick={this.submitSub} >绑定场馆</div>
+            <div className="submit" onClick={this.submitSub}>绑定场馆</div>
             <div className="text"><span >温馨提示:</span>绑定手机号后，您在该公众号即可收到“找对手”平台用户预订该场馆时的预订通知。
         </div>
           </div>

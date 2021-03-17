@@ -547,7 +547,7 @@ class home extends React.Component {
                 <span>场馆信息</span>
               </Link>
             </Menu.Item>
-            {/* <Menu.Item key="9" onClick={this.VipAgement}>
+            <Menu.Item key="9" onClick={this.VipAgement}>
               <Link to="/home/myWallet">
                 <i>
                   <svg width="1.3em" height="1.3em" style={{ marginRight: '0.6em' }} viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" >
@@ -557,7 +557,7 @@ class home extends React.Component {
                 </i>
                 <span>会员管理</span>
               </Link>
-            </Menu.Item> */}
+            </Menu.Item>
 
             <Menu.Item key="6" onClick={this.sitew}>
               <Link to="/home/systemSettings">

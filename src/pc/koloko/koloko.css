@@ -452,7 +452,7 @@
     top: 8px;
     right: 1px;
 }
-.ant-modal-footer{
+.mode .ant-modal-footer{
     display: none;
 }
 .moBtn{

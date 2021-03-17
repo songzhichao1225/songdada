@@ -29,7 +29,6 @@ class minePh extends React.Component {
 
   async gerVenueName(data) {
     const res = await gerVenueName(data, localStorage.getItem('venue_token'))
-    console.log(res.data.data.siteuid)
     localStorage.setItem('name', res.data.data.name)
     localStorage.setItem('avatar', imgUrlTwo + res.data.data.siteimg)
     localStorage.setItem('lyv', res.data.data.rate)
@@ -232,7 +231,7 @@ class minePh extends React.Component {
             </svg>
             <span>场馆收入</span><span className="redQuan" style={this.state.ishaverecharge === 1 || this.state.ishaverecharge === 1 ? { marginLeft: '0.3rem' } : { display: 'none' }}></span><img src={require("../../assets/right.png")} alt="arrow" /></li>
 
-{/* 
+
           <li onClick={this.management}>
             <svg width="16px" height="16px" viewBox="0 0 16 16" style={{ float: 'left', marginTop: '1rem' }} version="1.1" xmlns="http://www.w3.org/2000/svg">
               <title>icon_合作场馆_我的_会员管理</title>
@@ -250,7 +249,7 @@ class minePh extends React.Component {
                 </g>
               </g>
             </svg>
-            <span>会员管理</span><img src={require("../../assets/right.png")} alt="arrow" /></li> */}
+            <span>会员管理</span><img src={require("../../assets/right.png")} alt="arrow" /></li>
 
 
           <li onClick={this.Agreement}>
