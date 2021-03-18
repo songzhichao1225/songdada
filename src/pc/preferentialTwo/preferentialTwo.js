@@ -198,15 +198,18 @@ class appointmentList extends React.Component {
         arrTime.push(res.data.data[i].a)
       }
 
-      let ko = ''
-      if (new Date().getMinutes() >= 30) {
-        ko = new Date().getHours() + ':30'
-      } else {
-        ko = new Date().getHours() + ':00'
+      let kojh=[]
+      for (let i in res.data.data) {
+        arrTime.push(res.data.data[i].a)
+        for (let j in res.data.data[i].c) {
+          if(res.data.data[i].c[j].type===1){
+            kojh.push(res.data.data[i].a)
+          }
+        }
       }
       setTimeout(() => {
         if (document.querySelector('.ant-table-body') !== null) {
-          document.querySelector('.ant-table-body').scrollTo(0, arrTime.indexOf(ko) * 45)
+          document.querySelector('.ant-table-body').scrollTo(0, arrTime.indexOf(kojh[0]) * 45)
         }
       }, 2000)
 
@@ -372,17 +375,17 @@ class appointmentList extends React.Component {
   }
 
   placeSubmit = () => {
-    let { liNum, theWay, contacts,TotalPrice, selectVenueId, contactNumber, startTime, timeLen, repeat, theNews } = this.state
+    let { liNum, theWay, contacts,TotalPrice,vipDetails, selectVenueId, contactNumber, startTime, timeLen, repeat, theNews } = this.state
 
     let obj = {
       sportid: liNum,
       mode: theWay,
-      memberuuid: '',
-      cardholderName: '',
-      contacts: contacts,
-      contactNumber: contactNumber,
-      cardNumber: '',
-      balance: '',
+      memberuuid: theWay==='1'?vipDetails.memberID:'',
+      cardholderName:theWay==='1'?vipDetails.kzName:'',
+      contacts: theWay==='1'?vipDetails.userName:contacts,
+      contactNumber: theWay==='1'?vipDetails.tel:contactNumber,
+      cardNumber: theWay==='1'?vipDetails.cardNum:'',
+      balance:theWay==='1'? vipDetails.balance:'',
       venueid: selectVenueId,
       starttime: startTime,
       playtime: timeLen,
@@ -491,6 +494,8 @@ class appointmentList extends React.Component {
     const res = await getVipCardInfomation(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ vipDetails: res.data.data[0] })
+    }else{
+      message.warning(res.data.msg)
     }
   }
 
@@ -592,7 +597,7 @@ class appointmentList extends React.Component {
   render() {
 
     const content = (
-      <div>
+      <div style={this.state.vipDetails.length===0?{display:'none'}:{}}>
         <div>卡主名称：{this.state.vipDetails.kzName}</div>
         <div>联系人：{this.state.vipDetails.userName}</div>
         <div>手机号：{this.state.vipDetails.tel}</div>
@@ -632,6 +637,7 @@ class appointmentList extends React.Component {
             <div><span style={{ background: '#E9E9E9' }}></span><span>不可选</span></div>
             <div><span></span><span>线下占用</span></div>
             <div><span></span><span>线上占用</span></div>
+            <div className="cofirmZ" style={{paddingTop:0}} onClick={this.cofirmZ}>预订场地</div>
           </div>
           <div style={{ overflowX: 'auto', width: '100%' }}>
             <ul className="activityNav" style={{ width: '1350px' }}>
@@ -640,7 +646,6 @@ class appointmentList extends React.Component {
                   <li key={i} onClick={this.clickLi} data-index={i} data-num={item.id} className={parseInt(this.state.dianIndex) === i ? 'borderLi' : ''}>{item.name}</li>
                 ))
               }
-              <li><div className="cofirmZ" onClick={this.cofirmZ}>预订场地</div></li>
 
             </ul>
           </div>
@@ -768,7 +773,7 @@ class appointmentList extends React.Component {
           <div className="Relatedness">
             <div>
               <span>支付方式</span>
-              <Select defaultValue="其他支付(现金/微信/支付宝)" placeholder="选择支付方式" disabled={true} style={{ width: 260 }} onChange={this.theWay}>
+              <Select defaultValue="其他支付(现金/微信/支付宝)" placeholder="选择支付方式"  style={{ width: 260 }} onChange={this.theWay}>
                 <Option value="1">会员卡扣费</Option>
                 <Option value="2">其他支付(现金/微信/支付宝)</Option>
               </Select>

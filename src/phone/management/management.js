@@ -1,10 +1,10 @@
 import React from 'react';
 import './management.css';
 
-import { Card, List, InputItem, DatePicker, Picker, Toast, Modal,SearchBar } from 'antd-mobile';
+import { Card, List, InputItem, DatePicker, Picker, Toast, Modal, SearchBar } from 'antd-mobile';
 import { Pagination, Spin, Drawer } from 'antd';
 import 'antd-mobile/dist/antd-mobile.css';
-import { getVenueMemberlist, AddVenueMember, getVenueMemberRecordsOfConsumption, getVenueMemberDetails, VenueMemberRecharge, VenueMemberRefundCardDetails, VenueMemberRefundCard } from '../../api';
+import { getVenueMemberlist, AddVenueMember, getVenueMemberRecordsOfConsumption, getVenueMemberDetails, VenueMemberRecharge, VenueMemberRefundCardDetails,EditVenueMember, _code, VenueMemberRefundCard } from '../../api';
 import { LeftOutlined } from '@ant-design/icons';
 
 const alert = Modal.alert;
@@ -50,7 +50,14 @@ class management extends React.Component {
     gradeThree: '',
     balanceThree: '',
     validityThree: '',
-    searchVal:'',
+    searchVal: '',
+    contactOpen: false,
+    textFour: '获取验证码',
+    textFive: '获取验证码',
+    ipCode: '',
+    ipCodeTwo: '',
+    makeNumTwo:'',
+    memberuuidlokl:'',
   };
 
 
@@ -79,7 +86,7 @@ class management extends React.Component {
     const res = await AddVenueMember(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       Toast.success(res.data.msg)
-      this.setState({ visibleJoin: false,page:1 })
+      this.setState({ visibleJoin: false, page: 1 })
       this.getVenueMemberlist({ page: 1 })
     } else {
       Toast.fail(res.data.msg)
@@ -127,7 +134,9 @@ class management extends React.Component {
   onClose = () => {
     this.setState({ visibleJoin: false, consumption: false, visibleJoinTwo: false, visibleJoinThree: false })
   }
-
+  onCloseTwokoj = () => {
+    this.setState({ contactOpen: false,makeNumTwo:'',ipCode:'',ipCodeTwo:'' })
+  }
 
   async getVenueMemberDetails(data) {
     const res = await getVenueMemberDetails(data, localStorage.getItem('venue_token'))
@@ -224,28 +233,126 @@ class management extends React.Component {
 
   edidor = e => {
     this.getVenueMemberDetailsTwo({ memberuuid: e.currentTarget.dataset.uuid })
+    this.setState({memberuuidlokl:e.currentTarget.dataset.uuid})
     this.setState({ visibleJoinThree: true })
   }
 
-  searchBar=e=>{
-    
-    this.getVenueMemberlist({ search: e})
+  searchBar = e => {
+
+    this.getVenueMemberlist({ search: e })
   }
-  close=()=>{
-    this.getVenueMemberlist({ page: 1})
+  close = () => {
+    this.getVenueMemberlist({ page: 1 })
   }
-  lookText=e=>{
+  lookText = e => {
     alert('详情', e.currentTarget.dataset.txt, [
-    
-      { text: '确定', onPress: () => 6},
+
+      { text: '确定', onPress: () => 6 },
     ])
   }
-  cofirmMoney=e=>{
-   if(e>10){
-     Toast.fail('折扣不能大于10')
-     this.setState({discountVal:10})
-   }
+  cofirmMoney = e => {
+    if (e > 10) {
+      Toast.fail('折扣不能大于10')
+      this.setState({ discountVal: 10 })
+    }
   }
+
+  contactOpen = () => {
+    this.setState({ contactOpen: true })
+  }
+
+
+  async codeClickMsg(data) {
+    const res = await _code(data)
+    if (res.data.code === 2000) {
+      let num = 60
+      const timer = setInterval(() => {
+        this.setState({ textFour: num-- })
+        if (num === -1) {
+          clearInterval(timer)
+          this.setState({ textFour: '获取验证码' })
+        }
+      }, 1000)
+    } else {
+      Toast.fail(res.data.msg)
+    }
+  }
+
+  codeGo = () => {
+    this.codeClickMsg({ mobile: this.state.contactNumberThree, type: 'venuememberprimaryphone', uuid: sessionStorage.getItem('uuid') })
+  }
+
+
+  async codeClickMsgTwo(data) {
+    const res = await _code(data)
+    if (res.data.code === 2000) {
+      let num = 60
+      const timer = setInterval(() => {
+        this.setState({ textFive: num-- })
+        if (num === -1) {
+          clearInterval(timer)
+          this.setState({ textFive: '获取验证码' })
+        }
+      }, 1000)
+    } else {
+      Toast.fail(res.data.msg)
+    }
+  }
+
+  codeGoTwo = () => {
+    this.codeClickMsgTwo({ mobile: this.state.makeNumTwo, type: 'venuemembernewphone', uuid: sessionStorage.getItem('uuid') })
+  }
+
+  ipCode = e => {
+    this.setState({ ipCode: e.target.value })
+  }
+  ipCodeTwo = e => {
+    this.setState({ ipCodeTwo: e.target.value })
+  }
+
+  cubmitHood = () => {
+    let { makeNumTwo, ipCode, ipCodeTwo } = this.state
+    if (ipCode === '') {
+      Toast.fail('请输入原联系电话验证码')
+    } else if (makeNumTwo === '') {
+      Toast.fail('请输入新联系电话号码')
+    } else if (ipCodeTwo === '') {
+      Toast.fail('请输入新联系电话验证码')
+    } else {
+      this.setState({ contactOpen: false })
+    }
+  }
+
+
+  async EditVenueMember(data) {
+    const res = await EditVenueMember(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      Toast.success(res.data.msg)
+      this.setState({visibleJoinThree:false})
+      this.getVenueMemberlist({ page: 1 })
+    } else {
+      Toast.fail(res.data.msg)
+    }
+  }
+
+  btnSubmitTosjij=()=>{
+    let {memberuuidlokl,cardHolderThree,contactPersonThree,birthdayThree,contactNumberThree,makeNumTwo,ipCode,ipCodeTwo,VipcardThree,gradeThree,validityThree}=this.state
+    let obj={
+      memberuuid:memberuuidlokl,
+      cardholderName:cardHolderThree,
+      contacts:contactPersonThree,
+      birthday:birthdayThree,
+      contactNumber:contactNumberThree,
+      newContactNumber:makeNumTwo,
+      code:ipCode,
+      newcode:ipCodeTwo,
+      cardNumber:VipcardThree,
+      grade:gradeThree[0],
+      effective:validityThree[0]
+    } 
+    this.EditVenueMember(obj)
+  }
+
   render() {
     return (
       <div className="management">
@@ -264,11 +371,11 @@ class management extends React.Component {
                     extra={<span className="titleRight">联系人:{item.contacts}</span>}
                   />
                   <Card.Body className="listDetails" style={{ fontSize: '0.75rem' }}>
-                    <div>生日：{item.birthday}</div> <div>联系电话：{item.contactNumber}</div> <div><div style={{float:'left'}}>会员卡号：</div><div className="vipText" data-txt={item.cardNumber} onClick={this.lookText}>{item.cardNumber}</div></div>
+                    <div>生日：{item.birthday}</div> <div>联系电话：{item.contactNumber}</div> <div><div style={{ float: 'left' }}>会员卡号：</div><div className="vipText" data-txt={item.cardNumber} onClick={this.lookText}>{item.cardNumber}</div></div>
                     <div>会员等级：{item.grade === 1 ? '普通' : item.grade === 2 ? 'vip' : item.grade === 3 ? '银卡' : item.grade === 4 ? '金卡' : '超级vip'}</div>
                     <div>折扣：{item.discount}折</div>  <div>充值金额：￥{item.rechargeMoney}</div> <div>赠送金额：￥{item.giveMoney}</div>   <div>余额：￥{item.balance}<span className="lishi" onClick={this.consumptionOne} data-uuid={item.uuid}>历史记录</span></div>
-                    <div style={{paddingBottom:'0.5rem'}}>有效日期：{item.effectiveDate}</div> <div style={{paddingBottom:'0.5rem'}}>会员卡状态：{item.status===1?'已正常':item.status===2?'已退卡':item.status===3?'已过期':''}</div>
-                     
+                    <div style={{ paddingBottom: '0.5rem' }}>有效日期：{item.effectiveDate}</div> <div style={{ paddingBottom: '0.5rem' }}>会员卡状态：{item.status === 1 ? '已正常' : item.status === 2 ? '已退卡' : item.status === 3 ? '已过期' : ''}</div>
+
                     <span className="topUp" data-uuid={item.uuid} onClick={this.visibleJoinTwo}>充</span> <span className="topUp tui" data-uuid={item.uuid} onClick={this.fallBack}>退</span> <img data-uuid={item.uuid} onClick={this.edidor} src={require('../../assets/icon_pc_updata.png')} alt="img" />
                   </Card.Body>
                 </Card>
@@ -315,7 +422,7 @@ class management extends React.Component {
             mode="date"
             title="选择生日"
             extra="请选择"
-            minDate={new Date(1930,0,0)}
+            minDate={new Date(1930, 0, 0)}
             value={this.state.birthday}
             onChange={birthday => this.setState({ birthday })}
           >
@@ -357,31 +464,37 @@ class management extends React.Component {
 
           <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
             <InputItem
-              type='money'
+              type='number'
               placeholder="请输入"
               className="look"
               value={this.state.discountVal}
               onVirtualKeyboardConfirm={this.cofirmMoney}
-              onChange={(v) => { this.setState({ discountVal: v }) }}
+              onChange={(v) => {
+                if(Number(v)>10){
+                  this.setState({ discountVal: 10 })
+                }else{
+                  this.setState({ discountVal: v })
+                }
+                  }}
               style={{ padding: '0', textAlign: 'left', fontSize: '0.88rem' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>折扣</span></InputItem>
           </List.Item>
 
           <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
             <InputItem
-              type='money'
+              type='number'
               placeholder="请输入"
               className="look"
               maxLength={8}
               value={this.state.topUp}
-              onChange={(v) => { this.setState({ topUp: v,balance: Number(this.state.giveAway) + Number(v) }) }}
+              onChange={(v) => { this.setState({ topUp: v, balance: Number(this.state.giveAway) + Number(v) }) }}
               style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>充值金额</span></InputItem>
           </List.Item>
 
           <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
             <InputItem
-              type='money'
+              type='number'
               placeholder="请输入"
               className="look"
               maxLength={8}
@@ -494,20 +607,25 @@ class management extends React.Component {
 
           <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
             <InputItem
-              type='money'
-              disabledKeys={['.', '0']}
+              type='number'
               placeholder="请输入"
-              maxLength={2}
               className="look"
               value={this.state.discountValTwo}
-              onChange={(v) => { this.setState({ discountValTwo: v }) }}
+              onChange={(v) => { 
+                if(Number(v)>10){
+                  this.setState({ discountValTwo: 10 })
+                }else{
+                  this.setState({ discountValTwo: v })
+                }
+              
+              }}
               style={{ padding: '0', textAlign: 'left', fontSize: '0.88rem' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>折扣</span></InputItem>
           </List.Item>
 
           <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
             <InputItem
-              type='money'
+              type='number'
               placeholder="请输入"
               className="look"
               value={this.state.topUpTwo}
@@ -519,7 +637,7 @@ class management extends React.Component {
 
           <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
             <InputItem
-              type='money'
+              type='number'
               placeholder="请输入"
               className="look"
               maxLength={8}
@@ -533,7 +651,7 @@ class management extends React.Component {
 
 
           <List.Item arrow="empty"
-          className="gorad"
+            className="gorad"
             extra={this.state.validityTwo === 1 ? '1个月' : this.state.validityTwo === 2 ? '2个月' : this.state.validityTwo === 3 ? '3个月' : this.state.validityTwo === 4 ? '4个月' :
               this.state.validityTwo === 5 ? '5个月' : this.state.validityTwo === 6 ? '6个月' : this.state.validityTwo === 7 ? '7个月' : this.state.validityTwo === 8 ? '8个月' :
                 this.state.validityTwo === 9 ? '9个月' : this.state.validityTwo === 10 ? '十个月' : this.state.validityTwo === 11 ? '十一个月' : this.state.validityTwo === 12 ? '十二个月' :
@@ -565,7 +683,7 @@ class management extends React.Component {
               placeholder="请输入"
               value={this.state.cardHolderThree}
               onChange={(v) => { this.setState({ cardHolderThree: v }) }}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem', textAlign: 'right' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>卡主名称</span></InputItem>
           </List.Item>
 
@@ -575,7 +693,7 @@ class management extends React.Component {
               placeholder="请输入"
               value={this.state.contactPersonThree}
               onChange={(v) => { this.setState({ contactPersonThree: v }) }}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem', textAlign: 'right' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>联系人</span></InputItem>
           </List.Item>
 
@@ -584,21 +702,33 @@ class management extends React.Component {
             title="选择生日"
             extra="请选择"
             value={this.state.birthdayThree}
+            style={{ textAlign: 'right' }}
             onChange={birthdayThree => this.setState({ birthdayThree })}
           >
             <List.Item arrow="horizontal" className="lood" style={{ borderBottom: '1px solid #E9E9E9' }}>生日</List.Item>
           </DatePicker>
 
-          <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
+          <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }} onClick={this.contactOpen}>
             <InputItem
               type='number'
               placeholder="请输入"
-              value={this.state.contactNumberThree}
+              value={'点击修改：' + this.state.contactNumberThree}
               maxLength={11}
               disabled={true}
               onChange={(v) => { this.setState({ contactNumberThree: v }) }}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem', textAlign: 'right' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>联系电话</span></InputItem>
+          </List.Item>
+
+          <List.Item arrow="empty" style={this.state.makeNumTwo ==='' ? { display: 'none' } : { borderBottom: '1px solid #E9E9E9' }}>
+            <InputItem
+              type='number'
+              placeholder="请输入"
+              value={this.state.makeNumTwo}
+              maxLength={11}
+              disabled={true}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem', textAlign: 'right' }}
+            ><span style={{ fontSize: '0.88rem', border: 'none' }}>新联系电话</span></InputItem>
           </List.Item>
 
           <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
@@ -608,7 +738,7 @@ class management extends React.Component {
               value={this.state.VipcardThree}
               maxLength={20}
               onChange={(v) => { this.setState({ VipcardThree: v }) }}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem', textAlign: 'right' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>会员卡号</span></InputItem>
           </List.Item>
 
@@ -642,12 +772,61 @@ class management extends React.Component {
             <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>有效期</List.Item>
           </Picker>
 
-          <div className="btnsubmit" onClick={this.btnSubmit}>保存</div>
+          <div className="btnsubmit" onClick={this.btnSubmitTosjij}>保存</div>
 
 
 
 
         </Drawer>
+
+
+        <Modal
+          visible={this.state.contactOpen}
+          transparent
+          maskClosable={false}
+          closable={true}
+          onClose={this.onCloseTwokoj}
+          title="修改联系电话"
+          style={{ width: '90%' }}
+        >
+          <div style={{ height: 250, overflow: 'scroll' }}>
+            <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }} >
+              <InputItem
+                type='number'
+                placeholder="请输入"
+                value={this.state.contactNumberThree}
+                maxLength={11}
+                disabled={true}
+                onChange={(v) => { this.setState({ contactNumberThree: v }) }}
+                style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem', textAlign: 'left' }}
+              ><span style={{ fontSize: '0.88rem', border: 'none' }}>原联系电话</span></InputItem>
+            </List.Item>
+
+            <div style={{ borderBottom: '1px solid #E9E9E9', overflow: 'hidden' }} >
+              <div style={{ float: 'left', color: '#000', lineHeight: '44px', paddingLeft: "15px" }}>验证码</div>
+              <input style={{ height: '44px', float: 'left', border: 'none', marginLeft: '45px', width: '30%', fontSize: '0.88rem' }} onChange={this.ipCode} placeholder="请输入验证码" />
+              <div className="sdfgdfghdr" onClick={this.codeGo}>{this.state.textFour}</div>
+            </div>
+
+            <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }} >
+              <InputItem
+                type='number'
+                placeholder="请输入"
+                maxLength={11}
+                onChange={(v) => { this.setState({ makeNumTwo: v }) }}
+                style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem', textAlign: 'left' }}
+              ><span style={{ fontSize: '0.88rem', border: 'none' }}>新联系电话</span></InputItem>
+            </List.Item>
+
+            <div style={{ borderBottom: '1px solid #E9E9E9', overflow: 'hidden' }} >
+              <div style={{ float: 'left', color: '#000', lineHeight: '44px', paddingLeft: "15px" }}>验证码</div>
+              <input style={{ height: '44px', float: 'left', border: 'none', marginLeft: '45px', width: '30%', fontSize: '0.88rem' }} onChange={this.ipCodeTwo} placeholder="请输入验证码" />
+              <div className="sdfgdfghdr" onClick={this.codeGoTwo}>{this.state.textFive}</div>
+            </div>
+            <div className="sdfdsfger" onClick={this.cubmitHood}>确认</div>
+
+          </div>
+        </Modal>
 
 
 

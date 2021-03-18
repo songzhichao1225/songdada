@@ -79,7 +79,6 @@
     float: left;
 }
 .lood  .am-list-line .am-list-extra{
-    text-align: left;
     flex-basis: 64% !important;
     color: #000; 
 }
@@ -157,4 +156,24 @@
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap
+}
+.sdfgdfghdr{
+    width: 5rem;
+    height: 1.5rem;
+    background: #D85D27;
+    color: #fff;
+    float: right;
+    border-radius: 0.2rem;
+    margin-top: 0.8rem;
+}
+.sdfdsfger{
+    width: 80%;
+    height: 2.69rem;
+    border-radius: 1.34rem;
+    background: #D85D27;
+    color: #fff;
+    text-align: center;
+    line-height: 2.69rem;
+    margin: 1rem auto 0;
+
 }

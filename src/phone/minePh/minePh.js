@@ -348,12 +348,14 @@ class minePh extends React.Component {
           placement="right"
           onClose={this.onClose}
           visible={this.state.visible}>
+          <div className="asdtygdyhrt">
           <span style={{ fontSize: '0.75rem', display: 'block' }}>北京甲乙电子商务有限公司，成立于2015年，位于北京市城市副中心。</span>
           <span style={{ fontSize: '0.75rem', display: 'block', marginTop: '10px' }}>随着社会经济的发展，科学技术的进步，生产力水平的提高，人们逐渐从繁重的体力劳动中解放出来。随之而来的“运动量不足”、“富贵病”却又影响着人们的健康，尤其是坐办公室的上班一族。健康是1，其它都是0，只有这个1，更多的0才有意义。</span>
           <span style={{ fontSize: '0.75rem', display: 'block', marginTop: '10px' }}>跑步、练器械等一个人可开展的体育运动略显枯燥，有很大一部分人无法长期坚持。羽毛球、乒乓球、台球等两个人以上才能完成的对抗性运动，有趣、易坚持但又不好找到运动对手、伙伴。初步统计，有2/3左右的人有运动需求，但因为找不到运动伙伴，运动需求得不到满足。</span>
           <span style={{ fontSize: '0.75rem', display: 'block', marginTop: '10px' }}>“找对手”是北京甲乙电子商务有限公司推出的用户找运动对手、伙伴平台，通过平台的服务：1）让用户更方便地找到运动对手、伙伴；2）建立技术等级，让用户更有征服欲、成就感，运动更有趣；3）让场馆提高场馆预订率、降低场馆人员支出成本。</span>
           <span style={{ fontSize: '0.75rem', display: 'block', marginTop: '10px' }}>公司的愿景：让运动更简单、更有趣！</span>
-          <span style={{ fontSize: '0.75rem', display: 'block', marginTop: '10px' }}>期待志同道合的优秀人士加入到我公司，一起为这个愿景努力！</span>
+          <span style={{ fontSize: '0.75rem', display: 'block', marginTop: '10px' }}>期待志同道合的优秀人士加入到我公司，一起为这个愿景努力！</span>            
+          </div>
         </Drawer>
 
         <Drawer

@@ -2,7 +2,7 @@ import React from 'react';
 import './VipAgement.css';
 import 'antd/dist/antd.css';
 import { AddVenueMember, getVenueMemberlist, getVenueMemberRecordsOfConsumption, getVenueMemberDetails, VenueMemberRecharge, VenueMemberRefundCardDetails, VenueMemberRefundCard, EditVenueMember, _code } from '../../api';
-import { Row, Col, Modal, Input, Select, DatePicker, InputNumber, message, Pagination, Popconfirm,Popover } from 'antd';
+import { Row, Col, Modal, Input, Select, DatePicker, message, Pagination, Popconfirm,Popover } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 const { Search } = Input;
@@ -121,7 +121,11 @@ class VipAgement extends React.Component {
     this.setState({ VipcardVal: e.target.value })
   }
   discount = e => {
-    this.setState({ discountVal: e })
+    if(e.target.value>10){
+      this.setState({ discountVal: 10 })
+    }else{
+      this.setState({ discountVal: e.target.value })
+    }
   }
   handleChange = e => {
     this.setState({ handleChange: e })
@@ -230,13 +234,17 @@ class VipAgement extends React.Component {
     this.setState({ topAmount: false })
   }
   topUpTwo = e => {
-    this.setState({ topUpTwo: e.target.value })
+    this.setState({ topUpTwo: e.target.value,balanceTwo: Number(this.state.memberDetails.balance) + Number(this.state.giveAwayTwo) + Number(e.target.value) })
   }
   giveAwayTwo = e => {
     this.setState({ giveAwayTwo: e.target.value, balanceTwo: Number(this.state.memberDetails.balance) + Number(this.state.topUpTwo) + Number(e.target.value) })
   }
   discountTwo = e => {
-    this.setState({ discountTwo: e })
+    if(e.target.value>10){
+      this.setState({ discountTwo: 10 })
+    }else{
+      this.setState({ discountTwo: e.target.value })
+    }
   }
 
 
@@ -529,7 +537,7 @@ class VipAgement extends React.Component {
           </div>
           <div className="ViplistSon">
             <span className="title">折扣<span onClick={this.hintTr} style={{ padding: '0px 6px', marginLeft: '10px', background: '#F5A623', color: '#fff', cursor: 'pointer' }}>?</span></span>
-            <InputNumber style={{ marginLeft: '18px', width: '300px' }} max={10} step="1" value={this.state.discountVal} onChange={this.discount} maxLength={3} placeholder="请填写" />
+            <Input style={{ marginLeft: '18px', width: '300px' }}   value={this.state.discountVal} onChange={this.discount}  placeholder="请填写" />
           </div>
           <div className="ViplistSon">
             <span className="title">会员等级<span className="redStart">*</span></span>
@@ -680,16 +688,16 @@ class VipAgement extends React.Component {
 
           <div className="ViplistSon">
             <span className="title">充值金额<span className="redStart">*</span></span>
-            <Input type="number" maxLength={8} placeholder="请填写" value={this.state.topUpTwo} onChange={this.topUpTwo} />
+            <Input  maxLength={8} placeholder="请填写" value={this.state.topUpTwo} onChange={this.topUpTwo} />
           </div>
           <div className="ViplistSon">
             <span className="title">赠送金额</span>
-            <Input type="number" maxLength={8} placeholder="请填写" value={this.state.giveAwayTwo} onChange={this.giveAwayTwo} />
+            <Input  maxLength={8} placeholder="请填写" value={this.state.giveAwayTwo} onChange={this.giveAwayTwo} />
           </div>
 
           <div className="ViplistSon">
             <span className="title">折扣</span>
-            <InputNumber style={{ marginLeft: '19px', width: '300px' }} step="1" value={this.state.discountTwo} onChange={this.discountTwo} maxLength={3} placeholder="请填写" />
+            <Input style={{ marginLeft: '19px', width: '300px' }} value={this.state.discountTwo} onChange={this.discountTwo}  placeholder="请填写" />
           </div>
           <div className="ViplistSon">
             <span className="title">充值后金额</span>

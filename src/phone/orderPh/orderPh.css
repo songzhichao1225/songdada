@@ -166,7 +166,7 @@
     margin-top: 0.6rem;
     float: right;
     margin-top: -0.1rem;
-    margin-right: 0.5rem;
+    margin-right: 2rem;
 }
 .orderPh .bookingKanban .modTitle>span{
     display: block;
@@ -466,6 +466,7 @@ html:not([data-scale]) .am-card-body::before{
     color: #fff;
     border-bottom: 0.06rem solid #fff;
     margin: 0 auto;
+    padding-bottom: 0;
 }
 
 .dateT  .am-list-content{
@@ -479,7 +480,7 @@ html:not([data-scale]) .am-card-body::before{
     border: 0.06rem solid #fff;
     border-radius: 0.3rem;
     z-index: 1000;
-    top: 0.8rem;
+    top: 0.6rem;
 }
  .botDay{
     position: absolute;
@@ -490,7 +491,7 @@ html:not([data-scale]) .am-card-body::before{
     border-radius: 0.3rem;
     z-index: 1000;
     right: 0;
-    top: 0.8rem;
+    top: 0.6rem;
 }
 
 .orderPh .ant-table-thead > tr > th{
@@ -589,6 +590,7 @@ html:not([data-scale]) .am-card-body::before{
     font-size: 0.88rem;
     text-align: right;
     padding-right: 1.5rem;
+    color: #888;
 }
 
 .lohkhjgj{
@@ -597,10 +599,11 @@ html:not([data-scale]) .am-card-body::before{
     text-align: center;
     line-height: 25px;
     color: #fff;
-    background-color: #ccc;
+    background-color: rgb(111, 178, 255);
     float: left;
     margin-left: 10px;
     cursor: pointer;
+    margin-top: 10px;
 }
 .dfgk{
     width: 60px;
@@ -634,24 +637,30 @@ html:not([data-scale]) .am-card-body::before{
 
 .kojk .ant-drawer-body{
     padding: 0;
+    background: #f3f3f3;
 }
 .kojk .ant-drawer-header{
     padding: 16px 8px;
    
 }
 .kojk .ant-drawer-title{
-    font-size: 18px;
+    font-size: 1rem;
     font-weight: bold;
+    text-align: center;
 }
 .kojk .plaTop{
     padding: 0 8px;
-    line-height: 30px;
-    font-size: 15px;
+    line-height: 1.3rem;
+    font-size: 0.75rem;
+    background: #fff;
+    border-radius: 0.69rem;
+    margin-top: 0.63rem;
+
 }
 .kojk .plaTop>p{
-    font-size: 17px;
+    font-size: 0.88rem;
     font-weight: bold;
-    padding-top: 15px;
+    padding-top: 10px;
 }
 .kojk .plaTop>div{
     overflow: hidden;
@@ -690,6 +699,36 @@ html:not([data-scale]) .am-card-body::before{
   line-height: 29px;
   float: right;
   cursor: pointer;
-
+}
+.dfgd .am-search{
+    background: #fff;
+    border-bottom: 0.06rem solid #e5e5e5;
 }
 
+.lokjjkdgh{
+    line-height: 1.5rem;
+    overflow: hidden;
+}
+.sdfsdgdrg{
+    width: 100%;
+    height: 2.69rem;
+    color: #fff;
+    background: #D85D27;
+    text-align: center;
+    line-height: 2.69rem;
+    border-radius: 1.34rem;
+    margin-top: 2rem;
+}
+.lokjjkdgh>span{
+    display: block;
+    float: left;
+}
+.lokjjkdgh>span:first-child{
+    width: 6rem;
+}
+.sdfgdfgh{
+    position: absolute;
+    top: 0.7rem;
+    left: 65%;
+    color: #fff;
+}

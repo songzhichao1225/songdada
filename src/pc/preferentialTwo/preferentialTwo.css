@@ -117,6 +117,7 @@
    float: left;
    margin-left: 10px;
    height: 32px;
+   padding-top: 5px;
 }
 .orderList .ant-table-ping-right:not(.ant-table-has-fix-right) .ant-table-container{
     height: 100%;
@@ -176,8 +177,8 @@
       color: #fff;
       text-align: center;
       line-height: 20px;
-      margin-top: 12px;
       float: left;
+      line-height: 32px;
   }
 
   .orderList .cofirmZText{

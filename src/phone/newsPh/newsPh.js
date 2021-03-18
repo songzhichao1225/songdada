@@ -266,7 +266,7 @@ class newsPh extends React.Component {
                         title={<span style={{ fontSize: '12px' }}>{item.comment.length > 15 ? item.comment.slice(0, 15) + '...' : item.comment}</span>}
                         thumb={item.isred === 0 ? require("../../assets/logoTwo.png") : require("../../assets/logo.png")}
                         thumbStyle={{ width: '2rem', height: '2rem', marginTop: '-0.3rem' }}
-                        extra={<div><span style={{ fontSize: '12px' }}>{item.intime.slice(0, 10) === moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-") ? item.intime.slice(10, item.intime.length) : item.intime.slice(0, 10)}</span><Checkbox style={this.state.visibleDrawerNum === 1 ? {} : { display: 'none' }} onClick={this.Checkbox} data-idx={i} checked={item.Checkbox}></Checkbox></div>}
+                        extra={<div><span style={{ fontSize: '12px' }}>{item.intime === moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-") ? item.intime : item.intime}</span><Checkbox style={this.state.visibleDrawerNum === 1 ? {} : { display: 'none' }} onClick={this.Checkbox} data-idx={i} checked={item.Checkbox}></Checkbox></div>}
                       />
                       <Card.Body style={{ display: 'none' }}>
                         <div style={{ fontSize: '14px' }}>{item.comment}</div>
@@ -327,7 +327,7 @@ class newsPh extends React.Component {
                         title={<span style={{ fontSize: '12px' }}>{item.comment.length > 15 ? item.comment.slice(0, 15) + '...' : item.comment}</span>}
                         thumb={localStorage.getItem('avatar')}
                         thumbStyle={{ minHeight: '2rem',maxHeight:'2rem',minWidth:'2rem',maxWidth:'2.5rem', marginTop: '-0.3rem' }}
-                        extra={<div><span style={{ fontSize: '12px' }}>{item.intime.slice(0, 10) === moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-") ? item.intime.slice(10, item.intime.length) : item.intime.slice(0, 10)}</span><Checkbox style={this.state.visibleDrawerNumTwo === 1 ? {} : { display: 'none' }} onClick={this.CheckboxTwo} data-idx={i} checked={item.Checkbox}></Checkbox></div>}
+                        extra={<div><span style={{ fontSize: '12px' }}>{item.intime === moment().endOf('day')._d.toLocaleDateString().replace(/\//g, "-") ? item.intime : item.intime}</span><Checkbox style={this.state.visibleDrawerNumTwo === 1 ? {} : { display: 'none' }} onClick={this.CheckboxTwo} data-idx={i} checked={item.Checkbox}></Checkbox></div>}
                       />
                     </Card>
                   </div>
