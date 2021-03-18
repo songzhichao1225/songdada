@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 //本地全部隐去
-axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
+// axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
 // axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
 
 // export let imgUrlTwo='https://app.tiaozhanmeiyitian.com/'  //正式图片路径
