@@ -1058,6 +1058,9 @@ class orderPh extends React.Component {
     console.log(e)
     this.getVipCardInfomation({kw:e,sID:localStorage.getItem('siteUid')})
   }
+  sfdgdf=()=>{
+    this.setState({ date: new Date(), startTime: new Date().format("yyyy-MM-dd hh:mm") })
+  }
 
   render() {
     return (
@@ -1309,6 +1312,7 @@ class orderPh extends React.Component {
                 onChange={start => this.setState({ start, end: '' })}
               >
                 <List.Item arrow="horizontal">开始日期</List.Item>
+                
               </DatePicker>
 
 
@@ -1386,11 +1390,13 @@ class orderPh extends React.Component {
 
           <div className="listKoj">
             <DatePicker
+            minuteStep={30}
               value={this.state.date}
               onOk={this.startTime}
             >
               <List.Item arrow="horizontal">开始时间</List.Item>
             </DatePicker>
+            <span className="fghghf" onClick={this.sfdgdf}>此刻</span>
           </div>
 
           <div className="listKoj">
