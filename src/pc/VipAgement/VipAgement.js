@@ -501,10 +501,13 @@ class VipAgement extends React.Component {
               </Row>
             ))
           }
+          <div style={this.state.memberList.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '84px', height: '84px', display: 'block', margin: '64px auto 0' }} src={require('../../assets/vipno.png')} alt='icon' /><span style={{ display: 'block', textAlign: 'center' }}>您还没有添加会员信息!</span></div>
+            
           <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.page} total={this.state.other} onChange={this.current} />
           <div className="bottomJoin" onClick={this.bottomJoin}>+新增会员信息</div>
-          <div className="import" onClick={this.importTr}>批量导入会员</div>
-          <div className="derived import">导出会员</div>
+          
+          {/* <div className="import" onClick={this.importTr}>批量导入会员</div>
+          <div className="derived import">导出会员</div> */}
         </div>
 
 

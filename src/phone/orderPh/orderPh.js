@@ -292,6 +292,7 @@ class orderPh extends React.Component {
   async getVenueBookingInformation(data) {
     const res = await getVenueBookingInformation(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
+      res.data.data.comment=res.data.data.comment.slice(0,10)
       this.setState({ otherObj: res.data.data, otherObjTime: res.data.data.time, menu: 1, History: true })
     }
   }
@@ -1003,10 +1004,20 @@ class orderPh extends React.Component {
   }
 
   calesdeedsfr = () => {
-    alert('提示', '您确定取消本次订单吗?', [
-      { text: '取消', onPress: () => console.log('cancel') },
-      { text: '确认', onPress: () => this.DelVenueOfflineOccupancy({ offid: this.state.informaid, isloop: this.state.otherObj.isloop === 0 ? 3 : 2 }) },
-    ])
+    console.log(this.state.otherObj)
+    if(this.state.otherObj.isloop===1){
+      alert('提示', '您确定取消订单吗?', [
+        { text: '取消所有循环订单', onPress: () => this.DelVenueOfflineOccupancy({ offid: this.state.informaid, isloop: 2 }) },
+        { text: '取消本次循环订单', onPress: () => this.DelVenueOfflineOccupancy({ offid: this.state.informaid, isloop:  1 }) },
+        { text: '关闭', onPress: () => console.log('cancel') },
+      ])
+    }else{
+      alert('提示', '您确定取消本次订单吗?', [
+        { text: '取消', onPress: () => console.log('cancel') },
+        { text: '确定', onPress: () => this.DelVenueOfflineOccupancy({ offid: this.state.informaid, isloop: 3}) },
+      ])
+    }
+   
   }
   dayBefore = () => {
     let myDate = new Date(this.state.qiDate)
@@ -1209,9 +1220,10 @@ class orderPh extends React.Component {
             </div>
           </div>
           {/* 看板渲染标签 */}
-          <Table loading={this.state.loadingTwo} style={this.state.otherType.length === 0 ? { display: 'none' } : { maxWidth: this.state.otherType.length * 36 }} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 25, minWidth: 5, y: '90%' }} />,
+          <Table loading={this.state.loadingTwo} style={this.state.otherType.length === 0 ? { display: 'none' } : { maxWidth: this.state.otherType.length * 80 }} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 25, minWidth: 5, y: '90%' }} />,
             <div style={this.state.activityList === false && this.state.otherType.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (2).png')} alt="555" /><span style={{ textAlign: 'center', display: "block" }}>{this.state.textNuma}!</span></div>
         </div>
+
 
 
 
@@ -1366,6 +1378,7 @@ class orderPh extends React.Component {
               placeholder="请填写"
               className="rightInput"
               type='number'
+              maxLength={11}
               onBlur={this.contactNumber}
             ><div className="leftTxt">手机号</div></InputItem>
           </div>
@@ -1375,7 +1388,6 @@ class orderPh extends React.Component {
             <DatePicker
               value={this.state.date}
               onOk={this.startTime}
-              minuteStep={30}
             >
               <List.Item arrow="horizontal">开始时间</List.Item>
             </DatePicker>
@@ -1468,7 +1480,7 @@ class orderPh extends React.Component {
               <div><span>手机号:</span><span>{this.state.otherObj.contactNumber}</span></div>
               <div style={this.state.otherObj.cardNumber === '' ? { display: 'none' } : {}}><span>会员卡号:</span><span>{this.state.otherObj.cardNumber}</span></div>
               <div style={this.state.otherObj.balance === '' ? { display: 'none' } : {}}><span>余额:</span><span>{this.state.otherObj.balance}</span></div>
-              <div><span>其他:</span><span>{this.state.otherObj.comment === '' ? '无' : this.state.otherObj.comment}</span></div>
+              <div><span>其他:</span><span className="asdgfdsfg">{this.state.otherObj.comment === '' ? '无' : this.state.otherObj.comment+'...'}</span></div>
             </div>
 
             <div className="plaTop plaTopTwo">

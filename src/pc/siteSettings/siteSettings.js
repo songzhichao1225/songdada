@@ -1404,8 +1404,8 @@ class siteSettings extends React.Component {
     if (res.data.code === 2000) {
       message.success('删除成功')
       if (this.state.otherseris % 10 === 1) {
-        this.setState({ pageOne: Number(this.state.pageOne) - 1 })
-        this.getVenueNumberTitleList({ sportid: this.state.nameChang, page: Number(this.state.pageOne) - 1 })
+        this.getVenueNumberTitleList({ sportid: this.state.nameChang, page:Number(this.state.pageOne)===1?Number(this.state.pageOne):Number(this.state.pageOne) - 1 })
+        this.setState({ pageOne: Number(this.state.pageOne)===1?Number(this.state.pageOne):Number(this.state.pageOne) - 1 })
       } else {
         this.setState({ pageOne: this.state.pageOne })
         this.getVenueNumberTitleList({ sportid: this.state.nameChang, page: this.state.pageOne })

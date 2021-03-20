@@ -549,7 +549,7 @@
     text-align: center;
     line-height: 25px;
     color: #fff;
-    background-color: #ccc;
+    background-color: #56A5FF;
     float: left;
     margin-left: 10px;
     cursor: pointer;
@@ -615,7 +615,7 @@
     float: left;
 }
 .kojk .footer .calce{
-  width: 63px;
+  width: 83px;
   height: 29px;
   background: #F5A623;
   border-radius: 3px;
@@ -624,5 +624,13 @@
   line-height: 29px;
   float: right;
   cursor: pointer;
-
+  font-size: 12px;
+  margin-left: 10px;
+}
+.showNow{
+    float: right;
+    margin-right: 60px;
+    margin-top: 5px;
+    color: #56A5FF;
+    cursor: pointer;
 }

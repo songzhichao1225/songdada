@@ -118,6 +118,7 @@ class appointmentList extends React.Component {
     otherObj: [],
     informaid:'',
     TotalPrice:0,
+    hours:''
   };
 
   async getVenueSport(data) {
@@ -164,16 +165,17 @@ class appointmentList extends React.Component {
       this.getVenueNumberTitleList({ sportid: this.props.location.query.id })
     }
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    // let lo = new Date().toLocaleDateString().split('/')[1]
-    // let loTwo = new Date().toLocaleDateString().split('/')[2]
-    // if (lo.length === 1&&loTwo.length>1) {
-    //   lo = new Date().toLocaleDateString().split('/')[0] + '-0' + new Date().toLocaleDateString().split('/')[1] + '-' + new Date().toLocaleDateString().split('/')[2]
-    // }else if(lo.length === 1&&loTwo.length===1){
-    //   lo = new Date().toLocaleDateString().split('/')[0] + '-0' + new Date().toLocaleDateString().split('/')[1] + '-0' + new Date().toLocaleDateString().split('/')[2]
-    // }else if(lo.length > 1&&loTwo.length===1){
-    //   lo = new Date().toLocaleDateString().split('/')[0] + '-' + new Date().toLocaleDateString().split('/')[1] + '-0' + new Date().toLocaleDateString().split('/')[2]
-    // }
-    this.setState({ dateString: new Date(), week: week[new Date().getDay()] })
+    let lo = new Date().toLocaleDateString().split('/')[1]
+    let loTwo = new Date().toLocaleDateString().split('/')[2]
+    if (lo.length === 1&&loTwo.length>1) {
+      lo = new Date().toLocaleDateString().split('/')[0] + '-0' + new Date().toLocaleDateString().split('/')[1] + '-' + new Date().toLocaleDateString().split('/')[2]
+    }else if(lo.length === 1&&loTwo.length===1){
+      lo = new Date().toLocaleDateString().split('/')[0] + '-0' + new Date().toLocaleDateString().split('/')[1] + '-0' + new Date().toLocaleDateString().split('/')[2]
+    }else if(lo.length > 1&&loTwo.length===1){
+      lo = new Date().toLocaleDateString().split('/')[0] + '-' + new Date().toLocaleDateString().split('/')[1] + '-0' + new Date().toLocaleDateString().split('/')[2]
+    }
+    console.log(new Date().getHours())
+    this.setState({ dateString:lo,hours:new Date().getHours(),startTime:lo+' '+new Date().getHours()+':00', week: week[new Date().getDay()] })
   }
 
 
@@ -209,9 +211,9 @@ class appointmentList extends React.Component {
       }
       setTimeout(() => {
         if (document.querySelector('.ant-table-body') !== null) {
-          document.querySelector('.ant-table-body').scrollTo(0, arrTime.indexOf(kojh[0]) * 45)
+          document.querySelector('.ant-table-body').scrollTo(0, arrTime.indexOf(kojh[0]) * 55)
         }
-      }, 2000)
+      }, 50)
 
 
       this.setState({
@@ -305,14 +307,14 @@ class appointmentList extends React.Component {
   dateChange = (data, datatring) => {
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
     console.log(datatring)
-    this.setState({ dateString: datatring, week: week[new Date(datatring).getDay()] })
+    this.setState({ dateString: datatring,startTime:datatring+' '+new Date().getHours()+':00', week: week[new Date(datatring).getDay()] })
     this.getDateAndDayOfWeek({ date: datatring })
     this.getVenueReservation({ sportid: this.state.liNum, date: datatring })
   }
 
   dateStingTwo = (e) => {
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    this.setState({ dateString: e.currentTarget.dataset.date, week: week[new Date(e.currentTarget.dataset.date).getDay()] })
+    this.setState({ dateString: e.currentTarget.dataset.date,startTime:e.currentTarget.dataset.date+' '+new Date().getHours()+':00', week: week[new Date(e.currentTarget.dataset.date).getDay()] })
     this.getVenueReservation({ sportid: this.state.liNum, date: e.currentTarget.dataset.date })
   }
 
@@ -367,8 +369,10 @@ class appointmentList extends React.Component {
   async AddVenueOfflineOccupancy(data) {
     const res = await AddVenueOfflineOccupancy(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ info: false })
-      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.datatring })
+      this.setState({ info: false,selectVenueId:'' })
+      console.log(this.state.dateString)
+      this.getVenueReservation({ sportid: this.state.liNum,date: this.state.dateString })
+      console.log(8585)
     }else{
       message.warning(res.data.msg)
     }
@@ -438,6 +442,7 @@ class appointmentList extends React.Component {
   handleCancelInFo = () => {
     this.setState({
       info: false,
+      selectVenueId:'',
       selectable: false
     })
   }
@@ -474,14 +479,14 @@ class appointmentList extends React.Component {
 
   riLeft = () => {
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    this.setState({ dateString: this.getDay(-7), week: week[new Date(this.getDay(-7)).getDay()] })
+    this.setState({ dateString: this.getDay(-7),startTime:this.getDay(-7)+' '+new Date().getHours()+':00', week: week[new Date(this.getDay(-7)).getDay()] })
     this.getDateAndDayOfWeek({ date: this.getDay(-7) })
     this.getVenueReservation({ sportid: this.state.liNum, date: this.getDay(-7) })
   }
 
   riRight = () => {
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    this.setState({ dateString: this.getDay(7), week: week[new Date(this.getDay(7)).getDay()] })
+    this.setState({ dateString: this.getDay(7),startTime:this.getDay(7)+' '+new Date().getHours()+':00', week: week[new Date(this.getDay(7)).getDay()] })
     this.getDateAndDayOfWeek({ date: this.getDay(7) })
     this.getVenueReservation({ sportid: this.state.liNum, date: this.getDay(7) })
   }
@@ -578,7 +583,7 @@ class appointmentList extends React.Component {
   async DelVenueOfflineOccupancy(data) {
     const res = await DelVenueOfflineOccupancy(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.datatring })
+      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.dateString })
       this.setState({History:false})
       message.success('取消成功')
     }
@@ -591,7 +596,9 @@ class appointmentList extends React.Component {
 
 
 
-
+  sdgdrf=(e)=>{
+    this.setState({ startTime: new Date(e).format("yyyy-MM-dd hh:mm") })
+  }
 
 
   render() {
@@ -616,7 +623,7 @@ class appointmentList extends React.Component {
         <div className={this.state.number === '2' ? 'circumstance' : 'circumstanceT'} style={{ height: '92%' }} >
           <ul className="rightNav" style={{ top: '-63px', left: '-20px' }}>
             <li className="dateSelect">
-              <DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={locale} allowClear={false} placeholder="请选择日期" className="DatePicker" onPanelChange={this.dateChangeTwo} onChange={this.dateChange} />
+              <DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} value={moment(this.state.dateString, 'YYYY-MM-DD')} locale={locale} allowClear={false} placeholder="请选择日期" className="DatePicker" onPanelChange={this.dateChangeTwo} onChange={this.dateChange} />
             </li>
           </ul>
 
@@ -808,7 +815,7 @@ class appointmentList extends React.Component {
 
             <div>
               <span>开始时间</span>
-              <DatePicker showNow={false} allowClear={false} showTime  minuteStep={30} style={{ width: '260px' }} format="YYYY-MM-DD HH:mm" onOk={this.startTime} />
+              <DatePicker onChange={this.sdgdrf}  allowClear={false} showTime defaultValue={moment(this.state.dateString+' '+this.state.hours,'YYYY-MM-DD HH:mm')}  style={{ width: '260px' }} format="YYYY-MM-DD HH:mm" onOk={this.startTime} />
             </div>
 
             <div>
@@ -871,7 +878,7 @@ class appointmentList extends React.Component {
           <div style={{ overflow: 'hidden' }}>
             {
               this.state.selectableList.map((item, i) => (
-                <div className="lohkhjgj" key={i} data-ifused={i} onClick={this.selectClick} style={item.ifUsed === 2 ? { background: '#F5A623' } : item.ifUsed === 0 ? { background: 'red' } : {}}>{item.venueid}</div>
+                <div className="lohkhjgj" key={i} data-ifused={i} onClick={this.selectClick} style={item.ifUsed === 2 ? { background: 'red' } : item.ifUsed === 0 ? { background: '#ccc' } : {}}>{item.venueid}</div>
               ))
             }
           </div>
