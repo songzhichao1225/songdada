@@ -175,38 +175,38 @@
     font-size:12px;
 }
 .orderPh .bookingKanban .modTitle>.blue{
-    width:1rem;
-    height:1rem;
+    width:0.75rem;
+    height:0.75rem;
     background:rgba(86,165,255,1);
     border-radius:0.13rem;
     font-size: 12px;
-    margin-top: 0.1rem;
+    margin-top: 0.2rem;
     float: left;
 }
 
 .orderPh .bookingKanban .modTitle>.white{
-    width:1rem;
-    height:1rem;
+    width:0.75rem;
+    height:0.75rem;
     background:#E9E9E9;
     border-radius:0.13rem;
-    margin-top: 0.1rem;
+    margin-top: 0.2rem;
     float: left;
 }
 
 .orderPh .bookingKanban .modTitle>.yellow{
-    width:1rem;
-    height:1rem;
+    width:0.75rem;
+    height:0.75rem;
     background:rgba(245,166,35,1);
     border-radius:0.13rem;
-    margin-top: 0.1rem;
+    margin-top: 0.2rem;
     float: left;
 }
 .orderPh .bookingKanban .modTitle>.red{
-    width:1rem;
-    height:1rem;
+    width:0.75rem;
+    height:0.75rem;
     background:red;
     border-radius:0.13rem;
-    margin-top: 0.1rem;
+    margin-top: 0.2rem;
     float: left;
 }
 .orderPh .bookingKanban .locaList{
@@ -462,11 +462,12 @@ html:not([data-scale]) .am-card-body::before{
     flex-basis: 100%;
     font-size: 12px;
     color:#000;
-    text-align: center;
+    text-align: left;
     color: #fff;
     border-bottom: 0.06rem solid #fff;
     margin: 0 auto;
     padding-bottom: 0;
+    padding-left: 2.5rem;
 }
 
 .dateT  .am-list-content{
@@ -712,7 +713,9 @@ html:not([data-scale]) .am-card-body::before{
     overflow: hidden;
 }
 .sdfsdgdrg{
-    width: 100%;
+    position: absolute;
+    bottom: 2rem;
+    width: 90%;
     height: 2.69rem;
     color: #fff;
     background: #D85D27;
@@ -731,7 +734,7 @@ html:not([data-scale]) .am-card-body::before{
 .sdfgdfgh{
     position: absolute;
     top: 0.7rem;
-    left: 65%;
+    left: 56%;
     color: #fff;
 }
 .asdgfdsfg{
@@ -746,4 +749,22 @@ html:not([data-scale]) .am-card-body::before{
     left: 50%;
     z-index: 1000;
     color: blue;
+}
+.sgdfgdfg{
+    float: left;
+    width: 3rem;
+    height: 2.69rem;
+    background: #F5A623;
+    color: #fff;
+    text-align: center;
+    line-height: 2.69rem;
+    border-radius: 0.3rem;
+}
+
+.sdgfdfgdgjugfyh{
+    width: 0.54rem;
+    height: 1rem;
+    position: absolute;
+    top: 1rem;
+    right: 0.2rem;
 }

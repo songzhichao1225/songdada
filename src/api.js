@@ -9,8 +9,8 @@ export let imgUrlTwo='https://appstg.tiaozhanmeiyitian.com/'  //测试图片路�
 
 // export let wsFn = new WebSocket("wss://www.cg.zhaoduishou.com/socket");//正式socket
 // export let wsFn = new WebSocket("wss://cgstg.zhaoduishou.com/socket");//测试socket
-// export let wsFn = new WebSocket("wss://59.110.0.126:9998");//测试socket
-export let wsFn = new WebSocket("wss://admin.tiaozhanmeiyitian.com/socket");//测试、正式环境只此一个
+export let wsFn = new WebSocket("wss://socket.tiaozhanmeiyitian.com/socket");//测试socket
+// export let wsFn = new WebSocket("wss://admin.tiaozhanmeiyitian.com/socket");//测试、正式环境只此一个
 
 export let htUrl='http://adminstg.tiaozhanmeiyitian.com/'  //测试合同路径
 // export let htUrl='http://admin.tiaozhanmeiyitian.com/'  //正式合同路径

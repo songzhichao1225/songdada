@@ -80,10 +80,9 @@
 }
 .lood  .am-list-line .am-list-extra{
     flex-basis: 64% !important;
-    color: #000; 
+    color: #888; 
 }
 .loodTo  .am-list-line .am-list-extra{
-    text-align: left;
     flex-basis: 64% !important;
     color: #c0c0c0; 
 }
@@ -141,7 +140,6 @@
 }
 .gorad .am-list-line .am-list-extra{
     flex-basis:64%!important;
-    text-align: left;
     color: #bbb;
 }
 

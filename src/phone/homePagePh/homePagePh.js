@@ -124,7 +124,9 @@ class homePagePh extends React.Component {
 
 
 
-    this.jo()
+    setTimeout(() => {
+      this.jo()
+    }, 1000);
     
 
     // setInterval(() => {
@@ -157,7 +159,7 @@ class homePagePh extends React.Component {
 
 
   jo = () => {
-    let ws = new WebSocket("wss://admin.tiaozhanmeiyitian.com/socket")
+    let ws = new WebSocket("wss://socket.tiaozhanmeiyitian.com/socket")
     ws.onopen = function () {
       ws.send(localStorage.getItem('siteUid'))
     }

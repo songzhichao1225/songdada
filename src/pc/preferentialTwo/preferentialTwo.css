@@ -634,3 +634,20 @@
     color: #56A5FF;
     cursor: pointer;
 }
+.sdfdgsdf{
+    overflow: hidden;
+    cursor: pointer;
+}
+.sdfdgsdf>div{
+    overflow: hidden;
+}
+.sdfdgsdf>div>span{
+    float: left;
+}
+.sdfdgsdf>div>span:first-child{
+    width: 80px;
+}
+.sdfdgsdf:hover{
+    background: #f5f5f5;
+
+}

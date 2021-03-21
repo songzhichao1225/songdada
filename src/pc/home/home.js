@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Link } from 'react-router-dom';
 import './home.css';
 import 'antd/dist/antd.css';
-import { getVenueIndex, gerVenueName, VenueEvaluationOfOperation, _login, VenueEvaluationSave, getMobilePhoneBindingVenues } from '../../api';
+import { getVenueIndex, gerVenueName, VenueEvaluationOfOperation, _login, VenueEvaluationSave, getMobilePhoneBindingVenues,getAudio } from '../../api';
 import { Layout, Menu, message, notification, Modal, Rate, Select } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 // import homePage from '../homePage/homePage';
@@ -42,23 +42,7 @@ const Koloko=lazyLoad(() => import('../koloko/koloko'));
 const { Header, Sider, Content } = Layout;
 const { Option } = Select;
 
-function jo() {
-  let wsFn = new WebSocket("wss://admin.tiaozhanmeiyitian.com/socket")
-  wsFn.onopen = function () {
-    wsFn.send(sessionStorage.getItem('siteuid'))
-  }
 
-  wsFn.onmessage = function (e) {
-    let message_info = JSON.parse(e.data)
-    let msg = new SpeechSynthesisUtterance(message_info.percent)
-    window.speechSynthesis.speak(msg)
-    notification.open({ description: message_info.percent, duration: 5 })
-    sessionStorage.setItem('kood', 2)
-  }
-  wsFn.onclose = function () {
-    jo()
-  }
-}
 
 class home extends React.Component {
 
@@ -161,6 +145,45 @@ class home extends React.Component {
     }
   }
 
+  async getAudio(data) {
+    const res = await getAudio(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+        let url = res.data.data.path;
+        let audio = new Audio(url);
+        audio.src = url;
+        audio.preload='load'
+        audio.play();
+        document.addEventListener("WeixinJSBridgeReady", function () {
+          audio.play();
+        }, false);
+        document.addEventListener('YixinJSBridgeReady', function () {
+          audio.play();
+        }, false);
+        document.addEventListener("touchstart", audio.play(), false);
+        this.setState({ koFlag: 0 })
+      }
+    }
+
+
+    jo=()=>{
+      let wsFn = new WebSocket("wss://socket.tiaozhanmeiyitian.com/socket")
+      wsFn.onopen = function () {
+        wsFn.send(sessionStorage.getItem('siteuid'))
+      }
+      let that = this
+      wsFn.onmessage = function (e) {
+        let message_info = JSON.parse(e.data)
+        let msg = new SpeechSynthesisUtterance(message_info.percent)
+        window.speechSynthesis.speak(msg)
+        that.getAudio({txt:message_info.percent})
+        notification.open({ description: message_info.percent, duration: 5 })
+        sessionStorage.setItem('kood', 2)
+      }
+      wsFn.onclose = function () {
+        that.jo()
+      }
+    }
+
 
   componentDidMount() {
     sessionStorage.setItem('kood', 1)
@@ -180,7 +203,10 @@ class home extends React.Component {
       this.setState({flagHidden:1})
       sessionStorage.setItem('path', '1');
     }else{
-      jo()
+
+      setTimeout(() => {
+      this.jo()
+      },1000)
       this.getMobilePhoneBindingVenues()
       this.getVenueIndex()
       this.gerVenueName()

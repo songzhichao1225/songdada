@@ -127,6 +127,7 @@ class siteSettings extends React.Component {
       { name: '台球美式九球', id: 4 },
       { name: '台球斯诺克', id: 5 },
       { name: '篮球（全场）', id: 6 },
+      { name: '篮球（半场）', id: 15 },
       { name: '足球11人制', id: 7 },
       { name: '足球8人制', id: 8 },
       { name: '足球7人制', id: 9 },
@@ -1848,6 +1849,7 @@ class siteSettings extends React.Component {
   }
 
   handleChangeThree = e => {
+    console.log(e)
     this.setState({ relatednessRunid: [e], connectedName: '', connectedOne: '', connectedOneLen: 0 })
   }
 
@@ -1856,6 +1858,7 @@ class siteSettings extends React.Component {
   }
 
   connected = (e) => {
+    console.log(e.currentTarget.dataset)
     if (this.state.relatednessRunid !== '') {
       let num = e.currentTarget.dataset.num
       let arrNum = []
@@ -1908,7 +1911,56 @@ class siteSettings extends React.Component {
           { id: '45', cheked: false, num: 44 },
           { id: '46', cheked: false, num: 45 },
           { id: '47', cheked: false, num: 46 },]
-      } else {
+      } else if (this.state.relatednessRunid[0] === 15) {
+        arrNum = [
+          { id: '1A', cheked: false, num: 0 },
+          { id: '1B', cheked: false, num: 1 },
+          { id: '2A', cheked: false, num: 2 },
+          { id: '2B', cheked: false, num: 3 },
+          { id: '3A', cheked: false, num: 4 },
+          { id: '3B', cheked: false, num: 5 },
+          { id: '4A', cheked: false, num: 6 },
+          { id: '4B', cheked: false, num: 7 },
+          { id: '5A', cheked: false, num: 8 },
+          { id: '5B', cheked: false, num: 9 },
+          { id: '6A', cheked: false, num: 10 },
+          { id: '6B', cheked: false, num: 11 },
+          { id: '7A', cheked: false, num: 12 },
+          { id: '7B', cheked: false, num: 13 },
+          { id: '8A', cheked: false, num: 14 },
+          { id: '8B', cheked: false, num: 15 },
+          { id: '9A', cheked: false, num: 16 },
+          { id: '9B', cheked: false, num: 17 },
+          { id: '10A', cheked: false, num: 18 },
+          { id: '10B', cheked: false, num: 19 },
+          { id: '11A', cheked: false, num: 20 },
+          { id: '11B', cheked: false, num: 21 },
+          { id: '12A', cheked: false, num: 22 },
+          { id: '12B', cheked: false, num: 23 },
+          { id: '13A', cheked: false, num: 24 },
+          { id: '13B', cheked: false, num: 25 },
+          { id: '14A', cheked: false, num: 26 },
+          { id: '14B', cheked: false, num: 27 },
+          { id: '15A', cheked: false, num: 28 },
+          { id: '15B', cheked: false, num: 29 },
+          { id: '16A', cheked: false, num: 30 },
+          { id: '16B', cheked: false, num: 31 },
+          { id: '17A', cheked: false, num: 32 },
+          { id: '17B', cheked: false, num: 33 },
+          { id: '18A', cheked: false, num: 34 },
+          { id: '18B', cheked: false, num: 35 },
+          { id: '19A', cheked: false, num: 36 },
+          { id: '19B', cheked: false, num: 37 },
+          { id: '20A', cheked: false, num: 38 },
+          { id: '20B', cheked: false, num: 39 },
+          { id: '21A', cheked: false, num: 40 },
+          { id: '21B', cheked: false, num: 41 },
+          { id: '22A', cheked: false, num: 42 },
+          { id: '22B', cheked: false, num: 43 },
+          { id: '23A', cheked: false, num: 44 },
+          { id: '23B', cheked: false, num: 45 },
+          { id: '24A', cheked: false, num: 46 }]
+      }else {
         for (let i = 1; i <= 100; i++) {
           let p = {
             id: i, cheked: false
@@ -1922,6 +1974,15 @@ class siteSettings extends React.Component {
 
       if (num !== '') {
         if (this.state.relatednessRunid[0] === 6) {
+          let numT = num.split(',')
+          for (let i in numT) {
+            for (let j in arrNum) {
+              if (arrNum[j].id === numT[i]) {
+                arrNum[j].cheked = true
+              }
+            }
+          }
+        }else if(this.state.relatednessRunid[0] === 15) {
           let numT = num.split(',')
           for (let i in numT) {
             for (let j in arrNum) {
@@ -1964,6 +2025,8 @@ class siteSettings extends React.Component {
         ko = '网球'
       } else if (this.state.relatednessRunid[0] === 13) {
         ko = '足球6人制'
+      } else if (this.state.relatednessRunid[0] === 15) {
+        ko = '篮球(半场)'
       }
       this.setState({ connectedName: ko, arrNum: arrNum, connected: true })
     } else {
@@ -1972,14 +2035,25 @@ class siteSettings extends React.Component {
 
   }
   connectedSelsed = e => {
-
-    let data = this.state.arrNum
-    if (data[e.currentTarget.dataset.id - 1].cheked === true) {
-      data[e.currentTarget.dataset.id - 1].cheked = false
-    } else if (data[e.currentTarget.dataset.id - 1].cheked === false) {
-      data[e.currentTarget.dataset.id - 1].cheked = true
+    if (this.state.relatednessRunid[0] === 15) {
+      let data = this.state.arrNum
+      if (data[e.currentTarget.dataset.num].cheked === true) {
+        data[e.currentTarget.dataset.num].cheked = false
+      } else if (data[e.currentTarget.dataset.num].cheked === false) {
+        data[e.currentTarget.dataset.num].cheked = true
+      }
+      this.setState({ arrNum: data })
+    }else{
+      let data = this.state.arrNum
+      if (data[e.currentTarget.dataset.id - 1].cheked === true) {
+        data[e.currentTarget.dataset.id - 1].cheked = false
+      } else if (data[e.currentTarget.dataset.id - 1].cheked === false) {
+        data[e.currentTarget.dataset.id - 1].cheked = true
+      }
+      this.setState({ arrNum: data })
     }
-    this.setState({ arrNum: data })
+
+   
 
   }
   connectedBtn = () => {
@@ -2010,7 +2084,6 @@ class siteSettings extends React.Component {
     if (this.state.relatednessRunidTwo !== '') {
       let arrNum = []
       if (this.state.relatednessRunidTwo[0] === 6) {
-
         arrNum = [
           { id: '1A', cheked: false, num: 0 },
           { id: '1B', cheked: false, num: 1 },
@@ -2236,7 +2309,7 @@ class siteSettings extends React.Component {
       message.warning('请选择子关联场地编号')
     } else {
       let data = {
-        two_sportid: this.state.relatednessRunid[0],
+        two_sportid: this.state.relatednessRunid[0]===15?6:this.state.relatednessRunid[0],
         two_sportname: this.state.connectedName,
         two_venueid: this.state.connectedOne,
         one_sportid: this.state.relatednessRunidTwo[0],

@@ -3,7 +3,7 @@
   "name": "Create React App Sample",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "logoHead.png",
       "sizes": "256x256 128x128",
       "type": "image/x-icon"
     }

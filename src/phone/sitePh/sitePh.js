@@ -56,6 +56,7 @@ class sitePh extends React.Component {
       { label: '台球美式九球', value: 4 },
       { label: '台球斯诺克', value: 5 },
       { label: '篮球（全场）', value: 6 },
+      { label: '篮球（半场）', value: 15 },
       { label: '足球11人制', value: 7 },
       { label: '足球8人制', value: 8 },
       { label: '足球7人制', value: 9 },
@@ -1499,7 +1500,56 @@ class sitePh extends React.Component {
           { id: '45', cheked: false, num: 44 },
           { id: '46', cheked: false, num: 45 },
           { id: '47', cheked: false, num: 46 },]
-      } else {
+      } else if (this.state.relatednessRunid[0] === 15) {
+        arrNum=[
+          { id: '1A', cheked: false, num: 0 },
+          { id: '1B', cheked: false, num: 1 },
+          { id: '2A', cheked: false, num: 2 },
+          { id: '2B', cheked: false, num: 3 },
+          { id: '3A', cheked: false, num: 4 },
+          { id: '3B', cheked: false, num: 5 },
+          { id: '4A', cheked: false, num: 6 },
+          { id: '4B', cheked: false, num: 7 },
+          { id: '5A', cheked: false, num: 8 },
+          { id: '5B', cheked: false, num: 9 },
+          { id: '6A', cheked: false, num: 10 },
+          { id: '6B', cheked: false, num: 11 },
+          { id: '7A', cheked: false, num: 12 },
+          { id: '7B', cheked: false, num: 13 },
+          { id: '8A', cheked: false, num: 14 },
+          { id: '8B', cheked: false, num: 15 },
+          { id: '9A', cheked: false, num: 16 },
+          { id: '9B', cheked: false, num: 17 },
+          { id: '10A', cheked: false, num: 18 },
+          { id: '10B', cheked: false, num: 19 },
+          { id: '11A', cheked: false, num: 20 },
+          { id: '11B', cheked: false, num: 21 },
+          { id: '12A', cheked: false, num: 22 },
+          { id: '12B', cheked: false, num: 23 },
+          { id: '13A', cheked: false, num: 24 },
+          { id: '13B', cheked: false, num: 25 },
+          { id: '14A', cheked: false, num: 26 },
+          { id: '14B', cheked: false, num: 27 },
+          { id: '15A', cheked: false, num: 28 },
+          { id: '15B', cheked: false, num: 29 },
+          { id: '16A', cheked: false, num: 30 },
+          { id: '16B', cheked: false, num: 31 },
+          { id: '17A', cheked: false, num: 32 },
+          { id: '17B', cheked: false, num: 33 },
+          { id: '18A', cheked: false, num: 34 },
+          { id: '18B', cheked: false, num: 35 },
+          { id: '19A', cheked: false, num: 36 },
+          { id: '19B', cheked: false, num: 37 },
+          { id: '20A', cheked: false, num: 38 },
+          { id: '20B', cheked: false, num: 39 },
+          { id: '21A', cheked: false, num: 40 },
+          { id: '21B', cheked: false, num: 41 },
+          { id: '22A', cheked: false, num: 42 },
+          { id: '22B', cheked: false, num: 43 },
+          { id: '23A', cheked: false, num: 44 },
+          { id: '23B', cheked: false, num: 45 },
+          { id: '24A', cheked: false, num: 46 }]
+    }else {
         for (let i = 1; i <= 100; i++) {
           let p = {
             id: i, cheked: false
@@ -1511,12 +1561,21 @@ class sitePh extends React.Component {
       this.getLabelRelatVenueNumber({ sportid: this.state.relatednessRunid[0],type:2 })
 
       if (num !== '') {
-        
+         if(this.state.relatednessRunid[0] === 15) {
+          let numT = num.split(',')
+          for (let i in numT) {
+            for (let j in arrNum) {
+              if (arrNum[j].id === numT[i]) {
+                arrNum[j].cheked = true
+              }
+            }
+          }
+        }else{
           let numT = num.split(',')
           for (let i in numT) {
             arrNum[numT[i] - 1].cheked = true
           }
-        
+        }
       }
       let ko = ''
       if (this.state.relatednessRunid[0] === 1) {
@@ -1545,6 +1604,8 @@ class sitePh extends React.Component {
         ko = '网球'
       } else if (this.state.relatednessRunid[0]=== 13) {
         ko = '足球6人制'
+      }else if (this.state.relatednessRunid[0]=== 15) {
+        ko = '篮球（半场）'
       }
 
       this.setState({ connected: true, connectedName:ko,arrNum:arrNum })
@@ -1559,7 +1620,17 @@ class sitePh extends React.Component {
   }
 
   connectedSelsed = e => {
-    
+
+
+    if (this.state.relatednessRunid[0] === 15) {
+      let data = this.state.arrNum
+      if (data[e.currentTarget.dataset.num].cheked === true) {
+        data[e.currentTarget.dataset.num].cheked = false
+      } else if (data[e.currentTarget.dataset.num].cheked === false) {
+        data[e.currentTarget.dataset.num].cheked = true
+      }
+      this.setState({ arrNum: data })
+    }else{
       let data = this.state.arrNum
       if (data[e.currentTarget.dataset.id - 1].cheked === true) {
         data[e.currentTarget.dataset.id - 1].cheked = false
@@ -1567,7 +1638,7 @@ class sitePh extends React.Component {
         data[e.currentTarget.dataset.id - 1].cheked = true
       }
       this.setState({ arrNum: data })
-    
+    }
   }
 
   connectedBtn = () => {
@@ -1814,7 +1885,7 @@ class sitePh extends React.Component {
       Toast.fail('请选择子关联场地编号')
     } else {
       let data = {
-        two_sportid: this.state.relatednessRunid[0],
+        two_sportid: this.state.relatednessRunid[0]===15?6:this.state.relatednessRunid[0],
         two_sportname: this.state.connectedName,
         two_venueid: this.state.connectedOne,
         one_sportid: this.state.relatednessRunidTwo[0],
@@ -2291,7 +2362,7 @@ class sitePh extends React.Component {
               value={this.state.selectDa}
               cols={1}
             >
-              <List.Item arrow='empty' style={this.state.timeFalg === 'no' ? { width: '40%', position: 'absolute', top: 0, right: '0%',textAlign:'center' } :this.state.timeFalg === 'yes'?{ width: '40%', position: 'absolute', top: 0, right: '0%',textAlign:'center' } :{ display: 'none' }}></List.Item>
+              <List.Item arrow='horizontal' style={this.state.timeFalg === 'no' ? { width: '40%', position: 'absolute', top: 0, right: '-2rem',textAlign:'center' } :this.state.timeFalg === 'yes'?{ width: '40%', position: 'absolute', top: 0, right: '-2rem',textAlign:'center' } :{ display: 'none' }}></List.Item>
             </Picker>
              <div style={this.state.timeFalg === 'no' ? {display:'none'} : this.state.timeFalg === 'yes' ? {display:'none'} : {width: '40%', position: 'absolute', top: 0, right: '0%',lineHeight:'44px',textAlign:'right'}}>(元/时)</div>
           </List.Item>

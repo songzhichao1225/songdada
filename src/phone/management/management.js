@@ -29,7 +29,7 @@ class management extends React.Component {
     discountVal: '',//折扣
     topUp: '',//充值金额
     giveAway: '',//赠送金额
-    balance: '',//余额
+    balance: '0',//余额
     validity: '',//有效期
     grade: '',//等级
     other: '',
@@ -58,6 +58,7 @@ class management extends React.Component {
     ipCodeTwo: '',
     makeNumTwo:'',
     memberuuidlokl:'',
+    balanceTwo:'0'
   };
 
 
@@ -353,6 +354,7 @@ class management extends React.Component {
     this.EditVenueMember(obj)
   }
 
+
   render() {
     return (
       <div className="management">
@@ -404,7 +406,7 @@ class management extends React.Component {
               placeholder="请输入"
               value={this.state.cardHolder}
               onChange={(v) => { this.setState({ cardHolder: v }) }}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem',textAlign:'right' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>卡主名称</span></InputItem>
           </List.Item>
 
@@ -414,7 +416,7 @@ class management extends React.Component {
               placeholder="请输入"
               value={this.state.contactPerson}
               onChange={(v) => { this.setState({ contactPerson: v }) }}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem',textAlign:'right' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>联系人</span></InputItem>
           </List.Item>
 
@@ -436,7 +438,7 @@ class management extends React.Component {
               value={this.state.contactNumber}
               maxLength={11}
               onChange={(v) => { this.setState({ contactNumber: v }) }}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem',textAlign:'right' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>联系电话</span></InputItem>
           </List.Item>
 
@@ -446,7 +448,7 @@ class management extends React.Component {
               placeholder="请输入"
               value={this.state.Vipcard}
               onChange={(v) => { this.setState({ Vipcard: v }) }}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem',textAlign:'right' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>会员卡号</span></InputItem>
           </List.Item>
 
@@ -464,19 +466,20 @@ class management extends React.Component {
 
           <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
             <InputItem
-              type='number'
+              type='text'
               placeholder="请输入"
               className="look"
               value={this.state.discountVal}
               onVirtualKeyboardConfirm={this.cofirmMoney}
               onChange={(v) => {
-                if(Number(v)>10){
+                if(parseFloat(v)>10){
                   this.setState({ discountVal: 10 })
                 }else{
                   this.setState({ discountVal: v })
                 }
+                
                   }}
-              style={{ padding: '0', textAlign: 'left', fontSize: '0.88rem' }}
+              style={{ padding: '0', fontSize: '0.88rem',textAlign:'right' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>折扣</span></InputItem>
           </List.Item>
 
@@ -488,7 +491,7 @@ class management extends React.Component {
               maxLength={8}
               value={this.state.topUp}
               onChange={(v) => { this.setState({ topUp: v, balance: Number(this.state.giveAway) + Number(v) }) }}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem',textAlign:'right' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>充值金额</span></InputItem>
           </List.Item>
 
@@ -500,7 +503,7 @@ class management extends React.Component {
               maxLength={8}
               value={this.state.giveAway}
               onChange={(v) => { this.setState({ giveAway: v, balance: Number(this.state.topUp) + Number(v) }) }}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem',textAlign:'right' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>赠送金额</span></InputItem>
           </List.Item>
 
@@ -566,7 +569,7 @@ class management extends React.Component {
               placeholder="请输入"
               value={this.state.cardHolderTwo}
               disabled={true}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem',textAlign:'right' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>卡主名称</span></InputItem>
           </List.Item>
 
@@ -576,11 +579,11 @@ class management extends React.Component {
               placeholder="请输入"
               value={this.state.contactPersonTwo}
               disabled={true}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem',textAlign:'right'  }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>联系人</span></InputItem>
           </List.Item>
 
-          <List.Item arrow="empty" className="loodTo" extra={this.state.birthdayTwo} style={{ borderBottom: '1px solid #E9E9E9' }}>生日</List.Item>
+          <List.Item arrow="empty" className="loodTo" extra={this.state.birthdayTwo} style={{ borderBottom: '1px solid #E9E9E9',textAlign:'right'  }}>生日</List.Item>
 
           <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
             <InputItem
@@ -588,7 +591,7 @@ class management extends React.Component {
               placeholder="请输入"
               value={this.state.contactNumberTwo}
               disabled={true}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem',textAlign:'right' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>联系电话</span></InputItem>
           </List.Item>
 
@@ -598,28 +601,28 @@ class management extends React.Component {
               placeholder="请输入"
               value={this.state.VipcardTwo}
               disabled={true}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem',textAlign:'right'  }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>会员卡号</span></InputItem>
           </List.Item>
 
 
-          <List.Item arrow="empty" className="gorad" extra={this.state.gradeTwo === 1 ? '普通会员' : this.state.gradeTwo === 2 ? '银卡会员' : this.state.gradeTwo === 3 ? '金卡会员' : this.state.gradeTwo === 4 ? '铂金会员' : this.state.gradeTwo === 5 ? '钻石会员' : this.state.gradeTwo === 6 ? '星耀会员' : ''} style={{ borderBottom: '1px solid #E9E9E9' }}>会员卡等级</List.Item>
+          <List.Item arrow="empty" className="gorad" extra={this.state.gradeTwo === 1 ? '普通会员' : this.state.gradeTwo === 2 ? '银卡会员' : this.state.gradeTwo === 3 ? '金卡会员' : this.state.gradeTwo === 4 ? '铂金会员' : this.state.gradeTwo === 5 ? '钻石会员' : this.state.gradeTwo === 6 ? '星耀会员' : ''} style={{ borderBottom: '1px solid #E9E9E9',textAlign:'right' }}>会员卡等级</List.Item>
 
           <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
             <InputItem
-              type='number'
+              type='text'
               placeholder="请输入"
               className="look"
               value={this.state.discountValTwo}
               onChange={(v) => { 
-                if(Number(v)>10){
+                if(parseFloat(v)>10){
                   this.setState({ discountValTwo: 10 })
                 }else{
                   this.setState({ discountValTwo: v })
                 }
               
               }}
-              style={{ padding: '0', textAlign: 'left', fontSize: '0.88rem' }}
+              style={{ padding: '0', fontSize: '0.88rem',textAlign:'right'  }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>折扣</span></InputItem>
           </List.Item>
 
@@ -631,7 +634,7 @@ class management extends React.Component {
               value={this.state.topUpTwo}
               maxLength={8}
               onChange={(v) => { this.setState({ topUpTwo: v }) }}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem',textAlign:'right'  }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>充值金额</span></InputItem>
           </List.Item>
 
@@ -643,7 +646,7 @@ class management extends React.Component {
               maxLength={8}
               value={this.state.giveAwayTwo}
               onChange={(v) => { this.setState({ giveAwayTwo: v, balanceTwo: Number(this.state.topUpTwo) + Number(v) }) }}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem',textAlign:'right'  }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>赠送金额</span></InputItem>
           </List.Item>
 
@@ -683,7 +686,7 @@ class management extends React.Component {
               placeholder="请输入"
               value={this.state.cardHolderThree}
               onChange={(v) => { this.setState({ cardHolderThree: v }) }}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem', textAlign: 'right' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem', textAlign: 'right',color:'#888' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>卡主名称</span></InputItem>
           </List.Item>
 
@@ -693,7 +696,7 @@ class management extends React.Component {
               placeholder="请输入"
               value={this.state.contactPersonThree}
               onChange={(v) => { this.setState({ contactPersonThree: v }) }}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem', textAlign: 'right' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem', textAlign: 'right',color:'#888' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>联系人</span></InputItem>
           </List.Item>
 
@@ -702,7 +705,7 @@ class management extends React.Component {
             title="选择生日"
             extra="请选择"
             value={this.state.birthdayThree}
-            style={{ textAlign: 'right' }}
+            style={{ textAlign: 'right',color:'#888' }}
             onChange={birthdayThree => this.setState({ birthdayThree })}
           >
             <List.Item arrow="horizontal" className="lood" style={{ borderBottom: '1px solid #E9E9E9' }}>生日</List.Item>
@@ -738,7 +741,7 @@ class management extends React.Component {
               value={this.state.VipcardThree}
               maxLength={20}
               onChange={(v) => { this.setState({ VipcardThree: v }) }}
-              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem', textAlign: 'right' }}
+              style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem', textAlign: 'right',color:'#888' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>会员卡号</span></InputItem>
           </List.Item>
 
