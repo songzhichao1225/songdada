@@ -226,7 +226,7 @@ class orderPh extends React.Component {
         res.data.other[i].width = 60
       }
       let ploboj = {
-        title: <div>场地号<br />标签</div>,
+        title: <div style={{fontSize:'0.78rem'}}>场地号<br />标签</div>,
         fixed: 'left',
         width: 60,
         dataIndex: 'lppd',
@@ -261,7 +261,7 @@ class orderPh extends React.Component {
       for (let j in resData[i].c) {
         obj.key = i + 1
         let key = resData[i].c[j].venueids
-        let value = <div><div data-type={resData[i].c[j].type} data-uuid={resData[i].c[j].uuid} onClick={this.lookDeta} style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, color: 'transparent', lineHeight: 3 } : {}}><Checkbox className="chePe" idx={i} jdx={j} checked={resData[i].c[j].checked} onChange={this.checkbox} dtype={resData[i].c[j].type} time={resData[i].a} venueid={resData[i].c[j].venueids} uuid={resData[i].c[j].uuid} style={resData[i].c[j].type === 1 && this.state.cofirmZ === 1 ? {} : { display: 'none' } && resData[i].c[j].type === 4 && this.state.Cancels === 1 ? {} : { display: 'none' }} />{resData[i].c[j].money_cg}</div></div>
+        let value = <div><div data-type={resData[i].c[j].type} data-uuid={resData[i].c[j].uuid} onClick={this.lookDeta} style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, lineHeight: 3 } : {}}><Checkbox className="chePe" idx={i} jdx={j} checked={resData[i].c[j].checked} onChange={this.checkbox} dtype={resData[i].c[j].type} time={resData[i].a} venueid={resData[i].c[j].venueids} uuid={resData[i].c[j].uuid} style={resData[i].c[j].type === 1 && this.state.cofirmZ === 1 ? {} : { display: 'none' } && resData[i].c[j].type === 4 && this.state.Cancels === 1 ? {} : { display: 'none' }} />{resData[i].c[j].type === 4?resData[i].c[j].who:resData[i].c[j].money_cg}</div></div>
         obj[key] = value
         let koTwo = parseInt(resData[i].a.slice(1, 2)) + 1 + ':00'
         obj.lppd = <div style={{ color: '#F5A623' }}>{resData[i].a}<br />{resData[i].a.slice(3, resData[i].a.length) === '00' ? resData[i].a.slice(0, 2) + ':30' : koTwo === '10:00' && resData[i].a !== '19:30' ? '10:00' : resData[i].a === '19:30' ? '20:00' : resData[i].a.slice(0, 1) + koTwo}</div>
@@ -296,8 +296,8 @@ class orderPh extends React.Component {
   async getVenueBookingInformation(data) {
     const res = await getVenueBookingInformation(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      if(res.data.data.comment.length>15){
-        res.data.data.comment = res.data.data.comment.slice(0, 10)
+      if(res.data.data.comment.length>20){
+        res.data.data.comment = res.data.data.comment.slice(0, 20)
       }
       
       this.setState({ otherObj: res.data.data, otherObjTime: res.data.data.time, menu: 1, History: true })
@@ -495,7 +495,6 @@ class orderPh extends React.Component {
     } else if (this.state.end === '') {
       Toast.fail('请选择结束时间', 1)
     } else {
-      console.log(this.state.start)
       let start = this.state.start.format("yyyy-MM-dd").split('-')
       let end = this.state.end.format("yyyy-MM-dd").split('-')
       let startT = ''
@@ -1008,11 +1007,12 @@ class orderPh extends React.Component {
       this.getVenueReservation({ sportid: this.state.liNum, date: this.state.qiDate })
       this.setState({ History: false })
       Toast.success('取消成功')
+    }else{
+      Toast.fail(res.data.msg)
     }
   }
 
   calesdeedsfr = () => {
-    console.log(this.state.otherObj)
     if (this.state.otherObj.isloop === 1) {
       alert('提示', '您确定取消订单吗?', [
         { text: '取消所有循环订单', onPress: () => this.DelVenueOfflineOccupancy({ offid: this.state.informaid, isloop: 2 }) },
@@ -1450,7 +1450,7 @@ class orderPh extends React.Component {
               disabled={true}
               value={this.state.selectVenueId}
             ><div className="leftTxt">场地号</div></InputItem>
-            <img className="sdgfdfgdgjugfyh" src={require('../../assets/right.png')}/>
+            <img className="sdgfdfgdgjugfyh" src={require('../../assets/right.png')} alt="icon"/>
           </div>
 
           <div className="listKoj">
@@ -1531,9 +1531,25 @@ class orderPh extends React.Component {
             <div className="plaTop plaTopTwo">
               <p style={{ marginBottom: '0.5rem' }}>场地信息</p>
               <div style={{ fontWeight: 'bold', fontSize: '0.88rem' }}><span style={{ width: '80px' }}>预订时间:</span><span>{this.state.otherObj.bookingTime}</span></div>
+              <div style={{ fontWeight: 'bold', fontSize: '0.88rem' }}><span style={{ width: '80px' }}>预订时间:</span><span>
+              {this.state.otherObj.sportid===1?'羽毛球':
+              this.state.otherObj.sportid===2?'兵乓球':
+              this.state.otherObj.sportid===3?'台球中式黑八':
+              this.state.otherObj.sportid===4?'台球美式九球':
+              this.state.otherObj.sportid===5?'台球斯诺克':
+              this.state.otherObj.sportid===6?'篮球':
+              this.state.otherObj.sportid===7?'足球11人制':
+              this.state.otherObj.sportid===8?'足球8人制':
+              this.state.otherObj.sportid===9?'足球7人制':
+              this.state.otherObj.sportid===13?'足球6人制':
+              this.state.otherObj.sportid===10?'足球5人制':
+              this.state.otherObj.sportid===11?'排球':
+              this.state.otherObj.sportid===12?'网球':''
+              }
+                </span></div>
               {
                 this.state.otherObjTime.map((item, i) => (
-                  <div key={i}><span>{item.date}  {item.option}</span><span>{item.venueid}</span></div>
+                  <div key={i}><span style={{width:'140px'}}>{item.date}  {item.option}</span><span>{item.venueid}</span></div>
                 ))
               }
               <div style={{ color: "#D0021B" }}>预计消费：￥{this.state.otherObj.consumpMoney}</div>
@@ -1570,7 +1586,7 @@ class orderPh extends React.Component {
                     <div className="lokjjkdgh" style={{ marginTop: "1rem" }}><span>卡主名称：</span><span>{item.kzName}</span></div>
                     <div className="lokjjkdgh"><span>联系人：</span><span>{item.userName}</span></div>
                     <div className="lokjjkdgh"><span>手机号：</span><span>{item.tel}</span></div>
-                    <div className="lokjjkdgh"><span>会员卡号：</span><span>{item.cardNum}</span><span style={item.expire === 1 ? {} : { display: 'none' }}>已过期</span></div>
+                    <div className="lokjjkdgh"><span>会员卡号：</span><span>{item.cardNum}</span><span style={item.expire === 1 ? {color:'red'} : { display: 'none' }}>（已过期）</span></div>
                   </div>
                 </RadioItem>
               ))

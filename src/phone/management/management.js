@@ -376,7 +376,7 @@ class management extends React.Component {
                     <div>生日：{item.birthday}</div> <div>联系电话：{item.contactNumber}</div> <div><div style={{ float: 'left' }}>会员卡号：</div><div className="vipText" data-txt={item.cardNumber} onClick={this.lookText}>{item.cardNumber}</div></div>
                     <div>会员等级：{item.grade === 1 ? '普通' : item.grade === 2 ? 'vip' : item.grade === 3 ? '银卡' : item.grade === 4 ? '金卡' : '超级vip'}</div>
                     <div>折扣：{item.discount}折</div>  <div>充值金额：￥{item.rechargeMoney}</div> <div>赠送金额：￥{item.giveMoney}</div>   <div>余额：￥{item.balance}<span className="lishi" onClick={this.consumptionOne} data-uuid={item.uuid}>历史记录</span></div>
-                    <div style={{ paddingBottom: '0.5rem' }}>有效日期：{item.effectiveDate}</div> <div style={{ paddingBottom: '0.5rem' }}>会员卡状态：{item.status === 1 ? '已正常' : item.status === 2 ? '已退卡' : item.status === 3 ? '已过期' : ''}</div>
+                    <div style={{ paddingBottom: '0.5rem' }}>有效日期：{item.effectiveDate}</div> <div style={{ paddingBottom: '0.5rem' }}>会员卡状态：{item.status === 1 ? '正常' : item.status === 2 ? '已退卡' : item.status === 3 ? '已过期' : ''}</div>
 
                     <span className="topUp" data-uuid={item.uuid} onClick={this.visibleJoinTwo}>充</span> <span className="topUp tui" data-uuid={item.uuid} onClick={this.fallBack}>退</span> <img data-uuid={item.uuid} onClick={this.edidor} src={require('../../assets/icon_pc_updata.png')} alt="img" />
                   </Card.Body>

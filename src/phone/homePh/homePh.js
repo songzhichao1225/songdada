@@ -46,7 +46,7 @@ class homePh extends React.Component {
       this.setState({ getVenue: res.data.data, spin: false, spinFlag: false })
       sessionStorage.setItem('score', res.data.data.score)
       if(res.data.data.isevaluate===0){
-        // this.VenueEvaluationOfOperation()
+        this.VenueEvaluationOfOperation()
       }
     }
   }

@@ -180,7 +180,7 @@
     background:rgba(86,165,255,1);
     border-radius:0.13rem;
     font-size: 12px;
-    margin-top: 0.2rem;
+    margin-top: 0.1rem;
     float: left;
 }
 
@@ -189,7 +189,7 @@
     height:0.75rem;
     background:#E9E9E9;
     border-radius:0.13rem;
-    margin-top: 0.2rem;
+    margin-top: 0.1rem;
     float: left;
 }
 
@@ -198,7 +198,7 @@
     height:0.75rem;
     background:rgba(245,166,35,1);
     border-radius:0.13rem;
-    margin-top: 0.2rem;
+    margin-top: 0.1rem;
     float: left;
 }
 .orderPh .bookingKanban .modTitle>.red{
@@ -206,7 +206,7 @@
     height:0.75rem;
     background:red;
     border-radius:0.13rem;
-    margin-top: 0.2rem;
+    margin-top: 0.1rem;
     float: left;
 }
 .orderPh .bookingKanban .locaList{
@@ -531,7 +531,7 @@ html:not([data-scale]) .am-card-body::before{
     height: 100%;
 }
 .orderPh .ant-spin-container{
-    height: 97%;
+    height: 100%;
 }
 .orderPh .ant-table-container{
     height: 100%;
@@ -540,7 +540,7 @@ html:not([data-scale]) .am-card-body::before{
     height: 96%;
 }
 .orderPh .ant-table-wrapper{
-    height: 85%;
+    height: 90%;
 }
 .orderPh .cardBody{
     font-size: 12px;
@@ -671,7 +671,7 @@ html:not([data-scale]) .am-card-body::before{
 
 .kojk .plaTop>div>span:first-child{
     float: left;
-    width:140px ;
+    width:80px ;
 }
 .kojk .plaTop>div>span:last-child{
     float: left;
@@ -733,7 +733,7 @@ html:not([data-scale]) .am-card-body::before{
 }
 .sdfgdfgh{
     position: absolute;
-    top: 0.7rem;
+    top: 0.55rem;
     left: 56%;
     color: #fff;
 }

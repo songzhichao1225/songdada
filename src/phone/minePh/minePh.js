@@ -58,8 +58,13 @@ class minePh extends React.Component {
 
   componentDidMount() {
     this.gerVenueName()
-    this.getMobilePhoneBindingVenues()
+    setTimeout(()=>{
+      this.getMobilePhoneBindingVenues()
+    },500)
     sessionStorage.setItem('flaghood', 1)
+    
+       
+      
   }
 
   myWalletPh = () => {

@@ -339,6 +339,10 @@ class VipAgement extends React.Component {
   dateOnChangeTwo = (date, dateString) => {
     this.setState({ dateOnChangeTwo: dateString })
   }
+  dateOnChangeTwoTwo=(value,mode)=>{
+    this.setState({ dateOnChangeTwo: value._d.format("yyyy-MM-dd") })
+    
+  }
   contactNumberTqwo = e => {
     this.setState({ contactNumberTqwo: e.target.value })
   }
@@ -528,7 +532,7 @@ class VipAgement extends React.Component {
           </div>
           <div className="ViplistSon">
             <span className="title">生日</span>
-            <DatePicker style={{ marginLeft: '19.5px', width: '300px' }} allowClear={false} onChange={this.dateOnChange} />
+            <DatePicker style={{ marginLeft: '19.5px', width: '300px' }} allowClear={false} onChange={this.dateOnChange}/>
           </div>
           <div className="ViplistSon">
             <span className="title">联系电话<span className="redStart">*</span></span>
@@ -744,7 +748,7 @@ class VipAgement extends React.Component {
           </div>
           <div className="ViplistSon">
             <span className="title">生日</span>
-            <DatePicker style={{ marginLeft: '19.5px', width: '300px' }} allowClear={false} value={moment(this.state.dateOnChangeTwo)} onChange={this.dateOnChangeTwo} />
+            <DatePicker style={{ marginLeft: '19.5px', width: '300px' }} allowClear={false} value={moment(this.state.dateOnChangeTwo)} onPanelChange={this.dateOnChangeTwoTwo} onChange={this.dateOnChangeTwo} />
           </div>
           <div className="ViplistSon">
             <span className="title">联系电话</span>
