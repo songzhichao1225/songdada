@@ -1,8 +1,8 @@
 import React from 'react';
 import './VipAgement.css';
 import 'antd/dist/antd.css';
-import { AddVenueMember, getVenueMemberlist, getVenueMemberRecordsOfConsumption, getVenueMemberDetails, VenueMemberRecharge, VenueMemberRefundCardDetails, VenueMemberRefundCard, EditVenueMember, _code } from '../../api';
-import { Row, Col, Modal, Input, Select, DatePicker, message, Pagination, Popconfirm,Popover } from 'antd';
+import { AddVenueMember, getVenueMemberlist, getVenueMemberRecordsOfConsumption, getVenueMemberDetails, VenueMemberRecharge, VenueMemberRefundCardDetails, getVenueMemberlistexcel, VenueMemberRefundCard, EditVenueMember, _code } from '../../api';
+import { Row, Col, Modal, Input, Select, DatePicker, message, Pagination, Popconfirm } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 const { Search } = Input;
@@ -55,8 +55,11 @@ class VipAgement extends React.Component {
     textFive: '获取验证码',
     edorTwoLpoBlock: 0,
     memberuuidFour: '',
-    pageTwo:'',
-    RecordsUid:''
+    pageTwo: '',
+    RecordsUid: '',
+    validityThree: '',
+    href: '',
+    download: '',
   }
 
 
@@ -64,12 +67,19 @@ class VipAgement extends React.Component {
     const res = await getVenueMemberlist(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ memberList: res.data.data, other: res.data.other.maxcount })
+      setTimeout(() => {
+        let html = "<html><head><meta charset='utf-8' /></head><body>" + document.getElementsByTagName("table")[0].outerHTML + "</body></html>";
+        let blob = new Blob([html], { type: "application/vnd.ms-excel" });
+        this.setState({ href: URL.createObjectURL(blob), download: '会员管理第'+this.state.page+'页.xls' })
+      }, 500);
     } else {
       message.error(res.data.msg)
     }
   }
   componentDidMount() {
     this.getVenueMemberlist({ page: this.state.page })
+
+ 
   }
 
   handleCancel = () => {
@@ -121,9 +131,9 @@ class VipAgement extends React.Component {
     this.setState({ VipcardVal: e.target.value })
   }
   discount = e => {
-    if(e.target.value>10){
+    if (e.target.value > 10) {
       this.setState({ discountVal: 10 })
-    }else{
+    } else {
       this.setState({ discountVal: e.target.value })
     }
   }
@@ -131,7 +141,7 @@ class VipAgement extends React.Component {
     this.setState({ handleChange: e })
   }
   topUp = e => {
-    this.setState({ topUp: e.target.value,balance: Number(this.state.giveAway) + Number(e.target.value) })
+    this.setState({ topUp: e.target.value, balance: Number(this.state.giveAway) + Number(e.target.value) })
   }
   giveAway = e => {
 
@@ -145,7 +155,9 @@ class VipAgement extends React.Component {
     this.setState({ validity: e })
   }
 
-
+  validityThree = e => {
+    this.setState({ validityThree: Number(e) })
+  }
 
   vipSubmiter = () => {
     let { cardHolderVal, contactPersonVal, birthdays, contactNumberVal, VipcardVal, discountVal, handleChange, topUp, giveAway, balance, validity } = this.state
@@ -204,13 +216,13 @@ class VipAgement extends React.Component {
       message.error(res.data.msg)
     }
   }
-  currentTwo=(page,pageSize)=>{
-    this.setState({pageTwo:page})
-    this.getVenueMemberRecordsOfConsumption({ memberuuid:this.state.RecordsUid, page: page })
+  currentTwo = (page, pageSize) => {
+    this.setState({ pageTwo: page })
+    this.getVenueMemberRecordsOfConsumption({ memberuuid: this.state.RecordsUid, page: page })
   }
 
   recordsList = e => {
-    this.setState({ records: true,RecordsUid: e.currentTarget.dataset.uuid})
+    this.setState({ records: true, RecordsUid: e.currentTarget.dataset.uuid })
     this.getVenueMemberRecordsOfConsumption({ memberuuid: e.currentTarget.dataset.uuid, page: 1 })
   }
   records = () => {
@@ -220,7 +232,7 @@ class VipAgement extends React.Component {
   async getVenueMemberDetails(data) {
     const res = await getVenueMemberDetails(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ memberDetails: res.data.data })
+      this.setState({ memberDetails: res.data.data, validityThree: res.data.data.effective })
     } else {
       message.error(res.data.msg)
     }
@@ -234,27 +246,28 @@ class VipAgement extends React.Component {
     this.setState({ topAmount: false })
   }
   topUpTwo = e => {
-    this.setState({ topUpTwo: e.target.value,balanceTwo: Number(this.state.memberDetails.balance) + Number(this.state.giveAwayTwo) + Number(e.target.value) })
+    this.setState({ topUpTwo: e.target.value, balanceTwo: Number(this.state.memberDetails.balance) + Number(this.state.giveAwayTwo) + Number(e.target.value) })
   }
   giveAwayTwo = e => {
     this.setState({ giveAwayTwo: e.target.value, balanceTwo: Number(this.state.memberDetails.balance) + Number(this.state.topUpTwo) + Number(e.target.value) })
   }
   discountTwo = e => {
-    if(e.target.value>10){
+    if (e.target.value > 10) {
       this.setState({ discountTwo: 10 })
-    }else{
+    } else {
       this.setState({ discountTwo: e.target.value })
     }
   }
 
 
   vipSubmiterTwo = () => {
-    let { vipUid, discountTwo, topUpTwo, giveAwayTwo } = this.state
+    let { vipUid, discountTwo, validityThree, topUpTwo, giveAwayTwo } = this.state
     let obj = {
       memberuuid: vipUid,
       discount: discountTwo,
       rechargeMoney: topUpTwo,
-      giveMoney: giveAwayTwo
+      giveMoney: giveAwayTwo,
+      effective: validityThree
     }
 
     this.VenueMemberRecharge(obj)
@@ -264,7 +277,7 @@ class VipAgement extends React.Component {
     const res = await VenueMemberRecharge(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success(res.data.msg)
-      this.setState({ topAmount: false,giveAwayTwo:'',topUpTwo:'',balanceTwo:'' })
+      this.setState({ topAmount: false, giveAwayTwo: '', topUpTwo: '', balanceTwo: '' })
       this.getVenueMemberlist({ page: this.state.page })
     } else {
       message.error(res.data.msg)
@@ -339,9 +352,9 @@ class VipAgement extends React.Component {
   dateOnChangeTwo = (date, dateString) => {
     this.setState({ dateOnChangeTwo: dateString })
   }
-  dateOnChangeTwoTwo=(value,mode)=>{
+  dateOnChangeTwoTwo = (value, mode) => {
     this.setState({ dateOnChangeTwo: value._d.format("yyyy-MM-dd") })
-    
+
   }
   contactNumberTqwo = e => {
     this.setState({ contactNumberTqwo: e.target.value })
@@ -458,6 +471,20 @@ class VipAgement extends React.Component {
   }
 
 
+  async getVenueMemberlistexcel(data) {
+    const res = await getVenueMemberlistexcel(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+    } else {
+      message.error(res.data.msg)
+    }
+  }
+
+
+  sdastae = () => {
+
+  }
+
+
 
   render() {
 
@@ -469,49 +496,57 @@ class VipAgement extends React.Component {
         </div>
         <div className="line"></div>
         <div className="content">
-          <Row className="headList">
-            <Col xs={{ span: 2 }}>卡主名称</Col>
-            <Col xs={{ span: 1 }}>联系人</Col>
-            <Col xs={{ span: 2 }}>生日</Col>
-            <Col xs={{ span: 3 }}>联系电话</Col>
-            <Col xs={{ span: 2 }}>会员卡号</Col>
-            <Col xs={{ span: 2 }}>会员等级</Col>
-            <Col xs={{ span: 2 }}>充值金额</Col>
-            <Col xs={{ span: 2 }}>赠送金额</Col>
-            <Col xs={{ span: 1 }}>折扣</Col>
-            <Col xs={{ span: 2 }}>余额</Col>
-            <Col xs={{ span: 2 }}>有效期</Col>
-            <Col xs={{ span: 1 }}>会员状态</Col>
-            <Col xs={{ span: 2 }}>操作</Col>
-          </Row>
-          {
-            this.state.memberList.map((item, i) => (
-              <Row className="headListSon" key={i}>
-                <Col xs={{ span: 2 }}>{item.cardholderName}</Col>
-                <Col xs={{ span: 1 }}>{item.contacts}</Col>
-                <Col xs={{ span: 2 }}>{item.birthday}</Col>
-                <Col xs={{ span: 3 }}>{item.contactNumber}</Col>
-                <Popover content={item.cardNumber} title="详情" trigger="click">
-                  <Col xs={{ span: 2 }} style={{ cursor: 'pointer' }}>{item.cardNumber}</Col>
-                </Popover>
-                <Col xs={{ span: 2 }}>{item.grade === 1 ? '普通会员' : item.grade === 2 ? '银卡会员' : item.grade === 3 ? '金卡会员' : item.grade === 4 ? '铂金会员' : item.grade === 5?'钻石会员':item.grade === 6?'星耀会员':''}</Col>
-                <Col xs={{ span: 2 }}>￥{item.rechargeMoney}</Col>
-                <Col xs={{ span: 2 }}>￥{item.giveMoney}</Col>
-                <Col xs={{ span: 1 }}>{item.discount}</Col>
-                <Col xs={{ span: 2 }}>￥{item.balance}<span style={{ fontSize: '10px', paddingLeft: '5px', color: '#4A90E2', cursor: 'pointer' }} data-uuid={item.uuid} onClick={this.recordsList}>历史记录</span></Col>
-                <Col xs={{ span: 2 }}>{item.effectiveDate}</Col>
-                <Col xs={{ span: 1 }} style={{color:'blue'}}>{item.status===1?'正常':item.status===2?'已退卡':item.status===3?'已过期':''}</Col>
-                <Col xs={{ span: 2 }}><span className="topUp" data-uuid={item.uuid} onClick={this.topAmountDetail}>充</span><span className="topUp tui" data-uuid={item.uuid} onClick={this.returnCard}>退</span><img onClick={this.editorKo} data-uuid={item.uuid} style={{ cursor: 'pointer' }} src={require('../../assets/icon_pc_updata.png')} alt="编辑" /></Col>
-              </Row>
-            ))
-          }
+
+          <table style={{ width: '100%',border:'none' }} border="juikj">
+            <tbody>
+                <tr className="headList">
+                  <td>卡主名称</td>
+                  <td>联系人</td>
+                  <td>生日</td>
+                  <td>联系电话</td>
+                  <td>会员卡号</td>
+                  <td>会员等级</td>
+                  <td>充值金额</td>
+                  <td>赠送金额</td>
+                  <td>折扣</td>
+                  <td>余额</td>
+                  <td>有效期</td>
+                  <td>会员状态</td>
+                  <td>操作</td>
+                </tr>
+
+                {
+                  this.state.memberList.map((item, i) => (
+                    <tr className="headListTwo" key={i}>
+                      <td>{item.cardholderName}</td>
+                      <td>{item.contacts}</td>
+                      <td>{item.birthday}</td>
+                      <td>{item.contactNumber}</td>
+                      <td>{item.cardNumber}</td>
+                      <td>{item.grade === 1 ? '普通会员' : item.grade === 2 ? '银卡会员' : item.grade === 3 ? '金卡会员' : item.grade === 4 ? '铂金会员' : item.grade === 5 ? '钻石会员' : item.grade === 6 ? '星耀会员' : ''}</td>
+                      <td>￥{item.rechargeMoney}</td>
+                      <td>￥{item.giveMoney}</td>
+                      <td>{item.discount}</td>
+                      <td>￥{item.balance}<br /><span style={{ fontSize: '10px', paddingLeft: '5px', color: '#4A90E2', cursor: 'pointer' }} data-uuid={item.uuid} onClick={this.recordsList}>历史记录</span></td>
+                      <td>{item.effectiveDate}</td>
+                      <td>{item.status === 1 ? '正常' : item.status === 2 ? '已退卡' : item.status === 3 ? '已过期' : ''}</td>
+                      <td><span className="topUp" data-uuid={item.uuid} onClick={this.topAmountDetail}>充</span><span className="topUp tui" data-uuid={item.uuid} onClick={this.returnCard}>退</span><img onClick={this.editorKo} data-uuid={item.uuid} style={{ cursor: 'pointer' }} src={require('../../assets/icon_pc_updata.png')} alt="编辑" /></td>
+                    </tr>
+                  ))
+                }
+
+
+            </tbody>
+          </table>
+
+
           <div style={this.state.memberList.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '84px', height: '84px', display: 'block', margin: '64px auto 0' }} src={require('../../assets/vipno.png')} alt='icon' /><span style={{ display: 'block', textAlign: 'center' }}>您还没有添加会员信息!</span></div>
-            
+
           <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.page} total={this.state.other} onChange={this.current} />
           <div className="bottomJoin" onClick={this.bottomJoin}>+新增会员信息</div>
-          
-          {/* <div className="import" onClick={this.importTr}>批量导入会员</div>
-          <div className="derived import">导出会员</div> */}
+
+          {/* <div className="import" onClick={this.importTr}>批量导入会员</div> */}
+          <div className="derived import" ><a href={this.state.href} download={this.state.download}>导出会员</a></div>
         </div>
 
 
@@ -524,7 +559,7 @@ class VipAgement extends React.Component {
           onCancel={this.handleCancel}>
           <div className="ViplistSon">
             <span className="title">卡主名称<span className="redStart">*</span></span>
-            <Input placeholder="请填写" onChange={this.cardHolder} maxLength={10} />
+            <Input placeholder="请填写" onChange={this.cardHolder} />
           </div>
           <div className="ViplistSon">
             <span className="title">联系人<span className="redStart">*</span></span>
@@ -532,7 +567,7 @@ class VipAgement extends React.Component {
           </div>
           <div className="ViplistSon">
             <span className="title">生日</span>
-            <DatePicker style={{ marginLeft: '19.5px', width: '300px' }} allowClear={false} onChange={this.dateOnChange}/>
+            <DatePicker style={{ marginLeft: '19.5px', width: '300px' }} allowClear={false} onChange={this.dateOnChange} />
           </div>
           <div className="ViplistSon">
             <span className="title">联系电话<span className="redStart">*</span></span>
@@ -544,7 +579,7 @@ class VipAgement extends React.Component {
           </div>
           <div className="ViplistSon">
             <span className="title">折扣<span onClick={this.hintTr} style={{ padding: '0px 6px', marginLeft: '10px', background: '#F5A623', color: '#fff', cursor: 'pointer' }}>?</span></span>
-            <Input style={{ marginLeft: '18px', width: '300px' }}   value={this.state.discountVal} onChange={this.discount}  placeholder="请填写" />
+            <Input style={{ marginLeft: '18px', width: '300px' }} value={this.state.discountVal} onChange={this.discount} placeholder="请填写" />
           </div>
           <div className="ViplistSon">
             <span className="title">会员等级<span className="redStart">*</span></span>
@@ -645,8 +680,8 @@ class VipAgement extends React.Component {
               </Row>
             ))
           }
-           <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.pageTwo} total={this.state.otherTwo} onChange={this.currentTwo} />
-         
+          <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.pageTwo} total={this.state.otherTwo} onChange={this.currentTwo} />
+
 
         </Modal>
 
@@ -678,15 +713,39 @@ class VipAgement extends React.Component {
             <Input value={this.state.memberDetails.cardNumber} disabled={true} />
           </div>
 
+
           <div className="ViplistSon">
             <span className="title">会员等级</span>
             <Input value={this.state.memberDetails.grade === 1 ? '普通会员' : this.state.memberDetails.grade === 2 ? '银卡会员' : this.state.memberDetails.grade === 3 ? '金卡会员' : this.state.memberDetails.grade === 4 ? '铂金会员' : this.state.memberDetails.grade === 5 ? '钻石会员' : this.state.memberDetails.grade === 6 ? '星耀会员' : ''} disabled={true} />
           </div>
 
+
           <div className="ViplistSon">
-            <span className="title">有效期</span>
-            <Input value={this.state.memberDetails.effective === 1 ? '一个月' : this.state.memberDetails.effective === 2 ? '二个月' : this.state.memberDetails.effective === 3 ? '三个月' : this.state.memberDetails.effective === 4 ? '四个月' : this.state.memberDetails.effective === 5 ? '五个月' : this.state.memberDetails.effective === 6 ? '六个月' : this.state.memberDetails.effective === 7 ? '七个月' : this.state.memberDetails.effective === 8 ? '八个月' : this.state.memberDetails.effective === 9 ? '九个月' : this.state.memberDetails.effective === 10 ? '十个月' : this.state.memberDetails.effective === 11 ? '十一个月' : this.state.memberDetails.effective === 12 ? '十二个月' : this.state.memberDetails.effective === 13 ? '两年' : this.state.memberDetails.effective === 14 ? '三年' : this.state.memberDetails.effective === 15 ? '四年' : this.state.memberDetails.effective === 16 ? '五年' : this.state.memberDetails.effective === 17 ? '六年' : ''} disabled={true} />
+            <span className="title">有效期<span className="redStart">*</span></span>
+            <Select placeholder="请选择 " style={{ width: 300, marginLeft: '18px' }}
+              value={this.state.validityThree === 1 ? '一个月' : this.state.validityThree === 2 ? '二个月' : this.state.validityThree === 3 ? '三个月' : this.state.validityThree === 4 ? '四个月' : this.state.validityThree === 5 ? '五个月' : this.state.validityThree === 6 ? '六个月' : this.state.validityThree === 7 ? '七个月' : this.state.validityThree === 8 ? '八个月' : this.state.validityThree === 9 ? '九个月' : this.state.validityThree === 10 ? '十个月' : this.state.validityThree === 11 ? '十一个月' : this.state.validityThree === 12 ? '十二个月' : this.state.validityThree === 13 ? '两年' : this.state.validityThree === 14 ? '三年' : this.state.validityThree === 15 ? '四年' : this.state.validityThree === 16 ? '五年' : this.state.validityThree === 17 ? '六年' : ''}
+              onChange={this.validityThree}>
+              <Option value="1">一个月</Option>
+              <Option value="2">二个月</Option>
+              <Option value="3">三个月</Option>
+              <Option value="4">四个月</Option>
+              <Option value="5">五个月</Option>
+              <Option value="6">六个月</Option>
+              <Option value="7">七个月</Option>
+              <Option value="8">八个月</Option>
+              <Option value="9">九个月</Option>
+              <Option value="10">十个月</Option>
+              <Option value="11">十一个月</Option>
+              <Option value="12">十二个月</Option>
+              <Option value="13">两年</Option>
+              <Option value="14">三年</Option>
+              <Option value="15">四年</Option>
+              <Option value="16">五年</Option>
+              <Option value="17">六年</Option>
+            </Select>
           </div>
+
+
 
           <div className="ViplistSon">
             <span className="title">当前余额</span>
@@ -695,16 +754,16 @@ class VipAgement extends React.Component {
 
           <div className="ViplistSon">
             <span className="title">充值金额<span className="redStart">*</span></span>
-            <Input  maxLength={8} placeholder="请填写" value={this.state.topUpTwo} onChange={this.topUpTwo} />
+            <Input maxLength={8} placeholder="请填写" value={this.state.topUpTwo} onChange={this.topUpTwo} />
           </div>
           <div className="ViplistSon">
             <span className="title">赠送金额</span>
-            <Input  maxLength={8} placeholder="请填写" value={this.state.giveAwayTwo} onChange={this.giveAwayTwo} />
+            <Input maxLength={8} placeholder="请填写" value={this.state.giveAwayTwo} onChange={this.giveAwayTwo} />
           </div>
 
           <div className="ViplistSon">
             <span className="title">折扣</span>
-            <Input style={{ marginLeft: '19px', width: '300px' }} value={this.state.discountTwo} onChange={this.discountTwo}  placeholder="请填写" />
+            <Input style={{ marginLeft: '19px', width: '300px' }} value={this.state.discountTwo} onChange={this.discountTwo} placeholder="请填写" />
           </div>
           <div className="ViplistSon">
             <span className="title">充值后金额</span>
@@ -740,7 +799,7 @@ class VipAgement extends React.Component {
 
           <div className="ViplistSon">
             <span className="title">卡主名称</span>
-            <Input placeholder="请填写" onChange={this.cardHolderTwo} value={this.state.cardHolderTwo} maxLength={10} />
+            <Input placeholder="请填写" onChange={this.cardHolderTwo} value={this.state.cardHolderTwo} />
           </div>
           <div className="ViplistSon">
             <span className="title">联系人</span>
@@ -855,6 +914,7 @@ class VipAgement extends React.Component {
 
 
 
+        
       </div>
     )
   }

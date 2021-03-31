@@ -173,8 +173,6 @@ class home extends React.Component {
       let that = this
       wsFn.onmessage = function (e) {
         let message_info = JSON.parse(e.data)
-        let msg = new SpeechSynthesisUtterance(message_info.percent)
-        window.speechSynthesis.speak(msg)
         that.getAudio({txt:message_info.percent})
         notification.open({ description: message_info.percent, duration: 5 })
         sessionStorage.setItem('kood', 2)

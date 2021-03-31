@@ -539,6 +539,23 @@
     width: 260px;
     height: 36px;
 }
+.Relatedness .sdgfdfgf>div{
+    width: 100%;
+    margin-top: 18px;
+    overflow: hidden;
+}
+.Relatedness .sdgfdfgf>div>span:first-child{
+    width: 104px;
+    display: block;
+    float: left;
+    text-align: left;
+    line-height: 36px;
+}
+.Relatedness .sdgfdfgf>div>Input{
+    float: left;
+    width: 260px;
+    height: 36px;
+}
 .ant-input[disabled]{
     background-color: #fff;
     color: #333;
@@ -661,4 +678,18 @@
     line-height: 32px;
     padding-left: 11px;
     float: left;
+}
+.orderList .sdgdfgdf{
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: red;
+    margin: 0 auto;
+    color: #fff;
+    font-size: 0.75rem;
+    text-align: center;
+    line-height: 1rem;
+    position: absolute;
+    top: 1.1rem;
+    left: 2rem;
 }

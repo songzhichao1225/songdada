@@ -162,6 +162,12 @@ class closeYu extends React.Component {
       case 12:
         day = "网球";
         break;
+      case 13:
+        day = "足球6人制";
+        break;
+      case 14:
+        day = "足球9人制";
+        break;
       default:
         day = "";
     }
@@ -361,7 +367,7 @@ class closeYu extends React.Component {
             okText="确定"
             cancelText="取消"
           >
-            <div className="submit" style={{ lineHeight: '28px', marginLeft: '70px',textAlign:'center' }} onClick={this.modelSubmit}>确认</div>
+            <div className="submit" style={{ lineHeight: '28px', marginLeft: '70px', textAlign: 'center' }} onClick={this.modelSubmit}>确认</div>
           </Popconfirm>
         </Modal>
       </div>

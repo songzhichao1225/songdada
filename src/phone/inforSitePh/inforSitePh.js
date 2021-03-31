@@ -1073,6 +1073,7 @@ class inforSitePh extends React.Component {
       { label: '台球斯诺克', value: '5' },
       { label: '篮球', value: '6' },
       { label: '足球11人制', value: '7' },
+      { label: '足球9人制', value: '14' },
       { label: '足球8人制', value: '8' },
       { label: '足球7人制', value: '9' },
       { label: '足球6人制', value: '13' },

@@ -29,6 +29,24 @@
     text-align: center;
     line-height: 44px;
 }
+.VipAgement .headList>td{
+    width: 7.69%;
+    text-align: center;
+}
+.VipAgement .headListTwo{
+    border-bottom: 1px solid rgb(225, 224, 225);
+}
+.VipAgement .headListTwo>td{
+  width: 7.69%;
+  text-align: center;
+}
+.VipAgement .headListTwo>td:first-child{
+    text-align: left;
+    padding-left: 10px;
+}
+table {
+    border-collapse: collapse;
+}
 .VipAgement .headListSon{
     height: 44px;
     text-align: center;

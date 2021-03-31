@@ -656,7 +656,7 @@ class appointmentList extends React.Component {
 
                       </div>
                     ))
-                  }</div> <div onClick={this.deducting} data-uuid={item.uuid} data-sportName={item.SportName} style={item.breakup.length === 0 ? { display: 'none' } : { float: 'left', color: '#4A90E2' }}>扣除<br />记录</div><div style={item.breakup.length === 0 ? {} : { display: 'none' }}>非散场</div></Col>
+                  }</div> <div onClick={this.deducting} data-uuid={item.uuid} data-sportname={item.SportName} style={item.breakup.length === 0 ? { display: 'none' } : { float: 'left', color: '#4A90E2' }}>扣除<br />记录</div><div style={item.breakup.length === 0 ? {} : { display: 'none' }}>非散场</div></Col>
                 <Col xs={{ span: 2 }}  style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}><div>{item.PublicStatus}<div onClick={this.Complaints} data-id={item.uuid} style={item.iscomplain === 1 ? { color: '#F6410C', fontSize: '12px',cursor:'pointer' } : { display: 'none' }}>(有投诉)</div></div></Col>
                 <Col xs={{ span: 2 }}><div>￥{item.SiteMoney}</div></Col>
                 <Col xs={{ span: 2 }}><div>{item.SiteMoneyStatus}</div></Col>

@@ -55,7 +55,7 @@ class Agreement extends React.Component {
           <span className="block">4.2、<span className="weight">活动匹配失败</span>:场馆方无须继续给该活动预留场地；</span>
           <span className="block">5、<span className="weight">场馆方须支付场地费的8%作为平台服务费(平台充值会员的场馆，服务费由平台给用户的售卖价与场馆给平台的会员价所产生的差价确定)</span>，如场馆 方给平台的价格为20元/小时，场馆方收到的场地费为18.4元/小时；</span>
           <span className="block">6、场馆方在特殊情况下须临时关闭场馆时，须第一时间在场馆端进行操作。</span>
-          <span className="block">7、对于匹配中、匹配成功的找运动伙伴订单；仅预订场馆的订单。甲方须预留场地，否则甲方将赔偿充值金额的1%作为违约金支付给乙方，乙方再支付赔偿金给该订单对应的所有用户。</span>
+          <span className="block">7、对于匹配中、匹配成功的找运动伙伴订单；仅预订场馆的订单。甲方须预留场地，否则甲方与不少于场地费金额作为违约金支付给乙方，乙方再支付赔偿金给该订单对应的所有用户。甲方未预留场地超过3次，乙方有权取消合作，双方结清账款。对于签订会员合同的场馆，按照合同里甲方违约认同。</span>
           <span className="block" style={this.state.flag===1?{display:'none'}:{}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;勾选√“已阅读并同意《场馆入驻协议》”，视为双方均同意上述条款，对双方均具有法律约束力。</span>
         </div>
 

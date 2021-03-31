@@ -1,14 +1,14 @@
 import React from 'react';
 import './orderPh.css';
 
-import { DatePicker, Toast, Card, Modal, InputItem, List, Picker, SearchBar, Radio } from 'antd-mobile';
+import { DatePicker, Toast, Card, Modal, InputItem, List, Picker, SearchBar, Radio, Calendar } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Pagination, Drawer, Spin, Table, Checkbox, Row, Col } from 'antd';
+import { Pagination, Drawer, Spin, Table, Checkbox, Row, Col, Popover } from 'antd';
 import { getReservationActivitieslist, VenueSendMessage, getVenueReservation, setSquareByOffLine, DelVenueOfflineOccupancy, getVenueSport, CalculateVenuePrice, getVipCardInfomation, AddVenueOfflineOccupancy, getVenueBookingInformation, VenueClickCancelPlace, BreakUpConsumptionDetails, ContinuationRecord, getVenueNumberTitleList, VenueRemarksLabel, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave, DeductTheTimesOfClosing } from '../../api';
 const prompt = Modal.prompt;
 const alert = Modal.alert;
 const RadioItem = Radio.RadioItem;
-
+const now = new Date();
 Date.prototype.format = function (fmt) {
   var o = {
     "M+": this.getMonth() + 1,                 //月份 
@@ -164,8 +164,10 @@ class orderPh extends React.Component {
     cardDetails: false,
     vipDetails: [],
     vipDetailsTwo: '',
-    indexI:0,
-    kw:''
+    indexI: 0,
+    kw: '',
+    show: false,
+    venueT: [],
   }
 
 
@@ -212,7 +214,7 @@ class orderPh extends React.Component {
       }
       setTimeout(() => {
         if (document.querySelector('.ant-table-body') !== null) {
-          document.querySelector('.ant-table-body').scrollTo(0, arrTime.indexOf(kojh[0]) * 50)
+          document.querySelector('.ant-table-body').scrollTo(0, arrTime.indexOf(kojh[0]) * 49)
         }
       }, 50)
 
@@ -222,11 +224,11 @@ class orderPh extends React.Component {
       this.hoode(res.data.data)
       for (let i in res.data.other) {
         res.data.other[i].dataIndex = res.data.other[i].venueid
-        res.data.other[i].title = <div style={{ fontSize: '0.75rem' }}>{res.data.other[i].venueid}<br />{res.data.other[i].title}</div>
+        res.data.other[i].title = <Popover placement="topLeft" title='标签描述' content={res.data.other[i].com === '' ? '暂无标签描述' : res.data.other[i].com} trigger="click"><div style={{ fontSize: '0.75rem' }}>{res.data.other[i].venueid}<br />{res.data.other[i].title}</div></Popover>
         res.data.other[i].width = 60
       }
       let ploboj = {
-        title: <div style={{fontSize:'0.78rem'}}>场地号<br />标签</div>,
+        title: <div style={{ fontSize: '0.78rem' }}>场地号<br />标签</div>,
         fixed: 'left',
         width: 60,
         dataIndex: 'lppd',
@@ -234,7 +236,6 @@ class orderPh extends React.Component {
       res.data.other.unshift(ploboj)
       this.setState({ lookList: res.data.data, macNum: res.data.data[0].c, otherType: res.data.other, value: 'l', spinningTwo: false, loadingTwo: false })
       sessionStorage.setItem('kood', 1)
-
     } else if (res.data.code === 4005) {
       this.setState({ lookList: res.data.data, spinningTwo: false, loadingTwo: false, lppding: false })
       sessionStorage.setItem('kood', 1)
@@ -244,12 +245,6 @@ class orderPh extends React.Component {
     } else if (res.data.code === 4004) {
       this.setState({ lppding: false, textNuma: res.data.msg })
     }
-
-
-
-
-
-
   }
 
 
@@ -258,13 +253,25 @@ class orderPh extends React.Component {
     let jood = []
     for (let i in resData) {
       let obj = {}
+      let kood = []
       for (let j in resData[i].c) {
+        if (resData[i].c[j].type === 4) {
+          kood.push(resData[i].c[j])
+          resData[i].k = kood.length
+        }
         obj.key = i + 1
         let key = resData[i].c[j].venueids
-        let value = <div><div data-type={resData[i].c[j].type} data-uuid={resData[i].c[j].uuid} onClick={this.lookDeta} style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, lineHeight: 3 } : {}}><Checkbox className="chePe" idx={i} jdx={j} checked={resData[i].c[j].checked} onChange={this.checkbox} dtype={resData[i].c[j].type} time={resData[i].a} venueid={resData[i].c[j].venueids} uuid={resData[i].c[j].uuid} style={resData[i].c[j].type === 1 && this.state.cofirmZ === 1 ? {} : { display: 'none' } && resData[i].c[j].type === 4 && this.state.Cancels === 1 ? {} : { display: 'none' }} />{resData[i].c[j].type === 4?resData[i].c[j].who:resData[i].c[j].money_cg}</div></div>
+        let value = <div><div
+          data-type={resData[i].c[j].type}
+          data-uuid={resData[i].c[j].uuid}
+          data-venueids={resData[i].c[j].venueids}
+          data-starttime={resData[i].a}
+          data-endtime={resData[i].a}
+          data-index='1'
+          onClick={this.lookDeta}
+          style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, lineHeight: 3 } : {}}><Checkbox className="chePe" idx={i} jdx={j} checked={resData[i].c[j].checked} onChange={this.checkbox} dtype={resData[i].c[j].type} time={resData[i].a} venueid={resData[i].c[j].venueids} uuid={resData[i].c[j].uuid} style={resData[i].c[j].type === 1 && this.state.cofirmZ === 1 ? {} : { display: 'none' } && resData[i].c[j].type === 4 && this.state.Cancels === 1 ? {} : { display: 'none' }} />{resData[i].c[j].type === 4 ? resData[i].c[j].who : resData[i].c[j].money_cg}</div></div>
         obj[key] = value
-        let koTwo = parseInt(resData[i].a.slice(1, 2)) + 1 + ':00'
-        obj.lppd = <div style={{ color: '#F5A623' }}>{resData[i].a}<br />{resData[i].a.slice(3, resData[i].a.length) === '00' ? resData[i].a.slice(0, 2) + ':30' : koTwo === '10:00' && resData[i].a !== '19:30' ? '10:00' : resData[i].a === '19:30' ? '20:00' : resData[i].a.slice(0, 1) + koTwo}</div>
+        obj.lppd = <div style={{ color: '#F5A623', marginTop: '-2.2rem' }}>{resData[i].a}<br /><div className="sdgdfgdf" style={resData[i].k > 0 ? {} : { display: 'none' }}>{resData[i].k}</div><div style={resData[i].a === '23:30' ? { position: 'absolute', top: '2rem', left: '0.9rem' } : { display: 'none' }}>24:00</div></div>
       }
       jood.push(obj)
     }
@@ -290,16 +297,29 @@ class orderPh extends React.Component {
     } else if (e.currentTarget.dataset.type === '4') {
       this.setState({ informaid: e.currentTarget.dataset.uuid })
       this.getVenueBookingInformation({ informaid: e.currentTarget.dataset.uuid, type: 1, cur: this.state.qiDate })
+    } else if (e.currentTarget.dataset.type === "1") {
+      if (e.currentTarget.dataset.index === '1') {
+        e.currentTarget.style.backgroundColor = "#4064E1"
+        e.currentTarget.dataset.index = 2
+        this.setState({ venueT: [...this.state.venueT, this.state.qiDate + ' ' + e.currentTarget.dataset.starttime + '|' + e.currentTarget.dataset.venueids] })
+
+      } else {
+        let venueT = this.state.venueT
+        venueT.splice(venueT.indexOf(this.state.qiDate + ' ' + e.currentTarget.dataset.starttime + '|' + e.currentTarget.dataset.venueids), 1)
+        this.setState({ venueT: venueT })
+        e.currentTarget.style.backgroundColor = "#6FB2FF"
+        e.currentTarget.dataset.index = 1
+      }
     }
   }
 
   async getVenueBookingInformation(data) {
     const res = await getVenueBookingInformation(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      if(res.data.data.comment.length>20){
+      if (res.data.data.comment.length > 20) {
         res.data.data.comment = res.data.data.comment.slice(0, 20)
       }
-      
+
       this.setState({ otherObj: res.data.data, otherObjTime: res.data.data.time, menu: 1, History: true })
     }
   }
@@ -345,7 +365,7 @@ class orderPh extends React.Component {
   componentDidMount() {
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
 
-    this.setState({ qiDate: new Date(), nowDate: new Date().toLocaleDateString().replace(/\//g, "-"), week: week[new Date().getDay()], weekText: week[new Date().getDay()] })
+    this.setState({ qiDate: new Date().format('yyyy-MM-dd'), nowDate: new Date().toLocaleDateString().replace(/\//g, "-"), week: week[new Date().getDay()], weekText: week[new Date().getDay()] })
 
     this.getVenueSport()
     if (this.props.location.query !== undefined) {
@@ -696,10 +716,13 @@ class orderPh extends React.Component {
   }
 
   cofirmZ = () => {
-    let ko = this.state.qiDate
+    let ko = new Date(this.state.qiDate)
     ko.setHours(ko.getHours() + 1 > 24 ? ko.getHours() : ko.getHours() + 1)
     ko.setMinutes(0)
-    this.setState({ info: true, date: ko, startTime: ko })
+    if (this.state.venueT.length !== 0) {
+      this.CalculateVenuePrice({ sportid: this.state.liNum, venueT: this.state.venueT.join(',') })
+    }
+    this.setState({ info: true, date: ko, startTime: ko.format("yyyy-MM-dd hh:mm") })
 
   }
 
@@ -900,16 +923,31 @@ class orderPh extends React.Component {
     this.setState({ contactNumber: e })
   }
   startTime = e => {
-    this.setState({ date: e, startTime: e.format("yyyy-MM-dd hh:mm") })
+    this.setState({ date: e, startTime: e.format("yyyy-MM-dd hh:mm"), selectVenueId: '', TotalPrice: 0 })
   }
   timeLen = e => {
-    this.setState({ timeLen: e })
+    this.setState({ timeLen: e, selectVenueId: '', TotalPrice: 0 })
   }
 
   async setSquareByOffLine(data) {
     const res = await setSquareByOffLine(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ selectable: true, selectableList: res.data.data })
+      if (this.state.liNum === '6') {
+        let arr = []
+        let arrTwo = []
+        for (let i in res.data.data) {
+          if (res.data.data[i].venueid.indexOf('A') !== -1 || res.data.data[i].venueid.indexOf('B') !== -1) {
+            arr.push(res.data.data[i])
+          } else {
+            arrTwo.push(res.data.data[i])
+          }
+        }
+        let atho = [{ venueid: '半场' }]
+        this.setState({ selectable: true, selectableList: [...arrTwo, ...atho, ...arr] })
+
+      } else {
+        this.setState({ selectable: true, selectableList: res.data.data })
+      }
     } else {
       Toast.fail(res.data.msg)
     }
@@ -970,13 +1008,13 @@ class orderPh extends React.Component {
     const res = await AddVenueOfflineOccupancy(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ info: false })
-      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.qiDate })
+      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.qiDate, venueT: [] })
     } else {
       Toast.fail(res.data.msg)
     }
   }
   placeSubmit = () => {
-    let { liNum, theWay, contacts, TotalPrice, vipDetailsTwo, selectVenueId, contactNumber, startTime, timeLen, repeat, theNews } = this.state
+    let { liNum, theWay, contacts, TotalPrice, vipDetailsTwo, venueT, selectVenueId, contactNumber, startTime, timeLen, repeat, theNews } = this.state
 
     let obj = {
       sportid: liNum,
@@ -993,6 +1031,7 @@ class orderPh extends React.Component {
       isloop: repeat[0],
       consumpMoney: TotalPrice,
       comment: theNews,
+      venueT: venueT.join(',')
     }
     this.AddVenueOfflineOccupancy(obj)
   }
@@ -1007,7 +1046,7 @@ class orderPh extends React.Component {
       this.getVenueReservation({ sportid: this.state.liNum, date: this.state.qiDate })
       this.setState({ History: false })
       Toast.success('取消成功')
-    }else{
+    } else {
       Toast.fail(res.data.msg)
     }
   }
@@ -1015,14 +1054,14 @@ class orderPh extends React.Component {
   calesdeedsfr = () => {
     if (this.state.otherObj.isloop === 1) {
       alert('提示', '您确定取消订单吗?', [
-        { text: '取消所有循环订单', onPress: () => this.DelVenueOfflineOccupancy({ offid: this.state.informaid, isloop: 2 }) },
-        { text: '取消本次循环订单', onPress: () => this.DelVenueOfflineOccupancy({ offid: this.state.informaid, isloop: 1 }) },
+        { text: '取消所有循环订单', onPress: () => this.DelVenueOfflineOccupancy({ offid: this.state.informaid, isloop: 2, cur: this.state.qiDate.format('yyyy-MM-dd') }) },
+        { text: '取消本次循环订单', onPress: () => this.DelVenueOfflineOccupancy({ offid: this.state.informaid, isloop: 1, cur: this.state.qiDate.format('yyyy-MM-dd') }) },
         { text: '关闭', onPress: () => console.log('cancel') },
       ])
     } else {
       alert('提示', '您确定取消本次订单吗?', [
         { text: '取消', onPress: () => console.log('cancel') },
-        { text: '确定', onPress: () => this.DelVenueOfflineOccupancy({ offid: this.state.informaid, isloop: 3 }) },
+        { text: '确定', onPress: () => this.DelVenueOfflineOccupancy({ offid: this.state.informaid, isloop: 3, cur: this.state.qiDate.format('yyyy-MM-dd') }) },
       ])
     }
 
@@ -1031,15 +1070,15 @@ class orderPh extends React.Component {
     let myDate = new Date(this.state.qiDate)
     myDate.setDate(myDate.getDate() - 1)
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    this.setState({ qiDate: myDate, week: week[new Date(myDate).getDay()], date: myDate })
-    this.getVenueReservation({ sportid: this.state.liNum, date: myDate })
+    this.setState({ qiDate: myDate.format('yyyy-MM-dd'), week: week[new Date(myDate).getDay()], date: myDate })
+    this.getVenueReservation({ sportid: this.state.liNum, date: myDate.format('yyyy-MM-dd') })
   }
   nextDay = () => {
     let myDate = new Date(this.state.qiDate)
     myDate.setDate(myDate.getDate() + 1)
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    this.setState({ qiDate: myDate, week: week[new Date(myDate).getDay()], date: myDate })
-    this.getVenueReservation({ sportid: this.state.liNum, date: myDate })
+    this.setState({ qiDate: myDate.format('yyyy-MM-dd'), week: week[new Date(myDate).getDay()], date: myDate })
+    this.getVenueReservation({ sportid: this.state.liNum, date: myDate.format('yyyy-MM-dd') })
   }
   cardDetails = () => {
     this.setState({ cardDetails: true })
@@ -1049,7 +1088,7 @@ class orderPh extends React.Component {
   }
 
   subsdfgj = () => {
-    this.setState({ vipDetailsTwo: this.state.vipDetails[this.state.indexI],cardDetails: false })
+    this.setState({ vipDetailsTwo: this.state.vipDetails[this.state.indexI], cardDetails: false })
   }
 
 
@@ -1062,13 +1101,13 @@ class orderPh extends React.Component {
     }
   }
 
-  asdfsdfdsrfgd=e=>{
-    this.setState({kw:e})
+  asdfsdfdsrfgd = e => {
+    this.setState({ kw: e })
   }
   search = () => {
-    if(this.state.kw===''){
-       Toast.fail('请输入关键字')
-    }else{
+    if (this.state.kw === '') {
+      Toast.fail('请输入关键字')
+    } else {
       this.getVipCardInfomation({ kw: this.state.kw, sID: localStorage.getItem('siteUid') })
 
     }
@@ -1079,24 +1118,41 @@ class orderPh extends React.Component {
 
   asdfsdf = e => {
     let i = Number(e.currentTarget.dataset.index)
-    this.setState({indexI:i })
+    this.setState({ indexI: i })
   }
 
-  youMessages=()=>{
+  youMessages = () => {
     alert('会员详情',
-     <div>
-      <div style={this.state.vipDetailsTwo===''?{display:'none'}:{textAlign:'left'}}>
-        <div><span style={{float:'left',width:'5rem'}}>卡主名称：</span><span>{this.state.vipDetailsTwo.kzName}</span></div>
-        <div><span style={{float:'left',width:'5rem'}}>联系人：</span><span>{this.state.vipDetailsTwo.userName}</span></div>
-        <div><span style={{float:'left',width:'5rem'}}>手机号：</span><span>{this.state.vipDetailsTwo.tel}</span></div>
-        <div><span style={{float:'left',width:'5rem'}}>会员卡号：</span><span>{this.state.vipDetailsTwo.cardNum}</span></div>
-      </div>
-      <div style={this.state.vipDetailsTwo===''?{textAlign:'center'}:{display:'none'}}>请检索添加会员信息</div>
-    </div>, [
-      { text: '关闭'},
-     
+      <div>
+        <div style={this.state.vipDetailsTwo === '' ? { display: 'none' } : { textAlign: 'left' }}>
+          <div><span style={{ float: 'left', width: '5rem' }}>卡主名称：</span><span>{this.state.vipDetailsTwo.kzName}</span></div>
+          <div><span style={{ float: 'left', width: '5rem' }}>联系人：</span><span>{this.state.vipDetailsTwo.userName}</span></div>
+          <div><span style={{ float: 'left', width: '5rem' }}>手机号：</span><span>{this.state.vipDetailsTwo.tel}</span></div>
+          <div><span style={{ float: 'left', width: '5rem' }}>会员卡号：</span><span>{this.state.vipDetailsTwo.cardNum}</span></div>
+        </div>
+        <div style={this.state.vipDetailsTwo === '' ? { textAlign: 'center' } : { display: 'none' }}>请检索添加会员信息</div>
+      </div>, [
+      { text: '关闭' },
+
     ])
   }
+
+  Calendar = () => {
+    this.setState({ show: true })
+  }
+
+  onConfirm = (e) => {
+    let myDate = new Date(e.format('yyyy-MM-dd'))
+    myDate.setDate(myDate.getDate())
+    let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+    this.setState({ week: week[new Date(myDate).getDay()], date: e.format('yyyy-MM-dd'), show: false, qiDate: e.format('yyyy-MM-dd') })
+    this.getVenueReservation({ sportid: this.state.liNum, date: e.format('yyyy-MM-dd') })
+
+  }
+  onCancel = () => {
+    this.setState({ show: false })
+  }
+
   render() {
     return (
       <div className="orderPh">
@@ -1228,25 +1284,27 @@ class orderPh extends React.Component {
 
 
         <div className={this.state.activityList === false ? 'bookingKanban' : 'hidden'}>
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: 'relative', background: '#F5A623', height: '40px' }}>
             <span className="topDay" onClick={this.dayBefore}>前一天</span>
-            <DatePicker
-              mode="date"
-              extra='选择日期'
-              title='选择日期'
-              value={this.state.qiDate}
-              onChange={qiDate => this.setState({ qiDate })}
-              onOk={this.dateChange}
-            >
-              <List.Item className="dateT" style={{ fontSize: '14px' }}></List.Item>
-            </DatePicker>
-            <span className="sdfgdfgh">{this.state.week}</span>
+            <div className="dateT" onClick={this.Calendar} style={{ fontSize: '14px', textAlign: 'center', color: "#fff", paddingTop: '0.5rem', lineHeight: '25px', width: '8rem', margin: '0 auto', borderBottom: '1px solid #fff' }}>{this.state.qiDate}  {this.state.week}</div>
             <span className="botDay" onClick={this.nextDay}>后一天</span>
           </div>
           <div className="modTitle">
             <span className="blue"></span><span>空闲</span><span className="white"></span><span>不可选</span><span className="yellow"></span><span>线上占用</span><span className="red"></span><span>线下占用</span>
             <span className="btnSi" onClick={this.cofirmZ}><span>预订场地</span></span>
           </div>
+
+          <Calendar
+            visible={this.state.show}
+            onCancel={this.onCancel}
+            onConfirm={this.onConfirm}
+            defaultDate={now}
+            type='one'
+            infiniteOpt={true}
+            defaultValue={[new Date(this.state.qiDate)]}
+            maxDate={new Date(+now + 31536000000)}
+            style={{ zIndex: '1000' }}
+          />
 
           <div style={{ width: '100%', overflowX: 'auto' }}>
             <div className="locaList">
@@ -1400,10 +1458,10 @@ class orderPh extends React.Component {
 
 
           <div className="listKoj" style={this.state.theWay[0] === 1 ? {} : { display: 'none' }}>
-            <List.Item arrow="horizontal" extra={this.state.vipDetailsTwo===''?'添加/修改会员信息':'已添加'} onClick={this.cardDetails}>检索会员信息</List.Item>
+            <List.Item arrow="horizontal" extra={this.state.vipDetailsTwo === '' ? '添加/修改会员信息' : '已添加'} onClick={this.cardDetails}>检索会员信息</List.Item>
           </div>
           <div className="listKoj" style={this.state.theWay[0] === 1 ? {} : { display: 'none' }}>
-            <List.Item arrow="horizontal" extra={this.state.vipDetailsTwo===''?'无':'查看详情'} onClick={this.youMessages}>会员信息</List.Item>
+            <List.Item arrow="horizontal" extra={this.state.vipDetailsTwo === '' ? '无' : '查看详情'} onClick={this.youMessages}>会员信息</List.Item>
           </div>
 
 
@@ -1426,32 +1484,50 @@ class orderPh extends React.Component {
           </div>
 
 
-          <div className="listKoj">
-            <DatePicker
-              minuteStep={30}
-              value={this.state.date}
-              onOk={this.startTime}
-            >
-              <List.Item arrow="horizontal">开始时间</List.Item>
-            </DatePicker>
-            <span className="fghghf" onClick={this.sfdgdf}>此刻</span>
+          <div className="sdgfdfgf" style={this.state.venueT.length === 0 ? {} : { display: 'none' }}>
+
+            <div className="listKoj">
+              <DatePicker
+                minuteStep={30}
+                value={this.state.date}
+                onOk={this.startTime}
+              >
+                <List.Item arrow="horizontal">开始时间</List.Item>
+              </DatePicker>
+              <span className="fghghf" onClick={this.sfdgdf}>此刻</span>
+            </div>
+
+            <div className="listKoj">
+              <Picker data={this.state.timeLenList} cols={1} value={this.state.timeLen} onChange={this.timeLen} className="forss">
+                <List.Item arrow="horizontal">预约时长</List.Item>
+              </Picker>
+            </div>
+
+            <div className="listKoj" onClick={this.selectVenue}>
+              <InputItem
+                placeholder="点击选择场地号"
+                className="rightInput"
+                disabled={true}
+                value={this.state.selectVenueId}
+              ><div className="leftTxt">场地号</div></InputItem>
+              <img className="sdgfdfgdgjugfyh" src={require('../../assets/right.png')} alt="icon" />
+            </div>
           </div>
 
-          <div className="listKoj">
-            <Picker data={this.state.timeLenList} cols={1} value={this.state.timeLen} onChange={this.timeLen} className="forss">
-              <List.Item arrow="horizontal">预约时长</List.Item>
-            </Picker>
+          <div style={this.state.venueT.length !== 0 ? { overflow: 'hidden', borderBottom: '0.06rem solid #f5f5f5' } : { display: 'none' }}>
+            <span style={{ float: 'left', paddingLeft: '15px', paddingTop: '0.6rem' }}>已选择场地</span>
+            <div style={{ float: 'right', paddingRight: '1.5rem', paddingTop: '0.6rem', paddingBottom: '0.6rem' }}>
+              {
+                this.state.venueT.map((item, i) => (
+                  <div key={i}>{item}</div>
+                ))
+              }
+            </div>
+
           </div>
 
-          <div className="listKoj" onClick={this.selectVenue}>
-            <InputItem
-              placeholder="点击选择场地号"
-              className="rightInput"
-              disabled={true}
-              value={this.state.selectVenueId}
-            ><div className="leftTxt">场地号</div></InputItem>
-            <img className="sdgfdfgdgjugfyh" src={require('../../assets/right.png')} alt="icon"/>
-          </div>
+
+
 
           <div className="listKoj">
             <InputItem
@@ -1493,9 +1569,11 @@ class orderPh extends React.Component {
         >
 
           <div style={{ overflow: 'hidden' }}>
+            <div className="lohkhjgj" style={{ width: '520px', color: '#000', textAlign: 'left', background: '#fff', clear: 'both' }}>全场</div>
+
             {
               this.state.selectableList.map((item, i) => (
-                <div className="lohkhjgj" key={i} data-ifused={i} onClick={this.selectClick} style={item.ifUsed === 2 ? { background: 'red' } : item.ifUsed === 0 ? { background: '#ccc' } : {}}>{item.venueid}</div>
+                <div className="lohkhjgj" key={i} data-ifused={i} onClick={this.selectClick} style={item.venueid === '半场' ? { width: '520px', color: '#000', textAlign: 'left', background: '#fff', clear: 'both' } : item.ifUsed === 2 && item.venueid === '场地不固定' ? { width: '80px', background: 'red' } : item.ifUsed === 2 ? { background: 'red' } : item.ifUsed === 0 ? { background: '#ccc' } : item.venueid === '场地不固定' ? { width: '80px' } : {}}>{item.venueid}</div>
               ))
             }
           </div>
@@ -1521,8 +1599,8 @@ class orderPh extends React.Component {
               <p style={{ marginBottom: '0.5rem' }}>预订人信息</p>
               <div><span>支付方式:</span><span>{this.state.otherObj.mode}</span></div>
               <div style={this.state.otherObj.cardholderName === '' ? { display: 'none' } : {}}><span>卡主名称:</span><span>{this.state.otherObj.cardholderName}</span></div>
-              <div><span>联系人:</span><span>{this.state.otherObj.contacts===''?'无':this.state.otherObj.contacts}</span></div>
-              <div><span>手机号:</span><span>{this.state.otherObj.contactNumber===''?'无':this.state.otherObj.contactNumber}</span></div>
+              <div><span>联系人:</span><span>{this.state.otherObj.contacts === '' ? '无' : this.state.otherObj.contacts}</span></div>
+              <div><span>手机号:</span><span>{this.state.otherObj.contactNumber === '' ? '无' : this.state.otherObj.contactNumber}</span></div>
               <div style={this.state.otherObj.cardNumber === '' ? { display: 'none' } : {}}><span>会员卡号:</span><span>{this.state.otherObj.cardNumber}</span></div>
               <div style={this.state.otherObj.balance === '' ? { display: 'none' } : {}}><span>余额:</span><span>{this.state.otherObj.balance}</span></div>
               <div><span>其他:</span><span className="asdgfdsfg">{this.state.otherObj.comment === '' ? '无' : this.state.otherObj.comment + '...'}</span></div>
@@ -1531,32 +1609,34 @@ class orderPh extends React.Component {
             <div className="plaTop plaTopTwo">
               <p style={{ marginBottom: '0.5rem' }}>场地信息</p>
               <div style={{ fontWeight: 'bold', fontSize: '0.88rem' }}><span style={{ width: '80px' }}>预订时间:</span><span>{this.state.otherObj.bookingTime}</span></div>
-              <div style={{ fontWeight: 'bold', fontSize: '0.88rem' }}><span style={{ width: '80px' }}>预订时间:</span><span>
-              {this.state.otherObj.sportid===1?'羽毛球':
-              this.state.otherObj.sportid===2?'兵乓球':
-              this.state.otherObj.sportid===3?'台球中式黑八':
-              this.state.otherObj.sportid===4?'台球美式九球':
-              this.state.otherObj.sportid===5?'台球斯诺克':
-              this.state.otherObj.sportid===6?'篮球':
-              this.state.otherObj.sportid===7?'足球11人制':
-              this.state.otherObj.sportid===8?'足球8人制':
-              this.state.otherObj.sportid===9?'足球7人制':
-              this.state.otherObj.sportid===13?'足球6人制':
-              this.state.otherObj.sportid===10?'足球5人制':
-              this.state.otherObj.sportid===11?'排球':
-              this.state.otherObj.sportid===12?'网球':''
-              }
-                </span></div>
+              <div style={{ fontWeight: 'bold', fontSize: '0.88rem' }}><span style={{ width: '80px' }}>预订项目:</span><span>
+                {this.state.otherObj.sportid === 1 ? '羽毛球' :
+                  this.state.otherObj.sportid === 2 ? '兵乓球' :
+                    this.state.otherObj.sportid === 3 ? '台球中式黑八' :
+                      this.state.otherObj.sportid === 4 ? '台球美式九球' :
+                        this.state.otherObj.sportid === 5 ? '台球斯诺克' :
+                          this.state.otherObj.sportid === 6 ? '篮球' :
+                            this.state.otherObj.sportid === 7 ? '足球11人制' :
+                              this.state.otherObj.sportid === 8 ? '足球8人制' :
+                                this.state.otherObj.sportid === 9 ? '足球7人制' :
+                                  this.state.otherObj.sportid === 13 ? '足球6人制' :
+                                    this.state.otherObj.sportid === 10 ? '足球5人制' :
+                                      this.state.otherObj.sportid === 11 ? '排球' :
+                                        this.state.otherObj.sportid === 12 ? '网球' : 
+                                        this.state.otherObj.sportid === 14 ? '足球9人制':''
+                }
+              </span></div>
               {
                 this.state.otherObjTime.map((item, i) => (
-                  <div key={i}><span style={{width:'140px'}}>{item.date}  {item.option}</span><span>{item.venueid}</span></div>
+                  <div key={i}><span style={{ width: '140px' }}>{item.date}  {item.option}</span><span>{item.venueid}</span></div>
                 ))
               }
               <div style={{ color: "#D0021B" }}>预计消费：￥{this.state.otherObj.consumpMoney}</div>
             </div>
             <div className="footer"><span style={{ color: '#F5A623', fontSize: '0.88rem' }}>订单状态：{this.state.otherObj.status}</span>
 
-              <div className="calce" onClick={this.calesdeedsfr}>取消订单</div>
+              <div className="calce" style={this.state.otherObj.status === '未开始' ? {} : { display: 'none' }} onClick={this.calesdeedsfr}>取消订单</div>
+              {/* <div className="calce" style={this.state.otherObj.status!=='未开始'?{}:{display:'none'}}>立即结账</div> */}
 
             </div>
 
@@ -1576,23 +1656,23 @@ class orderPh extends React.Component {
           onClose={this.cardDetailsClose}
           visible={this.state.cardDetails}
         >
-          <SearchBar placeholder="请输入卡主名称/手机号/会员卡检索" onSubmit={this.search} onChange={this.asdfsdfdsrfgd} style={{width:'80%',float:'left',fontSize:'0.88rem'}} /><span className="sgdfgdfg" onClick={this.search}>搜索</span>
-           
-          <div style={{ overflowY: 'auto',clear:'both' }}>
+          <SearchBar placeholder="请输入卡主名称/手机号/会员卡检索" onSubmit={this.search} onChange={this.asdfsdfdsrfgd} style={{ width: '80%', float: 'left', fontSize: '0.88rem' }} /><span className="sgdfgdfg" onClick={this.search}>搜索</span>
+
+          <div style={{ overflowY: 'auto', clear: 'both' }}>
             {
               this.state.vipDetails.map((item, i) => (
                 <RadioItem key={i} checked={i === this.state.indexI} onClick={this.asdfsdf} data-index={i} >
-                  <div style={{ width: '15rem' }} >
+                  <div style={{ width: '25rem' }} >
                     <div className="lokjjkdgh" style={{ marginTop: "1rem" }}><span>卡主名称：</span><span>{item.kzName}</span></div>
                     <div className="lokjjkdgh"><span>联系人：</span><span>{item.userName}</span></div>
                     <div className="lokjjkdgh"><span>手机号：</span><span>{item.tel}</span></div>
-                    <div className="lokjjkdgh"><span>会员卡号：</span><span>{item.cardNum}</span><span style={item.expire === 1 ? {color:'red'} : { display: 'none' }}>（已过期）</span></div>
+                    <div className="lokjjkdgh"><span>会员卡号：</span><span>{item.cardNum}</span><span style={item.expire === 1 ? { color: 'red' } : { display: 'none' }}>（已过期）</span></div>
                   </div>
                 </RadioItem>
               ))
             }
           </div>
-          <div style={this.state.vipDetails.length !== 0 ? { display: 'none' } : { textAlign: 'center', marginTop: '2rem',clear:'both' }}>请搜索会员信息</div>
+          <div style={this.state.vipDetails.length !== 0 ? { display: 'none' } : { textAlign: 'center', marginTop: '2rem', clear: 'both' }}>请搜索会员信息</div>
 
           <div className="sdfsdgdrg" onClick={this.subsdfgj}>确认</div>
         </Drawer>

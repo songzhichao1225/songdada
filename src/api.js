@@ -2,18 +2,18 @@ import axios from 'axios';
 
 //本地全部隐去
 // axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
-axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
+// axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
 
-export let imgUrlTwo='https://app.tiaozhanmeiyitian.com/'  //正式图片路径
-// export let imgUrlTwo='https://appstg.tiaozhanmeiyitian.com/'  //测试图片路径
+// export let imgUrlTwo='https://app.tiaozhanmeiyitian.com/'  //正式图片路径
+export let imgUrlTwo='https://appstg.tiaozhanmeiyitian.com/'  //测试图片路径
 
 // export let wsFn = new WebSocket("wss://www.cg.zhaoduishou.com/socket");//正式socket
 // export let wsFn = new WebSocket("wss://cgstg.zhaoduishou.com/socket");//测试socket
 export let wsFn = new WebSocket("wss://socket.tiaozhanmeiyitian.com/socket");//测试socket
 // export let wsFn = new WebSocket("wss://admin.tiaozhanmeiyitian.com/socket");//测试、正式环境只此一个
 
-// export let htUrl='http://adminstg.tiaozhanmeiyitian.com/'  //测试合同路径
-export let htUrl='http://admin.tiaozhanmeiyitian.com/'  //正式合同路径
+export let htUrl='http://adminstg.tiaozhanmeiyitian.com/'  //测试合同路径
+// export let htUrl='http://admin.tiaozhanmeiyitian.com/'  //正式合同路径
 
 export function _login(data){    //登录
     return axios.post('/api/getVenueLogin',data)
@@ -637,6 +637,13 @@ export function AddVenueOfflineOccupancy(data,headers){    //线下占用~添加
 
 export function DelVenueOfflineOccupancy(data,headers){    //线下占用~取消订单
     return axios.post('/api/DelVenueOfflineOccupancy',data,{headers: {'token': headers}})
+}
+export function getVenueMemberlistexcel(data,headers){    //会员管理~导出会员信息
+    return axios.post('/api/getVenueMemberlistexcel',data,{headers: {'token': headers}})
+}
+
+export function getTagComment(data,headers){    //获取场地细分标签的备注
+    return axios.post('/api/getTagComment',data,{headers: {'token': headers}})
 }
 
 

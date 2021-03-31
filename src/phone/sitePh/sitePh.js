@@ -4,7 +4,7 @@ import { Card, Picker, List, Toast, InputItem, Modal, TextareaItem } from 'antd-
 import 'antd-mobile/dist/antd-mobile.css';
 import { Pagination, Drawer, Spin, Calendar } from 'antd';
 import { } from '@ant-design/icons';
-import { getVenueNumberTitleList, getVenueSportidTitle, getVenueSport, DelVenueTitle,getLabelRelatVenueNumber,VenueRelatSave,getVenueRelatList,VenueRelatRelieve, getVenueTitleSave, getSpecialDaysForVenue, getSiteSelectedVenueid, DelVenueNumberTitle, getSiteSettingHistoryList, DelSiteSetting, AddSiteSetting, getVenueNumberTitleSave, getVenueNumberTitleFirst, getSiteSettingList, getSiteSelectedTitle, getSiteSettingFirst, DelSiteSettingDiscount, SiteSettingDiscountSave } from '../../api';
+import { getVenueNumberTitleList, getVenueSportidTitle, getVenueSport, DelVenueTitle, getLabelRelatVenueNumber, VenueRelatSave, getVenueRelatList, VenueRelatRelieve, getVenueTitleSave, getSpecialDaysForVenue, getSiteSelectedVenueid, DelVenueNumberTitle, getSiteSettingHistoryList, DelSiteSetting, AddSiteSetting, getVenueNumberTitleSave, getVenueNumberTitleFirst, getSiteSettingList, getSiteSelectedTitle, getSiteSettingFirst, DelSiteSettingDiscount, SiteSettingDiscountSave } from '../../api';
 import 'moment/locale/zh-cn';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 const alert = Modal.alert;
@@ -27,6 +27,7 @@ class sitePh extends React.Component {
       { label: '台球斯诺克', value: 5 },
       { label: '篮球', value: 6 },
       { label: '足球11人制', value: 7 },
+      { label: '足球9人制', value: 14 },
       { label: '足球8人制', value: 8 },
       { label: '足球7人制', value: 9 },
       { label: '足球6人制', value: 13 },
@@ -42,6 +43,7 @@ class sitePh extends React.Component {
       { label: '台球斯诺克', value: 5 },
       { label: '篮球', value: 6 },
       { label: '足球11人制', value: 7 },
+      { label: '足球9人制', value: 14 },
       { label: '足球8人制', value: 8 },
       { label: '足球7人制', value: 9 },
       { label: '足球6人制', value: 13 },
@@ -58,6 +60,7 @@ class sitePh extends React.Component {
       { label: '篮球（全场）', value: 6 },
       { label: '篮球（半场）', value: 15 },
       { label: '足球11人制', value: 7 },
+      { label: '足球9人制', value: 14 },
       { label: '足球8人制', value: 8 },
       { label: '足球7人制', value: 9 },
       { label: '足球6人制', value: 13 },
@@ -73,6 +76,7 @@ class sitePh extends React.Component {
       { label: '台球斯诺克', value: 5 },
       { label: '篮球（半场）', value: 6 },
       { label: '足球11人制', value: 7 },
+      { label: '足球9人制', value: 14 },
       { label: '足球8人制', value: 8 },
       { label: '足球7人制', value: 9 },
       { label: '足球6人制', value: 13 },
@@ -110,7 +114,7 @@ class sitePh extends React.Component {
     pageTwo: 1,
     asyncValueTwo: 0,
     asyncValueThree: 0,
-    asyncValueFour:0,
+    asyncValueFour: 0,
     spin: true,
     Price: false,
     pickerValueTwo: '',
@@ -154,9 +158,9 @@ class sitePh extends React.Component {
     selectDa: [''],
     withDayIndex: '1',
     withDayList: [],
-    relatedness:false,
-    relatednessRunid:'',
-    connectedOne:[],
+    relatedness: false,
+    relatednessRunid: '',
+    connectedOne: [],
     connectedName: '',
     connectedOneLen: 0,
     relatednessRunidTwo: '',
@@ -164,9 +168,10 @@ class sitePh extends React.Component {
     connectedNameTwo: '',
     connectedOneTwo: '',
     connectedOneLenTwo: 0,
-    arrNum:[],
-    pageFour:1,
-    relatList:[],
+    arrNum: [],
+    pageFour: 1,
+    relatList: [],
+    commentTitle: '',
   }
 
   header = e => {
@@ -182,11 +187,11 @@ class sitePh extends React.Component {
     } else if (e.currentTarget.dataset.index === '3') {
       this.getSiteSettingHistoryList({ page: 1, sportid: this.state.asyncValue })
       this.setState({ asyncValueThree: this.state.asyncValue, pageThree: 1 })
-    }else if(e.currentTarget.dataset.index === '4'){
-      this.getVenueRelatList({page:this.state.pageFour,sportid:this.state.asyncValue})
+    } else if (e.currentTarget.dataset.index === '4') {
+      this.getVenueRelatList({ page: this.state.pageFour, sportid: this.state.asyncValue })
       this.setState({ asyncValueFour: this.state.asyncValue, pageFour: 1 })
     }
-    
+
   }
 
 
@@ -238,7 +243,7 @@ class sitePh extends React.Component {
           res.data.data[i].sportid = '足球8人制'
         } else if (res.data.data[i].sportid === 9) {
           res.data.data[i].sportid = '足球7人制'
-        }else if (res.data.data[i].sportid === 13) {
+        } else if (res.data.data[i].sportid === 13) {
           res.data.data[i].sportid = '足球6人制'
         } else if (res.data.data[i].sportid === 10) {
           res.data.data[i].sportid = '足球5人制'
@@ -246,7 +251,9 @@ class sitePh extends React.Component {
           res.data.data[i].sportid = '排球'
         } else if (res.data.data[i].sportid === 12) {
           res.data.data[i].sportid = '网球'
-        }
+        } else if (res.data.data[i].sportid === 14) {
+          res.data.data[i].sportid = '足球9人制'
+        } 
       }
       this.setState({ titleLise: res.data.data, other: res.data.other, spin: false })
     }
@@ -282,7 +289,7 @@ class sitePh extends React.Component {
     this.setState({ visibleXi: true, chekedArr: [], chekedArrLen: 0 })
   }
   onClose = () => {
-    this.setState({ visibleXi: false, upData: 0, firstUUid: '', detail: false,relatedness:false })
+    this.setState({ visibleXi: false, upData: 0, firstUUid: '', detail: false, relatedness: false })
   }
 
   onCloseTitle = () => {
@@ -386,7 +393,7 @@ class sitePh extends React.Component {
   async getSiteSelectedVenueid(data) {
     const res = await getSiteSelectedVenueid(data, localStorage.getItem('venue_token'))
     if (this.state.Serial === true) {
-      if (this.state.typeTwo[0] === 1||this.state.typeTwo[0] === 2 || this.state.pickerValue[0] === 2) {
+      if (this.state.typeTwo[0] === 1 || this.state.typeTwo[0] === 2 || this.state.pickerValue[0] === 2) {
         for (let j in res.data.data) {
           for (let i in this.state.numArr) {
             if (this.state.numArr.length === 48) {
@@ -656,7 +663,7 @@ class sitePh extends React.Component {
               { num: '场地不固定', cheked: false, id: 47 }
             ]
           })
-        }else{
+        } else {
           let numArr = []
           for (let i = 1; i <= 100; i++) {
             let obj = { num: i, cheked: false }
@@ -704,7 +711,7 @@ class sitePh extends React.Component {
   numArrSon = e => {
     let items = this.state.numArr
 
-    if (this.state.typeTwo[0] === 1||this.state.typeTwo[0] === 2 || this.state.pickerValue[0] === 2) {
+    if (this.state.typeTwo[0] === 1 || this.state.typeTwo[0] === 2 || this.state.pickerValue[0] === 2) {
       if (items[e.currentTarget.dataset.id].cheked === true) {
         items[e.currentTarget.dataset.id].cheked = false
       } else if (items[e.currentTarget.dataset.id].cheked === false) {
@@ -793,18 +800,18 @@ class sitePh extends React.Component {
     if (chekedArr.length === 0) {
       Toast.fail('请选择场地编号', 1)
     } else {
-      
-        let items = this.state.numArr
-        for (let i in items) {
-          if (items[i].cheked === true) {
-            items[i].cheked = false
-            this.setState({
-              numArr: items
-            })
-          }
+
+      let items = this.state.numArr
+      for (let i in items) {
+        if (items[i].cheked === true) {
+          items[i].cheked = false
+          this.setState({
+            numArr: items
+          })
         }
-        this.setState({ Serial: false, chekedArr: chekedArr, chekedArrLen: chekedArr.length })
-      
+      }
+      this.setState({ Serial: false, chekedArr: chekedArr, chekedArrLen: chekedArr.length })
+
     }
   }
 
@@ -840,7 +847,7 @@ class sitePh extends React.Component {
   }
 
   xifenPush = () => {
-    let { pickerValue, idxTitleTwo, chekedArr, chekedArrLen } = this.state
+    let { pickerValue, idxTitleTwo, chekedArr, chekedArrLen, commentTitle } = this.state
     if (pickerValue.length === 0) {
       Toast.fail('请选择场地类型', 1);
     } else if (idxTitleTwo === '' || idxTitleTwo === '请选择/添加') {
@@ -851,14 +858,15 @@ class sitePh extends React.Component {
       Toast.fail('请选择场地类型', 1);
     } else {
       let title = idxTitleTwo.indexOf('-') === -1 ? this.state.typeTwo[0] === 2 ? idxTitleTwo + '-散场' : this.state.typeTwo[0] === 1 ? idxTitleTwo + '-半场' : this.state.typeTwo[0] === 3 ? idxTitleTwo + '-按时' : this.state.typeTwo[0] === 4 ? idxTitleTwo + '-按次' : this.state.typeTwo[0] === 5 ? idxTitleTwo + '-全场' : idxTitleTwo : idxTitleTwo
-      this.getVenueNumberTitleSave({ sportid: pickerValue[0], title: title, venueid: chekedArr.join(','), number: chekedArrLen, uuid: this.state.firstUUid, type: this.state.typeTwo[0] })
+      this.getVenueNumberTitleSave({ sportid: pickerValue[0], title: title, venueid: chekedArr.join(','), number: chekedArrLen, uuid: this.state.firstUUid, type: this.state.typeTwo[0], com: commentTitle })
     }
   }
 
   async getVenueNumberTitleFirst(data) {
     const res = await getVenueNumberTitleFirst(data, localStorage.getItem('venue_token'))
     this.setState({
-      pickerValue: [res.data.data[0].sportid], idxTitleTwo: res.data.data[0].title, chekedArr: res.data.data[0].venueid.split(','), chekedArrLen: res.data.data[0].venueid.split(',').length, koArr: res.data.data[0].venueid.split(','), firstUUid: res.data.data[0].uuid, typeTwo: [res.data.data[0].type]
+      pickerValue: [res.data.data[0].sportid], idxTitleTwo: res.data.data[0].title, chekedArr: res.data.data[0].venueid.split(','), chekedArrLen: res.data.data[0].venueid.split(',').length, koArr: res.data.data[0].venueid.split(','), firstUUid: res.data.data[0].uuid, typeTwo: [res.data.data[0].type],
+      commentTitle: res.data.data[0].comment
     })
   }
 
@@ -949,9 +957,9 @@ class sitePh extends React.Component {
       otherThree: res.data.other
     })
   }
-  
 
-  
+
+
   asyncValueTwo = e => {
     this.setState({ asyncValue: e[0], asyncValueTwo: e[0], pageTwo: 1 })
     this.getSiteSettingList({ page: 1, sportid: e[0] })
@@ -961,7 +969,7 @@ class sitePh extends React.Component {
     this.setState({ asyncValue: e[0], asyncValueThree: e[0], pageThree: 1 })
     this.getSiteSettingHistoryList({ page: 1, sportid: e[0] })
   }
-  asyncValueFour=e=>{
+  asyncValueFour = e => {
     this.setState({ asyncValue: e[0], asyncValueFour: e[0], pageFour: 1 })
     this.getVenueRelatList({ page: 1, sportid: e[0] })
   }
@@ -1027,9 +1035,9 @@ class sitePh extends React.Component {
     }
 
     if (this.state.titleArr[v].label.indexOf('散') !== -1) {
-      this.setState({ timeFalg: 'no',pickerValueFive: -1, starttime: ['00:00'], endtime: ['24:00'], })
+      this.setState({ timeFalg: 'no', pickerValueFive: -1, starttime: ['00:00'], endtime: ['24:00'], })
     } else if (this.state.titleArr[v].label.indexOf('按次') !== -1) {
-      this.setState({ timeFalg: 'yes',pickerValueFive: -1, starttime: ['00:00'], endtime: ['24:00'], })
+      this.setState({ timeFalg: 'yes', pickerValueFive: -1, starttime: ['00:00'], endtime: ['24:00'], })
     } else if (this.state.titleArr[v].label.indexOf('散') !== -1 || this.state.titleArr[v].label.indexOf('按次') !== -1) {
       this.setState({ pickerValueFive: -1, starttime: ['00:00'], endtime: ['24:00'], timeFalg: false })
     } else {
@@ -1107,7 +1115,7 @@ class sitePh extends React.Component {
     } else if (endtime.length === undefined) {
       Toast.fail('请选择结束时间', 1);
     } else if (money === '') {
-      Toast.fail('请输入价格', 1); 
+      Toast.fail('请输入价格', 1);
     } else if (pickerValueFour.length === 0) {
       Toast.fail('请选择最长提前预定时间', 1);
     } else if (pickerValueFive.length === 0) {
@@ -1117,7 +1125,7 @@ class sitePh extends React.Component {
       let obj = {
         uuid: jiageUUid,
         sportid: pickerValueTwo,
-        sportname: pickerValueTwo === 1 ? '羽毛球' : pickerValueTwo === 2 ? '乒乓球' : pickerValueTwo === 3 ? '台球中式黑八' : pickerValueTwo === 4 ? '台球美式九球' : pickerValueTwo === 5 ? '台球斯诺克' : pickerValueTwo === 6 ? '篮球' : pickerValueTwo === 7 ? '足球11人制' : pickerValueTwo === 8 ? '足球8人制' : pickerValueTwo === 9 ? '足球7人制':pickerValueTwo === 13 ? '足球6人制' : pickerValueTwo === 10 ? '足球5人制' : pickerValueTwo === 11 ? '排球' : pickerValueTwo === 12 ? '网球' : '',
+        sportname: pickerValueTwo === 1 ? '羽毛球' : pickerValueTwo === 2 ? '乒乓球' : pickerValueTwo === 3 ? '台球中式黑八' : pickerValueTwo === 4 ? '台球美式九球' : pickerValueTwo === 5 ? '台球斯诺克' : pickerValueTwo === 6 ? '篮球' : pickerValueTwo === 7 ? '足球11人制' : pickerValueTwo === 8 ? '足球8人制' : pickerValueTwo === 9 ? '足球7人制' : pickerValueTwo === 13 ? '足球6人制' : pickerValueTwo === 10 ? '足球5人制' : pickerValueTwo === 11 ? '排球' : pickerValueTwo === 12 ? '网球' : pickerValueTwo === 14 ? '足球9人制':'',
         tags: titleArr[pickerValueThree].label,
         openday: titleArr[pickerValueThree].label.indexOf('散场') !== -1 || titleArr[pickerValueThree].label.indexOf('按次') !== -1 ? '1,2,3,4,5,6,7' : LiturgycheNum,
         opendayname: Liturgyche,
@@ -1157,7 +1165,7 @@ class sitePh extends React.Component {
               } else {
                 this.setState({ pickerValueFive: [res.data.data[0].appointmenttime_cg], starttime: [res.data.data[0].starttime], endtime: [res.data.data[0].endtime], timeFalg: true })
               }
-              that.setState({ pickerValueThree: [that.state.titleArr[i].value]})
+              that.setState({ pickerValueThree: [that.state.titleArr[i].value] })
             }
           }
         }, 1000)
@@ -1417,13 +1425,13 @@ class sitePh extends React.Component {
     this.setState({ withDayIndex: e.currentTarget.dataset.date })
   }
 
-  colseWithDay=e=>{
-    let p=this.state.withDayList
-    p.splice(p.indexOf(e.currentTarget.dataset.date),1)
-    this.setState({withDayList:p})
+  colseWithDay = e => {
+    let p = this.state.withDayList
+    p.splice(p.indexOf(e.currentTarget.dataset.date), 1)
+    this.setState({ withDayList: p })
   }
-  relatedness=()=>{
-    this.setState({relatedness:true})
+  relatedness = () => {
+    this.setState({ relatedness: true })
   }
 
   async getLabelRelatVenueNumber(data) {
@@ -1450,9 +1458,9 @@ class sitePh extends React.Component {
   connected = (e) => {
     if (this.state.relatednessRunid !== '') {
       let num = e.currentTarget.dataset.num
-      let arrNum=[]
-       if(this.state.relatednessRunid[0] === 2){
-        arrNum=[
+      let arrNum = []
+      if (this.state.relatednessRunid[0] === 2) {
+        arrNum = [
           { id: '1', cheked: false, num: 0 },
           { id: '2', cheked: false, num: 1 },
           { id: '3', cheked: false, num: 2 },
@@ -1501,7 +1509,7 @@ class sitePh extends React.Component {
           { id: '46', cheked: false, num: 45 },
           { id: '47', cheked: false, num: 46 },]
       } else if (this.state.relatednessRunid[0] === 15) {
-        arrNum=[
+        arrNum = [
           { id: '1A', cheked: false, num: 0 },
           { id: '1B', cheked: false, num: 1 },
           { id: '2A', cheked: false, num: 2 },
@@ -1549,19 +1557,19 @@ class sitePh extends React.Component {
           { id: '23A', cheked: false, num: 44 },
           { id: '23B', cheked: false, num: 45 },
           { id: '24A', cheked: false, num: 46 }]
-    }else {
+      } else {
         for (let i = 1; i <= 100; i++) {
           let p = {
             id: i, cheked: false
           }
           arrNum.push(p)
         }
-        
+
       }
-      this.getLabelRelatVenueNumber({ sportid: this.state.relatednessRunid[0],type:2 })
+      this.getLabelRelatVenueNumber({ sportid: this.state.relatednessRunid[0], type: 2 })
 
       if (num !== '') {
-         if(this.state.relatednessRunid[0] === 15) {
+        if (this.state.relatednessRunid[0] === 15) {
           let numT = num.split(',')
           for (let i in numT) {
             for (let j in arrNum) {
@@ -1570,7 +1578,7 @@ class sitePh extends React.Component {
               }
             }
           }
-        }else{
+        } else {
           let numT = num.split(',')
           for (let i in numT) {
             arrNum[numT[i] - 1].cheked = true
@@ -1596,19 +1604,21 @@ class sitePh extends React.Component {
         ko = '足球8人制'
       } else if (this.state.relatednessRunid[0] === 9) {
         ko = '足球7人制'
-      } else if (this.state.relatednessRunid[0]=== 10) {
-        ko= '足球5人制'
+      } else if (this.state.relatednessRunid[0] === 10) {
+        ko = '足球5人制'
       } else if (this.state.relatednessRunid[0] === 11) {
         ko = '排球'
       } else if (this.state.relatednessRunid[0] === 12) {
         ko = '网球'
-      } else if (this.state.relatednessRunid[0]=== 13) {
+      } else if (this.state.relatednessRunid[0] === 13) {
         ko = '足球6人制'
-      }else if (this.state.relatednessRunid[0]=== 15) {
+      } else if (this.state.relatednessRunid[0] === 15) {
         ko = '篮球（半场）'
+      } else if (this.state.relatednessRunid[0] === 14) {
+        ko = '足球9人制'
       }
 
-      this.setState({ connected: true, connectedName:ko,arrNum:arrNum })
+      this.setState({ connected: true, connectedName: ko, arrNum: arrNum })
     } else {
       Toast.fail('请选择场地类型')
     }
@@ -1616,7 +1626,7 @@ class sitePh extends React.Component {
   }
 
   connectedCale = () => {
-    this.setState({ connected: false})
+    this.setState({ connected: false })
   }
 
   connectedSelsed = e => {
@@ -1624,19 +1634,17 @@ class sitePh extends React.Component {
 
     if (this.state.relatednessRunid[0] === 15) {
       let data = this.state.arrNum
-      if (data[e.currentTarget.dataset.num].cheked === true) {
-        data[e.currentTarget.dataset.num].cheked = false
-      } else if (data[e.currentTarget.dataset.num].cheked === false) {
-        data[e.currentTarget.dataset.num].cheked = true
+      for (let i in data) {
+        data[i].cheked = false
       }
+      data[e.currentTarget.dataset.num].cheked = true
       this.setState({ arrNum: data })
-    }else{
+    } else {
       let data = this.state.arrNum
-      if (data[e.currentTarget.dataset.id - 1].cheked === true) {
-        data[e.currentTarget.dataset.id - 1].cheked = false
-      } else if (data[e.currentTarget.dataset.id - 1].cheked === false) {
-        data[e.currentTarget.dataset.id - 1].cheked = true
+      for (let i in data) {
+        data[i].cheked = false
       }
+      data[e.currentTarget.dataset.id - 1].cheked = true
       this.setState({ arrNum: data })
     }
   }
@@ -1655,62 +1663,62 @@ class sitePh extends React.Component {
     this.setState({ connectedOne: arr.join(','), connectedOneLen: arr.length, connected: false, arrNum: data })
   }
   connectedCaleTwo = () => {
-    this.setState({ connectedTwo: false})
+    this.setState({ connectedTwo: false })
   }
   connectedTwo = (e) => {
     if (this.state.relatednessRunidTwo !== '') {
-      let arrNum=[]
+      let arrNum = []
       if (this.state.relatednessRunidTwo[0] === 6) {
-          arrNum=[
-            { id: '1A', cheked: false, num: 0 },
-            { id: '1B', cheked: false, num: 1 },
-            { id: '2A', cheked: false, num: 2 },
-            { id: '2B', cheked: false, num: 3 },
-            { id: '3A', cheked: false, num: 4 },
-            { id: '3B', cheked: false, num: 5 },
-            { id: '4A', cheked: false, num: 6 },
-            { id: '4B', cheked: false, num: 7 },
-            { id: '5A', cheked: false, num: 8 },
-            { id: '5B', cheked: false, num: 9 },
-            { id: '6A', cheked: false, num: 10 },
-            { id: '6B', cheked: false, num: 11 },
-            { id: '7A', cheked: false, num: 12 },
-            { id: '7B', cheked: false, num: 13 },
-            { id: '8A', cheked: false, num: 14 },
-            { id: '8B', cheked: false, num: 15 },
-            { id: '9A', cheked: false, num: 16 },
-            { id: '9B', cheked: false, num: 17 },
-            { id: '10A', cheked: false, num: 18 },
-            { id: '10B', cheked: false, num: 19 },
-            { id: '11A', cheked: false, num: 20 },
-            { id: '11B', cheked: false, num: 21 },
-            { id: '12A', cheked: false, num: 22 },
-            { id: '12B', cheked: false, num: 23 },
-            { id: '13A', cheked: false, num: 24 },
-            { id: '13B', cheked: false, num: 25 },
-            { id: '14A', cheked: false, num: 26 },
-            { id: '14B', cheked: false, num: 27 },
-            { id: '15A', cheked: false, num: 28 },
-            { id: '15B', cheked: false, num: 29 },
-            { id: '16A', cheked: false, num: 30 },
-            { id: '16B', cheked: false, num: 31 },
-            { id: '17A', cheked: false, num: 32 },
-            { id: '17B', cheked: false, num: 33 },
-            { id: '18A', cheked: false, num: 34 },
-            { id: '18B', cheked: false, num: 35 },
-            { id: '19A', cheked: false, num: 36 },
-            { id: '19B', cheked: false, num: 37 },
-            { id: '20A', cheked: false, num: 38 },
-            { id: '20B', cheked: false, num: 39 },
-            { id: '21A', cheked: false, num: 40 },
-            { id: '21B', cheked: false, num: 41 },
-            { id: '22A', cheked: false, num: 42 },
-            { id: '22B', cheked: false, num: 43 },
-            { id: '23A', cheked: false, num: 44 },
-            { id: '23B', cheked: false, num: 45 },
-            { id: '24A', cheked: false, num: 46 }]
-      }else if(this.state.relatednessRunidTwo[0] === 2){
-        arrNum=[
+        arrNum = [
+          { id: '1A', cheked: false, num: 0 },
+          { id: '1B', cheked: false, num: 1 },
+          { id: '2A', cheked: false, num: 2 },
+          { id: '2B', cheked: false, num: 3 },
+          { id: '3A', cheked: false, num: 4 },
+          { id: '3B', cheked: false, num: 5 },
+          { id: '4A', cheked: false, num: 6 },
+          { id: '4B', cheked: false, num: 7 },
+          { id: '5A', cheked: false, num: 8 },
+          { id: '5B', cheked: false, num: 9 },
+          { id: '6A', cheked: false, num: 10 },
+          { id: '6B', cheked: false, num: 11 },
+          { id: '7A', cheked: false, num: 12 },
+          { id: '7B', cheked: false, num: 13 },
+          { id: '8A', cheked: false, num: 14 },
+          { id: '8B', cheked: false, num: 15 },
+          { id: '9A', cheked: false, num: 16 },
+          { id: '9B', cheked: false, num: 17 },
+          { id: '10A', cheked: false, num: 18 },
+          { id: '10B', cheked: false, num: 19 },
+          { id: '11A', cheked: false, num: 20 },
+          { id: '11B', cheked: false, num: 21 },
+          { id: '12A', cheked: false, num: 22 },
+          { id: '12B', cheked: false, num: 23 },
+          { id: '13A', cheked: false, num: 24 },
+          { id: '13B', cheked: false, num: 25 },
+          { id: '14A', cheked: false, num: 26 },
+          { id: '14B', cheked: false, num: 27 },
+          { id: '15A', cheked: false, num: 28 },
+          { id: '15B', cheked: false, num: 29 },
+          { id: '16A', cheked: false, num: 30 },
+          { id: '16B', cheked: false, num: 31 },
+          { id: '17A', cheked: false, num: 32 },
+          { id: '17B', cheked: false, num: 33 },
+          { id: '18A', cheked: false, num: 34 },
+          { id: '18B', cheked: false, num: 35 },
+          { id: '19A', cheked: false, num: 36 },
+          { id: '19B', cheked: false, num: 37 },
+          { id: '20A', cheked: false, num: 38 },
+          { id: '20B', cheked: false, num: 39 },
+          { id: '21A', cheked: false, num: 40 },
+          { id: '21B', cheked: false, num: 41 },
+          { id: '22A', cheked: false, num: 42 },
+          { id: '22B', cheked: false, num: 43 },
+          { id: '23A', cheked: false, num: 44 },
+          { id: '23B', cheked: false, num: 45 },
+          { id: '24A', cheked: false, num: 46 }]
+      } else if (this.state.relatednessRunidTwo[0] === 2) {
+        arrNum = [
           { id: '1', cheked: false, num: 0 },
           { id: '2', cheked: false, num: 1 },
           { id: '3', cheked: false, num: 2 },
@@ -1770,7 +1778,7 @@ class sitePh extends React.Component {
 
 
 
-      this.getLabelRelatVenueNumber({ sportid: this.state.relatednessRunidTwo[0],type:1 })
+      this.getLabelRelatVenueNumber({ sportid: this.state.relatednessRunidTwo[0], type: 1 })
       let num = e.currentTarget.dataset.num
       if (num !== '') {
         if (this.state.relatednessRunidTwo[0] === 6) {
@@ -1808,16 +1816,18 @@ class sitePh extends React.Component {
         ko = '足球8人制'
       } else if (this.state.relatednessRunidTwo[0] === 9) {
         ko = '足球7人制'
-      } else if (this.state.relatednessRunidTwo[0]=== 10) {
-        ko= '足球5人制'
+      } else if (this.state.relatednessRunidTwo[0] === 10) {
+        ko = '足球5人制'
       } else if (this.state.relatednessRunidTwo[0] === 11) {
         ko = '排球'
       } else if (this.state.relatednessRunidTwo[0] === 12) {
         ko = '网球'
-      } else if (this.state.relatednessRunidTwo[0]=== 13) {
+      } else if (this.state.relatednessRunidTwo[0] === 13) {
         ko = '足球6人制'
+      } else if (this.state.relatednessRunid[0] === 14) {
+        ko = '足球9人制'
       }
-      this.setState({ connectedTwo: true, connectedNameTwo:ko,arrNum:arrNum })
+      this.setState({ connectedTwo: true, connectedNameTwo: ko, arrNum: arrNum })
     } else {
       Toast.fail('请选择母关联场地类型')
     }
@@ -1864,7 +1874,7 @@ class sitePh extends React.Component {
     const res = await VenueRelatSave(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       Toast.success('添加成功')
-      this.setState({ relatedness: false,pageFour:1 })
+      this.setState({ relatedness: false, pageFour: 1 })
       this.getVenueRelatList({ page: 1 })
     } else if (res.data.code === 4002) {
       Toast.fail('母关联者只能选择单个场地')
@@ -1885,7 +1895,7 @@ class sitePh extends React.Component {
       Toast.fail('请选择子关联场地编号')
     } else {
       let data = {
-        two_sportid: this.state.relatednessRunid[0]===15?6:this.state.relatednessRunid[0],
+        two_sportid: this.state.relatednessRunid[0] === 15 ? 6 : this.state.relatednessRunid[0],
         two_sportname: this.state.connectedName,
         two_venueid: this.state.connectedOne,
         one_sportid: this.state.relatednessRunidTwo[0],
@@ -1897,7 +1907,7 @@ class sitePh extends React.Component {
 
   }
 
-  
+
   async getVenueRelatList(data) {
     const res = await getVenueRelatList(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
@@ -1909,9 +1919,13 @@ class sitePh extends React.Component {
 
   async VenueRelatRelieve(data) {
     const res = await VenueRelatRelieve(data, localStorage.getItem('venue_token'))
-    if(res.data.code===2000){
-        this.getVenueRelatList({page:this.state.pageFour})
+    if (res.data.code === 2000) {
+      this.getVenueRelatList({ page: this.state.pageFour })
     }
+  }
+  commentTitle = e => {
+    console.log(e)
+    this.setState({ commentTitle: e })
   }
 
   render() {
@@ -2054,13 +2068,13 @@ class sitePh extends React.Component {
 
 
         <div className="siting68" style={this.state.index === '4' ? {} : { display: 'none' }}>
-        <div className="Subdivide">
+          <div className="Subdivide">
             {
               this.state.relatList.map((item, i) => (
                 <Card className="card" key={i}>
                   <Card.Header
-                    title={<span className="titleLeft">母关联：{item.two_sportname==='篮球'?item.two_sportname+'（全场）':item.two_sportname}</span>}
-                    extra={<span className="titleRight">子关联：{item.one_sportname==='篮球'?item.one_sportname+'（半场）':item.one_sportname}</span>}
+                    title={<span className="titleLeft">母关联：{item.two_sportname === '篮球' ? item.two_sportname + '（全场）' : item.two_sportname}</span>}
+                    extra={<span className="titleRight">子关联：{item.one_sportname === '篮球' ? item.one_sportname + '（半场）' : item.one_sportname}</span>}
                   />
                   <Card.Body>
                     <div className="bossname">
@@ -2072,8 +2086,8 @@ class sitePh extends React.Component {
                     alert('提示', '您确定要删除该条场地关联么？', [
                       { text: '取消', onPress: () => console.log('cancel') },
                       { text: '确定', onPress: () => this.VenueRelatRelieve({ relatid: item.uuid }) },
-                    ])} style={{width:'1.5rem',height:'1.5rem',float:'right'}} src={require('../../assets/delet.png')} alt="img" /></div>} />
-                 </Card>
+                    ])} style={{ width: '1.5rem', height: '1.5rem', float: 'right' }} src={require('../../assets/delet.png')} alt="img" /></div>} />
+                </Card>
               ))
             }
             <div style={this.state.relatList.length !== 0 ? { display: 'none' } : { width: '100%' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (6).png')} alt="666" /><span style={{ display: 'block', textAlign: 'center' }}>您还没有添加场地关联!</span></div>
@@ -2085,7 +2099,7 @@ class sitePh extends React.Component {
               cols={1}
               onOk={this.asyncValueFour}
             >
-              <div><img src={require('../../assets/shai.png')} alt="img" />筛选：<span style={{color: '#000' }}>{this.state.sportArr[this.state.asyncValueFour].label}</span></div>
+              <div><img src={require('../../assets/shai.png')} alt="img" />筛选：<span style={{ color: '#000' }}>{this.state.sportArr[this.state.asyncValueFour].label}</span></div>
             </Picker>
             <div style={{ marginLeft: '4%' }} onClick={this.relatedness}>+添加场地关联</div>
           </div>
@@ -2104,7 +2118,7 @@ class sitePh extends React.Component {
             data={this.state.sportArrTwoSo}
             value={this.state.relatednessRunid}
             disabled={this.state.upData === 1 ? true : false}
-            onOk={v =>this.setState({ relatednessRunid:v, idxTitleTwo: '请选择/添加', connectedOne: []})}
+            onOk={v => this.setState({ relatednessRunid: v, idxTitleTwo: '请选择/添加', connectedOne: [] })}
             cols={1} className="forss">
             <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} style={{ borderBottom: '1px solid #E9E9E9' }}>母关联场地类型</List.Item>
           </Picker>
@@ -2194,7 +2208,18 @@ class sitePh extends React.Component {
             <List.Item arrow={this.state.upData === 1 ? 'empty' : 'horizontal'} style={this.state.pickerValue[0] === 6 || this.state.pickerValue[0] === 2 ? { borderBottom: '1px solid #E9E9E9' } : { display: 'none' }}>收费类型</List.Item>
           </Picker>
 
+          <List style={{ borderBottom: '1px solid #E9E9E9' }}>
+            <span style={{ float: 'left', lineHeight: '43px', paddingLeft: '15px' }}>标签描述</span>
+            <InputItem
+              placeholder="请填写(选填)"
+              ref={el => this.labelFocusInst = el}
+              value={this.state.commentTitle}
+              onChange={this.commentTitle}
+              style={{ width: '70%', float: 'right', textAlign: 'right', fontSize: '0.88rem', paddingRight: '23px', color: '#888' }}
+            ></InputItem>
+          </List>
           <List.Item arrow="horizontal" onClick={this.Serial} extra={this.state.chekedArr.length === 0 ? '请选择' : this.state.chekedArr.join(',')} style={{ borderBottom: '1px solid #E9E9E9' }}>场地编号</List.Item>
+
           <List.Item arrow="empty" extra={this.state.chekedArrLen} style={{ borderBottom: '1px solid #E9E9E9' }}>场地数量</List.Item>
           <div className="btnSub" onTouchStart={this.xifenPush}>提交</div>
 
@@ -2352,19 +2377,19 @@ class sitePh extends React.Component {
               value={this.state.money}
               onChange={(v) => { this.setState({ money: v }) }}
               onBlur={(v) => { console.log('onBlur', v); }}
-              style={{ padding: '0',left:'0.5rem' }}
+              style={{ padding: '0', left: '0.5rem' }}
               moneyKeyboardWrapProps={moneyKeyboardWrapProps}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>价格</span></InputItem>
-           
+
             <Picker
               data={this.state.selectDaArr}
               onOk={this.selectDa}
               value={this.state.selectDa}
               cols={1}
             >
-              <List.Item arrow='horizontal' style={this.state.timeFalg === 'no' ? { width: '40%', position: 'absolute', top: 0, right: '-2rem',textAlign:'center' } :this.state.timeFalg === 'yes'?{ width: '40%', position: 'absolute', top: 0, right: '-2rem',textAlign:'center' } :{ display: 'none' }}></List.Item>
+              <List.Item arrow='horizontal' style={this.state.timeFalg === 'no' ? { width: '40%', position: 'absolute', top: 0, right: '-2rem', textAlign: 'center' } : this.state.timeFalg === 'yes' ? { width: '40%', position: 'absolute', top: 0, right: '-2rem', textAlign: 'center' } : { display: 'none' }}></List.Item>
             </Picker>
-             <div style={this.state.timeFalg === 'no' ? {display:'none'} : this.state.timeFalg === 'yes' ? {display:'none'} : {width: '40%', position: 'absolute', top: 0, right: '0%',lineHeight:'44px',textAlign:'right'}}>(元/时)</div>
+            <div style={this.state.timeFalg === 'no' ? { display: 'none' } : this.state.timeFalg === 'yes' ? { display: 'none' } : { width: '40%', position: 'absolute', top: 0, right: '0%', lineHeight: '44px', textAlign: 'right' }}>(元/时)</div>
           </List.Item>
 
           <Picker
@@ -2379,7 +2404,7 @@ class sitePh extends React.Component {
             data={this.state.Shortest}
             value={this.state.pickerValueFive === -1 ? [0] : this.state.pickerValueFive}
             onOk={this.pickerValueFive}
-            disabled={this.state.pickerValueFive === -1 ? true : false} 
+            disabled={this.state.pickerValueFive === -1 ? true : false}
             cols={1} className="forss">
             <List.Item arrow={this.state.pickerValueFive === -1 ? 'empty' : 'horizontal'} style={{ borderBottom: '1px solid #E9E9E9' }}>最短提前预定时间</List.Item>
           </Picker>
@@ -2465,10 +2490,10 @@ class sitePh extends React.Component {
             <div onClick={this.withDay} data-date="3" style={this.state.withDayIndex === '3' ? { background: '#D85D27' } : {}}>当年法定节假日</div>
           </div>
 
-        
+
           <div className="site-calendar-demo-card" style={{ border: '1px solid #e9e9e9', marginTop: 15 }}>
             <Calendar fullscreen={false} className="startTime" dateCellRender={this.dateCellRender} locale={locale} mode='month' onChange={this.onPanelChange} />
-          </div> 
+          </div>
 
 
 

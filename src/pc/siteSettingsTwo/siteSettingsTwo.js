@@ -24,6 +24,7 @@ class siteSettingsTwo extends React.Component {
       {id:8,name:'足球8人制'},
       {id:9,name:'足球7人制'},
       {id:13,name:'足球6人制'},
+      {id:14,name:'足球9人制'},
       {id:10,name:'足球5人制'},
       {id:11,name:'排球'},
       {id:12,name:'网球'},
@@ -138,6 +139,7 @@ class siteSettingsTwo extends React.Component {
       { name: '足球8人制', id: 8 },
       { name: '足球7人制', id: 9 },
       { name: '足球6人制', id: 13 },
+      { name: '足球9人制', id: 14 },
       { name: '足球5人制', id: 10 },
       { name: '排球', id: 11 },
       { name: '网球', id: 12 }
@@ -153,6 +155,7 @@ class siteSettingsTwo extends React.Component {
       { name: '足球8人制', id: 8 },
       { name: '足球7人制', id: 9 },
       { name: '足球6人制', id: 13 },
+      { name: '足球9人制', id: 14 },
       { name: '足球5人制', id: 10 },
       { name: '排球', id: 11 },
       { name: '网球', id: 12 }
@@ -859,6 +862,8 @@ class siteSettingsTwo extends React.Component {
           res.data.data[i].sportid = '网球'
         } else if (res.data.data[i].sportid === 13) {
           res.data.data[i].sportid = '足球6人制'
+        }else if (res.data.data[i].sportid === 14) {
+          res.data.data[i].sportid = '足球9人制'
         }
       }
       this.setState({ joinXiList: res.data.data, otherseris: res.data.other })
@@ -1594,6 +1599,7 @@ class siteSettingsTwo extends React.Component {
                 <Option value="5">台球斯诺克</Option>
                 <Option value="6">篮球</Option>
                 <Option value="7">足球11人制</Option>
+                <Option value="14">足球9人制</Option>
                 <Option value="8">足球8人制</Option>
                 <Option value="9">足球7人制</Option>
                 <Option value="13">足球6人制</Option>

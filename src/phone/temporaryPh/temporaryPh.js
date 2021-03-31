@@ -117,11 +117,17 @@ class temporaryPh extends React.Component {
       case 7:
         day = "足球11人制";
         break;
+        case 14:
+        day = "足球9人制";
+        break;
       case 8:
         day = "足球8人制";
         break;
       case 9:
         day = "足球7人制";
+        break;
+        case 13:
+        day = "足球6人制";
         break;
       case 10:
         day = "足球5人制";

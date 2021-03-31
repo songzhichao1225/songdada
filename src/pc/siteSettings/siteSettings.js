@@ -132,6 +132,7 @@ class siteSettings extends React.Component {
       { name: '足球8人制', id: 8 },
       { name: '足球7人制', id: 9 },
       { name: '足球6人制', id: 13 },
+      { name: '足球9人制', id: 14 },
       { name: '足球5人制', id: 10 },
       { name: '排球', id: 11 },
       { name: '网球', id: 12 }
@@ -145,12 +146,14 @@ class siteSettings extends React.Component {
       { name: '篮球（半场）', id: 6 },
       { name: '足球11人制', id: 7 },
       { name: '足球8人制', id: 8 },
+      { name: '足球9人制', id: 14 },
       { name: '足球7人制', id: 9 },
       { name: '足球6人制', id: 13 },
       { name: '足球5人制', id: 10 },
       { name: '排球', id: 11 },
       { name: '网球', id: 12 }
     ],
+    commentTitle:'',
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -331,6 +334,10 @@ class siteSettings extends React.Component {
       case 13:
         day = "足球6人制";
         break;
+        case 14:
+        day = "足球9人制";
+        break;
+        
       default:
         day = "";
     }
@@ -382,6 +389,9 @@ class siteSettings extends React.Component {
         break;
       case 13:
         day = "足球6人制";
+        break;
+        case 14:
+        day = "足球9人制";
         break;
       default:
         day = "";
@@ -1231,14 +1241,15 @@ class siteSettings extends React.Component {
   }
 
   subSiteSubdivision = (e) => {
-    let { runId, tags, arrCheked, typeTwo } = this.state
+    let { runId, tags, arrCheked, typeTwo,commentTitle } = this.state
     let obj = {
       sportid: runId,
       title: tags.indexOf('-') === -1 ? typeTwo === 2 ? tags + '-散场' : typeTwo === 1 ? tags + '-半场' : typeTwo === 3 ? tags + '-按时' : typeTwo === 4 ? tags + '-按次' : typeTwo === 5 ? tags + '-全场' : tags : tags,
       venueid: typeof (arrCheked) === 'string' ? arrCheked : arrCheked.join(),
       number: this.state.arrChekedLen,
       uuid: e.currentTarget.dataset.id,
-      type: typeTwo
+      type: typeTwo,
+      com:commentTitle,
     }
 
 
@@ -1284,6 +1295,8 @@ class siteSettings extends React.Component {
           res.data.data[i].sportid = '网球'
         } else if (res.data.data[i].sportid === 13) {
           res.data.data[i].sportid = '足球6人制'
+        }else if (res.data.data[i].sportid === 14) {
+          res.data.data[i].sportid = '足球9人制'
         }
       }
       this.setState({ joinXiList: res.data.data, otherseris: res.data.other })
@@ -1303,7 +1316,8 @@ class siteSettings extends React.Component {
     this.getVenueSportidTitle({ sportid: res.data.data[0].sportid })
     if (res.data.data[0].title.indexOf('全场') !== -1) {
       this.setState({
-        runId: res.data.data[0].sportid, joinB: false, tags: res.data.data[0].title, arrChekedLen: res.data.data[0].venueid.split(',').length / 2, arrCheked: res.data.data[0].venueid.split(','), arrChekedTwope: res.data.data[0].venueid.split(','), venNumid: res.data.data[0].uuid, typeTwo: res.data.data[0].type
+        runId: res.data.data[0].sportid, joinB: false, tags: res.data.data[0].title, arrChekedLen: res.data.data[0].venueid.split(',').length / 2, arrCheked: res.data.data[0].venueid.split(','), arrChekedTwope: res.data.data[0].venueid.split(','), venNumid: res.data.data[0].uuid, typeTwo: res.data.data[0].type,
+        commentTitle:res.data.data[0].comment
       })
     } else {
       this.setState({
@@ -1317,7 +1331,8 @@ class siteSettings extends React.Component {
   async getSiteSelectedVenueid(data) {
     let { arrNum, runId } = this.state
     const res = await getSiteSelectedVenueid(data, sessionStorage.getItem('venue_token'))
-    if (this.state.typeTwo===1||this.state.typeTwo===2 || runId === 2) {
+    console.log(this.state.typeTwo)
+    if (this.state.typeTwo===1||this.state.typeTwo===2||this.state.typeTwo===5 || runId === 2) {
       for (let j in res.data.data) {
         for (let i in this.state.arrNum) {
           if (this.state.arrNum.length === 48) {
@@ -1330,8 +1345,8 @@ class siteSettings extends React.Component {
               }
             }
           } else {
-            if (this.state.arrNum[i].id === res.data.data[j]) {
-              this.state.arrNum[parseInt(this.state.arrNum[i].num)].cheked = 'no'
+            if (this.state.arrNum[i].id.toString() === res.data.data[j]) {
+              this.state.arrNum[parseInt(this.state.arrNum[i].id)].cheked = 'no'
             }
           }
           for (let k in this.state.arrChekedTwope) {
@@ -2025,7 +2040,9 @@ class siteSettings extends React.Component {
         ko = '网球'
       } else if (this.state.relatednessRunid[0] === 13) {
         ko = '足球6人制'
-      } else if (this.state.relatednessRunid[0] === 15) {
+      } else if (this.state.relatednessRunid[0] === 14) {
+        ko = '足球9人制'
+      }  else if (this.state.relatednessRunid[0] === 15) {
         ko = '篮球(半场)'
       }
       this.setState({ connectedName: ko, arrNum: arrNum, connected: true })
@@ -2035,21 +2052,23 @@ class siteSettings extends React.Component {
 
   }
   connectedSelsed = e => {
+
+
     if (this.state.relatednessRunid[0] === 15) {
       let data = this.state.arrNum
-      if (data[e.currentTarget.dataset.num].cheked === true) {
-        data[e.currentTarget.dataset.num].cheked = false
-      } else if (data[e.currentTarget.dataset.num].cheked === false) {
-        data[e.currentTarget.dataset.num].cheked = true
-      }
+      for(let i in data){
+        data[i].cheked=false
+     }
+     data[e.currentTarget.dataset.num].cheked = true
+     
       this.setState({ arrNum: data })
     }else{
       let data = this.state.arrNum
-      if (data[e.currentTarget.dataset.id - 1].cheked === true) {
-        data[e.currentTarget.dataset.id - 1].cheked = false
-      } else if (data[e.currentTarget.dataset.id - 1].cheked === false) {
-        data[e.currentTarget.dataset.id - 1].cheked = true
+      for(let i in data){
+         data[i].cheked=false
       }
+      data[e.currentTarget.dataset.id - 1].cheked = true
+      
       this.setState({ arrNum: data })
     }
 
@@ -2241,6 +2260,8 @@ class siteSettings extends React.Component {
         ko = '网球'
       } else if (this.state.relatednessRunidTwo[0] === 13) {
         ko = '足球6人制'
+      }else if (this.state.relatednessRunidTwo[0] === 14) {
+        ko = '足球9人制'
       }
       this.setState({ connectedTwo: true, connectedNameTwo: ko, arrNum: arrNum })
     } else {
@@ -2337,6 +2358,9 @@ class siteSettings extends React.Component {
   relatfirm = () => {
     this.VenueRelatRelieve({ relatid: this.state.relatUuid })
   }
+  commentTitle=e=>{
+    this.setState({commentTitle:e.target.value})
+  }
 
 
   render() {
@@ -2366,6 +2390,8 @@ class siteSettings extends React.Component {
                 <Option value="10">足球5人制</Option>
                 <Option value="11">排球</Option>
                 <Option value="12">网球</Option>
+                <Option value="13">足球6人制</Option>
+                <Option value="14">足球9人制</Option>
               </Select>
             </div>
           </div>
@@ -2807,7 +2833,7 @@ class siteSettings extends React.Component {
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>价格</span><span>{this.state.timeFalg === 'no' ? '' : this.state.timeFalg === 'yes' ? '' : '(元/时)'}</span>
-              <InputNumber className="startTime" value={this.state.costperhour_cg} defaultValue={1} min={1} style={this.state.timeFalg === 'no' ? { height: 32, width: 269, marginLeft: '115px', paddingLeft: '11px', marginRight: 0, float: 'left' } : this.state.timeFalg === 'yes' ? { height: 32, width: 269, marginLeft: '115px', paddingLeft: '11px', marginRight: 0, float: 'left' } : { height: 32, width: 269, paddingLeft: '11px' }} placeholder="请输入" onChange={this.money} />
+              <InputNumber className="startTime" value={this.state.costperhour_cg}  min={1} style={this.state.timeFalg === 'no' ? { height: 32, width: 269, marginLeft: '115px', paddingLeft: '11px', marginRight: 0, float: 'left' } : this.state.timeFalg === 'yes' ? { height: 32, width: 269, marginLeft: '115px', paddingLeft: '11px', marginRight: 0, float: 'left' } : { height: 32, width: 269, paddingLeft: '11px' }} placeholder="请输入" onChange={this.money} />
               <Select placeholder="请选择" onChange={this.selectDA} value={this.state.selectDA} style={this.state.timeFalg === 'no' ? { float: 'right', marginRight: '50px', width: '80px', height: '32px' } : this.state.timeFalg === 'yes' ? { float: 'right', marginRight: '50px', width: '80px', height: '32px' } : { display: 'none' }}>
                 <Option value="/次">/次</Option>
                 <Option value="/H">/H</Option>
@@ -2957,6 +2983,12 @@ class siteSettings extends React.Component {
                 }
               </Select>
             </div>
+
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>标签描述</span>
+              <Input className="startTime" value={this.state.commentTitle} onChange={this.commentTitle} style={{ paddingLeft: '10px', height: 32, background: '#fff', color: '#333', cursor: 'pointer', marginRight: 100 }}  placeholder="请填写(选填)" />
+            </div>
+
             <div className="modelList" style={{ height: '32px' }} onClick={this.serial}>
               <span>场地编号</span>
               <Input className="startTime" value={this.state.arrCheked.length !== 0 ? this.state.arrCheked : []} style={{ paddingLeft: '10px', height: 32, background: '#fff', color: '#333', cursor: 'pointer', marginRight: 100 }} disabled={true} placeholder="点击进行添加" />
