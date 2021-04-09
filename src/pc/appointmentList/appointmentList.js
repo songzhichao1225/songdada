@@ -595,7 +595,7 @@ class appointmentList extends React.Component {
         <div>
           {
             this.state.list.map((item, i) => (
-              <Row key={i}>
+              <Row key={i} className="asdgfdfsg">
                 <Popover content={(<span>{item.orderId}</span>)} title='详情' trigger="click">
                   <Col xs={{ span: 2 }}>{item.orderId}</Col>
                 </Popover>
@@ -662,7 +662,7 @@ class appointmentList extends React.Component {
                 <Col xs={{ span: 2 }}><div>{item.SiteMoneyStatus}</div></Col>
                 <Col xs={{ span: 2 }}>
                   <span>
-                    <img className={item.breakup.length === 0 ? item.PublicStatus === '匹配中' ? 'img' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'img' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'img' : 'circumstanceT' : 'circumstanceT'} data-uid={item.uuid} data-siteid={item.venueid} data-sitenum={item.venuenumber} style={{ marginTop: '0' }} onClick={this.sending} src={require("../../assets/icon_pc_faNews.png")} alt="发送消息" />
+                    <img className={item.breakup.length === 0 ? item.PublicStatus === '匹配中' ? 'img' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'img' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'img' : 'circumstanceT' : 'circumstanceT'} data-uid={item.uuid} data-siteid={item.venueid} data-sitenum={item.venuenumber}  onClick={this.sending} src={require("../../assets/icon_pc_faNews.png")} alt="发送消息" />
                   </span>
                 </Col>
               </Row>

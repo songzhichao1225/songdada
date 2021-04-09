@@ -55,11 +55,12 @@ class VipAgement extends React.Component {
     textFive: '获取验证码',
     edorTwoLpoBlock: 0,
     memberuuidFour: '',
-    pageTwo: '',
+    pageTwo: 1,
     RecordsUid: '',
     validityThree: '',
     href: '',
     download: '',
+    text:'',
   }
 
 
@@ -115,6 +116,7 @@ class VipAgement extends React.Component {
   }
 
   search = e => {
+    this.setState({text:e.target.value})
     this.getVenueMemberlist({ page: 1, search: e.target.value })
   }
 
@@ -137,20 +139,23 @@ class VipAgement extends React.Component {
       this.setState({ discountVal: e.target.value })
     }
   }
+
   handleChange = e => {
     this.setState({ handleChange: e })
   }
+
   topUp = e => {
     this.setState({ topUp: e.target.value, balance: Number(this.state.giveAway) + Number(e.target.value) })
   }
+
   giveAway = e => {
-
     this.setState({ giveAway: e.target.value, balance: Number(this.state.topUp) + Number(e.target.value) })
-
   }
+
   balance = e => {
     this.setState({ balance: e.target.value })
   }
+  
   validity = e => {
     this.setState({ validity: e })
   }
@@ -278,7 +283,11 @@ class VipAgement extends React.Component {
     if (res.data.code === 2000) {
       message.success(res.data.msg)
       this.setState({ topAmount: false, giveAwayTwo: '', topUpTwo: '', balanceTwo: '' })
+      if(this.state.text!==''){
+        this.getVenueMemberlist({ search: this.state.text })
+      }else{
       this.getVenueMemberlist({ page: this.state.page })
+      }
     } else {
       message.error(res.data.msg)
     }
@@ -492,7 +501,7 @@ class VipAgement extends React.Component {
       <div className="VipAgement">
         <div className="header">
           <div className="left">会员信息</div>
-          <div className="sreach"> <Search placeholder="请输入卡主名称/手机号/会员卡号" onChange={this.search} /></div>
+          <div className="sreach"> <Search  placeholder="请输入卡主名称/手机号/会员卡号" onChange={this.search} /></div>
         </div>
         <div className="line"></div>
         <div className="content">
@@ -594,11 +603,11 @@ class VipAgement extends React.Component {
           </div>
           <div className="ViplistSon">
             <span className="title">充值金额<span className="redStart">*</span></span>
-            <Input placeholder="请填写" maxLength={8} onChange={this.topUp} />
+            <Input type='number' placeholder="请填写"  onChange={this.topUp} />
           </div>
           <div className="ViplistSon">
             <span className="title">赠送金额</span>
-            <Input placeholder="请填写" maxLength={8} onChange={this.giveAway} />
+            <Input type='number' placeholder="请填写"  onChange={this.giveAway} />
           </div>
           <div className="ViplistSon">
             <span className="title">余额</span>
@@ -754,11 +763,11 @@ class VipAgement extends React.Component {
 
           <div className="ViplistSon">
             <span className="title">充值金额<span className="redStart">*</span></span>
-            <Input maxLength={8} placeholder="请填写" value={this.state.topUpTwo} onChange={this.topUpTwo} />
+            <Input type='number' placeholder="请填写" value={this.state.topUpTwo} onChange={this.topUpTwo} />
           </div>
           <div className="ViplistSon">
             <span className="title">赠送金额</span>
-            <Input maxLength={8} placeholder="请填写" value={this.state.giveAwayTwo} onChange={this.giveAwayTwo} />
+            <Input type='number' placeholder="请填写" value={this.state.giveAwayTwo} onChange={this.giveAwayTwo} />
           </div>
 
           <div className="ViplistSon">

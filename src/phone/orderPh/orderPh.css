@@ -794,3 +794,25 @@ html:not([data-scale]) .am-card-body::before{
 .dfgd .am-list-item .am-list-line .am-list-extra{
     flex-basis:5%;
 }
+.sdfdsfg{
+    width: 63px;
+    height: 25px;
+    background-color: #F5A623;
+    color: #fff;
+    text-align: center;
+    line-height: 25px;
+    font-size: 12px;
+    border-radius: 3px;
+    margin-top: 3px;
+    cursor: pointer;
+}
+.adfdsrghdf{
+    height: 2.69rem;
+    border-radius: 1.5rem;
+    background: #D85D27;
+    color: #fff;
+    text-align: center;
+    line-height: 2.69rem;
+    font-size: 0.88rem;
+    margin-top: 2rem;
+}

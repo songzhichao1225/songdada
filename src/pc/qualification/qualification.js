@@ -633,11 +633,7 @@ class qualification extends React.Component {
 
         if (this.state.loading === false || this.state.loadingTwo === false || this.state.loadingThree === false || this.state.loadingSix === false) {
           message.warning('图片上传中...');
-        } else if (Bankphone === '') {
-          message.warning('请填写短信通知手机号')
-        } else if (kolod === '') {
-          message.warning('请选择搜索出来的支行名称')
-        } else {
+        }  else {
           this.VenueQualifications_another(data)
         }
       } else {
@@ -1379,7 +1375,7 @@ class qualification extends React.Component {
                 disableDelete={this.state.flagDis}
               />
             </div>
-            <div className="name">
+            <div className="name" style={{float:'left',marginBottom:'20px'}}>
               <div className="nameSonTle">
                 <span className="boTitle">银行账号</span>
               </div>

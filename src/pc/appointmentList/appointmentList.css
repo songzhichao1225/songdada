@@ -33,12 +33,17 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+.asdgfdfsg .ant-col{
+    line-height: 50px;
+}
+.rowConten .ant-col{
     line-height: 50px;
 }
 .orderList .ant-col span{
     cursor: pointer;
     display: block;
-    line-height: 50px;
+    
 }
 .orderList .rowConten{
     height: 50px;

@@ -40,7 +40,7 @@ class management extends React.Component {
     memberuuidOne: '',
     visibleJoinTwo: false,
     ChUUid: '',
-    discountValTwo: '',//充值折扣
+    discountValTwo: 10,//充值折扣
     visibleJoinThree: false,//修改抽屉
     cardHolderThree: '',
     contactPersonThree: '',
@@ -58,7 +58,9 @@ class management extends React.Component {
     ipCodeTwo: '',
     makeNumTwo: '',
     memberuuidlokl: '',
-    balanceTwo: '0'
+    balanceTwo: '0',
+    text:'',
+    balanceTowT:0,
   };
 
 
@@ -145,7 +147,7 @@ class management extends React.Component {
       this.setState({
         cardHolderTwo: res.data.data.cardholderName, contactPersonTwo: res.data.data.contacts, birthdayTwo: res.data.data.birthday,
         contactNumberTwo: res.data.data.contactNumber, VipcardTwo: res.data.data.cardNumber, validityTwo: [res.data.data.effective.toString()],
-        gradeTwo: res.data.data.grade
+        gradeTwo: res.data.data.grade,balanceTowT:res.data.data.balance
       })
 
     } else {
@@ -164,7 +166,11 @@ class management extends React.Component {
     const res = await VenueMemberRecharge(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ visibleJoinTwo: false })
+      if(this.state.text!==''){
+        this.getVenueMemberlist({ search: this.state.text })
+      }else{
       this.getVenueMemberlist({ page: this.state.page })
+      }
     } else {
       Toast.fail(res.data.msg)
     }
@@ -242,6 +248,7 @@ class management extends React.Component {
 
   searchBar = e => {
     this.setState({page:1})
+    this.setState({text:e})
     this.getVenueMemberlist({ search: e })
   }
   close = () => {
@@ -635,7 +642,7 @@ class management extends React.Component {
               className="look"
               value={this.state.topUpTwo}
               maxLength={8}
-              onChange={(v) => { this.setState({ topUpTwo: v }) }}
+              onChange={(v) => { this.setState({ topUpTwo: v,balanceTwo:Number(v) }) }}
               style={{ padding: '0', left: '0.5rem', fontSize: '0.88rem', textAlign: 'right' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>充值金额</span></InputItem>
           </List.Item>
@@ -652,7 +659,7 @@ class management extends React.Component {
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>赠送金额</span></InputItem>
           </List.Item>
 
-          <List.Item arrow="empty" extra={this.state.balanceTwo} style={{ borderBottom: '1px solid #E9E9E9' }}>充值后余额</List.Item>
+          <List.Item arrow="empty" extra={Number(this.state.balanceTowT)+this.state.balanceTwo} style={{ borderBottom: '1px solid #E9E9E9' }}>充值后余额</List.Item>
 
 
        

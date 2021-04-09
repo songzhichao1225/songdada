@@ -646,6 +646,19 @@ export function getTagComment(data,headers){    //获取场地细分标签的备
     return axios.post('/api/getTagComment',data,{headers: {'token': headers}})
 }
 
+export function cancelSingleOrder(data,headers){    //场馆端~线下占用~取消子订单
+    return axios.post('/api/cancelSingleOrder',data,{headers: {'token': headers}})
+}
+
+export function payOccupyWindow(data,headers){    //场馆端~线下占用~关灯结算时，根据当前时间计算活动时间及结算金额
+    return axios.post('/api/payOccupyWindow',data,{headers: {'token': headers}})
+}
+
+export function payOfflineOccupyOrder(data,headers){    //场馆端~线下占用~线下占用关灯结算
+    return axios.post('/api/payOfflineOccupyOrder',data,{headers: {'token': headers}})
+}
+
+
 
 
 

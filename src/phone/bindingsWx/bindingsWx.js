@@ -104,10 +104,11 @@ class bindingsWx extends React.Component {
 
   venueId = (e) => {
     let id = e.currentTarget.dataset.index
-    if (this.state.venueList[id].checked === true) {
-      this.state.venueList[id].checked = false
+    let ko=this.state.venueList[id]
+    if (ko.checked === true) {
+      ko.checked = false
     } else {
-      this.state.venueList[id].checked = true
+      ko.checked = true
     }
   }
 

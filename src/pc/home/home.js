@@ -252,9 +252,6 @@ class home extends React.Component {
 
   componentWillReceiveProps() {
     this.setState({ path: this.props.history.location.pathname })
-   
-    
-
     if (this.props.history.location.pathname === '/home') {
       sessionStorage.setItem('path', '1');
     } else if (this.props.history.location.pathname === '/homenews') {

@@ -3,8 +3,8 @@ import './orderPh.css';
 
 import { DatePicker, Toast, Card, Modal, InputItem, List, Picker, SearchBar, Radio, Calendar } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Pagination, Drawer, Spin, Table, Checkbox, Row, Col, Popover } from 'antd';
-import { getReservationActivitieslist, VenueSendMessage, getVenueReservation, setSquareByOffLine, DelVenueOfflineOccupancy, getVenueSport, CalculateVenuePrice, getVipCardInfomation, AddVenueOfflineOccupancy, getVenueBookingInformation, VenueClickCancelPlace, BreakUpConsumptionDetails, ContinuationRecord, getVenueNumberTitleList, VenueRemarksLabel, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave, DeductTheTimesOfClosing } from '../../api';
+import { Pagination, Drawer, Spin, Table, Checkbox, Row, Col, Popover, message } from 'antd';
+import { getReservationActivitieslist, VenueSendMessage, getVenueReservation, setSquareByOffLine,payOfflineOccupyOrder, payOccupyWindow, DelVenueOfflineOccupancy, cancelSingleOrder, getVenueSport, CalculateVenuePrice, getVipCardInfomation, AddVenueOfflineOccupancy, getVenueBookingInformation, VenueClickCancelPlace, BreakUpConsumptionDetails, ContinuationRecord, getVenueNumberTitleList, VenueRemarksLabel, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave, DeductTheTimesOfClosing } from '../../api';
 const prompt = Modal.prompt;
 const alert = Modal.alert;
 const RadioItem = Radio.RadioItem;
@@ -29,7 +29,7 @@ Date.prototype.format = function (fmt) {
   }
   return fmt;
 }
-
+/*eslint no-extend-native: ["error", { "exceptions": ["Date"] }]*/
 
 
 class orderPh extends React.Component {
@@ -168,6 +168,12 @@ class orderPh extends React.Component {
     kw: '',
     show: false,
     venueT: [],
+    consumpMoneyYou: '',
+    orderIndex: 0,
+    checkOutNow: false,
+    checkOutNowObj: '',
+    payment: [3],
+    checkOutNowArr: [{ label: '现金', value: 3 }, { label: '微信', value: 4 }, { label: '支付宝', value: 5 }]
   }
 
 
@@ -720,10 +726,10 @@ class orderPh extends React.Component {
     ko.setHours(ko.getHours() + 1 > 24 ? ko.getHours() : ko.getHours() + 1)
     ko.setMinutes(0)
     if (this.state.venueT.length !== 0) {
+      this.setState({repeat:[0]})
       this.CalculateVenuePrice({ sportid: this.state.liNum, venueT: this.state.venueT.join(',') })
     }
     this.setState({ info: true, date: ko, startTime: ko.format("yyyy-MM-dd hh:mm") })
-
   }
 
   checkbox = e => {
@@ -994,7 +1000,7 @@ class orderPh extends React.Component {
   async CalculateVenuePrice(data) {
     const res = await CalculateVenuePrice(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ TotalPrice: res.data.data.TotalPrice })
+      this.setState({ TotalPrice: res.data.data.TotalPrice, consumpMoneyYou: res.data.other })
     }
   }
   repeat = e => {
@@ -1014,7 +1020,7 @@ class orderPh extends React.Component {
     }
   }
   placeSubmit = () => {
-    let { liNum, theWay, contacts, TotalPrice, vipDetailsTwo, venueT, selectVenueId, contactNumber, startTime, timeLen, repeat, theNews } = this.state
+    let { liNum, theWay, contacts, consumpMoneyYou, vipDetailsTwo, venueT, selectVenueId, contactNumber, startTime, timeLen, repeat, theNews } = this.state
 
     let obj = {
       sportid: liNum,
@@ -1029,9 +1035,9 @@ class orderPh extends React.Component {
       starttime: startTime,
       playtime: timeLen[0],
       isloop: repeat[0],
-      consumpMoney: TotalPrice,
+      consumpMoney: venueT.length === 0 ? consumpMoneyYou.join(',') : '',
       comment: theNews,
-      venueT: venueT.join(',')
+      venueT: venueT.length !== 0 ? consumpMoneyYou.join(',') : '',
     }
     this.AddVenueOfflineOccupancy(obj)
   }
@@ -1061,7 +1067,7 @@ class orderPh extends React.Component {
     } else {
       alert('提示', '您确定取消本次订单吗?', [
         { text: '取消', onPress: () => console.log('cancel') },
-        { text: '确定', onPress: () => this.DelVenueOfflineOccupancy({ offid: this.state.informaid, isloop: 3, cur: this.state.qiDate.format('yyyy-MM-dd') }) },
+        { text: '确定', onPress: () => this.DelVenueOfflineOccupancy({ offid: this.state.informaid, isloop: 3, cur: this.state.qiDate }) },
       ])
     }
 
@@ -1084,11 +1090,15 @@ class orderPh extends React.Component {
     this.setState({ cardDetails: true })
   }
   cardDetailsClose = () => {
-    this.setState({ cardDetails: false })
+    this.setState({ cardDetails: false, checkOutNow: false })
   }
 
   subsdfgj = () => {
-    this.setState({ vipDetailsTwo: this.state.vipDetails[this.state.indexI], cardDetails: false })
+    if (this.state.vipDetails.length === 0) {
+      message.warning('请选择会员卡')
+    } else {
+      this.setState({ vipDetailsTwo: this.state.vipDetails[this.state.indexI], cardDetails: false })
+    }
   }
 
 
@@ -1152,6 +1162,66 @@ class orderPh extends React.Component {
   onCancel = () => {
     this.setState({ show: false })
   }
+  async cancelSingleOrder(data) {
+    const res = await cancelSingleOrder(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ informaid: this.state.otherObjTime[Number(this.state.orderIndex) + 1].orderID })
+      this.getVenueBookingInformation({ informaid: this.state.otherObjTime[Number(this.state.orderIndex) + 1].orderID, type: 1, cur: this.state.qiDate })
+      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.qiDate })
+      Toast.info(res.data.msg)
+    } else {
+      Toast.fail(res.data.msg)
+    }
+  }
+
+  singly = e => {
+    let sid = e.currentTarget.dataset.orderid
+    let cur = e.currentTarget.dataset.date
+    this.setState({ orderIndex: e.currentTarget.dataset.index })
+    alert('提示', '您确定取消该场地订单吗?', [
+      { text: '取消', onPress: () => console.log('cancel') },
+      { text: '确定', onPress: () => this.cancelSingleOrder({ sid: sid, cur: cur }) },
+    ])
+  }
+
+  async payOccupyWindow(data) {
+    const res = await payOccupyWindow(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ checkOutNow: true, checkOutNowObj: res.data.data, amount: res.data.data.pay, payment: res.data.data.modeName === 2 ? [3] : [1],payTime:res.data.data.payTime })
+    } else {
+      message.error(res.data.msg)
+    }
+  }
+
+  checkOutNow = e => {
+    this.payOccupyWindow({ orderId: e.currentTarget.dataset.orderid, cur: this.state.qiDate })
+  }
+
+  payment = e => {
+    this.setState({ payment: e })
+  }
+  amount=e=>{
+    this.setState({amount:e})
+  }
+
+  async payOfflineOccupyOrder(data) {
+    const res = await payOfflineOccupyOrder(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      Toast.info(res.data.msg)
+      this.setState({ checkOutNow: false, History: false })
+      this.getVenueReservation({ sportid: this.state.liNum, date: this.state.qiDate })
+    } else {
+      Toast.fail(res.data.msg)
+    }
+  }
+
+  checkPlease = () => {
+    let { checkOutNowObj, amount, payment,payTime } = this.state
+    this.payOfflineOccupyOrder({ orderId: checkOutNowObj.orderID, pay: amount, payMode: payment[0], masterID: checkOutNowObj.masterID,payTime:payTime })
+
+  }
+   
+
 
   render() {
     return (
@@ -1538,8 +1608,8 @@ class orderPh extends React.Component {
           </div>
 
           <div className="listKoj">
-            <Picker data={this.state.repeatList} cols={1} value={this.state.repeat} onChange={this.repeat} className="forss">
-              <List.Item arrow="horizontal">每周重复</List.Item>
+            <Picker data={this.state.repeatList} cols={1} disabled={this.state.venueT.length !== 0 ? true : false} value={this.state.repeat} onChange={this.repeat} className="forss">
+              <List.Item arrow={this.state.venueT.length !== 0 ? 'empty' : 'horizontal'}>每周重复</List.Item>
             </Picker>
           </div>
 
@@ -1586,7 +1656,7 @@ class orderPh extends React.Component {
         <Drawer
           title='预订信息'
           placement="bottom"
-          height='70%'
+          height='80%'
           className="kojk"
           onClose={this.historyClose}
           visible={this.state.History}
@@ -1622,13 +1692,15 @@ class orderPh extends React.Component {
                                   this.state.otherObj.sportid === 13 ? '足球6人制' :
                                     this.state.otherObj.sportid === 10 ? '足球5人制' :
                                       this.state.otherObj.sportid === 11 ? '排球' :
-                                        this.state.otherObj.sportid === 12 ? '网球' : 
-                                        this.state.otherObj.sportid === 14 ? '足球9人制':''
+                                        this.state.otherObj.sportid === 12 ? '网球' :
+                                          this.state.otherObj.sportid === 14 ? '足球9人制' : ''
                 }
               </span></div>
               {
                 this.state.otherObjTime.map((item, i) => (
-                  <div key={i}><span style={{ width: '140px' }}>{item.date}  {item.option}</span><span>{item.venueid}</span></div>
+                  <div key={i}><span style={{ width: '140px' }}>{item.date}  {item.option}</span><span>{item.venueid}</span>
+                    <span className="sdfdsfg" data-orderid={item.orderID} data-date={item.fullDate} data-index={i} onClick={this.singly} style={item.showCancel === 0 ? { display: 'none' } : { float: 'right' }}>取消订单</span>
+                  </div>
                 ))
               }
               <div style={{ color: "#D0021B" }}>预计消费：￥{this.state.otherObj.consumpMoney}</div>
@@ -1636,15 +1708,67 @@ class orderPh extends React.Component {
             <div className="footer"><span style={{ color: '#F5A623', fontSize: '0.88rem' }}>订单状态：{this.state.otherObj.status}</span>
 
               <div className="calce" style={this.state.otherObj.status === '未开始' ? {} : { display: 'none' }} onClick={this.calesdeedsfr}>取消订单</div>
-              {/* <div className="calce" style={this.state.otherObj.status!=='未开始'?{}:{display:'none'}}>立即结账</div> */}
-
+              <div className="calce" onClick={this.checkOutNow} data-orderid={this.state.otherObj.orderID} style={this.state.otherObj.status !== '未开始' && this.state.otherObj.status !== '已结算' && this.state.otherObj.status !== '已完成' ? {} : { display: 'none' }}>立即结账</div>
             </div>
-
           </div>
 
+        </Drawer>
+
+        <Drawer
+          title="立即结账"
+          placement="bottom"
+          height='70%'
+          onClose={this.cardDetailsClose}
+          visible={this.state.checkOutNow}
+        >
+
+
+          <div className="listKoj" style={this.state.checkOutNowObj.modeName === 1 ? {} : { display: 'none' }}>
+            <List.Item arrow="empty" extra="会员卡扣费">支付方式</List.Item>
+          </div>
+
+          <div className="listKoj" style={this.state.checkOutNowObj.modeName === 2 ? {} : { display: 'none' }}>
+            <Picker data={this.state.checkOutNowArr} cols={1} value={this.state.payment} onChange={this.payment} className="forss">
+              <List.Item arrow="horizontal">支付方式</List.Item>
+            </Picker>
+          </div>
+
+          <div className="listKoj" style={this.state.checkOutNowObj.modeName === 1 ? {} : { display: 'none' }}>
+            <List.Item arrow="empty" extra={this.state.checkOutNowObj.cardHolder}>卡主名称</List.Item>
+          </div>
+          <div className="listKoj">
+            <List.Item arrow="empty" extra={this.state.checkOutNowObj.contactor === '' ? '未填写' : this.state.checkOutNowObj.contactor}>联系人</List.Item>
+          </div>
+          <div className="listKoj">
+            <List.Item arrow="empty" extra={this.state.checkOutNowObj.tel === '' ? '未填写' : this.state.checkOutNowObj.tel}>手机号</List.Item>
+          </div>
+          <div className="listKoj" style={this.state.checkOutNowObj.modeName === 1 ? {} : { display: 'none' }}>
+            <List.Item arrow="empty" extra={this.state.checkOutNowObj.cardNum}>会员卡卡号</List.Item>
+          </div>
+          <div className="listKoj" style={this.state.checkOutNowObj.modeName === 1 ? {} : { display: 'none' }}>
+            <List.Item arrow="empty" extra={this.state.checkOutNowObj.enough === 1 ? this.state.checkOutNowObj.balance : this.state.checkOutNowObj.balance + '   (余额不足本次消费)'}>余额</List.Item>
+          </div>
+          <div className="listKoj">
+            <List.Item arrow="empty" extra={this.state.checkOutNowObj.time}>消费时长</List.Item>
+          </div>
+          <div className="listKoj">
+            <InputItem
+              placeholder="请填写"
+              className="rightInput"
+              value={this.state.amount}
+              onBlur={this.amount}
+            ><div className="leftTxt">消费金额</div></InputItem>
+          </div>
+          <span style={this.state.checkOutNowObj.zhekou!==10?{paddingLeft:'15px',color:'#F5A623'}:{display:'none'}}>已打{this.state.checkOutNowObj.zhekou}折</span>
+
+         <div onClick={this.checkPlease} className="adfdsrghdf">确定</div>
 
 
         </Drawer>
+
+
+
+
 
 
 

@@ -162,7 +162,7 @@ class homePh extends React.Component {
   }
 
   handleOk = () => {
-    this.VenueEvaluationSave({star:this.state.rate,label:this.state.labelId.join('')})
+    this.VenueEvaluationSave({star:this.state.rate,label:this.state.labelId.join(',')})
   }
   handleCancel=()=>{
     this.VenueEvaluationSave({star:'',label:''})

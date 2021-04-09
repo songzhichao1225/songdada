@@ -184,3 +184,6 @@ table {
 .redStart{
     color: red;
 }
+.VipAgement .ant-btn {
+    height: 46px;
+}
