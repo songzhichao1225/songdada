@@ -685,7 +685,7 @@ class VipAgement extends React.Component {
                 <Col xs={{ span: 5 }}>{item.intime}</Col>
                 <Col xs={{ span: 8 }}>{item.content}</Col>
                 <Col xs={{ span: 5 }}>{item.status === 1 ? '会员充值' : item.status === 2 ? '会员消费' : '会员退卡'}</Col>
-                <Col xs={{ span: 5 }}>{item.status === 1 ? item.recharge + item.give : item.recharge}</Col>
+                <Col xs={{ span: 5 }}>{item.status === 1 ? parseFloat(item.recharge) + parseFloat(item.give) : item.recharge}</Col>
               </Row>
             ))
           }

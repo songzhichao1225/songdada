@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 //本地全部隐去
-// axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
+axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
 // axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
 
 // export let imgUrlTwo='https://app.tiaozhanmeiyitian.com/'  //正式图片路径
@@ -658,6 +658,9 @@ export function payOfflineOccupyOrder(data,headers){    //场馆端~线下占用
     return axios.post('/api/payOfflineOccupyOrder',data,{headers: {'token': headers}})
 }
 
+export function offlineOrderList(data,headers){    //场馆端~线下占用 线下订单列表
+    return axios.post('/api/offlineOrderList',data,{headers: {'token': headers}})
+}
 
 
 

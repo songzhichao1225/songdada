@@ -2741,8 +2741,9 @@ class siteSettings extends React.Component {
             onOk={this.handleOk}
             onCancel={this.handleCancel}
             width={630}
+             
             className='model'
-            style={{ marginLeft: this.state.pageX, marginTop: this.state.pageY }}
+            style={{ marginLeft: this.state.pageX, marginTop: this.state.pageY,top:20 }}
             closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
 
           >
@@ -2771,7 +2772,7 @@ class siteSettings extends React.Component {
             </div>
             <div className="modelList" style={{ height: '32px' }}>
               <span>场地编号</span>
-              <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 269, cursor: 'pointer' }} value={this.state.chekedTwo === '' ? [] : this.state.chekedTwo} disabled={true} placeholder="点击进行添加" onChange={this.money} />
+              <Input className="startTime" style={{ paddingLeft: '10px', height: 32, width: 269, cursor: 'pointer' }} value={this.state.chekedTwo === '' ? [] : this.state.chekedTwo} disabled={true} placeholder="请选择场地类型/细分标签" onChange={this.money} />
             </div>
             <div className="modelList">
               <span>场地数量</span>

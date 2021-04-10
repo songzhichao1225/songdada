@@ -816,3 +816,36 @@ html:not([data-scale]) .am-card-body::before{
     font-size: 0.88rem;
     margin-top: 2rem;
 }
+.aszvrtds{
+    height: 90%;
+    overflow-y: auto;
+}
+.asdfsdf{
+    padding: 0 0.5rem;
+    overflow: hidden;
+    font-size: 0.75rem;
+    line-height: 1.5rem;
+}
+.asdfsdf>div{
+    float: left;
+}
+.asdfsdf>div:first-child{
+    width: 11rem;
+}
+.dfge4sdgf{
+    height: 5%;
+    
+}
+.dfge4sdgf>div{
+    width: 44%;
+    height: 35px;
+    float: left;
+    text-align: center;
+    line-height:35px;
+    background: #fff;
+    margin-left: 4%;
+}
+.dfge4sdgf>div:last-child{
+    float: right;
+    margin-right: 4%;
+}

@@ -3,7 +3,7 @@ import './appointmentList.css';
 import 'antd/dist/antd.css';
 import { Input, Row, Col, Select, Pagination, Spin, message, DatePicker, Modal, Radio, Drawer, InputNumber, Popover, Popconfirm } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
-import { getReservationActivitieslist, getVenueReservation, getVenueSport, VenueSendMessage, VenueClickCancelPlace, getVenueComplainList, ContinuationRecord, BreakUpConsumptionDetails, VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave, DeductTheTimesOfClosing } from '../../api';
+import { getReservationActivitieslist, getVenueReservation, getVenueSport, VenueSendMessage, VenueClickCancelPlace, getVenueComplainList, offlineOrderList, ContinuationRecord, BreakUpConsumptionDetails, VenueNewsHistoricalRecord, DelVenueNumberTitle, VenueNumberSporttypeSave, getVenueSporttypelist, VenueRemarksLabel, getVenueNumberTitleList, getVenueNumberTitleSave, DeductTheTimesOfClosing } from '../../api';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -87,7 +87,12 @@ class appointmentList extends React.Component {
     isfinsh: 0,
     sportNameTwoyou: '',
     duration: false,
-    Record: []
+    Record: [],
+    pageHood: 1,
+    lineList: [],
+    sportidHood: '',
+    payModeHood: '',
+    icomeHood:'',
   };
 
   async getVenueSport(data) {
@@ -513,6 +518,9 @@ class appointmentList extends React.Component {
 
     }
   }
+
+
+
   headTop = e => {
     this.setState({ headTop: e.currentTarget.dataset.index, page: 1, status: '', start: '开始日期', end: '结束日期', paied: '2', Oneloading: true, orderId: '' })
 
@@ -524,11 +532,25 @@ class appointmentList extends React.Component {
         this.getReservationActivitieslist({ page: this.state.page, sport: this.state.sport, status: this.state.status, startdate: this.state.start, enddate: this.state.end, paied: this.state.paied, reserve: this.state.headTop })
       }
     }, 500)
+    if (e.currentTarget.dataset.index === '2') {
+      this.offlineOrderList({ sportid: '', payMode: '', page: this.state.pageHood })
+    }
+  }
+
+  async offlineOrderList(data) {
+    const res = await offlineOrderList(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ lineList: res.data.data, otherhood: res.data.other.count,icomeHood:res.data.other.income })
+    }else if(res.data.code===2001){
+     message.warning(res.data.msg)
+     this.setState({lineList:[]})
+    } else {
+      message.warning(res.data.msg)
+    }
   }
 
   onSearch = e => {
-    this.setState({ orderId: e,page:1 })
-    console.log(685)
+    this.setState({ orderId: e, page: 1 })
     this.getReservationActivitieslist({ page: 1, sport: this.state.sport, status: this.state.status, paied: this.state.paied, orderId: e, reserve: this.state.headTop })
   }
   confirmUUid = e => {
@@ -585,8 +607,25 @@ class appointmentList extends React.Component {
   }
   duration = (e) => {
     this.ContinuationRecord({ type: 2, publicuuid: e.currentTarget.dataset.uuid })
-
   }
+
+  currenthood = (page, pageSize) => {
+    this.setState({ pageHood: page })
+    this.offlineOrderList({ sportid: this.state.sportidHood, payMode: this.state.payModeHood, page: this.state.pageHood })
+  }
+
+
+  paymentType=e=>{
+   this.setState({payModeHood:e})
+    this.offlineOrderList({ sportid: this.state.sportidHood, payMode: e, page: 1 })
+  }
+  spoetType=e=>{
+    this.setState({sportidHood:e})
+    this.offlineOrderList({ sportid: e, payMode: this.state.payModeHood, page: 1 })
+  }
+
+
+
 
   render() {
     let userMessage;
@@ -605,7 +644,7 @@ class appointmentList extends React.Component {
                 <Col xs={{ span: 2 }} style={this.state.headTop === '1' ? { display: 'none' } : {}}><div style={{ lineHeight: '25px', fontSize: '10px' }}>{item.StartTime === 0 ? '00:00' : item.StartTime.slice(0, 10)}</div><div style={{ lineHeight: '25px' }}>{item.StartTime === 0 ? '00:00' : item.StartTime.slice(11, 16)}</div></Col>
                 <Col xs={{ span: 2 }}><div style={{ lineHeight: '25px', fontSize: '10px' }}>{item.FinishedTime.slice(0, 10)}</div><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(11, 16)}</div></Col>
                 <Col xs={{ span: 2 }}>{item.breakup.length === 0 ? item.PlayTime + '小时' : '无'}</Col>
-                <Col xs={{ span: 1 }} style={{width:'43px',cursor:'pointer'}}><div style={{ color: '#4A90E2' }} onClick={this.duration} data-uuid={item.uuid}>查看详情</div></Col>
+                <Col xs={{ span: 1 }} style={{ width: '43px', cursor: 'pointer' }}><div style={{ color: '#4A90E2' }} onClick={this.duration} data-uuid={item.uuid}>查看详情</div></Col>
 
                 <Col xs={{ span: 2 }} >{this.state.headTop === '1' ? item.breakup.length === 0 ? <Popover content={(<span>{item.venueid}</span>)} title='详情' trigger="click">
                   <div>{
@@ -615,7 +654,7 @@ class appointmentList extends React.Component {
                   }</div> </Popover> : <div><div>
                     {
                       item.breakup.map((itemTwo, i) => (
-                        <div key={i} style={{ textAlign: 'center',lineHeight:'33px' }}>{itemTwo.venueid}</div>
+                        <div key={i} style={{ textAlign: 'center', lineHeight: '33px' }}>{itemTwo.venueid}</div>
                       ))
                     }
                   </div></div> : <div>{item.Shouldarrive}</div>}</Col>
@@ -628,12 +667,12 @@ class appointmentList extends React.Component {
                       ))
                     }
                   </div> : <div>
-                      {
-                        item.breakup.map((itemTwo, i) => (
-                          <div key={i} style={{ textAlign: 'center', lineHeight: '30px' }}>￥{itemTwo.price}/次</div>
-                        ))
-                      }
-                    </div> : item.TrueTo}</div>
+                    {
+                      item.breakup.map((itemTwo, i) => (
+                        <div key={i} style={{ textAlign: 'center', lineHeight: '30px' }}>￥{itemTwo.price}/次</div>
+                      ))
+                    }
+                  </div> : item.TrueTo}</div>
                 </Col>
                 <Col xs={{ span: 3 }} style={this.state.headTop === '1' ? {} : { display: 'none' }}><div>
                   {
@@ -657,12 +696,12 @@ class appointmentList extends React.Component {
                       </div>
                     ))
                   }</div> <div onClick={this.deducting} data-uuid={item.uuid} data-sportname={item.SportName} style={item.breakup.length === 0 ? { display: 'none' } : { float: 'left', color: '#4A90E2' }}>扣除<br />记录</div><div style={item.breakup.length === 0 ? {} : { display: 'none' }}>非散场</div></Col>
-                <Col xs={{ span: 2 }}  style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}><div>{item.PublicStatus}<div onClick={this.Complaints} data-id={item.uuid} style={item.iscomplain === 1 ? { color: '#F6410C', fontSize: '12px',cursor:'pointer' } : { display: 'none' }}>(有投诉)</div></div></Col>
+                <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}><div>{item.PublicStatus}<div onClick={this.Complaints} data-id={item.uuid} style={item.iscomplain === 1 ? { color: '#F6410C', fontSize: '12px', cursor: 'pointer' } : { display: 'none' }}>(有投诉)</div></div></Col>
                 <Col xs={{ span: 2 }}><div>￥{item.SiteMoney}</div></Col>
                 <Col xs={{ span: 2 }}><div>{item.SiteMoneyStatus}</div></Col>
                 <Col xs={{ span: 2 }}>
                   <span>
-                    <img className={item.breakup.length === 0 ? item.PublicStatus === '匹配中' ? 'img' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'img' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'img' : 'circumstanceT' : 'circumstanceT'} data-uid={item.uuid} data-siteid={item.venueid} data-sitenum={item.venuenumber}  onClick={this.sending} src={require("../../assets/icon_pc_faNews.png")} alt="发送消息" />
+                    <img className={item.breakup.length === 0 ? item.PublicStatus === '匹配中' ? 'img' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'img' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'img' : 'circumstanceT' : 'circumstanceT'} data-uid={item.uuid} data-siteid={item.venueid} data-sitenum={item.venuenumber} onClick={this.sending} src={require("../../assets/icon_pc_faNews.png")} alt="发送消息" />
                   </span>
                 </Col>
               </Row>
@@ -682,9 +721,11 @@ class appointmentList extends React.Component {
           <div className="headTop">
             <div className="headTopBtn" onClick={this.headTop} data-index='0' style={this.state.headTop === '0' ? { color: '#fff', background: '#F5A623' } : {}}>找运动伙伴</div>
             <div className="headTopBtn" onClick={this.headTop} data-index='1' style={this.state.headTop === '1' ? { color: '#fff', background: '#F5A623' } : {}}>仅预订场馆</div>
+            <div className="headTopBtn" onClick={this.headTop} data-index='2' style={this.state.headTop === '2' ? { color: '#fff', background: '#F5A623' } : {}}>线下预订</div>
+            <div className="dfhfgh" style={this.state.headTop==='2'&&this.state.icomeHood!==''?{}:{display:'none'}}>共计收款:{this.state.icomeHood}</div>
           </div>
           <div className="xiange"></div>
-          <div className="withPartner">
+          <div className="withPartner" style={this.state.headTop !== '2' ? {} : { display: 'none' }}>
             <div className="navTab">
               <RangePicker
                 style={{ float: 'left', marginTop: '7px', marginRight: '40px' }}
@@ -713,48 +754,48 @@ class appointmentList extends React.Component {
               <Row className="rowConten" style={{ background: '#FCF7EE', marginTop: 0 }}>
                 <Col xs={{ span: 2 }}>活动编号</Col>
                 <Col xs={{ span: 2 }}>
-                    <Select className="selectName" defaultValue="项目名称" bordered={false}  style={{ width: '100%', padding: 0 }} onChange={this.nameChang}>
-                      <Option value="0">全部</Option>
-                      <Option value="1">羽毛球</Option>
-                      <Option value="2">兵乓球</Option>
-                      <Option value="3">台球</Option>
-                      <Option value="4">篮球</Option>
-                      <Option value="5">足球</Option>
-                      <Option value="6">排球</Option>
-                      <Option value="7">网球</Option>
-                    </Select>
+                  <Select className="selectName" defaultValue="项目名称" bordered={false} style={{ width: '100%', padding: 0 }} onChange={this.nameChang}>
+                    <Option value="0">全部</Option>
+                    <Option value="1">羽毛球</Option>
+                    <Option value="2">兵乓球</Option>
+                    <Option value="3">台球</Option>
+                    <Option value="4">篮球</Option>
+                    <Option value="5">足球</Option>
+                    <Option value="6">排球</Option>
+                    <Option value="7">网球</Option>
+                  </Select>
                 </Col>
                 <Col xs={{ span: 2 }} style={this.state.headTop === '1' ? { display: 'none' } : {}}>开始时间</Col>
                 <Col xs={{ span: 2 }}>结束时间</Col>
                 <Col xs={{ span: 2 }}>时长</Col>
-                <Col xs={{ span: 1 }} style={{width:'43px'}}>续时</Col>
+                <Col xs={{ span: 1 }} style={{ width: '43px' }}>续时</Col>
                 <Col xs={{ span: 2 }}>{this.state.headTop === '1' ? '场地编号' : '应到人数'}</Col>
                 <Col xs={{ span: 2 }}>{this.state.headTop === '1' ? '单价/时间段' : '已报名人数'}</Col>
                 <Col style={this.state.headTop === '0' ? { display: 'none' } : {}} xs={{ span: 3 }}>剩余次数</Col>
                 <Col xs={{ span: 2 }}>
-          
-                    <Select className="selectName" defaultValue="活动状态" bordered={false} listHeight={300} dropdownStyle={{ height: '300px', textAlign: 'center' }} style={{ width: '100%' }} onChange={this.activityChang} >
-                      <Option value="0">全部</Option>
-                      <Option value="1">匹配中</Option>
-                      <Option value="2">待出发</Option>
-                      <Option value="3">活动中</Option>
-                      <Option value="9">投诉中</Option>
-                      <Option value="4" title="待填写比赛结果">待填写比赛结果</Option>
-                      <Option value="6">待评价</Option>
-                      <Option value="5">已完成</Option>
-                      <Option value="7">已取消</Option>
-                    </Select>
-                 
+
+                  <Select className="selectName" defaultValue="活动状态" bordered={false} listHeight={300} dropdownStyle={{ height: '300px', textAlign: 'center' }} style={{ width: '100%' }} onChange={this.activityChang} >
+                    <Option value="0">全部</Option>
+                    <Option value="1">匹配中</Option>
+                    <Option value="2">待出发</Option>
+                    <Option value="3">活动中</Option>
+                    <Option value="9">投诉中</Option>
+                    <Option value="4" title="待填写比赛结果">待填写比赛结果</Option>
+                    <Option value="6">待评价</Option>
+                    <Option value="5">已完成</Option>
+                    <Option value="7">已取消</Option>
+                  </Select>
+
                 </Col>
                 <Col xs={{ span: 2 }}>场地费用</Col>
                 <Col xs={{ span: 2 }}>
-               
-                    <Select className="selectName" defaultValue="支付状态" bordered={false} dropdownStyle={{ textAlign: 'center' }} style={{ width: '100%' }} onChange={this.paied} >
-                      <Option value="2">全部</Option>
-                      <Option value="0">未到账</Option>
-                      <Option value="1">已支付</Option>
-                    </Select>
-                
+
+                  <Select className="selectName" defaultValue="支付状态" bordered={false} dropdownStyle={{ textAlign: 'center' }} style={{ width: '100%' }} onChange={this.paied} >
+                    <Option value="2">全部</Option>
+                    <Option value="0">未到账</Option>
+                    <Option value="1">已支付</Option>
+                  </Select>
+
                 </Col>
                 <Col xs={{ span: 2 }}>发消息</Col>
               </Row>
@@ -764,6 +805,78 @@ class appointmentList extends React.Component {
               <div style={this.state.hidden === true ? { display: 'none' } : { width: '100%' }}><img style={{ width: 84, height: 84, display: 'block', margin: '84px auto 0' }} src={require('../../assets/xifen (5).png')} alt="icon" /><span style={{ display: 'block', textAlign: 'center' }}>您的场馆没有相关活动!</span></div>
             </div>
           </div>
+
+
+          <div style={this.state.headTop === '2' ? {} : { display: 'none' }}>
+            <Row className="rowConten" style={{ background: '#FCF7EE', marginTop: 0 }}>
+              <Col span={2}>
+              <Select className="selectName" bordered={false} style={{ width:'100%', height: 30,border:0 }} defaultValue='项目名称(全部)' onChange={this.spoetType}>
+                  <Option value=" ">全部</Option>
+                  <Option value="1">羽毛球</Option>
+                  <Option value="2">乒乓球</Option>
+                  <Option value="3">台球中式黑八</Option>
+                  <Option value="4">台球美式九球</Option>
+                  <Option value="5">台球斯诺克</Option>
+                  <Option value="6">篮球</Option>
+                  <Option value="7">足球11人制</Option>
+                  <Option value="8">足球8人制</Option>
+                  <Option value="9">足球7人制</Option>
+                  <Option value="10">足球5人制</Option>
+                  <Option value="11">排球</Option>
+                  <Option value="12">网球</Option>
+                  <Option value="13">足球6人制</Option>
+                 
+                </Select>
+              </Col>
+              <Col span={2}>
+                <Select className="selectName" bordered={false} style={{ width:'100%', height: 30,border:0 }} defaultValue='支付类型(全部)' onChange={this.paymentType}>
+                  <Option value=" ">全部</Option>
+                  <Option value="1">会员卡扣费</Option>
+                  <Option value="3">现金支付</Option>
+                  <Option value="4">微信支付</Option>
+                  <Option value="5">支付宝支付</Option>
+                </Select>
+              </Col>
+              <Col span={3}>开始时间</Col>
+              <Col span={4}>时长</Col>
+              <Col span={2}>预计消费金额</Col>
+              <Col span={2}>实际消费金额</Col>
+              <Col span={3}>实际活动时间</Col>
+              <Col span={3}>订单状态</Col>
+              <Col span={3}>订单时间</Col>
+            </Row>
+            {
+              this.state.lineList.map((item, i) => (
+                <Row key={i} className="rowConten">
+                  <Col span={2}>{item.sportID === 1 ? '羽毛球' : item.sportID === 2 ? '乒乓球' : item.sportID === 3 ? '台球中式黑八' : item.sportID === 4 ? '台球美式九球' : item.sportID === 5 ? '台球斯诺克' : item.sportID === 6 ? '篮球' : item.sportID === 7 ? '足球11人制' : item.sportID === 8 ? '足球8人制' : item.sportID === 9 ? '足球7人制' : item.sportID === 10 ? '足球5人制' : item.sportID === 11 ? '排球' : item.sportID === 12 ? '网球' : item.sportID === 13 ? '足球6人制' : ''}</Col>
+                  <Col span={2}>{item.mode}</Col>
+                  <Col span={3}>{item.starttime}</Col>
+                  <Col span={4}>{item.playtime}</Col>
+                  <Col span={2}>{item.price}</Col>
+                  <Col span={2}>{item.iftPrice}</Col>
+                  <Col span={3}>{item.iftTime}</Col>
+                  <Col span={3}>{item.ifPay}</Col>
+                  <Col span={3}>{item.ctime}</Col>
+                </Row>
+              ))
+            }
+              <div style={this.state.lineList.length!== 0 ? { display: 'none' } : { width: '100%' }}><img style={{ width: 84, height: 84, display: 'block', margin: '84px auto 0' }} src={require('../../assets/xifen (5).png')} alt="icon" /><span style={{ display: 'block', textAlign: 'center' }}>您的场馆没有线下订单!</span></div>
+            
+
+            <Pagination className="fenye" hideOnSinglePage={true} showTotal={total => `总计: ${total} `} showSizeChanger={false} current={this.state.pageHood} total={this.state.otherhood} onChange={this.currenthood} />
+
+
+
+            
+          </div>
+
+
+          
+
+
+
+
+
 
           <Modal
             title="扣除记录"
@@ -900,7 +1013,7 @@ class appointmentList extends React.Component {
             onCancel={this.handleCancel}
             closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
           >
-            <div style={this.state.Record.length!==0?{}:{display:'none'}}>
+            <div style={this.state.Record.length !== 0 ? {} : { display: 'none' }}>
               <Row>
                 <Col span={8}>开始时间</Col>
                 <Col span={4}>时长</Col>
@@ -918,7 +1031,7 @@ class appointmentList extends React.Component {
                 ))
               }
             </div>
-            <div style={this.state.Record.length===0?{textAlign:'center'}:{display:'none'}}>暂无续时~</div>
+            <div style={this.state.Record.length === 0 ? { textAlign: 'center' } : { display: 'none' }}>暂无续时~</div>
 
           </Modal>
 

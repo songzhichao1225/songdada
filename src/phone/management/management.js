@@ -553,7 +553,7 @@ class management extends React.Component {
                   <Card.Body className="listDetailsTwo" style={{ fontSize: '0.75rem' }}>
                     <div>时间：{item.intime}</div><div>明细：{item.content}</div>
                     <div>类型：{item.status === 1 ? '会员充值' : item.status === 2 ? '会员消费' : item.status === 3 ? '会员退卡' : ''}</div>
-                    <div>金额：{item.status === 1 ? item.recharge + item.give : item.recharge}</div>
+                    <div>金额：{item.status === 1 ? parseFloat(item.recharge) + parseFloat(item.give) : item.recharge}</div>
                   </Card.Body>
                 </Card>
               ))

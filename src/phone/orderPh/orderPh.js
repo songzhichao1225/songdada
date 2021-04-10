@@ -4,7 +4,7 @@ import './orderPh.css';
 import { DatePicker, Toast, Card, Modal, InputItem, List, Picker, SearchBar, Radio, Calendar } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Pagination, Drawer, Spin, Table, Checkbox, Row, Col, Popover, message } from 'antd';
-import { getReservationActivitieslist, VenueSendMessage, getVenueReservation, setSquareByOffLine,payOfflineOccupyOrder, payOccupyWindow, DelVenueOfflineOccupancy, cancelSingleOrder, getVenueSport, CalculateVenuePrice, getVipCardInfomation, AddVenueOfflineOccupancy, getVenueBookingInformation, VenueClickCancelPlace, BreakUpConsumptionDetails, ContinuationRecord, getVenueNumberTitleList, VenueRemarksLabel, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave, DeductTheTimesOfClosing } from '../../api';
+import { getReservationActivitieslist, VenueSendMessage, getVenueReservation, setSquareByOffLine, payOfflineOccupyOrder, payOccupyWindow, offlineOrderList, DelVenueOfflineOccupancy, cancelSingleOrder, getVenueSport, CalculateVenuePrice, getVipCardInfomation, AddVenueOfflineOccupancy, getVenueBookingInformation, VenueClickCancelPlace, BreakUpConsumptionDetails, ContinuationRecord, getVenueNumberTitleList, VenueRemarksLabel, VenueNumberSporttypeSave, DelVenueNumberTitle, getVenueNumberTitleSave, DeductTheTimesOfClosing } from '../../api';
 const prompt = Modal.prompt;
 const alert = Modal.alert;
 const RadioItem = Radio.RadioItem;
@@ -173,7 +173,17 @@ class orderPh extends React.Component {
     checkOutNow: false,
     checkOutNowObj: '',
     payment: [3],
-    checkOutNowArr: [{ label: '现金', value: 3 }, { label: '微信', value: 4 }, { label: '支付宝', value: 5 }]
+    checkOutNowArr: [{ label: '现金', value: 3 }, { label: '微信', value: 4 }, { label: '支付宝', value: 5 }],
+
+    pageHood: 1,
+    lineList: [],
+    sportidHood: '',
+    payModeHood: '',
+    icomeHood:'',
+    seasons: [{ label: '羽毛球', value: 1 }, { label: '乒乓球', value: 2 }, { label: '台球中式黑八', value: 3 }, { label: '台球美式九球', value: 4 }, { label: '台球斯诺克', value: 5 }, { label: '篮球', value: 6 }, { label: '足球11人制', value: 7 }, { label: '足球8人制', value: 8 }, { label: '足球7人制', value: 9 }, { label: '足球6人制', value: 13 }, { label: '足球5人制', value: 10 }, { label: '排球', value: 11 }, { label: '网球', value: 12 }],
+    seasonsTwo:[{labe:'会员卡扣费',value:1},{label:'现金支付',value:3},{label:'微信支付',value:4},{label:'支付宝支付',value:5}]
+  
+  
   }
 
 
@@ -388,6 +398,8 @@ class orderPh extends React.Component {
     this.setState({ page: 1 })
     this.getReservationActivitieslist({ page: 1, sport: '', status: '', publicuid: '', paied: 2, reserve: this.state.headTop })
   }
+
+
   bookingKanban = () => {
     this.getVenueNumberTitleList({ sportid: this.state.liNum })
     this.setState({ activityList: false })
@@ -726,7 +738,7 @@ class orderPh extends React.Component {
     ko.setHours(ko.getHours() + 1 > 24 ? ko.getHours() : ko.getHours() + 1)
     ko.setMinutes(0)
     if (this.state.venueT.length !== 0) {
-      this.setState({repeat:[0]})
+      this.setState({ repeat: [0] })
       this.CalculateVenuePrice({ sportid: this.state.liNum, venueT: this.state.venueT.join(',') })
     }
     this.setState({ info: true, date: ko, startTime: ko.format("yyyy-MM-dd hh:mm") })
@@ -1187,7 +1199,7 @@ class orderPh extends React.Component {
   async payOccupyWindow(data) {
     const res = await payOccupyWindow(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ checkOutNow: true, checkOutNowObj: res.data.data, amount: res.data.data.pay, payment: res.data.data.modeName === 2 ? [3] : [1],payTime:res.data.data.payTime })
+      this.setState({ checkOutNow: true, checkOutNowObj: res.data.data, amount: res.data.data.pay, payment: res.data.data.modeName === 2 ? [3] : [1], payTime: res.data.data.payTime })
     } else {
       message.error(res.data.msg)
     }
@@ -1200,8 +1212,8 @@ class orderPh extends React.Component {
   payment = e => {
     this.setState({ payment: e })
   }
-  amount=e=>{
-    this.setState({amount:e})
+  amount = e => {
+    this.setState({ amount: e })
   }
 
   async payOfflineOccupyOrder(data) {
@@ -1216,12 +1228,41 @@ class orderPh extends React.Component {
   }
 
   checkPlease = () => {
-    let { checkOutNowObj, amount, payment,payTime } = this.state
-    this.payOfflineOccupyOrder({ orderId: checkOutNowObj.orderID, pay: amount, payMode: payment[0], masterID: checkOutNowObj.masterID,payTime:payTime })
+    let { checkOutNowObj, amount, payment, payTime } = this.state
+    this.payOfflineOccupyOrder({ orderId: checkOutNowObj.orderID, pay: amount, payMode: payment[0], masterID: checkOutNowObj.masterID, payTime: payTime })
 
   }
-   
 
+  async offlineOrderList(data) {
+    const res = await offlineOrderList(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ lineList: res.data.data, otherhood: res.data.other.count,icomeHood:res.data.other.income })
+    } else if (res.data.code === 2001) {
+      Toast.fail(res.data.msg)
+      this.setState({ lineList: [] })
+    } else {
+      Toast.fail(res.data.msg)
+    }
+  }
+
+  activityListTwo = () => {
+    this.setState({ activityList: 'yes' })
+    this.offlineOrderList({ sportid: '', payMode: '', page: this.state.pageHood })
+  }
+
+  currenthood = (page, pageSize) => {
+    this.setState({ pageHood: page })
+    this.offlineOrderList({ sportid: this.state.sportidHood, payMode: this.state.payModeHood, page: page })
+  }
+
+  spoetType=e=>{
+    this.setState({sportidHood:e[0]})
+    this.offlineOrderList({ sportid: e[0], payMode: this.state.payModeHood, page: 1 })
+  }
+  paymentType=e=>{
+    this.setState({payModeHood:e[0]})
+     this.offlineOrderList({ sportid: this.state.sportidHood, payMode: e[0], page: 1 })
+   }
 
   render() {
     return (
@@ -1229,6 +1270,7 @@ class orderPh extends React.Component {
         <div className="headerNav">
           <div onTouchStart={this.bookingKanban} style={this.state.activityList === false ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>场地占用情况</div>
           <div onTouchStart={this.activityList} style={this.state.activityList === true ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>预约活动列表</div>
+          <div onTouchStart={this.activityListTwo} style={this.state.activityList === 'yes' ? { borderBottom: '0.12rem solid #D85D27', color: '#D85D27' } : { border: 'none', color: '#000' }}>线下预订订单</div>
 
         </div>
         <div className="head" style={this.state.activityList === true ? {} : { display: 'none' }}>
@@ -1270,7 +1312,7 @@ class orderPh extends React.Component {
                         </div>
 
                         <div style={item.breakup.length === 0 && item.reserve === 1 ? { width: '25%', marginLeft: '0.5rem', float: 'left' } : { display: 'none' }}>场地编号
-                      {
+                          {
                             item.venueid_details.map((itemKo, i) => (
                               <div key={i}>{itemKo.venueid}</div>
                             ))
@@ -1388,6 +1430,76 @@ class orderPh extends React.Component {
           {/* 看板渲染标签 */}
           <Table loading={this.state.loadingTwo} style={this.state.otherType.length === 0 ? { display: 'none' } : { maxWidth: this.state.otherType.length * 80 }} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 25, minWidth: 5, y: '90%' }} />,
             <div style={this.state.activityList === false && this.state.otherType.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (2).png')} alt="555" /><span style={{ textAlign: 'center', display: "block" }}>{this.state.textNuma}!</span></div>
+        </div>
+
+
+
+        <div style={this.state.activityList === 'yes' ? { height: '93%' } : { display: 'none' }}>
+          <div className="aszvrtds">
+            {
+              this.state.lineList.map((item, i) => (
+                <Card key={i}>
+                  <Card.Header
+                    style={{ padding: '0 0.5rem' }}
+                    title={item.sportID === 1 ? '羽毛球' : item.sportID === 2 ? '乒乓球' : item.sportID === 3 ? '台球中式黑八' : item.sportID === 4 ? '台球美式九球' : item.sportID === 5 ? '台球斯诺克' : item.sportID === 6 ? '篮球' : item.sportID === 7 ? '足球11人制' : item.sportID === 8 ? '足球8人制' : item.sportID === 9 ? '足球7人制' : item.sportID === 10 ? '足球5人制' : item.sportID === 11 ? '排球' : item.sportID === 12 ? '网球' : item.sportID === 13 ? '足球6人制' : ''}
+                    extra={<span style={{ fontSize: '0.88rem', color: 'rgb(216, 93, 39)' }}>{item.mode}</span>}
+                  />
+                  <Card.Body>
+                    <div className="asdfsdf">
+                      <div>开始时间:{item.starttime}</div>
+                      <div>时长:{item.playtime}</div>
+                    </div>
+                    <div className="asdfsdf">
+                      <div>预计消费:{item.price}</div>
+                      <div>实际消费:{item.iftPrice}</div>
+                    </div>
+                    <div className="asdfsdf">
+                      <div>实际活动时间:{item.iftTime}</div>
+                      <div>订单状态:{item.ifPay}</div>
+                    </div>
+                    <div className="asdfsdf"><div>订单时间:{item.ctime}</div></div>
+                  </Card.Body>
+                  <Card.Footer />
+                </Card>
+              ))
+            }
+
+            <Pagination style={{ marginBottom: '15px' }} size="small" hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.pageHood} total={this.state.otherhood} onChange={this.currenthood} />
+
+            <div style={this.state.lineList.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (5).png')} alt="444" /><span style={{ display: 'block', textAlign: 'center' }}>没有线下订单!</span></div>
+          </div>
+          <div style={this.state.icomeHood===''?{display:'none'}:{paddingLeft:'1rem'}}>
+            共计收款:{this.state.icomeHood}
+          </div>
+          <div className="dfge4sdgf">
+
+            
+              <Picker
+                data={this.state.seasons}
+                title="选择运动项目"
+                cols={1}
+                value={this.state.sportidHood}
+                onOk={this.spoetType}
+              ><div>运动项目:<span style={{ color: 'rgb(216, 93, 39)' }}>
+                {this.state.sportidHood===1?'羽毛球':this.state.sportidHood===2?'乒乓球':this.state.sportidHood===3?'台球中式黑八':this.state.sportidHood===4?'台球美式九球':this.state.sportidHood===5?'台球斯诺克':this.state.sportidHood===6?'篮球':this.state.sportidHood===7?'足球11人制':this.state.sportidHood===8?'足球8人制':this.state.sportidHood===9?'足球7人制':this.state.sportidHood===10?'足球5人制':this.state.sportidHood===11?'排球':this.state.sportidHood===12?'网球':this.state.sportidHood===13?'足球6人制':'全部'}
+                
+                </span></div>
+              </Picker>
+
+              <Picker
+                data={this.state.seasonsTwo}
+                title="选择支付方式"
+                cols={1}
+                value={this.state.payModeHood}
+                onOk={this.paymentType}
+              >
+            <div>支付方式:<span style={{ color: 'rgb(216, 93, 39)' }}>
+              {this.state.payModeHood===1?'会员卡扣费':this.state.payModeHood===3?'现金支付':this.state.payModeHood===4?'微信支付':this.state.payModeHood===5?'支付宝支付':'全部'}
+              </span></div>
+            </Picker>
+
+          </div>
+
         </div>
 
 
@@ -1759,10 +1871,9 @@ class orderPh extends React.Component {
               onBlur={this.amount}
             ><div className="leftTxt">消费金额</div></InputItem>
           </div>
-          <span style={this.state.checkOutNowObj.zhekou!==10?{paddingLeft:'15px',color:'#F5A623'}:{display:'none'}}>已打{this.state.checkOutNowObj.zhekou}折</span>
+          <span style={this.state.checkOutNowObj.zhekou !== 10 ? { paddingLeft: '15px', color: '#F5A623' } : { display: 'none' }}>已打{this.state.checkOutNowObj.zhekou}折</span>
 
-         <div onClick={this.checkPlease} className="adfdsrghdf">确定</div>
-
+          <div onClick={this.checkPlease} className="adfdsrghdf">确定</div>
 
         </Drawer>
 

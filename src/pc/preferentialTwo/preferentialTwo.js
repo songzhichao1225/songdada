@@ -1220,7 +1220,7 @@ class appointmentList extends React.Component {
               <span>会员卡号</span>
               <Input disabled={true} value={this.state.checkOutNowObj.cardNum} />
             </div>
-            <div style={this.state.checkOutNowObj.modeName === 1 ? {} : { display: 'none' }}>
+            <div style={this.state.checkOutNowObj.modeName === 1 ? {} : { display: 'none' }}>                     
               <span>余额</span>
               <Input disabled={true} value={this.state.checkOutNowObj.enough===1?this.state.checkOutNowObj.balance:this.state.checkOutNowObj.balance+'   (余额不足本次消费)'} />
             </div>
