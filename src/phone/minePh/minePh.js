@@ -23,7 +23,8 @@ class minePh extends React.Component {
     page: 1,
     ishaverecharge: 0,
     selectEdList: [],
-    phone: ''
+    phone: '',
+    sutem:''
   }
 
 
@@ -34,7 +35,8 @@ class minePh extends React.Component {
     localStorage.setItem('lyv', res.data.data.rate)
     localStorage.setItem('siteUid', res.data.data.siteuid)
     localStorage.setItem('siteName',res.data.data.name)
-    this.setState({ gerVenueName: res.data.data, refreshing: false, ishaverecharge: res.data.data.ishaverecharge })
+
+    this.setState({ gerVenueName: res.data.data,sutem:res.data.data.name, refreshing: false, ishaverecharge: res.data.data.ishaverecharge })
 
   }
 
@@ -48,7 +50,7 @@ class minePh extends React.Component {
       obj.label = list[i].name
       obj.value = list[i].venueuuid
       arrList.push(obj)
-      if (list[i].name=== localStorage.getItem('siteName')) {
+      if (list[i].name=== this.state.sutem) {
         this.setState({ asyncValue: [list[i].venueuuid] })
       }
     }

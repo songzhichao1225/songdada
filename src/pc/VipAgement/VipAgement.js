@@ -588,7 +588,7 @@ class VipAgement extends React.Component {
           </div>
           <div className="ViplistSon">
             <span className="title">折扣<span onClick={this.hintTr} style={{ padding: '0px 6px', marginLeft: '10px', background: '#F5A623', color: '#fff', cursor: 'pointer' }}>?</span></span>
-            <Input style={{ marginLeft: '18px', width: '300px' }} value={this.state.discountVal} onChange={this.discount} placeholder="请填写" />
+            <Input style={{ marginLeft: '18px', width: '300px' }} maxLength={4} value={this.state.discountVal} onChange={this.discount} placeholder="请填写" />
           </div>
           <div className="ViplistSon">
             <span className="title">会员等级<span className="redStart">*</span></span>
@@ -772,7 +772,7 @@ class VipAgement extends React.Component {
 
           <div className="ViplistSon">
             <span className="title">折扣</span>
-            <Input style={{ marginLeft: '19px', width: '300px' }} value={this.state.discountTwo} onChange={this.discountTwo} placeholder="请填写" />
+            <Input style={{ marginLeft: '19px', width: '300px' }} maxLength={4} value={this.state.discountTwo} onChange={this.discountTwo} placeholder="请填写" />
           </div>
           <div className="ViplistSon">
             <span className="title">充值后金额</span>

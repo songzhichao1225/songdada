@@ -478,6 +478,7 @@ class management extends React.Component {
               type='text'
               placeholder="请输入"
               className="look"
+              maxLength={4}
               value={this.state.discountVal}
               onVirtualKeyboardConfirm={this.cofirmMoney}
               onChange={(v) => {
@@ -623,13 +624,13 @@ class management extends React.Component {
               placeholder="请输入"
               className="look"
               value={this.state.discountValTwo}
+              maxLength={4}
               onChange={(v) => {
                 if (parseFloat(v) > 10) {
                   this.setState({ discountValTwo: 10 })
                 } else {
                   this.setState({ discountValTwo: v })
                 }
-
               }}
               style={{ padding: '0', fontSize: '0.88rem', textAlign: 'right' }}
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>折扣</span></InputItem>

@@ -208,16 +208,17 @@
   margin-top: 0.5rem;
 }
 .koshone .select{
-  width: 8.8rem;
+  width: 7.8rem;
   height: 1.81rem;
   float: left;
   line-height: 1.81rem;
   border: 0.06rem solid #9b9b9b;
   margin-top: 0.8rem;
   text-align: center;
+  font-size: 0.75rem;
 }
 .koshone .select:nth-child(2n+1){
-  margin-left: 1rem;
+  margin-left: 0.5rem;
 }
 .koshone .ant-modal-close-x{
   line-height: 36px;
