@@ -392,7 +392,7 @@ class appointmentList extends React.Component {
                   data-starttime={resData[i].a}
                   data-endtime={resData[i].a}
                   onClick={this.lookDeta}
-                  style={resData[i].c[j].time !== undefined ? { height: '50px', top: 1.5 * ((resData[i].c[j].time.slice(3, 5) > 30 ? resData[i].c[j].time.slice(3, 5) - 30 : resData[i].c[j].time.slice(3, 5))), zIndex: '9' } : { display: 'none' }}>{resData[i].c[j].whoTwo}</div>
+                  style={resData[i].c[j].time !== undefined ? { height: '47px',color:'#fff', top: 1.5 * ((resData[i].c[j].time.slice(3, 5) > 30 ? resData[i].c[j].time.slice(3, 5) - 30 : resData[i].c[j].time.slice(3, 5))), zIndex: '9' } : { display: 'none' }}>{resData[i].c[j].whoTwo}</div>
                 {resData[i].c[j].type === 4 ? resData[i].c[j].who : resData[i].c[j].money_cg}</div>
             </Tooltip>
           </div>
@@ -449,6 +449,7 @@ class appointmentList extends React.Component {
     for (let i in ho) {
       if (ho[i].dataset !== undefined && ho[i].dataset.type === '1') {
         ho[i].style.backgroundColor = "#56A5FF"
+        ho[i].setAttribute('data-index','1')
       }
     }
 

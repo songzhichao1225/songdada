@@ -15,7 +15,7 @@ export let wsFn = new WebSocket("wss://socket.tiaozhanmeiyitian.com/socket");//�
 export let htUrl='http://adminstg.tiaozhanmeiyitian.com/'  //测试合同路径
 // export let htUrl='http://admin.tiaozhanmeiyitian.com/'  //正式合同路径
 
-export function _login(data){    //登录
+export function _login(data){    //登录  
     return axios.post('/api/getVenueLogin',data)
 }
 
@@ -666,6 +666,13 @@ export function formatPlayTimeAndVenueNum(data,headers){    //场馆端~线下�
     return axios.post('/api/formatPlayTimeAndVenueNum',data,{headers: {'token': headers}})
 }
 
+export function getsiteTels(data,headers){    //场馆端~获取场馆联系人
+    return axios.post('/api/getsiteTels',data,{headers: {'token': headers}})
+}
+
+export function getsiteTel(data,headers){    //场馆端~添加给场馆打电话
+    return axios.post('/api/getsiteTel',data,{headers: {'token': headers}})
+}
 
 
 

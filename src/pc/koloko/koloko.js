@@ -158,7 +158,16 @@ class koloko extends React.Component {
       this.getVenueNumberTitleList({ sportid: this.props.location.query.id,at:this.state.at,sid:this.state.sid })
     }
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    this.setState({ dateString: new Date(), week: week[new Date().getDay()] })
+    let lo = new Date().toLocaleDateString().split('/')[1]
+    let loTwo = new Date().toLocaleDateString().split('/')[2]
+    if (lo.length === 1 && loTwo.length > 1) {
+      lo = new Date().toLocaleDateString().split('/')[0] + '-0' + new Date().toLocaleDateString().split('/')[1] + '-' + new Date().toLocaleDateString().split('/')[2]
+    } else if (lo.length === 1 && loTwo.length === 1) {
+      lo = new Date().toLocaleDateString().split('/')[0] + '-0' + new Date().toLocaleDateString().split('/')[1] + '-0' + new Date().toLocaleDateString().split('/')[2]
+    } else if (lo.length > 1 && loTwo.length === 1) {
+      lo = new Date().toLocaleDateString().split('/')[0] + '-' + new Date().toLocaleDateString().split('/')[1] + '-0' + new Date().toLocaleDateString().split('/')[2]
+    }
+    this.setState({ dateString: lo, hours: new Date().getHours() + 1, startTime: lo + ' ' + Number(new Date().getHours() + 1) + ':' + this.state.Minutes, week: week[new Date().getDay()] })
   }
 
 
@@ -190,19 +199,19 @@ class koloko extends React.Component {
       }
       setTimeout(() => {
         if (document.querySelector('.ant-table-body') !== null) {
-          document.querySelector('.ant-table-body').scrollTo(0, arrTime.indexOf(ko) * 45)
+          document.querySelector('.ant-table-body').scrollTo(0, arrTime.indexOf(ko) * 48)
         }
-      }, 2000)
+      }, 500)
 
 
       this.setState({
         resData: res.data.data
       })
       this.hoode(res.data.data)
-      for (let i in res.data.other) {
-        res.data.other[i].dataIndex = res.data.other[i].venueid
-        res.data.other[i].title = <div>{res.data.other[i].venueid}<br />{res.data.other[i].title}</div>
-        res.data.other[i].width = 80
+      for (let i in res.data.other.biaoqian) {
+        res.data.other.biaoqian[i].dataIndex = res.data.other.biaoqian[i].venueid
+        res.data.other.biaoqian[i].title = <div>{res.data.other.biaoqian[i].venueid}<br />{res.data.other.biaoqian[i].title}</div>
+        res.data.other.biaoqian[i].width = 80
       }
       let ploboj = {
         title: <div>场地号<br />标签</div>,
@@ -210,8 +219,8 @@ class koloko extends React.Component {
         width: 80,
         dataIndex: 'lppd',
       }
-      res.data.other.unshift(ploboj)
-      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c, otherType: res.data.other, value: 'l', spinningTwo: false, loadingTwo: false })
+      res.data.other.biaoqian.unshift(ploboj)
+      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c, otherType: res.data.other.biaoqian, value: 'l', spinningTwo: false, loadingTwo: false })
       sessionStorage.setItem('kood', 1)
     } else if (res.data.code === 4005) {
       this.setState({ lookList: res.data.data, spinningTwo: false, loadingTwo: false, lppding: false })
@@ -527,7 +536,7 @@ class koloko extends React.Component {
         <div className={this.state.number === '2' ? 'circumstance' : 'circumstanceT'} style={{ height: '92%' }} >
           <ul className="rightNav" style={{ top: '-63px', left: '-20px' }}>
             <li className="dateSelect">
-              <DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} locale={locale} allowClear={false} placeholder="请选择日期" className="DatePicker" onPanelChange={this.dateChangeTwo} onChange={this.dateChange} />
+              <DatePicker defaultValue={moment(new Date(), 'YYYY-MM-DD')} value={moment(this.state.dateString, 'YYYY-MM-DD')} locale={locale} allowClear={false} placeholder="请选择日期" className="DatePicker" onPanelChange={this.dateChangeTwo} onChange={this.dateChange} />
             </li>
           </ul>
 

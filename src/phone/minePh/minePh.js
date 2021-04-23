@@ -157,7 +157,6 @@ class minePh extends React.Component {
   }
 
   onchangList = (e) => {
-
     let data = {
       username: this.state.phone, usercode: '', userpass: '', type: 5, Logintype: 'mobile', venueloginuuid: e[0]
     }

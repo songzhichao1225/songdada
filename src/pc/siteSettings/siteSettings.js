@@ -1652,7 +1652,11 @@ class siteSettings extends React.Component {
       discount_costperhour_cg: costperhourTwo,
       discount_appointment_cg: appointmenttime_cgTwo
     }
-    this.SiteSettingDiscountSave(obj)
+    if(Number(costperhourTwo)===0){
+     message.warning('价格不能小于等于0')
+    }else{
+      this.SiteSettingDiscountSave(obj)
+    }
   }
   tooltip = () => {
     this.setState({

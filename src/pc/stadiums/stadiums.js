@@ -124,7 +124,7 @@ class stadiums extends React.Component {
     Bankphone: '',
     yinhangSelect: 0,
     hand: 1,
-    kolod:'',
+    kolod: '',
   };
 
   async getVenueInformation(data) {
@@ -154,6 +154,8 @@ class stadiums extends React.Component {
           area: this.props.location.query.district,
           informationList: res.data.data, name: res.data.data.name,
           contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone,
+          contactsTwo:res.data.data.linkMan2,contactNumberTwo: res.data.data.telephone2,
+          contactsThree: res.data.data.linkMan3, contactNumberThree: res.data.data.telephone3,
           files: [{ url: imgUrlTwo + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
           starttime: res.data.data.openingtime, endtime: res.data.data.closingtime,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, sport: lo, facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
@@ -167,7 +169,10 @@ class stadiums extends React.Component {
         this.setState({
           spinning: false,
           informationList: res.data.data, name: res.data.data.name, handleAddress: res.data.data.address,
-          contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, adddress: res.data.data.position,
+          contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, 
+          contactsTwo: res.data.data.linkMan2, contactNumberTwo: res.data.data.telephone2,
+          contactsThree: res.data.data.linkMan3, contactNumberThree: res.data.data.telephone3,
+          adddress: res.data.data.position,
           files: [{ url: imgUrlTwo + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
           starttime: res.data.data.openingtime, endtime: res.data.data.closingtime,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, sport: lo, facilities: res.data.data.facilities.split(''), siteInfo: res.data.data.siteInfo, comment: res.data.data.comment
@@ -202,45 +207,45 @@ class stadiums extends React.Component {
         let obj = {}
         obj.name = name[i].sub_branch_name
         obj.nameT = name[i].sub_branch_name.slice(name[i].sub_branch_name.indexOf('公司') + 2, name[i].sub_branch_name.length)
-        obj.id=i
+        obj.id = i
         arrName.push(obj)
       }
-   
-      this.setState({ backList: arrName, flagThree: false,yinhangSelect: 1 })
+
+      this.setState({ backList: arrName, flagThree: false, yinhangSelect: 1 })
     }
   }
 
-  
-  backListJoinInput=e=>{
-      this.setState({backListJoinInput:e.target.value.replace(/\s+/g,"")})
+
+  backListJoinInput = e => {
+    this.setState({ backListJoinInput: e.target.value.replace(/\s+/g, "") })
   }
-  backListJoin=()=>{
-    if(this.state.backListJoinInput===''){
-        message.warning('请填写内容')
-    }else if(this.state.backList.length!==0){
-      for(let i in this.state.backList){
-        if(this.state.backList[i].name===this.state.backListJoinInput){
+  backListJoin = () => {
+    if (this.state.backListJoinInput === '') {
+      message.warning('请填写内容')
+    } else if (this.state.backList.length !== 0) {
+      for (let i in this.state.backList) {
+        if (this.state.backList[i].name === this.state.backListJoinInput) {
           message.warning('请勿重复添加')
-        }else{
-          let arr=this.state.backList
-          let lok= {}
-          lok.name=this.state.backListJoinInput
-          lok.nameT=this.state.backListJoinInput
-          lok.id=1000
+        } else {
+          let arr = this.state.backList
+          let lok = {}
+          lok.name = this.state.backListJoinInput
+          lok.nameT = this.state.backListJoinInput
+          lok.id = 1000
           arr.push(lok)
-          this.setState({backList:arr})
+          this.setState({ backList: arr })
         }
       }
-    }else{
-      let arr=this.state.backList
-      let lok= {}
-      lok.name=this.state.backListJoinInput
-      lok.nameT=this.state.backListJoinInput
-      lok.id=1000
+    } else {
+      let arr = this.state.backList
+      let lok = {}
+      lok.name = this.state.backListJoinInput
+      lok.nameT = this.state.backListJoinInput
+      lok.id = 1000
       arr.push(lok)
-      this.setState({backList:arr})
+      this.setState({ backList: arr })
     }
-   
+
   }
   async getVenueOpenBankCity(data) {
     const res = await getVenueOpenBankCity(data, sessionStorage.getItem('venue_token'))
@@ -279,8 +284,8 @@ class stadiums extends React.Component {
       } else {
         this.setState({ numRadio: res.data.data.Settlement, numRadioTwo: res.data.data.account, })
       }
-      if(res.data.data.OpeningBank!==''){
-         this.setState({kolod:0})
+      if (res.data.data.OpeningBank !== '') {
+        this.setState({ kolod: 0 })
       }
       this.setState({
         CorporateName: res.data.data.CorporateName, bank_id: res.data.data.Banktype, province_id: res.data.data.ProvinceBank, city_id: res.data.data.CityBank,
@@ -415,6 +420,21 @@ class stadiums extends React.Component {
   contactNumber = e => {
     this.setState({ contactNumber: e.target.value })
   }
+
+  contactsTwo = e => {
+    this.setState({ contactsTwo: e.target.value })
+  }
+  contactNumberTwo = e => {
+    this.setState({ contactNumberTwo: e.target.value })
+  }
+
+  contactsThree = e => {
+    this.setState({ contactsThree: e.target.value })
+  }
+  contactNumberThree = e => {
+    this.setState({ contactNumberThree: e.target.value })
+  }
+
   addtelephone = e => {
     this.setState({ addtelephone: e.target.value })
   }
@@ -498,7 +518,7 @@ class stadiums extends React.Component {
   }
 
   confirm = () => {
-    let { informationList, name, handleAddress, contacts, contactNumber, starttime, endtime, filesTwoSon, adddress, filesSon, sport, facilities, siteInfo, comment } = this.state
+    let { informationList, name, handleAddress, contacts, contactNumber,contactsTwo, contactNumberTwo,contactsThree, contactNumberThree, starttime, endtime, filesTwoSon, adddress, filesSon, sport, facilities, siteInfo, comment } = this.state
     if (filesTwoSon.slice(1, filesTwoSon.length).split('|').length < 2) {
       message.error('至少上传两张场地照')
     } else {
@@ -512,6 +532,10 @@ class stadiums extends React.Component {
         address: handleAddress,
         linkMan: contacts,
         telephone: contactNumber,
+        linkMan2: contactsTwo,
+        telephone2: contactNumberTwo,
+        linkMan3: contactsThree,
+        telephone3: contactNumberThree,
         firstURL: filesSon,
         filesURL: filesTwoSon,
         facilities: facilities.join(','),
@@ -525,6 +549,10 @@ class stadiums extends React.Component {
       }
       if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(contacts) === false) {
         message.error('联系人只允许输入文字/字母')
+      }else if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(contactsTwo) === false) {
+        message.error('联系人二只允许输入文字/字母')
+      }else if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(contactsThree) === false) {
+        message.error('联系人三只允许输入文字/字母')
       } else if (facilities.length === 0) {
         message.error('请至少选择一项场馆设施');
       } else {
@@ -676,9 +704,9 @@ class stadiums extends React.Component {
     this.setState({ corporateCardId: e.target.value })
   }
   corporateOpen = e => {
-    if(e!==this.state.corporateOpen){
-     this.setState({kolod:'',yinhangSelect:0})
-     this.setState({ corporateOpen: e.target.value })
+    if (e !== this.state.corporateOpen) {
+      this.setState({ kolod: '', yinhangSelect: 0 })
+      this.setState({ corporateOpen: e.target.value })
     }
   }
 
@@ -755,15 +783,15 @@ class stadiums extends React.Component {
 
 
   handleSearch = e => {
-    if (e !== ''&&this.state.city_id!=='') {
+    if (e !== '' && this.state.city_id !== '') {
       this.getVenueOpenBankList({ bank_id: this.state.bank_id, province_id: this.state.province_id, city_id: this.state.city_id, search_name: e })
     }
   }
   selectChecked = e => {
-    if(e.currentTarget.dataset.id==='1000'){
-      this.setState({ corporateOpen: e.currentTarget.dataset.name, yinhangSelect: 0, hand: 1,kolod:e.currentTarget.dataset.id })
-    }else{
-    this.setState({ corporateOpen: e.currentTarget.dataset.name, yinhangSelect: 0, hand: 0,kolod:e.currentTarget.dataset.id })
+    if (e.currentTarget.dataset.id === '1000') {
+      this.setState({ corporateOpen: e.currentTarget.dataset.name, yinhangSelect: 0, hand: 1, kolod: e.currentTarget.dataset.id })
+    } else {
+      this.setState({ corporateOpen: e.currentTarget.dataset.name, yinhangSelect: 0, hand: 0, kolod: e.currentTarget.dataset.id })
     }
   }
 
@@ -787,7 +815,7 @@ class stadiums extends React.Component {
   }
 
   ziSubmitTwo = () => {
-    let { kolod,hand, numRadio, numRadioTwo, Bankphone, inCorName, inChargeNa, legalBaseURL, imageUrlTwo, corporateId, imageUrlThree, filesFiveSon, filesFourSon, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
+    let { kolod, hand, numRadio, numRadioTwo, Bankphone, inCorName, inChargeNa, legalBaseURL, imageUrlTwo, corporateId, imageUrlThree, filesFiveSon, filesFourSon, corporateCardId, corporateOpen, bank_id, province_id, city_id } = this.state
     let data = {
       legalBaseURL: numRadioTwo === 1 ? legalBaseURL : numRadio === 1 ? legalBaseURL : '',
       legalFilesURL: numRadioTwo === 1 ? filesFourSon + '|' + filesFiveSon : numRadio === 1 ? filesFourSon + '|' + filesFiveSon : '',
@@ -810,8 +838,8 @@ class stadiums extends React.Component {
       message.error('图片违规请重新上传')
     } else if (Bankphone === '') {
       message.warning('请输入短信通知手机号')
-    }else if(kolod===''){
-      this.setState({yinhangSelect:1})
+    } else if (kolod === '') {
+      this.setState({ yinhangSelect: 1 })
       message.warning('请选择搜索出来的支行名称')
     } else {
       if (this.state.loading === false) {
@@ -1064,7 +1092,6 @@ class stadiums extends React.Component {
     const { files, filesTwo, filesThree, filesFive, BelongingFour, filesFour, BelongingOne, BelongingTwo, BelongingThree, BelongingFive, BelongingSix } = this.state;
 
 
-
     return (
       <div className="stadiums">
         <div className="navTap">
@@ -1101,6 +1128,9 @@ class stadiums extends React.Component {
               <span className="boTitle">详细地址:</span>
               <Input className="nameINput" onChange={this.handleAddress} value={this.state.handleAddress} />
             </div>
+
+
+            <div style={{ textAlign: 'center', width: '524.8px', marginTop: '20px' }}>联系人一</div>
             <div className="name">
               <span className="boTitle">联系人:</span>
               <Input className="nameINput" maxLength={10} value={this.state.contacts} onInput={this.contacts} />
@@ -1109,6 +1139,31 @@ class stadiums extends React.Component {
               <span className="boTitle">联系电话:</span>
               <Input className="nameINput" maxLength={11} value={this.state.contactNumber} onInput={this.contactNumber} />
             </div>
+
+            <div>
+              <div style={{ textAlign: 'center', width: '524.8px', marginTop: '20px' }}>联系人二</div>
+              <div className="name">
+                <span className="boTitle">联系人:</span>
+                <Input className="nameINput" maxLength={10} value={this.state.contactsTwo}  placeholder="(选填)" onInput={this.contactsTwo} />
+              </div>
+              <div className="name">
+                <span className="boTitle">联系电话:</span>
+                <Input className="nameINput" maxLength={11} value={this.state.contactNumberTwo}  placeholder="(选填)" onInput={this.contactNumberTwo} />
+              </div>
+            </div>
+            <div>
+              <div style={{ textAlign: 'center', width: '524.8px', marginTop: '20px' }}>联系人三</div>
+              <div className="name">
+                <span className="boTitle">联系人:</span>
+                <Input className="nameINput" maxLength={10} value={this.state.contactsThree} placeholder="(选填)" onInput={this.contactsThree} />
+              </div>
+              <div className="name">
+                <span className="boTitle">联系电话:</span>
+                <Input className="nameINput" maxLength={11} value={this.state.contactNumberThree}  placeholder="(选填)" onInput={this.contactNumberThree} />
+              </div>
+            </div>
+
+
 
             <div className="name">
               <span className="boTitle">门脸照:</span>
@@ -1430,16 +1485,16 @@ class stadiums extends React.Component {
 
               <Search placeholder="请输入支行名称" value={this.state.corporateOpen === '' ? null : this.state.corporateOpen} onChange={this.corporateOpen} onSearch={this.handleSearch} style={{ width: 430 }} />
               <div className="yinhangSelectTwo" style={this.state.yinhangSelect === 0 ? { display: 'none' } : { display: 'block' }}>
-                <div style={{height:'110px',overflowY:'auto'}}>
-                <div style={this.state.backList.length===0?{textAlign:'center',marginBottom:'30px'}:{display:'none'}}>未找到该支行名称</div>
-                {
-                  this.state.backList.map((item, i) => (
-                    <div key={i}  onClick={this.selectChecked} data-name={item.name} data-id={item.id}>{item.nameT}</div>
-                  ))
-                }
+                <div style={{ height: '110px', overflowY: 'auto' }}>
+                  <div style={this.state.backList.length === 0 ? { textAlign: 'center', marginBottom: '30px' } : { display: 'none' }}>未找到该支行名称</div>
+                  {
+                    this.state.backList.map((item, i) => (
+                      <div key={i} onClick={this.selectChecked} data-name={item.name} data-id={item.id}>{item.nameT}</div>
+                    ))
+                  }
                 </div>
-                <div style={this.state.backList.length<10?{}:{display:'none'}}>
-                  <Input placeholder="手动添加支行" style={{width:'60%'}} onKeyDown={this.keydown} onChange={this.backListJoinInput}/>
+                <div style={this.state.backList.length < 10 ? {} : { display: 'none' }}>
+                  <Input placeholder="手动添加支行" style={{ width: '60%' }} onKeyDown={this.keydown} onChange={this.backListJoinInput} />
                   <span className="pJoin" onClick={this.backListJoin}>+添加</span><span></span>
                 </div>
               </div>

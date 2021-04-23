@@ -120,14 +120,18 @@ class inforSitePh extends React.Component {
           files: [{ url: imgUrlTwo + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
           province: this.props.history.location.query.province, city: this.props.history.location.query.city, area: this.props.history.location.query.district,
           starttime: [res.data.data.openingtime], endtime: [res.data.data.closingtime],
-          cgName: res.data.data.name, address: this.props.history.location.query.adddress, linkMan: res.data.data.linkMan, telephone: res.data.data.telephone, siteInfo: res.data.data.siteInfo,
+          cgName: res.data.data.name, address: this.props.history.location.query.adddress, linkMan: res.data.data.linkMan, telephone: res.data.data.telephone,
+          linkManTwo: res.data.data.linkMan2, telephoneTwo: res.data.data.telephone2,linkManThree: res.data.data.linkMan3, telephoneThree: res.data.data.telephone3,
+          siteInfo: res.data.data.siteInfo,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, comment: res.data.data.siteInfo, lat: this.props.history.location.query.lat, lng: this.props.history.location.query.lng, position: this.props.history.location.query.title, spin: false
         })
       } else {
         this.setState({
           listSon: res.data.data, sport: res.data.data.sport.split(','), facilities: res.data.data.facilities.split(','), files: [{ url: imgUrlTwo + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
           province: res.data.data.province, city: res.data.data.city, area: res.data.data.area, starttime: [res.data.data.openingtime], endtime: [res.data.data.closingtime],
-          cgName: res.data.data.name, address: res.data.data.address, linkMan: res.data.data.linkMan, telephone: res.data.data.telephone, siteInfo: res.data.data.siteInfo,
+          cgName: res.data.data.name, address: res.data.data.address, linkMan: res.data.data.linkMan, telephone: res.data.data.telephone,
+          linkManTwo: res.data.data.linkMan2, telephoneTwo: res.data.data.telephone2,linkManThree: res.data.data.linkMan3, telephoneThree: res.data.data.telephone3,
+          siteInfo: res.data.data.siteInfo,
           filesTwo: arrImg, filesTwoSon: res.data.data.filesURL, comment: res.data.data.siteInfo, lat: res.data.data.lat, lng: res.data.data.lng, position: res.data.data.position, spin: false
         })
       }
@@ -352,6 +356,21 @@ class inforSitePh extends React.Component {
   telephone = e => {
     this.setState({ telephone: e.target.value })
   }
+
+  linkManTwo = e => {
+    this.setState({ linkManTwo: e.target.value })
+  }
+  telephoneTwo = e => {
+    this.setState({ telephoneTwo: e.target.value })
+  }
+
+  linkManThree = e => {
+    this.setState({ linkManThree: e.target.value })
+  }
+  telephoneThree = e => {
+    this.setState({ telephoneThree: e.target.value })
+  }
+
   handlePreview = async file => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64T(file.originFileObj);
@@ -386,7 +405,7 @@ class inforSitePh extends React.Component {
   }
 
   confirm = () => {
-    let { cgName, address, linkMan, telephone, filesTwoSon, filesSon, sport, starttime, endtime, facilities, comment, lat, lng, position, province, city, area } = this.state
+    let { cgName, address, linkMan, telephone,linkManTwo, telephoneTwo,linkManThree, telephoneThree, filesTwoSon, filesSon, sport, starttime, endtime, facilities, comment, lat, lng, position, province, city, area } = this.state
     if (filesTwoSon.slice(1, filesTwoSon.length).split('|').length > 1) {
       let data = {
         venuename: cgName,
@@ -398,6 +417,10 @@ class inforSitePh extends React.Component {
         address: address,
         linkMan: linkMan,
         telephone: telephone,
+        linkMan2: linkManTwo,
+        telephone2: telephoneTwo,
+        linkMan3: linkManThree,
+        telephone3: telephoneThree,
         firstURL: filesSon,
         filesURL: filesTwoSon,
         facilities: facilities.join(','),
@@ -608,33 +631,33 @@ class inforSitePh extends React.Component {
   backListJoinInput = e => {
     this.setState({ backListJoinInput: e.target.value })
   }
-  backListJoin=()=>{
-    if(this.state.backListJoinInput===''){
-        Toast.fail('请填写内容')
-    }else if(this.state.backList.length!==0){
-      for(let i in this.state.backList){
-        if(this.state.backList[i].name===this.state.backListJoinInput){
+  backListJoin = () => {
+    if (this.state.backListJoinInput === '') {
+      Toast.fail('请填写内容')
+    } else if (this.state.backList.length !== 0) {
+      for (let i in this.state.backList) {
+        if (this.state.backList[i].name === this.state.backListJoinInput) {
           Toast.fail('请勿重复添加')
-        }else{
-          let arr=this.state.backList
-          let lok= {}
-          lok.name=this.state.backListJoinInput
-          lok.nameT=this.state.backListJoinInput
-          lok.id=1000
+        } else {
+          let arr = this.state.backList
+          let lok = {}
+          lok.name = this.state.backListJoinInput
+          lok.nameT = this.state.backListJoinInput
+          lok.id = 1000
           arr.push(lok)
-          this.setState({backList:arr})
+          this.setState({ backList: arr })
         }
       }
-    }else{
-      let arr=this.state.backList
-      let lok= {}
-      lok.name=this.state.backListJoinInput
-      lok.nameT=this.state.backListJoinInput
-      lok.id=1000
+    } else {
+      let arr = this.state.backList
+      let lok = {}
+      lok.name = this.state.backListJoinInput
+      lok.nameT = this.state.backListJoinInput
+      lok.id = 1000
       arr.push(lok)
-      this.setState({backList:arr})
+      this.setState({ backList: arr })
     }
-   
+
   }
 
   typeChange = e => {
@@ -674,7 +697,7 @@ class inforSitePh extends React.Component {
 
   corporateOpen = e => {
     if (e.target.value !== this.state.openingLine) {
-      this.setState({ kolod: '',yinhangSelect:0 })
+      this.setState({ kolod: '', yinhangSelect: 0 })
       this.setState({ openingLine: e.target.value })
     }
   }
@@ -1143,14 +1166,47 @@ class inforSitePh extends React.Component {
             />
           </div>
 
-          <div className="listSon">
-            <span>联系人</span>
-            <Input className="right" value={this.state.linkMan} placeholder='联系人姓名' onChange={this.linkMan} />
+
+          <div>
+            <div style={{textAlign:'center',marginTop:'1rem'}}>联系人一</div>
+            <div className="listSon">
+              <span>联系人</span>
+              <Input className="right" value={this.state.linkMan} placeholder='联系人姓名' onChange={this.linkMan} />
+            </div>
+            <div className="listSon">
+              <span>联系电话</span>
+              <Input className="right" value={this.state.telephone} placeholder="联系人电话" onChange={this.telephone} />
+            </div>
           </div>
-          <div className="listSon">
-            <span>联系电话</span>
-            <Input className="right" value={this.state.telephone} placeholder="联系人电话" onChange={this.telephone} />
+
+          <div>
+            <div style={{textAlign:'center',marginTop:'1rem'}}>联系人二</div>
+            <div className="listSon">
+              <span>联系人</span>
+              <Input className="right" value={this.state.linkManTwo} placeholder='联系人姓名' onChange={this.linkManTwo} />
+            </div>
+            <div className="listSon">
+              <span>联系电话</span>
+              <Input className="right" value={this.state.telephoneTwo} placeholder="联系人电话" onChange={this.telephoneTwo} />
+            </div>
           </div>
+
+          <div>
+            <div style={{textAlign:'center',marginTop:'1rem'}}>联系人三</div>
+            <div className="listSon">
+              <span>联系人</span>
+              <Input className="right" value={this.state.linkManThree} placeholder='联系人姓名' onChange={this.linkManThree} />
+            </div>
+            <div className="listSon">
+              <span>联系电话</span>
+              <Input className="right" value={this.state.telephoneThree} placeholder="联系人电话" onChange={this.telephoneThree} />
+            </div>
+          </div>
+
+
+
+
+
           <div className="listSon" style={{ overflow: 'hidden' }}>
             <span>门脸照</span>
             <ImagePicker
@@ -1494,7 +1550,7 @@ class inforSitePh extends React.Component {
 
 
           <div className="listSon" style={{ lineHeight: '2.5rem', height: '3rem' }}>
-            <span style={{ float: 'left'}}>开户行</span>
+            <span style={{ float: 'left' }}>开户行</span>
 
 
             <Search placeholder="请输入支行名称" value={this.state.openingLine === '' ? null : this.state.openingLine} onChange={this.corporateOpen} onSearch={this.handleSearch} style={{ width: '70%', height: '2.8rem', top: '-0.45rem', paddingLeft: '0', border: 'none' }} />
@@ -1503,7 +1559,7 @@ class inforSitePh extends React.Component {
                 <div style={this.state.backList.length === 0 ? { textAlign: 'center', marginBottom: '30px' } : { display: 'none' }}>未找到该支行名称</div>
                 {
                   this.state.backList.map((item, i) => (
-                    <div key={i} style={{paddingLeft:'10px'}} onClick={this.selectChecked} data-name={item.name} data-id={item.id}>{item.nameT}</div>
+                    <div key={i} style={{ paddingLeft: '10px' }} onClick={this.selectChecked} data-name={item.name} data-id={item.id}>{item.nameT}</div>
                   ))
                 }
               </div>

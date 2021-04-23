@@ -30,7 +30,8 @@
 
 .loginPhTeo .loginInput .name>span{
   display: block;
-  float: left;
+  float: right;
+  margin-right: 0.8rem;
   line-height: 46px;
   font-size: 0.75rem;
 }

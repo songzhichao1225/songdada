@@ -342,5 +342,9 @@ clear: left;
 .Gname .ant-select-single:not(.ant-select-customize-input) .ant-select-selector{
     background-color: transparent;
     border:none;
-    
+}
+.moName:not(.ant-select-customize-input) .ant-select-selector{
+    background-color: transparent;
+    width: 300px;
+    margin-top: 10px;
 }

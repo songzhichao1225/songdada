@@ -598,7 +598,7 @@ class qualification extends React.Component {
   async VenueVerifyThatAllAreFilledIn(data) {
     const res = await VenueVerifyThatAllAreFilledIn(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      let { kolod,siteUUID, filesThreeSon, legalBaseURL, value, valueTwo, valueThree, CorporateName, filesFourSon, Radiovalue, RadiovalueTwo, BelongingOneSon, BelongingFourSon, BelongingFiveSon, BelongingSixSon, legalhourBaseURL, filesFiveSon, ascrBaceUrl, BelongingTwoSon, BelongingThreeSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, cardId, Bankphone, openingLine, handleCardId, inChargeNa, bankcorporate } = this.state
+      let { siteUUID, filesThreeSon, legalBaseURL, value, valueTwo, valueThree, CorporateName, filesFourSon, Radiovalue, RadiovalueTwo, BelongingOneSon, BelongingFourSon, BelongingFiveSon, BelongingSixSon, legalhourBaseURL, filesFiveSon, ascrBaceUrl, BelongingTwoSon, BelongingThreeSon, faIdcard, faName, bank_id, province_id, city_id, faPhone, cardId, Bankphone, openingLine, handleCardId, inChargeNa, bankcorporate } = this.state
       if (this.state.isqult === 0) {
         let data = {
           siteUUID: siteUUID,
@@ -670,10 +670,6 @@ class qualification extends React.Component {
 
         if (this.state.loading === false || this.state.loadingTwo === false || this.state.loadingThree === false || this.state.loadingSix === false) {
           message.warning('图片上传中...')
-        } else if (Bankphone === '') {
-          message.warning('请填写短信通知手机号')
-        }else if(kolod===''){
-          message.warning('请选择搜索出来的支行名称')
         } else {
           this.VenueQualificationInformationSave_another(data)
 
@@ -1308,7 +1304,7 @@ class qualification extends React.Component {
               />
             </div>
 
-            <div className="titile" style={{ marginTop: '38px', marginLeft: '-10px', textAlign: 'left', width: '450px' }}>场馆收款银行信息<span style={{ color: '#9B9B9B', fontWeight: '400' }}>(也可在提现前填写)</span></div>
+            <div className="titile" style={{ marginTop: '38px', marginLeft: '-10px', textAlign: 'left', width: '450px',overflow:'hidden' }}>场馆收款银行信息<span style={{ color: '#9B9B9B', fontWeight: '400' }}>(也可在提现前填写)</span></div>
             <div className="name">
               <div className="nameSonTle">
                 <span className="boTitle">结算账号</span>
@@ -1382,7 +1378,7 @@ class qualification extends React.Component {
               <Input className="nameINput" style={{ width: '445px' }} disabled={this.state.flagDis} onChange={this.handleBankNum} value={this.state.cardId} placeholder="请输入银行卡号" />
             </div>
 
-            <div className="name">
+            <div className="name" >
               <div className="nameSonTle">
                 <span className="boTitle">短信通知</span>
               </div>

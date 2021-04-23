@@ -6,6 +6,7 @@ import { getOpenidBindingVenue, VenueUnbundling, _code, WetchSelectSiteName, Ven
 import { Toast, Modal, List, Checkbox, } from 'antd-mobile';
 import { LeftOutlined } from '@ant-design/icons';
 const CheckboxItem = Checkbox.CheckboxItem;
+const alert = Modal.alert;
 class bindingsWx extends React.Component {
 
   state = {
@@ -18,17 +19,35 @@ class bindingsWx extends React.Component {
     venueList: [],
     modal: false,
     siteuuid: '',
+    phoneOne:''
   };
 
 
   componentDidMount() {
     this.setState({ para: this.props.location.search.split('=')[1] })
     this.getOpenidBindingVenue({ openid: this.props.location.search.split('=')[1] })
+    
+    // var arr = [];
+    
+    // function getRepeatNum(){
+    //     var obj = {}; 
+    //     for(var i= 0, l = arr.length; i< l; i++){ 
+    //         var item = arr[i]; 
+    //         obj[item] = (obj[item] +1 ) || 1; 
+    //     } 
+    //     return obj
+    // }
+    // console.log(getRepeatNum());
+    
+
+
+    
   }
 
   async getOpenidBindingVenue(data) {
     const res = await getOpenidBindingVenue(data)
-    this.setState({ listSon: res.data.data })
+    this.setState({ listSon: res.data.data,phoneOne:res.data.other.phone })
+
   }
 
   jiebang = (e) => {
@@ -66,8 +85,23 @@ class bindingsWx extends React.Component {
     }
   }
 
-  getCode = () => {
+  app=()=>{
     this.toVenueSendCode({ mobile: this.state.phone, type: 'Bindofficialaccount' })
+    this.VenueUnbundling({ openid: this.state.para, siteuuid: '' })
+  }
+
+  getCode = () => {
+    console.log(this.state.phoneOne)
+     if(this.state.phoneOne===''||this.state.phoneOne===this.state.phone){
+      this.toVenueSendCode({ mobile: this.state.phone, type: 'Bindofficialaccount' })
+    }else{
+      alert('提示', <div>您好，本手机号与原绑定的手机号不同，点击继续绑定将清除原手机号绑定的场馆。</div>, [
+        { text: '取消', },
+        { text: '继续绑定', onPress: () =>  this.app() },
+      ])
+
+    }
+    
   }
 
   code = (e) => {

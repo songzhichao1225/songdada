@@ -168,7 +168,7 @@ class orderPh extends React.Component {
     kw: '',
     show: false,
     venueT: [],
-    consumpMoneyYou: '',
+    consumpMoneyYou: [],
     orderIndex: 0,
     checkOutNow: false,
     checkOutNowObj: '',
@@ -184,6 +184,7 @@ class orderPh extends React.Component {
     seasonsTwo: [{ labe: '会员卡扣费', value: 1 }, { label: '现金支付', value: 3 }, { label: '微信支付', value: 4 }, { label: '支付宝支付', value: 5 }],
     venueTwo: [],
     otherTypeTwo: [],
+    kohgigh:1
 
   }
 
@@ -321,7 +322,7 @@ class orderPh extends React.Component {
             data-starttime={resData[i].a}
             data-endtime={resData[i].a}
             className="loopsdgds"
-            data-index='1'
+            data-index={this.state.kohgigh}
             onClick={this.lookDeta}
             style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, lineHeight: 3 } : {}}><Checkbox className="chePe" idx={i} jdx={j} checked={resData[i].c[j].checked} onChange={this.checkbox} dtype={resData[i].c[j].type} time={resData[i].a} venueid={resData[i].c[j].venueids} uuid={resData[i].c[j].uuid} style={resData[i].c[j].type === 1 && this.state.cofirmZ === 1 ? {} : { display: 'none' } && resData[i].c[j].type === 4 && this.state.Cancels === 1 ? {} : { display: 'none' }} />{resData[i].c[j].type === 4 ? resData[i].c[j].who : resData[i].c[j].money_cg}</div>
 
@@ -359,10 +360,8 @@ class orderPh extends React.Component {
               data-starttime={resData[i].a}
               data-endtime={resData[i].a}
               onClick={this.lookDeta}
-              style={resData[i].c[j].time !== undefined ? { height: '50px', top: 1.5 * ((resData[i].c[j].time.slice(3, 5) > 30 ? resData[i].c[j].time.slice(3, 5) - 30 : resData[i].c[j].time.slice(3, 5))), zIndex: '9' } : { display: 'none' }}>{resData[i].c[j].whoTwo}</div>
+              style={resData[i].c[j].time !== undefined ? { height: '47px',color:'#fff', top: 1.5 * ((resData[i].c[j].time.slice(3, 5) > 30 ? resData[i].c[j].time.slice(3, 5) - 30 : resData[i].c[j].time.slice(3, 5))), zIndex: '9' } : { display: 'none' }}>{resData[i].c[j].whoTwo}</div>
             {resData[i].c[j].type === 4 ? resData[i].c[j].who : resData[i].c[j].money_cg}</div>
-            
-
           </div>
           obj[key] = value
           obj.lppd = <div style={{ color: '#F5A623', marginTop: '-2.2rem' }}>{resData[i].a}<br /><div className="sdgdfgdf" style={resData[i].k > 0 ? {} : { display: 'none' }}>{resData[i].k}</div><div style={resData[i].a === '23:30' ? { position: 'absolute', top: '2rem', left: '0.9rem' } : { display: 'none' }}>24:00</div></div>
@@ -393,6 +392,7 @@ class orderPh extends React.Component {
     for (let i in ho) {
       if (ho[i].dataset !== undefined && ho[i].dataset.type === '1') {
         ho[i].style.backgroundColor = "#56A5FF"
+        ho[i].setAttribute('data-index','1')
       }
     }
 
@@ -1179,8 +1179,8 @@ class orderPh extends React.Component {
     if (this.state.otherObj.isloop === 1) {
       let mo = this.state.qiDate
       alert('提示', '您确定取消订单吗?', [
+        { text: '取消本次订单', onPress: () => this.DelVenueOfflineOccupancy({ offid: this.state.informaid, isloop: 1, cur: mo }) },
         { text: '取消所有循环订单', onPress: () => this.DelVenueOfflineOccupancy({ offid: this.state.informaid, isloop: 2, cur: mo }) },
-        { text: '取消本次循环订单', onPress: () => this.DelVenueOfflineOccupancy({ offid: this.state.informaid, isloop: 1, cur: mo }) },
         { text: '关闭', onPress: () => console.log('cancel') },
       ])
     } else {
@@ -1286,7 +1286,12 @@ class orderPh extends React.Component {
     const res = await cancelSingleOrder(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.setState({ informaid: this.state.otherObjTime[Number(this.state.orderIndex) + 1].orderID })
-      this.getVenueBookingInformation({ informaid: this.state.otherObjTime[Number(this.state.orderIndex) + 1].orderID, type: 1, cur: this.state.qiDate })
+      
+      if(this.state.otherObj.isloop===1){
+        this.getVenueBookingInformation({ informaid: this.state.sid, type: 1, cur: this.state.qiDate })
+      }else if(this.state.otherObj.isloop===0){
+        this.getVenueBookingInformation({ informaid: this.state.otherObjTime[Number(this.state.orderIndex) + 1].orderID, type: 1, cur: this.state.qiDate })
+      }
       this.getVenueReservation({ sportid: this.state.liNum, date: this.state.qiDate })
       Toast.info(res.data.msg)
     } else {
@@ -1297,7 +1302,7 @@ class orderPh extends React.Component {
   singly = e => {
     let sid = e.currentTarget.dataset.orderid
     let cur = e.currentTarget.dataset.date
-    this.setState({ orderIndex: e.currentTarget.dataset.index })
+    this.setState({ orderIndex: e.currentTarget.dataset.index,sid:sid })
     alert('提示', '您确定取消该场地订单吗?', [
       { text: '取消', onPress: () => console.log('cancel') },
       { text: '确定', onPress: () => this.cancelSingleOrder({ sid: sid, cur: cur }) },
@@ -2022,7 +2027,7 @@ class orderPh extends React.Component {
         >
           <SearchBar placeholder="请输入卡主名称/手机号/会员卡检索" onSubmit={this.search} onChange={this.asdfsdfdsrfgd} style={{ width: '80%', float: 'left', fontSize: '0.88rem' }} /><span className="sgdfgdfg" onClick={this.search}>搜索</span>
 
-          <div style={{ overflowY: 'auto', clear: 'both' }}>
+          <div style={{ overflowY: 'auto', clear: 'both',paddingBottom:'5rem' }}>
             {
               this.state.vipDetails.map((item, i) => (
                 <RadioItem key={i} checked={i === this.state.indexI} onClick={this.asdfsdf} data-index={i} >

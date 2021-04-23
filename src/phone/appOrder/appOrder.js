@@ -1,6 +1,6 @@
 import React from 'react';
 import './appOrder.css';
-import { Calendar, Toast, Result, Icon, ActivityIndicator,NoticeBar } from 'antd-mobile';
+import { Calendar, Toast, Icon, ActivityIndicator,NoticeBar } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Table } from 'antd';
 import { getAppVenueReservations, getVenueNumberTitleList, getAPPVenueSelectSite } from '../../api';
@@ -112,7 +112,7 @@ class appOrder extends React.Component {
       if (new Date().getDate() === Number(this.state.date.split('/')[2])) {
         setTimeout(() => {
           if (document.querySelector('.ant-table-body') !== null) {
-            document.querySelector('.ant-table-body').scrollTo(0, arrTime.indexOf(ko) * 45)
+            document.querySelector('.ant-table-body').scrollTo(0, arrTime.indexOf(ko) * 48)
           }
         }, 50)
       } else {
@@ -134,7 +134,7 @@ class appOrder extends React.Component {
         res.data.other.bq[i].title = <div className="titleScale" style={{ textAlign: 'center', fontSize: '10px' }}>{res.data.other.bq[i].venueid}<br />{res.data.other.bq[i].title}</div>
         res.data.other.bq[i].width = 54
         res.data.other.bq[i].maxWidth = 54
-      } 
+      }
       let ploboj = {
         title: <div style={{ fontSize: '10px' }}>场地号<br />标签</div>,
         fixed: 'left',
@@ -217,7 +217,7 @@ class appOrder extends React.Component {
       }
       obj.lppd = this.state.sporttypeFive === '22' || this.state.sporttypeFive === '24' ? <div>
         <div className="btnAutoi" style={result.hasOwnProperty(lo) ? { opacity: 1 } : { opacity: 0 }}>{resData.data[i].a === lo ? resuLo : ''}</div></div>
-        : <div><div style={i !== '0' ? { color: '#F5A623', marginTop: '-1.4rem' } : { color: '#F5A623' }}>{resData.data[i].a}<div style={resData.data[i].a === '23:30' ? { width: '100%', position: 'absolute', bottom: '-1rem', textAlign: 'center' } : { display: 'none' }}>{resData.data[i].a === '23:30' ? '24:00' : ''}</div></div><div className="btnAutoi" style={result.hasOwnProperty(lo) ? { opacity: 1 } : { opacity: 0 }}>{resData.data[i].a === lo ? resuLo : ''}</div></div>
+        : <div><div style={i !== '0' ? { color: '#F5A623', marginTop: '-1.4rem' } : { color: '#F5A623' }}>{resData.data[i].a}<div style={resData.data[resData.data.length-1].a === resData.data[i].a ? {width: '100%', position: 'absolute', bottom: '-1rem', textAlign: 'center' } : { display: 'none' }}>{resData.data[resData.data.length-1].a === '23:30' ? '24:00' : resData.data[resData.data.length-1].a.slice(3,5)==='00'?resData.data[resData.data.length-1].a.slice(0,2)+':30':Number(resData.data[resData.data.length-1].a.slice(0,2))+1+':00'}</div></div><div className="btnAutoi" style={result.hasOwnProperty(lo) ? { opacity: 1 } : { opacity: 0 }}>{resData.data[i].a === lo ? resuLo : ''}</div></div>
       jood.push(obj)
     }
     this.setState({
@@ -235,14 +235,14 @@ class appOrder extends React.Component {
   componentDidMount() {
 
     //测试数据
-    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=4&token=KtfJFfVmlqZtS1VyOZx4PpxtY2dVfqOOs9Tk4Z5rJp0NgpyReREOEmjDHVIfuZvX&sporttype=10&flag=0'
+    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=JWIogLxv3u74K4ADT7lJGIxj0dJo5YHUaogw8KFuU4ZgMCq4fMXcjIJUL1iu4gLv&sporttype=4&flag=0'
     let query = this.props.location.search
-    let arr = query.split('&')
+    let arr = query.split('&')  
     let siteuid = arr[0].slice(9, arr[0].length)
     let sportid = arr[1].slice(8, arr[1].length)
     let token = arr[2].slice(6, arr[2].length)
     let sporttype = arr[3].slice(10, arr[3].length)
-    this.setState({ flag: arr[4].slice(5, arr[4].length), sporttypeFive: sporttype })
+    this.setState({ flag: arr[4].slice(5, arr[4].length), sporttypeFive: sporttype})
     this.setState({ sportidQuery: sportid, token: token })
     setTimeout(() => {
       this.getAppVenueReservations({ date: '', siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
@@ -281,6 +281,7 @@ class appOrder extends React.Component {
     this.setState({ show: false, date: e.toLocaleDateString().replace(/\//g, "/"), week: week[e.getDay()], lotime: '', moneyCall: 0 })
     this.getAppVenueReservations({ date: e.toLocaleDateString().replace(/\//g, "/"), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo })
   }
+
   onCancel = () => {
     this.setState({ show: false })
   }
@@ -1009,11 +1010,9 @@ class appOrder extends React.Component {
               <NoticeBar className="textPass" marqueeProps={{ loop: true, style: { padding: '0 7.5px',fontSize:'0.75rem',lineHeight:'0.8rem' } }}>
                 我们确保100%留有场地,否则将退还您预付的所有场地费并补偿您：20元（到场签到了）；10元（未到场签到）。
     </NoticeBar>
-              <Result
-                style={this.state.otherType.length === 0 ? { display: 'block' } : { display: 'none' }}
-                img={<Icon type="cross-circle-o" style={{ fill: 'rgba(245,166,35,1)', width: '4rem', height: '4rem' }} />}
-                title="无场地可预约"
-              />
+              <div  style={this.state.otherType.length === 0 ? { display: 'block',marginTop:'3rem' } : { display: 'none' }}><Icon type="cross-circle-o" style={{ fill: 'rgba(245,166,35,1)', width: '4rem', height: '4rem',display:'block',margin:'0 auto' }} /></div>
+              <div  style={this.state.otherType.length === 0 ? { display: 'block',fontSize:'1rem',textAlign:'center' } : { display: 'none' }}>无场地可预订</div>
+              
               <Calendar
                 visible={this.state.show}
                 onCancel={this.onCancel}

@@ -641,7 +641,7 @@ class myWalletPh extends React.Component {
         <Modal
           visible={this.state.vipVisible}
           transparent
-          maskClosable={true}
+          maskClosable={false}
           onClose={this.onCloseTwo}
           title="会员充值卡确认"
 
@@ -661,7 +661,7 @@ class myWalletPh extends React.Component {
         <Modal
           visible={this.state.vipVisibleTwo}
           transparent
-          maskClosable={true}
+          maskClosable={false}
           onClose={this.onCloseThree}
           title="汇款凭证信息"
           footer={[{ text: '确认', onPress: () => { this.MembershipCollectionAgreeToRefuse({ shipuuid: this.state.vipListTwo.uuid }) } }]}
@@ -687,6 +687,7 @@ class myWalletPh extends React.Component {
           onClose={this.onClose}
           title="添加场馆收款信息"
           closable={true}
+          maskClosable={false}
           className="kood"
         >
           <div className="koh">

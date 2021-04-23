@@ -83,7 +83,7 @@ class statusAudits extends React.Component {
           <div className="imgtitle">
             <img className="img" src={require("../../assets/icon_pc_statusT.png")} alt="" />
             <span className="titleText">恭喜您！审核成功</span>
-            <span className="nowKo">您的用户名：{sessionStorage.getItem('name')}，可以用操作人员手机号登录，也可以用法人手机号登录</span>
+            <span className="nowKo">您的用户名：{sessionStorage.getItem('name')}，可以用操作人员手机号登录，也可以用负责人手机号登录</span>
             <a href="#/home" className="a">首次进入场馆端首页>></a>
           </div>
         </div>

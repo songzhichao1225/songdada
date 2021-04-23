@@ -17,6 +17,7 @@ class untiePhonePh extends React.Component {
     phoneTwo: '',
     codeOne: '',
     codeTwo: '',
+    uuidko:''
   }
 
   async gerVenueName(data) {
@@ -25,12 +26,15 @@ class untiePhonePh extends React.Component {
       localStorage.setItem('phone', res.data.data.phone)
       localStorage.setItem('legalphone',res.data.data.legalphone)
       localStorage.setItem('siteName',res.data.data.name)
+      localStorage.setItem('uuid',res.data.data.uuid)
+      this.setState({uuidko:res.data.data.uuid})
     }
   }
 
 
   componentDidMount() {
     this.gerVenueName()
+    this.setState({uuidko:localStorage.getItem('uuid')})
   }
 
   phone = (e) => {
@@ -73,7 +77,7 @@ class untiePhonePh extends React.Component {
   }
 
   nacodeOne = () => {
-    this.nacode({ "mobile": this.state.phone, "type": 'venuebindingfr', uuid: localStorage.getItem('uuid') })
+    this.nacode({ "mobile": this.state.phone, "type": 'venuebindingfr', uuid:this.state.uuidko  })
   }
   nacodeTwoT = () => {
     this.nacodeTwo({ "mobile": this.state.phoneTwo, "type": 'venuebindingczy' })

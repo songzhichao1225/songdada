@@ -1356,14 +1356,18 @@ class sitePh extends React.Component {
 
   joinSiscount = () => {
     let { SiscountUUid, withDayList, appointmenttimeTwo, moneySiscount } = this.state
-
     let obj = {
       uuid: SiscountUUid,
       discount_date: withDayList.join(','),
       discount_costperhour_cg: moneySiscount,
       discount_appointment_cg: appointmenttimeTwo[0]
     }
-    this.SiteSettingDiscountSave(obj)
+    if(Number(moneySiscount)===0){
+      Toast.fail('价格不能小于等于0')
+    }else{
+      this.SiteSettingDiscountSave(obj)
+    }
+    
 
   }
 
@@ -2462,15 +2466,15 @@ class sitePh extends React.Component {
             <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>最短提前预定时间</List.Item>
           </Picker>
 
-          <List.Item style={{ borderBottom: '1px solid #E9E9E9' }} arrow="empty">
+          <List.Item style={{ borderBottom: '1px solid #E9E9E9' }} className="sdgdrfgd" arrow="empty">
             <InputItem
               type='money'
               placeholder={this.state.moneySiscount}
               onChange={(v) => { this.setState({ moneySiscount: v }) }}
-              style={{ padding: '0' }}
+              style={{ padding: '0',marginRight:0 }}
               disabledKeys={['.']}
               moneyKeyboardWrapProps={moneyKeyboardWrapProps}
-            ><span style={{ fontSize: '0.75rem' }}>价格(元/时)</span></InputItem></List.Item>
+            ><span style={{ fontSize: '0.75rem',marginRight:0 }}>价格(元/时)</span></InputItem></List.Item>
 
 
           <div className="listSonSSS">

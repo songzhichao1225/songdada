@@ -826,6 +826,7 @@ class myWallet extends React.Component {
           visible={this.state.vipVisible}
           onOk={this.handleOk}
           className="mode"
+          maskClosable={false}
           onCancel={this.handleCancelOne}
           closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
         >
@@ -846,13 +847,14 @@ class myWallet extends React.Component {
           visible={this.state.vipVisibleTwo}
           onOk={this.handleOk}
           className="mode"
+          maskClosable={false}
           onCancel={this.handleCancelThree}
           closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
         >
           <p><span className="vipLeft">持卡人</span>北京甲乙电子商务有限公司(找对手平台)</p>
           <p><span className="vipLeft">充值金额</span>￥{this.state.vipListTwo.PlanRecharge}</p>
           <p><span className="vipLeft">需赠送金额</span>￥{this.state.vipListTwo.givemoney}</p>
-          <p><span className="vipLeft">场馆名称</span>￥{this.state.gerVenueNameName}</p>
+          <p><span className="vipLeft">场馆名称</span>{this.state.gerVenueNameName}</p>
           <p><span className="vipLeft" style={{ color: '#F5A623', cursor: 'pointer' }} data-url={this.state.vipListTwo.RemittanceURL} onClick={this.imgMasking}>查看凭证</span></p>
           <p className="vipFooter"><span data-id={this.state.vipListTwo.uuid} onClick={this.queren}>确认</span></p>
         </Modal>
@@ -862,7 +864,9 @@ class myWallet extends React.Component {
           visible={this.state.visible}
           className="mode"
           width={650}
+          style={{top:'20px'}}
           onCancel={this.handleCancelTwo}
+          maskClosable={false}
           closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
         >
           <div className="listing">
@@ -962,10 +966,9 @@ class myWallet extends React.Component {
 
           <div className="listing">
             <span>开户行:</span>
-
             <Search placeholder="请输入支行名称" value={this.state.corporateOpen === '' ? null : this.state.corporateOpen} onChange={this.corporateOpen} onSearch={this.handleSearch} style={{ width: 430 }} />
               <div className="yinhangSelect" style={this.state.yinhangSelect === 0 ? { display: 'none' } : { display: 'block' }}>
-              <div style={{height:'60px',overflowY:'auto'}}>
+              <div style={this.state.backList.length<10?{height:'80px',overflowY:'auto'}:{height:'100%',overflowY:'auto'}}>
                 <div style={this.state.backList.length===0?{textAlign:'center',marginBottom:'30px'}:{display:'none'}}>未找到该支行名称</div>
                 {
                   this.state.backList.map((item, i) => (

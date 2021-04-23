@@ -209,7 +209,7 @@
 
 .mode .listing{
 	overflow: hidden;
-	margin-top: 20px;
+	margin-top: 10px;
 }
 .mode.listing>span{
 	display: block;
@@ -465,5 +465,9 @@
     bottom: 10px;
     left: 10px;
     color: blue;
+}
+
+.mode .listing .ant-input-group .ant-input{
+    height: 34px;
 }
 
