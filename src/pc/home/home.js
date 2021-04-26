@@ -3,7 +3,7 @@ import { Route, Link } from 'react-router-dom';
 import './home.css';
 import 'antd/dist/antd.css';
 import { getVenueIndex, gerVenueName, VenueEvaluationOfOperation, _login, VenueEvaluationSave, getsiteTels, getMobilePhoneBindingVenues, getAudio, getsiteTel } from '../../api';
-import { Layout, Menu, message, notification, Modal, Rate, Select } from 'antd';
+import { Layout, Menu, message, notification, Modal, Rate, Select, Tooltip } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 // import homePage from '../homePage/homePage';
 // import information from '../information/information';
@@ -239,6 +239,8 @@ class home extends React.Component {
       sessionStorage.setItem('path', '8');
     } else if (this.props.history.location.pathname === '/home/VipAgement') {
       sessionStorage.setItem('path', '9');
+    }else if (this.props.history.location.pathname.indexOf('/home/Koloko')!==-1) {
+      sessionStorage.setItem('path', '21');
     }
 
     if (sessionStorage.getItem('islegal') === '0' || sessionStorage.getItem('islegal') === '2') {
@@ -403,10 +405,7 @@ class home extends React.Component {
         arr[j].telephone = telephone[j]
       }
       this.setState({ arrPhp: arr })
-
       this.getsiteTels()
-
-
       if (res.data.data.ishaverecharge === 1 || res.data.data.ishaverecharge === 2) {
         this.props.history.push({ pathname: '/home/myWallet', query: { time: 2 } })
         sessionStorage.setItem('incomtime', 2)
@@ -535,7 +534,7 @@ class home extends React.Component {
       arrt.push(v[i].children)
       arrg.push(v[i].value)
     }
-  this.getsiteTel({sitetel:arrg.join('|'),sitename:arrt.join('|')})
+    this.getsiteTel({ sitetel: arrg.join('|'), sitename: arrt.join('|') })
   }
 
 
@@ -592,14 +591,7 @@ class home extends React.Component {
                 <span>场地设置</span>
               </Link>
             </Menu.Item>
-            {/* <Menu.Item key="8">
-              <Link to="/home/special">
-                <i className="anticon anticon-gift">
-                  <svg t="1575597370225" className="icon" viewBox="64 64 896 896" version="1.1" fill="currentColor" width="1rem" height="1rem"><path d="M351.962 128.277l128.1-0.154 0.077 64-128.1 0.154zM255.804 64.339l64-0.077 0.192 159.9-64 0.077zM512.004 64.038l64-0.076 0.192 159.9-64 0.076z" p-id="1703"></path><path d="M160.9 896c-17.7 0-32-14.3-32-31.9l-0.8-639.6c0-17.7 14.3-32 32-32l64.1-0.1-0.1-64-64.1 0.1c-53.1 0.1-96 43.1-96 96.1l0.8 639.6c0.1 53 43.1 95.9 96.2 95.8l511.7-0.6-0.1-64-511.7 0.6z" p-id="1704"></path><path d="M513.1 702.7l-287.8 0.3c-17.7 0-32 14.3-32 32s14.3 32 32 31.9l287.8-0.3c17.7 0 32-14.3 32-32 0-17.6-14.3-31.9-32-31.9zM225.1 511.2c-17.7 0-32 14.3-32 32s14.3 32 32 31.9l383.8-0.5c17.7 0 32-14.3 32-32s-14.3-32-32-31.9l-383.8 0.5zM224.9 319.3c-17.7 0-32 14.3-32 32s14.3 32 32 31.9l383.8-0.5c17.7 0 32-14.3 32-32s-14.3-32-32-31.9l-383.8 0.5zM768.1 223.7c-0.1-53-43.1-95.9-96.1-95.8l-64 0.1 0.1 64 64-0.1c17.7 0 32 14.3 32 31.9l0.4 352.2h64l-0.4-352.3zM950.6 790.6L816.1 925c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.7 0-45.2l79.8-79.7L608 800c-12.9 0-24.6-7.8-29.6-19.8s-2.2-25.7 6.9-34.9L700 630.7c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-60 60H928c12.9 0 24.6 7.8 29.6 19.8 4.9 11.9 2.2 25.7-7 34.8z" p-id="1705"></path></svg>
-                </i>
-                <span>特殊场地</span>
-              </Link>
-            </Menu.Item> */}
+            
 
             <Menu.Item key="7" onClick={this.wallet}>
               <Link to="/home/myWallet">
@@ -681,7 +673,7 @@ class home extends React.Component {
 
               </Select>
             </div>
-            <div className="Gname">
+            <div className="Gname" style={this.state.flagHidden === 1 ? { display: 'none' } : {}}>
               <Select
                 mode="multiple"
                 className="moName"
@@ -697,8 +689,11 @@ class home extends React.Component {
                 }
 
               </Select>
-
             </div>
+            <Tooltip title="用于:用户预订活动电话通知">
+              <span className="asdfsdf" style={this.state.flagHidden === 1 ? { display: 'none' } : {}}>?</span>
+            </Tooltip>
+
             <div className="time" style={this.state.flagHidden === 1 ? { display: 'none' } : {}}>
               <div className="new">
                 <div onClick={this.news}>

@@ -3,11 +3,11 @@ import './minePh.css';
 
 import { Toast, Picker, List, } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Drawer, Input, Pagination } from 'antd';
-import { VenueFeedback, getVenueHelpCenter, gerVenueName, imgUrlTwo, getMobilePhoneBindingVenues, _login } from '../../api';
+import { Drawer, Input, Pagination,Select,Tooltip } from 'antd';
+import { VenueFeedback, getVenueHelpCenter, gerVenueName, imgUrlTwo, getMobilePhoneBindingVenues, _login,getsiteTel,getsiteTels } from '../../api';
 
 const { TextArea } = Input
-
+const { Option } = Select;
 
 
 class minePh extends React.Component {
@@ -24,7 +24,9 @@ class minePh extends React.Component {
     ishaverecharge: 0,
     selectEdList: [],
     phone: '',
-    sutem:''
+    sutem:'',
+    arrPhp: [],
+    moName: [],
   }
 
 
@@ -35,6 +37,19 @@ class minePh extends React.Component {
     localStorage.setItem('lyv', res.data.data.rate)
     localStorage.setItem('siteUid', res.data.data.siteuid)
     localStorage.setItem('siteName',res.data.data.name)
+    let linkMan = res.data.data.linkMan.split('|')
+      let telephone = res.data.data.telephone.split('|')
+      let arr = []
+      for (let i in linkMan) {
+        let obj = {}
+        obj.name = linkMan[i]
+        arr.push(obj)
+      }
+      for (let j in telephone) {
+        arr[j].telephone = telephone[j]
+      }
+      this.setState({ arrPhp: arr })
+      this.getsiteTels()
 
     this.setState({ gerVenueName: res.data.data,sutem:res.data.data.name, refreshing: false, ishaverecharge: res.data.data.ishaverecharge })
 
@@ -166,6 +181,35 @@ class minePh extends React.Component {
     }
 
   }
+
+
+  async getsiteTel(data) {
+    const res = await getsiteTel(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      Toast.info('编辑成功')
+      this.getsiteTels()
+    } else {
+      Toast.fail(res.data.msg)
+    }
+  }
+
+  handleChange = (e, v) => {
+    this.setState({ moName: e })
+    let arrt = []
+    let arrg = []
+    for (let i in v) {
+      arrt.push(v[i].children)
+      arrg.push(v[i].value)
+    }
+
+    this.getsiteTel({ sitetel: arrg.join('|'), sitename: arrt.join('|') })
+  }
+
+  async getsiteTels(data) {
+    const res = await getsiteTels(data, localStorage.getItem('venue_token'))
+    this.setState({ moName: res.data.data.telephone.split('|') })
+  }
+
   render() {
     return (
       <div className="minePh">
@@ -188,6 +232,26 @@ class minePh extends React.Component {
 
               <span>场地履约率{localStorage.getItem('lyv')}%</span>
             </div>
+            <div style={{clear:'both',width:'80%'}}>
+            <Select
+                mode="multiple"
+                className="moName"
+                style={{ width: '100%' }}
+                value={this.state.moName}
+                onChange={this.handleChange}
+                onDeselect={this.deselect}
+              >
+                {
+                  this.state.arrPhp.map((item, i) => (
+                    <Option key={i} value={item.telephone}>{item.name}</Option>
+                  ))
+                }
+              </Select>
+              <Tooltip title="用于:用户预订活动电话通知">
+              <span className="asdfsdf">?</span>
+            </Tooltip>
+            </div>
+            
           </div>
         </div>
 

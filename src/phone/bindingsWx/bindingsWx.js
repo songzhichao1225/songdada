@@ -27,27 +27,23 @@ class bindingsWx extends React.Component {
     this.setState({ para: this.props.location.search.split('=')[1] })
     this.getOpenidBindingVenue({ openid: this.props.location.search.split('=')[1] })
     
-    // var arr = [];
+    var arr = [];
     
-    // function getRepeatNum(){
-    //     var obj = {}; 
-    //     for(var i= 0, l = arr.length; i< l; i++){ 
-    //         var item = arr[i]; 
-    //         obj[item] = (obj[item] +1 ) || 1; 
-    //     } 
-    //     return obj
-    // }
-    // console.log(getRepeatNum());
-    
-
-
-    
+    function getRepeatNum(){
+        var obj = {}; 
+        for(var i= 0, l = arr.length; i< l; i++){ 
+            var item = arr[i]; 
+            obj[item] = (obj[item] +1 ) || 1; 
+        }
+        return obj
+    }
+    console.log(getRepeatNum());
   }
 
   async getOpenidBindingVenue(data) {
     const res = await getOpenidBindingVenue(data)
     this.setState({ listSon: res.data.data,phoneOne:res.data.other.phone })
-
+    
   }
 
   jiebang = (e) => {

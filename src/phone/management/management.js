@@ -392,7 +392,7 @@ class management extends React.Component {
                 </Card>
               ))
             }
-            <div className="request" style={this.state.memberList.length === 0 && this.state.spin === false ? {} : { display: 'none' }}><img src={require('../../assets/xifen (1).png')} alt="img" /><div>您还没有设置场地细分!</div></div>
+            <div className="request" style={this.state.memberList.length === 0 && this.state.spin === false ? {} : { display: 'none' }}><img src={require('../../assets/vipno.png')} alt="img" /><div>您还没添加会员信息!</div></div>
             <Pagination style={{ marginBottom: '15px' }} size="small" hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.page} total={this.state.other} onChange={this.current} />
             <Spin style={{ width: '100%', marginTop: '45%' }} spinning={this.state.spin} />
           </div>

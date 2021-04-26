@@ -234,7 +234,6 @@ class homePagePh extends React.Component {
 
   
 
-
   render() {
     this.getIsSignOut()
     return (
@@ -277,12 +276,13 @@ class homePagePh extends React.Component {
 
 
 
-        <Route path="/homePh/homePh" component={homePh} />
-        <Route path="/homePh/orderPh" component={orderPh} />
-        <Route path="/homePh/sitePh" component={sitePh} />
-        <Route path="/homePh/newsPh" component={newsPh} />
-        <Route path="/homePh/minePh" component={minePh} />
-        <Route path="/homePh/orderPhT" component={orderPhT} />
+        <Route path="/homePh/homePh" component={homePh}/>
+        <Route path="/homePh/orderPh" component={orderPh}/>
+        <Route path="/homePh/sitePh" component={sitePh}/>
+        <Route path="/homePh/newsPh" component={newsPh}/>
+        <Route path="/homePh/minePh" component={minePh}/>
+        <Route path="/homePh/orderPhT" component={orderPhT}/>
+
         <div className="footer">
           <div className="footerSon">
             <div onTouchStart={this.homePh}>
