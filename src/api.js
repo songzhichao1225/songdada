@@ -2,18 +2,19 @@ import axios from 'axios';
 
 //本地全部隐去
 // axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
-// axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
+axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
 
-// export let imgUrlTwo='https://app.tiaozhanmeiyitian.com/'  //正式图片路径
-export let imgUrlTwo='https://appstg.tiaozhanmeiyitian.com/'  //测试图片路径
+
+export let imgUrlTwo='https://zhaoduishou.oss-cn-beijing.aliyuncs.com/'  //正式图片路径
+// export let imgUrlTwo='https://zhaoduishoustg.oss-cn-beijing.aliyuncs.com/'  //测试图片路径
 
 // export let wsFn = new WebSocket("wss://www.cg.zhaoduishou.com/socket");//正式socket
 // export let wsFn = new WebSocket("wss://cgstg.zhaoduishou.com/socket");//测试socket
 export let wsFn = new WebSocket("wss://socket.tiaozhanmeiyitian.com/socket");//测试socket
 // export let wsFn = new WebSocket("wss://admin.tiaozhanmeiyitian.com/socket");//测试、正式环境只此一个
 
-export let htUrl='http://adminstg.tiaozhanmeiyitian.com/'  //测试合同路径
-// export let htUrl='http://admin.tiaozhanmeiyitian.com/'  //正式合同路径
+// export let htUrl='http://adminstg.tiaozhanmeiyitian.com/'  //测试合同路径
+export let htUrl='http://admin.tiaozhanmeiyitian.com/'  //正式合同路径
 
 export function _login(data){    //登录  
     return axios.post('/api/getVenueLogin',data)
@@ -673,6 +674,12 @@ export function getsiteTels(data,headers){    //场馆端~获取场馆联系人
 export function getsiteTel(data,headers){    //场馆端~添加给场馆打电话
     return axios.post('/api/getsiteTel',data,{headers: {'token': headers}})
 }
+
+export function getRangeOfVenueServiceTime(data,headers){    //最短预订时间提示语（app时间块选择） 
+    return axios.post('/api/getRangeOfVenueServiceTime',data,{headers: {'token': headers}})
+}
+
+
 
 
 

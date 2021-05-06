@@ -501,7 +501,7 @@ class siteSettingsTwo extends React.Component {
         sdgdfghfrfg: Number(res.data.data[0].costperhour),
         maxScheduledDateThree: res.data.data[0].maxScheduledDate,
         appointmenttimeYThree: res.data.data[0].appointmenttime,
-        costperhourSix: res.data.data[0].discount_costperhour === null ? 0 : res.data.data[0].discount_costperhour.slice(0, res.data.data[0].discount_costperhour.indexOf('.')),
+        costperhourSix: res.data.data[0].discount_costperhour === null ? 0 : res.data.data[0].discount_costperhour,
         appointmenttimeSix: res.data.data[0].discount_appointment === null ? 0 : res.data.data[0].discount_appointment,
       })
       if (res.data.data[0].zkPrice !== 0) {
@@ -1612,11 +1612,12 @@ class siteSettingsTwo extends React.Component {
   }
 
   zhekouya = e => {
+    console.log(e)
     this.setState({ zhekouya: e, moneyThree: this.state.costperhour * e / 10 })
-    if (this.state.hkjghdfg === 0) {
+    if (this.state.hkjghdfg === 0||this.state.hkjghdfg === null) {
       this.setState({ sdgdfghfrfg: (this.state.costperhour * e / 10).toFixed(2) })
     } else {
-      this.setState({ sdgdfghfrfg: ((this.state.asdfsdgd / (this.state.hkjghdfg + this.state.asdfsdgd)) * (this.state.costperhour * e / 10)).toFixed(2), lokopo: this.state.asdfsdgd / (this.state.hkjghdfg + this.state.asdfsdgd) })
+      this.setState({ sdgdfghfrfg: ((this.state.asdfsdgd===null?0:this.state.asdfsdgd / (this.state.hkjghdfg===null?0:this.state.hkjghdfg + this.state.asdfsdgd===null?0:this.state.asdfsdgd)) * (this.state.costperhour * e / 10)).toFixed(2), lokopo: this.state.asdfsdgd===null?0:this.state.asdfsdgd / (this.state.hkjghdfg===null?0:this.state.hkjghdfg + this.state.asdfsdgd===null?0:this.state.asdfsdgd) })
     }
   }
   asdfsdgd = e => {
@@ -1626,7 +1627,6 @@ class siteSettingsTwo extends React.Component {
       this.setState({ asdfsdgd: e })
       this.setState({ sdgdfghfrfg: ((e / (e + this.state.hkjghdfg)) * this.state.moneyThree).toFixed(2), lokopo: e / (e + this.state.hkjghdfg) })
     }
-
   }
   hkjghdfg = e => {
     if (e === null || e < 10) {
@@ -1675,13 +1675,13 @@ class siteSettingsTwo extends React.Component {
                 <Col xs={{ span: 2 }}>场地编号</Col>
                 <Col xs={{ span: 1 }}>场地数量</Col>
                 <Col xs={{ span: 2 }}>星期</Col>
-                <Col xs={{ span: 2 }}>时间范围</Col>
-                <Col xs={{ span: 1 }}>价格</Col>
+                <Col xs={{ span: 1 }}>时间范围</Col>
+                <Col xs={{ span: 2 }}>价格</Col>
                 <Popover content={(<span>最长提前预订时间</span>)} title='详情' trigger="click">
-                  <Col xs={{ span: 1 }}>最长提前预订时间</Col>
+                  <Col xs={{ span: 2 }}>最长提前预订时间</Col>
                 </Popover>
                 <Popover content={(<span>最短提前预订时间</span>)} title='详情' trigger="click">
-                  <Col xs={{ span: 1 }}>最短提前预订时间</Col>
+                  <Col xs={{ span: 2 }}>最短提前预订时间</Col>
                 </Popover>
                 <Popover content={(<span>开始时间限制</span>)} title='详情' trigger="click">
                   <Col xs={{ span: 2 }}>开始时间限制</Col>
@@ -1689,8 +1689,8 @@ class siteSettingsTwo extends React.Component {
                 <Popover content={(<span>时长限制</span>)} title='详情' trigger="click">
                   <Col xs={{ span: 2 }}>时长限制</Col>
                 </Popover>
-                <Col xs={{ span: 2 }}>备注</Col>
-                <Col xs={{ span: 2 }}>特定日期</Col>
+                <Col xs={{ span: 1 }}>备注</Col>
+                <Col xs={{ span: 1 }}>特定日期</Col>
                 <Col xs={{ span: 2, }}>操作</Col>
               </Row>
               <div className="dataList">
@@ -1706,18 +1706,18 @@ class siteSettingsTwo extends React.Component {
                       <Popover content={(<span>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</span>)} title='详情' trigger="click">
                         <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</Col>
                       </Popover>
-                      <Col xs={{ span: 2 }} style={{ lineHeight: '24px' }}>{item.starttime}<br />{item.endtime}</Col>
+                      <Col xs={{ span: 1 }} style={{ lineHeight: '24px' }}>{item.starttime}<br />{item.endtime}</Col>
                       <Popover content={(<span>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '(元/次)'}</span>)} title='详情' trigger="click">
-                        <Col xs={{ span: 1 }} style={{ cursor: 'pointer' }}>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '(元/次)'}</Col>
+                        <Col xs={{ span: 2 }} style={{ cursor: 'pointer' }}>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '(元/次)'}</Col>
                       </Popover>
-                      <Col xs={{ span: 1 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
-                      <Col xs={{ span: 1 }}>{item.appointmenttime === null ? '' : item.appointmenttime > 2879 ? item.appointmenttime / 60 / 24 + '天' : item.appointmenttime / 60 + '小时'}</Col>
+                      <Col xs={{ span: 2 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
+                      <Col xs={{ span: 2 }}>{item.appointmenttime === null ? '' : item.appointmenttime > 2879 ? item.appointmenttime / 60 / 24 + '天' : item.appointmenttime / 60 + '小时'}</Col>
                       <Col xs={{ span: 2 }}>{item.timelimit === 1 ? '不限' : item.timelimit === 2 ? '整点' : item.timelimit === 3 ? '单数整点' : item.timelimit === 4 ? '双数整点' : '不限'}</Col>
                       <Col xs={{ span: 2 }}>{item.tags.indexOf('散') !== -1 || item.tags.indexOf('按次') !== -1 ? '不限' : item.durationlimit === 1 ? '1小时以上' : item.durationlimit === 2 ? '1小时整数倍' : item.durationlimit === 3 ? '2小时整数倍' : '不限'}</Col>
                       <Popover content={(<span>{item.comment === '' ? '无' : item.comment}</span>)} title='详情' trigger="click">
-                        <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer' }}>{item.comment === '' ? '无' : item.comment}</Col>
+                        <Col xs={{ span: 1 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer' }}>{item.comment === '' ? '无' : item.comment}</Col>
                       </Popover>
-                      <Col xs={{ span: 2 }} ><span style={item.tags.indexOf('散') !== -1 || item.tags.indexOf('按次') !== -1 ? {} : { display: 'none' }}>不可设置</span><span style={item.tags.indexOf('散') !== -1 || item.tags.indexOf('按次') !== -1 ? { display: 'none' } : { cursor: 'pointer', padding: '3px 6px', color: 'blue' }} data-uid={item.uuid} data-type={item.discount_date} onClick={item.discount_date === null ? this.kok : this.preferential}>{item.discount_date === null ? '无' : '查看'}</span></Col>
+                      <Col xs={{ span: 1 }} ><span style={item.tags.indexOf('散') !== -1 || item.tags.indexOf('按次') !== -1 ? {} : { display: 'none' }}>不可设置</span><span style={item.tags.indexOf('散') !== -1 || item.tags.indexOf('按次') !== -1 ? { display: 'none' } : { cursor: 'pointer', padding: '3px 6px', color: 'blue' }} data-uid={item.uuid} data-type={item.discount_date} onClick={item.discount_date === null ? this.kok : this.preferential}>{item.discount_date === null ? '无' : '查看'}</span></Col>
                       <Col xs={{ span: 2 }}>
                         <img onClick={this.update} style={{ cursor: 'pointer' }} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;
 
@@ -1926,7 +1926,7 @@ class siteSettingsTwo extends React.Component {
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>折扣</span>
-              <InputNumber className="startTime" onChange={this.zhekouya} value={this.state.zhekouya} style={{ width: 269, height: 32, paddingLeft: '11px' }} placeholder="请输入" />
+              <InputNumber className="startTime" onChange={this.zhekouya} value={this.state.zhekouya} maxLength={4} style={{ width: 269, height: 32, paddingLeft: '11px' }} placeholder="请输入" />
             </div>
 
             <div className="modelList" style={{ height: '32px' }}>
@@ -2217,7 +2217,7 @@ class siteSettingsTwo extends React.Component {
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>价格</span><span style={{ marginLeft: 0 }}>(元/小时)</span>
-              <Input type="number" className="startTime" value={String(this.state.costperhourSix).replace('.', '')} min={0} style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 50 }} placeholder="请输入" onChange={this.moneySix} />
+              <Input type="number" className="startTime" value={this.state.costperhourSix}  style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 50 }} placeholder="请输入" onChange={this.moneySix} />
             </div>
 
 

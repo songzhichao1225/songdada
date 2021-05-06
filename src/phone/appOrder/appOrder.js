@@ -1,13 +1,13 @@
 import React from 'react';
 import './appOrder.css';
-import { Calendar, Toast, Icon, ActivityIndicator,NoticeBar } from 'antd-mobile';
+import { Calendar, Toast, Icon, ActivityIndicator, NoticeBar, Modal } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Table } from 'antd';
-import { getAppVenueReservations, getVenueNumberTitleList, getAPPVenueSelectSite } from '../../api';
+import { getAppVenueReservations, getVenueNumberTitleList, getAPPVenueSelectSite, getRangeOfVenueServiceTime } from '../../api';
 import initReactFastclick from 'react-fastclick';
 initReactFastclick();
 const now = new Date();
-
+const alert = Modal.alert;
 
 
 
@@ -47,7 +47,11 @@ class appOrder extends React.Component {
     StartEndTime: 0,
     week: '',
     durationlimit: 1,
-    timeArr: ['00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30', '24:00']
+    timeArr: ['00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30', '24:00'],
+    kopl: '我们确保100%留有场地,否则将退还您预付的所有场地费并补偿您：20元（到场签到了）；10元（未到场签到）。',
+    modal1: false,
+    koploe: '',
+    indexKeplo: '1'
   };
 
 
@@ -131,7 +135,7 @@ class appOrder extends React.Component {
 
       for (let i in res.data.other.bq) {
         res.data.other.bq[i].dataIndex = res.data.other.bq[i].venueid
-        res.data.other.bq[i].title = <div className="titleScale" style={{ textAlign: 'center', fontSize: '10px' }}>{res.data.other.bq[i].venueid}<br />{res.data.other.bq[i].title}</div>
+        res.data.other.bq[i].title = <div className="titleScale" onClick={this.titleDetails} data-title={res.data.other.bq[i].com} style={{ textAlign: 'center', fontSize: '10px' }}>{res.data.other.bq[i].venueid}<br />{res.data.other.bq[i].title}</div>
         res.data.other.bq[i].width = 54
         res.data.other.bq[i].maxWidth = 54
       }
@@ -147,6 +151,13 @@ class appOrder extends React.Component {
     } else {
       this.setState({ resData: [], animating: false, otherType: [] })
     }
+  }
+
+  titleDetails=e=>{
+    alert('标签描述', <div>{e.currentTarget.dataset.title===''?'暂无':e.currentTarget.dataset.title}</div>, [
+      { text: '确定', onPress: () => console.log() },
+     
+    ])
   }
 
 
@@ -216,8 +227,12 @@ class appOrder extends React.Component {
         resuLo = result[lo]
       }
       obj.lppd = this.state.sporttypeFive === '22' || this.state.sporttypeFive === '24' ? <div>
-        <div className="btnAutoi" style={result.hasOwnProperty(lo) ? { opacity: 1 } : { opacity: 0 }}>{resData.data[i].a === lo ? resuLo : ''}</div></div>
-        : <div><div style={i !== '0' ? { color: '#F5A623', marginTop: '-1.4rem' } : { color: '#F5A623' }}>{resData.data[i].a}<div style={resData.data[resData.data.length-1].a === resData.data[i].a ? {width: '100%', position: 'absolute', bottom: '-1rem', textAlign: 'center' } : { display: 'none' }}>{resData.data[resData.data.length-1].a === '23:30' ? '24:00' : resData.data[resData.data.length-1].a.slice(3,5)==='00'?resData.data[resData.data.length-1].a.slice(0,2)+':30':Number(resData.data[resData.data.length-1].a.slice(0,2))+1+':00'}</div></div><div className="btnAutoi" style={result.hasOwnProperty(lo) ? { opacity: 1 } : { opacity: 0 }}>{resData.data[i].a === lo ? resuLo : ''}</div></div>
+        <div className="btnAutoi" style={result.hasOwnProperty(lo) ? { display: 'block' } : { display: 'none' }}>{resData.data[i].a === lo ? resuLo : ''}</div></div>
+        : <div>
+          <div style={i !== '0' ? { color: '#F5A623', marginTop: '-1.4rem' } : { color: '#F5A623' }}>{resData.data[i].a}
+            <div style={resData.data[resData.data.length - 1].a === resData.data[i].a ? { width: '100%', position: 'absolute', bottom: '-1rem', textAlign: 'center' } : { display: 'none' }}>
+              {resData.data[resData.data.length - 1].a === '23:30' ? '24:00' : resData.data[resData.data.length - 1].a.slice(3, 5) === '00' ? resData.data[resData.data.length - 1].a.slice(0, 2) + ':30' : Number(resData.data[resData.data.length - 1].a.slice(0, 2)) + 1 + ':00'}
+            </div></div><div className="btnAutoi" style={result.hasOwnProperty(lo) ? { opacity: 1 } : { opacity: 0 }}>{resData.data[i].a === lo ? resuLo : ''}</div></div>
       jood.push(obj)
     }
     this.setState({
@@ -232,20 +247,28 @@ class appOrder extends React.Component {
     }
   }
 
-  componentDidMount() {
+  async getRangeOfVenueServiceTime(data) {
+    const res = await getRangeOfVenueServiceTime(data)
+    if (res.data.code === 2000) {
+      this.setState({ koploe: res.data.data[0] })
+    }
+  }
 
+
+  componentDidMount() {
     //测试数据
-    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=JWIogLxv3u74K4ADT7lJGIxj0dJo5YHUaogw8KFuU4ZgMCq4fMXcjIJUL1iu4gLv&sporttype=4&flag=0'
+    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=JWIogLxv3u74K4ADT7lJGIxj0dJo5YHUaogw8KFuU4ZgMCq4fMXcjIJUL1iu4gLv&sporttype=13&flag=1'
     let query = this.props.location.search
-    let arr = query.split('&')  
+    let arr = query.split('&')
     let siteuid = arr[0].slice(9, arr[0].length)
     let sportid = arr[1].slice(8, arr[1].length)
     let token = arr[2].slice(6, arr[2].length)
     let sporttype = arr[3].slice(10, arr[3].length)
-    this.setState({ flag: arr[4].slice(5, arr[4].length), sporttypeFive: sporttype})
+    this.setState({ flag: arr[4].slice(5, arr[4].length), sporttypeFive: sporttype })
     this.setState({ sportidQuery: sportid, token: token })
     setTimeout(() => {
       this.getAppVenueReservations({ date: '', siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
+      this.getRangeOfVenueServiceTime({ siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
     }, 500)
     let start = new Date().toLocaleDateString()
     if (start.split('/')[0].length === 4) {
@@ -261,6 +284,15 @@ class appOrder extends React.Component {
       let yoo = start.split('/')[2] + '/' + start.split('/')[0] + '/' + start.split('/')[1]
       this.setState({ date: yoo, week: week[myddy], token: token, siteid: siteuid, sportid: sportid, sporttypeTwo: sporttype, start: yoo })
     }
+
+    setInterval(() => {
+      this.setState({ kopl: this.state.kopl + '我们确保100%留有场地,否则将退还您预付的所有场地费并补偿您：20元（到场签到了）；10元（未到场签到）。' })
+    }, 8000);
+
+
+
+
+
   }
 
 
@@ -291,29 +323,27 @@ class appOrder extends React.Component {
       return false
     }
 
-
     let money = e.currentTarget.dataset.money
     let time = e.currentTarget.dataset.time
     let lotime = e.currentTarget.dataset.lo
-    let timelimit = e.currentTarget.dataset.timelimit
+    // let timelimit = e.currentTarget.dataset.timelimit
 
-
-    if (this.state.moneyCall === 0 && timelimit === '2' && time.indexOf('30') !== -1) {
-      Toast.fail('请选择整点场地', 2, null, false);
-      return false
-    } else if (this.state.moneyCall === 0 && timelimit === '3' && time.indexOf('30') !== -1) {
-      Toast.fail('请选择单数整点场地', 2, null, false);
-      return false
-    } else if (this.state.moneyCall === 0 && timelimit === '3' && Number(time.slice(0, 2)) % 2 === 0) {
-      Toast.fail('请选择单数整点场地', 2, null, false);
-      return false
-    } else if (this.state.moneyCall === 0 && timelimit === '4' && time.indexOf('30') !== -1) {
-      Toast.fail('请选择双数整点场地', 2, null, false);
-      return false
-    } else if (this.state.moneyCall === 0 && timelimit === '4' && Number(time.slice(0, 2)) % 2 !== 0) {
-      Toast.fail('请选择双数整点场地', 2, null, false);
-      return false
-    }
+    // if (this.state.moneyCall === 0 && timelimit === '2' && time.indexOf('30') !== -1) {
+    //   Toast.fail('请选择整点场地', 2, null, false);
+    //   return false
+    // } else if (this.state.moneyCall === 0 && timelimit === '3' && time.indexOf('30') !== -1) {
+    //   Toast.fail('请选择单数整点场地', 2, null, false);
+    //   return false
+    // } else if (this.state.moneyCall === 0 && timelimit === '3' && Number(time.slice(0, 2)) % 2 === 0) {
+    //   Toast.fail('请选择单数整点场地', 2, null, false);
+    //   return false
+    // } else if (this.state.moneyCall === 0 && timelimit === '4' && time.indexOf('30') !== -1) {
+    //   Toast.fail('请选择双数整点场地', 2, null, false);
+    //   return false
+    // } else if (this.state.moneyCall === 0 && timelimit === '4' && Number(time.slice(0, 2)) % 2 !== 0) {
+    //   Toast.fail('请选择双数整点场地', 2, null, false);
+    //   return false
+    // }
 
 
 
@@ -636,6 +666,7 @@ class appOrder extends React.Component {
           breakup: ccj.join(','),
           realData: ''
         }
+        console.log(obj)
         if (obj.placeNun === '') {
           Toast.fail('请选择场地', 2, null, false);
         } else {
@@ -714,6 +745,7 @@ class appOrder extends React.Component {
             arrGo.push(keyvalue[i])
           }
         }
+        
         let obj = {
           placeNun: keyvalue.join(','),
           placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
@@ -724,6 +756,7 @@ class appOrder extends React.Component {
           breakup: '',
           realData: arrGo.length * 0.5 + '小时'
         }
+        console.log(obj)
         let timelimit = this.state.lotime.sort()[0].split('-')[4]
         let timeTwo = this.state.lotime.sort()[0].split('-')[0]
         this.setState({ obj: obj })
@@ -823,7 +856,7 @@ class appOrder extends React.Component {
             arrGo.push(keyvalue[i])
           }
         }
-
+        
         let obj = {
           placeNun: keyvalue.join(','),
           placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
@@ -929,6 +962,8 @@ class appOrder extends React.Component {
             breakup: '',
             realData: ''
           }
+console.log(obj)
+
           this.setState({ obj: obj })
           if (this.state.date.split('/')[0].length === 4) {
             let mood = this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2]
@@ -972,10 +1007,12 @@ class appOrder extends React.Component {
     this.getAppVenueReservations({ date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo })
   }
 
-  touMove = (e) => {
-
+  showOff = (e) => {
+    this.setState({ modal1: true, indexKeplo: e.currentTarget.dataset.index })
   }
-
+  onClose = () => {
+    this.setState({ modal1: false })
+  }
 
 
 
@@ -994,7 +1031,9 @@ class appOrder extends React.Component {
               </div>
               <div className="titleDiv" style={this.state.sporttypeFive === '22' || this.state.sporttypeFive === '24' ? {} : { display: 'none' }}><span className="fontSize">由于散场人数不可控，为了有更好的体验，出发之前可与场馆方联系。</span></div>
 
-
+              <NoticeBar onClick={this.showOff} data-index="1" mode="link" marqueeProps={{ loop: true, style: { padding: '0 7.5px', fontSize: '0.75rem', lineHeight: '0.8rem' } }} >
+                {this.state.koploe}
+              </NoticeBar>
               <div className="modTitle">
 
                 <span className="blue"></span><span>可选</span>
@@ -1006,13 +1045,13 @@ class appOrder extends React.Component {
                 <span className="red"></span><span>已选中</span>
               </div>
               <Table loading={false} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '88%' }} />
-              
-              <NoticeBar className="textPass" marqueeProps={{ loop: true, style: { padding: '0 7.5px',fontSize:'0.75rem',lineHeight:'0.8rem' } }}>
-                我们确保100%留有场地,否则将退还您预付的所有场地费并补偿您：20元（到场签到了）；10元（未到场签到）。
-    </NoticeBar>
-              <div  style={this.state.otherType.length === 0 ? { display: 'block',marginTop:'3rem' } : { display: 'none' }}><Icon type="cross-circle-o" style={{ fill: 'rgba(245,166,35,1)', width: '4rem', height: '4rem',display:'block',margin:'0 auto' }} /></div>
-              <div  style={this.state.otherType.length === 0 ? { display: 'block',fontSize:'1rem',textAlign:'center' } : { display: 'none' }}>无场地可预订</div>
-              
+
+              <NoticeBar className="textPass" data-index="2" mode="link" onClick={this.showOff} marqueeProps={{ loop: true, style: { padding: '0 7.5px', fontSize: '0.75rem', lineHeight: '0.8rem' } }}>
+                {this.state.kopl}
+              </NoticeBar>
+              <div style={this.state.otherType.length === 0 ? { display: 'block', marginTop: '3rem' } : { display: 'none' }}><Icon type="cross-circle-o" style={{ fill: 'rgba(245,166,35,1)', width: '4rem', height: '4rem', display: 'block', margin: '0 auto' }} /></div>
+              <div style={this.state.otherType.length === 0 ? { display: 'block', fontSize: '1rem', textAlign: 'center' } : { display: 'none' }}>无场地可预订</div>
+
               <Calendar
                 visible={this.state.show}
                 onCancel={this.onCancel}
@@ -1036,6 +1075,23 @@ class appOrder extends React.Component {
             </div>
           </div>
         </div>
+
+
+        <Modal
+          visible={this.state.modal1}
+          transparent
+          maskClosable={true}
+          onClose={this.onClose}
+          title="详情"
+         
+
+        >
+          <span style={this.state.indexKeplo === '2' ? {} : { display: 'none' }}>我们确保100%留有场地,否则将退还您预付的所有场地费并补偿您：20元（到场签到了）；10元（未到场签到）。</span>
+          <span style={this.state.indexKeplo === '1' ? {} : { display: 'none' }}>{this.state.koploe}</span>
+        </Modal>
+
+
+
       </div>
     )
   }

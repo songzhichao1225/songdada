@@ -143,10 +143,6 @@ class home extends React.Component {
       sessionStorage.setItem('siteuid', res.data.data.siteuid)
       sessionStorage.setItem('ishaverecharge', res.data.data.ishaverecharge)
       sessionStorage.setItem('siteName', res.data.data.name)
-
-
-
-
     }
   }
 
@@ -239,7 +235,7 @@ class home extends React.Component {
       sessionStorage.setItem('path', '8');
     } else if (this.props.history.location.pathname === '/home/VipAgement') {
       sessionStorage.setItem('path', '9');
-    }else if (this.props.history.location.pathname.indexOf('/home/Koloko')!==-1) {
+    } else if (this.props.history.location.pathname.indexOf('/home/Koloko') !== -1) {
       sessionStorage.setItem('path', '21');
     }
 
@@ -398,11 +394,16 @@ class home extends React.Component {
       let arr = []
       for (let i in linkMan) {
         let obj = {}
-        obj.name = linkMan[i]
-        arr.push(obj)
+        if (linkMan[i] !== '') {
+          obj.name = linkMan[i]
+          arr.push(obj)
+        }
+
       }
       for (let j in telephone) {
-        arr[j].telephone = telephone[j]
+        if (telephone[j] !== '') {
+          arr[j].telephone = telephone[j]
+        }
       }
       this.setState({ arrPhp: arr })
       this.getsiteTels()
@@ -415,7 +416,14 @@ class home extends React.Component {
 
   async getsiteTels(data) {
     const res = await getsiteTels(data, sessionStorage.getItem('venue_token'))
-    this.setState({ moName: res.data.data.telephone.split('|') })
+    let ok = res.data.data.telephone.split('|')
+    let arr = []
+    for (let i in ok) {
+      if (ok[i] !== '') {
+        arr.push(ok[i])
+      }
+    }
+    this.setState({ moName: arr })
   }
 
 
@@ -591,7 +599,7 @@ class home extends React.Component {
                 <span>场地设置</span>
               </Link>
             </Menu.Item>
-            
+
 
             <Menu.Item key="7" onClick={this.wallet}>
               <Link to="/home/myWallet">

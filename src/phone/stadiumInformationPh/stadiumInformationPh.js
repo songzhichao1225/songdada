@@ -210,20 +210,17 @@ class stadiumInformationPh extends React.Component {
     if (type === 'add') {
       lrz(files[0].url, { quality: 0.5 })
         .then((rst) => {
-          console.log(rst)
           this.setState({ loading: false })
           let formdata1 = new FormData();
           formdata1.append('files', rst.file);
           this.UploadVenueImgs(formdata1)
         })
-
     } else if (type === 'remove') {
       this.setState({ filesSon: '' })
     }
-
-
   }
 
+  
 
   handlePreview = async file => {
     if (!file.url && !file.preview) {

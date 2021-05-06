@@ -84,7 +84,6 @@ class commandPh extends React.Component {
   }
 
   jiechu=e=>{
-    console.log()
     let uuid=e.currentTarget.dataset.uuid
     alert('提示', '您确定删除第二负责人的该手机号么?', [
       { text: '取消', onPress: () =>  console.log('取消') },

@@ -203,6 +203,35 @@ class koloko extends React.Component {
         }
       }, 500)
 
+      for (let i in res.data.other.incomplete) {
+        for (let j in res.data.data) {
+          if (res.data.other.incomplete[i].time.slice(3, 5) < 30) {
+            if (res.data.data[j].a.slice(0, 2) === res.data.other.incomplete[i].time.slice(0, 2) && res.data.data[j].a.slice(3, 5) < res.data.other.incomplete[i].time.slice(3, 5)) {
+              for (let k in res.data.data[j].c) {
+                if (res.data.data[j].c[k].venueids === res.data.other.incomplete[i].venueid) {
+                  res.data.data[j].c[k].time = res.data.other.incomplete[i].time
+                  res.data.data[j].c[k].type = 2
+                  res.data.data[j].c[k].uuidTwo = res.data.other.incomplete[i].uuid
+                  res.data.data[j].c[k].whoTwo = res.data.other.incomplete[i].who
+                }
+              }
+            }
+          } else {
+            if (res.data.data[j].a.slice(0, 2) === res.data.other.incomplete[i].time.slice(0, 2) && 30 < res.data.other.incomplete[i].time.slice(3, 5) && res.data.data[j].a.slice(3, 5) !== '00') {
+              for (let k in res.data.data[j].c) {
+                if (res.data.data[j].c[k].venueids === res.data.other.incomplete[i].venueid) {
+                  res.data.data[j].c[k].time = res.data.other.incomplete[i].time
+                  res.data.data[j].c[k].uuidTwo = res.data.other.incomplete[i].uuid
+                  res.data.data[j].c[k].type = 2
+                  res.data.data[j].c[k].whoTwo = res.data.other.incomplete[i].who
+                }
+              }
+            }
+          }
+        }
+      }
+
+
 
       this.setState({
         resData: res.data.data
@@ -261,6 +290,15 @@ class koloko extends React.Component {
         obj.key = i + 1
         let key = resData[i].c[j].venueids
         let value = <div><div data-type={resData[i].c[j].type} data-uuid={resData[i].c[j].uuid} onClick={this.lookDeta} style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, color: 'transparent', lineHeight: 3 } : {}}>
+            <div className="sdgfdrg"
+                  data-type='4'
+                  data-uuid={resData[i].c[j].uuidTwo}
+                  data-venueids={resData[i].c[j].venueids}
+                  data-starttime={resData[i].a}
+                  data-endtime={resData[i].a}
+                  onClick={this.lookDeta}
+                  style={resData[i].c[j].time !== undefined ? { height: '47px',color:'#fff', top: 1.5 * ((resData[i].c[j].time.slice(3, 5) > 30 ? resData[i].c[j].time.slice(3, 5) - 30 : resData[i].c[j].time.slice(3, 5))), zIndex: '9' } : { display: 'none' }}>{resData[i].c[j].whoTwo}</div>
+                
           {resData[i].c[j].money}</div></div>
         obj[key] = value
         let koTwo = parseInt(resData[i].a.slice(1, 2)) + 1 + ':00'

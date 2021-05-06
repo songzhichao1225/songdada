@@ -42,7 +42,6 @@ class idCardPh extends React.Component {
      if(this.props.location.query===undefined){
      this.props.history.goBack()
      }else if(this.props.location.query.imageResOneTwo!==''){
-      console.log(this.props.location.query.imageUrlBaseT+this.props.location.query.imageResOneTwo.split('|')[1])
       this.setState({imageUrl:this.props.location.query.imageUrlBaseT+this.props.location.query.imageResOneTwo.split('|')[0],imageUrlT:this.props.location.query.imageUrlBaseT+this.props.location.query.imageResOneTwo.split('|')[1],
       imageRes:this.props.location.query.imageResOneTwo.split('|')[0],imageResT:this.props.location.query.imageResOneTwo.split('|')[1],imageUrlBaseT:this.props.location.query.imageUrlBaseT
     })

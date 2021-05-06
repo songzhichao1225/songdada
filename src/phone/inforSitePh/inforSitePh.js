@@ -5,7 +5,7 @@ import './inforSitePh.css';
 import { Toast, Modal, TextareaItem, Picker, List, ImagePicker } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Input, Checkbox, Button, Radio, Spin, } from 'antd';
-import { LeftOutlined } from '@ant-design/icons';
+import { LeftOutlined,PlusCircleOutlined } from '@ant-design/icons';
 import lrz from 'lrz';
 import { getVenueInformation, getVenueQualificationInformation, VenueInformationSave, UploadVenueImgs, imgUrlTwo, VenueQualificationInformationSave_another, UploadVenueImgsLisenTwo, UploadVenueImgsLisen, getVenueIssecondaudit, getVenueOpenBank, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity, VenueReceivingBankInformation } from '../../api';
 const alert = Modal.alert;
@@ -103,6 +103,8 @@ class inforSitePh extends React.Component {
     yinhangSelect: 0,
     hand: 1,
     kolod: '',
+    lpko:0,
+    lpkoTwo:0,
   };
 
   async getVenueInformation(data) {
@@ -336,7 +338,6 @@ class inforSitePh extends React.Component {
 
   onChangeCheck = e => {
     this.setState({ sport: e })
-    console.log(e)
   }
 
 
@@ -417,10 +418,10 @@ class inforSitePh extends React.Component {
         address: address,
         linkMan: linkMan,
         telephone: telephone,
-        linkMan2: linkManTwo,
-        telephone2: telephoneTwo,
-        linkMan3: linkManThree,
-        telephone3: telephoneThree,
+        linkMan2: telephoneTwo===''?'':linkManTwo,
+        telephone2:linkManTwo===''?'':telephoneTwo,
+        linkMan3:telephoneThree===''?'':linkManThree,
+        telephone3:linkManThree===''?'':telephoneThree,
         firstURL: filesSon,
         filesURL: filesTwoSon,
         facilities: facilities.join(','),
@@ -433,7 +434,6 @@ class inforSitePh extends React.Component {
         closingtime: endtime[0],
         type: 2
       }
-
       if (this.state.loading === false) {
         Toast.loading('图片上传中', 1);
       } else {
@@ -1082,8 +1082,15 @@ class inforSitePh extends React.Component {
   endtime = (e) => {
     this.setState({ endtime: e })
   }
+  oneLinkMan=()=>{
+    this.setState({lpko:1})
+  }
 
+  twoLinkMan=()=>{
+    this.setState({lpkoTwo:1})
+  }
 
+  
 
 
   render() {
@@ -1113,6 +1120,7 @@ class inforSitePh extends React.Component {
     const { files, filesTwo, filesFour, filesThree, filesFive, BelongingFour, BelongingOne, BelongingThree, BelongingTwo, BelongingFive, BelongingSix } = this.state
 
 
+    
     return (
       <div className="inforSitePh">
         <div className="nav">
@@ -1168,7 +1176,7 @@ class inforSitePh extends React.Component {
 
 
           <div>
-            <div style={{textAlign:'center',marginTop:'1rem'}}>联系人一</div>
+            <div style={{marginTop:'1rem',marginLeft:'2.5%',fontSize:'14px',fontWeight:'bold'}}>联系人一</div>
             <div className="listSon">
               <span>联系人</span>
               <Input className="right" value={this.state.linkMan} placeholder='联系人姓名' onChange={this.linkMan} />
@@ -1176,30 +1184,32 @@ class inforSitePh extends React.Component {
             <div className="listSon">
               <span>联系电话</span>
               <Input className="right" value={this.state.telephone} placeholder="联系人电话" onChange={this.telephone} />
+              <PlusCircleOutlined onClick={this.oneLinkMan} style={this.state.linkManTwo===''?{fontSize:'2rem',position:'absolute',right:'0',top:'10px'}:{display:'none'}} />
             </div>
           </div>
 
-          <div>
-            <div style={{textAlign:'center',marginTop:'1rem'}}>联系人二</div>
+          <div style={this.state.lpko===1||this.state.linkManTwo!==''?{}:{display:'none'}}>
+            <div style={{marginTop:'1rem',marginLeft:'2.5%',fontSize:'14px',fontWeight:'bold'}}>联系人二</div>
             <div className="listSon">
               <span>联系人</span>
-              <Input className="right" value={this.state.linkManTwo} placeholder='联系人姓名' onChange={this.linkManTwo} />
+              <Input className="right" value={this.state.linkManTwo} placeholder='联系人姓名(选填)' onChange={this.linkManTwo} />
             </div>
             <div className="listSon">
               <span>联系电话</span>
-              <Input className="right" value={this.state.telephoneTwo} placeholder="联系人电话" onChange={this.telephoneTwo} />
+              <Input className="right" value={this.state.telephoneTwo} placeholder="联系人电话(选填)" onChange={this.telephoneTwo} />
+              <PlusCircleOutlined onClick={this.twoLinkMan} style={this.state.linkManThree===''?{fontSize:'2rem',position:'absolute',right:'0',top:'10px'}:{display:'none'}} />
             </div>
           </div>
 
-          <div>
-            <div style={{textAlign:'center',marginTop:'1rem'}}>联系人三</div>
+          <div style={this.state.lpkoTwo===1||this.state.linkManThree!==''?{}:{display:'none'}}>
+            <div style={{marginTop:'1rem',marginLeft:'2.5%',fontSize:'14px',fontWeight:'bold'}}>联系人三</div>
             <div className="listSon">
               <span>联系人</span>
-              <Input className="right" value={this.state.linkManThree} placeholder='联系人姓名' onChange={this.linkManThree} />
+              <Input className="right" value={this.state.linkManThree} placeholder='联系人姓名(选填)' onChange={this.linkManThree} />
             </div>
             <div className="listSon">
               <span>联系电话</span>
-              <Input className="right" value={this.state.telephoneThree} placeholder="联系人电话" onChange={this.telephoneThree} />
+              <Input className="right" value={this.state.telephoneThree} placeholder="联系人电话(选填)" onChange={this.telephoneThree} />
             </div>
           </div>
 

@@ -33,6 +33,7 @@ import advertisingPh from './phone/advertisingPh/advertisingPh';
 import lazyLoad from './lazyLoad';
 const appOrder = lazyLoad(() => import('./phone/appOrder/appOrder'));
 const bindingsWx = lazyLoad(() => import('./phone/bindingsWx/bindingsWx'));
+const aboutNews = lazyLoad(() => import('./phone/aboutNews/aboutNews'));
 
 
 const BasicRoute = () => (
@@ -66,6 +67,7 @@ const BasicRoute = () => (
             <Route  path="/homePh" component={homePagePh}/>
             <Route exact path="/appOrder" component={appOrder}/>
             <Route exact path="/bindingsWx" component={bindingsWx}/>
+            <Route exact path="/aboutNews" component={aboutNews}/>
             <Route exact path="/phone" component={phone}/>
             <Route exact path="/Agreement" component={Agreement}/>
             <Route exact path="/Membership" component={Membership}/>

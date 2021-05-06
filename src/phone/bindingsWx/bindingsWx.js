@@ -19,31 +19,35 @@ class bindingsWx extends React.Component {
     venueList: [],
     modal: false,
     siteuuid: '',
-    phoneOne:''
+    phoneOne: ''
   };
 
 
   componentDidMount() {
     this.setState({ para: this.props.location.search.split('=')[1] })
     this.getOpenidBindingVenue({ openid: this.props.location.search.split('=')[1] })
+
+
+    // console.log(Math.ceil((Math.random()*16)))
     
-    var arr = [];
-    
-    function getRepeatNum(){
-        var obj = {}; 
-        for(var i= 0, l = arr.length; i< l; i++){ 
-            var item = arr[i]; 
-            obj[item] = (obj[item] +1 ) || 1; 
-        }
-        return obj
-    }
-    console.log(getRepeatNum());
+
+
+    // let arr = [] b v
+    // function getRepeatNum() {
+    //   var obj = {};
+    //   for (var i = 0, l = arr.length; i < l; i++) {
+    //     var item = arr[i];
+    //     obj[item] = (obj[item] + 1) || 1; 
+    //   }
+    //   return obj
+    // }
+    // console.log(getRepeatNum());
   }
 
   async getOpenidBindingVenue(data) {
     const res = await getOpenidBindingVenue(data)
-    this.setState({ listSon: res.data.data,phoneOne:res.data.other.phone })
-    
+    this.setState({ listSon: res.data.data, phoneOne: res.data.other.phone })
+
   }
 
   jiebang = (e) => {
@@ -81,23 +85,22 @@ class bindingsWx extends React.Component {
     }
   }
 
-  app=()=>{
+  app = () => {
     this.toVenueSendCode({ mobile: this.state.phone, type: 'Bindofficialaccount' })
     this.VenueUnbundling({ openid: this.state.para, siteuuid: '' })
   }
 
   getCode = () => {
-    console.log(this.state.phoneOne)
-     if(this.state.phoneOne===''||this.state.phoneOne===this.state.phone){
+    if (this.state.phoneOne === '' || this.state.phoneOne === this.state.phone) {
       this.toVenueSendCode({ mobile: this.state.phone, type: 'Bindofficialaccount' })
-    }else{
+    } else {
       alert('提示', <div>您好，本手机号与原绑定的手机号不同，点击继续绑定将清除原手机号绑定的场馆。</div>, [
         { text: '取消', },
-        { text: '继续绑定', onPress: () =>  this.app() },
+        { text: '继续绑定', onPress: () => this.app() },
       ])
 
     }
-    
+
   }
 
   code = (e) => {
@@ -134,7 +137,7 @@ class bindingsWx extends React.Component {
 
   venueId = (e) => {
     let id = e.currentTarget.dataset.index
-    let ko=this.state.venueList[id]
+    let ko = this.state.venueList[id]
     if (ko.checked === true) {
       ko.checked = false
     } else {

@@ -356,7 +356,9 @@ class appointmentList extends React.Component {
             </Tooltip>
           </div>
           obj[key] = value
-          obj.lppd = <div style={{ color: '#F5A623', marginTop: '-30px' }}>{resData[i].a}<br /><div className="sdgdfgdf" style={resData[i].k > 0 ? {} : { display: 'none' }}>{resData[i].k}</div><div style={resData[i].a === '23:30' ? { position: 'absolute', left: '33%', top: '30px' } : { display: 'none' }}>24:00</div></div>
+          obj.lppd = <div style={{ color: '#F5A623', marginTop: '-30px' }}>{resData[i].a}<br /><div className="sdgdfgdf" style={resData[i].k > 0 ? {} : { display: 'none' }}>{resData[i].k}</div><div style={resData[resData.length - 1].a === resData[i].a ?{ position: 'absolute', left: '33%', top: '30px'}:{display:'none'}}>
+             {resData[resData.length - 1].a === '23:30' ? '24:00' : resData[resData.length - 1].a.slice(3, 5) === '00' ? resData[resData.length - 1].a.slice(0, 2) + ':30' : Number(resData[resData.length - 1].a.slice(0, 2)) + 1 + ':00'}
+            </div></div>
 
         }
 
@@ -831,9 +833,14 @@ class appointmentList extends React.Component {
   async cancelSingleOrder(data) {
     const res = await cancelSingleOrder(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ informaid: this.state.otherObjTime[Number(this.state.orderIndex) + 1].orderID })
-      this.getVenueBookingInformation({ informaid: this.state.otherObjTime[Number(this.state.orderIndex) + 1].orderID, type: 1, cur: this.state.dateString })
+      if(this.state.otherObj.isloop!==1){
+        this.getVenueBookingInformation({ informaid: this.state.otherObjTime[Number(this.state.orderIndex) + 1].orderID, type: 1, cur: this.state.dateString })
       this.getVenueReservation({ sportid: this.state.liNum, date: this.state.dateString })
+      }else{
+        this.getVenueBookingInformation({ informaid: this.state.otherObj.orderID, type: 1, cur: this.state.dateString })
+        this.getVenueReservation({ sportid: this.state.liNum, date: this.state.dateString })
+      }
+      
       message.success(res.data.msg)
     } else {
       message.warning(res.data.msg)
@@ -895,8 +902,8 @@ class appointmentList extends React.Component {
     let venueT = this.state.venueT
     for (let i = 0; i < parseFloat(playTime) * 2; i++) {
       let j = new Date(ko).setMinutes(new Date(ko).getMinutes() + i * 30)
-      venueT.splice(new Date(j).format("yyyy-MM-dd hh:mm") + '|' + venueid, 1)
-    }
+      venueT.splice(venueT.indexOf(new Date(j).format("yyyy-MM-dd hh:mm") + '|' + venueid), 1)
+    } 
     this.setState({ venueT: venueT })
     this.CalculateVenuePrice({ sportid: this.state.liNum, venueT: venueT.join(',') })
     let venueTwo = this.state.venueTwo
@@ -1120,7 +1127,7 @@ class appointmentList extends React.Component {
             </div>
 
 
-            <div className="calce" onClick={this.checkOutNow} data-orderid={this.state.otherObj.orderID} style={this.state.otherObj.status !== '未开始' && this.state.otherObj.status !== '已结算' && this.state.otherObj.status !== '已完成' && this.state.otherObj.status !== '已取消' ? {} : { display: 'none' }} >立即结账</div>
+            <div className="calce" onClick={this.checkOutNow} data-orderid={this.state.otherObj.orderID} style={this.state.otherObj.ifPay===0&&this.state.otherObj.status !== '未开始' && this.state.otherObj.status !== '已结算' && this.state.otherObj.status !== '已完成'&&this.state.otherObj.status !== '已取消' ? {} : { display: 'none' }} >立即结账</div>
           </div>
 
         </Drawer>

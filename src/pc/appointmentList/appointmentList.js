@@ -828,7 +828,7 @@ class appointmentList extends React.Component {
                  
                 </Select>
               </Col>
-              <Col span={2}>
+              <Col span={4}>
                 <Select className="selectName" bordered={false} style={{ width:'100%', height: 30,border:0 }} defaultValue='支付类型(全部)' onChange={this.paymentType}>
                   <Option value=" ">全部</Option>
                   <Option value="1">会员卡扣费</Option>
@@ -838,24 +838,24 @@ class appointmentList extends React.Component {
                 </Select>
               </Col>
               <Col span={3}>开始时间</Col>
-              <Col span={4}>时长</Col>
+              <Col span={3}>时长</Col>
               <Col span={2}>预计消费金额</Col>
               <Col span={2}>实际消费金额</Col>
               <Col span={3}>实际活动时间</Col>
-              <Col span={3}>订单状态</Col>
+              <Col span={2}>订单状态</Col>
               <Col span={3}>订单时间</Col>
             </Row>
             {
               this.state.lineList.map((item, i) => (
                 <Row key={i} className="rowConten">
                   <Col span={2}>{item.sportID === 1 ? '羽毛球' : item.sportID === 2 ? '乒乓球' : item.sportID === 3 ? '台球中式黑八' : item.sportID === 4 ? '台球美式九球' : item.sportID === 5 ? '台球斯诺克' : item.sportID === 6 ? '篮球' : item.sportID === 7 ? '足球11人制' : item.sportID === 8 ? '足球8人制' : item.sportID === 9 ? '足球7人制' : item.sportID === 10 ? '足球5人制' : item.sportID === 11 ? '排球' : item.sportID === 12 ? '网球' : item.sportID === 13 ? '足球6人制' : ''}</Col>
-                  <Col span={2}>{item.mode}</Col>
+                  <Col span={4}>{item.mode}</Col>
                   <Col span={3}>{item.starttime}</Col>
-                  <Col span={4}>{item.playtime}</Col>
+                  <Col span={3}>{item.playtime}</Col>
                   <Col span={2}>{item.price}</Col>
                   <Col span={2}>{item.iftPrice}</Col>
                   <Col span={3}>{item.iftTime}</Col>
-                  <Col span={3}>{item.ifPay}</Col>
+                  <Col span={2}>{item.ifPay}</Col>
                   <Col span={3}>{item.ctime}</Col>
                 </Row>
               ))

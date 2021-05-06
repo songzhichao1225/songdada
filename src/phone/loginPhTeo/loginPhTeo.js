@@ -78,7 +78,6 @@ class loginPhTeo extends React.Component {
           if (res.data.data.issite === 0) {
             this.props.history.push('/stadiumInformationPh')
           } else if (res.data.data.isqult === 0) {
-            console.log(666)
             this.props.history.push('/qualificationPh')
           } else if (res.data.data.islegal === 0 || res.data.data.islegal === 2) {
             this.props.history.push('/resultsAuditsPh')
@@ -125,6 +124,7 @@ class loginPhTeo extends React.Component {
   }
 
   closeWeb=()=>{
+    
   if(window.location.href.indexOf('flag=1')===-1){
     this.props.history.push('/phone')
      this.setState({visible:false})

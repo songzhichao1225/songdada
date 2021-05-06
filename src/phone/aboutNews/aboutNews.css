@@ -1,0 +1,30 @@
+
+.aboutNews{
+    font-size: 0.88rem;
+}
+.aboutNews span{
+    display: block;
+}
+.aboutNews h3{
+    font-weight: bold;
+    text-align: center;
+}
+.aboutNews .rivalFruit{
+   padding-top: 2rem;
+   width: 95%;
+   margin: 0 auto;
+}
+.aboutNews .rivalFruit .title{
+    font-weight: bold;
+}
+.aboutNews .rivalFruit .one{
+    float: left;
+    font-weight: bold;
+    
+}
+.aboutNews .rivalFruit .son{
+    margin-top: 1.5rem;
+}
+.aboutNews .rivalFruit .hayi{
+    text-indent:1.76rem;
+}

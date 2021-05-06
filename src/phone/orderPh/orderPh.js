@@ -302,12 +302,11 @@ class orderPh extends React.Component {
   hoode = (resData) => {
     let jood = []
     for (let i in resData) {
-
+      let obj = {}
+      let kood = []
       let otherTypeTwo = this.state.otherTypeTwo
       if (otherTypeTwo.length === 0) {
-
-        let obj = {}
-        let kood = []
+        
         for (let j in resData[i].c) {
           if (resData[i].c[j].type === 4) {
             kood.push(resData[i].c[j])
@@ -328,7 +327,11 @@ class orderPh extends React.Component {
 
           </div>
           obj[key] = value
-          obj.lppd = <div style={{ color: '#F5A623', marginTop: '-2.2rem' }}>{resData[i].a}<br /><div className="sdgdfgdf" style={resData[i].k > 0 ? {} : { display: 'none' }}>{resData[i].k}</div><div style={resData[i].a === '23:30' ? { position: 'absolute', top: '2rem', left: '0.9rem' } : { display: 'none' }}>24:00</div></div>
+          obj.lppd = <div style={{ color: '#F5A623', marginTop: '-2.2rem' }}>{resData[i].a}<br /><div className="sdgdfgdf" style={resData[i].k > 0 ? {} : { display: 'none' }}>{resData[i].k}</div><div style={resData[resData.length - 1].a === resData[i].a ? { position: 'absolute', left: '0.9rem', top: '2rem' } : { display: 'none' }}>
+            {resData[resData.length - 1].a === '23:30' ? '24:00' : resData[resData.length - 1].a.slice(3, 5) === '00' ? resData[resData.length - 1].a.slice(0, 2) + ':30' : Number(resData[resData.length - 1].a.slice(0, 2)) + 1 + ':00'}
+            </div></div>
+        
+        
         }
         jood.push(obj)
 
@@ -1386,7 +1389,7 @@ class orderPh extends React.Component {
     let venueT = this.state.venueT
     for (let i = 0; i < parseFloat(playTime) * 2; i++) {
       let j = new Date(ko).setMinutes(new Date(ko).getMinutes() + i * 30)
-      venueT.splice(new Date(j).format("yyyy-MM-dd hh:mm") + '|' + venueid, 1)
+      venueT.splice(venueT.indexOf(new Date(j).format("yyyy-MM-dd hh:mm") + '|' + venueid), 1)
     }
     this.setState({ venueT: venueT })
 
@@ -1954,7 +1957,7 @@ class orderPh extends React.Component {
             <div className="footer"><span style={{ color: '#F5A623', fontSize: '0.88rem' }}>订单状态：{this.state.otherObj.status}</span>
 
               <div className="calce" style={this.state.otherObj.status === '未开始' ? {} : { display: 'none' }} onClick={this.calesdeedsfr}>取消订单</div>
-              <div className="calce" onClick={this.checkOutNow} data-orderid={this.state.otherObj.orderID} style={this.state.otherObj.status !== '未开始' && this.state.otherObj.status !== '已结算' && this.state.otherObj.status !== '已完成' && this.state.otherObj.status !== '已取消' ? {} : { display: 'none' }}>立即结账</div>
+              <div className="calce" onClick={this.checkOutNow} data-orderid={this.state.otherObj.orderID} style={this.state.otherObj.ifPay===0&&this.state.otherObj.status !== '未开始' && this.state.otherObj.status !== '已结算' && this.state.otherObj.status !== '已完成' && this.state.otherObj.status !== '已取消' ? {} : { display: 'none' }}>立即结账</div>
             </div>
           </div>
 

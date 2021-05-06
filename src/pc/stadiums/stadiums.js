@@ -1,9 +1,10 @@
 import React from 'react';
 import './stadiums.css';
 import 'antd/dist/antd.css';
-import { getVenueInformation, VenueInformationSave, getVenueIssecondaudit, getVenueQualificationInformation, imgUrlTwo, getVenueOpenBank, UploadVenueImgsLisenTwo, UploadVenueImgsLisen, VenueReceivingBankInformation, UploadVenueImgs, getVenueSportList, VenueQualificationInformationSave_another, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
+import { getVenueInformation, VenueInformationSave, getVenueIssecondaudit, getVenueQualificationInformation, imgUrlTwo,gerVenueName, getVenueOpenBank, UploadVenueImgsLisenTwo, UploadVenueImgsLisen, VenueReceivingBankInformation, UploadVenueImgs, getVenueSportList, VenueQualificationInformationSave_another, getVenueOpenBankList, getVenueOpenBankProvince, getVenueOpenBankCity } from '../../api';
 import { Input, message, Checkbox, Button, Popconfirm, Radio, Select, Spin } from 'antd';
 import { ImagePicker } from 'antd-mobile';
+import {PlusCircleOutlined } from '@ant-design/icons';
 import lrz from 'lrz';
 
 const { Option } = Select;
@@ -125,6 +126,8 @@ class stadiums extends React.Component {
     yinhangSelect: 0,
     hand: 1,
     kolod: '',
+    lpko:0,
+    lpkoTwo:0,
   };
 
   async getVenueInformation(data) {
@@ -154,7 +157,7 @@ class stadiums extends React.Component {
           area: this.props.location.query.district,
           informationList: res.data.data, name: res.data.data.name,
           contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone,
-          contactsTwo:res.data.data.linkMan2,contactNumberTwo: res.data.data.telephone2,
+          contactsTwo: res.data.data.linkMan2, contactNumberTwo: res.data.data.telephone2,
           contactsThree: res.data.data.linkMan3, contactNumberThree: res.data.data.telephone3,
           files: [{ url: imgUrlTwo + res.data.data.firstURL }], filesSon: res.data.data.firstURL,
           starttime: res.data.data.openingtime, endtime: res.data.data.closingtime,
@@ -169,7 +172,7 @@ class stadiums extends React.Component {
         this.setState({
           spinning: false,
           informationList: res.data.data, name: res.data.data.name, handleAddress: res.data.data.address,
-          contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone, 
+          contacts: res.data.data.linkMan, contactNumber: res.data.data.telephone,
           contactsTwo: res.data.data.linkMan2, contactNumberTwo: res.data.data.telephone2,
           contactsThree: res.data.data.linkMan3, contactNumberThree: res.data.data.telephone3,
           adddress: res.data.data.position,
@@ -376,7 +379,6 @@ class stadiums extends React.Component {
           .then((rst) => {
             this.setState({ loading: false })
             let formdata1 = new FormData();
-            console.log(rst)
             formdata1.append('files', rst.file);
             this.UploadVenueImgsLisen(formdata1)
           })
@@ -456,7 +458,6 @@ class stadiums extends React.Component {
     this.setState({ filesTwo: files })
     this.setState({ num: 0 })
     if (type === 'add') {
-      console.log(files)
       if (files[files.length - 1].file.size / 1024 / 1024 < 9) {
         lrz(files[files.length - 1].url, { quality: 0.5 })
           .then((rst) => {
@@ -501,10 +502,44 @@ class stadiums extends React.Component {
   }
 
 
+  async gerVenueName(data) {
+    const res = await gerVenueName(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 4001) {
+      this.props.history.push('/')
+      message.error('登录超时请重新登录!')
+    } else {
+      this.setState({ gerVenueNameName: res.data.data.name, gerVenueNameRate: res.data.data.rate, ishaverecharge: res.data.data.ishaverecharge })
+      sessionStorage.setItem('mess', res.data.data.mess)
+      sessionStorage.setItem('siteuid', res.data.data.siteuid)
+      sessionStorage.setItem('ishaverecharge', res.data.data.ishaverecharge)
+      sessionStorage.setItem('siteName', res.data.data.name)
+
+      let linkMan = res.data.data.linkMan.split('|')
+      let telephone = res.data.data.telephone.split('|')
+      let arr = []
+      for (let i in linkMan) {
+        let obj = {}
+        if(linkMan[i]!==''){
+          obj.name = linkMan[i]
+          arr.push(obj)
+        }
+        
+      }
+      for (let j in telephone) {
+        if(telephone[j]!==''){
+          arr[j].telephone = telephone[j]
+        }
+      }
+      this.setState({ arrPhp: arr })
+    }
+  }
+
+
   async VenueInformationSave(data) {
     const res = await VenueInformationSave(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success('修改成功')
+      document.location.reload()
       if (res.data.other === false) {
         this.setState({ issecondaudit: 1 })
       } else {
@@ -518,7 +553,7 @@ class stadiums extends React.Component {
   }
 
   confirm = () => {
-    let { informationList, name, handleAddress, contacts, contactNumber,contactsTwo, contactNumberTwo,contactsThree, contactNumberThree, starttime, endtime, filesTwoSon, adddress, filesSon, sport, facilities, siteInfo, comment } = this.state
+    let { informationList, name, handleAddress, contacts, contactNumber, contactsTwo, contactNumberTwo, contactsThree, contactNumberThree, starttime, endtime, filesTwoSon, adddress, filesSon, sport, facilities, siteInfo, comment } = this.state
     if (filesTwoSon.slice(1, filesTwoSon.length).split('|').length < 2) {
       message.error('至少上传两张场地照')
     } else {
@@ -532,10 +567,10 @@ class stadiums extends React.Component {
         address: handleAddress,
         linkMan: contacts,
         telephone: contactNumber,
-        linkMan2: contactsTwo,
-        telephone2: contactNumberTwo,
-        linkMan3: contactsThree,
-        telephone3: contactNumberThree,
+        linkMan2:contactNumberTwo===''?'':contactsTwo,
+        telephone2:contactsTwo===''?'':contactNumberTwo,
+        linkMan3:contactNumberThree===''?'':contactsThree,
+        telephone3: contactsThree===''?'':contactNumberThree,
         firstURL: filesSon,
         filesURL: filesTwoSon,
         facilities: facilities.join(','),
@@ -549,11 +584,7 @@ class stadiums extends React.Component {
       }
       if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(contacts) === false) {
         message.error('联系人只允许输入文字/字母')
-      }else if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(contactsTwo) === false) {
-        message.error('联系人二只允许输入文字/字母')
-      }else if (/^[a-zA-Z\u4e00-\u9fa5]+$/.test(contactsThree) === false) {
-        message.error('联系人三只允许输入文字/字母')
-      } else if (facilities.length === 0) {
+      }  else if (facilities.length === 0) {
         message.error('请至少选择一项场馆设施');
       } else {
         if (this.state.loading === false) {
@@ -1085,6 +1116,13 @@ class stadiums extends React.Component {
     this.setState({ endtime: e })
   }
 
+  oneLinkMan=()=>{
+    this.setState({lpko:1})
+  }
+
+  twoLinkMan=()=>{
+    this.setState({lpkoTwo:1})
+  }
 
 
 
@@ -1129,37 +1167,41 @@ class stadiums extends React.Component {
               <Input className="nameINput" onChange={this.handleAddress} value={this.state.handleAddress} />
             </div>
 
-
-            <div style={{ textAlign: 'center', width: '524.8px', marginTop: '20px' }}>联系人一</div>
-            <div className="name">
-              <span className="boTitle">联系人:</span>
-              <Input className="nameINput" maxLength={10} value={this.state.contacts} onInput={this.contacts} />
-            </div>
-            <div className="name">
-              <span className="boTitle">联系电话:</span>
-              <Input className="nameINput" maxLength={11} value={this.state.contactNumber} onInput={this.contactNumber} />
-            </div>
-
-            <div>
-              <div style={{ textAlign: 'center', width: '524.8px', marginTop: '20px' }}>联系人二</div>
+            <div style={{position:'relative'}}>
+              <div style={{ marginTop: '20px',marginLeft:'5px',fontWeight:'bold',fontSize:'16px' }}>联系人一</div>
               <div className="name">
                 <span className="boTitle">联系人:</span>
-                <Input className="nameINput" maxLength={10} value={this.state.contactsTwo}  placeholder="(选填)" onInput={this.contactsTwo} />
+                <Input className="nameINput" maxLength={10} value={this.state.contacts} onInput={this.contacts} />
               </div>
               <div className="name">
                 <span className="boTitle">联系电话:</span>
-                <Input className="nameINput" maxLength={11} value={this.state.contactNumberTwo}  placeholder="(选填)" onInput={this.contactNumberTwo} />
+                <Input className="nameINput" maxLength={11} value={this.state.contactNumber} onInput={this.contactNumber} />
               </div>
+              <PlusCircleOutlined onClick={this.oneLinkMan} style={this.state.contactsTwo===''&&this.state.lpko===0?{fontSize:'30px',position:'absolute',top:80,left:430,cursor:'pointer'}:{display:'none'}}/>
             </div>
-            <div>
-              <div style={{ textAlign: 'center', width: '524.8px', marginTop: '20px' }}>联系人三</div>
+
+            <div style={this.state.lpko===1||this.state.contactsTwo!==''?{position:'relative'}:{display:'none'}}>
+              <div style={{  marginTop: '20px',marginLeft:'5px',fontWeight:'bold',fontSize:'16px' }}>联系人二</div>
+              <div className="name">
+                <span className="boTitle">联系人:</span>
+                <Input className="nameINput" maxLength={10} value={this.state.contactsTwo} placeholder="(选填)" onInput={this.contactsTwo} />
+              </div>
+              <div className="name">
+                <span className="boTitle">联系电话:</span>
+                <Input className="nameINput" maxLength={11} value={this.state.contactNumberTwo} placeholder="(选填)" onInput={this.contactNumberTwo} />
+              </div>
+              <PlusCircleOutlined onClick={this.twoLinkMan} style={this.state.contactsThree===''&&this.state.lpkoTwo===0?{fontSize:'30px',position:'absolute',top:80,left:430,cursor:'pointer'}:{display:'none'}}/>
+            </div> 
+
+             <div style={this.state.lpkoTwo===1||this.state.contactsThree!==''?{}:{display:'none'}}>
+              <div style={{  marginTop: '20px',marginLeft:'5px',fontWeight:'bold',fontSize:'16px'  }}>联系人三</div>
               <div className="name">
                 <span className="boTitle">联系人:</span>
                 <Input className="nameINput" maxLength={10} value={this.state.contactsThree} placeholder="(选填)" onInput={this.contactsThree} />
               </div>
               <div className="name">
                 <span className="boTitle">联系电话:</span>
-                <Input className="nameINput" maxLength={11} value={this.state.contactNumberThree}  placeholder="(选填)" onInput={this.contactNumberThree} />
+                <Input className="nameINput" maxLength={11} value={this.state.contactNumberThree} placeholder="(选填)" onInput={this.contactNumberThree} />
               </div>
             </div>
 

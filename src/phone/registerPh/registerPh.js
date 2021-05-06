@@ -28,7 +28,6 @@ class registerPh extends React.Component {
   componentDidMount() {
     if(sessionStorage.getItem('register')!==null){
       let h=JSON.parse(sessionStorage.getItem('register'))
-      console.log(h.changeRadio)
       this.setState({
         Id:h.Id,
         name:h.name,

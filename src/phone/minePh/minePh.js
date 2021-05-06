@@ -42,12 +42,17 @@ class minePh extends React.Component {
       let arr = []
       for (let i in linkMan) {
         let obj = {}
-        obj.name = linkMan[i]
-        arr.push(obj)
+        if(linkMan[i]!==''){
+          obj.name = linkMan[i]
+          arr.push(obj)
+        }
       }
       for (let j in telephone) {
-        arr[j].telephone = telephone[j]
+        if(telephone[j]!==''){
+          arr[j].telephone = telephone[j]
+        }
       }
+
       this.setState({ arrPhp: arr })
       this.getsiteTels()
 
@@ -207,7 +212,14 @@ class minePh extends React.Component {
 
   async getsiteTels(data) {
     const res = await getsiteTels(data, localStorage.getItem('venue_token'))
-    this.setState({ moName: res.data.data.telephone.split('|') })
+    let ok = res.data.data.telephone.split('|')
+    let arr = []
+    for (let i in ok) {
+      if (ok[i] !== '') {
+        arr.push(ok[i])
+      }
+    }
+    this.setState({ moName: arr })
   }
 
   render() {
