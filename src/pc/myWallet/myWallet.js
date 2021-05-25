@@ -1,7 +1,7 @@
 import React from 'react';
 import './myWallet.css';
 import 'antd/dist/antd.css';
-import { getVenueMoneyList, getVenueWithdrawalList, imgUrlTwo, getVenueWithdrawalOneList, VenueWithdrawal,htUrl, getReceivingBankQualifications,getHTBySite, gerVenueName, getVenueMembershipCardConsumptionList, MembershipCollectionAgreeToRefuse, getCompleteMembershipRechargeDetails, getMembershipCollectionDetails, MembershipRechargeAgreeToRefuse, getMembershipRechargeDetails, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankList, getVenueOpenBankCity, VenueReceivingBankInformation } from '../../api';
+import { getVenueMoneyList, getVenueWithdrawalList, imgUrlTwo, getVenueWithdrawalOneList, VenueWithdrawal,htUrl,urlKo, getReceivingBankQualifications,getHTBySite, gerVenueName, getVenueMembershipCardConsumptionList, MembershipCollectionAgreeToRefuse, getCompleteMembershipRechargeDetails, getMembershipCollectionDetails, MembershipRechargeAgreeToRefuse, getMembershipRechargeDetails, getVenueOpenBank, getVenueOpenBankProvince, getVenueOpenBankList, getVenueOpenBankCity, VenueReceivingBankInformation } from '../../api';
 import { DatePicker, Row, Col, Pagination, message, Input, Modal, Radio, Upload, Select, Popconfirm, Button } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -907,7 +907,7 @@ class myWallet extends React.Component {
               listType="picture-card"
               className="avatar-uploader addImg"
               showUploadList={false}
-              action={imgUrlTwo + "api/UploadVenueImgs?type=VenueIdCardImgs"}
+              action={urlKo + "api/UploadVenueImgs?type=VenueIdCardImgs"}
               beforeUpload={beforeUpload}
               onChange={this.handleChangeTwo}
               accept=".jpg, .jpeg, .png"
@@ -919,7 +919,7 @@ class myWallet extends React.Component {
               listType="picture-card"
               className="avatar-uploader addImg ko"
               showUploadList={false}
-              action={imgUrlTwo + "api/UploadVenueImgs?type=VenueIdCardImgs"}
+              action={urlKo + "api/UploadVenueImgs?type=VenueIdCardImgs"}
               beforeUpload={beforeUpload}
               onChange={this.handleChangeThree}
               accept=".jpg, .jpeg, .png"

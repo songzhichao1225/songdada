@@ -90,6 +90,7 @@ class sitePh extends React.Component {
     timeLimitList: [{ label: '不限', value: 1 }, { label: '整点', value: 2 }, { label: '单数整点', value: 3 }, { label: '双数整点', value: 4 }],
     timeLimitListTwo: [{ label: '一小时以上', value: 1 }, { label: '一小时整数倍', value: 2 }, { label: '二小时整数倍', value: 3 }],
     timeRtArr: [{ label: '00:00', value: '00:00' }, { label: '00:30', value: '00:30' }, { label: '01:00', value: '01:00' }, { label: '01:30', value: '01:30' }, { label: '02:00', value: '02:00' }, { label: '02:30', value: '02:30' }, { label: '03:00', value: '03:00' }, { label: '03:30', value: '03:30' }, { label: '04:00', value: '04:00' }, { label: '04:30', value: '04:30' }, { label: '05:00', value: '05:00' }, { label: '05:30', value: '05:30' }, { label: '06:00', value: '06:00' }, { label: '06:30', value: '06:30' }, { label: '07:00', value: '07:00' }, { label: '07:30', value: '07:30' }, { label: '08:00', value: '08:00' }, { label: '08:30', value: '08:30' }, { label: '09:00', value: '09:00' }, { label: '09:30', value: '09:30' }, { label: '10:00', value: '10:00' }, { label: '10:30', value: '10:30' }, { label: '11:00', value: '11:00' }, { label: '11:30', value: '11:30' }, { label: '12:00', value: '12:00' }, { label: '12:30', value: '12:30' }, { label: '13:00', value: '13:00' }, { label: '13:30', value: '13:30' }, { label: '14:00', value: '14:00' }, { label: '14:30', value: '14:30' }, { label: '15:00', value: '15:00' }, { label: '15:30', value: '15:30' }, { label: '16:00', value: '16:00' }, { label: '16:30', value: '16:30' }, { label: '17:00', value: '17:00' }, { label: '17:30', value: '17:30' }, { label: '18:00', value: '18:00' }, { label: '18:30', value: '18:30' }, { label: '19:00', value: '19:00' }, { label: '19:30', value: '19:30' }, { label: '20:00', value: '20:00' }, { label: '20:30', value: '20:30' }, { label: '21:00', value: '21:00' }, { label: '21:30', value: '21:30' }, { label: '22:00', value: '22:00' }, { label: '22:30', value: '22:30' }, { label: '23:00', value: '23:00' }, { label: '23:30', value: '23:30' }, { label: '24:00', value: '24:00' }],
+    timeRtArrTwo: [{ label: '00:00', value: '00:00' }, { label: '01:00', value: '01:00' }, { label: '02:00', value: '02:00' },  { label: '03:00', value: '03:00' }, { label: '04:00', value: '04:00' }, { label: '05:00', value: '05:00' },  { label: '06:00', value: '06:00' }, { label: '07:00', value: '07:00' }, { label: '08:00', value: '08:00' }, { label: '09:00', value: '09:00' }, { label: '10:00', value: '10:00' }, { label: '11:00', value: '11:00' }, { label: '12:00', value: '12:00' }, { label: '13:00', value: '13:00' }, { label: '14:00', value: '14:00' },  { label: '15:00', value: '15:00' },{ label: '16:00', value: '16:00' },{ label: '17:00', value: '17:00' }, { label: '18:00', value: '18:00' }, { label: '19:00', value: '19:00' }, { label: '20:00', value: '20:00' }, { label: '21:00', value: '21:00' }, { label: '22:00', value: '22:00' }, { label: '23:00', value: '23:00' }, { label: '24:00', value: '24:00' }],
     Longest: [{ label: '一周', value: 0.1 }, { label: '两周', value: 0.2 }, { label: '三周', value: 0.3 }, { label: '一个月', value: 1 }, { label: '两个月', value: 2 },],
     Shortest: [{ label: '不限', value: 0 }, { label: '30分钟', value: 30 }, { label: '60分钟', value: 60 }, { label: '2小时', value: 120 }, { label: '3小时', value: 180 }, { label: '4小时', value: 240 }, { label: '6小时', value: 360 }, { label: '24小时', value: 1440 }, { label: '2天', value: 2880 }, { label: '3天', value: 4320 }, { label: '4天', value: 5760 }, { label: '5天', value: 7200 }, { label: '6天', value: 8640 }, { label: '7天', value: 10080 }, { label: '8天', value: 11520 }, { label: '9天', value: 12960 }, { label: '10天', value: 14400 }, { label: '11天', value: 15840 }, { label: '12天', value: 17280 }, { label: '13天', value: 18720 }, { label: '14天', value: 20160 }, { label: '15天', value: 21600 },],
     LiturgyArr: [{ name: "周一", idx: 1, cheked: false }, { name: "周二", idx: 2, cheked: false }, { name: "周三", idx: 3, cheked: false }, { name: "周四", idx: 4, cheked: false }, { name: "周五", idx: 5, cheked: false }, { name: "周六", idx: 6, cheked: false, }, { name: "周日", idx: 7, cheked: false }],
@@ -2329,7 +2330,7 @@ class sitePh extends React.Component {
 
 
           <Picker
-            data={this.state.timeRtArr}
+            data={this.state.pickerValueTwo===3||this.state.pickerValueTwo===4||this.state.pickerValueTwo===5?this.state.timeRtArr:this.state.timeRtArrTwo}
             onOk={this.starttime}
             value={this.state.starttime}
             cols={1}
@@ -2339,7 +2340,7 @@ class sitePh extends React.Component {
 
 
           <Picker
-            data={this.state.timeRtArr}
+             data={this.state.pickerValueTwo===3||this.state.pickerValueTwo===4||this.state.pickerValueTwo===5?this.state.timeRtArr:this.state.timeRtArrTwo}
             onOk={this.endtime}
             value={this.state.endtime}
             cols={1}

@@ -1,9 +1,9 @@
 import React from 'react';
 import './VipAgement.css';
 import 'antd/dist/antd.css';
-import { AddVenueMember, getVenueMemberlist, getVenueMemberRecordsOfConsumption, getVenueMemberDetails, VenueMemberRecharge, VenueMemberRefundCardDetails, getVenueMemberlistexcel, VenueMemberRefundCard, EditVenueMember, _code } from '../../api';
-import { Row, Col, Modal, Input, Select, DatePicker, message, Pagination, Popconfirm } from 'antd';
-import { CloseCircleOutlined } from '@ant-design/icons';
+import { AddVenueMember, getVenueMemberlist, getVenueMemberRecordsOfConsumption, getVenueMemberDetails, VenueMemberRecharge,urlKo, VenueMemberRefundCardDetails, getVenueMemberlistexcel, VenueMemberRefundCard, EditVenueMember, _code } from '../../api';
+import { Row, Col, Modal, Input, Select, DatePicker, message, Pagination, Popconfirm, Upload, Button } from 'antd';
+import { CloseCircleOutlined,UploadOutlined } from '@ant-design/icons';
 import moment from 'moment';
 const { Search } = Input;
 const { Option } = Select;
@@ -60,7 +60,7 @@ class VipAgement extends React.Component {
     validityThree: '',
     href: '',
     download: '',
-    text:'',
+    text: '',
   }
 
 
@@ -71,7 +71,7 @@ class VipAgement extends React.Component {
       setTimeout(() => {
         let html = "<html><head><meta charset='utf-8' /></head><body>" + document.getElementsByTagName("table")[0].outerHTML + "</body></html>";
         let blob = new Blob([html], { type: "application/vnd.ms-excel" });
-        this.setState({ href: URL.createObjectURL(blob), download: '会员管理第'+this.state.page+'页.xls' })
+        this.setState({ href: URL.createObjectURL(blob), download: '会员管理第' + this.state.page + '页.xls' })
       }, 500);
     } else {
       message.error(res.data.msg)
@@ -80,7 +80,7 @@ class VipAgement extends React.Component {
   componentDidMount() {
     this.getVenueMemberlist({ page: this.state.page })
 
- 
+
   }
 
   handleCancel = () => {
@@ -116,7 +116,7 @@ class VipAgement extends React.Component {
   }
 
   search = e => {
-    this.setState({text:e.target.value})
+    this.setState({ text: e.target.value })
     this.getVenueMemberlist({ page: 1, search: e.target.value })
   }
 
@@ -155,7 +155,7 @@ class VipAgement extends React.Component {
   balance = e => {
     this.setState({ balance: e.target.value })
   }
-  
+
   validity = e => {
     this.setState({ validity: e })
   }
@@ -283,10 +283,10 @@ class VipAgement extends React.Component {
     if (res.data.code === 2000) {
       message.success(res.data.msg)
       this.setState({ topAmount: false, giveAwayTwo: '', topUpTwo: '', balanceTwo: '' })
-      if(this.state.text!==''){
+      if (this.state.text !== '') {
         this.getVenueMemberlist({ search: this.state.text })
-      }else{
-      this.getVenueMemberlist({ page: this.state.page })
+      } else {
+        this.getVenueMemberlist({ page: this.state.page })
       }
     } else {
       message.error(res.data.msg)
@@ -488,61 +488,76 @@ class VipAgement extends React.Component {
     }
   }
 
-
-  sdastae = () => {
-
-  }
+ 
 
 
 
   render() {
 
+    const props = {
+      name:'ss',
+      action:urlKo+'api/import',
+      headers: {
+        authorization: 'authorization-text',
+        token:sessionStorage.getItem("venue_token")
+      },
+      onChange(info) {
+        if (info.file.status !== 'uploading') {
+        } 
+        if (info.file.status === 'done') {
+          message.success(`${info.file.name}上传成功~`);
+
+        } else if (info.file.status === 'error') {
+          message.error(`${info.file.name} 上传失败!`);
+        }
+      }
+    }
+
     return (
       <div className="VipAgement">
         <div className="header">
           <div className="left">会员信息</div>
-          <div className="sreach"> <Search  placeholder="请输入卡主名称/手机号/会员卡号" onChange={this.search} /></div>
+          <div className="sreach"> <Search placeholder="请输入卡主名称/手机号/会员卡号" onChange={this.search} /></div>
         </div>
         <div className="line"></div>
         <div className="content">
-
-          <table style={{ width: '100%',border:'none' }} border="juikj">
+          <table style={{ width: '100%', border: 'none' }} border="juikj">
             <tbody>
-                <tr className="headList">
-                  <td>卡主名称</td>
-                  <td>联系人</td>
-                  <td>生日</td>
-                  <td>联系电话</td>
-                  <td>会员卡号</td>
-                  <td>会员等级</td>
-                  <td>充值金额</td>
-                  <td>赠送金额</td>
-                  <td>折扣</td>
-                  <td>余额</td>
-                  <td>有效期</td>
-                  <td>会员状态</td>
-                  <td>操作</td>
-                </tr>
+              <tr className="headList">
+                <td>卡主名称</td>
+                <td>联系人</td>
+                <td>生日</td>
+                <td>联系电话</td>
+                <td>会员卡号</td>
+                <td>会员等级</td>
+                <td>充值金额</td>
+                <td>赠送金额</td>
+                <td>折扣</td>
+                <td>余额</td>
+                <td>有效期</td>
+                <td>会员状态</td>
+                <td>操作</td>
+              </tr>
 
-                {
-                  this.state.memberList.map((item, i) => (
-                    <tr className="headListTwo" key={i}>
-                      <td>{item.cardholderName}</td>
-                      <td>{item.contacts}</td>
-                      <td>{item.birthday}</td>
-                      <td>{item.contactNumber}</td>
-                      <td>{item.cardNumber}</td>
-                      <td>{item.grade === 1 ? '普通会员' : item.grade === 2 ? '银卡会员' : item.grade === 3 ? '金卡会员' : item.grade === 4 ? '铂金会员' : item.grade === 5 ? '钻石会员' : item.grade === 6 ? '星耀会员' : ''}</td>
-                      <td>￥{item.rechargeMoney}</td>
-                      <td>￥{item.giveMoney}</td>
-                      <td>{item.discount}</td>
-                      <td>￥{item.balance}<br /><span style={{ fontSize: '10px', paddingLeft: '5px', color: '#4A90E2', cursor: 'pointer' }} data-uuid={item.uuid} onClick={this.recordsList}>历史记录</span></td>
-                      <td>{item.effectiveDate}</td>
-                      <td>{item.status === 1 ? '正常' : item.status === 2 ? '已退卡' : item.status === 3 ? '已过期' : ''}</td>
-                      <td><span className="topUp" data-uuid={item.uuid} onClick={this.topAmountDetail}>充</span><span className="topUp tui" data-uuid={item.uuid} onClick={this.returnCard}>退</span><img onClick={this.editorKo} data-uuid={item.uuid} style={{ cursor: 'pointer' }} src={require('../../assets/icon_pc_updata.png')} alt="编辑" /></td>
-                    </tr>
-                  ))
-                }
+              {
+                this.state.memberList.map((item, i) => (
+                  <tr className="headListTwo" key={i}>
+                    <td>{item.cardholderName}</td>
+                    <td>{item.contacts}</td>
+                    <td>{item.birthday}</td>
+                    <td>{item.contactNumber}</td>
+                    <td>{item.cardNumber}</td>
+                    <td>{item.grade === 1 ? '普通会员' : item.grade === 2 ? '银卡会员' : item.grade === 3 ? '金卡会员' : item.grade === 4 ? '铂金会员' : item.grade === 5 ? '钻石会员' : item.grade === 6 ? '星耀会员' : ''}</td>
+                    <td>￥{item.rechargeMoney}</td>
+                    <td>￥{item.giveMoney}</td>
+                    <td>{item.discount}</td>
+                    <td>￥{item.balance}<br /><span style={{ fontSize: '10px', paddingLeft: '5px', color: '#4A90E2', cursor: 'pointer' }} data-uuid={item.uuid} onClick={this.recordsList}>历史记录</span></td>
+                    <td>{item.effectiveDate}</td>
+                    <td>{item.status === 1 ? '正常' : item.status === 2 ? '已退卡' : item.status === 3 ? '已过期' : ''}</td>
+                    <td><span className="topUp" data-uuid={item.uuid} onClick={this.topAmountDetail}>充</span><span className="topUp tui" data-uuid={item.uuid} onClick={this.returnCard}>退</span><img onClick={this.editorKo} data-uuid={item.uuid} style={{ cursor: 'pointer' }} src={require('../../assets/icon_pc_updata.png')} alt="编辑" /></td>
+                  </tr>
+                ))
+              }
 
 
             </tbody>
@@ -554,9 +569,11 @@ class VipAgement extends React.Component {
           <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.page} total={this.state.other} onChange={this.current} />
           <div className="bottomJoin" onClick={this.bottomJoin}>+新增会员信息</div>
 
-          {/* <div className="import" onClick={this.importTr}>批量导入会员</div> */}
-          <div className="derived import" ><a href={this.state.href} download={this.state.download}>导出会员</a></div>
+          <div className="import" onClick={this.importTr}>导入会员</div>
+          <div className="derived import"> <a href={urlKo+'api/export?token='+sessionStorage.getItem('venue_token')}>导出会员</a></div>
+
         </div>
+
 
 
         <Modal
@@ -603,11 +620,11 @@ class VipAgement extends React.Component {
           </div>
           <div className="ViplistSon">
             <span className="title">充值金额<span className="redStart">*</span></span>
-            <Input type='number' placeholder="请填写"  onChange={this.topUp} />
+            <Input type='number' placeholder="请填写" onChange={this.topUp} />
           </div>
           <div className="ViplistSon">
             <span className="title">赠送金额</span>
-            <Input type='number' placeholder="请填写"  onChange={this.giveAway} />
+            <Input type='number' placeholder="请填写" onChange={this.giveAway} />
           </div>
           <div className="ViplistSon">
             <span className="title">余额</span>
@@ -657,12 +674,11 @@ class VipAgement extends React.Component {
           onCancel={this.import}>
           <div className="ViplistSon">
             <span className="title">导入文件</span>
-            <Input placeholder="请填写" />
+            <Upload {...props}>
+              <Button style={{marginLeft:'20px'}} icon={<UploadOutlined />}>点击上传</Button>
+            </Upload>
           </div>
-          <div className="ViplistSon">
-            <span className="title">文件类型</span>
-            <Input disabled={true} value="excel" />
-          </div>
+          
         </Modal>
 
 
@@ -923,7 +939,7 @@ class VipAgement extends React.Component {
 
 
 
-        
+
       </div>
     )
   }

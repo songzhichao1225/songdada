@@ -425,3 +425,59 @@ img{
     color: #fff;
     z-index: 999;
 }
+.siteStting .clieaTwo{
+    height:40px;
+
+}
+.siteStting .clieaTwo>div{
+    line-height: 40px;
+    float: left;
+    margin-left: 25px;
+    cursor: pointer;
+}
+ .memFooter{
+    border-top: 1px solid #ccc;
+    overflow: hidden;
+    margin-top: 20px;
+}
+ .memFooter>div{
+    float: left;
+    margin-left: 15px;
+    line-height: 36px;
+    cursor: pointer;
+}
+.vipTitle>div{
+    width: 106px;
+    height: 34px;
+    background: #F5F5F5;
+    border: 1px solid #E1E0E1;
+    text-align: center;
+    line-height: 34px;
+    float: left;
+    margin-left: 5px;
+    margin-top: 5px;
+    cursor: pointer;
+    position: relative;
+}
+.textAreaName{
+    width: 80%;
+    height:120px;
+    margin-left: 25px;
+}
+.vipTitle>div>span{
+    display: block;
+    width: 17px;
+    height: 17px;
+    background: #ccc;
+}
+.closeImg{
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    right: -9px;
+    top: -9px;
+    background: #ccc;
+    color: #fff;
+    z-index: 999;
+    border-radius: 50%;
+}

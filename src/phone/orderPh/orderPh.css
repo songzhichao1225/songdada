@@ -289,11 +289,6 @@
     display: none;
 }
 
-.orderPh .contentT{
- 
-                                                                                                           
-}
-
 .orderPh .ant-input{
     border:none;
     box-shadow: none;
@@ -821,16 +816,16 @@ html:not([data-scale]) .am-card-body::before{
     height: 90%;
     overflow-y: auto;
 }
-.asdfsdf{
+.asdfsdfdfg{
     padding: 0 0.5rem;
     overflow: hidden;
     font-size: 0.75rem;
     line-height: 1.5rem;
 }
-.asdfsdf>div{
+.asdfsdfdfg>div{
     float: left;
 }
-.asdfsdf>div:first-child{
+.asdfsdfdfg>div:first-child{
     width: 11rem;
 }
 .dfge4sdgf{

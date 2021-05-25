@@ -184,7 +184,8 @@ class orderPh extends React.Component {
     seasonsTwo: [{ labe: '会员卡扣费', value: 1 }, { label: '现金支付', value: 3 }, { label: '微信支付', value: 4 }, { label: '支付宝支付', value: 5 }],
     venueTwo: [],
     otherTypeTwo: [],
-    kohgigh:1
+    kohgigh:1,
+    lppding:true
 
   }
 
@@ -212,6 +213,26 @@ class orderPh extends React.Component {
           }
         }
       }
+
+      if(this.state.liNum!=='3'&&this.state.liNum!=='4'&&this.state.liNum!=='5'){
+        let arrty = []
+        for (let i=1;i<res.data.data.length;i++) {
+          if (res.data.data[i].a.slice(3, 5) === '00') {
+            arrty.push(res.data.data[i])
+          }
+        }
+        for (let i in arrty) {
+          for (let j in arrty[i].c) {
+            arrty[i].c[j].money_cg = arrty[i].c[j].money_cg * 2+'.00'
+            arrty[i].c[j].money = Number(arrty[i].c[j].money) * 2
+          }
+        }
+        res.data.data = arrty
+      }
+
+
+
+
       for (let i in res.data.data) {
         for (let j in res.data.data[i].c) {
           res.data.data[i].c[j].checked = false
@@ -431,7 +452,7 @@ class orderPh extends React.Component {
         res.data.data.comment = res.data.data.comment.slice(0, 20)
       }
 
-      this.setState({ otherObj: res.data.data, otherObjTime: res.data.data.time, menu: 1, History: true })
+      this.setState({ otherObj: res.data.data, otherObjTime: res.data.data.time, menu: 1, History: true,otherObjOrder:res.data.data.orderID  })
     }
   }
 
@@ -647,11 +668,10 @@ class orderPh extends React.Component {
         Drawervisible: false, page: 1
       })
     }
-
   }
 
   sportName = e => {
-    this.setState({ liNum: e.currentTarget.dataset.id, liIndex: e.currentTarget.dataset.index, venueT: [] })
+    this.setState({ liNum: e.currentTarget.dataset.id, liIndex: e.currentTarget.dataset.index, venueT: [],lppding:true })
     this.getVenueNumberTitleList({ sportid: e.target.dataset.id })
   }
 
@@ -845,7 +865,7 @@ class orderPh extends React.Component {
     ko.setMinutes(0)
     if (this.state.venueT.length !== 0) {
       this.setState({ repeat: [0] })
-      this.formatPlayTimeAndVenueNum({ sid: localStorage.getItem('siteUid'), str: this.state.venueT.join(',') })
+      this.formatPlayTimeAndVenueNum({sportid:this.state.liNum,  sid: localStorage.getItem('siteUid'), str: this.state.venueT.join(',') })
       this.CalculateVenuePrice({ sportid: this.state.liNum, venueT: this.state.venueT.join(',') })
     }
     this.setState({ info: true, date: ko, startTime: ko.format("yyyy-MM-dd hh:mm") })
@@ -1102,7 +1122,6 @@ class orderPh extends React.Component {
     } else if (koo[e.currentTarget.dataset.ifused].ifUsed === 2) {
       koo[e.currentTarget.dataset.ifused].ifUsed = 1
     }
-
     this.setState({ selectableList: koo })
   }
   submitkojhi = () => {
@@ -1198,14 +1217,14 @@ class orderPh extends React.Component {
     let myDate = new Date(this.state.qiDate)
     myDate.setDate(myDate.getDate() - 1)
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    this.setState({ qiDate: myDate.format('yyyy-MM-dd'), week: week[new Date(myDate).getDay()], date: myDate, venueT: [] })
+    this.setState({lppding:true, qiDate: myDate.format('yyyy-MM-dd'), week: week[new Date(myDate).getDay()], date: myDate, venueT: [] })
     this.getVenueReservation({ sportid: this.state.liNum, date: myDate.format('yyyy-MM-dd') })
   }
   nextDay = () => {
     let myDate = new Date(this.state.qiDate)
     myDate.setDate(myDate.getDate() + 1)
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    this.setState({ qiDate: myDate.format('yyyy-MM-dd'), week: week[new Date(myDate).getDay()], date: myDate, venueT: [] })
+    this.setState({lppding:true,  qiDate: myDate.format('yyyy-MM-dd'), week: week[new Date(myDate).getDay()], date: myDate, venueT: [] })
     this.getVenueReservation({ sportid: this.state.liNum, date: myDate.format('yyyy-MM-dd') })
   }
   cardDetails = () => {
@@ -1278,7 +1297,7 @@ class orderPh extends React.Component {
     let myDate = new Date(e.format('yyyy-MM-dd'))
     myDate.setDate(myDate.getDate())
     let week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    this.setState({ week: week[new Date(myDate).getDay()], date: e.format('yyyy-MM-dd'), show: false, qiDate: e.format('yyyy-MM-dd'), venueT: [] })
+    this.setState({lppding:true, week: week[new Date(myDate).getDay()], date: e.format('yyyy-MM-dd'), show: false, qiDate: e.format('yyyy-MM-dd'), venueT: [] })
     this.getVenueReservation({ sportid: this.state.liNum, date: e.format('yyyy-MM-dd') })
 
   }
@@ -1288,12 +1307,17 @@ class orderPh extends React.Component {
   async cancelSingleOrder(data) {
     const res = await cancelSingleOrder(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ informaid: this.state.otherObjTime[Number(this.state.orderIndex) + 1].orderID })
-      
       if(this.state.otherObj.isloop===1){
         this.getVenueBookingInformation({ informaid: this.state.sid, type: 1, cur: this.state.qiDate })
-      }else if(this.state.otherObj.isloop===0){
-        this.getVenueBookingInformation({ informaid: this.state.otherObjTime[Number(this.state.orderIndex) + 1].orderID, type: 1, cur: this.state.qiDate })
+      }else if(this.state.otherObj.isloop!==1){
+
+        if(Number(this.state.orderIndex)===0){
+          this.getVenueBookingInformation({ informaid: this.state.otherObjTime[Number(this.state.orderIndex) + 1].orderID, type: 1, cur: this.state.qiDate })
+          this.setState({informaid:this.state.otherObjTime[Number(this.state.orderIndex) + 1].orderID})
+        }else{
+          this.getVenueBookingInformation({ informaid: this.state.otherObjOrder, type: 1, cur: this.state.qiDate })
+          this.setState({informaid:this.state.otherObjOrder})
+        }
       }
       this.getVenueReservation({ sportid: this.state.liNum, date: this.state.qiDate })
       Toast.info(res.data.msg)
@@ -1564,7 +1588,9 @@ class orderPh extends React.Component {
             </div>
           </div>
           {/* 看板渲染标签 */}
+          <Spin spinning={this.state.lppding}>
           <Table loading={this.state.loadingTwo} style={this.state.otherType.length === 0 ? { display: 'none' } : { maxWidth: this.state.otherType.length * 80 }} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 25, minWidth: 5, y: '90%' }} />,
+          </Spin>
             <div style={this.state.activityList === false && this.state.otherType.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (2).png')} alt="555" /><span style={{ textAlign: 'center', display: "block" }}>{this.state.textNuma}!</span></div>
         </div>
 
@@ -1581,21 +1607,21 @@ class orderPh extends React.Component {
                     extra={<span style={{ fontSize: '0.88rem', color: 'rgb(216, 93, 39)' }}>{item.mode}</span>}
                   />
                   <Card.Body>
-                    <div className="asdfsdf">
+                    <div className="asdfsdfdfg">
                       <div>开始时间:{item.starttime}</div>
                       <div>时长:{item.playtime}</div>
                     </div>
-                    <div className="asdfsdf">
+                    <div className="asdfsdfdfg">
                       <div>预计消费:{item.price}</div>
                       <div>实际消费:{item.iftPrice}</div>
                     </div>
-                    <div className="asdfsdf">
+                    <div className="asdfsdfdfg">
                       <div>实际活动时间:{item.iftTime}</div>
                       <div>订单状态:{item.ifPay}</div>
                     </div>
-                    <div className="asdfsdf"><div>订单时间:{item.ctime}</div></div>
+                    <div className="asdfsdfdfg"><div>订单时间:{item.ctime}</div></div>
                   </Card.Body>
-                  <Card.Footer />
+                  <Card.Footer/>
                 </Card>
               ))
             }
@@ -1608,8 +1634,6 @@ class orderPh extends React.Component {
             共计收款:{this.state.icomeHood}
           </div>
           <div className="dfge4sdgf">
-
-
             <Picker
               data={this.state.seasons}
               title="选择运动项目"
@@ -1806,7 +1830,7 @@ class orderPh extends React.Component {
 
             <div className="listKoj">
               <DatePicker
-                minuteStep={30}
+                minuteStep={this.state.liNum==='3'||this.state.liNum==='4'||this.state.liNum==='5'?30:60}
                 value={this.state.date}
                 onOk={this.startTime}
               >

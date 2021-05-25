@@ -51,7 +51,8 @@ class appOrder extends React.Component {
     kopl: '我们确保100%留有场地,否则将退还您预付的所有场地费并补偿您：20元（到场签到了）；10元（未到场签到）。',
     modal1: false,
     koploe: '',
-    indexKeplo: '1'
+    indexKeplo: '1',
+    tableShow:true,
   };
 
 
@@ -62,6 +63,32 @@ class appOrder extends React.Component {
     let dataTwo = JSON.parse(dataOne)
 
     if (res.data.code === 2000) {
+      if (data.sportid!== '3'&&this.state.sporttypeFive !== '22'&&this.state.sporttypeFive !== '24') {
+        let arrty = []
+        for (let i = 0; i < res.data.data.length; i++) {
+          if (res.data.data[i].a.slice(3, 5) === '00') {
+            arrty.push(res.data.data[i])
+          }
+        }
+        for (let i in arrty) {
+          for (let j in arrty[i].c) {
+            arrty[i].c[j].money = arrty[i].c[j].money * 2
+            arrty[i].c[j].summoney = Number(arrty[i].c[j].summoney) * 2
+          }
+        }
+        res.data.data = arrty
+        let ko=[]
+        for (let i = 0; i < this.state.timeArr; i++) {
+          if (this.state.timeArr[i].slice(3, 5) === '00') {
+            ko.push(this.state.timeArr[i])
+          }
+        }
+        this.setState({timeArr:ko})
+
+      }
+
+      
+
       if (this.state.topNumList.length > 0) {
         for (let j = 0; j < this.state.topNumList.length; j++) {
           if (dataTwo[0].c[this.state.topNumList[j].venueid - 1] !== undefined) {
@@ -70,10 +97,6 @@ class appOrder extends React.Component {
           }
         }
       }
-
-
-
-
 
 
 
@@ -127,6 +150,7 @@ class appOrder extends React.Component {
         }, 50)
       }
 
+
       this.setState({
         resData: res.data
       })
@@ -147,16 +171,15 @@ class appOrder extends React.Component {
         dataIndex: 'lppd',
       }
       res.data.other.bq.unshift(ploboj)
-      this.setState({ lookList: res.data.data, durationlimit: res.data.data[0].c[0].durationlimit, macNum: res.data.data[0].c, otherType: res.data.other.bq, value: 'l', spinningTwo: false, loadingTwo: false, animating: false })
+      this.setState({ lookList: res.data.data, durationlimit: res.data.data[0].c[0].durationlimit, macNum: res.data.data[0].c, otherType: res.data.other.bq, value: 'l', spinningTwo: false, loadingTwo: false, animating: false,tableShow:false })
     } else {
-      this.setState({ resData: [], animating: false, otherType: [] })
+      this.setState({ resData: [], animating: false, otherType: []})
     }
   }
 
-  titleDetails=e=>{
-    alert('标签描述', <div>{e.currentTarget.dataset.title===''?'暂无':e.currentTarget.dataset.title}</div>, [
+  titleDetails = e => {
+    alert('标签描述', <div>{e.currentTarget.dataset.title === '' ? '暂无' : e.currentTarget.dataset.title}</div>, [
       { text: '确定', onPress: () => console.log() },
-     
     ])
   }
 
@@ -167,6 +190,7 @@ class appOrder extends React.Component {
   }
 
   loodp = (resData) => {
+
     let kopAd = this.state.lotime
     let arr = []
     for (let i in kopAd) {
@@ -202,10 +226,12 @@ class appOrder extends React.Component {
         let value = <div
           data-type={resData.data[i].c[j].type}
           data-time={resData.data[i].a}
+          className={'div' + resData.data[i].a.replace(':', '')}
           data-num={resData.data[i].c[j].venueid}
           data-uuid={resData.data[i].c[j].uuid}
           onTouchStart={this.onStart}
-          onTouchEnd={this.state.flag === '1' ? this.state.sporttypeFive === '10' ? this.lookPlateFive : this.lookPlateTwo : this.state.sporttypeFive === '10' ? this.lookPlateFive : this.lookPlate}
+          data-index={j}
+          onTouchEnd={resData.data[i].c[j].type === 1 ? this.state.flag === '1' ? this.state.sporttypeFive === '10' ? this.lookPlateFive : this.lookPlateTwo : this.state.sporttypeFive === '10' ? this.lookPlateFive : this.lookPlate : this.asfsdhngfju}
           data-money={resData.data[i].c[j].money}
           data-timelimit={resData.data[i].c[j].timelimit}
           data-summoney={resData.data[i].c[j].summoney}
@@ -231,14 +257,33 @@ class appOrder extends React.Component {
         : <div>
           <div style={i !== '0' ? { color: '#F5A623', marginTop: '-1.4rem' } : { color: '#F5A623' }}>{resData.data[i].a}
             <div style={resData.data[resData.data.length - 1].a === resData.data[i].a ? { width: '100%', position: 'absolute', bottom: '-1rem', textAlign: 'center' } : { display: 'none' }}>
-              {resData.data[resData.data.length - 1].a === '23:30' ? '24:00' : resData.data[resData.data.length - 1].a.slice(3, 5) === '00' ? resData.data[resData.data.length - 1].a.slice(0, 2) + ':30' : Number(resData.data[resData.data.length - 1].a.slice(0, 2)) + 1 + ':00'}
+              {resData.data[resData.data.length - 1].a === '23:30' ? '24:00' :
+              this.state.sportidQuery==='3'? resData.data[resData.data.length - 1].a.slice(3, 5) === '00' ? Number(resData.data[resData.data.length - 1].a.slice(0, 2)) + ':30' : Number(resData.data[resData.data.length - 1].a.slice(0, 2)) + 1 + ':00':
+              resData.data[resData.data.length - 1].a.slice(3, 5) === '00' ? Number(resData.data[resData.data.length - 1].a.slice(0, 2)) + 1 + ':00' : Number(resData.data[resData.data.length - 1].a.slice(0, 2)) + 1 + ':00'}
             </div></div><div className="btnAutoi" style={result.hasOwnProperty(lo) ? { opacity: 1 } : { opacity: 0 }}>{resData.data[i].a === lo ? resuLo : ''}</div></div>
       jood.push(obj)
     }
     this.setState({
       lookBan: jood
     })
+
+
+    for (let i in resData.data) {
+      let ho = document.querySelectorAll('.div' + resData.data[i].a.replace(':', ''))
+      for (let i in ho) {
+        if (ho[i].style !== undefined && ho[i].dataset.type === '1') {
+          ho[i].style.backgroundColor = '#6FB2FF'
+        }
+      }
+    }
   }
+
+
+
+
+
+
+
 
   async getVenueNumberTitleList(data) {
     const res = await getVenueNumberTitleList(data)
@@ -257,7 +302,7 @@ class appOrder extends React.Component {
 
   componentDidMount() {
     //测试数据
-    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=1&token=JWIogLxv3u74K4ADT7lJGIxj0dJo5YHUaogw8KFuU4ZgMCq4fMXcjIJUL1iu4gLv&sporttype=13&flag=1'
+    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=4&token=6P7rCxqy3KUQNIqkfV1KdVhCJTpUMfOvXKNzTO41D80gJbIOMZQst8qJyVPRJdwG&sporttype=11&flag=1'
     let query = this.props.location.search
     let arr = query.split('&')
     let siteuid = arr[0].slice(9, arr[0].length)
@@ -266,10 +311,12 @@ class appOrder extends React.Component {
     let sporttype = arr[3].slice(10, arr[3].length)
     this.setState({ flag: arr[4].slice(5, arr[4].length), sporttypeFive: sporttype })
     this.setState({ sportidQuery: sportid, token: token })
+
     setTimeout(() => {
-      this.getAppVenueReservations({ date: '', siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
+      this.getAppVenueReservations({ date: '', siteUUID: siteuid, sportid: sportid, sporttype: sporttype,flag:arr[4].slice(5, arr[4].length) })
       this.getRangeOfVenueServiceTime({ siteUUID: siteuid, sportid: sportid, sporttype: sporttype })
     }, 500)
+
     let start = new Date().toLocaleDateString()
     if (start.split('/')[0].length === 4) {
       let yoo = start.split('/')[0] + '/' + start.split('/')[1] + '/' + start.split('/')[2]
@@ -278,7 +325,7 @@ class appOrder extends React.Component {
       let week = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
       this.setState({ date: yoo, week: week[myddy], token: token, siteid: siteuid, sportid: sportid, sporttypeTwo: sporttype, start: yoo })
     } else {
-      let mydate = new Date();
+      let mydate = new Date()
       let myddy = mydate.getDay()
       let week = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
       let yoo = start.split('/')[2] + '/' + start.split('/')[0] + '/' + start.split('/')[1]
@@ -288,11 +335,6 @@ class appOrder extends React.Component {
     setInterval(() => {
       this.setState({ kopl: this.state.kopl + '我们确保100%留有场地,否则将退还您预付的所有场地费并补偿您：20元（到场签到了）；10元（未到场签到）。' })
     }, 8000);
-
-
-
-
-
   }
 
 
@@ -310,8 +352,8 @@ class appOrder extends React.Component {
 
   onConfirm = (e) => {
     let week = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
-    this.setState({ show: false, date: e.toLocaleDateString().replace(/\//g, "/"), week: week[e.getDay()], lotime: '', moneyCall: 0 })
-    this.getAppVenueReservations({ date: e.toLocaleDateString().replace(/\//g, "/"), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo })
+    this.setState({ show: false, date: e.toLocaleDateString().replace(/\//g, "/"), week: week[e.getDay()], lotime: '', moneyCall: 0,tableShow:true })
+    this.getAppVenueReservations({ date: e.toLocaleDateString().replace(/\//g, "/"), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo,flag:this.state.flag })
   }
 
   onCancel = () => {
@@ -326,66 +368,42 @@ class appOrder extends React.Component {
     let money = e.currentTarget.dataset.money
     let time = e.currentTarget.dataset.time
     let lotime = e.currentTarget.dataset.lo
-    // let timelimit = e.currentTarget.dataset.timelimit
 
-    // if (this.state.moneyCall === 0 && timelimit === '2' && time.indexOf('30') !== -1) {
-    //   Toast.fail('请选择整点场地', 2, null, false);
-    //   return false
-    // } else if (this.state.moneyCall === 0 && timelimit === '3' && time.indexOf('30') !== -1) {
-    //   Toast.fail('请选择单数整点场地', 2, null, false);
-    //   return false
-    // } else if (this.state.moneyCall === 0 && timelimit === '3' && Number(time.slice(0, 2)) % 2 === 0) {
-    //   Toast.fail('请选择单数整点场地', 2, null, false);
-    //   return false
-    // } else if (this.state.moneyCall === 0 && timelimit === '4' && time.indexOf('30') !== -1) {
-    //   Toast.fail('请选择双数整点场地', 2, null, false);
-    //   return false
-    // } else if (this.state.moneyCall === 0 && timelimit === '4' && Number(time.slice(0, 2)) % 2 !== 0) {
-    //   Toast.fail('请选择双数整点场地', 2, null, false);
-    //   return false
-    // }
-
+    if (e.currentTarget.style.backgroundColor === 'red') {
+      e.currentTarget.style.backgroundColor = '#6FB2FF'
+    } else {
+      e.currentTarget.style.backgroundColor = 'red'
+    }
 
 
     if (e.currentTarget.dataset.type === '1') {
-      if (this.state.lotime.length > 0) {
-        if (this.state.lotime.indexOf(lotime) !== -1) {
-          this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
-          this.state.time.splice(this.state.time.indexOf(time), 1)
-          let moneyCall = 0
-          for (let i in this.state.lotime) {
-            moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
-          }
-          this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
-        } else {
-          let pop = (Number(this.state.moneyCall) + Number(money)).toString()
-          if (pop.indexOf('.') !== -1) {
-            pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
-          }
-          this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop })
+
+      if (this.state.lotime.indexOf(lotime) !== -1) {
+        this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
+        this.state.time.splice(this.state.time.indexOf(time), 1)
+        let moneyCall = 0
+        for (let i in this.state.lotime) {
+          moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
         }
+        this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
       } else {
         let pop = (Number(this.state.moneyCall) + Number(money)).toString()
         if (pop.indexOf('.') !== -1) {
           pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
         }
-        this.setState({ time: [...this.state.time, time], lotime: [...this.state.lotime, lotime], moneyCall: pop })
+        this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop })
       }
+
     }
 
-    setTimeout(() => {
-      this.loodp(this.state.resData)
-    }, 10)
+
   }
 
 
   lookPlate = e => {
-
     if (e.timeStamp - this.state.StartEndTime > 150) {
       return false
     }
-
-
 
     let money = e.currentTarget.dataset.money
     let summoney = e.currentTarget.dataset.summoney
@@ -412,46 +430,54 @@ class appOrder extends React.Component {
       return false
     }
 
-
-
-
-    if (e.currentTarget.dataset.type === '1') {
-      if (this.state.lotime.length > 0) {
-        if (this.state.lotime.indexOf(lotime) !== -1) {
-          this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
-          this.state.time.splice(this.state.time.indexOf(time), 1)
-          let moneyCall = 0
-          for (let i in this.state.lotime) {
-            moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
+    let ho = document.querySelectorAll('.div' + e.currentTarget.dataset.time.replace(':', ''))
+    if (ho[e.currentTarget.dataset.index].style.backgroundColor !== 'red') {
+      for (let i in ho) {
+        if (ho[i].style!== undefined) {
+          if (ho[i].style.backgroundColor === 'red') {
+            ho[i].style.backgroundColor = '#6FB2FF'
           }
-          this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
-        } else if (this.state.time.sort().indexOf(time) !== -1) {
-          this.state.lotime.sort().splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney + '-' + timelimit)
-          this.setState({ lotime: this.state.lotime })
-          let moneyCall = 0
-          for (let i in this.state.lotime) {
-            moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
-          }
-          this.setState({ moneyCall: moneyCall })
-        } else {
-          let pop = (Number(this.state.moneyCall) + Number(money)).toString()
-          if (pop.indexOf('.') !== -1) {
-            pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
-          }
-          this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop })
         }
+      }
+    }
+
+    if (e.currentTarget.style.backgroundColor === 'red') {
+      e.currentTarget.style.backgroundColor = "#6FB2FF"
+    } else {
+      e.currentTarget.style.backgroundColor = "red"
+    }
+
+
+ 
+    if (e.currentTarget.dataset.type === '1') {
+      if (this.state.lotime.indexOf(lotime) !== -1) {
+        this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
+        this.state.time.splice(this.state.time.indexOf(time), 1)
+        let moneyCall = 0
+        for (let i in this.state.lotime) {
+          moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
+        }
+        this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
+      } else if (this.state.time.sort().indexOf(time) !== -1) {
+        this.state.lotime.sort().splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney + '-' + timelimit)
+        this.setState({ lotime: this.state.lotime })
+        let moneyCall = 0
+        for (let i in this.state.lotime) {
+          moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
+        }
+        this.setState({ moneyCall: moneyCall })
       } else {
         let pop = (Number(this.state.moneyCall) + Number(money)).toString()
         if (pop.indexOf('.') !== -1) {
           pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
         }
-        this.setState({ time: [...this.state.time, time], lotime: [...this.state.lotime, lotime], moneyCall: pop })
+        this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop })
       }
+
     }
 
-    setTimeout(() => {
-      this.loodp(this.state.resData)
-    }, 10)
+
+
   }
 
 
@@ -459,11 +485,10 @@ class appOrder extends React.Component {
 
 
   lookPlateFive = e => {
+
     if (e.timeStamp - this.state.StartEndTime > 150) {
       return false
     }
-
-
 
     let money = e.currentTarget.dataset.money
     let summoney = e.currentTarget.dataset.summoney
@@ -473,8 +498,8 @@ class appOrder extends React.Component {
     let timelimit = e.currentTarget.dataset.timelimit
 
 
-    if (this.state.flag === '1') {
 
+    if (this.state.flag === '1') {
       if (this.state.moneyCall === 0 && timelimit === '2' && time.indexOf('30') !== -1) {
         Toast.fail('请选择整点场地', 2, null, false);
         return false
@@ -492,30 +517,30 @@ class appOrder extends React.Component {
         return false
       }
 
+      if (e.currentTarget.style.backgroundColor === 'red') {
+        e.currentTarget.style.backgroundColor = '#6FB2FF'
+      } else {
+        e.currentTarget.style.backgroundColor = 'red'
+      }
+
+
       if (e.currentTarget.dataset.type === '1') {
-        if (this.state.lotime.length > 0) {
-          if (this.state.lotime.indexOf(lotime) !== -1) {
-            this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
-            this.state.time.splice(this.state.time.indexOf(time), 1)
-            let moneyCall = 0
-            for (let i in this.state.lotime) {
-              moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
-            }
-            this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
-          } else {
-            let pop = (Number(this.state.moneyCall) + Number(money)).toString()
-            if (pop.indexOf('.') !== -1) {
-              pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
-            }
-            this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop })
+        if (this.state.lotime.indexOf(lotime) !== -1) {
+          this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
+          this.state.time.splice(this.state.time.indexOf(time), 1)
+          let moneyCall = 0
+          for (let i in this.state.lotime) {
+            moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
           }
+          this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
         } else {
           let pop = (Number(this.state.moneyCall) + Number(money)).toString()
           if (pop.indexOf('.') !== -1) {
             pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
           }
-          this.setState({ time: [...this.state.time, time], lotime: [...this.state.lotime, lotime], moneyCall: pop })
+          this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop })
         }
+
       }
 
     } else {
@@ -535,6 +560,25 @@ class appOrder extends React.Component {
         Toast.fail('请选择双数整点场地', 2, null, false);
         return false
       }
+
+      let ho = document.querySelectorAll('.div' + e.currentTarget.dataset.time.replace(':', ''))
+      if (ho[Number(e.currentTarget.dataset.num)-1].style.backgroundColor !== 'red') {
+        for (let i in ho) {
+          if (ho[i].style !== undefined) {
+            if (ho[i].style.backgroundColor === 'red') {
+              ho[i].style.backgroundColor = '#6FB2FF'
+            }
+          }
+        }
+      }
+
+
+      if (e.currentTarget.style.backgroundColor === 'red') {
+        e.currentTarget.style.backgroundColor = "#6FB2FF"
+      } else {
+        e.currentTarget.style.backgroundColor = "red"
+      }
+
       if (e.currentTarget.dataset.type === '1') {
         if (this.state.lotime.length > 0) {
           if (this.state.lotime.indexOf(lotime) !== -1) {
@@ -578,9 +622,6 @@ class appOrder extends React.Component {
 
 
 
-    setTimeout(() => {
-      this.loodp(this.state.resData)
-    }, 10)
   }
 
 
@@ -630,7 +671,6 @@ class appOrder extends React.Component {
         let kopAd = this.state.lotime.sort()
         let kop = []
         for (let i in kopAd) {
-
           kop.push(kopAd[i].slice(6, kopAd[i].length))
         }
         let arr = []
@@ -655,18 +695,17 @@ class appOrder extends React.Component {
         for (let i in numNa) {
           ccj.push(numNa[i] + '-' + result[numNa[i]].split('-').length / 2 + '-' + result[numNa[i]].split('-')[0] + '-' + result[numNa[i]].split('-')[result[numNa[i]].split('-').length - 1])
         }
-
+           
         let obj = {
           placeNun: numNa.join('-'),
           placeTime: '00:00:00',
           placeDate: Number(this.state.date.split('/')[0]) > 500 ? this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2] : this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1],
           placeMoney: this.state.moneyCall,
           placeMoneyTwo: original,
-          placeTimeLen: this.state.lotime.length * 0.5 + '小时',
+          placeTimeLen: this.state.sportidQuery === '3' ? this.state.lotime.length * 0.5 + '小时' : this.state.lotime.length * 1 + '小时',
           breakup: ccj.join(','),
           realData: ''
         }
-        console.log(obj)
         if (obj.placeNun === '') {
           Toast.fail('请选择场地', 2, null, false);
         } else {
@@ -745,16 +784,16 @@ class appOrder extends React.Component {
             arrGo.push(keyvalue[i])
           }
         }
-        
+
         let obj = {
           placeNun: keyvalue.join(','),
           placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
           placeDate: Number(this.state.date.split('/')[0]) > 500 ? this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2] : this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1],
           placeMoney: this.state.moneyCall,
           placeMoneyTwo: original,
-          placeTimeLen: longTime * 0.5 + '小时',
+          placeTimeLen: this.state.sportidQuery === '3' ? longTime * 0.5 + '小时' : longTime * 1 + '小时',
           breakup: '',
-          realData: arrGo.length * 0.5 + '小时'
+          realData: this.state.sportidQuery === '3' ? arrGo.length * 0.5 + '小时' : arrGo.length * 1 + '小时'
         }
         console.log(obj)
         let timelimit = this.state.lotime.sort()[0].split('-')[4]
@@ -772,13 +811,13 @@ class appOrder extends React.Component {
           Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
         } else if (timelimit === '4' && Number(timeTwo.slice(0, 2)) % 2 !== 0) {
           Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
-        } else if (this.state.durationlimit === 1 && this.state.lotime.length < 2) {
+        } else if (this.state.sportidQuery==='3'&&this.state.durationlimit === 1 && this.state.lotime.length < 2) {
           let durationlimit = '最少选择1小时以上场地'
           Toast.fail(durationlimit, 2, null, false);
-        } else if (this.state.durationlimit === 2 && this.state.lotime.length % 2 === 1) {
+        } else if (this.state.sportidQuery === '3'&&this.state.durationlimit === 2 && this.state.lotime.length % 2 === 1) {
           let durationlimit = '请选择1小时整数倍场地'
           Toast.fail(durationlimit, 2, null, false);
-        } else if (this.state.durationlimit === 3 && this.state.lotime.length / 2 % 2 !== 0) {
+        } else if (this.state.sportidQuery === '3'?this.state.durationlimit === 3 && this.state.lotime.length / 2 % 2 !== 0:this.state.durationlimit === 3 && this.state.lotime.length % 2 !== 0) {
           let durationlimit = '请选择2小时整数倍场地 '
           Toast.fail(durationlimit, 2, null, false);
         } else {
@@ -840,11 +879,11 @@ class appOrder extends React.Component {
         let youhood = time.slice(0, time.length - 1).split(',')
         let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[youhood.length - 1])
         let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + youhood[0])
-        let longTime = (Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1
 
+        let longTime =this.state.sportidQuery === '3'?(Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1:(Number(s1) - Number(s2)) / 1000 / 60 / 60 + 1
         let timeOne = time.slice(0, time.length - 1).split(',')[0]
         let arrTime = this.state.timeArr.slice(this.state.timeArr.indexOf(timeOne), this.state.timeArr.indexOf(timeOne) + longTime)
-
+         
         for (let i in arrTime) {
           if (youhood.indexOf(arrTime[i]) === -1) {
             keyvalue.splice(Number(i), 0, '')
@@ -856,18 +895,19 @@ class appOrder extends React.Component {
             arrGo.push(keyvalue[i])
           }
         }
-        
+
+
         let obj = {
           placeNun: keyvalue.join(','),
           placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
           placeDate: Number(this.state.date.split('/')[0]) > 500 ? this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2] : this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1],
           placeMoney: this.state.moneyCall,
           placeMoneyTwo: original,
-          placeTimeLen: longTime * 0.5 + '小时',
+          placeTimeLen: this.state.sportidQuery === '3' ? longTime * 0.5 + '小时' : longTime * 1 + '小时',
           breakup: '',
-          realData: arrGo.length * 0.5 + '小时'
+          realData: this.state.sportidQuery === '3' ? arrGo.length * 0.5 + '小时' : arrGo.length * 1 + '小时'
         }
-
+        console.log(obj)
         let timelimit = this.state.lotime.sort()[0].split('-')[4]
         let timeTwo = this.state.lotime.sort()[0].split('-')[0]
         if (obj.placeNun === '') {
@@ -882,13 +922,13 @@ class appOrder extends React.Component {
           Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
         } else if (timelimit === '4' && Number(timeTwo.slice(0, 2)) % 2 !== 0) {
           Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
-        } else if (this.state.durationlimit === 1 && this.state.lotime.length < 2) {
+        } else if (this.state.sportidQuery==='3'&&this.state.durationlimit === 1 && this.state.lotime.length < 2) {
           let durationlimit = '最少选择1小时以上场地'
           Toast.fail(durationlimit, 2, null, false);
-        } else if (this.state.durationlimit === 2 && this.state.lotime.length / 2 % 2 !== 1 && this.state.lotime.length / 2 % 2 !== 0) {
+        } else if (this.state.sportidQuery === '3'&&this.state.durationlimit === 2 && this.state.lotime.length / 2 % 2 !== 1 && this.state.lotime.length / 2 % 2 !== 0) {
           let durationlimit = '请选择1小时整数倍场地'
           Toast.fail(durationlimit, 2, null, false);
-        } else if (this.state.durationlimit === 3 && this.state.lotime.length / 2 % 2 !== 0) {
+        } else if (this.state.sportidQuery === '3'?this.state.durationlimit === 3 && this.state.lotime.length / 2 % 2 !== 0:this.state.durationlimit === 3 && this.state.lotime.length % 2 !== 0) {
           let durationlimit = '请选择2小时整数倍场地 '
           Toast.fail(durationlimit, 2, null, false);
         } else {
@@ -928,9 +968,10 @@ class appOrder extends React.Component {
       let timelimit = this.state.lotime.sort()[0].split('-')[4]
       let timeTwo = this.state.lotime.sort()[0].split('-')[0]
       if (this.state.lotime.length > 0) {
+        console.log(this.state.durationlimit)
         let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[this.state.lotime.length - 1])
         let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[0])
-        if ((Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1 !== this.state.lotime.length && this.state.flag !== '1') {
+        if (this.state.sportidQuery === '3' ? (Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1 !== this.state.lotime.length && this.state.flag !== '1' : (Number(s1) - Number(s2)) / 1000 / 60 / 60 + 1 !== this.state.lotime.length && this.state.flag !== '1') {
           Toast.fail('时间必须连贯', 2, null, false);
         } else if (timelimit === '2' && timeTwo.indexOf('30') !== -1) {
           Toast.fail('请选择开始时间为整点场地', 2, null, false);
@@ -942,14 +983,14 @@ class appOrder extends React.Component {
           Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
         } else if (timelimit === '4' && Number(timeTwo.slice(0, 2)) % 2 !== 0) {
           Toast.fail('请选择开始时间为双数整点场地', 2, null, false);
-        } else if (this.state.durationlimit === 1 && this.state.lotime.length < 2) {
+        } else if (this.state.sportidQuery==='3'&&this.state.durationlimit === 1 && this.state.lotime.length < 2) {
           let durationlimit = '最少选择1小时以上场地'
           Toast.fail(durationlimit, 2, null, false);
-        } else if (this.state.durationlimit === 2 && this.state.lotime.length / 2 % 2 !== 1 && this.state.lotime.length / 2 % 2 !== 0) {
+        } else if (this.state.sportidQuery === '3'&&this.state.durationlimit === 2 && this.state.lotime.length / 2 % 2 !== 1 && this.state.lotime.length / 2 % 2 !== 0) {
           let durationlimit = '请选择1小时整数倍场地'
           Toast.fail(durationlimit, 2, null, false);
-        } else if (this.state.durationlimit === 3 && this.state.lotime.length / 2 % 2 !== 0) {
-          let durationlimit = '请选择2小时整数倍场地 '
+        } else if (this.state.sportidQuery === '3'?this.state.durationlimit === 3 && this.state.lotime.length / 2 % 2 !== 0:this.state.durationlimit === 3 && this.state.lotime.length % 2 !== 0) {
+          let durationlimit = '请选择2小时整数倍场地'
           Toast.fail(durationlimit, 2, null, false);
         } else {
           let obj = {
@@ -958,11 +999,11 @@ class appOrder extends React.Component {
             placeDate: Number(this.state.date.split('/')[0]) > 500 ? this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2] : this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1],
             placeMoney: this.state.moneyCall,
             placeMoneyTwo: original,
-            placeTimeLen: (time.split(',').length - 1) * 0.5 + '小时',
+            placeTimeLen:this.state.sportidQuery === '3'?(time.split(',').length - 1) * 0.5 + '小时':(time.split(',').length - 1) * 1 + '小时',
             breakup: '',
             realData: ''
           }
-console.log(obj)
+          console.log(obj)
 
           this.setState({ obj: obj })
           if (this.state.date.split('/')[0].length === 4) {
@@ -987,9 +1028,10 @@ console.log(obj)
       lotime: [],
       week: week[myDate.getDay()],
       time: [],
-      moneyCall: 0
+      moneyCall: 0,
+      tableShow:true
     })
-    this.getAppVenueReservations({ date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo })
+    this.getAppVenueReservations({ date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo,flag:this.state.flag })
   }
 
 
@@ -1002,9 +1044,10 @@ console.log(obj)
       week: week[myDate.getDay()],
       lotime: [],
       time: [],
-      moneyCall: 0
+      moneyCall: 0,
+      tableShow:true
     })
-    this.getAppVenueReservations({ date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo })
+    this.getAppVenueReservations({ date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo,flag:this.state.flag })
   }
 
   showOff = (e) => {
@@ -1022,8 +1065,8 @@ console.log(obj)
       <div className="homepage">
         <ActivityIndicator toast animating={this.state.animating} />
         <div className="kog" style={this.state.animating === true ? { display: 'none' } : { display: 'block' }}>
-          <div className="appOrder" >
-            <div className='bookingKanban' >
+          <div className="appOrder">
+            <div className='bookingKanban'>
               <div className="titleDiv" style={this.state.sporttypeFive === '22' || this.state.sporttypeFive === '24' ? { display: 'none' } : {}}>
                 <div className="dayBefore" style={this.state.date === this.state.start ? { display: 'none' } : { display: 'block' }} onTouchStart={this.dayBefore}>前一天</div>
                 <div className="nextDay" onTouchStart={this.nextDay}>后一天</div>
@@ -1031,7 +1074,7 @@ console.log(obj)
               </div>
               <div className="titleDiv" style={this.state.sporttypeFive === '22' || this.state.sporttypeFive === '24' ? {} : { display: 'none' }}><span className="fontSize">由于散场人数不可控，为了有更好的体验，出发之前可与场馆方联系。</span></div>
 
-              <NoticeBar onClick={this.showOff} data-index="1" mode="link" marqueeProps={{ loop: true, style: { padding: '0 7.5px', fontSize: '0.75rem', lineHeight: '0.8rem' } }} >
+              <NoticeBar onClick={this.showOff} className="textPassTwo" data-index="1" mode="link" marqueeProps={{ loop: true, style: { padding: '0 7.5px', fontSize: '0.75rem', lineHeight: '0.8rem' } }} >
                 {this.state.koploe}
               </NoticeBar>
               <div className="modTitle">
@@ -1044,7 +1087,8 @@ console.log(obj)
 
                 <span className="red"></span><span>已选中</span>
               </div>
-              <Table loading={false} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '88%' }} />
+
+              <Table loading={this.state.tableShow} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '92%' }} />
 
               <NoticeBar className="textPass" data-index="2" mode="link" onClick={this.showOff} marqueeProps={{ loop: true, style: { padding: '0 7.5px', fontSize: '0.75rem', lineHeight: '0.8rem' } }}>
                 {this.state.kopl}
@@ -1083,7 +1127,7 @@ console.log(obj)
           maskClosable={true}
           onClose={this.onClose}
           title="详情"
-         
+
 
         >
           <span style={this.state.indexKeplo === '2' ? {} : { display: 'none' }}>我们确保100%留有场地,否则将退还您预付的所有场地费并补偿您：20元（到场签到了）；10元（未到场签到）。</span>

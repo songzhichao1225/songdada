@@ -193,7 +193,20 @@ class information extends React.Component {
   async getReservationActivitieslist(data) {
     const res = await getReservationActivitieslist(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ list: res.data.data.data, informList: res.data.data.data, other: res.data.other, loading: false, hidden: true, Oneloading: false })
+      let p=res.data.data.data
+      for(let i in p){
+          if(p[i].SportName.indexOf('台球')===-1){
+            let k=p[i].venueid.split(',')
+            let arr=[]
+            for(let j in k){
+              if(j%2===0){
+               arr.push(k[j])
+              }
+            }
+            p[i].venueid=arr.join(',')
+          }
+      }
+      this.setState({ list:p, informList: res.data.data.data, other: res.data.other, loading: false, hidden: true, Oneloading: false })
     } else if (res.data.code === 4001) {
       this.props.history.push('/')
       message.error('登录超时请重新登录!')
@@ -613,25 +626,28 @@ class information extends React.Component {
             this.state.list.map((item, i) => (
               <Row key={i}>
                 <Popover content={(<span>{item.orderId}</span>)} title='详情' trigger="click">
-                  <Col xs={{ span: 2 }}>{item.orderId}</Col>
+                  <Col xs={{ span: 3 }}>{item.orderId}</Col>
                 </Popover>
                 <Popover content={(<span>{item.SportName}</span>)} title='详情' trigger="click">
                   <Col xs={{ span: 2 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer' }}>{item.SportName}</Col>
                 </Popover>
                 <Col xs={{ span: 2 }} style={this.state.headTop === '1' ? { display: 'none' } : {}}><div style={{ lineHeight: '25px', fontSize: '10px' }}>{item.StartTime === 0 ? '00:00' : item.StartTime.slice(0, 10)}</div><div style={{ lineHeight: '25px' }}>{item.StartTime === 0 ? '00:00' : item.StartTime.slice(11, 16)}</div></Col>
-                <Col xs={{ span: 2 }}><div style={{ lineHeight: '25px', fontSize: '10px' }}>{item.FinishedTime.slice(0, 10)}</div><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(11, 16)}</div></Col>
-                <Col xs={{ span: 2 }}>{item.breakup.length === 0 ? item.PlayTime + '小时' : '无'}</Col>
+                <Col xs={{ span: 2 }} style={this.state.headTop === '1' ? { display: 'none' } : {}}><div style={{ lineHeight: '25px', fontSize: '10px' }}>{item.FinishedTime.slice(0, 10)}</div><div style={{ lineHeight: '25px' }}>{item.FinishedTime.slice(11, 16)}</div></Col>
+                <Col xs={{ span: 1 }} style={this.state.headTop === '1' ? { display: 'none' } : {}}>{item.breakup.length === 0 ? item.PlayTime + '小时' : '无'}</Col>
+                <Popover content={(<span>{item.venueid}</span>)} title='详情' trigger="click">
+                <Col xs={{ span: 2 }} style={this.state.headTop === '1' ? { display: 'none' } : {cursor:'pointer'}}>{item.venueid}</Col>
+                </Popover>
                 <Col xs={{ span: 1 }}><div style={{ color: '#4A90E2',cursor:'pointer' }} onClick={this.duration} data-uuid={item.uuid}>查看详情</div></Col>
 
-                <Col xs={{ span: 2 }} >{this.state.headTop === '1' ? item.breakup.length === 0 ? <Popover content={(<span>{item.venueid}</span>)} title='详情' trigger="click">
+                <Col xs={{ span: 1 }} >{this.state.headTop === '1' ? item.breakup.length === 0 ? <Popover content={(<span>{item.venueid}</span>)} title='详情' trigger="click">
                   <div>{
                     item.venueid_details.map((itemKo, i) => (
-                      <div key={i}>{itemKo.venueid}</div>
+                      <div key={i} style={item.venueid_details.length===1?{}:{lineHeight:'20px'}}>{itemKo.venueid}</div>
                     ))
                   }</div> </Popover> :<div>
                     {
                       item.breakup.map((itemTwo, i) => (
-                        <div key={i} style={{ textAlign: 'center' }}>{itemTwo.venueid}</div>
+                        <div key={i} style={item.breakup.length===1?{textAlign:'center',lineHeight:'50px'}:{ textAlign: 'center',lineHeight:'20px' }}>{itemTwo.venueid}</div>
                       ))
                     }
                   </div> : <span>{item.Shouldarrive}</span>}</Col>
@@ -640,13 +656,13 @@ class information extends React.Component {
                   {this.state.headTop === '1' ? item.breakup.length === 0 ? <div>
                     {
                       item.venueid_details.map((itemHo, i) => (
-                        <div key={i}>{itemHo.time}</div>
+                        <div key={i} style={item.venueid_details.length===1?{lineHeight:'50px'}:{lineHeight:'20px'}}>{itemHo.time}</div>
                       ))
                     }
                   </div> : <div>
                       {
                         item.breakup.map((itemTwo, i) => (
-                          <div key={i} style={{ textAlign: 'center', lineHeight: '30px' }}>￥{itemTwo.price}/次</div>
+                          <div key={i} style={item.breakup.length===1?{ textAlign: 'center', lineHeight: '50px' }:{lineHeight:'20px'}}>￥{itemTwo.price}/次</div>
                         ))
                       }
                     </div> : item.TrueTo}
@@ -657,7 +673,7 @@ class information extends React.Component {
                       <div key={i} style={{ overflow: 'hidden', marginTop: '6px' }}><div style={{ float: 'left', marginLeft: '35%' }}>{itemThree.frequency}</div>
                         {
                           itemThree.frequency === 0 || item.PublicStatus === '已完成' ?
-                            <div className="sijn" style={itemThree.frequency === 0 || item.PublicStatus === '已完成' ? { background: '#9b9b9b' } : {}} onClick={this.confirmUUid} data-uuid={itemThree.uuid}>—</div>
+                            <div className={item.breakup.length===1?'sijnTwo':'sijn'} style={itemThree.frequency === 0 || item.PublicStatus === '已完成' ? { background: '#9b9b9b' } : {}} onClick={this.confirmUUid} data-uuid={itemThree.uuid}>—</div>
                             :
                             <Popconfirm
                               placement="top"
@@ -666,18 +682,18 @@ class information extends React.Component {
                               okText="确定"
                               cancelText="取消"
                             >
-                              <div className="sijn" style={itemThree.frequency === 0 || item.PublicStatus === '已完成' ? { background: '#9b9b9b' } : {}} onClick={this.confirmUUid} data-uuid={itemThree.uuid}>—</div>
+                              <div className={item.breakup.length===1?'sijnTwo':'sijn'} style={itemThree.frequency === 0 || item.PublicStatus === '已完成' ? { background: '#9b9b9b' } : {}} onClick={this.confirmUUid} data-uuid={itemThree.uuid}>—</div>
                             </Popconfirm>
                         }
                       </div>
                     ))
-                  } <div onClick={this.deducting} data-uuid={item.uuid} data-sportName={item.SportName} style={item.breakup.length === 0 ? { display: 'none' } : { float: 'left', color: '#4A90E2' }}>扣除<br />记录</div><div style={item.breakup.length === 0 ? {} : { display: 'none' }}>非散场</div></Col>
-                <Col xs={{ span: 2 }}  style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}><span>{item.PublicStatus}<span onClick={this.Complaints} data-id={item.uuid} style={item.iscomplain === 1 ? { color: '#F6410C', fontSize: '12px',cursor:'pointer' } : { display: 'none' }}>(有投诉)</span></span></Col>
+                  } <div onClick={this.deducting} data-uuid={item.uuid} data-sportName={item.SportName} style={item.breakup.length === 0 ? { display: 'none' } : {  float: 'left', color: '#4A90E2',lineHeight:'15px',position:'absolute',top:'10px',right:20,cursor:'pointer' }}>扣除<br />记录</div><div style={item.breakup.length === 0 ? {} : { display: 'none' }}>非散场</div></Col>
+                <Col xs={{ span: 1 }}  style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}><span>{item.PublicStatus}<span onClick={this.Complaints} data-id={item.uuid} style={item.iscomplain === 1 ? { color: '#F6410C', fontSize: '12px',cursor:'pointer' } : { display: 'none' }}>(有投诉)</span></span></Col>
                 <Col xs={{ span: 2 }}><span>￥{item.SiteMoney}</span></Col>
                 <Col xs={{ span: 2 }}><span>{item.SiteMoneyStatus}</span></Col>
                 <Col xs={{ span: 2 }}>
                   <span>
-                    <img className={item.breakup.length === 0 ? item.PublicStatus === '匹配中' ? 'img' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'img' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'img' : 'circumstanceT' : 'circumstanceT'} data-uid={item.uuid} data-siteid={item.venueid} data-sitenum={item.venuenumber} style={{ marginTop: '0' }} onClick={this.sending} src={require("../../assets/icon_pc_faNews.png")} alt="发送消息" />
+                    <img className={item.breakup.length === 0 ? item.PublicStatus === '匹配中' ? 'img' : 'circumstanceT' && item.PublicStatus === '待出发' ? 'img' : 'circumstanceT' && item.PublicStatus === '活动中' ? 'img' : 'circumstanceT' : 'circumstanceT'} data-uid={item.uuid} data-siteid={item.venueid} data-sitenum={item.venuenumber} onClick={this.sending} src={require("../../assets/icon_pc_faNews.png")} alt="发送消息" />
                   </span>
                 </Col>
               </Row>
@@ -726,7 +742,7 @@ class information extends React.Component {
               <div className="xiange"></div>
 
               <Row className="rowConten" style={{ background: '#FCF7EE', marginTop: 0 }}>
-                <Col xs={{ span: 2 }}>活动编号</Col>
+                <Col xs={{ span: 3 }}>活动编号</Col>
                 <Col xs={{ span: 2 }}>
                     <Select className="selectName" defaultValue="项目名称" bordered={false} style={{ width: '100%', padding: 0 }} onChange={this.nameChang}>
                       <Option value="0">全部</Option>
@@ -740,13 +756,14 @@ class information extends React.Component {
                     </Select>
                 </Col>
                 <Col xs={{ span: 2 }} style={this.state.headTop === '1' ? { display: 'none' } : {}}>开始时间</Col>
-                <Col xs={{ span: 2 }}>结束时间</Col>
-                <Col xs={{ span: 2 }}>时长</Col>
+                <Col xs={{ span: 2 }} style={this.state.headTop === '1'?{display:'none'}:{}}>结束时间</Col>
+                <Col xs={{ span: 1 }} style={this.state.headTop === '1'?{display:'none'}:{}}>时长</Col>
+                <Col xs={{ span: 2 }} style={this.state.headTop === '1'?{display:'none'}:{}}>场地编号</Col>
                 <Col xs={{ span: 1 }}>续时</Col>
-                <Col xs={{ span: 2 }}>{this.state.headTop === '1' ? '场地编号' : '应到人数'}</Col>
+                <Col xs={{ span: 1 }}>{this.state.headTop === '1' ? '场地编号' : '应到人数'}</Col>
                 <Col xs={{ span: 2 }}>{this.state.headTop === '1' ? '单价/时间段' : '已报名人数'}</Col>
                 <Col style={this.state.headTop === '0' ? { display: 'none' } : {}} xs={{ span: 3 }}>剩余次数</Col>
-                <Col xs={{ span: 2 }}>
+                <Col xs={{ span: 1 }}>
                     <Select className="selectName" defaultValue="活动状态" bordered={false} listHeight={300} dropdownStyle={{ height: '300px', textAlign: 'center' }} style={{ width: '100%' }} onChange={this.activityChang} >
                       <Option value="0">全部</Option>
                       <Option value="1">匹配中</Option>
@@ -787,7 +804,7 @@ class information extends React.Component {
            <div className="Mtitle" style={this.state.isfinsh === 0 ? { display: 'none' } : { fontWeight: 'bold', fontSize: '14px' }}>所有散场次数已消费完</div>
             {
               this.state.deductingdetails.map((item,i) => (
-              <div style={{clear:'both'}} key={i}><span style={{float:'left',width:'70%'}}>{item.comment}</span><span style={{float:'right'}}>{item.time}</span></div>
+              <div style={{clear:'both'}} key={i}><span style={{float:'left',width:'60%'}}>{item.comment}</span><span style={{float:'right'}}>{item.time}</span></div>
               ))
             }
 

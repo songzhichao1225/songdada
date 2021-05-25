@@ -74,9 +74,8 @@ class perfect extends React.Component {
             arrImg.push({ url: imgUrlTwo + imgS[i] })
           }
         }
-
       }
-
+   
       localStorage.setItem('handleName', res.data.data.name)
       let arrjo = []
       for (let i in res.data.data.sport.split(',')) {
@@ -110,6 +109,7 @@ class perfect extends React.Component {
   componentDidMount() {
     this.getVenueSportList()
     this.getVenueInformation()
+    
   }
 
 

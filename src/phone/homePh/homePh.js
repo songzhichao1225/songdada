@@ -37,7 +37,7 @@ class homePh extends React.Component {
     detail: [],
     SelabelTwo: [],
     isModalVisible: false,
-    rate: 1,
+    rate: 5,
     labelId:[],
   };
   async getVenueIndex(data) {
@@ -92,7 +92,7 @@ class homePh extends React.Component {
         arr.push(object[i]);
       }
 
-      this.setState({ detail: res.data.data, Selabel: arr, SelabelTwo: arr[0], isModalVisible: true })
+      this.setState({ detail: res.data.data, Selabel: arr, SelabelTwo: arr[4], isModalVisible: true })
     }
   }
 
@@ -197,6 +197,7 @@ class homePh extends React.Component {
                 <div onTouchStart={this.commentPh}><span className="title" >场馆评分  {this.state.getVenue.score}分</span>
                   <div className="content">
                     <div className="img">
+                    
                       <img src={this.state.getVenue.score >= 1 ? require("../../assets/50xing (3).png") : require("../../assets/oneXing.png") && this.state.getVenue.score < 1 && this.state.getVenue.score > 0 ? require("../../assets/50xing (1).png") : require("../../assets/oneXing.png")} alt="星" />
                     </div>
                     <div className="img">
@@ -218,6 +219,8 @@ class homePh extends React.Component {
           </div>
         </div>
 
+      
+
         <Modal
           visible={this.state.isModalVisible}
           className="koshone"
@@ -234,7 +237,7 @@ class homePh extends React.Component {
                 <span>{this.state.detail.promotename}</span>
               </div>
             </div>
-            <div className="startRota">整体评分:<Rate defaultValue={1} allowClear={false} onChange={this.rate} />  {this.state.rate}分</div>
+            <div className="startRota">整体评分:<Rate defaultValue={5} allowClear={false} onChange={this.rate} />  {this.state.rate}分</div>
             <div className="textAre">基于对ta的印象点击下方标签评价吧！</div>
              {
                this.state.SelabelTwo.map((item,i)=>(

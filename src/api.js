@@ -2,19 +2,21 @@ import axios from 'axios';
 
 //本地全部隐去
 // axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
-axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
+// axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
 
 
-export let imgUrlTwo='https://zhaoduishou.oss-cn-beijing.aliyuncs.com/'  //正式图片路径
-// export let imgUrlTwo='https://zhaoduishoustg.oss-cn-beijing.aliyuncs.com/'  //测试图片路径
+// export let imgUrlTwo='https://zhaoduishou.oss-cn-beijing.aliyuncs.com/'  //正式图片路径
+export let imgUrlTwo='https://zhaoduishoustg.oss-cn-beijing.aliyuncs.com/'  //测试图片路径
 
-// export let wsFn = new WebSocket("wss://www.cg.zhaoduishou.com/socket");//正式socket
-// export let wsFn = new WebSocket("wss://cgstg.zhaoduishou.com/socket");//测试socket
+
+export let urlKo='https://appstg.tiaozhanmeiyitian.com/'  //测试哈
+// export let urlKo='https://app.tiaozhanmeiyitian.com/'  //正式哈
+
+
 export let wsFn = new WebSocket("wss://socket.tiaozhanmeiyitian.com/socket");//测试socket
-// export let wsFn = new WebSocket("wss://admin.tiaozhanmeiyitian.com/socket");//测试、正式环境只此一个
 
-// export let htUrl='http://adminstg.tiaozhanmeiyitian.com/'  //测试合同路径
-export let htUrl='http://admin.tiaozhanmeiyitian.com/'  //正式合同路径
+export let htUrl='http://adminstg.tiaozhanmeiyitian.com/'  //测试合同路径
+// export let htUrl='http://admin.tiaozhanmeiyitian.com/'  //正式合同路径
 
 export function _login(data){    //登录  
     return axios.post('/api/getVenueLogin',data)
@@ -22,7 +24,7 @@ export function _login(data){    //登录
 
 export function _register(data){   //注册
     return axios.post('/api/venueregister',data) 
-}
+} 
 
 export function VenueChangePassword(data,headers){   //重置密码
     return axios.post('/api/VenueChangePassword',data,{headers: {'token': headers}})
@@ -68,7 +70,6 @@ export function getVenueIndex(data,headers){    //获取首页数据
 export function gerVenueName(data,headers){    //获取该场馆名称、消息数量、场地履约率
     return axios.post('/api/gerVenueName',data, {headers: {'token': headers}})
 }
-
 
 export function getReservationActivitieslist(data,headers){    //预约活动列表
     return axios.post('/api/getReservationActivitieslist',data, {headers: {'token': headers}})
@@ -678,6 +679,31 @@ export function getsiteTel(data,headers){    //场馆端~添加给场馆打电�
 export function getRangeOfVenueServiceTime(data,headers){    //最短预订时间提示语（app时间块选择） 
     return axios.post('/api/getRangeOfVenueServiceTime',data,{headers: {'token': headers}})
 }
+
+export function exportTwo(data,headers){    //场馆端导出会员Excel
+    return axios.get('/api/export?token='+headers,data,{headers: {'token': headers}})
+}
+
+export function getSiteSettingList_member(data,headers){    //场馆场地设置下会员价格列表
+    return axios.post('/api/getSiteSettingList_member',data,{headers: {'token': headers}})
+}
+
+export function getSiteSettinglevelSetup(data,headers){    //查询某一条会员价格设置信息
+    return axios.post('/api/getSiteSettinglevelSetup',data,{headers: {'token': headers}})
+}
+
+export function getSiteAddMember(data,headers){    //添加会员等级
+    return axios.post('/api/getSiteAddMember',data,{headers: {'token': headers}})
+}
+
+export function getSiteSelectMemberlevel(data,headers){    //查询会员列表
+    return axios.post('/api/getSiteSelectMemberlevel',data,{headers: {'token': headers}})
+}
+
+export function getSiteMemberlevelDel(data,headers){    //场馆会员等级信息删除
+    return axios.post('/api/getSiteMemberlevelDel',data,{headers: {'token': headers}})
+}
+
 
 
 

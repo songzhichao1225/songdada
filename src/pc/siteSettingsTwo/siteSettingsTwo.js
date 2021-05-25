@@ -166,7 +166,13 @@ class siteSettingsTwo extends React.Component {
     zhekouya: 10,
     asdfsdgd: 0,
     hkjghdfg: 0,
-    lokopo: 10
+    lokopo: 10,
+    szkPrice: 0,
+    sczzkTwo: 0,
+    sczzkOne: 0,
+    szhekou: 0,
+    htID: '',
+    oldcostperhour:0,
   };
 
 
@@ -358,6 +364,8 @@ class siteSettingsTwo extends React.Component {
     const res = await AddSiteSetting(data, '')
     if (res.data.code === 2000) {
       this.getSiteSettingList({ sportid: this.state.nameChang, page: this.state.page, at: this.state.token, sid: this.state.siteId })
+      localStorage.setItem('asdfsdgd', this.state.asdfsdgd)
+      localStorage.setItem('hkjghdfg', this.state.hkjghdfg)
       this.setState({
         visible: false, update: 0, Disid: '',
         hkjghdfg: 0,
@@ -371,7 +379,7 @@ class siteSettingsTwo extends React.Component {
   }
 
   submit = (e) => {
-    let { appointmenttimeYThree, maxScheduledDateThree, zhekouya, moneyThree, sdgdfghfrfg, asdfsdgd, hkjghdfg, runIdTwo, runNameTwo, tagsTwo, openday, selectDA, starttime, timeLimit, timeLimitTwo, endtime, costperhour, chekedTwo, chekedTwoLen, maxScheduledDate, appointmenttime, comment, tagsTwoId, tags_type } = this.state
+    let { appointmenttimeYThree, maxScheduledDateThree, zhekouya, moneyThree, htID, sdgdfghfrfg, asdfsdgd, hkjghdfg, runIdTwo, runNameTwo, tagsTwo, openday, selectDA, starttime, timeLimit, timeLimitTwo, endtime, costperhour, chekedTwo, chekedTwoLen, maxScheduledDate, appointmenttime, comment, tagsTwoId, tags_type } = this.state
     if (runIdTwo === '') {
       message.warning('请选择场地类型')
     } else if (tagsTwo === '') {
@@ -417,6 +425,7 @@ class siteSettingsTwo extends React.Component {
         czzk: asdfsdgd + '|' + hkjghdfg,
         zhekou: zhekouya,
         zkPrice: moneyThree,
+        htID: htID
       }
       this.AddSiteSetting(obj)
     }
@@ -431,7 +440,7 @@ class siteSettingsTwo extends React.Component {
     this.setState({
       visible: true,
       update: 1,
-      
+
     });
 
 
@@ -459,7 +468,7 @@ class siteSettingsTwo extends React.Component {
         attop.push('周日')
       }
       let dayTwo = ''
-      switch (res.data.data[0].maxScheduledDate) {
+      switch (res.data.data[0].maxScheduledDate_cg) {
         case '0.1':
           dayTwo = "一周";
           break;
@@ -476,7 +485,6 @@ class siteSettingsTwo extends React.Component {
           dayTwo = "两个月";
           break;
         default:
-
           dayTwo = "请选择";
       }
       this.setState({ maxScheduledDateName: dayTwo })
@@ -487,34 +495,46 @@ class siteSettingsTwo extends React.Component {
       } else if (res.data.data[0].tags.indexOf('散') !== -1 || res.data.data[0].tags.indexOf('按次') !== -1) {
         this.setState({ appointmenttime: res.data.data[0].appointmenttime, starttime: '00:00', endtime: '24:00', timeFalg: false })
       } else {
-        this.setState({ appointmenttime: res.data.data[0].appointmenttime, starttime: res.data.data[0].starttime, endtime: res.data.data[0].endtime, timeFalg: true })
+        this.setState({ starttime: res.data.data[0].starttime, endtime: res.data.data[0].endtime, timeFalg: true })
       }
       this.setState({
         runId: res.data.data[0].sportid, tags: res.data.data[0].tags,
         discount_sdate: res.data.data[0].discount_sdate, discount_edate: res.data.data[0].discount_edate, discount_start: res.data.data[0].discount_start,
-        discount_end: res.data.data[0].discount_end, costperhourTwo: res.data.data[0].discount_costperhour_cg === null ? res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')) : res.data.data[0].discount_costperhour_cg.slice(0, res.data.data[0].discount_costperhour_cg.indexOf('.')),
-        runIdTwo: res.data.data[0].sportid, tagsTwo: res.data.data[0].tags, opendayname: attop, openday: res.data.data[0].openday.split(','), starttime: res.data.data[0].starttime,
+        discount_end: res.data.data[0].discount_end,
+         costperhourTwo: res.data.data[0].discount_costperhour_cg === null ? res.data.data[0].costperhour.slice(0, res.data.data[0].costperhour.indexOf('.')) : res.data.data[0].discount_costperhour_cg.slice(0, res.data.data[0].discount_costperhour_cg.indexOf('.')),
+         olddiscount_costperhour:res.data.data[0].olddiscount_costperhour,
+         runIdTwo: res.data.data[0].sportid, tagsTwo: res.data.data[0].tags, opendayname: attop, openday: res.data.data[0].openday.split(','), starttime: res.data.data[0].starttime,
         costperhour: res.data.data[0].costperhour_cg.slice(0, res.data.data[0].costperhour_cg.indexOf('.')), chekedTwo: res.data.data[0].venueid, chekedFour: res.data.data[0].venueid, chekedThree: res.data.data[0].venueid !== null ? res.data.data[0].venueid : res.data.data[0].venueid, chekedTwoLen: res.data.data[0].sitenumber, appointmenttime: res.data.data[0].appointmenttime_cg,
+        oldcostperhour:res.data.data[0].oldcostperhour,
         tagsTwoId: res.data.data[0].tags_id, tags_type: res.data.data[0].tags_type, comment: res.data.data[0].comment, maxScheduledDate: res.data.data[0].maxScheduledDate_cg, runNameTwo: res.data.data[0].sportname, Disid: res.data.data[0].uuid, appointmenttimeTwo: res.data.data[0].discount_appointment_cg === null ? 0 : res.data.data[0].discount_appointment_cg, workingDayList: res.data.data[0].discount_date === null ? [] : res.data.data[0].discount_date.split(','),
         timeLimit: res.data.data[0].timelimit, timeLimitTwo: res.data.data[0].durationlimit, selectDA: res.data.data[0].priceunit,
-
         sdgdfghfrfg: Number(res.data.data[0].costperhour),
         maxScheduledDateThree: res.data.data[0].maxScheduledDate,
         appointmenttimeYThree: res.data.data[0].appointmenttime,
         costperhourSix: res.data.data[0].discount_costperhour === null ? 0 : res.data.data[0].discount_costperhour,
         appointmenttimeSix: res.data.data[0].discount_appointment === null ? 0 : res.data.data[0].discount_appointment,
+        szhekou: res.data.data[0].szhekou, szkPrice: res.data.data[0].szkPrice === 0 ? res.data.data[0].discount_costperhour : res.data.data[0].szkPrice, sczzk: res.data.data[0].sczzk, sczzkTwo: res.data.data[0].sczzk !== '' ? res.data.data[0].sczzk.split('|')[1] : '', sczzkOne: res.data.data[0].sczzk !== '' ? res.data.data[0].sczzk.split('|')[0] : '',
+        htID: res.data.data[0].htID
       })
-      if (res.data.data[0].zkPrice !== 0) {
+
+
+
+
+
+
+      if (res.data.data[0].zkPrice !== Number(res.data.data[0].costperhour_cg && res.data.data[0].zkPrice !== 0)) {
         this.setState({
           zhekouya: res.data.data[0].zhekou, moneyThree: res.data.data[0].zkPrice, asdfsdgd: res.data.data[0].czzk === '' ? 0 : Number(res.data.data[0].czzk.split('|')[0]), hkjghdfg: res.data.data[0].czzk === '' ? 0 : Number(res.data.data[0].czzk.split('|')[1])
         })
-      }else{
-        this.setState({ zhekouya: this.state.zhekouya,
-          asdfsdgd: this.state.asdfsdgd,
-          hkjghdfg:this.state.hkjghdfg,
+      } else {
+        console.log(58585)
+        this.setState({
+          zhekouya: this.state.zhekouya,
+          asdfsdgd: Number(localStorage.getItem('asdfsdgd')),
+          hkjghdfg: Number(localStorage.getItem('hkjghdfg')),
           moneyThree: res.data.data[0].costperhour_cg.slice(0, res.data.data[0].costperhour_cg.indexOf('.')) * this.state.zhekouya / 10,
-          sdgdfghfrfg:this.state.hkjghdfg===0?res.data.data[0].costperhour_cg.slice(0, res.data.data[0].costperhour_cg.indexOf('.')) * this.state.zhekouya / 10:
-           ((this.state.asdfsdgd / (this.state.hkjghdfg + this.state.asdfsdgd)) * (res.data.data[0].costperhour * this.state.zhekouya / 10)).toFixed(2)
+          sdgdfghfrfg: Number(localStorage.getItem('hkjghdfg')) === 0 ? res.data.data[0].costperhour_cg.slice(0, res.data.data[0].costperhour_cg.indexOf('.')) * this.state.zhekouya / 10 :
+            ((Number(localStorage.getItem('asdfsdgd')) / (Number(localStorage.getItem('hkjghdfg')) + Number(localStorage.getItem('asdfsdgd')))) * (res.data.data[0].costperhour_cg * this.state.zhekouya / 10)).toFixed(2)
         })
       }
       if (this.state.runIdTwo !== '') {
@@ -812,10 +832,7 @@ class siteSettingsTwo extends React.Component {
         serialNumber: false,
         arrChekedLen: arrCheked.length
       })
-
-
     }
-
   }
 
   async getVenueNumberTitleSave(data) {
@@ -840,8 +857,6 @@ class siteSettingsTwo extends React.Component {
       uuid: e.currentTarget.dataset.id,
       type: typeTwo
     }
-
-
     this.getVenueNumberTitleSave(obj)
 
   }
@@ -1233,7 +1248,7 @@ class siteSettingsTwo extends React.Component {
   }
 
   PreferentialComfir = (e) => {
-    let { costperhourSix, appointmenttimeSix, siteListId, workingDayList, costperhourTwo, appointmenttimeTwo } = this.state
+    let { costperhourSix, appointmenttimeSix, siteListId, workingDayList, costperhourTwo, appointmenttimeTwo, szkPrice, szhekou, sczzkOne, sczzkTwo } = this.state
     let obj = {
       uuid: siteListId,
       discount_date: workingDayList.join(','),
@@ -1241,6 +1256,9 @@ class siteSettingsTwo extends React.Component {
       discount_appointment_cg: appointmenttimeTwo,
       discount_costperhour: costperhourSix,
       discount_appointment: appointmenttimeSix,
+      szkPrice: szkPrice,
+      szhekou: szhekou,
+      sczzk: sczzkOne + '|' + sczzkTwo,
       at: this.state.token,
       sid: this.state.siteId
     }
@@ -1602,7 +1620,7 @@ class siteSettingsTwo extends React.Component {
   }
 
   moneyThree = e => {
-    this.setState({ moneyThree: e, zhekouya: e / this.state.costperhour * 10 })
+    this.setState({ moneyThree: e, zhekouya: e / this.state.oldcostperhour * 10 })
 
     if (this.state.hkjghdfg === 0) {
       this.setState({ sdgdfghfrfg: e })
@@ -1612,12 +1630,11 @@ class siteSettingsTwo extends React.Component {
   }
 
   zhekouya = e => {
-    console.log(e)
-    this.setState({ zhekouya: e, moneyThree: this.state.costperhour * e / 10 })
-    if (this.state.hkjghdfg === 0||this.state.hkjghdfg === null) {
-      this.setState({ sdgdfghfrfg: (this.state.costperhour * e / 10).toFixed(2) })
+    this.setState({ zhekouya: e, moneyThree: this.state.oldcostperhour * e / 10 })
+    if (this.state.hkjghdfg === 0 || this.state.hkjghdfg === null) {
+      this.setState({ sdgdfghfrfg: (this.state.oldcostperhour * e / 10).toFixed(2) })
     } else {
-      this.setState({ sdgdfghfrfg: ((this.state.asdfsdgd===null?0:this.state.asdfsdgd / (this.state.hkjghdfg===null?0:this.state.hkjghdfg + this.state.asdfsdgd===null?0:this.state.asdfsdgd)) * (this.state.costperhour * e / 10)).toFixed(2), lokopo: this.state.asdfsdgd===null?0:this.state.asdfsdgd / (this.state.hkjghdfg===null?0:this.state.hkjghdfg + this.state.asdfsdgd===null?0:this.state.asdfsdgd) })
+      this.setState({ sdgdfghfrfg: ((this.state.asdfsdgd/(this.state.hkjghdfg +this.state.asdfsdgd)) * (this.state.oldcostperhour * e / 10)).toFixed(2), lokopo: this.state.asdfsdgd === null ? 0 : this.state.asdfsdgd / (this.state.hkjghdfg === null ? 0 : this.state.hkjghdfg + this.state.asdfsdgd === null ? 0 : this.state.asdfsdgd) })
     }
   }
   asdfsdgd = e => {
@@ -1635,6 +1652,27 @@ class siteSettingsTwo extends React.Component {
       this.setState({ hkjghdfg: e })
       this.setState({ sdgdfghfrfg: ((this.state.asdfsdgd / (this.state.asdfsdgd + e)) * this.state.moneyThree).toFixed(2), lokopo: this.state.asdfsdgd / (this.state.asdfsdgd + e) })
     }
+  }
+
+
+  szhekou = e => {
+    this.setState({ szhekou: e.target.value, szkPrice: this.state.olddiscount_costperhour * (Number(e.target.value) / 10).toFixed(2), costperhourSix: (this.state.olddiscount_costperhour * (Number(e.target.value) / 10)*this.state.sczzkOne / (Number(this.state.sczzkOne) + Number(this.state.sczzkTwo))).toFixed(2) })
+   
+  }
+
+  szkPrice = e => {
+    this.setState({ szkPrice: e.target.value, szhekou: Number(e.target.value) / this.state.olddiscount_costperhour * 10, costperhourSix: (Number(e.target.value)*this.state.sczzkOne / (Number(this.state.sczzkOne) + Number(this.state.sczzkTwo))).toFixed(2) })
+   
+  }
+
+  sczzkOne = e => {
+    let vipZ = e / (e + Number(this.state.sczzkTwo))
+    this.setState({ sczzkOne: e, costperhourSix: this.state.olddiscount_costperhour * (Number(this.state.szhekou) / 10) * vipZ })
+  }
+
+  sczzkTwo = e => {
+    let vipZ = this.state.sczzkOne / (e + Number(this.state.sczzkOne))
+    this.setState({ sczzkTwo: e, costperhourSix: this.state.olddiscount_costperhour * (Number(this.state.szhekou) / 10) * vipZ })
   }
 
 
@@ -1671,12 +1709,13 @@ class siteSettingsTwo extends React.Component {
             <div className='siteList' style={{ paddingBottom: 0 }}>
               <Row className="rowConten" style={{ background: '#FCF7EE' }}>
                 <Col xs={{ span: 2 }}>场地类型</Col>
-                <Col xs={{ span: 2 }}>细分标签</Col>
+                <Col xs={{ span: 1 }}>细分标签</Col>
                 <Col xs={{ span: 2 }}>场地编号</Col>
                 <Col xs={{ span: 1 }}>场地数量</Col>
                 <Col xs={{ span: 2 }}>星期</Col>
                 <Col xs={{ span: 1 }}>时间范围</Col>
-                <Col xs={{ span: 2 }}>价格</Col>
+                <Col xs={{ span: 2 }}>成本价格</Col>
+                <Col xs={{ span: 2 }}>场馆价格</Col>
                 <Popover content={(<span>最长提前预订时间</span>)} title='详情' trigger="click">
                   <Col xs={{ span: 2 }}>最长提前预订时间</Col>
                 </Popover>
@@ -1691,14 +1730,14 @@ class siteSettingsTwo extends React.Component {
                 </Popover>
                 <Col xs={{ span: 1 }}>备注</Col>
                 <Col xs={{ span: 1 }}>特定日期</Col>
-                <Col xs={{ span: 2, }}>操作</Col>
+                <Col xs={{ span: 1}}>操作</Col>
               </Row>
               <div className="dataList">
                 {
                   this.state.list.map((item, i) => (
                     <Row key={i} className="rowList">
                       <Col xs={{ span: 2 }}>{item.sportname}</Col>
-                      <Col xs={{ span: 2 }}>{item.tags}</Col>
+                      <Col xs={{ span: 1 }}>{item.tags}</Col>
                       <Popover content={(<div style={{ maxWidth: '200px', wordBreak: 'break-all' }}>{item.venueid}</div>)} title='详情' trigger="click">
                         <Col xs={{ span: 2 }} style={{ cursor: 'pointer' }}>{item.venueid}</Col>
                       </Popover>
@@ -1708,8 +1747,15 @@ class siteSettingsTwo extends React.Component {
                       </Popover>
                       <Col xs={{ span: 1 }} style={{ lineHeight: '24px' }}>{item.starttime}<br />{item.endtime}</Col>
                       <Popover content={(<span>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '(元/次)'}</span>)} title='详情' trigger="click">
-                        <Col xs={{ span: 2 }} style={{ cursor: 'pointer' }}>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '(元/次)'}</Col>
+                        <Col xs={{ span: 2 }} style={item.costperhour===item.costperhour_cg?{ cursor: 'pointer',color:'red' }:{cursor: 'pointer'}}>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour + '(元/时)' : item.costperhour + '(元/次)'}</Col>
                       </Popover>
+
+
+                      <Popover content={(<span>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour_cg + '(元/时)' : item.costperhour_cg + '(元/次)'}</span>)} title='详情' trigger="click">
+                        <Col xs={{ span: 2 }} style={item.costperhour===item.costperhour_cg?{ cursor: 'pointer',color:'red' }:{cursor: 'pointer'}}>{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour_cg + '(元/时)' : item.costperhour_cg + '(元/次)'}</Col>
+                      </Popover>
+
+
                       <Col xs={{ span: 2 }}>{item.maxScheduledDate === null ? '' : item.maxScheduledDateTwo}</Col>
                       <Col xs={{ span: 2 }}>{item.appointmenttime === null ? '' : item.appointmenttime > 2879 ? item.appointmenttime / 60 / 24 + '天' : item.appointmenttime / 60 + '小时'}</Col>
                       <Col xs={{ span: 2 }}>{item.timelimit === 1 ? '不限' : item.timelimit === 2 ? '整点' : item.timelimit === 3 ? '单数整点' : item.timelimit === 4 ? '双数整点' : '不限'}</Col>
@@ -1718,9 +1764,8 @@ class siteSettingsTwo extends React.Component {
                         <Col xs={{ span: 1 }} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer' }}>{item.comment === '' ? '无' : item.comment}</Col>
                       </Popover>
                       <Col xs={{ span: 1 }} ><span style={item.tags.indexOf('散') !== -1 || item.tags.indexOf('按次') !== -1 ? {} : { display: 'none' }}>不可设置</span><span style={item.tags.indexOf('散') !== -1 || item.tags.indexOf('按次') !== -1 ? { display: 'none' } : { cursor: 'pointer', padding: '3px 6px', color: 'blue' }} data-uid={item.uuid} data-type={item.discount_date} onClick={item.discount_date === null ? this.kok : this.preferential}>{item.discount_date === null ? '无' : '查看'}</span></Col>
-                      <Col xs={{ span: 2 }}>
+                      <Col xs={{ span: 1 }}>
                         <img onClick={this.update} style={{ cursor: 'pointer' }} data-uid={item.uuid} src={require("../../assets/icon_pc_updata.png")} alt="修改" />&nbsp;&nbsp;&nbsp;
-
                       </Col>
                     </Row>
                   ))
@@ -1841,9 +1886,22 @@ class siteSettingsTwo extends React.Component {
             </div>
 
 
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>原始公开价格</span><span style={{marginLeft:'5px'}}>{this.state.timeFalg === 'no' ? '' : this.state.timeFalg === 'yes' ? '' : '(元/时)'}</span>
+              <InputNumber className="startTime" disabled={true} value={this.state.oldcostperhour} style={this.state.timeFalg === 'no' ? { height: 32, width: 269, marginLeft: '88px', paddingLeft: '11px', marginRight: 0, float: 'left' } : this.state.timeFalg === 'yes' ? { height: 32, width: 269, marginLeft: '88px', paddingLeft: '11px', marginRight: 0, float: 'left' } : { height: 32, width: 269, paddingLeft: '11px' }} placeholder="请输入" onChange={this.money} />
+              <Select placeholder="请选择" onChange={this.selectDA} disabled={true} value={this.state.selectDA} style={this.state.timeFalg === 'no' ? { float: 'right', marginRight: '50px', width: '80px', height: '32px' } : this.state.timeFalg === 'yes' ? { float: 'right', marginRight: '50px', width: '80px', height: '32px' } : { display: 'none' }}>
+                <Option value="/次">/次</Option>
+                <Option value="/H">/H</Option>
+                <Option value="/2H">/2H</Option>
+                <Option value="/3H">/3H</Option>
+                <Option value="/4H">/4H</Option>
+                <Option value="/5H">/5H</Option>
+                <Option value="/6H">/6H</Option>
+              </Select>
+            </div>
 
             <div className="modelList" style={{ height: '32px' }}>
-              <span>公开价格</span><span>{this.state.timeFalg === 'no' ? '' : this.state.timeFalg === 'yes' ? '' : '(元/时)'}</span>
+              <span>最新公开价格</span><span style={{marginLeft:'5px'}}>{this.state.timeFalg === 'no' ? '' : this.state.timeFalg === 'yes' ? '' : '(元/时)'}</span>
               <InputNumber className="startTime" disabled={true} value={this.state.costperhour} defaultValue={1} min={1} style={this.state.timeFalg === 'no' ? { height: 32, width: 269, marginLeft: '88px', paddingLeft: '11px', marginRight: 0, float: 'left' } : this.state.timeFalg === 'yes' ? { height: 32, width: 269, marginLeft: '88px', paddingLeft: '11px', marginRight: 0, float: 'left' } : { height: 32, width: 269, paddingLeft: '11px' }} placeholder="请输入" onChange={this.money} />
               <Select placeholder="请选择" onChange={this.selectDA} disabled={true} value={this.state.selectDA} style={this.state.timeFalg === 'no' ? { float: 'right', marginRight: '50px', width: '80px', height: '32px' } : this.state.timeFalg === 'yes' ? { float: 'right', marginRight: '50px', width: '80px', height: '32px' } : { display: 'none' }}>
                 <Option value="/次">/次</Option>
@@ -2149,13 +2207,40 @@ class siteSettingsTwo extends React.Component {
               </Select>
             </div>
 
+
             <div className="modelList" style={{ height: '32px' }}>
-              <span>场馆方价格</span><span style={{ marginLeft: 0 }}>(元/小时)</span>
+              <span>原始场馆方价格</span><span style={{ marginLeft: 0 }}>(元/小时)</span>
+              <Input type="number" className="startTime" disabled={true} value={String(this.state.olddiscount_costperhour).replace('.', '')} min={0} style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 50 }} placeholder="请输入" onChange={this.moneyTwo} />
+            </div>
+
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>最新场馆方价格</span><span style={{ marginLeft: 0 }}>(元/小时)</span>
               <Input type="number" className="startTime" disabled={true} value={String(this.state.costperhourTwo).replace('.', '')} min={0} style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 50 }} placeholder="请输入" onChange={this.moneyTwo} />
+            </div>
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>折扣</span>
+              <Input type="number" className="startTime" value={this.state.szhekou} style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 50 }} placeholder="请输入" onChange={this.szhekou} />
+            </div>
+
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>折扣后价格</span>
+              <Input type="number" className="startTime" value={this.state.szkPrice} style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 50 }} placeholder="请输入" onChange={this.szkPrice} />
+            </div>
+
+
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>充值赠送金额</span>
+              <span style={{ marginLeft: '60px', color: '#000' }}>充值</span><InputNumber className="startTime" value={this.state.sczzkOne} style={{ height: 32, width: 87, marginLeft: '10px', paddingLeft: '11px', marginRight: 0, float: 'left' }} placeholder="请输入" onChange={this.sczzkOne} />
+              <span>赠送</span><InputNumber className="startTime" value={this.state.sczzkTwo} style={{ height: 32, width: 87, marginLeft: '10px', paddingLeft: '11px', marginRight: 0, float: 'left' }} placeholder="请输入" onChange={this.sczzkTwo} />
+            </div>
+
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>最终成本价</span>
+              <Input type="number" className="startTime" value={this.state.costperhourSix} disabled={true} style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 50 }} placeholder="请输入" onChange={this.moneySix} />
             </div>
 
             <div className="modelList" style={{ height: 32 }}>
-              <span>最短提前预订时间</span>
+              <span>内部最短提前预订时间</span>
               <Select placeholder="请选择" className="selectModel"
                 defaultActiveFirstOption={false}
                 value={
@@ -2215,17 +2300,124 @@ class siteSettingsTwo extends React.Component {
 
 
 
-            <div className="modelList" style={{ height: '32px' }}>
-              <span>价格</span><span style={{ marginLeft: 0 }}>(元/小时)</span>
-              <Input type="number" className="startTime" value={this.state.costperhourSix}  style={{ paddingLeft: '10px', height: 32, width: 330, marginRight: 50 }} placeholder="请输入" onChange={this.moneySix} />
-            </div>
-
 
 
             <div className="footerSerial">
-              <div className="seriaComfir" onClick={this.PreferentialComfir} data-type="1">{this.state.typeList === undefined ? '提交' : '提交修改'}</div>
-
+              <div className="seriaComfir" style={{ marginLeft: '15px' }} onClick={this.PreferentialComfir} data-type="1">{this.state.typeList === undefined ? '提交' : '提交修改'}</div>
             </div>
+
+            <div className="monthScroll">
+              <div className="modelList" style={{ minHeight: '32px' }}>
+                <span>一月份</span>
+                {
+                  this.state.workingDayList.map((item, i) => (
+                    <div className="dgfgkhldhdf" key={i}>{item.split('-')[1] === '01' ? item : ''}</div>
+                  ))
+                }
+              </div>
+
+              <div className="modelList" style={{ minHeight: '32px' }}>
+                <span>二月份</span>
+                {
+                  this.state.workingDayList.map((item, i) => (
+                    <div className="dgfgkhldhdf" key={i}>{item.split('-')[1] === '02' ? item : ''}</div>
+                  ))
+                }
+              </div>
+
+              <div className="modelList" style={{ minHeight: '32px' }}>
+                <span>三月份</span>
+                {
+                  this.state.workingDayList.map((item, i) => (
+                    <div className="dgfgkhldhdf" key={i}>{item.split('-')[1] === '03' ? item : ''}</div>
+                  ))
+                }
+              </div>
+
+              <div className="modelList" style={{ minHeight: '32px' }}>
+                <span>四月份</span>
+                {
+                  this.state.workingDayList.map((item, i) => (
+                    <div className="dgfgkhldhdf" key={i}>{item.split('-')[1] === '04' ? item : ''}</div>
+                  ))
+                }
+              </div>
+
+              <div className="modelList" style={{ minHeight: '32px' }}>
+                <span>五月份</span>
+                {
+                  this.state.workingDayList.map((item, i) => (
+                    <div className="dgfgkhldhdf" key={i}>{item.split('-')[1] === '05' ? item : ''}</div>
+                  ))
+                }
+              </div>
+
+              <div className="modelList" style={{ minHeight: '32px' }}>
+                <span>六月份</span>
+                {
+                  this.state.workingDayList.map((item, i) => (
+                    <div className="dgfgkhldhdf" key={i}>{item.split('-')[1] === '06' ? item : ''}</div>
+                  ))
+                }
+              </div>
+
+              <div className="modelList" style={{ minHeight: '32px' }}>
+                <span>七月份</span>
+                {
+                  this.state.workingDayList.map((item, i) => (
+                    <div className="dgfgkhldhdf" key={i}>{item.split('-')[1] === '07' ? item : ''}</div>
+                  ))
+                }
+              </div>
+
+              <div className="modelList" style={{ minHeight: '32px' }}>
+                <span>八月份</span>
+                {
+                  this.state.workingDayList.map((item, i) => (
+                    <div className="dgfgkhldhdf" key={i}>{item.split('-')[1] === '08' ? item : ''}</div>
+                  ))
+                }
+              </div>
+
+              <div className="modelList" style={{ minHeight: '32px' }}>
+                <span>九月份</span>
+                {
+                  this.state.workingDayList.map((item, i) => (
+                    <div className="dgfgkhldhdf" key={i}>{item.split('-')[1] === '09' ? item : ''}</div>
+                  ))
+                }
+              </div>
+
+              <div className="modelList" style={{ minHeight: '32px' }}>
+                <span>十月份</span>
+                {
+                  this.state.workingDayList.map((item, i) => (
+                    <div className="dgfgkhldhdf" key={i}>{item.split('-')[1] === '10' ? item : ''}</div>
+                  ))
+                }
+              </div>
+
+              <div className="modelList" style={{ minHeight: '32px' }}>
+                <span>十一月份</span>
+                {
+                  this.state.workingDayList.map((item, i) => (
+                    <div className="dgfgkhldhdf" key={i}>{item.split('-')[1] === '11' ? item : ''}</div>
+                  ))
+                }
+              </div>
+
+              <div className="modelList" style={{ minHeight: '32px' }}>
+                <span>十二月份</span>
+                {
+                  this.state.workingDayList.map((item, i) => (
+                    <div className="dgfgkhldhdf" key={i}>{item.split('-')[1] === '12' ? item : ''}</div>
+                  ))
+                }
+              </div>
+            </div>
+
+
+
           </Modal>
 
 
