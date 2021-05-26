@@ -704,6 +704,14 @@ export function getSiteMemberlevelDel(data,headers){    //场馆会员等级信�
     return axios.post('/api/getSiteMemberlevelDel',data,{headers: {'token': headers}})
 }
 
+export function exchangeVenue(data,headers){    //场馆端~线下占用 更换场地 
+    return axios.post('/api/exchangeVenue',data,{headers: {'token': headers}})
+}
+
+export function getSiteSettinglevelPrice(data,headers){    //提交会员价格设置
+    return axios.post('/api/getSiteSettinglevelPrice',data,{headers: {'token': headers}})
+}
+
 
 
 

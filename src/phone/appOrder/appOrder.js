@@ -302,8 +302,8 @@ class appOrder extends React.Component {
 
   componentDidMount() {
     //测试数据
-    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=4&token=6P7rCxqy3KUQNIqkfV1KdVhCJTpUMfOvXKNzTO41D80gJbIOMZQst8qJyVPRJdwG&sporttype=11&flag=1'
-    let query = this.props.location.search
+    let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=4&token=6P7rCxqy3KUQNIqkfV1KdVhCJTpUMfOvXKNzTO41D80gJbIOMZQst8qJyVPRJdwG&sporttype=22&flag=1'
+    // let query = this.props.location.search
     let arr = query.split('&')
     let siteuid = arr[0].slice(9, arr[0].length)
     let sportid = arr[1].slice(8, arr[1].length)
@@ -706,6 +706,7 @@ class appOrder extends React.Component {
           breakup: ccj.join(','),
           realData: ''
         }
+        console.log(obj)
         if (obj.placeNun === '') {
           Toast.fail('请选择场地', 2, null, false);
         } else {
