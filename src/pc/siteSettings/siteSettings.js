@@ -1,9 +1,9 @@
 import React from 'react';
 import './siteSettings.css';
 import 'antd/dist/antd.css';
-import { getSiteSettingList, addVenueField, getVenueSport, AddSiteSetting, DelSiteSetting, getVenueSportidTitle, VenueRelatSave, getSiteSettinglevelSetup,getSiteSettinglevelPrice, getSiteMemberlevelDel, getSiteAddMember, getSiteSelectMemberlevel, getVenueRelatList, getSiteSettingList_member, VenueRelatRelieve, getLabelRelatVenueNumber, DelVenueTitle, getSpecialDaysForVenue, SiteSettingDiscountSave, getSiteSettingHistoryList, getVenueNumberTitleFirst, getSiteSettingFirst, getSiteSelectedTitle, DelVenueNumberTitle, getSiteSelectedVenueid, getVenueTitleSave, getVenueNumberTitleSave, getVenueNumberTitleList, DelSiteSettingDiscount } from '../../api';
+import { getSiteSettingList, addVenueField, getVenueSport, AddSiteSetting, DelSiteSetting, getVenueSportidTitle, VenueRelatSave, getSiteSettinglevelSetup,getSiteSettinglevelEdit, getSiteSettinglevelPrice, getSiteMemberlevelDel, getSiteAddMember, getSiteSelectMemberlevel, getVenueRelatList, getSiteSettingList_member, VenueRelatRelieve, getLabelRelatVenueNumber, DelVenueTitle, getSpecialDaysForVenue, SiteSettingDiscountSave, getSiteSettingHistoryList, getVenueNumberTitleFirst, getSiteSettingFirst, getSiteSelectedTitle, DelVenueNumberTitle, getSiteSelectedVenueid, getVenueTitleSave, getVenueNumberTitleSave, getVenueNumberTitleList, DelSiteSettingDiscount } from '../../api';
 import { Select, Row, Col, Modal, Input, message, Pagination, Popconfirm, Divider, Popover, Spin, Drawer, InputNumber, Calendar, Form, Button } from 'antd';
-import { PlusOutlined, CloseCircleOutlined, CloseOutlined } from '@ant-design/icons';
+import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import 'moment/locale/zh-cn';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 const { Option } = Select;
@@ -18,7 +18,7 @@ const { TextArea } = Input;
 
 
 class siteSettings extends React.Component {
-  
+
 
   state = {
     visible: false,
@@ -162,13 +162,15 @@ class siteSettings extends React.Component {
     memberListPage: 1,
     vipPrice: false,
     levelSetup: [],
-    vipMoney: '1',
     joinVipTitle: false,
     vipGrade: '1',
     levelList: [],
     memberLevel: [],
     levelSetupList: [],
-    levelSetupid:'',
+    levelSetupid: '',
+    lookDetails: false,
+    lookDetailsList: [],
+    flag:false,
   };
   async getVenueSport(data) {
     const res = await getVenueSport(data, sessionStorage.getItem('venue_token'))
@@ -297,7 +299,7 @@ class siteSettings extends React.Component {
 
   handleCancel = e => {
     this.setState({
-      visible: false, update: 0, Disid: '',
+      visible: false, update: 0, Disid: '', lookDetails: false,
       // runIdTwo: '', tagsTwo: '', opendayname: '', openday: '', starttime: '',
       // endtime: '', costperhour: '', chekedTwo: '', chekedTwoLen: 0, appointmenttime_cg: '',
       // tagsTwoId: '', comment: '', maxScheduledDate_cg: '', maxScheduledDate_cgName: [], runNameTwo: '', Disid: ''   用于价格设置弹窗清空
@@ -2404,7 +2406,15 @@ class siteSettings extends React.Component {
         } if (res.data.data[i].openday.split(',').indexOf('7') !== -1) {
           res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周日'
         }
+        let arr = []
+        for (let j in res.data.data[i].level) {
+          if (res.data.data[i].level[j].discount !== null && res.data.data[i].level[j].price !== null) {
+            arr.push(res.data.data[i].level[j])
+          }
+        }
+        res.data.data[i].level = arr
       }
+
       this.setState({ memberList: res.data.data, memberListOther: res.data.other.total, memberLevel: res.data.other.level })
     }
   }
@@ -2413,6 +2423,10 @@ class siteSettings extends React.Component {
   public = e => {
     if (e.currentTarget.dataset.index === '2') {
       this.getSiteSettingList_member({ sportid: this.state.nameChang, page: this.state.memberListPage, sid: sessionStorage.getItem('siteuid') })
+
+    }
+    if (e.currentTarget.dataset.index === '3') {
+      this.getSiteSelectMemberlevel()
     }
     this.setState({ public: Number(e.currentTarget.dataset.index) })
   }
@@ -2426,7 +2440,6 @@ class siteSettings extends React.Component {
   async getSiteSettinglevelSetup(data) {
     const res = await getSiteSettinglevelSetup(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-
       for (let i in res.data.data) {
         res.data.data[i].opendaynameTwo = ''
         if (res.data.data[i].openday.split(',').indexOf('1') !== -1) {
@@ -2443,34 +2456,33 @@ class siteSettings extends React.Component {
           res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周六'
         } if (res.data.data[i].openday.split(',').indexOf('7') !== -1) {
           res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周日'
-        }
+        } 
+        res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo.slice(1, res.data.data[i].opendaynameTwo.length)
       }
-      this.getSiteSelectMemberlevel()
-      this.setState({ levelSetup: res.data.data[0], vipPrice: true, levelSetupList: res.data.other })
+
+      this.setState({ levelSetup: res.data.data[0], vipPrice: true, levelSetupList: res.data.data[0].level })
 
     }
   }
 
   vipPrice = e => {
-    this.setState({levelSetupid:e.currentTarget.dataset.uuid})
+    this.setState({ levelSetupid: e.currentTarget.dataset.uuid })
     this.getSiteSettinglevelSetup({ uuid: e.currentTarget.dataset.uuid })
   }
 
   vipPriceTwo = () => {
     this.setState({ vipPrice: false })
-  }
-  vipMoney = e => {
-    this.setState({ vipMoney: e.currentTarget.dataset.index })
+
   }
   joinVipTitle = () => {
     this.setState({ joinVipTitle: true })
   }
   joinVipTitleTwo = () => {
-    this.setState({ joinVipTitle: false })
+    this.setState({ joinVipTitle: false,flag:false })
   }
 
   vipGrade = e => {
-    this.setState({ vipGrade: e })
+    this.setState({ vipGrade: e,vipTextArea:'' })
   }
   vipTextArea = e => {
     this.setState({ vipTextArea: e.target.value })
@@ -2481,7 +2493,18 @@ class siteSettings extends React.Component {
     const res = await getSiteAddMember(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       message.success(res.data.msg)
-      this.setState({ joinVipTitle: false })
+      this.setState({ joinVipTitle: false,flag:false })
+      this.getSiteSelectMemberlevel()
+    } else {
+      message.warning(res.data.msg)
+    }
+  }
+
+  async getSiteSettinglevelEdit(data) {
+    const res = await getSiteSettinglevelEdit(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      message.success(res.data.msg)
+      this.setState({ joinVipTitle: false,flag:false })
       this.getSiteSelectMemberlevel()
     } else {
       message.warning(res.data.msg)
@@ -2490,7 +2513,11 @@ class siteSettings extends React.Component {
 
 
   btnVipTitle = () => {
-    this.getSiteAddMember({ grade_name: this.state.vipTextArea, grade_level: this.state.vipGrade })
+    if(this.state.flag===true){
+      this.getSiteSettinglevelEdit({id:this.state.gradeId, grade_name: this.state.vipTextArea, grade_level: this.state.vipGrade })
+    }else{
+      this.getSiteAddMember({ grade_name: this.state.vipTextArea, grade_level: this.state.vipGrade })
+    }
   }
 
   async getSiteSelectMemberlevel(data) {
@@ -2520,25 +2547,19 @@ class siteSettings extends React.Component {
   }
 
   detelTitleTwo = () => {
-    this.getSiteMemberlevelDel({ id: this.state.levelDel })
+    this.getSiteMemberlevelDel({ uuid: this.state.levelSetupid, id: this.state.levelDel })
   }
 
 
-  joinWeek = e => {
 
-
-    let levelSetupList = this.state.levelSetupList
-    console.log(e.currentTarget.dataset.index)
-    console.log(levelSetupList[e.currentTarget.dataset.index])
-  }
 
 
   async getSiteSettinglevelPrice(data) {
     const res = await getSiteSettinglevelPrice(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      
-      this.getSiteSettinglevelSetup({uuid:this.state.levelSetupid})
-    }else {
+      this.getSiteSettingList_member({ sportid: this.state.nameChang, page: 1, sid: sessionStorage.getItem('siteuid') })
+      this.setState({ vipPrice: false })
+    } else {
       message.error(res.data.msg)
     }
   }
@@ -2546,33 +2567,41 @@ class siteSettings extends React.Component {
 
 
   handleSubmit = (values) => {
-    values.uuid=this.state.levelSetup.uuid
+    values.uuid = this.state.levelSetup.uuid
     this.getSiteSettinglevelPrice(values)
-    
   }
 
-  changeForm=(e)=>{
-    let p=Object.keys(e)[0]
-    if(p.substr(0,8)==='discount'){
-      let u=['price'+p.substr(8,1)]
-      let money=this.state.levelSetup.costperhour_cg
+  changeForm = (e) => {
+    let p = Object.keys(e)[0]
+    if (p.substr(0, 8) === 'discount') {
+      let u = ['price' + p.substr(8, 1)]
+      let money = this.state.levelSetup.costperhour_cg
       this.form.current.setFieldsValue({
-        [u]:money*e[Object.keys(e)[0]]/10
+        [u]: (money / 10 * e[Object.keys(e)[0]]).toFixed(2)
       })
-    }else{
-      let u=['discount'+p.substr(5,1)]
-      let money=this.state.levelSetup.costperhour_cg
+    } else {
+      let u = ['discount' + p.substr(5, 1)]
+      let money = this.state.levelSetup.costperhour_cg
       this.form.current.setFieldsValue({
-        [u]:e[Object.keys(e)[0]]*10/money
+        [u]: (e[Object.keys(e)[0]] * 10 / money).toFixed(2)
       })
     }
   }
- 
+
+  lookDetails = e => {
+    let i = e.currentTarget.dataset.index
+    this.setState({ lookDetails: true, lookDetailsList: this.state.memberList[i].level })
+  }
+
+  updateGrade=e=>{
+     this.setState({gradeId:this.state.levelList[e.currentTarget.dataset.index].id, vipGrade:this.state.levelList[e.currentTarget.dataset.index].grade_level, vipTextArea:this.state.levelList[e.currentTarget.dataset.index].grade_name,joinVipTitle:true,flag:true})
+  }
+
 
 
   render() {
     const { name } = this.state;
-    
+
     return (
       <Spin spinning={this.state.lppding} style={{ height: '100%' }}>
         <div className="siteStting">
@@ -2606,6 +2635,7 @@ class siteSettings extends React.Component {
           <div className="xiange"></div>
           <div className="clieaTwo" style={this.state.headerData === '2' ? {} : { display: 'none' }}>
             <div onClick={this.public} data-index='1' style={this.state.public === 1 ? { borderBottom: '2px solid #000' } : {}}>公开价格设置</div>
+            <div onClick={this.public} data-index='3' style={this.state.public === 3 ? { borderBottom: '2px solid #000' } : {}}>会员等级设置</div>
             <div onClick={this.public} data-index='2' style={this.state.public === 2 ? { borderBottom: '2px solid #000' } : {}}>会员价格设置</div>
           </div>
           <div className="xiange"></div>
@@ -2689,17 +2719,13 @@ class siteSettings extends React.Component {
           <div style={this.state.headerData === '2' && this.state.public === 2 ? { overflowY: 'auto', height: '90%' } : { display: 'none' }}>
             <Row className="rowConten" style={{ background: '#FCF7EE' }}>
               <Col xs={{ span: 2 }}>场地类型</Col>
-              <Col xs={{ span: 1 }}>细分标签</Col>
-              <Col xs={{ span: 2 }}>场地编号</Col>
-              <Col xs={{ span: 1 }}>场地数量</Col>
-              <Col xs={{ span: 2 }}>星期</Col>
-              <Col xs={{ span: 2 }}>时间范围</Col>
-              <Col xs={{ span: 1 }}>价格(元/时)</Col>
-              {
-                this.state.memberLevel.map((item, i) => (
-                  <Col xs={{ span: 3 }} key={i}>{item.grade_name}(元/时)</Col>
-                ))
-              }
+              <Col xs={{ span: 3 }}>细分标签</Col>
+              <Col xs={{ span: 3 }}>场地编号</Col>
+              <Col xs={{ span: 2 }}>场地数量</Col>
+              <Col xs={{ span: 4 }}>星期</Col>
+              <Col xs={{ span: 3 }}>时间范围</Col>
+              <Col xs={{ span: 2 }}>公开价格(元/时)</Col>
+              <Col xs={{ span: 3 }}>会员价格详情</Col>
               <Col xs={{ span: 2 }}>操作</Col>
             </Row>
 
@@ -2708,19 +2734,17 @@ class siteSettings extends React.Component {
               this.state.memberList.map((item, i) => (
                 <Row className="rowConten" key={i}>
                   <Col xs={{ span: 2 }}>{item.sportname}</Col>
-                  <Col xs={{ span: 1 }}>{item.tags}</Col>
+                  <Col xs={{ span: 3 }}>{item.tags}</Col>
                   <Popover content={(<span>{item.venueid}</span>)} title='详情' trigger="click">
-                    <Col xs={{ span: 2 }}>{item.venueid}</Col>
+                    <Col xs={{ span: 3 }}>{item.venueid}</Col>
                   </Popover>
-                  <Col xs={{ span: 1 }}>{item.sitenumber}</Col>
+                  <Col xs={{ span: 2 }}>{item.sitenumber}</Col>
                   <Popover content={(<span>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</span>)} title='详情' trigger="click">
-                    <Col style={{ cursor: 'pointer' }} xs={{ span: 2 }}>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</Col>
+                    <Col style={{ cursor: 'pointer' }} xs={{ span: 4 }}>{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</Col>
                   </Popover>
-                  <Col xs={{ span: 2 }}>{item.starttime}-{item.endtime}</Col>
-                  <Col xs={{ span: 1 }}>{item.costperhour_cg}</Col>
-                  <Col xs={{ span: 3 }}>{item.costperhour_cg}</Col>
-                  <Col xs={{ span: 3 }}>{item.costperhour_cg}</Col>
-                  <Col xs={{ span: 3 }}>{item.costperhour_cg}</Col>
+                  <Col xs={{ span: 3 }}>{item.starttime}-{item.endtime}</Col>
+                  <Col xs={{ span: 2 }}>{item.costperhour_cg}</Col>
+                  <Col xs={{ span: 3 }}><span onClick={this.lookDetails} data-index={i} style={item.level.length !== 0 ? { color: 'blue', cursor: 'pointer' } : { display: 'none' }}>查看详情</span><span style={item.level.length === 0 ? {} : { display: 'none' }}>暂无设置</span></Col>
                   <Col xs={{ span: 2 }}><img style={{ cursor: 'pointer' }} data-uuid={item.uuid} onClick={this.vipPrice} src={require("../../assets/icon_pc_updata.png")} alt='编辑' /></Col>
                 </Row>
               ))
@@ -2731,6 +2755,71 @@ class siteSettings extends React.Component {
 
           </div>
 
+          <div style={this.state.headerData === '2' && this.state.public === 3 ? { overflowY: 'auto', height: '85%' } : { display: 'none' }}>
+            <Row className="rowConten" style={{ background: '#FCF7EE' }}>
+              <Col xs={{ span: 4 }}>序号</Col>
+              <Col xs={{ span: 7 }}>会员等级名称</Col>
+              <Col xs={{ span: 7 }}>会员等级</Col>
+              <Col xs={{ span: 4 }}>操作</Col>
+            </Row>
+            {
+              this.state.levelList.map((item, i) => (
+                <Row key={i} className="rowConten">
+                  <Col xs={{ span: 4 }}>{i + 1}</Col>
+                  <Col xs={{ span: 7 }}>{item.grade_name}</Col>
+                  <Col xs={{ span: 7 }}>{item.grade_level}</Col>
+                  <Col xs={{ span: 4 }}>
+                    <Popconfirm
+                      title="你确定删除该条会员等级吗?"
+                      onConfirm={this.detelTitleTwo}
+                      onCancel={this.cancel}
+                      okText="确认"
+                      cancelText="取消"
+                    ><img style={{ cursor: 'pointer' }} onClick={this.detelTitle} data-id={item.id} src={require("../../assets/icon_pc_delet.png")} alt='编辑' /></Popconfirm>
+                  <img style={{ cursor: 'pointer',marginLeft:'20px' }} onClick={this.updateGrade} data-index={i}  src={require("../../assets/icon_pc_updata.png")} alt="修改"/>
+                  </Col>
+                </Row>
+              ))
+            }
+
+            <div style={this.state.levelList.length === 0 ? { width: '100%' } : { display: 'none' }}><img style={{ width: '84px', height: '84px', display: 'block', margin: '64px auto 0' }} src={require('../../assets/xifen (6).png')} alt='icon' /><span style={{ display: 'block', textAlign: 'center' }}>您还没有设置会员等级!</span></div>
+
+          </div>
+
+          <div className="join" style={this.state.headerData === '2' && this.state.public === 3 ? {} : { display: 'none' }} onClick={this.joinVipTitle}><div id="join" style={{ textAlign: 'center', width: '150px', margin: '0 auto' }}>+添加会员等级</div></div>
+
+
+
+
+
+
+          <Modal
+            title="会员价格详情"
+            visible={this.state.lookDetails}
+            onOk={this.handleOk}
+            onCancel={this.handleCancel}
+            width={630}
+            style={{ zIndex: 999 }}
+            className='model'
+            closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
+          >
+            <Row style={{ textAlign: 'center' }}>
+              <Col xs={{ span: 8 }}>会员等级</Col>
+              <Col xs={{ span: 8 }}>会员折扣</Col>
+              <Col xs={{ span: 8 }}>会员价格</Col>
+            </Row>
+            {
+              this.state.lookDetailsList.map((item, i) => (
+                <Row key={i} style={{ textAlign: 'center', lineHeight: '30px' }}>
+                  <Col xs={{ span: 8 }}>{item.grade_name}</Col>
+                  <Col xs={{ span: 8 }}>{item.discount}折</Col>
+                  <Col xs={{ span: 8 }}>{item.price}元</Col>
+                </Row>
+              ))
+            }
+
+          </Modal>
+
 
 
 
@@ -2740,6 +2829,7 @@ class siteSettings extends React.Component {
             onOk={this.handleOk}
             onCancel={this.vipPriceTwo}
             width={630}
+            destroyOnClose={true}
             style={{ zIndex: 999 }}
             className='model'
             closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
@@ -2758,7 +2848,7 @@ class siteSettings extends React.Component {
             </div>
             <div className="modelList" style={{ height: '32px' }}>
               <span>数量</span>
-              <div>{this.state.levelSetup.sitenumber}</div>
+              <div style={{ marginLeft: 165 }}>{this.state.levelSetup.sitenumber}</div>
             </div>
             <div className="modelList" style={{ height: '32px' }}>
               <span>星期</span>
@@ -2774,40 +2864,36 @@ class siteSettings extends React.Component {
             </div>
 
             <div className="memFooter">
-              <div onClick={this.vipMoney} data-index='1' style={this.state.vipMoney === '1' ? { borderBottom: '2px solid #000' } : {}}>+添加会员等级价格</div>
-              <div onClick={this.vipMoney} data-index='2' style={this.state.vipMoney === '2' ? { borderBottom: '2px solid #000' } : {}}>+添加会员等级</div>
+
             </div>
 
-            <div style={this.state.vipMoney === '1' ? { marginTop: '15px' } : { display: 'none' }}>
 
-              <Form ref={this.form} onFinish={this.handleSubmit} onValuesChange={this.changeForm}>
+            <div style={this.state.levelSetupList.length !== 0 ? {} : { display: 'none' }}>
+              <Form ref={this.form} onFinish={this.handleSubmit} onValuesChange={this.changeForm} preserve={false}>
                 {
                   this.state.levelSetupList.map((item, i) => (
-                    <div key={i} style={{overflow:'hidden'}}>
+                    <div key={i} style={{ overflow: 'hidden' }}>
                       <span style={{ float: 'left', lineHeight: '32px' }}>价格{i + 1}</span>
-                      <Form.Item className="form" style={{display:'none'}} name={'grade_level' + (i + 1)} initialValue={item.grade_level}>
-                        <div style={{display:'none'}}>{item.grade_level}</div>
+                      <Form.Item className="form" style={{ display: 'none' }} name={'grade_level' + (i + 1)} initialValue={item.grade_level}>
+                        <div style={{ display: 'none' }}>{item.grade_level}</div>
                         <Input className="sdgfdfgdfgd" disabled={true} value={item.grade_level} />
                       </Form.Item>
                       <Form.Item className="form" name={'grade_name' + (i + 1)} initialValue={item.grade_name}>
-                        <div style={{display:'none'}}>{item.grade_name}</div>
+                        <div style={{ display: 'none' }}>{item.grade_name}</div>
                         <Input className="sdgfdfgdfgd" disabled={true} value={item.grade_name} />
                       </Form.Item>
-                      <Form.Item className="form" name={'discount' + (i + 1)} initialValue={item.discount}>
-                        <InputNumber className="sdgfdfgdfgd dsgfghfgh" min={1} max={10} placeholder="请输入折扣"  value={item.discount} />
+                      <Form.Item className="form" name={'discount' + (i + 1)} rules={[{ required: true, message: '请输入折扣!' }]} initialValue={item.discount}>
+                        <InputNumber className="sdgfdfgdfgd dsgfghfgh" min={1} max={10} placeholder="请输入折扣" value={item.discount} />
                       </Form.Item>
-                      <Form.Item className="form" name={'price' + (i + 1)} initialValue={item.price}>
-                        <InputNumber className="sdgfdfgdfgd dsgfghfgh" min={1} placeholder="请输入价格" value={item.price}  />
+                      <Form.Item className="form" name={'price' + (i + 1)} rules={[{ required: true, message: '请输入价格!' }]} initialValue={item.price}>
+                        <InputNumber className="sdgfdfgdfgd dsgfghfgh" min={1} max={this.state.levelSetup.costperhour_cg} placeholder="请输入价格" value={item.price} />
                       </Form.Item>
 
-                      <div style={{display:'none'}}>{item.grade_name}</div>
+                      <div style={{ display: 'none' }}>{item.grade_name}</div>
 
                     </div>
                   ))
                 }
-
-
-
                 <Form.Item >
                   <Button className="save" htmlType="submit">
                     提交
@@ -2815,54 +2901,11 @@ class siteSettings extends React.Component {
                 </Form.Item>
               </Form>
 
-
-              {/* {
-                this.state.levelSetupList.map((item, i) => (
-                  <div className="modelList" key={i} style={{ height: '32px' }}>
-                    <div className="PriceList" style={{overflow:'hidden'}}>
-                      <span style={{ float: 'left', lineHeight: '32px' }}>价格{i + 1}</span>
-                      <Input style={{ width: 150, marginLeft: 20, display: 'block', float: 'left' }} disabled={true} value={item.grade_name} />
-
-                      <Popconfirm
-                        title={<InputNumber/>}
-                        onConfirm={this.confirm}
-                        onCancel={this.cancel}
-                        okText="Yes"
-                        cancelText="No"
-                      >
-                        <div className="sdfsdfgdrfg" onClick={this.joinWeek}>{item.discount===''?'请点击输入折扣':item.discount}</div>
-                      </Popconfirm>
-                      <Input style={{ width: 150, marginLeft: 20, display: 'block', float: 'left', height: 28 }} value={item.price} disabled={true} placeholder="0元" />
-                    </div>
-                  </div>
-                ))
-              } */}
-
-
-
-
-
             </div>
 
-            <div className="vipTitle" style={this.state.vipMoney === '2' ? { marginTop: '15px' } : { display: 'none' }}>
-              {
-                this.state.levelList.map((item, i) => (
-                  <div key={i}>{item.grade_name}
-                    <Popconfirm
-                      title="你确定删除该条会员等级吗?"
-                      onConfirm={this.detelTitleTwo}
-                      onCancel={this.cancel}
-                      okText="确认"
-                      cancelText="取消"
-                    ><CloseOutlined onClick={this.detelTitle} data-id={item.id} className="closeImg" /></Popconfirm>
-                  </div>
-                ))
-              }
-              <div onClick={this.joinVipTitle}>+新增</div>
-
-            </div>
-
-
+            <div style={this.state.levelSetupList.length === 0 ? { color: 'red' } : { display: 'none' }}>
+              请去会员等级设置页面，设置会员等级。
+              </div>
 
 
 
@@ -2870,7 +2913,7 @@ class siteSettings extends React.Component {
 
 
           <Modal
-            title="添加会员等级"
+            title="添加/修改会员等级"
             visible={this.state.joinVipTitle}
             onOk={this.handleOk}
             onCancel={this.joinVipTitleTwo}
@@ -2882,7 +2925,7 @@ class siteSettings extends React.Component {
 
             <div className="modelList" style={{ height: '32px' }}>
               <span>等级</span>
-              <Select defaultValue="1" style={{ width: 120, marginLeft: '25px' }} onChange={this.vipGrade}>
+              <Select value={this.state.vipGrade} style={{ width: 120, marginLeft: '25px' }} disabled={this.state.flag} onChange={this.vipGrade}>
                 <Option value="1">1级</Option>
                 <Option value="2">2级</Option>
                 <Option value="3">3级</Option>
@@ -2896,7 +2939,7 @@ class siteSettings extends React.Component {
             </div>
             <div className="modelList">
               <span>名称</span>
-              <TextArea className="textAreaName" onChange={this.vipTextArea} placeholder="请输入会员等级名称"></TextArea>
+              <TextArea className="textAreaName" value={this.state.vipTextArea} onChange={this.vipTextArea} placeholder="请输入会员等级名称"></TextArea>
             </div>
             <button className="submit" onClick={this.btnVipTitle} style={{ border: 'none' }}>提交</button>
 

@@ -185,3 +185,64 @@
 .management .request div{
  text-align: center;
 }
+
+.managementTwo .am-list-item.am-input-item{
+    padding-left: 0;
+}
+.managementTwo .am-list-item .am-list-line{
+    padding-right: 0;
+}
+
+.managementTwo .am-list-item .am-list-line .am-list-content{
+    padding: 0;
+}
+.managementTwo .am-list-line .am-list-extra{
+ font-size: 0.88rem;
+} 
+
+.modelList{
+    overflow: hidden;
+    position: relative;
+    margin-top: 8px;
+}
+.modelList>span{
+  display: block;
+  float: left;
+  margin-left: 19px;
+  line-height: 26px;
+}
+.modelList>span:nth-child(2){
+    color: #9B9B9B;
+}
+.modelList .selectModel{
+   float: right;
+   margin-right: 150px;
+   height: 32px;
+
+}
+.modelList .startTime{
+    width: 249px;
+    height: 26px;
+    float: right;
+    margin-right: 150px;
+    z-index: 999;
+    
+}
+.textAreaName{
+    width: 60%;
+    height:120px;
+    margin-left: 25px;
+}
+.submit{
+    width: 80px;
+    height: 32px;
+    text-align: center;
+    line-height: 32px;
+    background: #F5A623;
+    border-radius: 2px;
+    color: #fff;
+    float: right;
+    margin-top: 20px;
+    margin-right: 50px;
+    cursor: pointer;
+}

@@ -216,17 +216,19 @@ class orderPh extends React.Component {
 
       if(this.state.liNum!=='3'&&this.state.liNum!=='4'&&this.state.liNum!=='5'){
         let arrty = []
-        for (let i=1;i<res.data.data.length;i++) {
+        for (let i=0;i<res.data.data.length;i++) {
           if (res.data.data[i].a.slice(3, 5) === '00') {
             arrty.push(res.data.data[i])
           }
         }
+        console.log(arrty)
         for (let i in arrty) {
           for (let j in arrty[i].c) {
             arrty[i].c[j].money_cg = arrty[i].c[j].money_cg * 2+'.00'
             arrty[i].c[j].money = Number(arrty[i].c[j].money) * 2
           }
         }
+        console.log(arrty)
         res.data.data = arrty
       }
 

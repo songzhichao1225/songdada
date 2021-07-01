@@ -625,8 +625,6 @@ class myWalletPh extends React.Component {
             <span style={this.state.chargeDetails.cardnumber === '' || this.state.chargeDetails.length === 0 ? { display: 'none' } : { paddingTop: '0.5rem' }}>卡号：{this.state.chargeDetails.cardnumber}</span>
             <span style={{ textAlign: 'left', fontSize: '14px', paddingTop: '0.5rem', paddingRight: '1rem' }}>场馆名称：{this.state.siteName}</span>
             <span style={{ textAlign: 'right', fontSize: '14px', paddingTop: '1rem', paddingRight: '1rem' }}>当前余额：¥{this.state.chargeDetailsNum}</span>
-            <div className="lookhe" style={this.state.bySite.length!==0?{}:{display:'none'}}><a href={this.state.bySite.length!==0?htUrl+this.state.bySite[0].HT_path:''}  rel="noopener noreferrer" target="_blank">查看合同</a></div>
-           
           </div>
           <div className="ulList">
             <div onClick={this.Membership}><img src={require('../../assets/photoOne.png')} alt="icon" />&nbsp;&nbsp;&nbsp;会员卡照片<img src={require('../../assets/right.png')} alt="icon" /></div>

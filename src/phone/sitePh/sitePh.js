@@ -2,13 +2,13 @@ import React from 'react';
 import './sitePh.css';
 import { Card, Picker, List, Toast, InputItem, Modal, TextareaItem } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Pagination, Drawer, Spin, Calendar } from 'antd';
-import { } from '@ant-design/icons';
-import { getVenueNumberTitleList, getVenueSportidTitle, getVenueSport, DelVenueTitle, getLabelRelatVenueNumber, VenueRelatSave, getVenueRelatList, VenueRelatRelieve, getVenueTitleSave, getSpecialDaysForVenue, getSiteSelectedVenueid, DelVenueNumberTitle, getSiteSettingHistoryList, DelSiteSetting, AddSiteSetting, getVenueNumberTitleSave, getVenueNumberTitleFirst, getSiteSettingList, getSiteSelectedTitle, getSiteSettingFirst, DelSiteSettingDiscount, SiteSettingDiscountSave } from '../../api';
+import { Pagination, Drawer, Spin, Calendar, Form, Input, InputNumber, Select, Button, Row,Col } from 'antd';
+import { getVenueNumberTitleList, getVenueSportidTitle, getVenueSport, DelVenueTitle, getLabelRelatVenueNumber, getSiteSettinglevelSetup, getSiteSettinglevelPrice,getSiteSettinglevelEdit, getSiteSelectMemberlevel, getSiteMemberlevelDel, getSiteAddMember, VenueRelatSave, getVenueRelatList, getSiteSettingList_member, VenueRelatRelieve, getVenueTitleSave, getSpecialDaysForVenue, getSiteSelectedVenueid, DelVenueNumberTitle, getSiteSettingHistoryList, DelSiteSetting, AddSiteSetting, getVenueNumberTitleSave, getVenueNumberTitleFirst, getSiteSettingList, getSiteSelectedTitle, getSiteSettingFirst, DelSiteSettingDiscount, SiteSettingDiscountSave } from '../../api';
 import 'moment/locale/zh-cn';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 const alert = Modal.alert;
-
+const { Option } = Select;
+const { TextArea } = Input;
 let moneyKeyboardWrapProps;
 
 
@@ -90,7 +90,7 @@ class sitePh extends React.Component {
     timeLimitList: [{ label: '不限', value: 1 }, { label: '整点', value: 2 }, { label: '单数整点', value: 3 }, { label: '双数整点', value: 4 }],
     timeLimitListTwo: [{ label: '一小时以上', value: 1 }, { label: '一小时整数倍', value: 2 }, { label: '二小时整数倍', value: 3 }],
     timeRtArr: [{ label: '00:00', value: '00:00' }, { label: '00:30', value: '00:30' }, { label: '01:00', value: '01:00' }, { label: '01:30', value: '01:30' }, { label: '02:00', value: '02:00' }, { label: '02:30', value: '02:30' }, { label: '03:00', value: '03:00' }, { label: '03:30', value: '03:30' }, { label: '04:00', value: '04:00' }, { label: '04:30', value: '04:30' }, { label: '05:00', value: '05:00' }, { label: '05:30', value: '05:30' }, { label: '06:00', value: '06:00' }, { label: '06:30', value: '06:30' }, { label: '07:00', value: '07:00' }, { label: '07:30', value: '07:30' }, { label: '08:00', value: '08:00' }, { label: '08:30', value: '08:30' }, { label: '09:00', value: '09:00' }, { label: '09:30', value: '09:30' }, { label: '10:00', value: '10:00' }, { label: '10:30', value: '10:30' }, { label: '11:00', value: '11:00' }, { label: '11:30', value: '11:30' }, { label: '12:00', value: '12:00' }, { label: '12:30', value: '12:30' }, { label: '13:00', value: '13:00' }, { label: '13:30', value: '13:30' }, { label: '14:00', value: '14:00' }, { label: '14:30', value: '14:30' }, { label: '15:00', value: '15:00' }, { label: '15:30', value: '15:30' }, { label: '16:00', value: '16:00' }, { label: '16:30', value: '16:30' }, { label: '17:00', value: '17:00' }, { label: '17:30', value: '17:30' }, { label: '18:00', value: '18:00' }, { label: '18:30', value: '18:30' }, { label: '19:00', value: '19:00' }, { label: '19:30', value: '19:30' }, { label: '20:00', value: '20:00' }, { label: '20:30', value: '20:30' }, { label: '21:00', value: '21:00' }, { label: '21:30', value: '21:30' }, { label: '22:00', value: '22:00' }, { label: '22:30', value: '22:30' }, { label: '23:00', value: '23:00' }, { label: '23:30', value: '23:30' }, { label: '24:00', value: '24:00' }],
-    timeRtArrTwo: [{ label: '00:00', value: '00:00' }, { label: '01:00', value: '01:00' }, { label: '02:00', value: '02:00' },  { label: '03:00', value: '03:00' }, { label: '04:00', value: '04:00' }, { label: '05:00', value: '05:00' },  { label: '06:00', value: '06:00' }, { label: '07:00', value: '07:00' }, { label: '08:00', value: '08:00' }, { label: '09:00', value: '09:00' }, { label: '10:00', value: '10:00' }, { label: '11:00', value: '11:00' }, { label: '12:00', value: '12:00' }, { label: '13:00', value: '13:00' }, { label: '14:00', value: '14:00' },  { label: '15:00', value: '15:00' },{ label: '16:00', value: '16:00' },{ label: '17:00', value: '17:00' }, { label: '18:00', value: '18:00' }, { label: '19:00', value: '19:00' }, { label: '20:00', value: '20:00' }, { label: '21:00', value: '21:00' }, { label: '22:00', value: '22:00' }, { label: '23:00', value: '23:00' }, { label: '24:00', value: '24:00' }],
+    timeRtArrTwo: [{ label: '00:00', value: '00:00' }, { label: '01:00', value: '01:00' }, { label: '02:00', value: '02:00' }, { label: '03:00', value: '03:00' }, { label: '04:00', value: '04:00' }, { label: '05:00', value: '05:00' }, { label: '06:00', value: '06:00' }, { label: '07:00', value: '07:00' }, { label: '08:00', value: '08:00' }, { label: '09:00', value: '09:00' }, { label: '10:00', value: '10:00' }, { label: '11:00', value: '11:00' }, { label: '12:00', value: '12:00' }, { label: '13:00', value: '13:00' }, { label: '14:00', value: '14:00' }, { label: '15:00', value: '15:00' }, { label: '16:00', value: '16:00' }, { label: '17:00', value: '17:00' }, { label: '18:00', value: '18:00' }, { label: '19:00', value: '19:00' }, { label: '20:00', value: '20:00' }, { label: '21:00', value: '21:00' }, { label: '22:00', value: '22:00' }, { label: '23:00', value: '23:00' }, { label: '24:00', value: '24:00' }],
     Longest: [{ label: '一周', value: 0.1 }, { label: '两周', value: 0.2 }, { label: '三周', value: 0.3 }, { label: '一个月', value: 1 }, { label: '两个月', value: 2 },],
     Shortest: [{ label: '不限', value: 0 }, { label: '30分钟', value: 30 }, { label: '60分钟', value: 60 }, { label: '2小时', value: 120 }, { label: '3小时', value: 180 }, { label: '4小时', value: 240 }, { label: '6小时', value: 360 }, { label: '24小时', value: 1440 }, { label: '2天', value: 2880 }, { label: '3天', value: 4320 }, { label: '4天', value: 5760 }, { label: '5天', value: 7200 }, { label: '6天', value: 8640 }, { label: '7天', value: 10080 }, { label: '8天', value: 11520 }, { label: '9天', value: 12960 }, { label: '10天', value: 14400 }, { label: '11天', value: 15840 }, { label: '12天', value: 17280 }, { label: '13天', value: 18720 }, { label: '14天', value: 20160 }, { label: '15天', value: 21600 },],
     LiturgyArr: [{ name: "周一", idx: 1, cheked: false }, { name: "周二", idx: 2, cheked: false }, { name: "周三", idx: 3, cheked: false }, { name: "周四", idx: 4, cheked: false }, { name: "周五", idx: 5, cheked: false }, { name: "周六", idx: 6, cheked: false, }, { name: "周日", idx: 7, cheked: false }],
@@ -173,6 +173,18 @@ class sitePh extends React.Component {
     pageFour: 1,
     relatList: [],
     commentTitle: '',
+    headerTwoTop: '1',
+    memberList: [],
+    levelSetupList: [],
+    vipMoney: false,
+    levelSetup: [],
+    levelList: [],
+    vipGrade: '1',
+    vipTextArea: '',
+    lookDetails: false,
+    lookDetailsList: [],
+    memberPage:1,
+    flag:false,
   }
 
   header = e => {
@@ -184,6 +196,7 @@ class sitePh extends React.Component {
       this.setState({ asyncValue: this.state.asyncValueTwo, page: 1 })
     } else if (e.currentTarget.dataset.index === '2') {
       this.getSiteSettingList({ page: 1, sportid: this.state.asyncValue })
+      this.getSiteSettingList_member({ page: this.state.memberPage, sportid: this.state.asyncValue })
       this.setState({ asyncValueTwo: this.state.asyncValue, pageTwo: 1 })
     } else if (e.currentTarget.dataset.index === '3') {
       this.getSiteSettingHistoryList({ page: 1, sportid: this.state.asyncValue })
@@ -193,6 +206,40 @@ class sitePh extends React.Component {
       this.setState({ asyncValueFour: this.state.asyncValue, pageFour: 1 })
     }
 
+  }
+
+  async getSiteSettingList_member(data) {
+    const res = await getSiteSettingList_member(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      for (let i in res.data.data) {
+        res.data.data[i].opendaynameTwo = ''
+        if (res.data.data[i].openday.split(',').indexOf('1') !== -1) {
+          res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周一'
+        } if (res.data.data[i].openday.split(',').indexOf('2') !== -1) {
+          res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周二'
+        } if (res.data.data[i].openday.split(',').indexOf('3') !== -1) {
+          res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周三'
+        } if (res.data.data[i].openday.split(',').indexOf('4') !== -1) {
+          res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周四'
+        } if (res.data.data[i].openday.split(',').indexOf('5') !== -1) {
+          res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周五'
+        } if (res.data.data[i].openday.split(',').indexOf('6') !== -1) {
+          res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周六'
+        } if (res.data.data[i].openday.split(',').indexOf('7') !== -1) {
+          res.data.data[i].opendaynameTwo = res.data.data[i].opendaynameTwo + ',周日'
+        }
+        let arr = []
+        for (let j in res.data.data[i].level) {
+          if (res.data.data[i].level[j].discount !== null && res.data.data[i].level[j].price !== null) {
+            arr.push(res.data.data[i].level[j])
+          }
+        }
+        res.data.data[i].level = arr
+
+      }
+
+      this.setState({ memberList: res.data.data, memberListOther: res.data.other.total, memberLevel: res.data.other.level })
+    }
   }
 
 
@@ -254,7 +301,7 @@ class sitePh extends React.Component {
           res.data.data[i].sportid = '网球'
         } else if (res.data.data[i].sportid === 14) {
           res.data.data[i].sportid = '足球9人制'
-        } 
+        }
       }
       this.setState({ titleLise: res.data.data, other: res.data.other, spin: false })
     }
@@ -270,7 +317,13 @@ class sitePh extends React.Component {
       pageTwo: page
     })
     this.getSiteSettingList({ page: page, sportid: this.state.asyncValueTwo })
+  }
 
+  memberCurrent=(page,pageSize)=>{
+    this.setState({
+      memberPage: page
+    })
+    this.getSiteSettingList_member({ page: page, sportid: this.state.asyncValue })
   }
 
   currentThree = (page, pageSize) => {
@@ -290,7 +343,7 @@ class sitePh extends React.Component {
     this.setState({ visibleXi: true, chekedArr: [], chekedArrLen: 0 })
   }
   onClose = () => {
-    this.setState({ visibleXi: false, upData: 0, firstUUid: '', detail: false, relatedness: false })
+    this.setState({ visibleXi: false, upData: 0, firstUUid: '', detail: false, relatedness: false, vipMoney: false, joinVipTitle: false,lookDetails:false })
   }
 
   onCloseTitle = () => {
@@ -930,7 +983,7 @@ class sitePh extends React.Component {
         res.data.data[i].maxScheduledDateTwo = '3周'
       } else if (res.data.data[i].maxScheduledDate === '1') {
         res.data.data[i].maxScheduledDateTwo = '1个月'
-      } else if (res.data.data[i].maxScheduledDate=== '2') {
+      } else if (res.data.data[i].maxScheduledDate === '2') {
         res.data.data[i].maxScheduledDateTwo = '2个月'
       }
     }
@@ -1090,7 +1143,7 @@ class sitePh extends React.Component {
   async AddSiteSetting(data) {
     const res = await AddSiteSetting(data, localStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ Price: false, jiageUUid: '', pickerValueThree: [], cheStr: '',selectDa:[''] })
+      this.setState({ Price: false, jiageUUid: '', pickerValueThree: [], cheStr: '', selectDa: [''] })
       this.getSiteSettingList({ page: this.state.pageTwo, sportid: this.state.asyncValueTwo })
     } else {
       Toast.fail(res.data.msg, 2);
@@ -1125,7 +1178,7 @@ class sitePh extends React.Component {
       let obj = {
         uuid: jiageUUid,
         sportid: pickerValueTwo,
-        sportname: pickerValueTwo === 1 ? '羽毛球' : pickerValueTwo === 2 ? '乒乓球' : pickerValueTwo === 3 ? '台球中式黑八' : pickerValueTwo === 4 ? '台球美式九球' : pickerValueTwo === 5 ? '台球斯诺克' : pickerValueTwo === 6 ? '篮球' : pickerValueTwo === 7 ? '足球11人制' : pickerValueTwo === 8 ? '足球8人制' : pickerValueTwo === 9 ? '足球7人制' : pickerValueTwo === 13 ? '足球6人制' : pickerValueTwo === 10 ? '足球5人制' : pickerValueTwo === 11 ? '排球' : pickerValueTwo === 12 ? '网球' : pickerValueTwo === 14 ? '足球9人制':'',
+        sportname: pickerValueTwo === 1 ? '羽毛球' : pickerValueTwo === 2 ? '乒乓球' : pickerValueTwo === 3 ? '台球中式黑八' : pickerValueTwo === 4 ? '台球美式九球' : pickerValueTwo === 5 ? '台球斯诺克' : pickerValueTwo === 6 ? '篮球' : pickerValueTwo === 7 ? '足球11人制' : pickerValueTwo === 8 ? '足球8人制' : pickerValueTwo === 9 ? '足球7人制' : pickerValueTwo === 13 ? '足球6人制' : pickerValueTwo === 10 ? '足球5人制' : pickerValueTwo === 11 ? '排球' : pickerValueTwo === 12 ? '网球' : pickerValueTwo === 14 ? '足球9人制' : '',
         tags: titleArr[pickerValueThree].label,
         openday: titleArr[pickerValueThree].label.indexOf('散场') !== -1 || titleArr[pickerValueThree].label.indexOf('按次') !== -1 ? '1,2,3,4,5,6,7' : LiturgycheNum,
         opendayname: Liturgyche,
@@ -1362,12 +1415,12 @@ class sitePh extends React.Component {
       discount_costperhour_cg: moneySiscount,
       discount_appointment_cg: appointmenttimeTwo[0]
     }
-    if(Number(moneySiscount)===0){
+    if (Number(moneySiscount) === 0) {
       Toast.fail('价格不能小于等于0')
-    }else{
+    } else {
       this.SiteSettingDiscountSave(obj)
     }
-    
+
 
   }
 
@@ -1929,6 +1982,152 @@ class sitePh extends React.Component {
   commentTitle = e => {
     this.setState({ commentTitle: e })
   }
+  headerTwoTop = e => {
+    this.getSiteSelectMemberlevel()
+    this.setState({ headerTwoTop: e.currentTarget.dataset.index })
+  }
+
+
+  async getSiteSettinglevelSetup(data) {
+    const res = await getSiteSettinglevelSetup(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ levelSetup: res.data.data[0], vipMoney: true, levelSetupList: res.data.other })
+      this.getSiteSelectMemberlevel()
+    }
+  }
+
+  vipMoney = e => {
+    this.setState({ levelSetupid: e.currentTarget.dataset.uuid })
+    this.getSiteSettinglevelSetup({ uuid: e.currentTarget.dataset.uuid })
+  }
+
+  async getSiteSettinglevelPrice(data) {
+    const res = await getSiteSettinglevelPrice(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.getSiteSettingList_member({page: this.state.memberPage, sportid: this.state.asyncValue })
+      this.setState({vipMoney:false})
+    } else {
+      Toast.error(res.data.msg)
+    }
+  }
+
+  handleSubmit = (values) => {
+    values.uuid = this.state.levelSetup.uuid
+    this.getSiteSettinglevelPrice(values)
+
+  }
+
+  changeForm = (e) => {
+    let p = Object.keys(e)[0]
+    if (p.substr(0, 8) === 'discount') {
+      let u = ['price' + p.substr(8, 1)]
+      let money = this.state.levelSetup.costperhour_cg
+      this.form.current.setFieldsValue({
+        [u]: (money / 10 * e[Object.keys(e)[0]] ).toFixed(2)
+      })
+    } else {
+      let u = ['discount' + p.substr(5, 1)]
+      let money = this.state.levelSetup.costperhour_cg
+      this.form.current.setFieldsValue({
+        [u]:  (e[Object.keys(e)[0]] * 10 / money).toFixed(2)
+      })
+    }
+  }
+
+
+  async getSiteSelectMemberlevel(data) {
+    const res = await getSiteSelectMemberlevel(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ levelList: res.data.data })
+    } else {
+      Toast.fail(res.data.msg)
+    }
+  }
+
+  async getSiteAddMember(data) {
+    const res = await getSiteAddMember(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      Toast.success(res.data.msg)
+      this.setState({ joinVipTitle: false })
+      this.getSiteSelectMemberlevel()
+      this.getSiteSettinglevelSetup({ uuid: this.state.levelSetupid })
+    } else if (res.data.code === 4001) {
+      Toast.fail('请输入会员等级名称')
+    } else {
+      Toast.fail(res.data.msg)
+    }
+  }
+
+
+  async getSiteSettinglevelEdit(data) {
+    const res = await getSiteSettinglevelEdit(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ joinVipTitle: false,flag:false })
+      this.getSiteSelectMemberlevel()
+    } else {
+      Toast.fail(res.data.msg)
+    }
+  }
+
+
+  btnVipTitle = () => {
+    if(this.state.flag===true){
+      this.getSiteSettinglevelEdit({ grade_name: this.state.vipTextArea, grade_level: this.state.vipGrade })
+    }else{
+      this.getSiteAddMember({ grade_name: this.state.vipTextArea, grade_level: this.state.vipGrade })
+    }
+  }
+
+  async getSiteMemberlevelDel(data) {
+    const res = await getSiteMemberlevelDel(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      Toast.success(res.data.msg)
+      this.getSiteSelectMemberlevel()
+      this.getSiteSettinglevelSetup({ uuid: this.state.levelSetupid })
+    } else {
+      Toast.fail(res.data.msg)
+    }
+  }
+
+
+  detelTitleTwo = () => {
+    this.getSiteMemberlevelDel({ uuid: '', id: this.state.levelDel })
+  }
+
+  vipGrade = e => {
+    this.setState({ vipGrade: e,vipTextArea:'' })
+  }
+  vipTextArea = e => {
+    this.setState({ vipTextArea: e.target.value })
+  }
+
+
+  joinVipTitle = () => {
+    this.setState({ joinVipTitle: true })
+  }
+  joinVipTitleTwo = () => {
+    this.setState({ joinVipTitle: false,flag:false })
+  }
+
+  deletGrade = e => {
+    this.setState({ levelDel: e.currentTarget.dataset.id })
+    alert('提示', '您确定删除该条等级设置吗?', [
+      { text: '取消', onPress: () => console.log(' ') },
+      { text: '确认', onPress: () => this.detelTitleTwo() },
+    ])
+
+  }
+
+  lookDetails = e => {
+    let i = e.currentTarget.dataset.index
+    this.setState({ lookDetails: true, lookDetailsList: this.state.memberList[i].level })
+  }
+
+
+  updateGrade=e=>{
+    this.setState({vipGrade:this.state.levelList[e.currentTarget.dataset.index].grade_level, vipTextArea:this.state.levelList[e.currentTarget.dataset.index].grade_name,joinVipTitle:true,flag:true})
+ }
+
 
   render() {
     return (
@@ -1939,6 +2138,14 @@ class sitePh extends React.Component {
           <div onTouchStart={this.header} data-index='4' style={this.state.index === '4' ? { color: '#D85D27' } : {}}>场地关联<div style={this.state.index === '4' ? { width: '10%', height: '2px', background: '#D85D27', margin: '-3px auto 0' } : { display: 'none' }}></div></div>
           <div onTouchStart={this.header} data-index='3' style={this.state.index === '3' ? { color: '#D85D27' } : {}}>历史设置<div style={this.state.index === '3' ? { width: '10%', height: '2px', background: '#D85D27', margin: '-3px auto 0' } : { display: 'none' }}></div></div>
         </div>
+
+        <div className="headerTwoTop" style={this.state.index === '2' ? {} : { display: 'none' }}>
+          <div data-index='1' onClick={this.headerTwoTop} style={this.state.headerTwoTop === '1' ? { color: '#D85D27', borderBottom: '0.06rem solid #D85D27' } : {}}>公开价格设置</div>
+          <div data-index='3' onClick={this.headerTwoTop} style={this.state.headerTwoTop === '3' ? { color: '#D85D27', borderBottom: '0.06rem solid #D85D27' } : {}}>会员等级设置</div>
+          <div data-index='2' onClick={this.headerTwoTop} style={this.state.headerTwoTop === '2' ? { color: '#D85D27', borderBottom: '0.06rem solid #D85D27' } : {}}>会员价格设置</div>
+        </div>
+
+
         <div className="wsMa4" style={this.state.index === '1' ? {} : { display: 'none' }}>
           <div className="Subdivide">
             {
@@ -1975,7 +2182,7 @@ class sitePh extends React.Component {
           </div>
         </div>
 
-        <div className="siting68" style={this.state.index === '2' ? {} : { display: 'none' }}>
+        <div className="siting68" style={this.state.index === '2' && this.state.headerTwoTop === '1' ? {} : { display: 'none' }}>
           <div className="Subdivide">
             {
               this.state.siteList.map((item, i) => (
@@ -2106,6 +2313,172 @@ class sitePh extends React.Component {
             <div style={{ marginLeft: '4%' }} onClick={this.relatedness}>+添加场地关联</div>
           </div>
         </div>
+
+
+        <div className="siting68" style={this.state.index === '2' && this.state.headerTwoTop === '2' ? {} : { display: 'none' }}>
+          <div className="Subdivide">
+            {
+              this.state.memberList.map((item, i) => (
+                <Card className="card" key={i}>
+                  <Card.Header
+                    title={<span className="titleLeft">{item.sportname}</span>}
+                    extra={<span className="titleRight">细分标签：{item.tags}</span>}
+                  />
+                  <Card.Body>
+                    <div className="bossname">
+                      <div onClick={this.venDuo} data-venueid={item.venueid}>场地编号：{item.venueid}</div>
+                      <div>场地数量：{item.sitenumber}</div>
+                      <div onClick={this.venDuo} data-venueid={item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}>星期：{item.opendaynameTwo.slice(1, item.opendaynameTwo.length)}</div>
+                      <div onClick={this.venDuo} data-venueid={item.starttime + '~' + item.endtime}>时间范围：{item.starttime}~{item.endtime}</div>
+                      <div>价格：{item.tags.indexOf('散') === -1 && item.tags.indexOf('按次') === -1 ? item.costperhour_cg + '元/时' : item.costperhour_cg + '元/次'}</div>
+
+                    </div>
+                  </Card.Body>
+                  <Card.Footer content={<div><div onClick={this.lookDetails} data-index={i} style={item.level.length !== 0 ? { color: '#F5A623' } : { display: 'none' }}>查看详情</div><div style={item.level.length === 0 ? {} : { display: 'none' }}>暂无设置</div></div>} extra={<div className="capzuo"><img style={{ marginRight: '10px' }} onClick={this.vipMoney} data-uuid={item.uuid} src={require('../../assets/upLoad.png')} alt="img" /></div>} />
+                </Card>
+              ))
+            }
+            <div style={this.state.siteList.length !== 0 ? { display: 'none' } : { width: '100%' }}><img style={{ width: '4rem', height: '4rem', display: 'block', margin: '4rem auto 0' }} src={require('../../assets/xifen (6).png')} alt="666" /><span style={{ display: 'block', textAlign: 'center' }}>您还没有添加价格设置!</span></div>
+            <Pagination style={{ marginBottom: '15px' }} size="small" hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.memberPage} total={this.state.memberListOther} onChange={this.memberCurrent} />
+          </div>
+
+        </div>
+
+        <div className="siting68" style={this.state.index === '2' && this.state.headerTwoTop === '3' ? {} : { display: 'none' }}>
+          <div className="Subdivide">
+            {
+              this.state.levelList.map((item, i) => (
+                <Card className="card" key={i}>
+                  <Card.Header
+                    title={<span className="titleLeft">名称：{item.grade_name}</span>}
+                    extra={<span className="titleRight">等级：{item.grade_level}级</span>}
+                  />
+                  <Card.Body>
+                    <div className="imgLeft" onClick={this.updateGrade} data-index={i}><img src={require('../../assets/upLoad.png')} alt='icon' /></div>
+                    <div className="imgRight" data-id={item.id} onClick={this.deletGrade}><img src={require('../../assets/delet.png')} alt='icon' /></div>
+                  </Card.Body>
+                </Card>
+              ))
+            }
+             <div className="request" style={this.state.levelList.length=== 0 ? {} : { display: 'none' }}><img src={require('../../assets/xifen (1).png')} alt="img" /><div>您还没有设置会员等级!</div></div>
+          </div>
+          <div className="footerSite">
+            <div style={{ width: '100%' }} onClick={this.joinVipTitle}>+添加会员等级</div>
+          </div>
+
+         
+        </div>
+
+
+
+
+
+
+        <Drawer
+          title="添加会员价格"
+          placement="bottom"
+          height='100%'
+          onClose={this.onClose}
+          destroyOnClose={true}
+          visible={this.state.vipMoney}
+        >
+          <div className="sitePhForm" style={this.state.levelSetupList.length !== 0 ? {} : { display: 'none' }}>
+            <div className="title">
+              <div>会员等级</div>
+              <div>会员折扣</div>
+              <div>会员价格</div>
+            </div>
+            <Form ref={this.form} onFinish={this.handleSubmit} onValuesChange={this.changeForm} preserve={false}>
+              {
+                this.state.levelSetupList.map((item, i) => (
+                  <div key={i} style={{ overflow: 'hidden' }}>
+                    <span style={{ float: 'left', lineHeight: '32px' }}>价格{i + 1}</span>
+                    <Form.Item className="form" style={{ display: 'none' }} name={'grade_level' + (i + 1)} initialValue={item.grade_level}>
+                      <div style={{ display: 'none' }}>{item.grade_level}</div>
+                      <Input className="sdgfdfgdfgd" disabled={true} value={item.grade_level} />
+                    </Form.Item>
+                    <Form.Item className="form" name={'grade_name' + (i + 1)} initialValue={item.grade_name}>
+                      <div style={{ display: 'none' }}>{item.grade_name}</div>
+                      <Input className="sdgfdfgdfgd" disabled={true} value={item.grade_name} />
+                    </Form.Item>
+                    <Form.Item className="form" name={'discount' + (i + 1)} initialValue={item.discount}>
+                      <InputNumber className="sdgfdfgdfgd dsgfghfgh" min={1} max={10} placeholder="折扣" value={item.discount} />
+                    </Form.Item>
+                    <Form.Item className="form" name={'price' + (i + 1)} initialValue={item.price}>
+                      <InputNumber className="sdgfdfgdfgd dsgfghfgh" min={1} max={this.state.levelSetup.costperhour_cg} placeholder="价格" value={item.price} />
+                    </Form.Item>
+
+                    <div style={{ display: 'none' }}>{item.grade_name}</div>
+                  </div>
+                ))
+              }
+              <Form.Item >
+                <Button className="save" htmlType="submit">
+                  提交
+                   </Button>
+              </Form.Item>
+            </Form>
+          </div>
+          <div style={this.state.levelSetupList.length === 0 ? { color: 'red' } : { display: 'none' }}>请去会员等级设置页面，设置会员等级。</div>
+        </Drawer>
+
+        <Drawer
+          title="添加会员等级名称"
+          placement="bottom"
+          height='50%'
+          onClose={this.onClose}
+          visible={this.state.joinVipTitle}
+        >
+          <div className="modelList" style={{ height: '32px' }}>
+            <span>等级</span>
+            <Select value={this.state.vipGrade}  disabled={this.state.flag} style={{ width: 120, marginLeft: '25px' }} onChange={this.vipGrade}>
+              <Option value="1">1级</Option>
+              <Option value="2">2级</Option>
+              <Option value="3">3级</Option>
+              <Option value="4">4级</Option>
+              <Option value="5">5级</Option>
+              <Option value="6">6级</Option>
+              <Option value="7">7级</Option>
+              <Option value="8">8级</Option>
+              <Option value="9">9级</Option>
+            </Select>
+          </div>
+          <div className="modelList">
+            <span>名称</span>
+            <TextArea className="textAreaName" value={this.state.vipTextArea} onChange={this.vipTextArea} placeholder="请输入会员等级名称"></TextArea>
+          </div>
+          <button className="submit" onClick={this.btnVipTitle} style={{ border: 'none' }}>提交</button>
+        </Drawer>
+
+
+        <Drawer
+          title="会员价格详情"
+          placement="bottom"
+          height='100%'
+          onClose={this.onClose}
+          destroyOnClose={true}
+          visible={this.state.lookDetails}
+        >
+          
+          <Row style={{ textAlign: 'center' }}>
+              <Col xs={{ span: 8 }}>会员等级</Col>
+              <Col xs={{ span: 8 }}>会员折扣</Col>
+              <Col xs={{ span: 8 }}>会员价格</Col>
+            </Row>
+            <div style={{height:'100%',overflowY:'auto'}}>
+            {
+              this.state.lookDetailsList.map((item, i) => (
+                <Row key={i} style={{ textAlign: 'center', lineHeight: '30px' }}>
+                  <Col xs={{ span: 8 }}>{item.grade_name}</Col>
+                  <Col xs={{ span: 8 }}>{item.discount}折</Col>
+                  <Col xs={{ span: 8 }}>{item.price}元</Col>
+                </Row>
+              ))
+            }
+            </div>
+
+
+        </Drawer>
 
 
 
@@ -2330,7 +2703,7 @@ class sitePh extends React.Component {
 
 
           <Picker
-            data={this.state.pickerValueTwo===3||this.state.pickerValueTwo===4||this.state.pickerValueTwo===5?this.state.timeRtArr:this.state.timeRtArrTwo}
+            data={this.state.pickerValueTwo === 3 || this.state.pickerValueTwo === 4 || this.state.pickerValueTwo === 5 ? this.state.timeRtArr : this.state.timeRtArrTwo}
             onOk={this.starttime}
             value={this.state.starttime}
             cols={1}
@@ -2340,7 +2713,7 @@ class sitePh extends React.Component {
 
 
           <Picker
-             data={this.state.pickerValueTwo===3||this.state.pickerValueTwo===4||this.state.pickerValueTwo===5?this.state.timeRtArr:this.state.timeRtArrTwo}
+            data={this.state.pickerValueTwo === 3 || this.state.pickerValueTwo === 4 || this.state.pickerValueTwo === 5 ? this.state.timeRtArr : this.state.timeRtArrTwo}
             onOk={this.endtime}
             value={this.state.endtime}
             cols={1}
@@ -2469,10 +2842,10 @@ class sitePh extends React.Component {
               type='money'
               placeholder={this.state.moneySiscount}
               onChange={(v) => { this.setState({ moneySiscount: v }) }}
-              style={{ padding: '0',marginRight:0 }}
+              style={{ padding: '0', marginRight: 0 }}
               disabledKeys={['.']}
               moneyKeyboardWrapProps={moneyKeyboardWrapProps}
-            ><span style={{ fontSize: '0.75rem',marginRight:0 }}>价格(元/时)</span></InputItem></List.Item>
+            ><span style={{ fontSize: '0.75rem', marginRight: 0 }}>价格(元/时)</span></InputItem></List.Item>
 
 
           <div className="listSonSSS">
@@ -2563,6 +2936,7 @@ class sitePh extends React.Component {
 
     )
   }
+  form = React.createRef();
 }
 
 

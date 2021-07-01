@@ -768,11 +768,8 @@ class myWallet extends React.Component {
                 <span className="h1">会员卡信息</span>
                 <span className="h2">北京甲乙电子商务有限公司(找对手平台)</span>
                 <span className="h2" style={this.state.chargeDetails.cardnumber === '' || this.state.chargeDetails.length === 0 ? { display: 'none' } : {}}>卡号：{this.state.chargeDetails.cardnumber}</span>
-      
                 <span className="h2" style={{ textAlign: 'left', paddingRight: '6px' }}>场馆名称：{this.state.gerVenueNameName}</span>
                 <span className="h1" style={{ textAlign: 'right', paddingRight: '6px',paddingTop:'10px' }}>当前余额：¥{this.state.chargeDetailsNum}</span>
-                
-                <div className="lookhe" style={this.state.bySite.length!==0?{}:{display:'none'}}><a href={this.state.bySite.length!==0?htUrl+this.state.bySite[0].HT_path:''}  rel="noopener noreferrer" target="_blank">查看合同</a></div>
               </div>
               <div className="backVipTwo" style={this.state.chargeDetails.cardJustURL === '' || this.state.chargeDetails.length === 0 ? { display: 'none' } : {}}>
                 <img src={imgUrlTwo + this.state.chargeDetails.cardJustURL} alt="img" />

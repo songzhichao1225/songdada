@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-//本地全部隐去
-// axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
+//本地全部隐去   
+axios.defaults.baseURL = 'https://appstg.tiaozhanmeiyitian.com/';//测试
 // axios.defaults.baseURL = 'https://app.tiaozhanmeiyitian.com/';//正式
 
 
@@ -19,7 +19,7 @@ export let htUrl='http://adminstg.tiaozhanmeiyitian.com/'  //测试合同路径
 // export let htUrl='http://admin.tiaozhanmeiyitian.com/'  //正式合同路径
 
 export function _login(data){    //登录  
-    return axios.post('/api/getVenueLogin',data)
+    return axios.post('/api/getVenueLogin',data) 
 }
 
 export function _register(data){   //注册
@@ -710,6 +710,10 @@ export function exchangeVenue(data,headers){    //场馆端~线下占用 更换�
 
 export function getSiteSettinglevelPrice(data,headers){    //提交会员价格设置
     return axios.post('/api/getSiteSettinglevelPrice',data,{headers: {'token': headers}})
+}
+
+export function getSiteSettinglevelEdit(data,headers){    //提交会员价格设置
+    return axios.post('/api/getSiteSettinglevelEdit',data,{headers: {'token': headers}})
 }
 
 

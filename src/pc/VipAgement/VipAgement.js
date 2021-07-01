@@ -1,12 +1,13 @@
 import React from 'react';
 import './VipAgement.css';
 import 'antd/dist/antd.css';
-import { AddVenueMember, getVenueMemberlist, getVenueMemberRecordsOfConsumption, getVenueMemberDetails, VenueMemberRecharge,urlKo, VenueMemberRefundCardDetails, getVenueMemberlistexcel, VenueMemberRefundCard, EditVenueMember, _code } from '../../api';
+import { AddVenueMember, getVenueMemberlist, getVenueMemberRecordsOfConsumption, getVenueMemberDetails, VenueMemberRecharge,urlKo,getSiteSelectMemberlevel,getSiteAddMember, VenueMemberRefundCardDetails, getVenueMemberlistexcel, VenueMemberRefundCard, EditVenueMember, _code } from '../../api';
 import { Row, Col, Modal, Input, Select, DatePicker, message, Pagination, Popconfirm, Upload, Button } from 'antd';
-import { CloseCircleOutlined,UploadOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined, UploadOutlined } from '@ant-design/icons';
 import moment from 'moment';
 const { Search } = Input;
 const { Option } = Select;
+const { TextArea } = Input;
 
 class VipAgement extends React.Component {
 
@@ -33,7 +34,6 @@ class VipAgement extends React.Component {
     memberDetails: [],
     topUpTwo: '',
     giveAwayTwo: '',
-    discountTwo: 10,
     balanceTwo: '',
     vipUid: '',
     returnCard: false,
@@ -61,6 +61,10 @@ class VipAgement extends React.Component {
     href: '',
     download: '',
     text: '',
+    levelList: [],
+    joinVipTitle: false,
+    vipTextArea:'',
+    vipGrade: '1',
   }
 
 
@@ -77,10 +81,17 @@ class VipAgement extends React.Component {
       message.error(res.data.msg)
     }
   }
+
+  async getSiteSelectMemberlevel(data) {
+    const res = await getSiteSelectMemberlevel(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      this.setState({ levelList: res.data.data })
+    } 
+  }
+
   componentDidMount() {
     this.getVenueMemberlist({ page: this.state.page })
-
-
+    this.getSiteSelectMemberlevel()
   }
 
   handleCancel = () => {
@@ -132,16 +143,10 @@ class VipAgement extends React.Component {
   Vipcard = e => {
     this.setState({ VipcardVal: e.target.value })
   }
-  discount = e => {
-    if (e.target.value > 10) {
-      this.setState({ discountVal: 10 })
-    } else {
-      this.setState({ discountVal: e.target.value })
-    }
-  }
+
 
   handleChange = e => {
-    this.setState({ handleChange: e })
+    this.setState({ handleChange: this.state.levelList[e].id,handleChangeTwo:this.state.levelList[e].grade_name })
   }
 
   topUp = e => {
@@ -165,7 +170,7 @@ class VipAgement extends React.Component {
   }
 
   vipSubmiter = () => {
-    let { cardHolderVal, contactPersonVal, birthdays, contactNumberVal, VipcardVal, discountVal, handleChange, topUp, giveAway, balance, validity } = this.state
+    let { cardHolderVal, contactPersonVal, birthdays, contactNumberVal, VipcardVal, handleChange,handleChangeTwo, topUp, giveAway, balance, validity } = this.state
     let obj = {
       cardholderName: cardHolderVal,
       contacts: contactPersonVal,
@@ -173,7 +178,7 @@ class VipAgement extends React.Component {
       contactNumber: contactNumberVal,
       cardNumber: VipcardVal,
       grade: handleChange,
-      discount: discountVal,
+      gradeName:handleChangeTwo,
       rechargeMoney: topUp,
       giveMoney: giveAway,
       balance: balance,
@@ -256,20 +261,13 @@ class VipAgement extends React.Component {
   giveAwayTwo = e => {
     this.setState({ giveAwayTwo: e.target.value, balanceTwo: Number(this.state.memberDetails.balance) + Number(this.state.topUpTwo) + Number(e.target.value) })
   }
-  discountTwo = e => {
-    if (e.target.value > 10) {
-      this.setState({ discountTwo: 10 })
-    } else {
-      this.setState({ discountTwo: e.target.value })
-    }
-  }
+
 
 
   vipSubmiterTwo = () => {
-    let { vipUid, discountTwo, validityThree, topUpTwo, giveAwayTwo } = this.state
+    let { vipUid, validityThree, topUpTwo, giveAwayTwo } = this.state
     let obj = {
       memberuuid: vipUid,
-      discount: discountTwo,
       rechargeMoney: topUpTwo,
       giveMoney: giveAwayTwo,
       effective: validityThree
@@ -330,7 +328,7 @@ class VipAgement extends React.Component {
     if (res.data.code === 2000) {
       this.setState({
         cardHolderTwo: res.data.data.cardholderName, contactPersonTwo: res.data.data.contacts, dateOnChangeTwo: res.data.data.birthday,
-        contactNumberTqwo: res.data.data.contactNumber, VipcardTwo: res.data.data.cardNumber, gradeTwo: res.data.data.grade, validityTwo: res.data.data.effective
+        contactNumberTqwo: res.data.data.contactNumber, VipcardTwo: res.data.data.cardNumber,gradeThree:res.data.data.gradeName, gradeTwo: res.data.data.grade, validityTwo: res.data.data.effective
       })
     } else {
       message.error(res.data.msg)
@@ -372,7 +370,7 @@ class VipAgement extends React.Component {
     this.setState({ VipcardTwo: e.target.value })
   }
   gradeTwo = e => {
-    this.setState({ gradeTwo: Number(e) })
+    this.setState({ gradeTwo:this.state.levelList[e].id,gradeThree:this.state.levelList[e].grade_name })
   }
   validityTwo = e => {
     this.setState({ validityTwo: Number(e) })
@@ -390,7 +388,7 @@ class VipAgement extends React.Component {
   }
 
   returnCardSubTwo = () => {
-    let { memberuuidFour, cardHolderTwo, contactPersonTwo, dateOnChangeTwo, code, codeTwo, makeNumTwo, contactNumberTqwo, VipcardTwo, gradeTwo, validityTwo } = this.state
+    let { memberuuidFour, cardHolderTwo, contactPersonTwo, dateOnChangeTwo, code, codeTwo, makeNumTwo, contactNumberTqwo, VipcardTwo, gradeTwo,gradeThree, validityTwo } = this.state
     let obj = {
       memberuuid: memberuuidFour,
       cardholderName: cardHolderTwo,
@@ -402,6 +400,7 @@ class VipAgement extends React.Component {
       code: code,
       newcode: codeTwo,
       grade: gradeTwo,
+      gradeName:gradeThree,
       effective: validityTwo,
     }
     this.EditVenueMember(obj)
@@ -488,29 +487,60 @@ class VipAgement extends React.Component {
     }
   }
 
- 
+
+  xlsxChange = (info) => {
+    if (info.file.status === 'done') {
+      if (info.file.response.code === 2000) {
+        message.success('上传成功')
+        this.setState({ import: false })
+        this.getVenueMemberlist({ page: 1 })
+      } else {
+        message.error(info.file.response.msg)
+      }
+    }
+  }
+
+  joinVipTitle = () => {
+    this.setState({ joinVipTitle: true })
+  }
+
+  joinVipTitleTwo=()=>{
+    this.setState({joinVipTitle:false})
+  }
+  vipTextArea = e => {
+    this.setState({ vipTextArea: e.target.value })
+  }
+
+  vipGrade = e => {
+    this.setState({ vipGrade: e })
+  }
+  async getSiteAddMember(data) {
+    const res = await getSiteAddMember(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      message.success(res.data.msg)
+      this.setState({ joinVipTitle: false })
+      this.getSiteSelectMemberlevel()
+    } else {
+      message.warning(res.data.msg)
+    }
+  }
 
 
+  btnVipTitle = () => {
+    this.getSiteAddMember({ grade_name: this.state.vipTextArea, grade_level: this.state.vipGrade })
+  }
 
   render() {
 
+
     const props = {
-      name:'ss',
+      name: 'ss',
       action:urlKo+'api/import',
       headers: {
         authorization: 'authorization-text',
-        token:sessionStorage.getItem("venue_token")
+        token: sessionStorage.getItem("venue_token")
       },
-      onChange(info) {
-        if (info.file.status !== 'uploading') {
-        } 
-        if (info.file.status === 'done') {
-          message.success(`${info.file.name}上传成功~`);
 
-        } else if (info.file.status === 'error') {
-          message.error(`${info.file.name} 上传失败!`);
-        }
-      }
     }
 
     return (
@@ -547,7 +577,7 @@ class VipAgement extends React.Component {
                     <td>{item.birthday}</td>
                     <td>{item.contactNumber}</td>
                     <td>{item.cardNumber}</td>
-                    <td>{item.grade === 1 ? '普通会员' : item.grade === 2 ? '银卡会员' : item.grade === 3 ? '金卡会员' : item.grade === 4 ? '铂金会员' : item.grade === 5 ? '钻石会员' : item.grade === 6 ? '星耀会员' : ''}</td>
+                    <td>{item.gradeName}</td>
                     <td>￥{item.rechargeMoney}</td>
                     <td>￥{item.giveMoney}</td>
                     <td>{item.discount}</td>
@@ -558,8 +588,6 @@ class VipAgement extends React.Component {
                   </tr>
                 ))
               }
-
-
             </tbody>
           </table>
 
@@ -568,9 +596,9 @@ class VipAgement extends React.Component {
 
           <Pagination style={{ marginBottom: '15px' }} hideOnSinglePage={true} showSizeChanger={false} className='fenye' current={this.state.page} total={this.state.other} onChange={this.current} />
           <div className="bottomJoin" onClick={this.bottomJoin}>+新增会员信息</div>
-
+          <div className="import derivedTwo" ><a href="https://cgstg.zhaoduishou.com/uploads/excel/import.xlsx">下载导入模板</a></div>
           <div className="import" onClick={this.importTr}>导入会员</div>
-          <div className="derived import"> <a href={urlKo+'api/export?token='+sessionStorage.getItem('venue_token')}>导出会员</a></div>
+          <div className="derived import"> <a href={urlKo + 'api/export?token=' + sessionStorage.getItem('venue_token')}>导出会员</a></div>
 
         </div>
 
@@ -603,20 +631,19 @@ class VipAgement extends React.Component {
             <span className="title">会员卡号<span className="redStart">*</span></span>
             <Input placeholder="请填写" maxLength={20} onChange={this.Vipcard} />
           </div>
-          <div className="ViplistSon">
-            <span className="title">折扣<span onClick={this.hintTr} style={{ padding: '0px 6px', marginLeft: '10px', background: '#F5A623', color: '#fff', cursor: 'pointer' }}>?</span></span>
-            <Input style={{ marginLeft: '18px', width: '300px' }} maxLength={4} value={this.state.discountVal} onChange={this.discount} placeholder="请填写" />
-          </div>
+
           <div className="ViplistSon">
             <span className="title">会员等级<span className="redStart">*</span></span>
-            <Select placeholder="请选择 " style={{ width: 300, marginLeft: '18px' }} onChange={this.handleChange}>
-              <Option value="1">普通会员</Option>
-              <Option value="2">银卡会员</Option>
-              <Option value="3">金卡会员</Option>
-              <Option value="4">铂金会员</Option>
-              <Option value="5">钻石会员</Option>
-              <Option value="6">星耀会员</Option>
+            <Select placeholder="请选择 " style={{ width: 300, marginLeft: '18px',float:'left' }} onChange={this.handleChange}>
+
+              {
+                this.state.levelList.map((item,i) => (
+                  <Option key={i} value={i}>{item.grade_name+'-('+item.grade_level+'级)'}</Option>
+                ))
+              }
+             
             </Select>
+            <div style={{float:'left',color:'blue',fontSize:'12px',lineHeight:'32px',cursor:'pointer'}} onClick={this.joinVipTitle}>+添加会员等级</div>
           </div>
           <div className="ViplistSon">
             <span className="title">充值金额<span className="redStart">*</span></span>
@@ -656,6 +683,40 @@ class VipAgement extends React.Component {
           <div className="vipSubmiter" onClick={this.vipSubmiter}>保存</div>
         </Modal>
 
+
+        <Modal
+            title="添加会员等级"
+            visible={this.state.joinVipTitle}
+            onOk={this.handleOk}
+            onCancel={this.joinVipTitleTwo}
+            width={630}
+            style={{ zIndex: 999 }}
+            className='model'
+            closeIcon={<CloseCircleOutlined style={{ color: '#fff', fontSize: '20px' }} />}
+          >
+
+            <div className="modelList" style={{ height: '32px' }}>
+              <span>等级</span>
+              <Select defaultValue="1" style={{ width: 120, marginLeft: '25px' }} onChange={this.vipGrade}>
+                <Option value="1">1级</Option>
+                <Option value="2">2级</Option>
+                <Option value="3">3级</Option>
+                <Option value="4">4级</Option>
+                <Option value="5">5级</Option>
+                <Option value="6">6级</Option>
+                <Option value="7">7级</Option>
+                <Option value="8">8级</Option>
+                <Option value="9">9级</Option>
+              </Select>
+            </div>
+            <div className="modelList">
+              <span>名称</span>
+              <TextArea className="textAreaName" onChange={this.vipTextArea} placeholder="请输入会员等级名称"></TextArea>
+            </div>
+            <button className="submit" onClick={this.btnVipTitle} style={{ border: 'none' }}>提交</button>
+
+          </Modal>
+
         <Modal
           title="提示"
           visible={this.state.hint}
@@ -674,11 +735,11 @@ class VipAgement extends React.Component {
           onCancel={this.import}>
           <div className="ViplistSon">
             <span className="title">导入文件</span>
-            <Upload {...props}>
-              <Button style={{marginLeft:'20px'}} icon={<UploadOutlined />}>点击上传</Button>
+            <Upload {...props} onChange={this.xlsxChange}>
+              <Button style={{ marginLeft: '20px' }} icon={<UploadOutlined />}>点击上传</Button>
             </Upload>
           </div>
-          
+
         </Modal>
 
 
@@ -741,7 +802,7 @@ class VipAgement extends React.Component {
 
           <div className="ViplistSon">
             <span className="title">会员等级</span>
-            <Input value={this.state.memberDetails.grade === 1 ? '普通会员' : this.state.memberDetails.grade === 2 ? '银卡会员' : this.state.memberDetails.grade === 3 ? '金卡会员' : this.state.memberDetails.grade === 4 ? '铂金会员' : this.state.memberDetails.grade === 5 ? '钻石会员' : this.state.memberDetails.grade === 6 ? '星耀会员' : ''} disabled={true} />
+            <Input value={this.state.memberDetails.gradeName} disabled={true} />
           </div>
 
 
@@ -786,10 +847,7 @@ class VipAgement extends React.Component {
             <Input type='number' placeholder="请填写" value={this.state.giveAwayTwo} onChange={this.giveAwayTwo} />
           </div>
 
-          <div className="ViplistSon">
-            <span className="title">折扣</span>
-            <Input style={{ marginLeft: '19px', width: '300px' }} maxLength={4} value={this.state.discountTwo} onChange={this.discountTwo} placeholder="请填写" />
-          </div>
+
           <div className="ViplistSon">
             <span className="title">充值后金额</span>
             <Input placeholder="请填写" value={this.state.balanceTwo} disabled={true} />
@@ -851,15 +909,13 @@ class VipAgement extends React.Component {
 
           <div className="ViplistSon">
             <span className="title">会员等级</span>
-            <Select placeholder="请选择 " style={{ width: 300, marginLeft: '18px' }} value={
-              this.state.gradeTwo === 1 ? '普通会员' : this.state.gradeTwo === 2 ? '银卡会员' : this.state.gradeTwo === 3 ? '金卡会员' : this.state.gradeTwo === 4 ? '铂金会员' : this.state.gradeTwo === 5 ? '钻石会员' : this.state.gradeTwo === 6 ? '星耀会员' : ''
-            } onChange={this.gradeTwo}>
-              <Option value="1">普通会员</Option>
-              <Option value="2">银卡会员</Option>
-              <Option value="3">金卡会员</Option>
-              <Option value="4">铂金会员</Option>
-              <Option value="5">钻石会员</Option>
-              <Option value="6">星耀会员</Option>
+            <Select placeholder="请选择 " style={{ width: 300, marginLeft: '18px' }} value={this.state.gradeThree} onChange={this.gradeTwo}>
+            {
+                this.state.levelList.map((item,i) => (
+                  <Option key={i} value={i}>{item.grade_name+'-('+item.grade_level+'级)'}</Option>
+                ))
+              }
+             
             </Select>
           </div>
 

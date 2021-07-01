@@ -2,13 +2,14 @@ import React from 'react';
 import './management.css';
 
 import { Card, List, InputItem, DatePicker, Picker, Toast, Modal, SearchBar } from 'antd-mobile';
-import { Pagination, Spin, Drawer } from 'antd';
+import { Pagination, Spin, Drawer,Select,Input } from 'antd';
 import 'antd-mobile/dist/antd-mobile.css';
-import { getVenueMemberlist, AddVenueMember, getVenueMemberRecordsOfConsumption, getVenueMemberDetails, VenueMemberRecharge, VenueMemberRefundCardDetails, EditVenueMember, _code, VenueMemberRefundCard } from '../../api';
+import { getVenueMemberlist, AddVenueMember, getVenueMemberRecordsOfConsumption, getVenueMemberDetails,getSiteSelectMemberlevel, VenueMemberRecharge,getSiteAddMember, VenueMemberRefundCardDetails, EditVenueMember, _code, VenueMemberRefundCard } from '../../api';
 import { LeftOutlined } from '@ant-design/icons';
 
 const alert = Modal.alert;
-
+const { Option } = Select;
+const { TextArea } = Input;
 class management extends React.Component {
 
   state = {
@@ -20,13 +21,12 @@ class management extends React.Component {
     { label: '六个月', value: '6' }, { label: '七个月', value: '7' }, { label: '八个月', value: '8' }, { label: '九个月', value: '9' }, { label: '十个月', value: '10' }, { label: '十一个月', value: '11' },
     { label: '十二个月', value: '12' }, { label: '两年', value: '13' }, { label: '三年', value: '14' }, { label: '四年', value: '15' }, { label: '五年', value: '16' }, { label: '六年', value: '17' },
     ],
-    gradeList: [{ label: '普通会员', value: '1' }, { label: '银卡会员', value: '2' }, { label: '金卡会员', value: '3' }, { label: '铂金会员', value: '4' }, { label: '钻石会员', value: '5' }, { label: '星耀会员', value: '6' },],
+    gradeList: [],
     cardHolder: '',//卡主名称
     contactPerson: '',//联系人
     birthday: '',//生日
     contactNumber: '',//联系电话
     Vipcard: '',//会员卡号
-    discountVal: '',//折扣
     topUp: '',//充值金额
     giveAway: '',//赠送金额
     balance: '0',//余额
@@ -40,7 +40,6 @@ class management extends React.Component {
     memberuuidOne: '',
     visibleJoinTwo: false,
     ChUUid: '',
-    discountValTwo: 10,//充值折扣
     visibleJoinThree: false,//修改抽屉
     cardHolderThree: '',
     contactPersonThree: '',
@@ -61,6 +60,9 @@ class management extends React.Component {
     balanceTwo: '0',
     text:'',
     balanceTowT:0,
+    joinVipTitle:false,
+    vipGrade: '1',
+    vipTextArea: '',
   };
 
 
@@ -69,8 +71,24 @@ class management extends React.Component {
     this.setState({ memberList: res.data.data, spin: false, other: res.data.other.maxcount })
   }
 
+  async getSiteSelectMemberlevel(data) {
+    const res = await getSiteSelectMemberlevel(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+     
+      let arr=[]
+      for(let i in res.data.data){
+         let obj={}
+         obj.label=res.data.data[i].grade_name+'-('+res.data.data[i].grade_level+'级)'
+         obj.value=res.data.data[i].id
+         arr.push(obj)
+      }
+      this.setState({ gradeList:arr})
+    } 
+  }
+
   componentDidMount() {
     this.getVenueMemberlist({ page: this.state.page })
+    this.getSiteSelectMemberlevel()
   }
 
   current = (page, pageSize) => {
@@ -98,7 +116,14 @@ class management extends React.Component {
   }
 
   btnSubmit = () => {
-    let { cardHolder, contactPerson, birthday, contactNumber, Vipcard, discountVal, grade, topUp, giveAway, balance, validity } = this.state
+    let { cardHolder, contactPerson, birthday, contactNumber, Vipcard, grade, topUp, giveAway, balance, validity } = this.state
+    let g=''
+    for(let i in this.state.gradeList){
+        if(this.state.gradeList[i].value===grade[0]){
+          g=this.state.gradeList[i].label.split('-')[0]
+          
+        }
+    }
     let obj = {
       cardholderName: cardHolder,
       contacts: contactPerson,
@@ -106,13 +131,31 @@ class management extends React.Component {
       contactNumber: contactNumber,
       cardNumber: Vipcard,
       grade: grade[0],
-      discount: discountVal,
+      gradeName:g,
       rechargeMoney: topUp,
       giveMoney: giveAway,
       balance: balance,
       effective: validity[0],
     }
-    this.AddVenueMember(obj)
+    console.log(obj)
+
+    if (cardHolder === '') {
+       Toast.fail('请填写卡主名称')
+    } else if (contactPerson === '') {
+      Toast.fail('请填写联系人')
+    } else if (contactNumber === '') {
+      Toast.fail('请填写联系电话')
+    } else if (Vipcard === '') {
+      Toast.fail('请填写会员卡号')
+    } else if (grade.length ===0) {
+      Toast.fail('请选择会员等级')
+    } else if (topUp === '') {
+      Toast.fail('请输入充值金额')
+    } else if (validity.length ===0) {
+      Toast.fail('请选择有效期')
+    } else {
+      this.AddVenueMember(obj)
+    }
   }
 
   async getVenueMemberRecordsOfConsumption(data) {
@@ -178,10 +221,9 @@ class management extends React.Component {
 
 
   btnSubmitTwo = () => {
-    let { ChUUid, discountValTwo,validityTwo, topUpTwo, giveAwayTwo } = this.state
+    let { ChUUid, validityTwo, topUpTwo, giveAwayTwo } = this.state
     let obj = {
       memberuuid: ChUUid,
-      discount: discountValTwo,
       rechargeMoney: topUpTwo,
       giveMoney: giveAwayTwo,
       effective:validityTwo[0],
@@ -259,12 +301,6 @@ class management extends React.Component {
 
       { text: '确定', onPress: () => 6 },
     ])
-  }
-  cofirmMoney = e => {
-    if (e > 10) {
-      Toast.fail('折扣不能大于10')
-      this.setState({ discountVal: 10 })
-    }
   }
 
   contactOpen = () => {
@@ -347,6 +383,15 @@ class management extends React.Component {
 
   btnSubmitTosjij = () => {
     let { memberuuidlokl, cardHolderThree, contactPersonThree, birthdayThree, contactNumberThree, makeNumTwo, ipCode, ipCodeTwo, VipcardThree, gradeThree, validityThree } = this.state
+    let g=''
+    for(let i in this.state.gradeList){
+        if(this.state.gradeList[i].value===gradeThree[0]){
+          g=this.state.gradeList[i].label.split('-')[0]
+          
+        }
+    }
+    
+    
     let obj = {
       memberuuid: memberuuidlokl,
       cardholderName: cardHolderThree,
@@ -358,11 +403,46 @@ class management extends React.Component {
       newcode: ipCodeTwo,
       cardNumber: VipcardThree,
       grade: gradeThree[0],
+      gradeName:g,
       effective: validityThree[0]
     }
     this.EditVenueMember(obj)
   }
 
+  
+  joinVipTitle = () => {
+    this.setState({ joinVipTitle: true })
+  }
+
+  joinVipTitleTwo = () => {
+    this.setState({ joinVipTitle: false })
+  }
+
+  async getSiteAddMember(data) {
+    const res = await getSiteAddMember(data, localStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      Toast.success(res.data.msg)
+      this.setState({ joinVipTitle: false })
+      this.getSiteSelectMemberlevel()
+    } else if (res.data.code === 4001) {
+      Toast.fail('请输入会员等级名称')
+    } else {
+      Toast.fail(res.data.msg)
+    }
+  }
+
+
+  btnVipTitle = () => {
+    this.getSiteAddMember({ grade_name: this.state.vipTextArea, grade_level: this.state.vipGrade })
+  }
+
+  vipGrade = e => {
+    this.setState({ vipGrade: e })
+  }
+
+  vipTextArea = e => {
+    this.setState({ vipTextArea: e.target.value })
+  }
 
   render() {
     return (
@@ -383,7 +463,7 @@ class management extends React.Component {
                   />
                   <Card.Body className="listDetails" style={{ fontSize: '0.75rem' }}>
                     <div>生日：{item.birthday}</div> <div>联系电话：{item.contactNumber}</div> <div><div style={{ float: 'left' }}>会员卡号：</div><div className="vipText" data-txt={item.cardNumber} onClick={this.lookText}>{item.cardNumber}</div></div>
-                    <div>会员等级：{item.grade === 1 ? '普通' : item.grade === 2 ? '银卡' : item.grade === 3 ? '金卡' : item.grade === 4 ? '铂金' : item.grade === 5 ? '钻石' : item.grade === 6 ? '星耀' : ''}</div>
+                    <div>会员等级：{item.gradeName}</div>
                     <div>折扣：{item.discount}折</div>  <div>充值金额：￥{item.rechargeMoney}</div> <div>赠送金额：￥{item.giveMoney}</div>   <div>余额：￥{item.balance}<span className="lishi" onClick={this.consumptionOne} data-uuid={item.uuid}>历史记录</span></div>
                     <div style={{ paddingBottom: '0.5rem' }}>有效日期：{item.effectiveDate}</div> <div style={{ paddingBottom: '0.5rem' }}>会员卡状态：{item.status === 1 ? '正常' : item.status === 2 ? '已退卡' : item.status === 3 ? '已过期' : ''}</div>
 
@@ -407,6 +487,7 @@ class management extends React.Component {
           closable={true}
           width="100%"
           onClose={this.onClose}
+          className="managementTwo"
           visible={this.state.visibleJoin}
         >
           <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
@@ -437,7 +518,7 @@ class management extends React.Component {
             value={this.state.birthday}
             onChange={birthday => this.setState({ birthday })}
           >
-            <List.Item arrow="horizontal" className="lood" style={{ borderBottom: '1px solid #E9E9E9' }}>生日</List.Item>
+            <List.Item arrow="horizontal" className="lood" style={{ borderBottom: '1px solid #E9E9E9' }}><span style={{ fontSize: '0.88rem', border: 'none'}}>生日</span></List.Item>
           </DatePicker>
 
           <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
@@ -466,32 +547,14 @@ class management extends React.Component {
             cols={1}
             title="选择等级"
             extra="请选择"
-            value={this.state.grade}
+            value={this.state.gradeName}
             onChange={v => this.setState({ grade: v })}
             onOk={v => this.setState({ grade: v })}
           >
-            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>会员卡等级</List.Item>
+            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}><span style={{ fontSize: '0.88rem', border: 'none' }}>会员卡等级</span></List.Item>
           </Picker>
 
-          <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
-            <InputItem
-              type='text'
-              placeholder="请输入"
-              className="look"
-              maxLength={4}
-              value={this.state.discountVal}
-              onVirtualKeyboardConfirm={this.cofirmMoney}
-              onChange={(v) => {
-                if (parseFloat(v) > 10) {
-                  this.setState({ discountVal: 10 })
-                } else {
-                  this.setState({ discountVal: v })
-                }
-
-              }}
-              style={{ padding: '0', fontSize: '0.88rem', textAlign: 'right' }}
-            ><span style={{ fontSize: '0.88rem', border: 'none' }}>折扣</span></InputItem>
-          </List.Item>
+         
 
           <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
             <InputItem
@@ -517,7 +580,7 @@ class management extends React.Component {
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>赠送金额</span></InputItem>
           </List.Item>
 
-          <List.Item arrow="empty" extra={this.state.balance} style={{ borderBottom: '1px solid #E9E9E9' }}>余额</List.Item>
+          <List.Item arrow="empty" extra={this.state.balance} style={{ borderBottom: '1px solid #E9E9E9' }}><span style={{ fontSize: '0.88rem', border: 'none'}}>余额</span></List.Item>
 
           <Picker
             data={this.state.seasons}
@@ -528,14 +591,42 @@ class management extends React.Component {
             onChange={v => this.setState({ validity: v })}
             onOk={v => this.setState({ validity: v })}
           >
-            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>有效期</List.Item>
+            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}><span style={{ fontSize: '0.88rem', border: 'none'}}>有效期</span></List.Item>
           </Picker>
 
           <div className="btnsubmit" onClick={this.btnSubmit}>保存</div>
 
+          <div onClick={this.joinVipTitle} style={{marginTop:'1rem',color:'blue'}}>+添加会员等级</div>
+
+        </Drawer>
 
 
-
+        <Drawer
+          title="添加会员等级名称"
+          placement="bottom"
+          height='50%'
+          onClose={this.joinVipTitleTwo}
+          visible={this.state.joinVipTitle}
+        >
+          <div className="modelList" style={{ height: '32px' }}>
+            <span>等级</span>
+            <Select defaultValue="1" style={{ width: 120, marginLeft: '25px' }} onChange={this.vipGrade}>
+              <Option value="1">1级</Option>
+              <Option value="2">2级</Option>
+              <Option value="3">3级</Option>
+              <Option value="4">4级</Option>
+              <Option value="5">5级</Option>
+              <Option value="6">6级</Option>
+              <Option value="7">7级</Option>
+              <Option value="8">8级</Option>
+              <Option value="9">9级</Option>
+            </Select>
+          </div>
+          <div className="modelList">
+            <span>名称</span>
+            <TextArea className="textAreaName" onChange={this.vipTextArea} placeholder="请输入会员等级名称"></TextArea>
+          </div>
+          <button className="submit" onClick={this.btnVipTitle} style={{ border: 'none' }}>提交</button>
         </Drawer>
 
 
@@ -570,6 +661,7 @@ class management extends React.Component {
           placement="right"
           closable={true}
           width="100%"
+          className="managementTwo"
           onClose={this.onClose}
           visible={this.state.visibleJoinTwo}
         >
@@ -593,7 +685,7 @@ class management extends React.Component {
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>联系人</span></InputItem>
           </List.Item>
 
-          <List.Item arrow="empty" className="loodTo" extra={this.state.birthdayTwo} style={{ borderBottom: '1px solid #E9E9E9', textAlign: 'right' }}>生日</List.Item>
+          <List.Item arrow="empty" className="loodTo" extra={this.state.birthdayTwo} style={{ borderBottom: '1px solid #E9E9E9', textAlign: 'right' }}><span style={{ fontSize: '0.88rem', border: 'none' }}>生日</span></List.Item>
 
           <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
             <InputItem
@@ -616,25 +708,9 @@ class management extends React.Component {
           </List.Item>
 
 
-          <List.Item arrow="empty" className="gorad" extra={this.state.gradeTwo === 1 ? '普通会员' : this.state.gradeTwo === 2 ? '银卡会员' : this.state.gradeTwo === 3 ? '金卡会员' : this.state.gradeTwo === 4 ? '铂金会员' : this.state.gradeTwo === 5 ? '钻石会员' : this.state.gradeTwo === 6 ? '星耀会员' : ''} style={{ borderBottom: '1px solid #E9E9E9', textAlign: 'right' }}>会员卡等级</List.Item>
+          <List.Item arrow="empty" className="gorad" extra={this.state.gradeTwo} style={{ borderBottom: '1px solid #E9E9E9', textAlign: 'right' }}><span style={{ fontSize: '0.88rem', border: 'none' }}>会员卡等级</span></List.Item>
 
-          <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
-            <InputItem
-              type='text'
-              placeholder="请输入"
-              className="look"
-              value={this.state.discountValTwo}
-              maxLength={4}
-              onChange={(v) => {
-                if (parseFloat(v) > 10) {
-                  this.setState({ discountValTwo: 10 })
-                } else {
-                  this.setState({ discountValTwo: v })
-                }
-              }}
-              style={{ padding: '0', fontSize: '0.88rem', textAlign: 'right' }}
-            ><span style={{ fontSize: '0.88rem', border: 'none' }}>折扣</span></InputItem>
-          </List.Item>
+       
 
           <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }}>
             <InputItem
@@ -660,7 +736,7 @@ class management extends React.Component {
             ><span style={{ fontSize: '0.88rem', border: 'none' }}>赠送金额</span></InputItem>
           </List.Item>
 
-          <List.Item arrow="empty" extra={Number(this.state.balanceTowT)+this.state.balanceTwo} style={{ borderBottom: '1px solid #E9E9E9' }}>充值后余额</List.Item>
+          <List.Item arrow="empty" extra={Number(this.state.balanceTowT)+this.state.balanceTwo} style={{ borderBottom: '1px solid #E9E9E9' }}><span style={{ fontSize: '0.88rem', border: 'none' }}>充值后余额</span></List.Item>
 
 
        
@@ -674,7 +750,7 @@ class management extends React.Component {
             onChange={v => this.setState({ validityTwo: v })}
             onOk={v => this.setState({ validityTwo: v })}
           >
-            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>有效期</List.Item>
+            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}><span style={{ fontSize: '0.88rem', border: 'none' }}>有效期</span></List.Item>
           </Picker>
 
 
@@ -692,6 +768,7 @@ class management extends React.Component {
           placement="right"
           closable={true}
           width="100%"
+          className="managementTwo"
           onClose={this.onClose}
           visible={this.state.visibleJoinThree}
         >
@@ -723,7 +800,7 @@ class management extends React.Component {
             style={{ textAlign: 'right', color: '#888' }}
             onChange={birthdayThree => this.setState({ birthdayThree })}
           >
-            <List.Item arrow="horizontal" className="lood" style={{ borderBottom: '1px solid #E9E9E9' }}>生日</List.Item>
+            <List.Item arrow="horizontal" className="lood" style={{ borderBottom: '1px solid #E9E9E9' }}> <span style={{ fontSize: '0.88rem', border: 'none'}}>生日</span></List.Item>
           </DatePicker>
 
           <List.Item arrow="empty" style={{ borderBottom: '1px solid #E9E9E9' }} onClick={this.contactOpen}>
@@ -765,18 +842,18 @@ class management extends React.Component {
             cols={1}
             title="选择等级"
             extra="请选择"
-            value={this.state.gradeThree}
+            value={this.state.gradeName}
             onChange={v => this.setState({ gradeThree: v })}
             onOk={v => this.setState({ gradeThree: v })}
           >
-            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>会员卡等级</List.Item>
+            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}><span style={{ fontSize: '0.88rem', border: 'none'}}>会员卡等级</span></List.Item>
           </Picker>
 
 
 
 
 
-          <List.Item arrow="empty" extra={this.state.balanceThree} style={{ borderBottom: '1px solid #E9E9E9' }}>余额</List.Item>
+          <List.Item arrow="empty" extra={this.state.balanceThree} style={{ borderBottom: '1px solid #E9E9E9' }}><span style={{ fontSize: '0.88rem', border: 'none'}}>余额</span></List.Item>
 
           <Picker
             data={this.state.seasons}
@@ -787,7 +864,7 @@ class management extends React.Component {
             onChange={v => this.setState({ validityThree: v })}
             onOk={v => this.setState({ validityThree: v })}
           >
-            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}>有效期</List.Item>
+            <List.Item arrow="horizontal" style={{ borderBottom: '1px solid #E9E9E9' }}><span style={{ fontSize: '0.88rem', border: 'none'}}>有效期</span></List.Item>
           </Picker>
 
           <div className="btnsubmit" onClick={this.btnSubmitTosjij}>保存</div>

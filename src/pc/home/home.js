@@ -677,7 +677,7 @@ class home extends React.Component {
               <Select value={this.state.defaultValue} className="selectEd" onChange={this.selectEd}  suffixIcon={<DownOutlined style={{ color: '#fff', fontSize: '18px' }} />}>
                 {
                   this.state.selectEd.map((item, i) => (
-                    <Option key={i} value={item.venueuuid}>{item.name}{i}</Option>
+                    <Option key={i} value={item.venueuuid}>{item.name}</Option>
                   ))
                 }
 

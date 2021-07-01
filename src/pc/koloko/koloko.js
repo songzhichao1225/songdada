@@ -1,7 +1,7 @@
 import React from 'react';
 import './koloko.css';
 import 'antd/dist/antd.css';
-import { Input, Spin, message, DatePicker, Modal, Drawer, Table, Select, Popover } from 'antd';
+import { Input, Spin, message, DatePicker, Modal, Drawer, Table, Select, Popover,Tooltip } from 'antd';
 import { SyncOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { getVenueReservation, getVenueSport, VenueNumberSporttypeSave, getVenueNumberTitleList, getDateAndDayOfWeek, getReservationActivitieslist,setSquareByOffLine, VenueNewsHistoricalRecord, VenueRemarksLabel, getVipCardInfomation } from '../../api';
 import locale from 'antd/es/date-picker/locale/zh_CN';
@@ -110,6 +110,7 @@ class koloko extends React.Component {
     repeat: '',//是否重复
     theNews: '',//其他
     vipDetails: [],//会员卡详情
+    otherTypeTwo:[],
   };
 
   async getVenueSport(data) {
@@ -185,23 +186,43 @@ class koloko extends React.Component {
         }
       }
 
+      if (this.state.liNum !== '3' && this.state.liNum !== '4' && this.state.liNum !== '5') {
+        let arrty = []
+        for (let i = 0; i < res.data.data.length; i++) {
+          if (res.data.data[i].a.slice(3, 5) === '00') {
+            arrty.push(res.data.data[i])
+          }
+        }
+        for (let i in arrty) {
+          for (let j in arrty[i].c) {
+            arrty[i].c[j].money_cg = arrty[i].c[j].money_cg * 2 + '.00'
+            arrty[i].c[j].money = Number(arrty[i].c[j].money) * 2
+          }
+        }
+        
+        res.data.data = arrty
+      }
+
 
       let arrTime = []
       for (let i in res.data.data) {
         arrTime.push(res.data.data[i].a)
       }
 
-      let ko = ''
-      if (new Date().getMinutes() >= 30) {
-        ko = new Date().getHours() + ':30'
-      } else {
-        ko = new Date().getHours() + ':00'
+      let kojh = []
+      for (let i in res.data.data) {
+        arrTime.push(res.data.data[i].a)
+        for (let j in res.data.data[i].c) {
+          if (res.data.data[i].c[j].type === 1) {
+            kojh.push(res.data.data[i].a)
+          }
+        }
       }
       setTimeout(() => {
         if (document.querySelector('.ant-table-body') !== null) {
-          document.querySelector('.ant-table-body').scrollTo(0, arrTime.indexOf(ko) * 48)
+          document.querySelector('.ant-table-body').scrollTo(0, arrTime.indexOf(kojh[0]) * 49)
         }
-      }, 500)
+      }, 50)
 
       for (let i in res.data.other.incomplete) {
         for (let j in res.data.data) {
@@ -237,10 +258,12 @@ class koloko extends React.Component {
         resData: res.data.data
       })
       this.hoode(res.data.data)
+      
       for (let i in res.data.other.biaoqian) {
         res.data.other.biaoqian[i].dataIndex = res.data.other.biaoqian[i].venueid
-        res.data.other.biaoqian[i].title = <div>{res.data.other.biaoqian[i].venueid}<br />{res.data.other.biaoqian[i].title}</div>
+        res.data.other.biaoqian[i].title = <Popover placement="topLeft" title='标签描述' content={res.data.other.biaoqian[i].com === '' ? '暂无标签描述' : res.data.other.biaoqian[i].com} trigger="click"><div className={'div' + res.data.other.biaoqian[i].venueid} data-tagsid={res.data.other.biaoqian[i].tagsid} onClick={this.tagShow}>{res.data.other.biaoqian[i].venueid}<br />{res.data.other.biaoqian[i].title}</div></Popover>
         res.data.other.biaoqian[i].width = 80
+
       }
       let ploboj = {
         title: <div>场地号<br />标签</div>,
@@ -249,7 +272,7 @@ class koloko extends React.Component {
         dataIndex: 'lppd',
       }
       res.data.other.biaoqian.unshift(ploboj)
-      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c, otherType: res.data.other.biaoqian, value: 'l', spinningTwo: false, loadingTwo: false })
+      this.setState({ lookList: res.data.data, macNum: res.data.data[0].c, otherType: res.data.other.biaoqian, otherTypeTwo: res.data.other.incomplete, value: 'l', spinningTwo: false, loadingTwo: false })
       sessionStorage.setItem('kood', 1)
     } else if (res.data.code === 4005) {
       this.setState({ lookList: res.data.data, spinningTwo: false, loadingTwo: false, lppding: false })
@@ -284,26 +307,86 @@ class koloko extends React.Component {
 
   hoode = (resData) => {
     let jood = []
+
     for (let i in resData) {
       let obj = {}
-      for (let j in resData[i].c) {
-        obj.key = i + 1
-        let key = resData[i].c[j].venueids
-        let value = <div><div data-type={resData[i].c[j].type} data-uuid={resData[i].c[j].uuid} onClick={this.lookDeta} style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, color: 'transparent', lineHeight: 3 } : {}}>
-            <div className="sdgfdrg"
+      let kood = []
+      let otherTypeTwo = this.state.otherTypeTwo
+      if (otherTypeTwo.length === 0) {
+        for (let j in resData[i].c) {
+          if (resData[i].c[j].type === 4) {
+            kood.push(resData[i].c[j])
+            resData[i].k = kood.length
+          }
+          obj.key = i + 1
+          let key = resData[i].c[j].venueids
+          let value = <div>
+            <Tooltip title="您好，选择完场地后，请点击“预订场地”来提交" mouseEnterDelay={2}>
+              <div
+                data-type={resData[i].c[j].type}
+                data-uuid={resData[i].c[j].uuid}
+                data-venueids={resData[i].c[j].venueids}
+                data-starttime={resData[i].a}
+                data-endtime={resData[i].a}
+                data-index='1'
+                onMouseOut={this.onmouseout}
+                onMouseOver={this.onmouseover}
+                className="loopsdgds"
+                onClick={this.lookDeta}
+                style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 3 } : {}}
+              >{resData[i].c[j].type === 4 ? resData[i].c[j].who : resData[i].c[j].money_cg}</div>
+            </Tooltip>
+          </div>
+          obj[key] = value
+          obj.lppd = <div style={{ color: '#F5A623', marginTop: '-36px' }}>{resData[i].a}<br /><div className="sdgdfgdf" style={resData[i].k > 0 ? {} : { display: 'none' }}>{resData[i].k}</div><div style={resData[resData.length - 1].a === resData[i].a ? { position: 'absolute', left: '33%', top: '30px' } : { display: 'none' }}>
+            {resData[resData.length - 1].a === '23:30' ? '24:00' : resData[resData.length - 1].a.slice(3, 5) === '00' ? Number(resData[resData.length - 1].a.slice(0, 2)) + 1 + ':00' : Number(resData[resData.length - 1].a.slice(0, 2)) + 1 + ':00'}
+          </div></div>
+        }
+
+      } else {
+
+
+
+        for (let j in resData[i].c) {
+          if (resData[i].c[j].type === 4) {
+            kood.push(resData[i].c[j])
+            resData[i].k = kood.length
+          }
+
+          obj.key = i + 1
+          let key = resData[i].c[j].venueids
+          let value = <div>
+            <Tooltip title="您好，选择完场地后，请点击“预订场地”来提交" mouseEnterDelay={2}>
+              <div
+                data-type={resData[i].c[j].type}
+                data-uuid={resData[i].c[j].uuid}
+                data-venueids={resData[i].c[j].venueids}
+                data-starttime={resData[i].a}
+                data-endtime={resData[i].a}
+                data-index='1'
+                className="loopsdgds"
+                onClick={this.lookDeta}
+                style={resData[i].c[j].type === 1 ? { background: '#6FB2FF', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 3 ? { background: '#F5A623', color: 'transparent', height: 45, lineHeight: 3 } : {} && resData[i].c[j].type === 4 ? { background: 'red', height: 45, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 3 } : {}}
+              >
+                <div className="sdgfdrg"
                   data-type='4'
                   data-uuid={resData[i].c[j].uuidTwo}
                   data-venueids={resData[i].c[j].venueids}
                   data-starttime={resData[i].a}
                   data-endtime={resData[i].a}
                   onClick={this.lookDeta}
-                  style={resData[i].c[j].time !== undefined ? { height: '47px',color:'#fff', top: 1.5 * ((resData[i].c[j].time.slice(3, 5) > 30 ? resData[i].c[j].time.slice(3, 5) - 30 : resData[i].c[j].time.slice(3, 5))), zIndex: '9' } : { display: 'none' }}>{resData[i].c[j].whoTwo}</div>
-                
-          {resData[i].c[j].money}</div></div>
-        obj[key] = value
-        let koTwo = parseInt(resData[i].a.slice(1, 2)) + 1 + ':00'
-        obj.lppd = <div style={{ color: '#F5A623' }}>{resData[i].a}<br />{resData[i].a.slice(3, resData[i].a.length) === '00' ? resData[i].a.slice(0, 2) + ':30' : koTwo === '10:00' && resData[i].a !== '19:30' ? '10:00' : resData[i].a === '19:30' ? '20:00' : resData[i].a.slice(0, 1) + koTwo}</div>
+                  style={resData[i].c[j].time !== undefined ? { height: '47px', color: '#fff', top: 1.5 * ((resData[i].c[j].time.slice(3, 5) > 30 ? resData[i].c[j].time.slice(3, 5) - 30 : resData[i].c[j].time.slice(3, 5))), zIndex: '9' } : { display: 'none' }}>{resData[i].c[j].whoTwo}</div>
+                {resData[i].c[j].type === 4 ? resData[i].c[j].who : resData[i].c[j].money_cg}</div>
+            </Tooltip>
+          </div>
+          obj[key] = value
+          obj.lppd = <div style={{ color: '#F5A623', marginTop: '-30px' }}>{resData[i].a}<br /><div className="sdgdfgdf" style={resData[i].k > 0 ? {} : { display: 'none' }}>{resData[i].k}</div><div style={resData[i].a === '23:30' ? { position: 'absolute', left: '33%', top: '30px' } : { display: 'none' }}>24:00</div></div>
+
+
+        }
       }
+
+
       jood.push(obj)
     }
 

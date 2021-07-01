@@ -21,6 +21,7 @@ class appOrder extends React.Component {
     show: false,
     lastTime: '',
     moneyCall: 0,
+    openPrice:0,
     ko: '',
     lotime: [],
     time: [],
@@ -74,6 +75,8 @@ class appOrder extends React.Component {
           for (let j in arrty[i].c) {
             arrty[i].c[j].money = arrty[i].c[j].money * 2
             arrty[i].c[j].summoney = Number(arrty[i].c[j].summoney) * 2
+            arrty[i].c[j].lr = Number(arrty[i].c[j].lr) * 2
+            arrty[i].c[j].pubPrice = Number(arrty[i].c[j].pubPrice) * 2
           }
         }
         res.data.data = arrty
@@ -227,15 +230,16 @@ class appOrder extends React.Component {
           data-type={resData.data[i].c[j].type}
           data-time={resData.data[i].a}
           className={'div' + resData.data[i].a.replace(':', '')}
-          data-num={resData.data[i].c[j].venueid}
+          data-num={j}
           data-uuid={resData.data[i].c[j].uuid}
+          data-pubprice={resData.data[i].c[j].pubPrice}
           onTouchStart={this.onStart}
           data-index={j}
           onTouchEnd={resData.data[i].c[j].type === 1 ? this.state.flag === '1' ? this.state.sporttypeFive === '10' ? this.lookPlateFive : this.lookPlateTwo : this.state.sporttypeFive === '10' ? this.lookPlateFive : this.lookPlate : this.asfsdhngfju}
           data-money={resData.data[i].c[j].money}
           data-timelimit={resData.data[i].c[j].timelimit}
           data-summoney={resData.data[i].c[j].summoney}
-          data-lo={resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney + '-' + resData.data[i].c[j].timelimit}
+          data-lo={resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney + '-' + resData.data[i].c[j].timelimit+'-'+resData.data[i].c[j].lr+'-'+resData.data[i].c[j].pubPrice}
           style={resData.data[i].c[j].type === 1
             && this.state.lotime.indexOf(resData.data[i].a + '-' + resData.data[i].c[j].venueid + '-' + resData.data[i].c[j].money + '-' + resData.data[i].c[j].summoney + '-' + resData.data[i].c[j].timelimit) === -1 ? { background: '#6FB2FF', height: 40, lineHeight: 3, color: '#fff' } : {}
               && resData.data[i].c[j].type === 2 ? { background: '#E9E9E9', color: 'transparent', height: 40, lineHeight: 3 } : {}
@@ -302,8 +306,8 @@ class appOrder extends React.Component {
 
   componentDidMount() {
     //测试数据
-    let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=4&token=6P7rCxqy3KUQNIqkfV1KdVhCJTpUMfOvXKNzTO41D80gJbIOMZQst8qJyVPRJdwG&sporttype=22&flag=1'
-    // let query = this.props.location.search
+    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=2&token=Ky1P1DeAeIX8QC1zBKd1sbTqgyui0Due43sFmuLN5W5PLwFb3D5ekzCRNIEfGHXC&sporttype=6&flag=1'
+    let query = this.props.location.search
     let arr = query.split('&')
     let siteuid = arr[0].slice(9, arr[0].length)
     let sportid = arr[1].slice(8, arr[1].length)
@@ -352,7 +356,7 @@ class appOrder extends React.Component {
 
   onConfirm = (e) => {
     let week = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
-    this.setState({ show: false, date: e.toLocaleDateString().replace(/\//g, "/"), week: week[e.getDay()], lotime: '', moneyCall: 0,tableShow:true })
+    this.setState({ show: false, date: e.toLocaleDateString().replace(/\//g, "/"), week: week[e.getDay()], lotime: '',openPrice:0, moneyCall: 0,tableShow:true })
     this.getAppVenueReservations({ date: e.toLocaleDateString().replace(/\//g, "/"), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo,flag:this.state.flag })
   }
 
@@ -368,6 +372,7 @@ class appOrder extends React.Component {
     let money = e.currentTarget.dataset.money
     let time = e.currentTarget.dataset.time
     let lotime = e.currentTarget.dataset.lo
+    let pubPrice=e.currentTarget.dataset.pubprice
 
     if (e.currentTarget.style.backgroundColor === 'red') {
       e.currentTarget.style.backgroundColor = '#6FB2FF'
@@ -382,16 +387,24 @@ class appOrder extends React.Component {
         this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
         this.state.time.splice(this.state.time.indexOf(time), 1)
         let moneyCall = 0
+        let openPrice=0
         for (let i in this.state.lotime) {
           moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
         }
-        this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
+        for (let i in this.state.lotime) {
+          openPrice = openPrice + Number(this.state.lotime[i].split('-')[6])
+        }
+        this.setState({ moneyCall: moneyCall, lotime: this.state.lotime,openPrice:openPrice })
       } else {
         let pop = (Number(this.state.moneyCall) + Number(money)).toString()
         if (pop.indexOf('.') !== -1) {
           pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
         }
-        this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop })
+        let popTwo = (Number(this.state.openPrice) + Number(pubPrice)).toString()
+        if (popTwo.indexOf('.') !== -1) {
+          popTwo = Number(popTwo.slice(0, popTwo.indexOf('.'))) + 1
+        }
+        this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop,openPrice:popTwo })
       }
 
     }
@@ -411,6 +424,7 @@ class appOrder extends React.Component {
     let num = e.currentTarget.dataset.num
     let lotime = e.currentTarget.dataset.lo
     let timelimit = e.currentTarget.dataset.timelimit
+    let pubPrice=e.currentTarget.dataset.pubprice
 
 
     if (this.state.moneyCall === 0 && timelimit === '2' && time.indexOf('30') !== -1) {
@@ -454,24 +468,38 @@ class appOrder extends React.Component {
         this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
         this.state.time.splice(this.state.time.indexOf(time), 1)
         let moneyCall = 0
+        let openPrice=0
         for (let i in this.state.lotime) {
           moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
         }
-        this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
+
+        for (let i in this.state.lotime) {
+          openPrice = openPrice + Number(this.state.lotime[i].split('-')[6])
+        }
+        this.setState({ moneyCall: moneyCall,openPrice:openPrice, lotime: this.state.lotime })
       } else if (this.state.time.sort().indexOf(time) !== -1) {
         this.state.lotime.sort().splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney + '-' + timelimit)
         this.setState({ lotime: this.state.lotime })
         let moneyCall = 0
+        let openPrice=0
         for (let i in this.state.lotime) {
           moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
         }
-        this.setState({ moneyCall: moneyCall })
+        for (let i in this.state.lotime) {
+          openPrice = openPrice + Number(this.state.lotime[i].split('-')[6])
+        }
+        this.setState({ moneyCall: moneyCall,openPrice:openPrice })
       } else {
         let pop = (Number(this.state.moneyCall) + Number(money)).toString()
         if (pop.indexOf('.') !== -1) {
           pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
         }
-        this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop })
+
+        let popTwo = (Number(this.state.openPrice) + Number(pubPrice)).toString()
+        if (popTwo.indexOf('.') !== -1) {
+          popTwo = Number(popTwo.slice(0, popTwo.indexOf('.'))) + 1
+        }
+        this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop,openPrice:popTwo })
       }
 
     }
@@ -496,7 +524,7 @@ class appOrder extends React.Component {
     let num = e.currentTarget.dataset.num
     let lotime = e.currentTarget.dataset.lo
     let timelimit = e.currentTarget.dataset.timelimit
-
+    let pubPrice=e.currentTarget.dataset.pubprice
 
 
     if (this.state.flag === '1') {
@@ -529,16 +557,24 @@ class appOrder extends React.Component {
           this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
           this.state.time.splice(this.state.time.indexOf(time), 1)
           let moneyCall = 0
+          let openPrice=0
           for (let i in this.state.lotime) {
             moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
           }
-          this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
+          for (let i in this.state.lotime) {
+            openPrice = openPrice + Number(this.state.lotime[i].split('-')[6])
+          }
+          this.setState({ moneyCall: moneyCall,openPrice:openPrice, lotime: this.state.lotime })
         } else {
           let pop = (Number(this.state.moneyCall) + Number(money)).toString()
           if (pop.indexOf('.') !== -1) {
             pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
           }
-          this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop })
+          let popTwo = (Number(this.state.openPrice) + Number(pubPrice)).toString()
+          if (popTwo.indexOf('.') !== -1) {
+            popTwo = Number(popTwo.slice(0, popTwo.indexOf('.'))) + 1
+          }
+          this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop,openPrice:popTwo })
         }
 
       }
@@ -562,7 +598,7 @@ class appOrder extends React.Component {
       }
 
       let ho = document.querySelectorAll('.div' + e.currentTarget.dataset.time.replace(':', ''))
-      if (ho[Number(e.currentTarget.dataset.num)-1].style.backgroundColor !== 'red') {
+      if (ho[Number(e.currentTarget.dataset.num)].style.backgroundColor !== 'red') {
         for (let i in ho) {
           if (ho[i].style !== undefined) {
             if (ho[i].style.backgroundColor === 'red') {
@@ -571,6 +607,7 @@ class appOrder extends React.Component {
           }
         }
       }
+
 
 
       if (e.currentTarget.style.backgroundColor === 'red') {
@@ -585,10 +622,14 @@ class appOrder extends React.Component {
             this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
             this.state.time.splice(this.state.time.indexOf(time), 1)
             let moneyCall = 0
+            let openPrice=0
             for (let i in this.state.lotime) {
               moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
             }
-            this.setState({ moneyCall: moneyCall, lotime: this.state.lotime })
+            for (let i in this.state.lotime) {
+              openPrice = openPrice + Number(this.state.lotime[i].split('-')[6])
+            }
+            this.setState({ moneyCall: moneyCall,openPrice:openPrice, lotime: this.state.lotime })
           } else if (this.state.time.sort().indexOf(time) !== -1) {
 
 
@@ -598,23 +639,35 @@ class appOrder extends React.Component {
 
             this.setState({ lotime: this.state.lotime })
             let moneyCall = 0
+            let openPrice=0
             for (let i in this.state.lotime) {
               moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
             }
-            this.setState({ moneyCall: moneyCall })
+            for (let i in this.state.lotime) {
+              openPrice = openPrice + Number(this.state.lotime[i].split('-')[6])
+            }
+            this.setState({ moneyCall: moneyCall,openPrice:openPrice })
           } else {
             let pop = (Number(this.state.moneyCall) + Number(money)).toString()
             if (pop.indexOf('.') !== -1) {
               pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
             }
-            this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop })
+            let popTwo = (Number(this.state.openPrice) + Number(pubPrice)).toString()
+            if (popTwo.indexOf('.') !== -1) {
+              popTwo = Number(popTwo.slice(0, popTwo.indexOf('.'))) + 1
+            }
+            this.setState({ lotime: [...this.state.lotime, lotime], time: [...this.state.time, time], moneyCall: pop,openPrice:popTwo })
           }
         } else {
           let pop = (Number(this.state.moneyCall) + Number(money)).toString()
           if (pop.indexOf('.') !== -1) {
             pop = Number(pop.slice(0, pop.indexOf('.'))) + 1
           }
-          this.setState({ time: [...this.state.time, time], lotime: [...this.state.lotime, lotime], moneyCall: pop })
+          let popTwo = (Number(this.state.openPrice) + Number(pubPrice)).toString()
+            if (popTwo.indexOf('.') !== -1) {
+              popTwo = Number(popTwo.slice(0, popTwo.indexOf('.'))) + 1
+            }
+          this.setState({ time: [...this.state.time, time], lotime: [...this.state.lotime, lotime], moneyCall: pop,openPrice:popTwo })
         }
       }
     }
@@ -662,10 +715,13 @@ class appOrder extends React.Component {
     let time = ''
     let num = ''
     let original = 0
+    let lr=0
+    console.log(this.state.lotime)
     if (this.state.flag === '1') {
 
       for (let i in this.state.lotime.sort()) {
         original += Number(this.state.lotime[i].split('-')[3])
+        lr+=Number(this.state.lotime[i].split('-')[5])
       }
       if (this.state.sporttypeFive === '22' || this.state.sporttypeFive === '24') {
         let kopAd = this.state.lotime.sort()
@@ -695,6 +751,7 @@ class appOrder extends React.Component {
         for (let i in numNa) {
           ccj.push(numNa[i] + '-' + result[numNa[i]].split('-').length / 2 + '-' + result[numNa[i]].split('-')[0] + '-' + result[numNa[i]].split('-')[result[numNa[i]].split('-').length - 1])
         }
+
            
         let obj = {
           placeNun: numNa.join('-'),
@@ -704,7 +761,9 @@ class appOrder extends React.Component {
           placeMoneyTwo: original,
           placeTimeLen: this.state.sportidQuery === '3' ? this.state.lotime.length * 0.5 + '小时' : this.state.lotime.length * 1 + '小时',
           breakup: ccj.join(','),
-          realData: ''
+          realData: '',
+          lr:lr,
+          openPrice:this.state.openPrice
         }
         console.log(obj)
         if (obj.placeNun === '') {
@@ -741,10 +800,12 @@ class appOrder extends React.Component {
 
 
       } else if (this.state.sporttypeFive === '10') {
+        let lr=0
         let kopAd = this.state.lotime.sort()
         let arr = []
         for (let i in kopAd) {
           time += kopAd[i].split('-')[0] + ','
+          lr+=Number(kopAd[i].split('-')[5])
           let obj = {}
           obj.time = kopAd[i].split('-')[0]
           obj.num = kopAd[i].split('-')[1]
@@ -794,7 +855,9 @@ class appOrder extends React.Component {
           placeMoneyTwo: original,
           placeTimeLen: this.state.sportidQuery === '3' ? longTime * 0.5 + '小时' : longTime * 1 + '小时',
           breakup: '',
-          realData: this.state.sportidQuery === '3' ? arrGo.length * 0.5 + '小时' : arrGo.length * 1 + '小时'
+          realData: this.state.sportidQuery === '3' ? arrGo.length * 0.5 + '小时' : arrGo.length * 1 + '小时',
+          lr:lr,
+          openPrice:this.state.openPrice
         }
         console.log(obj)
         let timelimit = this.state.lotime.sort()[0].split('-')[4]
@@ -851,8 +914,10 @@ class appOrder extends React.Component {
       } else {
         let kopAd = this.state.lotime.sort()
         let arr = []
+        let lr=0
         for (let i in kopAd) {
           time += kopAd[i].split('-')[0] + ','
+          lr+=Number(kopAd[i].split('-')[5])
           let obj = {}
           obj.time = kopAd[i].split('-')[0]
           obj.num = kopAd[i].split('-')[1]
@@ -906,7 +971,9 @@ class appOrder extends React.Component {
           placeMoneyTwo: original,
           placeTimeLen: this.state.sportidQuery === '3' ? longTime * 0.5 + '小时' : longTime * 1 + '小时',
           breakup: '',
-          realData: this.state.sportidQuery === '3' ? arrGo.length * 0.5 + '小时' : arrGo.length * 1 + '小时'
+          realData: this.state.sportidQuery === '3' ? arrGo.length * 0.5 + '小时' : arrGo.length * 1 + '小时',
+          lr:lr,
+          openPrice:this.state.openPrice
         }
         console.log(obj)
         let timelimit = this.state.lotime.sort()[0].split('-')[4]
@@ -961,15 +1028,16 @@ class appOrder extends React.Component {
       }
 
     } else {
+      let lr=0
       for (let i in this.state.lotime.sort()) {
         num += this.state.lotime[i].split('-')[1] + ','
         time += this.state.lotime[i].split('-')[0] + ','
         original += Number(this.state.lotime[i].split('-')[3])
+        lr+=Number(this.state.lotime[i].split('-')[5])
       }
       let timelimit = this.state.lotime.sort()[0].split('-')[4]
       let timeTwo = this.state.lotime.sort()[0].split('-')[0]
       if (this.state.lotime.length > 0) {
-        console.log(this.state.durationlimit)
         let s1 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[this.state.lotime.length - 1])
         let s2 = new Date(this.state.date.replace(/-/g, "/") + ' ' + time.slice(0, time.length - 1).split(',').sort()[0])
         if (this.state.sportidQuery === '3' ? (Number(s1) - Number(s2)) / 1000 / 60 / 30 + 1 !== this.state.lotime.length && this.state.flag !== '1' : (Number(s1) - Number(s2)) / 1000 / 60 / 60 + 1 !== this.state.lotime.length && this.state.flag !== '1') {
@@ -1002,17 +1070,19 @@ class appOrder extends React.Component {
             placeMoneyTwo: original,
             placeTimeLen:this.state.sportidQuery === '3'?(time.split(',').length - 1) * 0.5 + '小时':(time.split(',').length - 1) * 1 + '小时',
             breakup: '',
-            realData: ''
+            realData: '',
+            lr:lr,
+            openPrice:this.state.openPrice
           }
           console.log(obj)
 
           this.setState({ obj: obj })
           if (this.state.date.split('/')[0].length === 4) {
             let mood = this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1] + '-' + this.state.date.split('/')[2]
-            this.getAPPVenueSelectSite({ startTime: mood + ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5, siteUid: this.state.siteid })
+            this.getAPPVenueSelectSite({ startTime: mood + ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5, siteUid: this.state.siteid,flag:this.state.flag })
           } else {
             let mood = this.state.date.split('/')[2] + '-' + this.state.date.split('/')[0] + '-' + this.state.date.split('/')[1]
-            this.getAPPVenueSelectSite({ startTime: mood + ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5, siteUid: this.state.siteid })
+            this.getAPPVenueSelectSite({ startTime: mood + ' ' + time.slice(0, time.length - 1).split(',').sort()[0], playTime: (time.split(',').length - 1) * 0.5, siteUid: this.state.siteid,flag:this.state.flag  })
           }
         }
       } else {
@@ -1030,6 +1100,7 @@ class appOrder extends React.Component {
       week: week[myDate.getDay()],
       time: [],
       moneyCall: 0,
+      openPrice:0,
       tableShow:true
     })
     this.getAppVenueReservations({ date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo,flag:this.state.flag })
@@ -1046,6 +1117,7 @@ class appOrder extends React.Component {
       lotime: [],
       time: [],
       moneyCall: 0,
+      openPrice:0,
       tableShow:true
     })
     this.getAppVenueReservations({ date: myDate.getFullYear() + "/" + (myDate.getMonth() + 1) + "/" + myDate.getDate(), siteUUID: this.state.siteid, sportid: this.state.sportid, sporttype: this.state.sporttypeTwo,flag:this.state.flag })
@@ -1089,7 +1161,7 @@ class appOrder extends React.Component {
                 <span className="red"></span><span>已选中</span>
               </div>
 
-              <Table loading={this.state.tableShow} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '92%' }} />
+              <Table loading={this.state.tableShow} style={this.state.otherType.length === 0 ? { display: 'none' } : {}} columns={this.state.otherType} rowKey='key' pagination={false} dataSource={this.state.lookBan} scroll={{ x: this.state.otherType.length * 20, y: '90%' }} />
 
               <NoticeBar className="textPass" data-index="2" mode="link" onClick={this.showOff} marqueeProps={{ loop: true, style: { padding: '0 7.5px', fontSize: '0.75rem', lineHeight: '0.8rem' } }}>
                 {this.state.kopl}

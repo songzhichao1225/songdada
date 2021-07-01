@@ -439,6 +439,7 @@ img{
     border-top: 1px solid #ccc;
     overflow: hidden;
     margin-top: 20px;
+    margin-bottom: 20px;
 }
  .memFooter>div{
     float: left;
@@ -515,4 +516,8 @@ img{
 }
 .form{
     float: left;
+}
+
+.ant-form-item-explain.ant-form-item-explain-error{
+    padding-left: 20px;
 }

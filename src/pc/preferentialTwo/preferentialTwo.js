@@ -151,7 +151,8 @@ class appointmentList extends React.Component {
     payment: 3,
     payTime: 0,
     venueTwo: [],
-    otherTypeTwo: []
+    otherTypeTwo: [],
+    k:'',
   };
 
   async getVenueSport(data) {
@@ -239,8 +240,10 @@ class appointmentList extends React.Component {
             arrty[i].c[j].money = Number(arrty[i].c[j].money) * 2
           }
         }
+        
         res.data.data = arrty
       }
+      
 
 
 
@@ -365,7 +368,7 @@ class appointmentList extends React.Component {
 
   onmouseover = e => {
     let ho = document.querySelector('.div' + e.currentTarget.dataset.venueids)
-    ho.style.backgroundColor = '#ccc'
+    ho.style.backgroundColor = '#e9e9e9'
 
   }
 
@@ -658,11 +661,12 @@ class appointmentList extends React.Component {
       info: false,
       selectVenueId: '',
       selectable: false,
+      changeselectableTwo:false,
       venueT: []
     })
   }
   handleCancel = () => {
-    this.setState({ selectable: false, checkOutNow: false })
+    this.setState({ selectable: false, checkOutNow: false,changeselectableTwo:false })
   }
 
 
@@ -821,7 +825,7 @@ class appointmentList extends React.Component {
   async CalculateVenuePrice(data) {
     const res = await CalculateVenuePrice(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
-      this.setState({ TotalPrice: res.data.data.TotalPrice, consumpMoneyYou: res.data.other, })
+      this.setState({ TotalPrice: res.data.data.TotalPrice, consumpMoneyYou: res.data.other,selectableList:[] })
 
     }
   }
@@ -968,39 +972,85 @@ class appointmentList extends React.Component {
     this.setState({ venueTwo: venueTwo })
   }
 
+  
+
+
+
+  async setSquareByOffLineTwo(data) {
+    const res = await setSquareByOffLine(data, sessionStorage.getItem('venue_token'))
+    if (res.data.code === 2000) {
+      if (this.state.liNum === '6') {
+        let arr = []
+        let arrTwo = []
+        for (let i in res.data.data) {
+          if (res.data.data[i].venueid.indexOf('A') !== -1 || res.data.data[i].venueid.indexOf('B') !== -1) {
+            arr.push(res.data.data[i])
+          } else {
+            arrTwo.push(res.data.data[i])
+          }
+        }
+        let atho = [{ venueid: '半场' }]
+        this.setState({ changeselectableTwo: true, selectableList: [...arrTwo, ...atho, ...arr] })
+
+      } else {
+        this.setState({ changeselectableTwo: true, selectableList: res.data.data })
+      }
+
+    } else {
+      message.warning(res.data.msg)
+    }
+  }
+  
+
+
+  changeOfVenue=e=>{
+    let k=e.currentTarget.dataset
+    let obj = {
+      siteUUID: sessionStorage.getItem('siteuid'),
+      sportid: this.state.liNum,
+      startTime: k.riqi,
+      playTime: k.playtime
+    }
+    this.setState({k:e.currentTarget.dataset})
+    this.setSquareByOffLineTwo(obj)
+
+
+  }
+
+  submitGehu=()=>{
+    let selectableList = this.state.selectableList
+    let venueidid = []
+    for (let i in selectableList) {
+      if (selectableList[i].ifUsed === 2) {
+        venueidid.push(selectableList[i].venueid)
+      }
+    }
+    if(venueidid.length!==1){
+       message.warning('请选择一块场地')
+    }else{
+      let obj={
+        orderID:this.state.k.orderid,
+        venue:venueidid.join(','),
+        type:1,
+        date:this.state.k.riqi
+      }
+      this.exchangeVenue(obj)
+    }
+
+  }
+
   async exchangeVenue(data) {
     const res = await exchangeVenue(data, sessionStorage.getItem('venue_token'))
     if (res.data.code === 2000) {
       this.getVenueBookingInformation({ informaid: this.state.informaid, type: 1, cur: this.state.dateString })
       this.getVenueReservation({ sportid: this.state.liNum, date: this.state.dateString })
+      this.setState({changeselectableTwo:false})
       message.success(res.data.msg)
     
     } else {
       message.error(res.data.msg)
     }
   }
-
-  
-
-
-  changeOfVenue=e=>{
-    let k=e.currentTarget.dataset
-    console.log(k.option.slice(0,5))
-    console.log(this.state.dateString)
-
-    let obj = {
-      siteUUID: sessionStorage.getItem('siteuid'),
-      sportid: this.state.liNum,
-      startTime: this.state.startTime,
-      playTime: this.state.timeLen
-    }
-    // this.setSquareByOffLine(obj)
-
-
-    // this.exchangeVenue({orderID:k.orderid,venue:k.venueid,type:1,date:k.riqi})
-    
-  }
-
 
 
   render() {
@@ -1069,6 +1119,7 @@ class appointmentList extends React.Component {
           title="该活动详细信息"
           placement="right"
           width='400px'
+          destroyOnClose={true}
           onClose={this.informOnClose}
           visible={this.state.informVisible}
         >
@@ -1159,7 +1210,7 @@ class appointmentList extends React.Component {
             {
               this.state.otherObjTime.map((item, i) => (
                 <div key={i}><span style={{ width: '140px' }}>{item.date}  {item.option}</span><span style={{float:'left'}}>{item.venueid}</span>
-                <div className="sdfdsfg" onClick={this.changeOfVenue} data-orderid={item.orderID} data-riqi={item.date} data-option={item.option} data-venueid={item.venueid} style={this.state.otherObj.isloop === 0 ?{float:'left',marginLeft:'20px' }:{display:'none'}}>更换场地</div>
+                <div className="sdfdsfg" onClick={this.changeOfVenue} data-playtime={item.playtime} data-date={item.date}  data-orderid={item.orderID} data-riqi={item.startTime} style={this.state.otherObj.isloop === 0&&item.showChange===1 ?{float:'left',marginLeft:'20px' }:{display:'none'}}>更换场地</div>
                   <Popconfirm
                     title="您确定取消该场地订单吗?"
                     onConfirm={this.singlyTwo}
@@ -1227,7 +1278,7 @@ class appointmentList extends React.Component {
 
         <Modal
           title="更换可选择场地编号"
-          visible={this.state.changeselectable}
+          visible={this.state.changeselectableTwo}
           onOk={this.handleOk}
           className="mode"
           onCancel={this.handleCancel}
@@ -1240,8 +1291,10 @@ class appointmentList extends React.Component {
               ))
             }
           </div>
-          <div className="dfgk" onClick={this.submitkojhi}>确认</div>
+          <div className="dfgk" onClick={this.submitGehu}>确认</div>
         </Modal>
+
+        
 
 
 

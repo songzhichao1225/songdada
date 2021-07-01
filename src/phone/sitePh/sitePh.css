@@ -535,3 +535,152 @@
 .sdgdrfgd .am-input-control .fake-input-container{
     margin-right: 0;
 }
+
+.sitePh .headerTwoTop{
+    width: 100%;
+    overflow: hidden;
+}
+.sitePh .headerTwoTop>div{
+    float: left;
+    line-height: 2rem;
+    margin-left: 15px;
+}
+.sitePhForm{
+    margin-top: 2rem;
+    overflow-y: auto;
+}
+.sitePhForm .sdgfdfgdfgd{
+    width: 5rem;
+    float: left;
+    margin-left: 0.5rem;
+}
+
+.form{
+    float: left;
+}
+
+.save{
+    text-align: center;
+    line-height: 22px;
+    background: #F5A623;
+    border-radius: 2px;
+    color: #fff;
+    float: right;
+    margin-top: 20px;
+    cursor: pointer;
+}
+.sitePhForm>.title{
+    overflow: hidden;
+    clear: both;
+}
+.sitePhForm .title>div{
+   width: 5rem;
+   float: left;
+   margin-left: 0.5rem;
+   text-align: center;
+}
+.sitePhForm .title>div:first-child{
+    margin-left: 2.5rem;
+}
+.shijh{
+    overflow: hidden;
+
+}
+.shijh>div{
+    float: left;
+    width: 50%;
+    text-align: center;
+    line-height: 2.5rem;
+
+}
+
+.modelList{
+    overflow: hidden;
+    position: relative;
+    margin-top: 8px;
+}
+.modelList>span{
+  display: block;
+  float: left;
+  margin-left: 19px;
+  line-height: 26px;
+}
+.modelList>span:nth-child(2){
+    color: #9B9B9B;
+}
+.modelList .selectModel{
+   float: right;
+   margin-right: 150px;
+   height: 32px;
+
+}
+.modelList .startTime{
+    width: 249px;
+    height: 26px;
+    float: right;
+    margin-right: 150px;
+    z-index: 999;
+    
+}
+
+.vipTitle>div{
+    width: 106px;
+    height: 34px;
+    background: #F5F5F5;
+    border: 1px solid #E1E0E1;
+    text-align: center;
+    line-height: 34px;
+    float: left;
+    margin-left: 5px;
+    margin-top: 5px;
+    cursor: pointer;
+    position: relative;
+}
+
+.vipTitle>div>span{
+    display: block;
+    width: 17px;
+    height: 17px;
+    background: #ccc;
+}
+.closeImg{
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    right: -9px;
+    top: -9px;
+    background: #ccc;
+    color: #fff;
+    z-index: 999;
+    border-radius: 50%;
+}
+
+.textAreaName{
+    width: 60%;
+    height:120px;
+    margin-left: 25px;
+}
+.submit{
+    width: 80px;
+    height: 32px;
+    text-align: center;
+    line-height: 32px;
+    background: #F5A623;
+    border-radius: 2px;
+    color: #fff;
+    float: right;
+    margin-top: 20px;
+    margin-right: 50px;
+    cursor: pointer;
+}
+.sitePh .imgLeft>img{
+    width: 1.37rem;
+    height: 1.37rem;
+    float: left;
+}
+
+.sitePh .imgRight>img{
+    width: 1.37rem;
+    height: 1.37rem;
+    float: right;
+}
