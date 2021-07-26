@@ -13,7 +13,7 @@ export let urlKo='https://appstg.tiaozhanmeiyitian.com/'  //测试哈
 // export let urlKo='https://app.tiaozhanmeiyitian.com/'  //正式哈
 
 
-export let wsFn = new WebSocket("wss://socket.tiaozhanmeiyitian.com/socket");//测试socket
+export let wsFn = new WebSocket("wss://socket.tiaozhanmeiyitian.com/socket");//socket
 
 export let htUrl='http://adminstg.tiaozhanmeiyitian.com/'  //测试合同路径
 // export let htUrl='http://admin.tiaozhanmeiyitian.com/'  //正式合同路径

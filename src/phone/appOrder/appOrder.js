@@ -231,10 +231,12 @@ class appOrder extends React.Component {
           data-time={resData.data[i].a}
           className={'div' + resData.data[i].a.replace(':', '')}
           data-num={j}
+          data-venueid={resData.data[i].c[j].venueid}
           data-uuid={resData.data[i].c[j].uuid}
           data-pubprice={resData.data[i].c[j].pubPrice}
           onTouchStart={this.onStart}
           data-index={j}
+          data-lr={resData.data[i].c[j].lr}
           onTouchEnd={resData.data[i].c[j].type === 1 ? this.state.flag === '1' ? this.state.sporttypeFive === '10' ? this.lookPlateFive : this.lookPlateTwo : this.state.sporttypeFive === '10' ? this.lookPlateFive : this.lookPlate : this.asfsdhngfju}
           data-money={resData.data[i].c[j].money}
           data-timelimit={resData.data[i].c[j].timelimit}
@@ -306,7 +308,7 @@ class appOrder extends React.Component {
 
   componentDidMount() {
     //测试数据
-    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=2&token=Ky1P1DeAeIX8QC1zBKd1sbTqgyui0Due43sFmuLN5W5PLwFb3D5ekzCRNIEfGHXC&sporttype=6&flag=1'
+    // let query = '?siteuid=94da6c9c-8ced-d0e2-d54f-ad690d247134&sportid=4&token=jopZA3czKf5Qw7PBoidM5hXIcGynQL9rEKpYSAsTGTlelJMHWfOW0ezUEM2s5MQf&sporttype=12&flag=1'
     let query = this.props.location.search
     let arr = query.split('&')
     let siteuid = arr[0].slice(9, arr[0].length)
@@ -373,7 +375,6 @@ class appOrder extends React.Component {
     let time = e.currentTarget.dataset.time
     let lotime = e.currentTarget.dataset.lo
     let pubPrice=e.currentTarget.dataset.pubprice
-
     if (e.currentTarget.style.backgroundColor === 'red') {
       e.currentTarget.style.backgroundColor = '#6FB2FF'
     } else {
@@ -384,6 +385,7 @@ class appOrder extends React.Component {
     if (e.currentTarget.dataset.type === '1') {
 
       if (this.state.lotime.indexOf(lotime) !== -1) {
+        console.log(this.state.lotime)
         this.state.lotime.splice(this.state.lotime.indexOf(lotime), 1)
         this.state.time.splice(this.state.time.indexOf(time), 1)
         let moneyCall = 0
@@ -421,11 +423,11 @@ class appOrder extends React.Component {
     let money = e.currentTarget.dataset.money
     let summoney = e.currentTarget.dataset.summoney
     let time = e.currentTarget.dataset.time
-    let num = e.currentTarget.dataset.num
+    let venueid=e.currentTarget.dataset.venueid
     let lotime = e.currentTarget.dataset.lo
     let timelimit = e.currentTarget.dataset.timelimit
     let pubPrice=e.currentTarget.dataset.pubprice
-
+    let lr=e.currentTarget.dataset.lr
 
     if (this.state.moneyCall === 0 && timelimit === '2' && time.indexOf('30') !== -1) {
       Toast.fail('请选择整点场地', 2, null, false);
@@ -472,13 +474,13 @@ class appOrder extends React.Component {
         for (let i in this.state.lotime) {
           moneyCall = moneyCall + Number(this.state.lotime[i].split('-')[2])
         }
-
         for (let i in this.state.lotime) {
           openPrice = openPrice + Number(this.state.lotime[i].split('-')[6])
         }
         this.setState({ moneyCall: moneyCall,openPrice:openPrice, lotime: this.state.lotime })
       } else if (this.state.time.sort().indexOf(time) !== -1) {
-        this.state.lotime.sort().splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney + '-' + timelimit)
+        this.state.lotime.sort().splice(this.state.time.indexOf(time), 1, time + '-' + venueid + '-' + money + '-' + summoney + '-' + timelimit + '-' + lr + '-' + pubPrice)
+        
         this.setState({ lotime: this.state.lotime })
         let moneyCall = 0
         let openPrice=0
@@ -521,10 +523,11 @@ class appOrder extends React.Component {
     let money = e.currentTarget.dataset.money
     let summoney = e.currentTarget.dataset.summoney
     let time = e.currentTarget.dataset.time
-    let num = e.currentTarget.dataset.num
+    let venueid = e.currentTarget.dataset.venueid
     let lotime = e.currentTarget.dataset.lo
     let timelimit = e.currentTarget.dataset.timelimit
     let pubPrice=e.currentTarget.dataset.pubprice
+    let lr=e.currentTarget.dataset.lr
 
 
     if (this.state.flag === '1') {
@@ -634,7 +637,7 @@ class appOrder extends React.Component {
 
 
             let lo = this.state.lotime.sort()
-            lo.splice(this.state.time.indexOf(time), 1, time + '-' + num + '-' + money + '-' + summoney + '-' + timelimit)
+            lo.splice(this.state.time.indexOf(time), 1, time + '-' + venueid + '-' + money + '-' + summoney + '-' + timelimit+'-'+lr+'-'+pubPrice)
             this.setState({ lotime: lo })
 
             this.setState({ lotime: this.state.lotime })
@@ -716,7 +719,6 @@ class appOrder extends React.Component {
     let num = ''
     let original = 0
     let lr=0
-    console.log(this.state.lotime)
     if (this.state.flag === '1') {
 
       for (let i in this.state.lotime.sort()) {
@@ -961,8 +963,8 @@ class appOrder extends React.Component {
             arrGo.push(keyvalue[i])
           }
         }
-
-
+        
+         let plo=Array.from(new Set(time.split(',')))
         let obj = {
           placeNun: keyvalue.join(','),
           placeTime: time.slice(0, time.length - 1).split(',').sort()[0],
@@ -973,7 +975,8 @@ class appOrder extends React.Component {
           breakup: '',
           realData: this.state.sportidQuery === '3' ? arrGo.length * 0.5 + '小时' : arrGo.length * 1 + '小时',
           lr:lr,
-          openPrice:this.state.openPrice
+          openPrice:this.state.openPrice,
+          tPoint:plo.join(','),
         }
         console.log(obj)
         let timelimit = this.state.lotime.sort()[0].split('-')[4]
@@ -1074,6 +1077,7 @@ class appOrder extends React.Component {
             lr:lr,
             openPrice:this.state.openPrice
           }
+          console.log(this.state.lotime)
           console.log(obj)
 
           this.setState({ obj: obj })
