@@ -6,11 +6,12 @@ class perfect2 extends React.Component {
 
 
   render(){
-    console.log(211413)
+
+    console.log('ktt') 
     return(
         <div>
 
-            aseddfedrg
+            你妹的
         </div>
 
     )
